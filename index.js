@@ -93,13 +93,13 @@ app.prepare()
 
   // Add route to serve compiled SCSS from /assets/{build id}/main.css
   // Note: This is is only used in production, in development it is inlined
-  const sassResult = sass.renderSync({ file: './css/main.scss', outputStyle: 'compressed' });
-  server.get('/assets/:id/main.css', (req, res) => {
-    res.setHeader('Content-Type', 'text/css');
-    res.setHeader('Cache-Control', 'public, max-age=2592000');
-    res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
-    res.send(sassResult.css);
-  });
+  // const sassResult = sass.renderSync({ file: './css/index.scss', outputStyle: 'compressed' });
+  // server.get('/assets/:id/index.css', (req, res) => {
+  //   res.setHeader('Content-Type', 'text/css');
+  //   res.setHeader('Cache-Control', 'public, max-age=2592000');
+  //   res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
+  //   res.send(sassResult.css);
+  // });
 
   // A simple example of a custom route
   // Says requests to '/route/{anything}' will be handled by 'pages/routing.js'
