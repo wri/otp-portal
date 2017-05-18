@@ -26,6 +26,7 @@
     "object-curly-spacing": ["error", "always"],
 
     "react/no-danger": 1,
-    "react/jsx-space-before-closing": ["error", "always"]
+    "react/jsx-space-before-closing": ["error", "always"],
+    "react/forbid-component-props": 0
   }
 }

@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
-import inlineCSS from '../css/index.scss';
+import inlineCSS from 'css/index.scss';
 import Package from '../package';
 import Menu from './menu';
 

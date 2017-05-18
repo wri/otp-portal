@@ -5,12 +5,17 @@ import Link from 'next/link';
 import React from 'react';
 import Page from '../components/page';
 import Layout from '../components/layout';
+import Head from 'components/head';
 
 export default class extends Page {
 
   render() {
     return (
       <Layout session={this.props.session}>
+        <Head
+          title="Home"
+          description="Home description"
+        />
         <h2>About this project</h2>
         <p>
           This is a starter <a href="https://zeit.co/blog/next">Next.js 2.0</a> project

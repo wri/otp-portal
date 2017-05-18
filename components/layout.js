@@ -1,15 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Header from './header';
 import Footer from './footer';
 
-export default class extends React.Component {
-
-  static propTypes() {
-    return {
-      session: React.PropTypes.object.isRequired,
-      children: React.PropTypes.object.isRequired
-    };
-  }
+export default class Layout extends React.Component {
 
   render() {
     return (
@@ -24,3 +18,8 @@ export default class extends React.Component {
   }
 
 }
+
+Layout.propTypes = {
+  session: PropTypes.object.isRequired,
+  children: PropTypes.any.isRequired
+};

@@ -4912,7 +4912,7 @@
     },
     "prop-types": {
       "version": "15.5.7",
-      "from": "prop-types@15.5.7",
+      "from": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.7.tgz",
       "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.7.tgz"
     },
     "proto-props": {
