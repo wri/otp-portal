@@ -3,9 +3,9 @@
  */
 import Link from 'next/link';
 import React from 'react';
-import Page from '../components/page';
-import Layout from '../components/layout';
-import Head from 'components/head';
+import Page from 'components/layout/page';
+import Layout from 'components/layout/layout';
+import Head from 'components/layout/head';
 
 export default class extends Page {
 
@@ -46,12 +46,8 @@ export default class extends Page {
         </p>
         <h3>Examples</h3>
         <ul>
-          <li><Link prefetch href="/helloworld"><a>HelloWorld</a></Link> - The simplest possible example</li>
-          <li><Link prefetch href="/css"><a>CSS &amp; SCSS</a></Link> - Live CSS/SCSS reloading and page specific CSS and &lt;head&gt; tags</li>
           <li><Link prefetch href="/async"><a>Asynchronous data fetching</a></Link> - How to include data from an API or database</li>
-          <li><Link prefetch href="/routing/?id=example" as="/route/example"><a>Custom routing</a></Link> - Handling custom routes with Express</li>
           <li><Link prefetch href="/auth/signin"><a>Authentication</a></Link> - Authentication via email and Facebook, Google+ and Twitter</li>
-          <li><Link prefetch href="/clock"><a>Clock</a></Link> - A more advanced example from the Zeit wiki that uses &quot;next-redux-wrapper&quot;</li>
         </ul>
         <p>
           If you want to see how custom 404, 500 and other HTTP errors are handled take a look at pages/_error.js

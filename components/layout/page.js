@@ -1,5 +1,5 @@
 import React from 'react';
-import Session from './session';
+import Session from 'components/session';
 
 export default class extends React.Component {
 

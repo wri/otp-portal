@@ -5,8 +5,8 @@
  * It does not illustrate best practice and does not implement caching.
  */
 import React from 'react';
-import Page from '../components/page';
-import Layout from '../components/layout';
+import Page from 'components/layout/page';
+import Layout from 'components/layout/layout';
 import AsyncData from '../components/async-data';
 
 export default class extends Page {

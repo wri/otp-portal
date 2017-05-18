@@ -4,8 +4,8 @@
 
 import Link from 'next/link';
 import React from 'react';
-import Page from '../components/page';
-import Layout from '../components/layout';
+import Page from 'components/layout/page';
+import Layout from 'components/layout/layout';
 
 export default class extends Page {
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HeadNext from 'next/head';
-import Package from '../package';
+import Package from '../../package';
 
 // Styles
 import styles from 'css/index.scss';
