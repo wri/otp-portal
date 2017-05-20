@@ -1,7 +1,6 @@
 import React from 'react';
-import Page from '../../components/page';
-import Layout from '../../components/layout';
-import Session from '../../components/session';
+import Page from 'components/layout/page';
+import Session from 'components/session';
 
 export default class extends Page {
 
@@ -119,7 +118,11 @@ export default class extends Page {
     }
 
     return (
-      <Layout session={this.state.session}>
+      <Page
+        title="Sign in"
+        description="Sign in description..."
+        session={this.state.session}
+      >
         <h2>Authentication</h2>
         {signinForm}
         <h3>How it works</h3>
@@ -155,7 +158,7 @@ export default class extends Page {
           configuring the mail server option - some email providers block email from
           unverified mail servers.
         </p>
-      </Layout>
+      </Page>
     );
   }
 

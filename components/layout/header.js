@@ -19,4 +19,4 @@ export default class Layout extends React.Component {
 
 Layout.propTypes = {
   session: PropTypes.object.isRequired
-}
+};
