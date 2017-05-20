@@ -17,17 +17,19 @@
     },
     "sourceType": "module"
   },
-  "plugins": [ "babel", "react" ],
   "extends": [
-    "xo-space",
-    "xo-react/space"
+    "vizzuality"
   ],
+  "plugins": [
+    "babel"
+  ],
+  "settings": {
+    "import/resolver": {
+      "babel-module": {
+      }
+    }
+  },
   "rules": {
-    "object-curly-spacing": ["error", "always"],
-
-    "react/no-danger": 1,
-    "react/jsx-space-before-closing": ["error", "always"],
-    "react/jsx-closing-bracket-location": ["error", "tag-aligned"],
-    "react/forbid-component-props": 0
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   }
 }

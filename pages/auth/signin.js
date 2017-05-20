@@ -48,7 +48,7 @@ export default class extends Page {
     .then(() => {
       this.props.url.push('/auth/check-email');
     })
-    .catch(err => {
+    .catch((err) => {
       // @FIXME Handle error
       console.log(err);
     });

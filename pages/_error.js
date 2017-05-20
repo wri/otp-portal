@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
 
-export default class Error extends React.Component {
+export default class ErrorPage extends React.Component {
 
   static getInitialProps({ res, xhr }) {
     const errorCode = res ? res.statusCode : xhr.status;
@@ -27,7 +27,7 @@ export default class Error extends React.Component {
       </Head>
     );
 
-    var response;
+    let response;
     switch (this.props.errorCode) {
       case 200: // Also display a 404 if someone requests /_error explicitly
       case 404:
@@ -67,7 +67,7 @@ export default class Error extends React.Component {
 
 }
 
-Error.propTypes = {
+ErrorPage.propTypes = {
   errorCode: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired
 };

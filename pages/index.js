@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Page from 'components/layout/page';
 import Icon from 'components/ui/icon';
 
-export default class extends Page {
+export default class HomePage extends React.Component {
 
   render() {
     return (
@@ -18,3 +19,7 @@ export default class extends Page {
   }
 
 }
+
+HomePage.propTypes = {
+  session: PropTypes.object.isRequired
+};

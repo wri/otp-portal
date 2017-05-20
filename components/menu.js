@@ -22,7 +22,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const session = this.props.session || null;
+    const session = this.props.session || {};
 
     let loginMessage = <p><Link prefetch href="/"><a className="home">Home</a></Link> You are not logged in. <Link prefetch href="/auth/signin"><a>Sign in</a></Link></p>;
 

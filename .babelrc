@@ -8,7 +8,6 @@
           "components": "./components",
           "css": "./css"
         },
-        "cwd": "babelrc"
     }],
     [
       "wrap-in-js",
