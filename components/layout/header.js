@@ -1,24 +1,68 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import Menu from 'components/menu';
+import Icon from 'components/ui/icon';
 
 export default class Header extends React.Component {
 
   render() {
     return (
-      <header>
-        <Menu
-          session={this.props.session}
-        />
-        <div className="header">
-          <h1><Link prefetch href="/"><a>Next.js 2.0 Starter Project</a></Link></h1>
-          <hr />
+      <header className="c-header">
+        <div className="l-container">
+          <div className="header-container">
+            <h1 className="header-logo">
+              <Link prefetch href="/">
+                <a>Open Timber Portal</a>
+              </Link>
+            </h1>
+            <nav className="header-nav">
+              <ul className="header-nav-list">
+                <li>
+                  <Link prefetch href="/operators">
+                    <a>Operators</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link prefetch href="/operators">
+                    <a>Observators</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link prefetch href="/operators">
+                    <a>Help</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link prefetch href="/operators">
+                    <a>About</a>
+                  </Link>
+                </li>
+              </ul>
+
+              <ul className="header-nav-list">
+                <li>
+                  <Link prefetch href="/search">
+                    <a>
+                      <span>Search</span>
+                      <Icon name="icon-search" />
+                    </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link prefetch href="/auth/signin">
+                    <a>
+                      <span>Sign in</span>
+                      <Icon name="icon-search" />
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
     );
   }
-
 }
 
 Header.propTypes = {

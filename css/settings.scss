@@ -27,6 +27,11 @@ $color-text-2: #f7f6ed;
 $border-color-1: #eee;
 $border-color-2: #ccc;
 
+// Zindex
+$z-index-1: 0;
+$z-index-2: 999;
+$z-index-3: 1000;
+
 /**
  * FONTS
  * - Families
@@ -34,7 +39,7 @@ $border-color-2: #ccc;
  * - Weights
 */
 // Families
-$font-family-proximanova: 'ProximaNova', Georgia, Arial, sans-serif;
+$font-family-acumin: 'Acumin Pro', Georgia, Arial, sans-serif;
 $font-family-georgia: Georgia, Arial, sans-serif;
 
 // Sizes
@@ -54,7 +59,13 @@ $font-weight-bold:    700;
 /**
  * LAYOUT
 */
+// Max widths
 $layout-max-width: 1060px;
+
+// Responsive breakpoints
+$br-mobile: 640px;
+$br-tablet: 1024px;
+$br-desktop: 1200px;
 
 /**
  * SPACES && SIZES
@@ -80,8 +91,3 @@ $ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1.000);
 $ease-in-sine: cubic-bezier(0.470, 0.000, 0.745, 0.715);
 $ease-out-sine: cubic-bezier(0.390, 0.575, 0.565, 1.000);
 $ease-in-out-sine: cubic-bezier(0.445, 0.050, 0.550, 0.950);
-
-// Responsive breakpoints
-$br-mobile: 640px;
-$br-tablet: 900px;
-$br-desktop: 1140px;

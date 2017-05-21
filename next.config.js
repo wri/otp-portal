@@ -1,5 +1,6 @@
 const path = require('path');
 const glob = require('glob');
+const webpack = require('webpack');
 
 module.exports = {
   webpack: (config, { dev }) => {
@@ -31,6 +32,15 @@ module.exports = {
         ]
       }
     );
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        config: {
+          PORT: JSON.stringify(process.env.PORT)
+        }
+      })
+    );
+
     return config;
   }
 };

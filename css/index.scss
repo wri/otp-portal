@@ -1,6 +1,19 @@
-@import 'normalize.css';
 @import 'settings';
+@import 'foundation_settings';
+
+// Reset
+@import 'normalize.css';
+
+// Foundation
+@import 'foundation-sites/scss/foundation';
+@include foundation-flex-grid;
 
 // Common
 @import 'base';
+@import 'fonts';
+@import 'layout';
 @import 'animations';
+
+// Components
+@import 'components/header';
+@import 'components/icon';
