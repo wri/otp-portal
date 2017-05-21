@@ -15,5 +15,11 @@
 @import 'animations';
 
 // Components
-@import 'components/header';
-@import 'components/icon';
+// - layout
+@import 'components/layout/header';
+
+// - page
+@import 'components/page/static-header';
+
+// - ui
+@import 'components/ui/icon';

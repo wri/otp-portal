@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Session from '../session';
+import Session from 'components/session';
 import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';

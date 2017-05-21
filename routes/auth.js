@@ -9,7 +9,7 @@
  * Normally some of this logic might be elsewhere (like server.js) but for the
  * purposes of this example all server logic related to authentication is here.
  */
-'use strict';
+
 
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -30,7 +30,7 @@ exports.configure = ({
     // Secret used to encrypt session data on the server
     secret = 'change-me',
     // Sessions store for express-session (defaults to /tmp/sessions file store)
-    store = new FileStore({ path: '/tmp/sessions', secret: secret }),
+    store = new FileStore({ path: '/tmp/sessions', secret }),
     // Max session age in ms (default is 4 weeks)
     // NB: With 'rolling: true' passed to session() the session expiry time will
     // be reset every time a user visits the site again before it expires.
@@ -65,14 +65,14 @@ exports.configure = ({
 
   // Configure sessions
   server.use(session({
-    secret: secret,
-    store: store,
+    secret,
+    store,
     resave: false,
     rolling: true,
     saveUninitialized: true,
     httpOnly: true,
     cookie: {
-      maxAge: maxAge
+      maxAge
     }
   }));
 
@@ -85,20 +85,18 @@ exports.configure = ({
   // With sessions connfigured (& before routes) we need to configure Passport
   // and trigger passport.initialize() before we add any routes
   passportStrategies.configure({
-    app: app,
-    server: server,
+    app,
+    server,
     user: User
   });
 
   // Add route to get CSRF token via AJAX
-  server.get(path + '/csrf', (req, res) => {
-    return res.json({ csrfToken: res.locals._csrf });
-  });
+  server.get(`${path}/csrf`, (req, res) => res.json({ csrfToken: res.locals._csrf }));
 
   // Return session info
-  server.get(path + '/session', (req, res) => {
-    let session = {
-      clientMaxAge: clientMaxAge,
+  server.get(`${path}/session`, (req, res) => {
+    const session = {
+      clientMaxAge,
       csrfToken: res.locals._csrf
     };
 
@@ -111,45 +109,45 @@ exports.configure = ({
   });
 
   // On post request, redirect to page with instrutions to check email for link
-  server.post(path + '/email/signin', (req, res) => {
+  server.post(`${path}/email/signin`, (req, res) => {
     const email = req.body.email || null;
 
     if (!email || email.trim() === '') {
-      return app.render(req, res, pages + '/signin', req.params);
+      return app.render(req, res, `${pages}/signin`, req.params);
     }
 
     const token = uuid();
-    const verificationUrl = (serverUrl || 'http://' + req.headers.host) + path + '/email/signin/' + token;
+    const verificationUrl = `${(serverUrl || `http://${req.headers.host}`) + path}/email/signin/${token}`;
 
     // Create verification token save it to database
     // @FIXME Improve error handling
-    User.one({ email: email }, function (err, user) {
+    User.one({ email }, (err, user) => {
       if (err) {
         throw err;
       }
       if (user) {
         user.token = token;
-        user.save(function (err) {
+        user.save((err) => {
           if (err) {
             throw err;
           }
 
           sendVerificationEmail({
-            mailserver: mailserver,
-            fromEmail: 'noreply@' + req.headers.host.split(':')[0],
+            mailserver,
+            fromEmail: `noreply@${req.headers.host.split(':')[0]}`,
             toEmail: email,
             url: verificationUrl
           });
         });
       } else {
-        User.create({ email: email, token: token }, function (err) {
+        User.create({ email, token }, (err) => {
           if (err) {
             throw err;
           }
 
           sendVerificationEmail({
-            mailserver: mailserver,
-            fromEmail: 'noreply@' + req.headers.host.split(':')[0],
+            mailserver,
+            fromEmail: `noreply@${req.headers.host.split(':')[0]}`,
             toEmail: email,
             url: verificationUrl
           });
@@ -157,43 +155,43 @@ exports.configure = ({
       }
     });
 
-    return app.render(req, res, pages + '/check-email', req.params);
+    return app.render(req, res, `${pages}/check-email`, req.params);
   });
 
-  server.get(path + '/email/signin/:token', (req, res) => {
+  server.get(`${path}/email/signin/:token`, (req, res) => {
     if (!req.params.token) {
-      return res.redirect(path + '/signin');
+      return res.redirect(`${path}/signin`);
     }
 
     // Look up user by token
-    User.one({ token: req.params.token }, function (err, user) {
+    User.one({ token: req.params.token }, (err, user) => {
       if (err) {
-        return res.redirect(path + '/error/email');
+        return res.redirect(`${path}/error/email`);
       }
       if (user) {
         // Reset token and mark as verified
         user.token = null;
         user.verified = true;
-        user.save(function (err) {
+        user.save((err) => {
           // @TODO Improve error handling
           if (err) {
-            return res.redirect(path + '/error/email');
+            return res.redirect(`${path}/error/email`);
           }
           // Having validated to the token, we log the user with Passport
-          req.logIn(user, function (err) {
+          req.logIn(user, (err) => {
             if (err) {
-              return res.redirect(path + '/error/email');
+              return res.redirect(`${path}/error/email`);
             }
-            return res.redirect(path + '/signin?action=signin_email');
+            return res.redirect(`${path}/signin?action=signin_email`);
           });
         });
       } else {
-        return res.redirect(path + '/error/email');
+        return res.redirect(`${path}/error/email`);
       }
     });
   });
 
-  server.post(path + '/signout', (req, res) => {
+  server.post(`${path}/signout`, (req, res) => {
     // Log user out by disassociating their account from the session
     req.logout();
     res.redirect('/');
@@ -208,11 +206,11 @@ function sendVerificationEmail({ mailserver, fromEmail, toEmail, url }) {
     to: toEmail,
     from: fromEmail,
     subject: 'Sign in link',
-    text: 'Use the link below to sign in:\n\n' + url + '\n\n'
-  }, function (err) {
+    text: `Use the link below to sign in:\n\n${url}\n\n`
+  }, (err) => {
     // @TODO Handle errors
     if (err) {
-      console.log('Error sending email to ' + toEmail, err);
+      console.error(`Error sending email to ${toEmail}`, err);
     }
   });
   // console.log('Generated sign in link ' + url + ' for ' + toEmail)

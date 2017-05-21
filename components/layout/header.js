@@ -23,17 +23,17 @@ export default class Header extends React.Component {
                   </Link>
                 </li>
                 <li>
-                  <Link prefetch href="/operators">
+                  <Link prefetch href="/observators">
                     <a>Observators</a>
                   </Link>
                 </li>
                 <li>
-                  <Link prefetch href="/operators">
+                  <Link prefetch href="/help">
                     <a>Help</a>
                   </Link>
                 </li>
                 <li>
-                  <Link prefetch href="/operators">
+                  <Link prefetch href="/about">
                     <a>About</a>
                   </Link>
                 </li>

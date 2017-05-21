@@ -85,27 +85,31 @@ app.prepare()
 .then(db => {
   // Once DB is available, setup sessions and routes for authentication
   auth.configure({
-    app: app,
-    server: server,
+    app,
+    server,
     user: db.models.user,
     secret: process.env.SESSION_SECRET
   });
 
   // Add route to serve compiled SCSS from /assets/{build id}/main.css
   // Note: This is is only used in production, in development it is inlined
-  // const sassResult = sass.renderSync({ file: './css/index.scss', outputStyle: 'compressed' });
-  // server.get('/assets/:id/index.css', (req, res) => {
-  //   res.setHeader('Content-Type', 'text/css');
-  //   res.setHeader('Cache-Control', 'public, max-age=2592000');
-  //   res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
-  //   res.send(sassResult.css);
-  // });
+  const sassResult = sass.renderSync({ file: './css/index.scss', outputStyle: 'compressed' });
+  server.get('/assets/:id/index.css', (req, res) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.setHeader('Cache-Control', 'public, max-age=2592000');
+    res.setHeader('Expires', new Date(Date.now() + 2592000000).toUTCString());
+    res.send(sassResult.css);
+  });
 
   // A simple example of a custom route
   // Says requests to '/route/{anything}' will be handled by 'pages/routing.js'
   // and the {anything} part will be pased to the page in parameters.
   server.get('/route/:id', (req, res) => {
     return app.render(req, res, '/routing', req.params);
+  });
+
+  server.get('/about', (req, res) => {
+    return app.render(req, res, '/about', req.params);
   });
 
   // Default catch-all handler to allow Next.js to handle all other routes
@@ -127,7 +131,7 @@ app.prepare()
     console.log('> Ready on http://localhost:' + process.env.PORT + ' [' + process.env.NODE_ENV + ']');
   });
 })
-.catch(err => {
-  console.log('An error occurred, unable to start the server');
-  console.log(err);
+.catch((err) => {
+  console.error('An error occurred, unable to start the server');
+  console.error(err);
 });
