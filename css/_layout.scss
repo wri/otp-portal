@@ -1,5 +1,6 @@
 .l-container {
   display: block;
   margin: 0 auto;
-  max-width: $layout-max-width;
+  max-width: $layout-max-width + 40px;
+  padding: 0 20px;
 }
