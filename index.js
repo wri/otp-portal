@@ -112,6 +112,10 @@ app.prepare()
     return app.render(req, res, '/about', req.params);
   });
 
+  server.get('/help', (req, res) => {
+    return app.render(req, res, '/help', req.params);
+  });
+
   // Default catch-all handler to allow Next.js to handle all other routes
   server.all('*', (req, res) => {
     return handle(req, res);

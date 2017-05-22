@@ -5,7 +5,7 @@
 @import 'normalize.css';
 
 // Foundation
-@import 'foundation-sites/scss/foundation';
+@import '../node_modules/foundation-sites/scss/foundation';
 @include foundation-flex-grid;
 
 // Common
