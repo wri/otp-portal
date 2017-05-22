@@ -1,12 +1,17 @@
-import Link from 'next/link';
 import React from 'react';
-import Page from '../../../components/page';
-import Layout from '../../../components/layout';
+import PropTypes from 'prop-types';
+import Link from 'next/link';
+import Page from 'components/layout/page';
 
-export default class extends Page {
+export default class ErrorOauthPage extends React.Component {
+
   render() {
     return (
-      <Layout session={this.props.session}>
+      <Page
+        title="Error oAuth"
+        description="Error oAuth description..."
+        session={this.props.session}
+      >
         <h2>Unable to sign in</h2>
         <p>If you have already signed in with your email address or previously signed in using a different service, use that method to sign in.</p>
         <p><Link href="/auth/signin"><a>Try signing in with your email address or another service.</a></Link></p>
@@ -17,7 +22,12 @@ export default class extends Page {
         <p>
           Once you have signed in and been authenticated, you can link your accounts so you can use any of them to sign in next time.
         </p>
-      </Layout>
+      </Page>
     );
   }
+
 }
+
+ErrorOauthPage.propTypes = {
+  session: PropTypes.object.isRequired
+};

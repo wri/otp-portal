@@ -42,8 +42,8 @@
     justify-content: flex-start;
     align-items: flex-start;
     list-style: none;
-    padding: 0 0 0 45px;
-    margin: 0;
+    padding: 0 0 0 $space-1 * 3;
+    margin: 0 0 0 $space-1 * 2;
     font-family: $font-family-acumin;
     font-size: $font-size-small;
     font-weight: $font-weight-default;
@@ -87,20 +87,19 @@
         &:after {
           content: "";
           display: block;
-          width: 0%;
-          height: 5px;
+          width: 100%;
+          height: 0px;
           position: absolute;
           bottom: 0;
-          left: 50%;
+          left: 0;
           opacity: 0;
           background: $color-secondary;
-          transform: translateX(-50%);
           transition: all $animation-time $ease-in-out-sine;
         }
 
         &.-active, &:hover {
           &:after {
-            width: 100%;
+            height: 5px;
             opacity: 1;
           }
         }
