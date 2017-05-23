@@ -15,7 +15,7 @@ export default class ObservatorsPage extends Page {
       >
         <StaticHeader
           title="Observators"
-          background="/static/images/static-header/about.jpg"
+          background="/static/images/static-header/bg-help.jpg"
         />
       </Layout>
     );

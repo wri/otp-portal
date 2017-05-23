@@ -15,7 +15,7 @@ export default class AboutPage extends Page {
       >
         <StaticHeader
           title="About"
-          background="/static/images/static-header/about.jpg"
+          background="/static/images/static-header/bg-help.jpg"
         />
       </Layout>
     );

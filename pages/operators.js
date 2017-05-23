@@ -15,7 +15,7 @@ export default class OperatorsPage extends Page {
       >
         <StaticHeader
           title="Operators"
-          background="/static/images/static-header/about.jpg"
+          background="/static/images/static-header/bg-help.jpg"
         />
       </Layout>
     );

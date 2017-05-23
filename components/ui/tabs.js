@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+// Next components
+import Link from 'next/link';
+
 export default class Tabs extends React.Component {
 
   constructor(props) {
@@ -10,22 +13,11 @@ export default class Tabs extends React.Component {
     this.state = {
       selected: props.defaultSelected
     };
-
-    // BINDINGS
-    this.triggerClickTab = this.triggerClickTab.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       selected: nextProps.selected
-    });
-  }
-
-  triggerClickTab(option) {
-    this.setState({
-      selected: option.value
-    }, () => {
-      this.props.onChange && this.props.onChange(this.state.selected);
     });
   }
 
@@ -47,12 +39,11 @@ export default class Tabs extends React.Component {
                   key={option.value}
                   className={`medium-${12 / options.length} columns`}
                 >
-                  <button
-                    className={`tabs-btn ${btnClasses}`}
-                    onClick={() => this.triggerClickTab(option)}
-                  >
-                    {option.label}
-                  </button>
+                  <Link href={{ pathname: '/help', query: { tab: option.value } }} as={`/help/${option.value}`}>
+                    <a className={`tabs-btn ${btnClasses}`}>
+                      {option.label}
+                    </a>
+                  </Link>
                 </div>
               );
             })}
@@ -63,20 +54,8 @@ export default class Tabs extends React.Component {
   }
 }
 
-Tabs.defaultProps = {
-  options: [{
-    label: 'Test',
-    value: 'test'
-  }, {
-    label: 'Test 1',
-    value: 'test-1'
-  }],
-  defaultSelected: 'test'
-};
-
 Tabs.propTypes = {
   options: PropTypes.array.isRequired,
   selected: PropTypes.string.isRequired,
-  defaultSelected: PropTypes.string.isRequired,
-  onChange: PropTypes.func
+  defaultSelected: PropTypes.string.isRequired
 };

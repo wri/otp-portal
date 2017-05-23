@@ -22,7 +22,7 @@ export default class HelpPage extends Page {
       >
         <StaticHeader
           title="Help"
-          background="/static/images/static-header/about.jpg"
+          background="/static/images/static-header/bg-help.jpg"
         />
         <Tabs
           options={TABS_HELP}

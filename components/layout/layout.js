@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+// Components
 import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
@@ -8,6 +10,7 @@ import Icons from 'components/layout/icons';
 export default class Layout extends React.Component {
   render() {
     const { title, description } = this.props;
+
     return (
       <div className="c-page">
         <Head

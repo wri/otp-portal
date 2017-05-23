@@ -10,7 +10,7 @@ export default class StaticHeader extends React.Component {
       <div
         className="c-static-header"
         style={{
-          background: `url(${background})`
+          backgroundImage: `url(${background})`
         }}
       >
         <h2>{title}</h2>
