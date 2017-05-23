@@ -10,7 +10,7 @@
     width: 100%;
     padding: 20px;
     border: none;
-    font-family: $font-family-acumin;
+    font-family: $font-family-proximanova;
     font-size: $font-size-small;
     color: $color-text-1;
     background: #edece3;
@@ -41,11 +41,6 @@
 
     &:hover {
       background: darken($color-tertiary, 2.5%);
-
-      &:after {
-        height: 5px;
-        opacity: 1;
-      }
     }
 
     &.-active {
