@@ -6,6 +6,7 @@
 
 // Foundation
 @import '../node_modules/foundation-sites/scss/foundation';
+@include foundation-flex-classes;
 @include foundation-flex-grid;
 
 // Common
@@ -20,7 +21,11 @@
 
 // - page
 @import 'components/page/static-header';
+@import 'components/page/static-section';
+@import 'components/page/static-box';
 
 // - ui
+@import 'components/ui/card';
 @import 'components/ui/icon';
+@import 'components/ui/intro';
 @import 'components/ui/tabs';
