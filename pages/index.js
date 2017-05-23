@@ -7,11 +7,14 @@ import Icon from 'components/ui/icon';
 export default class HomePage extends Page {
 
   render() {
+    const { url, session } = this.props;
+
     return (
       <Layout
         title="Home"
         description="Home description..."
-        session={this.props.session}
+        url={url}
+        session={session}
       >
         <h2>Home</h2>
         <Icon name="icon-arrow-down" />

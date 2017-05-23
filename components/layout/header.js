@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Link from 'next/link';
 import Icon from 'components/ui/icon';
 
 export default class Header extends React.Component {
+
+  setActiveClassName(pathname) {
+    const { url } = this.props;
+    return classnames({ '-active': (url.pathname === pathname) });
+  }
 
   render() {
     return (
@@ -19,22 +25,22 @@ export default class Header extends React.Component {
               <ul className="header-nav-list">
                 <li>
                   <Link prefetch href="/operators">
-                    <a>Operators</a>
+                    <a className={this.setActiveClassName('/operators')}>Operators</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/observators">
-                    <a>Observators</a>
+                    <a className={this.setActiveClassName('/observators')}>Observators</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/help">
-                    <a>Help</a>
+                    <a className={this.setActiveClassName('/help')}>Help</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/about">
-                    <a>About</a>
+                    <a className={this.setActiveClassName('/about')}>About</a>
                   </Link>
                 </li>
               </ul>
@@ -66,5 +72,6 @@ export default class Header extends React.Component {
 }
 
 Header.propTypes = {
+  url: PropTypes.object.isRequired,
   session: PropTypes.object.isRequired
 };

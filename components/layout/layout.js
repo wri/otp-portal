@@ -9,7 +9,7 @@ import Icons from 'components/layout/icons';
 
 export default class Layout extends React.Component {
   render() {
-    const { title, description } = this.props;
+    const { title, description, url, session, children } = this.props;
 
     return (
       <div className="c-page">
@@ -21,11 +21,12 @@ export default class Layout extends React.Component {
         <Icons />
 
         <Header
-          session={this.props.session}
+          url={url}
+          session={session}
         />
 
-        <div className="container">
-          {this.props.children}
+        <div className="l-main">
+          {children}
         </div>
 
         <Footer />
@@ -39,5 +40,6 @@ Layout.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  url: PropTypes.object.isRequired
 };

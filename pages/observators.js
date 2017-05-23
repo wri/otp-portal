@@ -7,11 +7,14 @@ import StaticHeader from 'components/page/static-header';
 export default class ObservatorsPage extends Page {
 
   render() {
+    const { url, session } = this.props;
+
     return (
       <Layout
         title="Observators"
         description="Observators description..."
-        session={this.props.session}
+        url={url}
+        session={session}
       >
         <StaticHeader
           title="Observators"

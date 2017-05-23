@@ -12,13 +12,14 @@ import Tabs from 'components/ui/tabs';
 
 export default class HelpPage extends Page {
   render() {
-    const { url } = this.props;
+    const { url, session } = this.props;
 
     return (
       <Layout
         title="Help"
         description="Help description..."
-        session={this.props.session}
+        url={url}
+        session={session}
       >
         <StaticHeader
           title="Help"
