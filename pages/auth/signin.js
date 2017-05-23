@@ -1,5 +1,8 @@
 import React from 'react';
+
+// Components
 import Page from 'components/layout/page';
+import Layout from 'components/layout/layout';
 import Session from 'components/session';
 
 export default class extends Page {
@@ -118,7 +121,7 @@ export default class extends Page {
     }
 
     return (
-      <Page
+      <Layout
         title="Sign in"
         description="Sign in description..."
         session={this.state.session}
@@ -158,7 +161,7 @@ export default class extends Page {
           configuring the mail server option - some email providers block email from
           unverified mail servers.
         </p>
-      </Page>
+      </Layout>
     );
   }
 

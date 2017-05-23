@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import Page from 'components/layout/page';
 
-export default class ErrorOauthPage extends React.Component {
+// Components
+import Page from 'components/layout/page';
+import Layout from 'components/layout/layout';
+
+export default class ErrorOauthPage extends Page {
 
   render() {
     return (
-      <Page
+      <Layout
         title="Error oAuth"
         description="Error oAuth description..."
         session={this.props.session}
@@ -22,7 +25,7 @@ export default class ErrorOauthPage extends React.Component {
         <p>
           Once you have signed in and been authenticated, you can link your accounts so you can use any of them to sign in next time.
         </p>
-      </Page>
+      </Layout>
     );
   }
 

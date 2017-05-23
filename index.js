@@ -1,4 +1,4 @@
-'use strict';
+
 
 const express = require('express');
 const next = require('next');
@@ -14,8 +14,8 @@ if (process.env.LOGS_SECRET) {
   require('now-logs')(process.env.LOGS_SECRET);
 }
 
-process.on('uncaughtException', function (err) {
-  console.log('Uncaught Exception: ' + err);
+process.on('uncaughtException', (err) => {
+  console.log(`Uncaught Exception: ${err}`);
 });
 
 process.on('unhandledRejection', (reason, p) => {
@@ -51,7 +51,7 @@ app.prepare()
   // Set it up the database (used to store user info and email sign in tokens)
   return new Promise((resolve, reject) => {
     // Before we can set up authentication routes we need to set up a database
-    orm.connect(process.env.DB_CONNECTION_STRING, function (err, db) {
+    orm.connect(process.env.DB_CONNECTION_STRING, (err, db) => {
       if (err) {
         return reject(err);
       }
@@ -73,7 +73,7 @@ app.prepare()
       // Note: If you add fields to am object this won't do that for you, it
       // only creates tables/collections if they are not there - you still need
       // to handle database schema changes yourself.
-      db.sync(function (err) {
+      db.sync((err) => {
         if (err) {
           return reject(err);
         }
@@ -82,7 +82,7 @@ app.prepare()
     });
   });
 })
-.then(db => {
+.then((db) => {
   // Once DB is available, setup sessions and routes for authentication
   auth.configure({
     app,
@@ -108,39 +108,31 @@ app.prepare()
   //   return app.render(req, res, '/routing', req.params);
   // });
 
-  server.get('/operators', (req, res) => {
-    return app.render(req, res, '/operators', req.params);
-  });
+  server.get('/operators', (req, res) => app.render(req, res, '/operators', req.params));
 
-  server.get('/observators', (req, res) => {
-    return app.render(req, res, '/observators', req.params);
-  });
+  server.get('/observators', (req, res) => app.render(req, res, '/observators', req.params));
 
-  server.get('/about', (req, res) => {
-    return app.render(req, res, '/about', req.params);
-  });
+  server.get('/about', (req, res) => app.render(req, res, '/about', req.params));
 
-  server.get('/help', (req, res) => {
-    return app.render(req, res, '/help', req.params);
-  });
+  // HELP
+  server.get('/help', (req, res) => app.render(req, res, '/help', req.params));
+  server.get('/help/:tab', (req, res) => app.render(req, res, '/help', req.params));
 
   // Default catch-all handler to allow Next.js to handle all other routes
-  server.all('*', (req, res) => {
-    return handle(req, res);
-  });
+  server.all('*', (req, res) => handle(req, res));
 
   // Set vary header (good practice)
   // Note: This overrides any existing 'Vary' header but is okay in this app
-  server.use(function (req, res, next) {
+  server.use((req, res, next) => {
     res.setHeader('Vary', 'Accept-Encoding');
     next();
   });
 
-  server.listen(process.env.PORT, err => {
+  server.listen(process.env.PORT, (err) => {
     if (err) {
       throw err;
     }
-    console.log('> Ready on http://localhost:' + process.env.PORT + ' [' + process.env.NODE_ENV + ']');
+    console.log(`> Ready on http://localhost:${process.env.PORT} [${process.env.NODE_ENV}]`);
   });
 })
 .catch((err) => {

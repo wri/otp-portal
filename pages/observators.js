@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Page from 'components/layout/page';
-import PageStaticHeader from 'components/page/static-header';
+import Layout from 'components/layout/layout';
+import StaticHeader from 'components/page/static-header';
 
-export default class ObservatorsPage extends React.Component {
+export default class ObservatorsPage extends Page {
 
   render() {
     return (
-      <Page
+      <Layout
         title="Observators"
         description="Observators description..."
         session={this.props.session}
       >
-        <PageStaticHeader
+        <StaticHeader
           title="Observators"
           background="/static/images/static-header/about.jpg"
         />
-      </Page>
+      </Layout>
     );
   }
 

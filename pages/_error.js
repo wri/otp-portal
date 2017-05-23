@@ -69,5 +69,5 @@ export default class ErrorPage extends React.Component {
 
 ErrorPage.propTypes = {
   errorCode: PropTypes.number.isRequired,
-  url: PropTypes.string.isRequired
+  url: PropTypes.object.isRequired
 };

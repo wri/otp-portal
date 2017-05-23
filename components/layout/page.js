@@ -1,12 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Session from 'components/session';
-import Header from 'components/layout/header';
-import Footer from 'components/layout/footer';
-import Head from 'components/layout/head';
-import Icons from 'components/layout/icons';
 
-export default class Page extends React.Component {
+export default class extends React.Component {
 
   // Expose session to all pages
   static async getInitialProps({ req }) {
@@ -14,35 +9,4 @@ export default class Page extends React.Component {
     return { session: await session.getSession() };
   }
 
-  render() {
-    const { title, description } = this.props;
-    return (
-      <div className="c-page">
-        <Head
-          title={title}
-          description={description}
-        />
-
-        <Icons />
-
-        <Header
-          session={this.props.session}
-        />
-
-        <div className="container">
-          {this.props.children}
-        </div>
-
-        <Footer />
-      </div>
-    );
-  }
-
 }
-
-Page.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  children: PropTypes.any.isRequired,
-  session: PropTypes.object.isRequired
-};
