@@ -104,8 +104,16 @@ app.prepare()
   // A simple example of a custom route
   // Says requests to '/route/{anything}' will be handled by 'pages/routing.js'
   // and the {anything} part will be pased to the page in parameters.
-  server.get('/route/:id', (req, res) => {
-    return app.render(req, res, '/routing', req.params);
+  // server.get('/route/:id', (req, res) => {
+  //   return app.render(req, res, '/routing', req.params);
+  // });
+
+  server.get('/operators', (req, res) => {
+    return app.render(req, res, '/operators', req.params);
+  });
+
+  server.get('/observators', (req, res) => {
+    return app.render(req, res, '/observators', req.params);
   });
 
   server.get('/about', (req, res) => {
