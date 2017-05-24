@@ -55,6 +55,6 @@ StaticSection.defaultProps = {
 StaticSection.propTypes = {
   children: PropTypes.any.isRequired,
   background: PropTypes.string.isRequired,
-  position: PropTypes.string,
+  position: PropTypes.object,
   column: PropTypes.number
 };
