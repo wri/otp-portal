@@ -119,6 +119,10 @@
             transition: all $animation-time $ease-in-out-sine;
           }
 
+          svg {
+            fill: $color-primary;
+          }
+
           &.-active, &:hover {
             &:after {
               height: 5px;
@@ -148,6 +152,10 @@
         > a {
           color: $color-tertiary;
           letter-spacing: 2px;
+
+          svg {
+            fill: $color-tertiary;
+          }
         }
       }
     }

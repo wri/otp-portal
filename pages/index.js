@@ -32,7 +32,7 @@ export default class HomePage extends Page {
         </StaticSection>
 
         <StaticSection
-          background="/static/images/home/bg-intro.jpg"
+          background="/static/images/home/bg-a.jpg"
           position={{ top: true, left: true }}
           column={4}
         >
@@ -46,7 +46,7 @@ export default class HomePage extends Page {
         </StaticSection>
 
         <StaticSection
-          background="/static/images/home/bg-intro.jpg"
+          background="/static/images/home/bg-b.jpg"
           position={{ top: true, right: true }}
           column={4}
         >
@@ -59,7 +59,7 @@ export default class HomePage extends Page {
         </StaticSection>
 
         <StaticSection
-          background="/static/images/home/bg-intro.jpg"
+          background="/static/images/home/bg-c.jpg"
           position={{ top: true, left: true }}
           column={4}
         >
