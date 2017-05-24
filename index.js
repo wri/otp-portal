@@ -110,7 +110,7 @@ app.prepare()
 
   server.get('/operators', (req, res) => app.render(req, res, '/operators', req.params));
 
-  server.get('/observators', (req, res) => app.render(req, res, '/observators', req.params));
+  server.get('/observations', (req, res) => app.render(req, res, '/observations', req.params));
 
   server.get('/about', (req, res) => app.render(req, res, '/about', req.params));
 

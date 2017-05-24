@@ -44,8 +44,8 @@ export default class Header extends React.Component {
                   </Link>
                 </li>
                 <li>
-                  <Link prefetch href="/observators">
-                    <a className={this.setActive('/observators')}>Observators</a>
+                  <Link prefetch href="/observations">
+                    <a className={this.setActive('/observations')}>Observations</a>
                   </Link>
                 </li>
                 <li>

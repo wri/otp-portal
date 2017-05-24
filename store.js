@@ -20,12 +20,4 @@ const store = () =>
     )
   );
 
-
-const storeInitiated = store();
-
-// Export dispatch funcion for dispatching actions outside connect
-function dispatch(action) {
-  storeInitiated.dispatch(action);
-}
-
-export { store, dispatch };
+export { store };

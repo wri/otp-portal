@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+// Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservators } from 'modules/observators';
 
 // Components
 import Page from 'components/layout/page';
@@ -11,12 +12,6 @@ import StaticSection from 'components/page/static-section';
 import Card from 'components/ui/card';
 
 class HomePage extends Page {
-
-  componentWillMount() {
-    // Example: how to use redux
-    this.props.dispatch(getObservators());
-  }
-
   render() {
     const { url, session } = this.props;
 
@@ -27,8 +22,6 @@ class HomePage extends Page {
         url={url}
         session={session}
       >
-        {this.props.observators.list.map(observator => <p>{observator.title}</p>)}
-
         <StaticSection
           background="/static/images/home/bg-intro.jpg"
           position={{ bottom: true, left: true }}
@@ -83,7 +76,6 @@ class HomePage extends Page {
       </Layout>
     );
   }
-
 }
 
 HomePage.propTypes = {
@@ -91,8 +83,5 @@ HomePage.propTypes = {
 };
 
 export default withRedux(
-  store,
-  state => ({
-    observators: state.observators
-  })
+  store
 )(HomePage);

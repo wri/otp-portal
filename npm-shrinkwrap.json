@@ -3599,6 +3599,11 @@
       "from": "jsesc@>=1.3.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/jsesc/-/jsesc-1.3.0.tgz"
     },
+    "json-api-normalizer": {
+      "version": "0.4.0",
+      "from": "json-api-normalizer@latest",
+      "resolved": "https://registry.npmjs.org/json-api-normalizer/-/json-api-normalizer-0.4.0.tgz"
+    },
     "json-loader": {
       "version": "0.5.4",
       "from": "json-loader@0.5.4",
@@ -3725,7 +3730,7 @@
     },
     "lodash": {
       "version": "4.17.4",
-      "from": "lodash@>=4.2.0 <5.0.0",
+      "from": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz"
     },
     "lodash-es": {

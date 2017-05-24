@@ -58,6 +58,8 @@ export default class extends Page {
   }
 
   render() {
+    const { url } = this.props;
+
     let signinForm = <div />;
     if (this.state.session.user) {
       let linkWithFacebook = <p><a className="button button-oauth button-facebook" href="/auth/oauth/facebook">Link with Facebook</a></p>;
@@ -125,6 +127,7 @@ export default class extends Page {
         title="Sign in"
         description="Sign in description..."
         session={this.state.session}
+        url={url}
       >
         <h2>Authentication</h2>
         {signinForm}

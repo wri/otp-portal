@@ -35,9 +35,9 @@ module.exports = {
 
     config.plugins.push(
       new webpack.DefinePlugin({
-        config: {
-          PORT: JSON.stringify(process.env.PORT)
-        }
+        'process.env.PORT': JSON.stringify(process.env.PORT),
+        'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
+        'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY)
       })
     );
 
