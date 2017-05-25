@@ -1,0 +1,72 @@
+.c-button {
+  display: inline-block;
+  align-items: center;
+  padding: 9px 25px 8px;
+  text-align: center;
+  letter-spacing: 2px;
+  font-family: $font-family-proximanova;
+  font-size: $font-size-default;
+  font-weight: $font-weight-default;
+  border-radius: 3px;
+  text-transform: uppercase;
+  border-width: 1px;
+  border-style: solid;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all .1s linear;
+
+  // STATES
+  &.-disabled {
+    pointer-events: none;
+    opacity: .4;
+  }
+
+  // SIZES
+  &.-fullwidth { width: 100%; }
+  &.-fullheight { height: 100%; }
+
+  // THEMES
+  // - primary
+  // - facebook
+  // - twitter
+  // - linkedin
+  &.-primary {
+    border-color: $border-color-3;
+    color: $color-text-1;
+    background: transparent;
+  }
+
+  &.-facebook {
+    display: inline-flex;
+    background: #3b5998;
+    color: $color-white;
+    border-color: #3b5998;
+
+    &:hover {
+      background: darken(#3b5998, 10%);
+    }
+  }
+
+  &.-twitter {
+    display: inline-flex;
+    background: #55acee;
+    color: $color-white;
+    border-color: #55acee;
+
+    &:hover {
+      background: darken(#55acee, 10%);
+    }
+  }
+
+  &.-linkedin {
+    display: inline-flex;
+    align-items: flex-start;
+    background: #007bb5;
+    color: $color-white;
+    border-color: #007bb5;
+
+    &:hover {
+      background: darken(#007bb5, 10%);
+    }
+  }
+}

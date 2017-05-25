@@ -16,7 +16,7 @@ export default function Card({ theme, letter, title, description, link }) {
       <h2 className="card-title"> {title} </h2>
       <p className="card-description"> {description} </p>
       <Link href={link}>
-        <a className="card-link">Link</a>
+        <a className="c-button -primary -fullwidth">Link</a>
       </Link>
     </div>
   );

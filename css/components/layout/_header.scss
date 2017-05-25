@@ -124,7 +124,13 @@
             fill: $color-primary;
           }
 
-          &.-active, &:hover {
+          &:hover {
+            color: lighten($color-text-1, 50%);
+          }
+
+          &.-active {
+            color: $color-text-1;
+
             &:after {
               height: 5px;
               opacity: 1;
