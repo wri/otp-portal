@@ -1,11 +1,15 @@
 .c-card {
+  position: relative;
   width: 100%;
   padding: $space-1 * 4;
+  padding-bottom: 100px;
   background: $color-tertiary;
 
-  > * {
-    margin: 0 0 20px;
-    &:last-child { margin: 0; }
+  .card-content {
+    > * {
+      margin: 0 0 20px;
+      &:last-child { margin: 0; }
+    }
   }
 
   .card-letter {
@@ -26,12 +30,32 @@
     font-size: $font-size-big;
   }
 
+  .card-link {
+    position: absolute;
+    width: calc(100% - #{$space-1 * 8});
+    left: 50%;
+    bottom: $space-1 * 4;
+    transform: translate(-50%,0);
+  }
+
   // THEMES
-  &.-theme-secondary {
+  &.-primary {
+    background: rgba($color-black, 0.04);
+  }
+
+  &.-secondary {
     background: $color-secondary;
 
     .card-letter {
       color: $color-tertiary;
     }
+
+    .card-title {
+      color: $color-tertiary;
+    }
+  }
+
+  &.-tertiary {
+    background: $color-tertiary;
   }
 }

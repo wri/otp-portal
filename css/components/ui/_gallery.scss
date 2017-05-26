@@ -1,0 +1,13 @@
+.c-gallery {
+  padding: $space-1 * 6 0;
+
+  h2 {
+    font-size: $font-size-huge;
+    font-weight: $font-weight-default;
+    margin: 0 0 $space-1 * 5;
+  }
+
+  .columns {
+    display: flex;
+  }
+}
