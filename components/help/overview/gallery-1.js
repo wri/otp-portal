@@ -7,7 +7,7 @@ import Card from 'components/ui/card';
 export default function Gallery1() {
   return (
     <div className="c-gallery">
-      <h2>How the Open Timber Portal Works</h2>
+      <h2 className="c-title">How the Open Timber Portal Works</h2>
 
       <div className="row custom-row">
         <div className="columns small-12 medium-4">
