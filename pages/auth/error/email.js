@@ -6,7 +6,11 @@ import Link from 'next/link';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 
-export default class ErrorEmailPage extends Page {
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
+class ErrorEmailPage extends Page {
 
   render() {
     return (
@@ -27,3 +31,7 @@ export default class ErrorEmailPage extends Page {
 ErrorEmailPage.propTypes = {
   session: PropTypes.object.isRequired
 };
+
+export default withRedux(
+  store
+)(ErrorEmailPage);

@@ -2303,6 +2303,11 @@
         }
       }
     },
+    "eventemitter3": {
+      "version": "2.0.3",
+      "from": "eventemitter3@latest",
+      "resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-2.0.3.tgz"
+    },
     "events": {
       "version": "1.1.1",
       "from": "events@>=1.0.0 <2.0.0",

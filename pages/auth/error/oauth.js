@@ -2,11 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 
-export default class ErrorOauthPage extends Page {
+class ErrorOauthPage extends Page {
 
   render() {
     return (
@@ -34,3 +38,7 @@ export default class ErrorOauthPage extends Page {
 ErrorOauthPage.propTypes = {
   session: PropTypes.object.isRequired
 };
+
+export default withRedux(
+  store
+)(ErrorOauthPage);

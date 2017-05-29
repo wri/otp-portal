@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 
-export default class CheckEmailPage extends Page {
+class CheckEmailPage extends Page {
 
   render() {
     return (
@@ -25,3 +29,7 @@ export default class CheckEmailPage extends Page {
 CheckEmailPage.propTypes = {
   session: PropTypes.object.isRequired
 };
+
+export default withRedux(
+  store
+)(CheckEmailPage);
