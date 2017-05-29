@@ -1,5 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+// Components
+import { TABS_FAQS } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
@@ -7,45 +9,26 @@ import Card from 'components/ui/card';
 export default function Gallery3() {
   return (
     <div className="c-gallery">
-      <h2>FAQs</h2>
+      <h2 className="c-title">FAQs</h2>
 
       <div className="row custom-row">
-        <div className="columns small-12 medium-4">
-          <Card
-            theme="-secondary"
-            title="First FAQ"
-            description="Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod."
-            link={{
-              label: 'Read more',
-              href: '/help?tab=faqs',
-              as: '/help/faqs'
-            }}
-          />
-        </div>
-        <div className="columns small-12 medium-4">
-          <Card
-            theme="-primary"
-            title="Second FAQ"
-            description="Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod."
-            link={{
-              label: 'Find out more',
-              href: '/help?tab=faqs',
-              as: '/help/faqs'
-            }}
-          />
-        </div>
-        <div className="columns small-12 medium-4">
-          <Card
-            theme="-primary"
-            title="Third FAQ"
-            description="Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod."
-            link={{
-              label: 'Read more',
-              href: '/help?tab=faqs',
-              as: '/help/faqs'
-            }}
-          />
-        </div>
+        {TABS_FAQS.map((article, i) => {
+          const theme = (i === 0) ? '-secondary' : '-primary';
+
+          return (
+            <div
+              key={article.id}
+              className="columns small-12 medium-4"
+            >
+              <Card
+                theme={theme}
+                title={article.title}
+                description={article.description}
+                link={article.link}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

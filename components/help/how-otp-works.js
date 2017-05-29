@@ -2,6 +2,8 @@ import React from 'react';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
+import { TABS_HOW_OTP_WORKS } from 'constants/help';
+
 export default class HelpHowOTPWorks extends React.Component {
 
   constructor(props) {
@@ -14,8 +16,8 @@ export default class HelpHowOTPWorks extends React.Component {
     });
   }
 
-  triggerClick(selector) {
-    const target = document.querySelector(selector);
+  triggerScrollTo(id) {
+    const target = document.querySelector(id);
     this.moveTo.move(target);
   }
 
@@ -35,9 +37,14 @@ export default class HelpHowOTPWorks extends React.Component {
                         <h3>How OTP Works</h3>
                         <nav>
                           <ul>
-                            <li onClick={() => this.triggerClick('#understanding-the-platform')}>Understanding the platform</li>
-                            <li onClick={() => this.triggerClick('#how-the-score-is-calculated')}>How the score is calculated</li>
-                            <li onClick={() => this.triggerClick('#understanding-third-card')}>Understanding. Third card</li>
+                            {TABS_HOW_OTP_WORKS.map(article =>
+                              <li
+                                key={article.id}
+                                onClick={() => this.triggerScrollTo(`#${article.id}`)}
+                              >
+                                {article.title}
+                              </li>
+                            )}
                           </ul>
                         </nav>
                       </aside>
@@ -47,63 +54,21 @@ export default class HelpHowOTPWorks extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                <article id="understanding-the-platform" className="c-article">
-                  <header>
-                    <h2 className="c-title">Understanding the platform</h2>
-                  </header>
-                  <div className="content">
-                    <p>Sociis natoque penatibus et magnis dis parturient montes,
-                       nascetur ridiculus mus.
-                      Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      Etiam porta sem malesuada magna mollis euismod. Donec id elit non mi
-                       porta gravida at eget metus.
-                      Nullam id dolor id ultricies vehicula ut id elit.</p>
-                    <p>Sociis natoque penatibus et magnis dis parturient montes,
-                       nascetur ridiculus mus.
-                      Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      Etiam porta sem malesuada magna mollis euismod. Donec id elit non mi
-                       porta gravida at eget metus.
-                      Nullam id dolor id ultricies vehicula ut id elit.</p>
-                    <img src="/static/images/static-header/bg-help.jpg" alt="Understanding the platform" />
-                  </div>
-                </article>
-
-                <article id="how-the-score-is-calculated" className="c-article">
-                  <header>
-                    <h2 className="c-title">How the score is calculated</h2>
-                  </header>
-                  <div className="content">
-                    <p>Sociis natoque penatibus et magnis dis parturient montes,
-                      nascetur ridiculus mus.
-                      Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      Etiam porta sem malesuada magna mollis euismod.
-                      Donec id elit non mi porta gravida at eget metus.
-                      Nullam id dolor id ultricies vehicula ut id elit.</p>
-                    <p>Sociis natoque penatibus et magnis dis parturient montes,
-                      nascetur ridiculus mus.
-                      Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      Etiam porta sem malesuada magna mollis euismod.
-                      Donec id elit non mi porta gravida at eget metus.
-                      Nullam id dolor id ultricies vehicula ut id elit.</p>
-                    <img src="/static/images/static-header/bg-help.jpg" alt="Understanding the platform" />
-                  </div>
-                </article>
-
-                <article id="understanding-third-card" className="c-article">
-                  <header>
-                    <h2 className="c-title">Understanding third card</h2>
-                  </header>
-                  <div className="content">
-                    <p>Sociis natoque penatibus et magnis dis parturient montes,
-                      nascetur ridiculus mus.
-                      Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      Etiam porta sem malesuada magna mollis euismod.
-                      Donec id elit non mi porta gravida at eget metus.
-                      Nullam id dolor id ultricies vehicula ut id elit.</p>
-                    <img src="/static/images/static-header/bg-help.jpg" alt="Understanding the platform" />
-                  </div>
-                </article>
-
+                {TABS_HOW_OTP_WORKS.map(article =>
+                  <article
+                    key={article.id}
+                    id={article.id}
+                    className="c-article"
+                  >
+                    <header>
+                      <h2 className="c-title">{article.title}</h2>
+                    </header>
+                    <div className="description">
+                      {article.description}
+                      <img src="/static/images/static-header/bg-help.jpg" alt={article.title} />
+                    </div>
+                  </article>
+                )}
               </div>
             </div>
           </StickyContainer>
