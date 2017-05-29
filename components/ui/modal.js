@@ -16,10 +16,9 @@ import { EE } from 'services/modal';
 class Modal extends React.Component {
 
   componentDidMount() {
-    const { toggleModal, toggleModalLoading, setModalOptions } = this.props;
+    const { toggleModal, setModalOptions } = this.props;
 
     EE.on('toggleModal', toggleModal);
-    EE.on('toggleModalLoading', toggleModalLoading);
     EE.on('setModalOptions', setModalOptions);
 
     this.el.addEventListener('transitionend', () => {
@@ -42,7 +41,6 @@ class Modal extends React.Component {
 
   componentWillUnmount() {
     EE.removeListener('toggleModal');
-    EE.removeListener('toggleModalLoading');
     EE.removeListener('setModalOptions');
   }
 
@@ -91,7 +89,6 @@ Modal.propTypes = {
 
   // ACTIONS
   toggleModal: PropTypes.func,
-  toggleModalLoading: PropTypes.func,
   setModalOptions: PropTypes.func
 };
 

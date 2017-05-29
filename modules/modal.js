@@ -38,10 +38,6 @@ export function toggleModal(opened, opts = {}) {
   };
 }
 
-export function toggleModalLoading(loading) {
-  return dispatch => dispatch({ type: MODAL_TOGGLE_LOADING, payload: loading });
-}
-
 export function setModalOptions(opts = {}) {
   return dispatch => dispatch({ type: MODAL_SET_OPTIONS, payload: opts });
 }
