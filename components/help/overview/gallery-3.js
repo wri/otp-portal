@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import { TABS_FAQS } from 'constants/help';
+import { FAQS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
@@ -12,7 +12,7 @@ export default function Gallery3() {
       <h2 className="c-title">FAQs</h2>
 
       <div className="row custom-row">
-        {TABS_FAQS.map((article, i) => {
+        {FAQS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (

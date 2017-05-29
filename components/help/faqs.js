@@ -2,7 +2,7 @@ import React from 'react';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import { TABS_FAQS } from 'constants/help';
+import { FAQS_HELP } from 'constants/help';
 
 export default class HelpFaqs extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ export default class HelpFaqs extends React.Component {
                         <h3>How OTP Works</h3>
                         <nav>
                           <ul>
-                            {TABS_FAQS.map(article =>
+                            {FAQS_HELP.map(article =>
                               <li
                                 key={article.id}
                                 onClick={() => this.triggerScrollTo(`#${article.id}`)}
@@ -53,7 +53,7 @@ export default class HelpFaqs extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {TABS_FAQS.map(article =>
+                {FAQS_HELP.map(article =>
                   <article
                     key={article.id}
                     id={article.id}

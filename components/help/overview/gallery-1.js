@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TABS_HOW_OTP_WORKS } from 'constants/help';
+import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
@@ -11,7 +11,7 @@ export default function Gallery1() {
       <h2 className="c-title">How the Open Timber Portal Works</h2>
 
       <div className="row custom-row">
-        {TABS_HOW_OTP_WORKS.map((article, i) => {
+        {HOW_OTP_WORKS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (

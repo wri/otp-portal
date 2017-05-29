@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import { TABS_LEGISLATION_AND_REGULATIONS } from 'constants/help';
+import { LEGISLATION_AND_REGULATIONS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
@@ -12,7 +12,7 @@ export default function Gallery2() {
       <h2 className="c-title">Legislation and Regulations</h2>
 
       <div className="row custom-row">
-        {TABS_LEGISLATION_AND_REGULATIONS.map((article, i) => {
+        {LEGISLATION_AND_REGULATIONS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (

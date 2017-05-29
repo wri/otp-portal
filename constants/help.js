@@ -13,14 +13,14 @@ const TABS_HELP = [{
 }];
 
 
-const TABS_HOW_OTP_WORKS = [{
+const HOW_OTP_WORKS_HELP = [{
   id: 'understanding-the-platform',
   title: 'Understanding the platform',
   description: 'The Open Timber Platform aims to track the performance of forest concession operators.',
   link: {
     label: 'Read more',
-    href: '/help?tab=how-otp-works',
-    as: '/help/how-otp-works'
+    href: '/help?tab=how-otp-works&article=understanding-the-platform',
+    as: '/help/how-otp-works?article=understanding-the-platform'
   }
 }, {
   id: 'how-the-score-is-calculated',
@@ -28,8 +28,8 @@ const TABS_HOW_OTP_WORKS = [{
   description: 'Registered forest operators are ranked according to their performance against standard legality and sustainability indicators.',
   link: {
     label: 'Find out more',
-    href: '/help?tab=how-otp-works',
-    as: '/help/how-otp-works'
+    href: '/help?tab=how-otp-works&article=how-the-score-is-calculated',
+    as: '/help/how-otp-works?article=how-the-score-is-calculated'
   }
 }, {
   id: 'understanding-third-card',
@@ -37,20 +37,20 @@ const TABS_HOW_OTP_WORKS = [{
   description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
   link: {
     label: 'Read more',
-    href: '/help?tab=how-otp-works',
-    as: '/help/how-otp-works'
+    href: '/help?tab=how-otp-works&article=understanding-third-card',
+    as: '/help/how-otp-works?article=understanding-third-card'
   }
 }];
 
 
-const TABS_LEGISLATION_AND_REGULATIONS = [{
+const LEGISLATION_AND_REGULATIONS_HELP = [{
   id: 'understanding-forest-products-and-legality',
   title: 'Understanding Forest Products and Legality',
   description: 'The Risk Information Tool provides an overview of relevant legislations and regulations, information about most commonly traded species, etc.',
   link: {
     label: 'Learn more',
-    href: '/help?tab=legislation-and-regulations',
-    as: '/help/legislation-and-regulations'
+    href: '/help?tab=legislation-and-regulations&article=understanding-forest-products-and-legality',
+    as: '/help/legislation-and-regulations?article=understanding-forest-products-and-legality'
   }
 }, {
   id: 'understand-timber-trade-and-due-dilligence',
@@ -58,8 +58,8 @@ const TABS_LEGISLATION_AND_REGULATIONS = [{
   description: 'The Timber Trade Portal provides information regarding legal timber trade, due diligence and on country requirements and exports.',
   link: {
     label: 'Learn more',
-    href: '/help?tab=legislation-and-regulations',
-    as: '/help/legislation-and-regulations'
+    href: '/help?tab=legislation-and-regulations&article=understand-timber-trade-and-due-dilligence',
+    as: '/help/legislation-and-regulations?article=understand-timber-trade-and-due-dilligence'
   }
 }, {
   id: 'understanding-the-voluntary-partnership-agreement-vpa-process',
@@ -67,19 +67,19 @@ const TABS_LEGISLATION_AND_REGULATIONS = [{
   description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
   link: {
     label: 'Read more',
-    href: '/help?tab=legislation-and-regulations',
-    as: '/help/legislation-and-regulations'
+    href: '/help?tab=legislation-and-regulations&article=understanding-the-voluntary-partnership-agreement-vpa-process',
+    as: '/help/legislation-and-regulations?article=understanding-the-voluntary-partnership-agreement-vpa-process'
   }
 }];
 
-const TABS_FAQS = [{
+const FAQS_HELP = [{
   id: 'first-faq',
   title: 'First FAQ',
   description: 'The Open Timber Platform aims to track the performance of forest concession operators.',
   link: {
     label: 'Read more',
-    href: '/help?tab=faqs',
-    as: '/help/faqs'
+    href: '/help?tab=faqs&article=first-faq',
+    as: '/help/faqs?article=first-faq'
   }
 }, {
   id: 'second-faq',
@@ -87,8 +87,8 @@ const TABS_FAQS = [{
   description: 'Registered forest operators are ranked according to their performance against standard legality and sustainability indicators.',
   link: {
     label: 'Find out more',
-    href: '/help?tab=faqs',
-    as: '/help/faqs'
+    href: '/help?tab=faqs&article=second-faq',
+    as: '/help/faqs?article=second-faq'
   }
 }, {
   id: 'third-faq',
@@ -96,8 +96,8 @@ const TABS_FAQS = [{
   description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
   link: {
     label: 'Read more',
-    href: '/help?tab=faqs',
-    as: '/help/faqs'
+    href: '/help?tab=faqs&article=third-faq',
+    as: '/help/faqs?article=third-faq'
   }
 }];
-export { TABS_HELP, TABS_HOW_OTP_WORKS, TABS_LEGISLATION_AND_REGULATIONS, TABS_FAQS };
+export { TABS_HELP, HOW_OTP_WORKS_HELP, LEGISLATION_AND_REGULATIONS_HELP, FAQS_HELP };

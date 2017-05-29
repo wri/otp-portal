@@ -20,7 +20,13 @@
 
       > li {
         margin: $space-1 0 0;
+        cursor: pointer;
+
         &:first-child { margin: 0 }
+
+        &:hover {
+          color: $color-primary;
+        }
       }
     }
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import { TABS_HOW_OTP_WORKS } from 'constants/help';
+import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 export default class HelpHowOTPWorks extends React.Component {
 
@@ -37,7 +37,7 @@ export default class HelpHowOTPWorks extends React.Component {
                         <h3>How OTP Works</h3>
                         <nav>
                           <ul>
-                            {TABS_HOW_OTP_WORKS.map(article =>
+                            {HOW_OTP_WORKS_HELP.map(article =>
                               <li
                                 key={article.id}
                                 onClick={() => this.triggerScrollTo(`#${article.id}`)}
@@ -54,7 +54,7 @@ export default class HelpHowOTPWorks extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {TABS_HOW_OTP_WORKS.map(article =>
+                {HOW_OTP_WORKS_HELP.map(article =>
                   <article
                     key={article.id}
                     id={article.id}

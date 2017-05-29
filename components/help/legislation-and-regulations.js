@@ -2,7 +2,7 @@ import React from 'react';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
-import { TABS_LEGISLATION_AND_REGULATIONS } from 'constants/help';
+import { LEGISLATION_AND_REGULATIONS_HELP } from 'constants/help';
 
 export default class HelpLegislationAndRegulations extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ export default class HelpLegislationAndRegulations extends React.Component {
                         <h3>How OTP Works</h3>
                         <nav>
                           <ul>
-                            {TABS_LEGISLATION_AND_REGULATIONS.map(article =>
+                            {LEGISLATION_AND_REGULATIONS_HELP.map(article =>
                               <li
                                 key={article.id}
                                 onClick={() => this.triggerScrollTo(`#${article.id}`)}
@@ -53,7 +53,7 @@ export default class HelpLegislationAndRegulations extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {TABS_LEGISLATION_AND_REGULATIONS.map(article =>
+                {LEGISLATION_AND_REGULATIONS_HELP.map(article =>
                   <article
                     key={article.id}
                     id={article.id}
