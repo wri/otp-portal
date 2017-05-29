@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 // Constants
 import { TABS_HELP } from 'constants/help';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
@@ -16,7 +20,7 @@ import HelpHowOTPWorks from 'components/help/how-otp-works';
 import HelpLegislationAndRegulations from 'components/help/legislation-and-regulations';
 import HelpFaqs from 'components/help/faqs';
 
-export default class HelpPage extends Page {
+class HelpPage extends Page {
   render() {
     const { url, session } = this.props;
     const tab = url.query.tab || 'overview';
@@ -64,3 +68,7 @@ HelpPage.propTypes = {
   url: PropTypes.object.isRequired,
   session: PropTypes.object.isRequired
 };
+
+export default withRedux(
+  store
+)(HelpPage);

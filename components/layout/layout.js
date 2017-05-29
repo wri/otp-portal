@@ -6,6 +6,7 @@ import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
+import Modal from 'components/ui/modal';
 
 export default class Layout extends React.Component {
   render() {
@@ -30,6 +31,8 @@ export default class Layout extends React.Component {
         </div>
 
         <Footer />
+
+        <Modal />
       </div>
     );
   }

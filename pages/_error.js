@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
 
-export default class ErrorPage extends React.Component {
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
+class ErrorPage extends React.Component {
 
   static getInitialProps({ res, xhr }) {
     const errorCode = res ? res.statusCode : xhr.status;
@@ -71,3 +75,7 @@ ErrorPage.propTypes = {
   errorCode: PropTypes.number.isRequired,
   url: PropTypes.object.isRequired
 };
+
+export default withRedux(
+  store
+)(ErrorPage);

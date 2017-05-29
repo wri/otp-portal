@@ -1,11 +1,15 @@
 import React from 'react';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Session from 'components/session';
 
-export default class extends Page {
+class SignInPage extends Page {
 
   static async getInitialProps({ req }) {
     // On the sign in page we always force get the latest session data from the
@@ -167,5 +171,8 @@ export default class extends Page {
       </Layout>
     );
   }
-
 }
+
+export default withRedux(
+  store
+)(SignInPage);
