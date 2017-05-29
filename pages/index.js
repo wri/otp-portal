@@ -22,6 +22,7 @@ class HomePage extends Page {
         url={url}
         session={session}
       >
+        {/* INTRO */}
         <StaticSection
           background="/static/images/home/bg-intro.jpg"
           position={{ bottom: true, left: true }}
@@ -33,44 +34,57 @@ class HomePage extends Page {
           </div>
         </StaticSection>
 
+        {/* SECTION A */}
         <StaticSection
           background="/static/images/home/bg-a.jpg"
           position={{ top: true, left: true }}
           column={4}
         >
           <Card
-            theme="-theme-secondary"
+            theme="-secondary"
             letter="A"
             title="Operator transparency rankings"
             description="Visualize and refine transparency rankings by country or by operator type"
-            link="/operators"
+            link={{
+              label: 'Link',
+              href: '/operators'
+            }}
           />
         </StaticSection>
 
+        {/* SECTION B */}
         <StaticSection
           background="/static/images/home/bg-b.jpg"
           position={{ top: true, right: true }}
           column={4}
         >
           <Card
+            theme="-tertiary"
             letter="B"
             title="Operator profiles"
             description="Explore the profiles of specific operators, view documents provided and observations from Independent Monitors"
-            link="/operators"
+            link={{
+              label: 'Link',
+              href: '/operators'
+            }}
           />
         </StaticSection>
 
+        {/* SECTION C */}
         <StaticSection
           background="/static/images/home/bg-c.jpg"
           position={{ top: true, left: true }}
           column={4}
         >
           <Card
-            theme="-theme-secondary"
+            theme="-secondary"
             letter="C"
             title="Forest Management Units"
             description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore."
-            link="/operators"
+            link={{
+              label: 'Link',
+              href: '/operators'
+            }}
           />
         </StaticSection>
       </Layout>

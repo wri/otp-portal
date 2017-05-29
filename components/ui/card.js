@@ -12,11 +12,17 @@ export default function Card({ theme, letter, title, description, link }) {
 
   return (
     <div className={`c-card ${classNames}`}>
-      <div className="card-letter"> {letter} </div>
-      <h2 className="card-title"> {title} </h2>
-      <p className="card-description"> {description} </p>
-      <Link href={link}>
-        <a className="c-button -primary -fullwidth">Link</a>
+      <div className="card-content">
+        {letter && <div className="card-letter"> {letter} </div>}
+
+        <h2 className="card-title"> {title} </h2>
+        <p className="card-description"> {description} </p>
+      </div>
+
+      <Link
+        {...link}
+      >
+        <a className="card-link c-button -primary -fullwidth">{link.label}</a>
       </Link>
     </div>
   );
@@ -27,5 +33,5 @@ Card.propTypes = {
   letter: PropTypes.string,
   title: PropTypes.string,
   description: PropTypes.string,
-  link: PropTypes.string
+  link: PropTypes.object
 };

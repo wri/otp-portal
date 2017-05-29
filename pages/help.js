@@ -10,9 +10,16 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/page/static-header';
 import Tabs from 'components/ui/tabs';
 
+// Help Tabs
+import HelpOverview from 'components/help/overview';
+import HelpHowOTPWorks from 'components/help/how-otp-works';
+import HelpLegislationAndRegulations from 'components/help/legislation-and-regulations';
+import HelpFaqs from 'components/help/faqs';
+
 export default class HelpPage extends Page {
   render() {
     const { url, session } = this.props;
+    const tab = url.query.tab || 'overview';
 
     return (
       <Layout
@@ -27,9 +34,26 @@ export default class HelpPage extends Page {
         />
         <Tabs
           options={TABS_HELP}
-          defaultSelected={url.query.tab || 'overview'}
-          selected={url.query.tab || 'overview'}
+          defaultSelected={tab}
+          selected={tab}
         />
+
+        {tab === 'overview' &&
+          <HelpOverview />
+        }
+
+        {tab === 'how-otp-works' &&
+          <HelpHowOTPWorks />
+        }
+
+        {tab === 'legislation-and-regulations' &&
+          <HelpLegislationAndRegulations />
+        }
+
+        {tab === 'faqs' &&
+          <HelpFaqs />
+        }
+
       </Layout>
     );
   }

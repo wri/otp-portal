@@ -15,7 +15,7 @@ import { getObservations } from 'modules/observations';
 
 class ObservationsPage extends Page {
 
-  componentWillMount() {
+  componentDidMount() {
     const { dispatch, observations } = this.props;
     if (isEmpty(observations.data)) {
       dispatch(getObservations());

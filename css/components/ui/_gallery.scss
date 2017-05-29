@@ -1,0 +1,14 @@
+.c-gallery {
+  padding: $space-1 * 6 0;
+
+  &:first-child { padding-top: 0; }
+  &:last-child { padding-bottom: 0; }
+
+  h2 {
+    margin: 0 0 $space-1 * 5;
+  }
+
+  .columns {
+    display: flex;
+  }
+}

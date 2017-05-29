@@ -1,5 +1,4 @@
 @import 'settings';
-@import 'foundation_settings';
 
 // Reset
 @import 'normalize.css';
@@ -8,6 +7,8 @@
 @import '../node_modules/foundation-sites/scss/foundation';
 @include foundation-flex-classes;
 @include foundation-flex-grid;
+@include foundation-responsive-embed;
+@import 'foundation_settings';
 
 // Common
 @import 'base';
@@ -25,8 +26,15 @@
 @import 'components/page/static-box';
 
 // - ui
+@import 'components/ui/article';
+@import 'components/ui/aside';
 @import 'components/ui/button';
 @import 'components/ui/card';
+@import 'components/ui/gallery';
 @import 'components/ui/icon';
 @import 'components/ui/intro';
 @import 'components/ui/tabs';
+@import 'components/ui/title';
+
+// - help
+@import 'components/help/help-section';
