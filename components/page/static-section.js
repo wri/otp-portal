@@ -30,7 +30,7 @@ export default class StaticSection extends React.Component {
       <div
         className="c-static-section"
         style={{
-          backgroundImage: `url(${background})`
+          backgroundImage: background ? `url(${background})` : 'none'
         }}
       >
         {this.props.map &&
@@ -60,7 +60,7 @@ StaticSection.defaultProps = {
 
 StaticSection.propTypes = {
   children: PropTypes.any.isRequired,
-  background: PropTypes.string.isRequired,
+  background: PropTypes.string,
   map: PropTypes.any,
   position: PropTypes.object,
   column: PropTypes.number

@@ -60,7 +60,6 @@ class HomePage extends Page {
 
         {/* SECTION B */}
         <StaticSection
-          background="/static/images/home/bg-b.jpg"
           map={{
             component: Map,
             props: {
@@ -88,7 +87,7 @@ class HomePage extends Page {
             title="Operator profiles"
             description="Explore the profiles of specific operators, view documents provided and observations from Independent Monitors"
             link={{
-              label: 'Link',
+              label: 'Explore operators',
               href: '/operators'
             }}
           />

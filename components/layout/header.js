@@ -63,7 +63,7 @@ export default class Header extends React.Component {
               <ul className="header-nav-list">
                 <li>
                   <a>
-                    <span>Search</span>
+                    <span>Search operator</span>
                     <Icon name="icon-search" />
                   </a>
                 </li>
