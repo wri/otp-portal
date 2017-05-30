@@ -25,6 +25,10 @@
 @import 'components/page/static-section';
 @import 'components/page/static-box';
 
+// - map
+@import '../node_modules/leaflet/dist/leaflet';
+@import 'components/map/map';
+
 // - ui
 @import 'components/ui/article';
 @import 'components/ui/aside';

@@ -9,7 +9,8 @@
           "constants": "./constants",
           "css": "./css",
           "modules": "./modules",
-          "services": "./services"
+          "services": "./services",
+          "utils": "./utils"
         },
     }],
     [
