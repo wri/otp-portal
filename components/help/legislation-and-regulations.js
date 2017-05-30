@@ -23,7 +23,7 @@ export default class HelpLegislationAndRegulations extends React.Component {
   render() {
     return (
       <div
-        className="c-help-section"
+        className="c-section"
       >
         <div className="l-container">
           <StickyContainer>

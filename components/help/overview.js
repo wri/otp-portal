@@ -8,7 +8,7 @@ import Gallery3 from 'components/help/overview/gallery-3';
 export default function HelpOverview() {
   return (
     <div
-      className="c-help-section"
+      className="c-section"
     >
       <div className="l-container">
         <Gallery1 />
