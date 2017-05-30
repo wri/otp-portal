@@ -33,6 +33,12 @@ export default class StaticSection extends React.Component {
           backgroundImage: `url(${background})`
         }}
       >
+        {this.props.map &&
+          <div className="c-map-container -absolute" type="full">
+            <this.props.map.component {...this.props.map.props} />
+          </div>
+        }
+
         <div className={`c-static-box ${this.setPosition()}`}>
           <div className="l-container">
             <div className={`row collapse ${this.setJustify()}`}>
@@ -55,6 +61,7 @@ StaticSection.defaultProps = {
 StaticSection.propTypes = {
   children: PropTypes.any.isRequired,
   background: PropTypes.string.isRequired,
+  map: PropTypes.any,
   position: PropTypes.object,
   column: PropTypes.number
 };

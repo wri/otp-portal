@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -10,6 +11,11 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/page/static-section';
 import Card from 'components/ui/card';
+
+const Map = dynamic(
+  import('components/map/map'),
+  { ssr: false }
+);
 
 class HomePage extends Page {
   render() {
@@ -55,6 +61,24 @@ class HomePage extends Page {
         {/* SECTION B */}
         <StaticSection
           background="/static/images/home/bg-b.jpg"
+          map={{
+            component: Map,
+            props: {
+              mapOptions: {
+                zoom: 5,
+                center: [0, 30],
+                zoomControl: false,
+                scrollWheelZoom: false
+              },
+              mapMethods: {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+                tileLayers: [
+                  { url: process.env.BASEMAP_LABEL_URL, zIndex: 1000 },
+                  { url: process.env.BASEMAP_TILE_URL, zIndex: 0 }
+                ]
+              }
+            }
+          }}
           position={{ top: true, right: true }}
           column={4}
         >
