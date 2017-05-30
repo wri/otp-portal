@@ -91,7 +91,7 @@ app.prepare()
     secret: process.env.SESSION_SECRET
   });
 
-  // Add route to serve compiled SCSS from /assets/{build id}/main.css
+  // Add route to serve compiled SCSS from /assets/{build id}/index.css
   // Note: This is is only used in production, in development it is inlined
   const sassResult = sass.renderSync({ file: './css/index.scss', outputStyle: 'compressed' });
   server.get('/assets/:id/index.css', (req, res) => {

@@ -1,7 +1,7 @@
 @import 'settings';
 
 // Reset
-@import 'normalize.css';
+@import '../node_modules/normalize.css/normalize';
 
 // Foundation
 @import '../node_modules/foundation-sites/scss/foundation';
@@ -21,6 +21,7 @@
 @import 'components/layout/header';
 
 // - page
+@import 'components/page/section';
 @import 'components/page/static-header';
 @import 'components/page/static-section';
 @import 'components/page/static-box';
@@ -40,6 +41,3 @@
 @import 'components/ui/modal';
 @import 'components/ui/tabs';
 @import 'components/ui/title';
-
-// - help
-@import 'components/help/help-section';

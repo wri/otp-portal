@@ -12,7 +12,7 @@ export default class Head extends React.Component {
   static getStyles() {
     if (process.env.NODE_ENV === 'production') {
       // In production, serve pre-built CSS file from /assets/{version}/main.css
-      return <link rel="stylesheet" type="text/css" href={`/assets/${Package.version}/main.css`} />;
+      return <link rel="stylesheet" type="text/css" href={`/assets/${Package.version}/index.css`} />;
     }
     // In development, serve CSS inline (with live reloading) with webpack
     // NB: Not using dangerouslySetInnerHTML will cause problems with some CSS

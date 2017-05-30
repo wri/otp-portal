@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import L from 'leaflet/dist/leaflet';
 
@@ -202,12 +203,12 @@ export default class Map extends React.Component {
 }
 
 Map.propTypes = {
-  mapOptions: React.PropTypes.object,
-  mapMethods: React.PropTypes.object,
-  mapListeners: React.PropTypes.object,
-  layers: React.PropTypes.array,
-  markers: React.PropTypes.array,
-  markerIcon: React.PropTypes.object
+  mapOptions: PropTypes.object,
+  mapMethods: PropTypes.object,
+  mapListeners: PropTypes.object,
+  layers: PropTypes.array,
+  markers: PropTypes.array,
+  markerIcon: PropTypes.object
 };
 
 Map.defaultProps = {
