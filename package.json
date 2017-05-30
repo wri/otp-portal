@@ -1,8 +1,8 @@
 {
-  "name": "nextjs-starter",
-  "version": "2.11.0",
-  "description": "A starter Next.js project with email and oAuth authentication",
-  "author": "Iain Collins <me@iaincollins.com>",
+  "name": "otp-portal",
+  "version": "0.0.1",
+  "description": "Open Timber Portal",
+  "author": "Vizzuality",
   "license": "ISC",
   "repository": "https://github.com/iaincollins/nextjs-starter.git",
   "main": "index.js",
