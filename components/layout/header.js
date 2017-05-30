@@ -62,12 +62,10 @@ export default class Header extends React.Component {
 
               <ul className="header-nav-list">
                 <li>
-                  <Link prefetch href="/search">
-                    <a>
-                      <span>Search</span>
-                      <Icon name="icon-search" />
-                    </a>
-                  </Link>
+                  <a>
+                    <span>Search</span>
+                    <Icon name="icon-search" />
+                  </a>
                 </li>
                 <li>
                   <Link prefetch href="/auth/signin">

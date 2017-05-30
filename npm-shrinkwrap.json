@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-starter",
-  "version": "2.11.0",
+  "name": "otp-portal",
+  "version": "0.0.2",
   "dependencies": {
     "abbrev": {
       "version": "1.0.9",
@@ -5270,9 +5270,9 @@
       "dev": true
     },
     "react": {
-      "version": "15.4.2",
-      "from": "react@15.4.2",
-      "resolved": "https://registry.npmjs.org/react/-/react-15.4.2.tgz"
+      "version": "15.5.4",
+      "from": "react@15.5.4",
+      "resolved": "https://registry.npmjs.org/react/-/react-15.5.4.tgz"
     },
     "react-deep-force-update": {
       "version": "2.0.1",
@@ -5280,9 +5280,9 @@
       "resolved": "https://registry.npmjs.org/react-deep-force-update/-/react-deep-force-update-2.0.1.tgz"
     },
     "react-dom": {
-      "version": "15.4.2",
-      "from": "react-dom@15.4.2",
-      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.4.2.tgz"
+      "version": "15.5.4",
+      "from": "react-dom@15.5.4",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.5.4.tgz"
     },
     "react-hot-loader": {
       "version": "3.0.0-beta.6",
