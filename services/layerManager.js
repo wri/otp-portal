@@ -9,14 +9,12 @@ export default class LayerManager {
     this.onLayerAddedSuccess = options.onLayerAddedSuccess;
     this.onLayerAddedError = options.onLayerAddedError;
 
+    // Init popup
     this.initPopup();
   }
 
   initPopup() {
-    this.popup = new Mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false
-    });
+    this.Popup = Mapboxgl.Popup;
   }
 
   /* Public methods */
@@ -49,19 +47,18 @@ export default class LayerManager {
 
     // Loop trough layers
     layer.layer.forEach((l) => {
-      // Create a popup, but don't add it to the map yet.
+      const interactivity = l.interactivity;
 
       // Add layer
       this.map.addLayer(l);
 
-      // // Add interactivity (if exists)
-      // this.map.on('click', l.id, (e) => {
-      //   // Populate the popup and set its coordinates
-      //   // based on the feature found.
-      //   this.popup.setLngLat(e.lngLat)
-      //       .setHTML(e.features[0].properties.fmu_name)
-      //       .addTo(this.map);
-      // });
+      // Add interactivity (if exists)
+      if (interactivity) {
+        Object.keys(interactivity).forEach((i) => {
+          const iFn = interactivity[i].bind(this);
+          this.map.on(i, l.id, iFn);
+        });
+      }
     });
   }
 }

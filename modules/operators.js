@@ -2,8 +2,6 @@ import Router from 'next/router';
 import normalize from 'json-api-normalizer';
 import fetch from 'isomorphic-fetch';
 
-import { MAP_OPTIONS_OPERATORS } from 'constants/operators';
-
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
@@ -17,7 +15,13 @@ const initialState = {
   data: {},
   loading: false,
   error: false,
-  map: MAP_OPTIONS_OPERATORS
+  map: {
+    zoom: 5,
+    center: {
+      lat: 0,
+      lng: 18
+    }
+  }
 };
 
 /* Reducer */
@@ -101,10 +105,10 @@ export function getOperatorsUrl(url) {
   const { zoom, lat, lng } = url.query;
 
   return {
-    zoom: +zoom || MAP_OPTIONS_OPERATORS.zoom,
+    zoom: +zoom || initialState.map.zoom,
     center: {
-      lat: +lat || MAP_OPTIONS_OPERATORS.center.lat,
-      lng: +lng || MAP_OPTIONS_OPERATORS.center.lng
+      lat: +lat || initialState.map.center.lat,
+      lng: +lng || initialState.map.center.lng
     }
   };
 }

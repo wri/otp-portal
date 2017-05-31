@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 
 // Next
-import Router from 'next/router';
 import dynamic from 'next/dynamic';
 
 // Redux
@@ -26,27 +24,37 @@ const Map = dynamic(
 
 class OperatorsPage extends Page {
 
+  /* Component Lifecycle */
   componentDidMount() {
-    const { operators, url } = this.props;
-    if (isEmpty(operators.data)) {
-      this.props.getOperators();
-    }
+    const { url } = this.props;
 
-    const location = this.props.getOperatorsUrl(url);
-    this.props.setOperatorsMapLocation(location);
+    // Get operators
+    this.props.getOperators();
+
+    // Set location
+    this.props.setOperatorsMapLocation(getOperatorsUrl(url));
+  }
+
+  /**
+   * HELPERS
+   * - getOperatorsTable
+  */
+  getOperatorsTable() {
+    const { operators } = this.props.operators.data;
+    if (operators) {
+      return (
+        <ul>
+          {Object.keys(operators).map(o =>
+            <li key={o}>{operators[o].attributes.name}</li>
+          )}
+        </ul>
+      );
+    }
+    return null;
   }
 
   render() {
     const { url, session } = this.props;
-
-    const MAP_LISTENERS_OPERATORS = {
-      moveend: (map) => {
-        this.props.setOperatorsMapLocation({
-          zoom: map.getZoom(),
-          center: map.getCenter()
-        });
-      }
-    };
 
     return (
       <Layout
@@ -59,12 +67,20 @@ class OperatorsPage extends Page {
         <div className="c-section -map">
           <Sidebar>
             <h2>Sidebar</h2>
+            {this.getOperatorsTable()}
           </Sidebar>
 
           <div className="c-map-container">
             <Map
               mapOptions={this.props.operators.map}
-              mapListeners={MAP_LISTENERS_OPERATORS}
+              mapListeners={{
+                moveend: (map) => {
+                  this.props.setOperatorsMapLocation({
+                    zoom: map.getZoom(),
+                    center: map.getCenter()
+                  });
+                }
+              }}
               layers={MAP_LAYERS_OPERATORS}
             />
           </div>
@@ -84,8 +100,9 @@ export default withRedux(
     operators: state.operators
   }),
   dispatch => ({
-    getOperators,
-    getOperatorsUrl,
+    getOperators() {
+      dispatch(getOperators());
+    },
     setOperatorsMapLocation(mapLocation) {
       dispatch(setOperatorsMapLocation(mapLocation));
       dispatch(setOperatorsUrl());
