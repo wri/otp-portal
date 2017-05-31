@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import Popup from 'components/map/popup';
 
 const MAP_LAYERS_OPERATORS = [
   {
@@ -21,33 +21,30 @@ const MAP_LAYERS_OPERATORS = [
       },
       interactivity: {
         click(e) {
-          this.popup = new this.Popup({
-            closeButton: true,
-            closeOnClick: true
-          });
+          // Remove always the popup if exists and you are using 'closeOnClick'
+          // You will prevent a bug that doesn't show the popup again
+          this.popup && this.popup.remove();
+          this.popup = new this.Popup();
 
           const props = e.features[0].properties;
 
-          const div = window.document.createElement('div');
-          const html = (
-            <ul>
-              {Object.keys(props).map(p =>
-                <li onClick={() => console.log(p)} key={p}>{p}: {props[p]}</li>
-              )}
-            </ul>
-          );
-
           this.popup.setLngLat(e.lngLat)
-            .setDOMContent(ReactDOM.render(html, div))
+            .setDOMContent(
+              render(
+                Popup(props, ['company_na']),
+                window.document.createElement('div')
+              )
+            )
             .addTo(this.map);
         },
-        mouseenter() {
+        mouseenter(e) {
           this.map.getCanvas().style.cursor = 'pointer';
         },
         mousemove(e) {
+          this.map.getCanvas().style.cursor = 'pointer';
           this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
         },
-        mouseleave() {
+        mouseleave(e) {
           this.map.getCanvas().style.cursor = '';
           this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', '']);
         }
@@ -84,11 +81,36 @@ const MAP_LAYERS_OPERATORS = [
       },
       interactivity: {
         click(e) {
+          // Remove always the popup if exists and you are using 'closeOnClick'
+          this.popup && this.popup.remove();
+          this.popup = new this.Popup();
+
           this.popup.setLngLat(e.lngLat)
             .setHTML(e.features[0].properties.num_ccf)
             .addTo(this.map);
+        },
+        mouseenter(e) {
+          this.map.getCanvas().style.cursor = 'pointer';
+          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
+        },
+        mousemove(e) {
+          this.map.getCanvas().style.cursor = 'pointer';
+          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
+        },
+        mouseleave(e) {
+          this.map.getCanvas().style.cursor = '';
+          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
         }
       }
+    }, {
+      id: 'harvestable_areas_layer_hover',
+      type: 'fill',
+      source: 'harvestable_areas',
+      layout: {},
+      paint: {
+        'fill-color': '#004219'
+      },
+      filter: ['==', 'cartodb_id', '']
     }]
   }
 ];

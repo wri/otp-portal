@@ -36,7 +36,7 @@ export default class Map extends React.Component {
   **/
   componentDidMount() {
     this.mounted = true;
-    const mapOptions = Object.assign({}, MAP_OPTIONS, this.props.mapOptions);
+    const mapOptions = { ...MAP_OPTIONS, ...this.props.mapOptions };
 
     this.map = new Mapboxgl.Map({
       container: this.mapNode,
@@ -47,7 +47,7 @@ export default class Map extends React.Component {
       // Add event mapListeners
       this.props.mapListeners && this.setMapEventListeners();
       //
-      // // Exec leaflet methods
+      // // Exec mapbox methods
       // this.execMethods();
 
       // Add layers
@@ -89,17 +89,6 @@ export default class Map extends React.Component {
     this.map.attributionControl.addAttribution(this.props.mapMethods.attribution);
   }
 
-  setZoomControlPosition() {
-    this.map.zoomControl.setPosition(this.props.mapMethods.zoomControlPosition);
-  }
-
-  setTileLayers() {
-    const { tileLayers } = this.props.mapMethods;
-    tileLayers.forEach((tile) => {
-      L.tileLayer(tile.url, tile.options || {}).addTo(this.map).setZIndex(tile.zIndex);
-    });
-  }
-
   /**
    * MAP LISTENERS
    * - setMapEventListeners
@@ -107,6 +96,7 @@ export default class Map extends React.Component {
   */
   setMapEventListeners() {
     const { mapListeners } = this.props;
+
     Object.keys(mapListeners).forEach((eventName) => {
       this.map.on(eventName, (...args) => mapListeners[eventName](this.map, ...args));
     });
