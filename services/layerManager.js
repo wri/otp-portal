@@ -1,7 +1,5 @@
 import Mapboxgl from 'mapbox-gl';
 
-import { get } from 'utils/request';
-
 export default class LayerManager {
 
   /* Constructor */

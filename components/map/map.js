@@ -35,7 +35,7 @@ export default class Map extends React.Component {
    * COMPONENT LYFECYLE
   **/
   componentDidMount() {
-    this._mounted = true;
+    this.mounted = true;
     const mapOptions = Object.assign({}, MAP_OPTIONS, this.props.mapOptions);
 
     this.map = new Mapboxgl.Map({
@@ -79,20 +79,9 @@ export default class Map extends React.Component {
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
     this.props.mapListeners && this.removeMapEventListeners();
     this.map && this.map.remove();
-  }
-
-  /**
-   * MAP METHODS
-  */
-  execMethods() {
-    Object.keys(this.props.mapMethods).forEach((name) => {
-      const methodName = name.charAt(0).toUpperCase() + name.slice(1);
-      const fnName = `set${methodName}`;
-      typeof this[fnName] === 'function' && this[fnName].call(this);
-    });
   }
 
   setAttribution() {
@@ -127,11 +116,22 @@ export default class Map extends React.Component {
   }
 
   /**
+   * MAP METHODS
+  */
+  execMethods() {
+    Object.keys(this.props.mapMethods).forEach((name) => {
+      const methodName = name.charAt(0).toUpperCase() + name.slice(1);
+      const fnName = `set${methodName}`;
+      typeof this[fnName] === 'function' && this[fnName].call(this);
+    });
+  }
+
+  /**
    * LAYER MANAGER
   */
   initLayerManager() {
     const stopLoading = () => {
-      this._mounted && this.setState({ loading: false });
+      this.mounted && this.setState({ loading: false });
     };
 
     this.layerManager = new LayerManager(this.map, {
@@ -165,7 +165,8 @@ export default class Map extends React.Component {
         <div
           ref={(node) => {
             this.mapNode = node;
-          }} className="map-leaflet"
+          }}
+          className="map-leaflet"
         />
         <Spinner isLoading={this.state.loading} className="-map" />
       </div>
