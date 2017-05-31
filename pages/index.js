@@ -6,6 +6,9 @@ import dynamic from 'next/dynamic';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 
+// Constants
+import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
@@ -63,19 +66,8 @@ class HomePage extends Page {
           map={{
             component: Map,
             props: {
-              mapOptions: {
-                zoom: 5,
-                center: [0, 30],
-                zoomControl: false,
-                scrollWheelZoom: false
-              },
-              mapMethods: {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
-                tileLayers: [
-                  { url: process.env.BASEMAP_LABEL_URL, zIndex: 1000 },
-                  { url: process.env.BASEMAP_TILE_URL, zIndex: 0 }
-                ]
-              }
+              mapOptions: MAP_OPTIONS_HOME,
+              layers: MAP_LAYERS_HOME
             }
           }}
           position={{ top: true, right: true }}
