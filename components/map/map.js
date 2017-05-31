@@ -44,8 +44,8 @@ export default class Map extends React.Component {
     });
 
     this.map.on('load', () => {
-      // // Add event mapListeners
-      // this.props.mapListeners && this.setMapEventListeners();
+      // Add event mapListeners
+      this.props.mapListeners && this.setMapEventListeners();
       //
       // // Exec leaflet methods
       // this.execMethods();
@@ -61,10 +61,11 @@ export default class Map extends React.Component {
     if (!isEqual(this.props.mapMethods.fitBounds, nextProps.mapMethods.fitBounds)) {
       this.map.fitBounds(nextProps.mapMethods.fitBounds);
     }
+
     // Layers
     if (!isEqual(this.props.layers, nextProps.layers)) {
       this.layerManager.removeAllLayers();
-      this.addLayer(nextProps.layers[0]);
+      this.addLayer(nextProps.layers);
     }
 
     // Zoom
@@ -101,6 +102,8 @@ export default class Map extends React.Component {
 
   /**
    * MAP LISTENERS
+   * - setMapEventListeners
+   * - removeMapEventListeners
   */
   setMapEventListeners() {
     const { mapListeners } = this.props;

@@ -50,5 +50,5 @@ Layout.propTypes = {
   children: PropTypes.any.isRequired,
   session: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
-  className: PropTypes.object
+  className: PropTypes.string
 };

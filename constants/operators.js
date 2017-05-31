@@ -1,6 +1,9 @@
 const MAP_OPTIONS_OPERATORS = {
   zoom: 5,
-  center: [18, 0]
+  center: {
+    lat: 0,
+    lng: 18
+  }
 };
 
 const MAP_LAYERS_OPERATORS = [{

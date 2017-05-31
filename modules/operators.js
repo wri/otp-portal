@@ -1,16 +1,23 @@
+import Router from 'next/router';
 import normalize from 'json-api-normalizer';
 import fetch from 'isomorphic-fetch';
+
+import { MAP_OPTIONS_OPERATORS } from 'constants/operators';
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
 const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
 
+const SET_OPERATORS_MAP_LOCATION = 'SET_OPERATORS_MAP_LOCATION';
+
+
 /* Initial state */
 const initialState = {
   data: {},
   loading: false,
-  error: false
+  error: false,
+  map: MAP_OPTIONS_OPERATORS
 };
 
 /* Reducer */
@@ -22,12 +29,21 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
+    case SET_OPERATORS_MAP_LOCATION:
+      return Object.assign({}, state, { map: action.payload });
     default:
       return state;
   }
 }
 
 /* Action creators */
+export function setOperatorsMapLocation(mapLocation) {
+  return {
+    type: SET_OPERATORS_MAP_LOCATION,
+    payload: mapLocation
+  };
+}
+
 export function getOperators() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
@@ -61,5 +77,34 @@ export function getOperators() {
           payload: err.message
         });
       });
+  };
+}
+
+export function setOperatorsUrl() {
+  return (dispatch, getState) => {
+    const { operators } = getState();
+
+    const location = {
+      pathname: '/operators',
+      query: {
+        lat: operators.map.center.lat.toFixed(2),
+        lng: operators.map.center.lng.toFixed(2),
+        zoom: operators.map.zoom.toFixed(2)
+      }
+    };
+
+    Router.replace(location);
+  };
+}
+
+export function getOperatorsUrl(url) {
+  const { zoom, lat, lng } = url.query;
+
+  return {
+    zoom: +zoom || MAP_OPTIONS_OPERATORS.zoom,
+    center: {
+      lat: +lat || MAP_OPTIONS_OPERATORS.center.lat,
+      lng: +lng || MAP_OPTIONS_OPERATORS.center.lng
+    }
   };
 }

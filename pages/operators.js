@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import dynamic from 'next/dynamic';
 import isEmpty from 'lodash/isEmpty';
+
+// Next
+import Router from 'next/router';
+import dynamic from 'next/dynamic';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { getOperators, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators';
 
 // Constants
-import { MAP_OPTIONS_OPERATORS, MAP_LAYERS_OPERATORS } from 'constants/operators';
+import { MAP_LAYERS_OPERATORS } from 'constants/operators';
 
 // Components
 import Page from 'components/layout/page';
@@ -21,18 +24,29 @@ const Map = dynamic(
   { ssr: false }
 );
 
-
 class OperatorsPage extends Page {
 
   componentDidMount() {
-    const { operators } = this.props;
+    const { operators, url } = this.props;
     if (isEmpty(operators.data)) {
       this.props.getOperators();
     }
+
+    const location = this.props.getOperatorsUrl(url);
+    this.props.setOperatorsMapLocation(location);
   }
 
   render() {
     const { url, session } = this.props;
+
+    const MAP_LISTENERS_OPERATORS = {
+      moveend: (map) => {
+        this.props.setOperatorsMapLocation({
+          zoom: map.getZoom(),
+          center: map.getCenter()
+        });
+      }
+    };
 
     return (
       <Layout
@@ -49,7 +63,8 @@ class OperatorsPage extends Page {
 
           <div className="c-map-container">
             <Map
-              mapOptions={MAP_OPTIONS_OPERATORS}
+              mapOptions={this.props.operators.map}
+              mapListeners={MAP_LISTENERS_OPERATORS}
               layers={MAP_LAYERS_OPERATORS}
             />
           </div>
@@ -57,7 +72,6 @@ class OperatorsPage extends Page {
       </Layout>
     );
   }
-
 }
 
 OperatorsPage.propTypes = {
@@ -69,5 +83,12 @@ export default withRedux(
   state => ({
     operators: state.operators
   }),
-  { getOperators }
+  dispatch => ({
+    getOperators,
+    getOperatorsUrl,
+    setOperatorsMapLocation(mapLocation) {
+      dispatch(setOperatorsMapLocation(mapLocation));
+      dispatch(setOperatorsUrl());
+    }
+  })
 )(OperatorsPage);

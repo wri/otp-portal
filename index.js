@@ -1,9 +1,8 @@
-
-
 const express = require('express');
 const next = require('next');
 const orm = require('orm');
 const sass = require('node-sass');
+const { parse } = require('url');
 const auth = require('./routes/auth');
 
 // Load environment variables from .env file if present
@@ -108,9 +107,12 @@ app.prepare()
   //   return app.render(req, res, '/routing', req.params);
   // });
 
-  server.get('/operators', (req, res) => app.render(req, res, '/operators', req.params));
+  server.get('/operators', (req, res) => {
+    const { query } = parse(req.url, true);
+    return app.render(req, res, '/operators', Object.assign(req.params, query));
+  });
 
-  server.get('/observations', (req, res) => app.render(req, res, '/observations', req.params));
+  server.get('/observations', (req, res) => app.render(req, res, '/observations', Object.assign(req.params, req.query)));
 
   server.get('/about', (req, res) => app.render(req, res, '/about', req.params));
 
