@@ -39,7 +39,8 @@ module.exports = {
         'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
         'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY),
         'process.env.BASEMAP_LABEL_URL': JSON.stringify(process.env.BASEMAP_LABEL_URL),
-        'process.env.BASEMAP_TILE_URL': JSON.stringify(process.env.BASEMAP_TILE_URL)
+        'process.env.BASEMAP_TILE_URL': JSON.stringify(process.env.BASEMAP_TILE_URL),
+        'process.env.MAPBOX_API_KEY': JSON.stringify(process.env.MAPBOX_API_KEY)
       })
     );
 

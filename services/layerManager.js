@@ -1,4 +1,4 @@
-import L from 'leaflet/dist/leaflet';
+import Mapboxgl from 'mapbox-gl';
 
 import { get } from 'utils/request';
 
@@ -6,78 +6,64 @@ export default class LayerManager {
 
   /* Constructor */
   constructor(map, options = {}) {
-    this._map = map;
-    this._mapLayers = {};
-    this._mapMarkers = {};
-    this._onLayerAddedSuccess = options.onLayerAddedSuccess;
-    this._onLayerAddedError = options.onLayerAddedError;
+    this.map = map;
+    this.mapLayers = {};
+    this.onLayerAddedSuccess = options.onLayerAddedSuccess;
+    this.onLayerAddedError = options.onLayerAddedError;
+
+    this.initPopup();
+  }
+
+  initPopup() {
+    this.popup = new Mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
   }
 
   /* Public methods */
   addLayer(layer, opts = {}) {
     const method = {
-      cartodb: this._addCartoLayer
+      cartodb: this.addCartoLayer
     }[layer.provider];
 
     method && method.call(this, layer, opts);
   }
 
   removeLayer(layerId) {
-    if (this._mapLayers[layerId]) {
-      this._map.removeLayer(this._mapLayers[layerId]);
-      delete this._mapLayers[layerId];
+    if (this.mapLayers[layerId]) {
+      this.map.removeLayer(this.mapLayers[layerId]);
+      delete this.mapLayers[layerId];
     }
   }
 
   removeAllLayers() {
-    const layerIds = Object.keys(this._mapLayers);
+    const layerIds = Object.keys(this.mapLayers);
     if (!layerIds.length) return;
     layerIds.forEach(id => this.removeLayer(id));
   }
 
-  addMarker({ id, lat, lng }, icon) {
-    this._mapMarkers[id] = L.marker([lat, lng], { icon });
-    this._mapMarkers[id].addTo(this._map);
-  }
+  /**
+   * PRIVATE METHODS
+   */
+  addCartoLayer(layer) {
+    this.map.addSource(layer.id, layer.source);
 
-  removeMarker(markerId) {
-    if (this._mapMarkers[markerId]) {
-      this._map.removeLayer(this._mapMarkers[markerId]);
-      delete this._mapMarkers[markerId];
-    }
-  }
+    // Loop trough layers
+    layer.layer.forEach((l) => {
+      // Create a popup, but don't add it to the map yet.
 
-  updateMarker({ id, options }) {
-    const { selected } = options;
-    const markerIcon = this._mapMarkers[id]._icon;
+      // Add layer
+      this.map.addLayer(l);
 
-    markerIcon.classList.toggle('-selected', selected);
-  }
-
-  /* Private methods */
-  _addCartoLayer(layer) {
-    const layerTpl = {
-      version: '1.3.0',
-      stat_tag: 'API',
-      ...layer.layerConfig.body
-    };
-    const params = `stat_tag=API&config=${encodeURIComponent(JSON.stringify(layerTpl))}`;
-
-    const request = get({
-      url: `https://${layer.layerConfig.account}.carto.com/api/v1/map?${params}`,
-      onSuccess: (data) => {
-        const tileUrl = `https://${layer.layerConfig.account}.carto.com/api/v1/map/${data.layergroupid}/{z}/{x}/{y}.png`;
-        this._mapLayers[layer.id] = L.tileLayer(tileUrl).addTo(this._map).setZIndex(500);
-        this._mapLayers[layer.id].on('load', () => {
-          this._onLayerAddedSuccess();
-        });
-        this._mapLayers[layer.id].on('tileerror', () => {
-          this._onLayerAddedError();
-        });
-      },
-      onError: this._onLayerAddedError
+      // // Add interactivity (if exists)
+      // this.map.on('click', l.id, (e) => {
+      //   // Populate the popup and set its coordinates
+      //   // based on the feature found.
+      //   this.popup.setLngLat(e.lngLat)
+      //       .setHTML(e.features[0].properties.fmu_name)
+      //       .addTo(this.map);
+      // });
     });
-
-    return request;
   }
 }

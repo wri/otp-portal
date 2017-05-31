@@ -27,7 +27,7 @@
 @import 'components/page/static-box';
 
 // - map
-@import '../node_modules/leaflet/dist/leaflet';
+@import '../node_modules/mapbox-gl/dist/mapbox-gl';
 @import 'components/map/map';
 
 // - ui

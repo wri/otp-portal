@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
-import L from 'leaflet/dist/leaflet';
+import Mapboxgl from 'mapbox-gl';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -12,34 +12,18 @@ import LayerManager from 'services/layerManager';
 const MAP_OPTIONS = {
   zoom: 2,
   minZoom: 2,
-  center: [30, -120],
-  zoomControl: true,
-  detectRetina: true
+  maxZoom: 20,
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: [0, 0]
 };
 
+Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
 
 export default class Map extends React.Component {
 
-  /* Static methods */
-  static addOrRemove(oldItems, newItems, addCb, removeCb, updateCb) {
-    // TODO: improve performace uning sets instead of looping over arrays
-    // Remove
-    oldItems.forEach(i => !newItems.find(ii => i.id === ii.id) && removeCb(i));
-
-    // Add
-    newItems.forEach(i => !oldItems.find(ii => i.id === ii.id) && addCb(i));
-
-    // Update
-    newItems.forEach((i) => {
-      const old = oldItems.find(ii => i.id === ii.id);
-      if (!!updateCb && !!old && !isEqual(old, i)) {
-        updateCb(i);
-      }
-    });
-  }
-
-
-  /* Constructor */
+  /**
+   * CONSTRUCTOR
+  **/
   constructor(props) {
     super(props);
     this.state = {
@@ -47,22 +31,29 @@ export default class Map extends React.Component {
     };
   }
 
-  /* Component Lyfecyle */
+  /**
+   * COMPONENT LYFECYLE
+  **/
   componentDidMount() {
     this._mounted = true;
     const mapOptions = Object.assign({}, MAP_OPTIONS, this.props.mapOptions);
-    this.map = L.map(this.mapNode, mapOptions);
 
-    // Add event mapListeners
-    this.props.mapListeners && this.setMapEventListeners();
+    this.map = new Mapboxgl.Map({
+      container: this.mapNode,
+      ...mapOptions
+    });
 
-    // Exec leaflet methods
-    this.execMethods();
+    this.map.on('load', () => {
+      // // Add event mapListeners
+      // this.props.mapListeners && this.setMapEventListeners();
+      //
+      // // Exec leaflet methods
+      // this.execMethods();
 
-    // Add layers
-    this.initLayerManager();
-    this.props.layers && this.addLayer(this.props.layers);
-    this.props.markers.length && this.addMarker(this.props.markers);
+      // Add layers
+      this.initLayerManager();
+      this.props.layers.length && this.addLayer(this.props.layers);
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -75,16 +66,7 @@ export default class Map extends React.Component {
       this.layerManager.removeAllLayers();
       this.addLayer(nextProps.layers[0]);
     }
-    // Markers
-    if (!isEqual(this.props.markers, nextProps.markers)) {
-      Map.addOrRemove(
-        this.props.markers,
-        nextProps.markers,
-        marker => this.addMarker(marker),
-        marker => this.removeMarker(marker.id),
-        marker => this.updateMarker(marker)
-      );
-    }
+
     // Zoom
     if (this.props.mapOptions.zoom !== nextProps.mapOptions.zoom) {
       this.map.setZoom(nextProps.mapOptions.zoom);
@@ -102,7 +84,9 @@ export default class Map extends React.Component {
     this.map && this.map.remove();
   }
 
-  /* MapMethods methods */
+  /**
+   * MAP METHODS
+  */
   execMethods() {
     Object.keys(this.props.mapMethods).forEach((name) => {
       const methodName = name.charAt(0).toUpperCase() + name.slice(1);
@@ -126,7 +110,9 @@ export default class Map extends React.Component {
     });
   }
 
-  /* Event listener methods */
+  /**
+   * MAP LISTENERS
+  */
   setMapEventListeners() {
     const { mapListeners } = this.props;
     Object.keys(mapListeners).forEach((eventName) => {
@@ -140,12 +126,12 @@ export default class Map extends React.Component {
     eventNames && eventNames.forEach(eventName => this.map.off(eventName));
   }
 
-  /* LayerManager initialization */
+  /**
+   * LAYER MANAGER
+  */
   initLayerManager() {
     const stopLoading = () => {
-      this._mounted && this.setState({
-        loading: false
-      });
+      this._mounted && this.setState({ loading: false });
     };
 
     this.layerManager = new LayerManager(this.map, {
@@ -156,9 +142,7 @@ export default class Map extends React.Component {
 
   /* Layer methods */
   addLayer(layer) {
-    this.setState({
-      loading: true
-    });
+    this.setState({ loading: true });
     if (Array.isArray(layer)) {
       layer.forEach(l => this.layerManager.addLayer(l));
       return;
@@ -174,28 +158,15 @@ export default class Map extends React.Component {
     this.layerManager.removeLayer(layer.id);
   }
 
-  /* Marker methods */
-  addMarker(marker) {
-    if (Array.isArray(marker)) {
-      marker.forEach(m => this.layerManager.addMarker(m, this.props.markerIcon));
-      return;
-    }
-    this.layerManager.addMarker(marker, this.props.markerIcon);
-  }
-
-  removeMarker(markerId) {
-    this.layerManager.removeMarker(markerId);
-  }
-
-  updateMarker(marker) {
-    this.layerManager.updateMarker(marker);
-  }
-
   /* Render method */
   render() {
     return (
       <div className="c-map">
-        <div ref={(node) => { this.mapNode = node; }} className="map-leaflet" />
+        <div
+          ref={(node) => {
+            this.mapNode = node;
+          }} className="map-leaflet"
+        />
         <Spinner isLoading={this.state.loading} className="-map" />
       </div>
     );
@@ -206,15 +177,12 @@ Map.propTypes = {
   mapOptions: PropTypes.object,
   mapMethods: PropTypes.object,
   mapListeners: PropTypes.object,
-  layers: PropTypes.array,
-  markers: PropTypes.array,
-  markerIcon: PropTypes.object
+  layers: PropTypes.array
 };
 
 Map.defaultProps = {
   mapOptions: {},
   mapMethods: {},
   mapListeners: {},
-  layers: [],
-  markers: []
+  layers: []
 };
