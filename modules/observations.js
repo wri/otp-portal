@@ -2,9 +2,9 @@ import normalize from 'json-api-normalizer';
 import fetch from 'isomorphic-fetch';
 
 /* Constants */
-const GET_OBSERVATORS_SUCCESS = 'GET_OBSERVATORS_SUCCESS';
-const GET_OBSERVATORS_ERROR = 'GET_OBSERVATORS_ERROR';
-const GET_OBSERVATORS_LOADING = 'GET_OBSERVATORS_LOADING';
+const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
+const GET_OBSERVATIONS_ERROR = 'GET_OBSERVATIONS_ERROR';
+const GET_OBSERVATIONS_LOADING = 'GET_OBSERVATIONS_LOADING';
 
 /* Initial state */
 const initialState = {
@@ -16,11 +16,11 @@ const initialState = {
 /* Reducer */
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_OBSERVATORS_SUCCESS:
+    case GET_OBSERVATIONS_SUCCESS:
       return Object.assign({}, state, { data: action.payload.data, loading: false, error: false });
-    case GET_OBSERVATORS_ERROR:
+    case GET_OBSERVATIONS_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
-    case GET_OBSERVATORS_LOADING:
+    case GET_OBSERVATIONS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
     default:
       return state;
@@ -31,7 +31,7 @@ export default function (state = initialState, action) {
 export function getObservations() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OBSERVATORS_LOADING });
+    dispatch({ type: GET_OBSERVATIONS_LOADING });
 
 
     fetch(`${process.env.OTP_API}/observations`, {
@@ -48,7 +48,7 @@ export function getObservations() {
       .then((observations) => {
         // Fetch from server ok -> Dispatch observations
         dispatch({
-          type: GET_OBSERVATORS_SUCCESS,
+          type: GET_OBSERVATIONS_SUCCESS,
           payload: {
             data: normalize(observations)
           }
@@ -57,7 +57,7 @@ export function getObservations() {
       .catch((err) => {
         // Fetch from server ko -> Dispatch error
         dispatch({
-          type: GET_OBSERVATORS_ERROR,
+          type: GET_OBSERVATIONS_ERROR,
           payload: err.message
         });
       });

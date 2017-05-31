@@ -16,9 +16,9 @@ import { getObservations } from 'modules/observations';
 class ObservationsPage extends Page {
 
   componentDidMount() {
-    const { dispatch, observations } = this.props;
+    const { observations } = this.props;
     if (isEmpty(observations.data)) {
-      dispatch(getObservations());
+      this.props.getObservations();
     }
   }
 
@@ -51,5 +51,6 @@ export default withRedux(
   store,
   state => ({
     observations: state.observations
-  })
+  }),
+  { getObservations }
 )(ObservationsPage);

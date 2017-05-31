@@ -20,3 +20,16 @@
   flex-direction: column;
   flex: 1;
 }
+
+.l-sidebar {
+  display: flex;
+  flex-direction: column;
+
+  .l-sidebar-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+  }
+}
