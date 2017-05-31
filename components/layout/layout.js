@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 // Components
 import Header from 'components/layout/header';
@@ -10,10 +11,14 @@ import Modal from 'components/ui/modal';
 
 export default class Layout extends React.Component {
   render() {
-    const { title, description, url, session, children } = this.props;
+    const { title, description, url, session, children, className } = this.props;
+
+    const classNames = classnames({
+      [className]: !!className
+    });
 
     return (
-      <div className="c-page">
+      <div className={`l-page c-page ${classNames}`}>
         <Head
           title={title}
           description={description}
@@ -26,7 +31,7 @@ export default class Layout extends React.Component {
           session={session}
         />
 
-        <div className="l-main">
+        <div className={`l-main ${classNames}`}>
           {children}
         </div>
 
@@ -44,5 +49,6 @@ Layout.propTypes = {
   description: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
   session: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired,
+  className: PropTypes.object
 };

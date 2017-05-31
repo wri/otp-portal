@@ -4,3 +4,19 @@
   max-width: $layout-max-width + 40px;
   padding: 0 20px;
 }
+
+
+.l-page {
+  display: flex;
+  flex-direction: column;
+
+  &.-fullscreen {
+    height: 100vh;
+  }
+}
+
+.l-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
