@@ -5,9 +5,14 @@ import Link from 'next/link';
 export default function Popup(props) {
   const { title, list } = props;
 
+  const parse = (v) => {
+    if (!v || v === 'null') { return '-'; }
+    return v;
+  };
+
   return (
     <div className="c-popup">
-      <h2 className="c-title -extrabig">{title}</h2>
+      <h2 className="c-title -extrabig">{parse(title)}</h2>
 
       {list && !!list.length &&
         <dl className="dl">
@@ -18,7 +23,7 @@ export default function Popup(props) {
               key={item.label}
             >
               <dt className="dt">{item.label}:</dt>
-              <dd className="dd">{item.value}</dd>
+              <dd className="dd">{parse(item.value)}</dd>
             </div>
           )}
         </dl>
