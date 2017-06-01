@@ -59,14 +59,14 @@ const MAP_LAYERS_OPERATORS = [
             )
             .addTo(this.map);
         },
-        mouseenter(e) {
+        mouseenter() {
           this.map.getCanvas().style.cursor = 'pointer';
         },
         mousemove(e) {
           this.map.getCanvas().style.cursor = 'pointer';
           this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
         },
-        mouseleave(e) {
+        mouseleave() {
           this.map.getCanvas().style.cursor = '';
           this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', '']);
         }
@@ -99,7 +99,6 @@ const MAP_LAYERS_OPERATORS = [
           this.popup = new this.Popup();
 
           const props = e.features[0].properties;
-          console.log(props);
 
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
@@ -113,7 +112,7 @@ const MAP_LAYERS_OPERATORS = [
             )
             .addTo(this.map);
         },
-        mouseenter(e) {
+        mouseenter() {
           this.map.getCanvas().style.cursor = 'pointer';
           this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
         },
@@ -121,7 +120,7 @@ const MAP_LAYERS_OPERATORS = [
           this.map.getCanvas().style.cursor = 'pointer';
           this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
         },
-        mouseleave(e) {
+        mouseleave() {
           this.map.getCanvas().style.cursor = '';
           this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
         }

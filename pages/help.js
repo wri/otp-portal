@@ -37,6 +37,11 @@ class HelpPage extends Page {
           background="/static/images/static-header/bg-help.jpg"
         />
         <Tabs
+          href={{
+            pathname: url.pathname,
+            query: { },
+            as: url.pathname
+          }}
           options={TABS_HELP}
           defaultSelected={tab}
           selected={tab}

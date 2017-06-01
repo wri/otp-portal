@@ -22,7 +22,7 @@ export default class Header extends React.Component {
   setActive(pathname) {
     const { url } = this.props;
     return classnames({
-      '-active': (url.pathname === pathname)
+      '-active': (pathname.includes(url.pathname))
     });
   }
 
@@ -40,22 +40,22 @@ export default class Header extends React.Component {
               <ul className="header-nav-list">
                 <li>
                   <Link prefetch href="/operators">
-                    <a className={this.setActive('/operators')}>Operators</a>
+                    <a className={this.setActive(['/operators', '/operators-detail'])}>Operators</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/observations">
-                    <a className={this.setActive('/observations')}>Observations</a>
+                    <a className={this.setActive(['/observations'])}>Observations</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/help">
-                    <a className={this.setActive('/help')}>Help</a>
+                    <a className={this.setActive(['/help'])}>Help</a>
                   </Link>
                 </li>
                 <li>
                   <Link prefetch href="/about">
-                    <a className={this.setActive('/about')}>About</a>
+                    <a className={this.setActive(['/about'])}>About</a>
                   </Link>
                 </li>
               </ul>

@@ -29,7 +29,7 @@ export default function Popup(props) {
         </dl>
       }
 
-      <Link href={{ pathname: '/operators', query: { id: 26 } }} as="/operators/26">
+      <Link href={{ pathname: '/operators-detail', query: { id: 26 } }} as="/operators/26">
         <a className="c-button -tertiary -fullwidth button">
           Operator's name
         </a>
