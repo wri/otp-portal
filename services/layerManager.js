@@ -1,4 +1,8 @@
-import Mapboxgl from 'mapbox-gl';
+let Mapboxgl;
+if (typeof window !== 'undefined') {
+  Mapboxgl = require('mapbox-gl');
+  Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
+}
 
 export default class LayerManager {
 

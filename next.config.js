@@ -1,6 +1,7 @@
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
+require('dotenv').load();
 
 module.exports = {
   webpack: (config, { dev }) => {
@@ -33,13 +34,13 @@ module.exports = {
       }
     );
 
+    config.module.noParse = /(mapbox-gl)\.js$/;
+
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env.PORT': JSON.stringify(process.env.PORT),
         'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
         'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY),
-        'process.env.BASEMAP_LABEL_URL': JSON.stringify(process.env.BASEMAP_LABEL_URL),
-        'process.env.BASEMAP_TILE_URL': JSON.stringify(process.env.BASEMAP_TILE_URL),
         'process.env.MAPBOX_API_KEY': JSON.stringify(process.env.MAPBOX_API_KEY)
       })
     );

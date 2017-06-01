@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
-import Mapboxgl from 'mapbox-gl';
+
 
 // Components
 import Spinner from 'components/ui/spinner';
 
 // Services
 import LayerManager from 'services/layerManager';
+
+let Mapboxgl;
+if (typeof window !== 'undefined') {
+  Mapboxgl = require('mapbox-gl');
+  Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
+}
 
 const MAP_OPTIONS = {
   zoom: 2,
@@ -17,7 +23,6 @@ const MAP_OPTIONS = {
   center: [0, 0]
 };
 
-Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
 
 export default class Map extends React.Component {
 
@@ -36,24 +41,26 @@ export default class Map extends React.Component {
   **/
   componentDidMount() {
     this.mounted = true;
-    const mapOptions = { ...MAP_OPTIONS, ...this.props.mapOptions };
+    if (Mapboxgl) {
+      const mapOptions = { ...MAP_OPTIONS, ...this.props.mapOptions };
 
-    this.map = new Mapboxgl.Map({
-      container: this.mapNode,
-      ...mapOptions
-    });
+      this.map = new Mapboxgl.Map({
+        container: this.mapNode,
+        ...mapOptions
+      });
 
-    this.map.on('load', () => {
-      // Add event mapListeners
-      this.props.mapListeners && this.setMapEventListeners();
-      //
-      // // Exec mapbox methods
-      // this.execMethods();
+      this.map.on('load', () => {
+        // Add event mapListeners
+        this.props.mapListeners && this.setMapEventListeners();
+        //
+        // // Exec mapbox methods
+        // this.execMethods();
 
-      // Add layers
-      this.initLayerManager();
-      this.props.layers.length && this.addLayer(this.props.layers);
-    });
+        // Add layers
+        this.initLayerManager();
+        this.props.layers.length && this.addLayer(this.props.layers);
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {

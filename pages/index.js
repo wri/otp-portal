@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import dynamic from 'next/dynamic';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -14,11 +13,7 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/page/static-section';
 import Card from 'components/ui/card';
-
-const Map = dynamic(
-  import('components/map/map'),
-  { ssr: false }
-);
+import Map from 'components/map/map';
 
 class HomePage extends Page {
   render() {
