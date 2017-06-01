@@ -35,8 +35,8 @@ export default class Map extends React.Component {
    * COMPONENT LYFECYLE
   **/
   componentDidMount() {
-    this._mounted = true;
-    const mapOptions = Object.assign({}, MAP_OPTIONS, this.props.mapOptions);
+    this.mounted = true;
+    const mapOptions = { ...MAP_OPTIONS, ...this.props.mapOptions };
 
     this.map = new Mapboxgl.Map({
       container: this.mapNode,
@@ -44,10 +44,10 @@ export default class Map extends React.Component {
     });
 
     this.map.on('load', () => {
-      // // Add event mapListeners
-      // this.props.mapListeners && this.setMapEventListeners();
+      // Add event mapListeners
+      this.props.mapListeners && this.setMapEventListeners();
       //
-      // // Exec leaflet methods
+      // // Exec mapbox methods
       // this.execMethods();
 
       // Add layers
@@ -61,10 +61,11 @@ export default class Map extends React.Component {
     if (!isEqual(this.props.mapMethods.fitBounds, nextProps.mapMethods.fitBounds)) {
       this.map.fitBounds(nextProps.mapMethods.fitBounds);
     }
+
     // Layers
     if (!isEqual(this.props.layers, nextProps.layers)) {
       this.layerManager.removeAllLayers();
-      this.addLayer(nextProps.layers[0]);
+      this.addLayer(nextProps.layers);
     }
 
     // Zoom
@@ -79,9 +80,32 @@ export default class Map extends React.Component {
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
     this.props.mapListeners && this.removeMapEventListeners();
     this.map && this.map.remove();
+  }
+
+  setAttribution() {
+    this.map.attributionControl.addAttribution(this.props.mapMethods.attribution);
+  }
+
+  /**
+   * MAP LISTENERS
+   * - setMapEventListeners
+   * - removeMapEventListeners
+  */
+  setMapEventListeners() {
+    const { mapListeners } = this.props;
+
+    Object.keys(mapListeners).forEach((eventName) => {
+      this.map.on(eventName, (...args) => mapListeners[eventName](this.map, ...args));
+    });
+  }
+
+  removeMapEventListeners() {
+    const { mapListeners } = this.props;
+    const eventNames = Object.keys[mapListeners];
+    eventNames && eventNames.forEach(eventName => this.map.off(eventName));
   }
 
   /**
@@ -95,43 +119,12 @@ export default class Map extends React.Component {
     });
   }
 
-  setAttribution() {
-    this.map.attributionControl.addAttribution(this.props.mapMethods.attribution);
-  }
-
-  setZoomControlPosition() {
-    this.map.zoomControl.setPosition(this.props.mapMethods.zoomControlPosition);
-  }
-
-  setTileLayers() {
-    const { tileLayers } = this.props.mapMethods;
-    tileLayers.forEach((tile) => {
-      L.tileLayer(tile.url, tile.options || {}).addTo(this.map).setZIndex(tile.zIndex);
-    });
-  }
-
-  /**
-   * MAP LISTENERS
-  */
-  setMapEventListeners() {
-    const { mapListeners } = this.props;
-    Object.keys(mapListeners).forEach((eventName) => {
-      this.map.on(eventName, (...args) => mapListeners[eventName](this.map, ...args));
-    });
-  }
-
-  removeMapEventListeners() {
-    const { mapListeners } = this.props;
-    const eventNames = Object.keys[mapListeners];
-    eventNames && eventNames.forEach(eventName => this.map.off(eventName));
-  }
-
   /**
    * LAYER MANAGER
   */
   initLayerManager() {
     const stopLoading = () => {
-      this._mounted && this.setState({ loading: false });
+      this.mounted && this.setState({ loading: false });
     };
 
     this.layerManager = new LayerManager(this.map, {
@@ -165,7 +158,8 @@ export default class Map extends React.Component {
         <div
           ref={(node) => {
             this.mapNode = node;
-          }} className="map-leaflet"
+          }}
+          className="map-leaflet"
         />
         <Spinner isLoading={this.state.loading} className="-map" />
       </div>
