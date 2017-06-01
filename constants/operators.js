@@ -10,6 +10,17 @@ const MAP_LAYERS_OPERATORS = [
       data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
     },
     layer: [{
+      id: 'forest_concession_layer_hover',
+      type: 'fill',
+      source: 'forest_concession',
+      layout: {},
+      paint: {
+        'fill-color': '#d07500',
+        'fill-opacity': 0.8,
+        'fill-outline-color': '#d07500'
+      },
+      filter: ['==', 'cartodb_id', '']
+    }, {
       id: 'forest_concession_layer',
       type: 'fill',
       source: 'forest_concession',
@@ -27,11 +38,22 @@ const MAP_LAYERS_OPERATORS = [
           this.popup = new this.Popup();
 
           const props = e.features[0].properties;
-
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
               render(
-                Popup(props, ['company_na']),
+                Popup({
+                  title: props.fmu_name,
+                  list: [{
+                    label: 'Company',
+                    value: props.company_na
+                  }, {
+                    label: 'CCF status',
+                    value: props.ccf_status
+                  }, {
+                    label: 'Type',
+                    value: props.fmu_type
+                  }]
+                }),
                 window.document.createElement('div')
               )
             )
@@ -49,15 +71,6 @@ const MAP_LAYERS_OPERATORS = [
           this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', '']);
         }
       }
-    }, {
-      id: 'forest_concession_layer_hover',
-      type: 'fill',
-      source: 'forest_concession',
-      layout: {},
-      paint: {
-        'fill-color': '#d07500'
-      },
-      filter: ['==', 'cartodb_id', '']
     }]
   },
 
@@ -85,8 +98,19 @@ const MAP_LAYERS_OPERATORS = [
           this.popup && this.popup.remove();
           this.popup = new this.Popup();
 
+          const props = e.features[0].properties;
+          console.log(props);
+
           this.popup.setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.num_ccf)
+            .setDOMContent(
+              render(
+                Popup({
+                  title: props.num_ccf,
+                  list: []
+                }),
+                window.document.createElement('div')
+              )
+            )
             .addTo(this.map);
         },
         mouseenter(e) {

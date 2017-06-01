@@ -27,6 +27,8 @@
 
   // THEMES
   // - primary
+  // - secondary
+  // - tertiary
   // - facebook
   // - twitter
   // - linkedin
@@ -34,6 +36,30 @@
     border-color: $border-color-3;
     color: $color-text-1;
     background: transparent;
+
+    &:hover {
+      color: darken($color-text-1, 10%);
+    }
+  }
+
+  &.-secondary {
+    border-color: $border-color-3;
+    color: $color-text-2;
+    background: $color-gray-1;
+
+    &:hover {
+      color: darken($color-text-2, 10%);
+    }
+  }
+
+  &.-tertiary {
+    border-color: $color-tertiary;
+    color: $color-text-1;
+    background: $color-tertiary;
+
+    &:hover {
+      color: darken($color-text-1, 10%);
+    }
   }
 
   &.-facebook {

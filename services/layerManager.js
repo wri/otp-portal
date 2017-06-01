@@ -9,11 +9,7 @@ export default class LayerManager {
     this.onLayerAddedSuccess = options.onLayerAddedSuccess;
     this.onLayerAddedError = options.onLayerAddedError;
 
-    // Init popup
-    this.initPopup();
-  }
-
-  initPopup() {
+    // Inits
     this.Popup = Mapboxgl.Popup;
   }
 
