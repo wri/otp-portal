@@ -9,6 +9,10 @@
   position: relative;
   z-index: 1;
 
+  &.-static {
+    height: 600px;
+  }
+
   &.-absolute {
     position: absolute;
     top: 0;

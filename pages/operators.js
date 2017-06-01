@@ -16,11 +16,7 @@ import { MAP_LAYERS_OPERATORS } from 'constants/operators';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
-
-const Map = dynamic(
-  import('components/map/map'),
-  { ssr: false }
-);
+import Map from 'components/map/map';
 
 class OperatorsPage extends Page {
 
