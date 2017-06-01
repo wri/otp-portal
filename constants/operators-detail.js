@@ -3,13 +3,16 @@ const TABS_OPERATORS_DETAIL = [{
   value: 'overview'
 }, {
   label: 'Documentation',
-  value: 'documentation'
+  value: 'documentation',
+  number: '65%'
 }, {
   label: 'Observations',
-  value: 'observations'
+  value: 'observations',
+  number: 120
 }, {
   label: 'FMUs',
-  value: 'fmus'
+  value: 'fmus',
+  number: 7
 }];
 
 

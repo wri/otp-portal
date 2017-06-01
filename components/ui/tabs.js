@@ -28,7 +28,7 @@ export default class Tabs extends React.Component {
     return (
       <header className="c-tabs">
         <div className="l-container">
-          <div className="row collapse">
+          <div className="row custom-row">
             {options.map((option) => {
               const btnClasses = classnames({
                 '-active': option.value === selected
@@ -41,7 +41,8 @@ export default class Tabs extends React.Component {
                 >
                   <Link href={{ pathname: href.pathname, query: { ...href.query, tab: option.value } }} as={`${href.as}/${option.value}`}>
                     <a className={`tabs-btn ${btnClasses}`}>
-                      {option.label}
+                      <span className="title">{option.label}</span>
+                      {!!option.number && <span className="number">{option.number}</span>}
                     </a>
                   </Link>
                 </div>
