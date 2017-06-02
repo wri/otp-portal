@@ -18,6 +18,43 @@ const TABS_OPERATORS_DETAIL = [{
   number: 7
 }];
 
+// TODO: replace this const to an API call
+const DOCUMENTATION_OPERATORS_DETAIL = {
+  'Legal registration': [{
+    title: 'Sample document title lorem ipsum',
+    date: 'Oct 2015',
+    status: 'valid',
+    fmus: 7
+  }, {
+    title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+    date: 'Apr 2015',
+    status: 'not-valid',
+    fmus: 15
+  }, {
+    title: 'Sample document title lorem',
+    date: 'Sep 2015',
+    status: 'not-provided',
+    fmus: 5
+  }],
+  'Use rights': [{
+    title: 'Sample document title lorem ipsum',
+    date: 'Oct 2015',
+    status: 'valid',
+    fmus: 65
+  }, {
+    title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+    date: 'Apr 2015',
+    status: 'not-provided',
+    fmus: 15
+  }, {
+    title: 'Sample document title lorem',
+    date: 'Sep 2015',
+    status: 'not-provided',
+    fmus: 5
+  }]
+};
+
+
 const MAP_OPTIONS_OPERATORS_DETAIL = {
   zoom: 5,
   center: [18, 0],
@@ -162,4 +199,4 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 ];
 
 
-export { TABS_OPERATORS_DETAIL, MAP_OPTIONS_OPERATORS_DETAIL, MAP_LAYERS_OPERATORS_DETAIL };
+export { TABS_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL, MAP_OPTIONS_OPERATORS_DETAIL, MAP_LAYERS_OPERATORS_DETAIL };

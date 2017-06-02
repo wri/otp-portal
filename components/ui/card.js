@@ -15,13 +15,11 @@ export default function Card({ theme, letter, title, description, link }) {
       <div className="card-content">
         {letter && <div className="card-letter"> {letter} </div>}
 
-        <h2 className="card-title"> {title} </h2>
+        <h2 className="c-title -extrabig -uppercase -proximanova"> {title} </h2>
         <p className="card-description"> {description} </p>
       </div>
 
-      <Link
-        {...link}
-      >
+      <Link {...link} >
         <a className="card-link c-button -primary -fullwidth">{link.label}</a>
       </Link>
     </div>

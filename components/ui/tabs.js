@@ -16,8 +16,9 @@ export default class Tabs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { selected } = nextProps;
     this.setState({
-      selected: nextProps.selected
+      selected
     });
   }
 
@@ -39,7 +40,16 @@ export default class Tabs extends React.Component {
                   key={option.value}
                   className={`medium-${12 / options.length} columns`}
                 >
-                  <Link href={{ pathname: href.pathname, query: { ...href.query, tab: option.value } }} as={`${href.as}/${option.value}`}>
+                  <Link
+                    href={{
+                      pathname: href.pathname,
+                      query: {
+                        ...href.query,
+                        tab: option.value
+                      }
+                    }}
+                    as={`${href.as}/${option.value}`}
+                  >
                     <a className={`tabs-btn ${btnClasses}`}>
                       <span className="title">{option.label}</span>
                       {!!option.number && <span className="number">{option.number}</span>}
