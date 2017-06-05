@@ -7534,6 +7534,20 @@
       "from": "which-module@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/which-module/-/which-module-1.0.0.tgz"
     },
+    "why-did-you-update": {
+      "version": "0.0.8",
+      "from": "why-did-you-update@latest",
+      "resolved": "https://registry.npmjs.org/why-did-you-update/-/why-did-you-update-0.0.8.tgz",
+      "dev": true,
+      "dependencies": {
+        "lodash": {
+          "version": "4.12.0",
+          "from": "lodash@4.12.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.12.0.tgz",
+          "dev": true
+        }
+      }
+    },
     "wide-align": {
       "version": "1.1.0",
       "from": "wide-align@>=1.1.0 <2.0.0",
