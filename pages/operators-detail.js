@@ -11,7 +11,7 @@ import { store } from 'store';
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
-import StaticHeader from 'components/page/static-header';
+import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
 
 // Help Tabs

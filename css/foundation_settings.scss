@@ -24,5 +24,9 @@ $block-grid-max: 8;
 
   .columns {
     @include flex-grid-column(expand, $grid-column-gutter);
+
+    &.shrink {
+      @include flex-grid-column(shrink, $grid-column-gutter);
+    }
   }
 }

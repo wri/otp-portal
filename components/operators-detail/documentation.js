@@ -1,10 +1,12 @@
 import React from 'react';
 
 // Constants
-import { DOCUMENTATION_OPERATORS_DETAIL } from 'constants/operators-detail';
+import { TABS_DOCUMENTATION_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL } from 'constants/operators-detail';
 
 // Components
+import StaticTabs from 'components/ui/static-tabs';
 import DocCard from 'components/ui/doc-card';
+
 
 export default class OperatorsDetailDocumentation extends React.Component {
 
@@ -24,18 +26,30 @@ export default class OperatorsDetailDocumentation extends React.Component {
             </article>
           </div>
         </div>
+
+        <StaticTabs
+          options={TABS_DOCUMENTATION_OPERATORS_DETAIL}
+          defaultSelected="documents-list"
+        />
+
         <div className="c-section">
           <div className="l-container">
             <ul className="c-doc-gallery">
               {Object.keys(DOCUMENTATION_OPERATORS_DETAIL).map(category => (
-                <li className="doc-gallery-item">
+                <li
+                  key={category}
+                  className="doc-gallery-item"
+                >
                   <header>
                     <h3 className="c-title -proximanova -extrabig -uppercase">{category}</h3>
                   </header>
 
                   <div className="row custom-row">
                     {DOCUMENTATION_OPERATORS_DETAIL[category].map(card => (
-                      <div className="columns small-12 medium-4">
+                      <div
+                        key={card.id}
+                        className="columns small-12 medium-4"
+                      >
                         <DocCard
                           {...card}
                         />

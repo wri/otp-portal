@@ -18,35 +18,50 @@ const TABS_OPERATORS_DETAIL = [{
   number: 7
 }];
 
+
+const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
+  label: 'Documents list',
+  value: 'documents-list'
+}, {
+  label: 'Chronological view',
+  value: 'chronological-view'
+}];
+
 // TODO: replace this const to an API call
 const DOCUMENTATION_OPERATORS_DETAIL = {
   'Legal registration': [{
+    id: 1,
     title: 'Sample document title lorem ipsum',
     date: 'Oct 2015',
     status: 'valid',
     fmus: 7
   }, {
+    id: 2,
     title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
     date: 'Apr 2015',
     status: 'not-valid',
     fmus: 15
   }, {
+    id: 3,
     title: 'Sample document title lorem',
     date: 'Sep 2015',
     status: 'not-provided',
     fmus: 5
   }],
   'Use rights': [{
+    id: 4,
     title: 'Sample document title lorem ipsum',
     date: 'Oct 2015',
     status: 'valid',
     fmus: 65
   }, {
+    id: 5,
     title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
     date: 'Apr 2015',
     status: 'not-provided',
     fmus: 15
   }, {
+    id: 6,
     title: 'Sample document title lorem',
     date: 'Sep 2015',
     status: 'not-provided',
@@ -199,4 +214,4 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 ];
 
 
-export { TABS_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL, MAP_OPTIONS_OPERATORS_DETAIL, MAP_LAYERS_OPERATORS_DETAIL };
+export { TABS_OPERATORS_DETAIL, TABS_DOCUMENTATION_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL, MAP_OPTIONS_OPERATORS_DETAIL, MAP_LAYERS_OPERATORS_DETAIL };
