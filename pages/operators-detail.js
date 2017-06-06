@@ -8,7 +8,7 @@ import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations } from 'modules/observations';
+import { getOperator } from 'modules/operators-detail';
 
 // Components
 import Page from 'components/layout/page';
@@ -25,9 +25,9 @@ import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 class OperatorsDetail extends Page {
 
   componentDidMount() {
-    const { observations } = this.props;
-    if (isEmpty(observations.data)) {
-      this.props.getObservations();
+    const { url, operatorsDetail } = this.props;
+    if (isEmpty(operatorsDetail.data)) {
+      this.props.getOperator(url.query.id);
     }
   }
 
@@ -67,7 +67,7 @@ class OperatorsDetail extends Page {
           <OperatorsDetailDocumentation />
         }
 
-        {tab === 'observations' &&
+        {tab === 'operators' &&
           <OperatorsDetailObservations />
         }
 
@@ -89,7 +89,7 @@ OperatorsDetail.propTypes = {
 export default withRedux(
   store,
   state => ({
-    observations: state.observations
+    operatorsDetail: state.operatorsDetail
   }),
-  { getObservations }
+  { getOperator }
 )(OperatorsDetail);
