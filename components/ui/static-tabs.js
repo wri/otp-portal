@@ -20,7 +20,7 @@ export default class Tabs extends React.Component {
   */
   triggerClickSelected(selected) {
     this.setState({ selected }, () => {
-      this.props.onTabChange && this.props.onTabChange(selected);
+      this.props.onChange && this.props.onChange(selected);
     });
   }
 
@@ -62,5 +62,5 @@ export default class Tabs extends React.Component {
 Tabs.propTypes = {
   options: PropTypes.array.isRequired,
   defaultSelected: PropTypes.string,
-  onTabChange: PropTypes.func
+  onChange: PropTypes.func
 };
