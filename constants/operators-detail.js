@@ -27,47 +27,51 @@ const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
   value: 'chronological-view'
 }];
 
+
 // TODO: replace this const to an API call
-const DOCUMENTATION_OPERATORS_DETAIL = {
-  'Legal registration': [{
-    id: 1,
-    title: 'Sample document title lorem ipsum',
-    date: 'Oct 2015',
-    status: 'valid',
-    fmus: 7
-  }, {
-    id: 2,
-    title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
-    date: 'Apr 2015',
-    status: 'not-valid',
-    fmus: 15
-  }, {
-    id: 3,
-    title: 'Sample document title lorem',
-    date: 'Sep 2015',
-    status: 'not-provided',
-    fmus: 5
-  }],
-  'Use rights': [{
-    id: 4,
-    title: 'Sample document title lorem ipsum',
-    date: 'Oct 2015',
-    status: 'valid',
-    fmus: 65
-  }, {
-    id: 5,
-    title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
-    date: 'Apr 2015',
-    status: 'not-provided',
-    fmus: 15
-  }, {
-    id: 6,
-    title: 'Sample document title lorem',
-    date: 'Sep 2015',
-    status: 'not-provided',
-    fmus: 5
-  }]
-};
+const DOCUMENTATION_OPERATORS_DETAIL = [{
+  id: 1,
+  title: 'Sample document title lorem ipsum',
+  date: 'Oct 2015',
+  status: 'valid',
+  fmus: 7,
+  category: 'Use rights'
+}, {
+  id: 2,
+  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+  date: 'Apr 2015',
+  status: 'not-valid',
+  fmus: 15,
+  category: 'Use rights'
+}, {
+  id: 3,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Use rights'
+}, {
+  id: 4,
+  title: 'Sample document title lorem ipsum',
+  date: 'Oct 2015',
+  status: 'valid',
+  fmus: 65,
+  category: 'Legal registration'
+}, {
+  id: 5,
+  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+  date: 'Apr 2015',
+  status: 'not-provided',
+  fmus: 15,
+  category: 'Legal registration'
+}, {
+  id: 6,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Harvesting'
+}];
 
 
 const MAP_OPTIONS_OPERATORS_DETAIL = {

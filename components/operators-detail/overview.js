@@ -2,10 +2,10 @@
 import React from 'react';
 
 // Constants
-import { PALETTE_COLOR_1 } from 'constants/rechart';
+import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rechart';
 
 // Components
-import { BarChart, Bar, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer } from 'recharts';
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
 
 // Example of how data should be
@@ -38,52 +38,43 @@ export default function OperatorsDetailOverview() {
           </div>
         </article>
 
+        {/* CHARTS */}
+        {/* TODO: move it to a component as long as we need to re-use it in other places */}
         <article className="c-article">
-          <header>
-            <h2 className="c-title">Observations by category</h2>
-          </header>
-
-          {/* CHARTS */}
           <div className="c-chart-container">
+            <header>
+              <h2 className="c-title">Observations by category</h2>
+            </header>
             <div className="c-chart-legend">
-              <h4 className="c-title -default -proximanova chart-legend-title">SEVERITY:</h4>
+              <h4 className="c-title -default -proximanova chart-legend-title">{LEGEND_SEVERITY.title}:</h4>
 
               <ul className="chart-legend-list">
-                <li className="chart-legend-item">
-                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[0] }} />
-                  <span className="chart-legend-label">High</span>
-                </li>
-                <li className="chart-legend-item">
-                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[1] }} />
-                  <span className="chart-legend-label">Medium</span>
-                </li>
-                <li className="chart-legend-item">
-                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[2] }} />
-                  <span className="chart-legend-label">Low</span>
-                </li>
-                <li className="chart-legend-item">
-                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[3] }} />
-                  <span className="chart-legend-label">Unknown</span>
-                </li>
+                {LEGEND_SEVERITY.list.map(item => (
+                  <li key={item.label} className="chart-legend-item">
+                    <span className="chart-legend-dot" style={{ background: item.fill }} />
+                    <span className="chart-legend-label">{item.label}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div className="row custom-row">
               {Object.keys(data).map(category => (
-                <div key={category} className="columns small-2">
+                <div key={category} className="columns small-6 medium-4 large-2">
                   <div className="c-chart">
                     <div className="chart -max-width-100">
-                      <ResponsiveContainer maxWidth={118} height={120}>
+                      <ResponsiveContainer height={120}>
                         <BarChart
                           data={data[category]}
                           barGap={5}
                           barCategoryGap={0}
                           margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                          {...ANIMATION_TIMES}
                         >
-                          <Bar dataKey="high" fill={PALETTE_COLOR_1[0]} />
-                          <Bar dataKey="medium" fill={PALETTE_COLOR_1[1]} />
-                          <Bar dataKey="low" fill={PALETTE_COLOR_1[2]} />
-                          <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3]} />
+                          <Bar dataKey="high" fill={PALETTE_COLOR_1[0].fill} />
+                          <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} />
+                          <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} />
+                          <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} />
 
                         </BarChart>
                       </ResponsiveContainer>
