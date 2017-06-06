@@ -60,7 +60,9 @@ class OperatorsDetail extends Page {
         />
 
         {tab === 'overview' &&
-          <OperatorsDetailOverview />
+          <OperatorsDetailOverview
+            url={url}
+          />
         }
 
         {tab === 'documentation' &&

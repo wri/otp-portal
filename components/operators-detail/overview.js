@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react';
+import PropTypes from 'prop-types';
+
+// Next components
+import Link from 'next/link';
 
 // Constants
 import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rechart';
@@ -18,7 +22,10 @@ const data = {
   'Transport and export': [{ name: 'Page F', high: 2390, medium: 3800, low: 2500, unknown: 2050 }]
 };
 
-export default function OperatorsDetailOverview() {
+export default function OperatorsDetailOverview(props) {
+  const { url } = props;
+  const id = url.query.id;
+
   return (
     <div
       className="c-section"
@@ -42,9 +49,12 @@ export default function OperatorsDetailOverview() {
         {/* TODO: move it to a component as long as we need to re-use it in other places */}
         <article className="c-article">
           <div className="c-chart-container">
+            {/* Header */}
             <header>
               <h2 className="c-title">Observations by category</h2>
             </header>
+
+            {/* Legend */}
             <div className="c-chart-legend">
               <h4 className="c-title -default -proximanova chart-legend-title">{LEGEND_SEVERITY.title}:</h4>
 
@@ -58,6 +68,7 @@ export default function OperatorsDetailOverview() {
               </ul>
             </div>
 
+            {/* Charts */}
             <div className="row custom-row">
               {Object.keys(data).map(category => (
                 <div key={category} className="columns small-6 medium-4 large-2">
@@ -86,9 +97,26 @@ export default function OperatorsDetailOverview() {
                 </div>
               ))}
             </div>
+
+            {/* Footer */}
+            <footer>
+              <Link
+                href={{
+                  pathname: url.pathname,
+                  query: { id, tab: 'observations' }
+                }}
+                as={`/operators/${id}/observations`}
+              >
+                <a className="c-button -primary">Go to observations</a>
+              </Link>
+            </footer>
           </div>
         </article>
       </div>
     </div>
   );
 }
+
+OperatorsDetailOverview.propTypes = {
+  url: PropTypes.object.isRequired
+};
