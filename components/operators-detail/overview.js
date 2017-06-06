@@ -1,8 +1,22 @@
 /* eslint-disable max-len */
 import React from 'react';
 
+// Constants
+import { PALETTE_COLOR_1 } from 'constants/rechart';
+
 // Components
+import { BarChart, Bar, ResponsiveContainer, Tooltip } from 'recharts';
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
+
+// Example of how data should be
+const data = {
+  'Right to exploit': [{ name: 'Right to exploit', high: 4000, medium: 2400, low: 2400, unknown: 2040 }],
+  'Timber harvesting': [{ name: 'Timber harvesting', high: 3000, medium: 1398, low: 2210, unknown: 2021 }],
+  'Timber processing': [{ name: 'Timber processing', high: 2000, medium: 9800, low: 2290, unknown: 2029 }],
+  'Social aspects': [{ name: 'Social aspects', high: 2780, medium: 3908, low: 2000, unknown: 2000 }],
+  Payments: [{ name: 'Payments', high: 1890, medium: 4800, low: 2181, unknown: 2018 }],
+  'Transport and export': [{ name: 'Page F', high: 2390, medium: 3800, low: 2500, unknown: 2050 }]
+};
 
 export default function OperatorsDetailOverview() {
   return (
@@ -20,6 +34,66 @@ export default function OperatorsDetailOverview() {
               <div className="description">
                 <p>REM is a non-profit organisation that operates as Independent Monitor of Law Enforcement and Governance. Our mission is to stimulate government reform and action in natural resource extraction through independent monitoring and credible reporting of illegalities and related governance problems. We use this information to develop, with the concerned actors, constructive and viable solutions and assist in their implementation.</p>
               </div>
+            </div>
+          </div>
+        </article>
+
+        <article className="c-article">
+          <header>
+            <h2 className="c-title">Observations by category</h2>
+          </header>
+
+          {/* CHARTS */}
+          <div className="c-chart-container">
+            <div className="c-chart-legend">
+              <h4 className="c-title -default -proximanova chart-legend-title">SEVERITY:</h4>
+
+              <ul className="chart-legend-list">
+                <li className="chart-legend-item">
+                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[0] }} />
+                  <span className="chart-legend-label">High</span>
+                </li>
+                <li className="chart-legend-item">
+                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[1] }} />
+                  <span className="chart-legend-label">Medium</span>
+                </li>
+                <li className="chart-legend-item">
+                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[2] }} />
+                  <span className="chart-legend-label">Low</span>
+                </li>
+                <li className="chart-legend-item">
+                  <span className="chart-legend-dot" style={{ background: PALETTE_COLOR_1[3] }} />
+                  <span className="chart-legend-label">Unknown</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="row custom-row">
+              {Object.keys(data).map(category => (
+                <div key={category} className="columns small-2">
+                  <div className="c-chart">
+                    <div className="chart -max-width-100">
+                      <ResponsiveContainer maxWidth={118} height={120}>
+                        <BarChart
+                          data={data[category]}
+                          barGap={5}
+                          barCategoryGap={0}
+                          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                        >
+                          <Bar dataKey="high" fill={PALETTE_COLOR_1[0]} />
+                          <Bar dataKey="medium" fill={PALETTE_COLOR_1[1]} />
+                          <Bar dataKey="low" fill={PALETTE_COLOR_1[2]} />
+                          <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3]} />
+
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <h3 className="c-title -bigger">{category}</h3>
+
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </article>

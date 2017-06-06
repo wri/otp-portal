@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -7,6 +8,7 @@ import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getObservations } from 'modules/observations';
 
 // Components
 import Page from 'components/layout/page';
@@ -21,6 +23,15 @@ import OperatorsDetailObservations from 'components/operators-detail/observation
 import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
 class OperatorsDetail extends Page {
+
+  componentDidMount() {
+    const { observations } = this.props;
+    if (isEmpty(observations.data)) {
+      this.props.getObservations();
+    }
+  }
+
+
   render() {
     const { url, session } = this.props;
     const id = url.query.id;
@@ -76,5 +87,9 @@ OperatorsDetail.propTypes = {
 };
 
 export default withRedux(
-  store
+  store,
+  state => ({
+    observations: state.observations
+  }),
+  { getObservations }
 )(OperatorsDetail);

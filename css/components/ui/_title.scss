@@ -8,13 +8,10 @@
   }
 
   // Font sizes
-  &.-big {
-    font-size: $font-size-big;
-  }
-
-  &.-extrabig {
-    font-size: $font-size-extrabig;
-  }
+  &.-default { font-size: $font-size-default; }
+  &.-big { font-size: $font-size-big; }
+  &.-extrabig { font-size: $font-size-extrabig; }
+  &.-bigger { font-size: $font-size-bigger; }
 
   // Text transforms
   &.-uppercase {

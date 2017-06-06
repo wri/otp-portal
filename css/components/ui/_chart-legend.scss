@@ -1,0 +1,38 @@
+.c-chart-legend {
+  display: flex;
+  align-items: center;
+  padding: $space-1 * 4 0 $space-1 * 5;
+
+  .chart-legend-title {
+    margin: 0;
+  }
+
+  .chart-legend-list {
+    display: flex;
+    list-style: none;
+    margin: 0 0 0 $space-1 * 2;
+    padding: 0;
+  }
+
+  .chart-legend-item {
+    display: flex;
+    margin: 0 0 0 $space-1;
+    &:first-child { margin: 0; }
+
+    > * {
+      margin: 0 0 0 $space-1;
+      &:first-child { margin: 0; }
+    }
+  }
+
+  .chart-legend-label {
+    font-size: $font-size-small;
+  }
+
+  .chart-legend-dot {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+}
