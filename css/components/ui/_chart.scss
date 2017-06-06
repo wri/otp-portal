@@ -1,0 +1,20 @@
+.c-chart-container {
+  footer {
+    margin: $space-1 * 7 0 0;
+  }
+}
+
+.c-chart {
+  .chart {
+    position: relative;
+    width: 100%;
+
+    &.-max-width-100 {
+      max-width: 100px;
+    }
+  }
+
+  h3 {
+    margin: $space-1 * 2 0 0;
+  }
+}

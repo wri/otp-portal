@@ -25,6 +25,7 @@
 @import 'components/page/static-header';
 @import 'components/page/static-section';
 @import 'components/page/static-box';
+@import 'components/page/static-tabs';
 
 // - map
 @import '../node_modules/mapbox-gl/dist/mapbox-gl';
@@ -36,6 +37,10 @@
 @import 'components/ui/aside';
 @import 'components/ui/button';
 @import 'components/ui/card';
+@import 'components/ui/chart';
+@import 'components/ui/chart-legend';
+@import 'components/ui/doc-card';
+@import 'components/ui/doc-gallery';
 @import 'components/ui/gallery';
 @import 'components/ui/icon';
 @import 'components/ui/intro';

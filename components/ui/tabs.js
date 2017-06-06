@@ -16,19 +16,20 @@ export default class Tabs extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { selected } = nextProps;
     this.setState({
-      selected: nextProps.selected
+      selected
     });
   }
 
   render() {
     const { selected } = this.state;
-    const { options } = this.props;
+    const { options, href } = this.props;
 
     return (
       <header className="c-tabs">
         <div className="l-container">
-          <div className="row collapse">
+          <div className="row custom-row">
             {options.map((option) => {
               const btnClasses = classnames({
                 '-active': option.value === selected
@@ -39,9 +40,19 @@ export default class Tabs extends React.Component {
                   key={option.value}
                   className={`medium-${12 / options.length} columns`}
                 >
-                  <Link href={{ pathname: '/help', query: { tab: option.value } }} as={`/help/${option.value}`}>
+                  <Link
+                    href={{
+                      pathname: href.pathname,
+                      query: {
+                        ...href.query,
+                        tab: option.value
+                      }
+                    }}
+                    as={`${href.as}/${option.value}`}
+                  >
                     <a className={`tabs-btn ${btnClasses}`}>
-                      {option.label}
+                      <span className="title">{option.label}</span>
+                      {!!option.number && <span className="number">{option.number}</span>}
                     </a>
                   </Link>
                 </div>
@@ -56,6 +67,7 @@ export default class Tabs extends React.Component {
 
 Tabs.propTypes = {
   options: PropTypes.array.isRequired,
+  href: PropTypes.object.isRequired,
   selected: PropTypes.string.isRequired,
   defaultSelected: PropTypes.string.isRequired
 };

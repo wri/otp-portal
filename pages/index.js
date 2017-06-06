@@ -11,7 +11,7 @@ import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
-import StaticSection from 'components/page/static-section';
+import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
 import Map from 'components/map/map';
 

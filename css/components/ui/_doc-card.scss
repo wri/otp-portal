@@ -1,0 +1,63 @@
+.c-doc-card {
+  position: relative;
+  width: 100%;
+  padding: $space-1 * 3 $space-1 * 4;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+  }
+
+  .doc-card-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .doc-card-date {
+    color: rgba($color-text-1, 0.5);
+    font-family: $font-family-proximanova;
+  }
+
+  .doc-card-status {
+    font-family: $font-family-proximanova;
+  }
+
+  .doc-card-title {
+    margin: $space-1 * 2 0;
+  }
+
+  .doc-card-fmus {
+    color: rgba($color-text-1, 0.5);
+    font-family: $font-family-proximanova;
+  }
+
+  // STATUS
+  &.-valid {
+    background: rgba($color-black, 0.04);
+
+    &:after { background: $color-primary; }
+
+    .doc-card-status { color: $color-primary; }
+  }
+
+  &.-not-valid {
+    background: rgba($color-black, 0.04);
+
+    &:after { background: $color-secondary; }
+
+    .doc-card-status { color: $color-secondary; }
+  }
+
+  &.-not-provided {
+    background: $color-secondary;
+
+    .doc-card-title { color: $color-tertiary; }
+    .doc-card-date { color: rgba($color-tertiary, 0.5); }
+    .doc-card-status { color: rgba($color-tertiary, 0.5); }
+    .doc-card-fmus { color: rgba($color-tertiary, 0.5); }
+  }
+}

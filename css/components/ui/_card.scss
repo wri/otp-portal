@@ -13,9 +13,10 @@
   }
 
   .card-letter {
-    line-height: 100px;
+    line-height: 130px;
     font-size: 130px;
     letter-spacing: -3px;
+    margin: -#{$space-1 * 2} 0 #{$space-1 * 4};
   }
 
   .card-title {
@@ -41,6 +42,10 @@
   // THEMES
   &.-primary {
     background: rgba($color-black, 0.04);
+
+    .card-letter {
+      color: $color-primary;
+    }
   }
 
   &.-secondary {

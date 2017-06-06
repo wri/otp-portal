@@ -22,7 +22,11 @@ $block-grid-max: 8;
 .custom-row {
   @include flex-grid-row(nest, expand, null, false, $grid-column-gutter);
 
-  .columns {
-    @include flex-grid-column(expand, $grid-column-gutter);
-  }
+  // .columns {
+  //   @include flex-grid-column(expand, $grid-column-gutter);
+  //
+  //   &.shrink {
+  //     @include flex-grid-column(shrink, $grid-column-gutter);
+  //   }
+  // }
 }

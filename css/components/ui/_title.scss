@@ -1,9 +1,20 @@
 .c-title {
   font-size: $font-size-huge;
   font-weight: $font-weight-default;
-  line-height: 1;
+  line-height: 1.25;
 
-  &.-extrabig {
-    font-size: $font-size-extrabig;
+  &.-proximanova {
+    font-family: $font-family-proximanova;
+  }
+
+  // Font sizes
+  &.-default { font-size: $font-size-default; }
+  &.-big { font-size: $font-size-big; }
+  &.-extrabig { font-size: $font-size-extrabig; }
+  &.-bigger { font-size: $font-size-bigger; }
+
+  // Text transforms
+  &.-uppercase {
+    text-transform: uppercase;
   }
 }

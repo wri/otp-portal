@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
-import StaticHeader from 'components/page/static-header';
+import StaticHeader from 'components/ui/static-header';
 
 // Redux
 import withRedux from 'next-redux-wrapper';

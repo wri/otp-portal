@@ -9,6 +9,14 @@ import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
 
+if (process.env.NODE_ENV !== 'production') {
+  // TODO
+  // If you want to debug the permonace
+  // we should check avoidables re-renders
+  // const { whyDidYouUpdate } = require('why-did-you-update');
+  // whyDidYouUpdate(React);
+}
+
 export default class Layout extends React.Component {
   render() {
     const { title, description, url, session, children, className } = this.props;

@@ -1,7 +1,86 @@
 import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
-const MAP_LAYERS_OPERATORS = [
+const TABS_OPERATORS_DETAIL = [{
+  label: 'Overview',
+  value: 'overview'
+}, {
+  label: 'Documentation',
+  value: 'documentation',
+  number: '65%'
+}, {
+  label: 'Observations',
+  value: 'observations',
+  number: 120
+}, {
+  label: 'FMUs',
+  value: 'fmus',
+  number: 7
+}];
+
+
+const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
+  label: 'Documents list',
+  value: 'documents-list'
+}, {
+  label: 'Chronological view',
+  value: 'chronological-view'
+}];
+
+
+// TODO: replace this const to an API call
+const DOCUMENTATION_OPERATORS_DETAIL = [{
+  id: 1,
+  title: 'Sample document title lorem ipsum',
+  date: 'Oct 2015',
+  status: 'valid',
+  fmus: 7,
+  category: 'Use rights'
+}, {
+  id: 2,
+  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+  date: 'Apr 2015',
+  status: 'not-valid',
+  fmus: 15,
+  category: 'Use rights'
+}, {
+  id: 3,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Use rights'
+}, {
+  id: 4,
+  title: 'Sample document title lorem ipsum',
+  date: 'Oct 2015',
+  status: 'valid',
+  fmus: 65,
+  category: 'Legal registration'
+}, {
+  id: 5,
+  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
+  date: 'Apr 2015',
+  status: 'not-provided',
+  fmus: 15,
+  category: 'Legal registration'
+}, {
+  id: 6,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Harvesting'
+}];
+
+
+const MAP_OPTIONS_OPERATORS_DETAIL = {
+  zoom: 5,
+  center: [18, 0],
+  scrollZoom: false
+};
+
+const MAP_LAYERS_OPERATORS_DETAIL = [
   {
     id: 'forest_concession',
     provider: 'cartodb',
@@ -138,4 +217,11 @@ const MAP_LAYERS_OPERATORS = [
   }
 ];
 
-export { MAP_LAYERS_OPERATORS };
+
+export {
+  TABS_OPERATORS_DETAIL,
+  TABS_DOCUMENTATION_OPERATORS_DETAIL,
+  DOCUMENTATION_OPERATORS_DETAIL,
+  MAP_OPTIONS_OPERATORS_DETAIL,
+  MAP_LAYERS_OPERATORS_DETAIL
+};
