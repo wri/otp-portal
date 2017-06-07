@@ -37,4 +37,20 @@ const LEGEND_SEVERITY = {
   }]
 };
 
-export { PALETTE_COLOR_1, PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_SEVERITY };
+const LEGEND_DOCUMENTATION = {
+  list: [{
+    fill: PALETTE_COLOR_2[0].fill,
+    stroke: PALETTE_COLOR_2[0].stroke,
+    label: 'Not provided'
+  }, {
+    fill: PALETTE_COLOR_2[1].fill,
+    stroke: PALETTE_COLOR_2[1].stroke,
+    label: 'Provided (not valid)'
+  }, {
+    fill: PALETTE_COLOR_2[2].fill,
+    stroke: PALETTE_COLOR_2[2].stroke,
+    label: 'Provided (valid)'
+  }]
+};
+
+export { PALETTE_COLOR_1, PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_SEVERITY, LEGEND_DOCUMENTATION };

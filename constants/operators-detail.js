@@ -65,12 +65,33 @@ const DOCUMENTATION_OPERATORS_DETAIL = [{
   fmus: 15,
   category: 'Legal registration'
 }, {
-  id: 6,
+  id: 7,
   title: 'Sample document title lorem',
   date: 'Sep 2015',
   status: 'not-provided',
   fmus: 5,
   category: 'Harvesting'
+}, {
+  id: 8,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Harvesting'
+}, {
+  id: 9,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Forest Management'
+}, {
+  id: 10,
+  title: 'Sample document title lorem',
+  date: 'Sep 2015',
+  status: 'not-provided',
+  fmus: 5,
+  category: 'Forest Management'
 }];
 
 

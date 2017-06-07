@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Next
-import dynamic from 'next/dynamic';
-
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';

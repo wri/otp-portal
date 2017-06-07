@@ -16,7 +16,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
 
-// Help Tabs
+// Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
 import OperatorsDetailDocumentation from 'components/operators-detail/documentation';
 import OperatorsDetailObservations from 'components/operators-detail/observations';
@@ -48,6 +48,7 @@ class OperatorsDetail extends Page {
           title="Forest operator's name"
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
+
         <Tabs
           href={{
             pathname: url.pathname,
