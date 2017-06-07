@@ -17,4 +17,8 @@
   &.-uppercase {
     text-transform: uppercase;
   }
+
+  //Font color
+  &.-light { color: $color-white; }
+  &.-dark { color: rgba($color-black, .8); }
 }

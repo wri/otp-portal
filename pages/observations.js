@@ -6,11 +6,12 @@ import isEmpty from 'lodash/isEmpty';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Filters from 'components/ui/filters';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations } from 'modules/observations';
+import { getObservations, getFilters, setFilters } from 'modules/observations';
 
 
 class ObservationsPage extends Page {
@@ -19,6 +20,10 @@ class ObservationsPage extends Page {
     const { observations } = this.props;
     if (isEmpty(observations.data)) {
       this.props.getObservations();
+    }
+
+    if (isEmpty(observations.filters.data)) {
+      this.props.getFilters();
     }
   }
 
@@ -41,7 +46,11 @@ class ObservationsPage extends Page {
           <div className="l-container">
             <div className="row custom-row">
               <div className="columns small-12 medium-4">
-                {/* Filters */}
+                <Filters
+                  // options={[]}
+                  filters={observations.filters.data}
+                  setFilters={this.props.setFilters}
+                />
               </div>
 
               <div className="columns small-12 medium-6 medium-offset-1">
@@ -59,7 +68,9 @@ class ObservationsPage extends Page {
 }
 
 ObservationsPage.propTypes = {
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  observations: PropTypes.object,
+  filters: PropTypes.object
 };
 
 export default withRedux(
@@ -67,5 +78,9 @@ export default withRedux(
   state => ({
     observations: state.observations
   }),
-  { getObservations }
+  {
+    getObservations,
+    getFilters,
+    setFilters
+  }
 )(ObservationsPage);
