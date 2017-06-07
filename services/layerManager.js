@@ -59,6 +59,8 @@ export default class LayerManager {
           this.map.on(i, l.id, iFn);
         });
       }
+
+      this.onLayerAddedSuccess();
     });
   }
 }
