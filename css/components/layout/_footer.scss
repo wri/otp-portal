@@ -1,0 +1,35 @@
+
+.c-footer {
+  background-color: $color-gray-1;
+
+  .footer-container {
+    padding: 55px;
+    color: $color-white;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .footer-item {
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+
+    &:last-child {
+      text-align: right;
+    }
+  }
+
+  p {
+    font-family: $font-family-proximanova;
+    font-size: 14px;
+    margin: 0;
+    line-height: 24px;
+    margin-bottom: 5px;
+
+    &:last-child { margin-bottom: 0; }
+
+    &.-bold {
+      font-weight: bold;
+    }
+  }
+}
