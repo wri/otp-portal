@@ -59,6 +59,7 @@ class OperatorsPage extends Page {
         url={url}
         session={session}
         className="-fullscreen"
+        footer={false}
       >
         <div className="c-section -map">
           <Sidebar>
