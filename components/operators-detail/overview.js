@@ -11,6 +11,7 @@ import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rec
 // Components
 import { BarChart, Bar, ResponsiveContainer } from 'recharts';
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
+import ChartLegend from 'components/ui/chart-legend';
 
 // Example of how data should be
 const data = {
@@ -55,18 +56,11 @@ export default function OperatorsDetailOverview(props) {
             </header>
 
             {/* Legend */}
-            <div className="c-chart-legend">
-              <h4 className="c-title -default -proximanova chart-legend-title">{LEGEND_SEVERITY.title}:</h4>
-
-              <ul className="chart-legend-list">
-                {LEGEND_SEVERITY.list.map(item => (
-                  <li key={item.label} className="chart-legend-item">
-                    <span className="chart-legend-dot" style={{ background: item.fill }} />
-                    <span className="chart-legend-label">{item.label}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ChartLegend
+              title={LEGEND_SEVERITY.title}
+              list={LEGEND_SEVERITY.list}
+              className="-horizontal"
+            />
 
             {/* Charts */}
             <div className="row custom-row">

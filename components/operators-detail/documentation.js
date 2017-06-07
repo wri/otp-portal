@@ -6,7 +6,7 @@ import { TABS_DOCUMENTATION_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL } f
 import { PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_DOCUMENTATION } from 'constants/rechart';
 
 // Components
-import { PieChart, Pie, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import StaticTabs from 'components/ui/static-tabs';
 import DocCard from 'components/ui/doc-card';
 import ChartLegend from 'components/ui/chart-legend';
