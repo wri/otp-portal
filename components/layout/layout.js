@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default class Layout extends React.Component {
   render() {
-    const { title, description, url, session, children, className } = this.props;
+    const { title, description, url, session, children, className, footer } = this.props;
 
     const classNames = classnames({
       [className]: !!className
@@ -43,7 +43,7 @@ export default class Layout extends React.Component {
           {children}
         </div>
 
-        <Footer />
+        {footer !== false && <Footer />}
 
         <Modal />
       </div>
@@ -58,5 +58,6 @@ Layout.propTypes = {
   children: PropTypes.any.isRequired,
   session: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  footer: PropTypes.bool
 };
