@@ -95,6 +95,136 @@ const DOCUMENTATION_OPERATORS_DETAIL = [{
 }];
 
 
+// TODO: replace this const to an API call
+const OBSERVATIONS_OPERATORS_DETAIL = [{
+  id: 1,
+  title: 'Sample observations title lorem ipsum',
+  year: 2017,
+  severity: 1,
+  category: 'Use rights',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 2,
+  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
+  year: 2017,
+  severity: 1,
+  category: 'Use rights',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 3,
+  title: 'Sample observations title lorem',
+  year: 2017,
+  severity: 3,
+  category: 'Use rights',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 4,
+  title: 'Sample observations title lorem ipsum',
+  year: 2017,
+  severity: 3,
+  category: 'Legal registration',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 5,
+  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
+  year: 2016,
+  severity: 3,
+  category: 'Legal registration',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 7,
+  title: 'Sample observations title lorem',
+  year: 2016,
+  severity: 2,
+  category: 'Harvesting',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 8,
+  title: 'Sample observations title lorem',
+  year: 2015,
+  severity: 0,
+  category: 'Harvesting',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 9,
+  title: 'Sample observations title lorem',
+  year: 2015,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 10,
+  title: 'Sample observations title lorem',
+  year: 2015,
+  severity: 3,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 11,
+  title: 'Sample observations title lorem',
+  year: 2017,
+  severity: 3,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 12,
+  title: 'Sample observations title lorem',
+  year: 2016,
+  severity: 3,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 13,
+  title: 'Sample observations title lorem',
+  year: 2016,
+  severity: 1,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 14,
+  title: 'Sample observations title lorem',
+  year: 2017,
+  severity: 1,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 15,
+  title: 'Sample observations title lorem',
+  year: 2016,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 16,
+  title: 'Sample observations title lorem',
+  year: 2016,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 17,
+  title: 'Sample observations title lorem',
+  year: 2017,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 18,
+  title: 'Sample observations title lorem',
+  year: 2017,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}, {
+  id: 19,
+  title: 'Sample observations title lorem',
+  year: 2014,
+  severity: 0,
+  category: 'Forest Management',
+  illegality: 'Harvesting without concession title'
+}];
+
+
 const MAP_OPTIONS_OPERATORS_DETAIL = {
   zoom: 5,
   center: [18, 0],
@@ -109,7 +239,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       type: 'geojson',
       data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
     },
-    layer: [{
+    layers: [{
       id: 'forest_concession_layer_hover',
       type: 'fill',
       source: 'forest_concession',
@@ -182,7 +312,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       type: 'geojson',
       data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
     },
-    layer: [{
+    layers: [{
       id: 'harvestable_areas_layer',
       type: 'fill',
       source: 'harvestable_areas',
@@ -243,6 +373,7 @@ export {
   TABS_OPERATORS_DETAIL,
   TABS_DOCUMENTATION_OPERATORS_DETAIL,
   DOCUMENTATION_OPERATORS_DETAIL,
+  OBSERVATIONS_OPERATORS_DETAIL,
   MAP_OPTIONS_OPERATORS_DETAIL,
   MAP_LAYERS_OPERATORS_DETAIL
 };

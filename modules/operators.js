@@ -54,7 +54,7 @@ export function getOperators() {
     dispatch({ type: GET_OPERATORS_LOADING });
 
 
-    fetch(`${process.env.OTP_API}/operators`, {
+    fetch(`${process.env.OTP_API}/operators?page[size]=99999`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
