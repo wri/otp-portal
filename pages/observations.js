@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Overview from 'components/observations/overview';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -46,6 +47,7 @@ class ObservationsPage extends Page {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
+                <Overview />
               </div>
             </div>
           </div>
