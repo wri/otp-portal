@@ -31,7 +31,7 @@ export default class DocumentsProvided extends React.Component {
     const groupedByStatus = this.getGroupedByStatus();
 
     return (
-      <div className="c-documents-provided">
+      <div className="c-doc-provided">
         <div className="row custom-row">
           <div className="columns small-6">
             <div className="c-chart">
