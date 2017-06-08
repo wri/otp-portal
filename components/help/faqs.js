@@ -62,9 +62,11 @@ export default class HelpFaqs extends React.Component {
                     <header>
                       <h2 className="c-title">{article.title}</h2>
                     </header>
-                    <div className="description">
-                      {article.description}
-                      <img src="/static/images/static-header/bg-help.jpg" alt={article.title} />
+                    <div className="content">
+                      <div className="description">
+                        <p>{article.description}</p>
+                        <img src="/static/images/static-header/bg-help.jpg" alt={article.title} />
+                      </div>
                     </div>
                   </article>
                 )}

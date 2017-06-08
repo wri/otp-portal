@@ -35,7 +35,9 @@ export default class OperatorsDetailDocumentation extends React.Component {
                 <h2 className="c-title">65% documents provided</h2>
               </header>
 
-              <DocumentsProvided data={DOCUMENTATION_OPERATORS_DETAIL} />
+              <div className="content">
+                <DocumentsProvided data={DOCUMENTATION_OPERATORS_DETAIL} />
+              </div>
             </article>
           </div>
         </div>

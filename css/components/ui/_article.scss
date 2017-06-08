@@ -6,13 +6,16 @@
     margin: 0;
   }
 
-  .description {
+  .content {
     margin: $space-1 * 2 0 0;
+  }
+
+  .description {
     font-size: $font-size-big;
     line-height: 1.5;
 
     > * {
-      margin: $space-1 0 0;
+      margin: $space-1 * 2 0 0;
       &:first-child { margin: 0; }
     }
   }

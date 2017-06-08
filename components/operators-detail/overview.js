@@ -39,8 +39,10 @@ export default function OperatorsDetailOverview(props) {
               <header>
                 <h2 className="c-title">Overview</h2>
               </header>
-              <div className="description">
-                <p>REM is a non-profit organisation that operates as Independent Monitor of Law Enforcement and Governance. Our mission is to stimulate government reform and action in natural resource extraction through independent monitoring and credible reporting of illegalities and related governance problems. We use this information to develop, with the concerned actors, constructive and viable solutions and assist in their implementation.</p>
+              <div className="content">
+                <div className="description">
+                  <p>REM is a non-profit organisation that operates as Independent Monitor of Law Enforcement and Governance. Our mission is to stimulate government reform and action in natural resource extraction through independent monitoring and credible reporting of illegalities and related governance problems. We use this information to develop, with the concerned actors, constructive and viable solutions and assist in their implementation.</p>
+                </div>
               </div>
             </div>
           </div>
