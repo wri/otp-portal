@@ -11,13 +11,14 @@ import Filters from 'components/ui/filters';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations, getFilters, setFilters } from 'modules/observations';
+import { getObservations, getFilters, setFilters, setObservationsUrl, getObservationsUrl } from 'modules/observations';
 
 
 class ObservationsPage extends Page {
 
   componentDidMount() {
-    const { observations } = this.props;
+    const { observations, url } = this.props;
+
     if (isEmpty(observations.data)) {
       this.props.getObservations();
     }
@@ -25,11 +26,13 @@ class ObservationsPage extends Page {
     if (isEmpty(observations.filters.data)) {
       this.props.getFilters();
     }
+
+    this.props.getObservationsUrl(url);
   }
 
   render() {
     const { url, session, observations } = this.props;
-    console.info(observations);
+    console.info(observations.filters);
 
     return (
       <Layout
@@ -78,9 +81,13 @@ export default withRedux(
   state => ({
     observations: state.observations
   }),
-  {
+  dispatch => ({
     getObservations,
     getFilters,
-    setFilters
-  }
+    getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
+    setFilters(filter) {
+      dispatch(setFilters(filter));
+      dispatch(setObservationsUrl());
+    }
+  })
 )(ObservationsPage);

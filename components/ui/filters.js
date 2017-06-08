@@ -44,7 +44,6 @@ export default class Filters extends React.Component {
   }
 
   render() {
-    console.log(this.props.filters);
     return (
       <aside className="c-filters">
         <div className="filters-content">
@@ -65,9 +64,5 @@ Filters.propTypes = {
 };
 
 Filters.defaultProps = {
-  filters: {
-    type: [],
-    country: []
-  },
   options: {}
 };

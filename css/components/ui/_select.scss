@@ -4,7 +4,7 @@
 
 /* Overried react select */
 .is-focused:not(.is-open) > .Select-control {
-  border-color: rgba($color-white, .3);
+  border-color: rgba($color-tertiary, .3);
   box-shadow: none;
 }
 
@@ -12,7 +12,7 @@
 
   &.-filled {
     .Select-control {
-      border-bottom: 2px solid rgba($color-white, .2);;
+      border-bottom: 2px solid rgba($color-tertiary, .2);;
     }
   }
 
@@ -79,7 +79,7 @@
         letter-spacing: 1px;
         line-height: 19px;
         font-weight: 700;
-        font-size: $font-size-default;
+        font-size: $font-size-small;
         margin-right: 20px;
         margin-bottom: -1px;
       }

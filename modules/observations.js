@@ -1,5 +1,7 @@
 import normalize from 'json-api-normalizer';
 import fetch from 'isomorphic-fetch';
+import Router from 'next/router';
+import { encode, decode } from 'utils/general';
 
 /* Constants */
 const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
@@ -19,7 +21,12 @@ const initialState = {
   filters: {
     data: {
       type: [],
-      country: []
+      country: [],
+      fmu: [],
+      year: [],
+      monitor: [],
+      category: [],
+      severity: []
     },
     options: {},
     loading: false,
@@ -143,5 +150,49 @@ export function setFilters(filter) {
       type: SET_FILTERS,
       payload: newFilters
     });
+  };
+}
+
+export function setObservationsUrl() {
+  return (dispatch, getState) => {
+    const filters = getState().observations.filters.data;
+    const query = {};
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] && filters[key].length) query[key] = filters[key];
+    });
+
+    const location = {
+      pathname: '/observations',
+      query: {}
+    };
+
+    if (Object.keys(query).length) location.query.filters = encode(query);
+
+    Router.replace(location);
+  };
+}
+
+export function getObservationsUrl(url) {
+  return (dispatch) => {
+    if (url.query.filters) {
+      const filters = decode(url.query.filters);
+      const { type, country, fmu, year, monitor, category, severity } = filters;
+
+      const startFilters = {
+        type: type || initialState.type,
+        country: country || initialState.country,
+        fmu: fmu || initialState.fmu,
+        year: year || initialState.year,
+        monitor: monitor || initialState.monitor,
+        category: category || initialState.category,
+        severity: severity || initialState.severity
+      };
+
+      dispatch({
+        type: SET_FILTERS,
+        payload: startFilters
+      });
+    }
   };
 }
