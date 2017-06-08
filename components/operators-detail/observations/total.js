@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 import classnames from 'classnames';
 
+// Constants
+import { LEGEND_SEVERITY } from 'constants/rechart';
+
+// Components
+import ChartLegend from 'components/ui/chart-legend';
 
 export default class TotalObservationsByOperator extends React.Component {
 
@@ -56,7 +61,7 @@ export default class TotalObservationsByOperator extends React.Component {
                   className={`obo-observations-list ${observationListClassNames}`}
                   style={{ width: `${(length / max) * 100}%` }}
                 >
-                  {Object.keys(groupedBySeverity).map((severity) => {
+                  {Object.keys(groupedBySeverity).sort((a, b) => b - a).map((severity) => {
                     const lengthSeverity = groupedBySeverity[severity].length;
 
                     return (
@@ -74,6 +79,14 @@ export default class TotalObservationsByOperator extends React.Component {
             );
           })}
         </ul>
+
+        {/* Legend */}
+        <ChartLegend
+          title={LEGEND_SEVERITY.title}
+          list={LEGEND_SEVERITY.list}
+          className="-horizontal"
+        />
+
       </div>
     );
   }
