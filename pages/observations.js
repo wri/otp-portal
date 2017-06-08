@@ -32,7 +32,6 @@ class ObservationsPage extends Page {
 
   render() {
     const { url, session, observations } = this.props;
-    console.info(observations.filters);
 
     return (
       <Layout

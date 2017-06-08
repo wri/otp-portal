@@ -30,6 +30,7 @@ export default class Filters extends React.Component {
         <div key={i} className="field">
           <h3 className="title">{key}</h3>
           <Select
+            instanceId={key}
             name={key}
             options={options[key]}
             multi
