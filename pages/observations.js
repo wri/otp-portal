@@ -37,10 +37,25 @@ class ObservationsPage extends Page {
           title="Observations"
           background="/static/images/static-header/bg-help.jpg"
         />
+        <div className="c-section">
+          <div className="l-container">
+            <div className="row custom-row">
+              <div className="columns small-12 medium-4">
+                {/* Filters */}
+              </div>
+
+              <div className="columns small-12 medium-6 medium-offset-1">
+                {/* Overview by category graphs */}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          {/* Observations details */}
+        </div>
       </Layout>
     );
   }
-
 }
 
 ObservationsPage.propTypes = {
