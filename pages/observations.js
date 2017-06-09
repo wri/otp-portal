@@ -11,45 +11,18 @@ import Filters from 'components/ui/filters';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations, getFilters, setFilters, setObservationsUrl, getObservationsUrl } from 'modules/observations';
 
-const filtersRefs = [
-  {
-    key: 'type',
-    name: 'Type',
-    plural: 'Types'
-  },
-  {
-    key: 'country',
-    name: 'Country',
-    plural: 'Countries'
-  },
-  {
-    key: 'fmu',
-    name: 'FMU',
-    plural: 'fmus'
-  },
-  {
-    key: 'years',
-    name: 'Year',
-    plural: 'Years'
-  },
-  {
-    key: 'monitors',
-    name: 'Monitor',
-    plural: 'Monitors'
-  },
-  {
-    key: 'categories',
-    name: 'categories',
-    plural: 'Categories'
-  },
-  {
-    key: 'levels',
-    name: 'Severity',
-    plural: 'Severities'
-  }
-];
+// Utils
+import {
+  getObservations,
+  getFilters,
+  setFilters,
+  setObservationsUrl,
+  getObservationsUrl
+} from 'modules/observations';
+
+// Constants
+import { FILTERS_REFS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
@@ -90,7 +63,7 @@ class ObservationsPage extends Page {
                   options={observations.filters.options}
                   filters={observations.filters.data}
                   setFilters={this.props.setFilters}
-                  filtersRefs={filtersRefs}
+                  filtersRefs={FILTERS_REFS}
                 />
               </div>
 
