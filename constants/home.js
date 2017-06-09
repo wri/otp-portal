@@ -13,7 +13,7 @@ const MAP_LAYERS_HOME = [
       type: 'geojson',
       data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
     },
-    layer: [{
+    layers: [{
       id: 'forest_concession_layer',
       type: 'fill',
       source: 'forest_concession',
@@ -34,7 +34,7 @@ const MAP_LAYERS_HOME = [
       type: 'geojson',
       data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
     },
-    layer: [{
+    layers: [{
       id: 'harvestable_areas_layer',
       type: 'fill',
       source: 'harvestable_areas',
