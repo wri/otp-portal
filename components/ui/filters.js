@@ -4,13 +4,6 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
 
-// Provisional
-// const options = {
-//   type: [{ label: 'type1', value: 'type1' }, { label: 'type2', value: 'type2' }],
-//   country: [{ label: 'country1', value: 'country1' }, { label: 'country2', value: 'country2' }]
-// };
-
-
 export default class Filters extends React.Component {
   setFilter(opts, key) {
     const filter = {};
@@ -63,7 +56,7 @@ Filters.propTypes = {
   filtersRefs: PropTypes.array,
   options: PropTypes.object,
   // Actions
-  onChange: PropTypes.any,
+  // onChange: PropTypes.any,
   setFilters: PropTypes.func
 };
 
