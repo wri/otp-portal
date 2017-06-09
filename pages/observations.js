@@ -6,11 +6,16 @@ import isEmpty from 'lodash/isEmpty';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Tabs from 'components/ui/tabs';
+import Table from 'components/ui/table';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getObservations } from 'modules/observations';
+
+// Constants
+import { TABS_OBSERVATIONS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
@@ -24,7 +29,9 @@ class ObservationsPage extends Page {
 
   render() {
     const { url, session, observations } = this.props;
+    const tab = url.query.tab || 'observations-list';
     console.info(observations);
+
 
     return (
       <Layout
@@ -51,7 +58,25 @@ class ObservationsPage extends Page {
           </div>
         </div>
         <div>
-          {/* Observations details */}
+          {/* Observations table details */}
+          <Tabs
+            href={{
+              pathname: url.pathname,
+              query: {},
+              as: url.pathname
+            }}
+            options={TABS_OBSERVATIONS}
+            defaultSelected={tab}
+            selected={tab}
+          />
+
+          {tab === 'observations-list' &&
+            <Table />
+          }
+
+          {tab === 'map' &&
+            <div>Map</div>
+          }
         </div>
       </Layout>
     );
