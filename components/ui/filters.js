@@ -5,10 +5,10 @@ import 'react-select/dist/react-select.css';
 
 
 // Provisional
-const options = {
-  type: [{ label: 'type1', value: 'type1' }, { label: 'type2', value: 'type2' }],
-  country: [{ label: 'country1', value: 'country1' }, { label: 'country2', value: 'country2' }]
-};
+// const options = {
+//   type: [{ label: 'type1', value: 'type1' }, { label: 'type2', value: 'type2' }],
+//   country: [{ label: 'country1', value: 'country1' }, { label: 'country2', value: 'country2' }]
+// };
 
 
 export default class Filters extends React.Component {
@@ -19,25 +19,27 @@ export default class Filters extends React.Component {
   }
 
   renderFiltersSelects() {
-    return Object.keys(options).map((key, i) => {
-      const value = options[key] ?
-        options[key].filter(opt => this.props.filters[key] ?
-          this.props.filters[key].includes(opt.value) :
+    const { options, filters } = this.props;
+
+    return this.props.filtersRefs.map((f, i) => {
+      const value = options[f.key] ?
+        options[f.key].filter(opt => filters[f.key] ?
+          filters[f.key].includes(opt.value) :
           false) :
         [];
 
       return (
         <div key={i} className="field">
-          <h3 className="title">{key}</h3>
+          <h3 className="title">{f.name}</h3>
           <Select
-            instanceId={key}
-            name={key}
-            options={options[key]}
+            instanceId={f.key}
+            name={f.key}
+            options={options[f.key]}
             multi
             className={value.length ? '-filled' : ''}
             value={value}
-            placeholder={`All ${key}`}
-            onChange={opts => this.setFilter(opts, key)}
+            placeholder={`All ${f.plural}`}
+            onChange={opts => this.setFilter(opts, f.key)}
           />
         </div>
       );
@@ -58,9 +60,10 @@ export default class Filters extends React.Component {
 
 Filters.propTypes = {
   filters: PropTypes.object,
-  onChange: PropTypes.any,
+  filtersRefs: PropTypes.array,
   options: PropTypes.object,
   // Actions
+  onChange: PropTypes.any,
   setFilters: PropTypes.func
 };
 

@@ -1,7 +1,7 @@
 import normalize from 'json-api-normalizer';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
-import { encode, decode } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
 /* Constants */
 const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
@@ -23,10 +23,10 @@ const initialState = {
       type: [],
       country: [],
       fmu: [],
-      year: [],
-      monitor: [],
-      category: [],
-      severity: []
+      years: [],
+      monitors: [],
+      categories: [],
+      levels: []
     },
     options: {},
     loading: false,
@@ -46,7 +46,7 @@ export default function (state = initialState, action) {
     // Filters
     case GET_FILTERS_SUCCESS: {
       const newFilters = Object.assign({}, state.filters, {
-        options: action.payload.data, loading: false, error: false
+        options: action.payload, loading: false, error: false
       });
       return Object.assign({}, state, { filters: newFilters });
     }
@@ -72,7 +72,6 @@ export function getObservations() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
-
 
     fetch(`${process.env.OTP_API}/observations`, {
       method: 'GET',
@@ -109,8 +108,7 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_LOADING });
 
-
-    fetch(`${process.env.OTP_API}/filters`, {
+    fetch(`${process.env.OTP_API}/api/observation_filters`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -125,9 +123,7 @@ export function getFilters() {
         // Fetch from server ok -> Dispatch observations
         dispatch({
           type: GET_FILTERS_SUCCESS,
-          payload: {
-            data: normalize(filters)
-          }
+          payload: parseObjectSelectOptions(filters)
         });
       })
       .catch((err) => {
@@ -177,16 +173,16 @@ export function getObservationsUrl(url) {
   return (dispatch) => {
     if (url.query.filters) {
       const filters = decode(url.query.filters);
-      const { type, country, fmu, year, monitor, category, severity } = filters;
+      const { type, country, fmu, years, monitors, categories, levels } = filters;
 
       const startFilters = {
         type: type || initialState.type,
         country: country || initialState.country,
         fmu: fmu || initialState.fmu,
-        year: year || initialState.year,
-        monitor: monitor || initialState.monitor,
-        category: category || initialState.category,
-        severity: severity || initialState.severity
+        years: years || initialState.years,
+        monitors: monitors || initialState.monitors,
+        categories: categories || initialState.categories,
+        levels: levels || initialState.levels
       };
 
       dispatch({

@@ -14,4 +14,18 @@ function decode(obj) {
   return JSON.parse(atob(obj));
 }
 
-export { toBase64, encode, decode };
+function parseSelectOptions(options) {
+  return options.map(o => (
+    { label: o.name, value: o.id }
+  ));
+}
+
+function parseObjectSelectOptions(object) {
+  const newObject = {};
+  Object.keys(object).forEach((key) => {
+    newObject[key] = parseSelectOptions(object[key]);
+  });
+  return newObject;
+}
+
+export { toBase64, encode, decode, parseSelectOptions, parseObjectSelectOptions };
