@@ -68,6 +68,7 @@ class ObservationsPage extends Page {
             options={TABS_OBSERVATIONS}
             defaultSelected={tab}
             selected={tab}
+            collapse
           />
 
           {tab === 'observations-list' &&
