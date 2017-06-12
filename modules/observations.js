@@ -1,10 +1,12 @@
-import normalize from 'json-api-normalizer';
+import { Deserializer } from 'jsonapi-serializer';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
+import isEmpty from 'lodash/isEmpty';
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
 /* Constants */
 const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
+const GET_OBSERVATIONS_TOTAL_SIZE = 'GET_OBSERVATIONS_TOTAL_SIZE';
 const GET_OBSERVATIONS_ERROR = 'GET_OBSERVATIONS_ERROR';
 const GET_OBSERVATIONS_LOADING = 'GET_OBSERVATIONS_LOADING';
 
@@ -13,9 +15,12 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
+const OBS_MAX_SIZE = 20;
+
 /* Initial state */
 const initialState = {
-  data: {},
+  data: [],
+  totalSize: 0,
   loading: false,
   error: false,
   filters: {
@@ -38,7 +43,11 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_OBSERVATIONS_SUCCESS:
-      return Object.assign({}, state, { data: action.payload.data, loading: false, error: false });
+      return Object.assign({}, state, {
+        data: action.payload, loading: false, error: false
+      });
+    case GET_OBSERVATIONS_TOTAL_SIZE:
+      return Object.assign({}, state, { totalSize: action.payload });
     case GET_OBSERVATIONS_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OBSERVATIONS_LOADING:
@@ -68,12 +77,23 @@ export default function (state = initialState, action) {
 }
 
 /* Action creators */
-export function getObservations() {
-  return (dispatch) => {
+export function getObservations(page) {
+  return (dispatch, getState) => {
+    const filters = getState().observations.filters.data;
+    let query = '';
+    let first = true;
+
+    Object.keys(filters).forEach((key) => {
+      if (!isEmpty(filters[key])) {
+        query += `${!first ? '&' : ''}${key}=${filters[key].join(',')}`;
+        if (first) first = false;
+      }
+    });
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
-    fetch(`${process.env.OTP_API}/observations`, {
+    fetch(`${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -85,12 +105,16 @@ export function getObservations() {
         throw new Error(response.statusText);
       })
       .then((observations) => {
-        // Fetch from server ok -> Dispatch observations
         dispatch({
-          type: GET_OBSERVATIONS_SUCCESS,
-          payload: {
-            data: normalize(observations)
-          }
+          type: GET_OBSERVATIONS_TOTAL_SIZE,
+          payload: Math.ceil(observations.meta.total_items / OBS_MAX_SIZE)
+        });
+        // Fetch from server ok -> Dispatch observations
+        new Deserializer().deserialize(observations, (err, dataParsed) => {
+          dispatch({
+            type: GET_OBSERVATIONS_SUCCESS,
+            payload: dataParsed
+          });
         });
       })
       .catch((err) => {

@@ -1,11 +1,11 @@
 
 .c-table {
-  margin: 30px 0 50px;
+  margin: 0 0 30px;
 
   // Override
   .ReactTable {
     border: 0;
-    
+
     .rt-thead {
       box-shadow: none;
     }
@@ -90,6 +90,10 @@
       &.-sev-1 { color: $lg-color-1; }
       &.-sev-2 { color: $lg-color-2; }
       &.-sev-3 { color: $lg-color-3; }
+    }
+
+    .rt-noData {
+      display: none;
     }
   }
 }
