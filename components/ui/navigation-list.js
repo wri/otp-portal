@@ -49,5 +49,5 @@ export default class NavigationList extends React.Component {
 NavigationList.propTypes = {
   url: PropTypes.object,
   hideActive: PropTypes.bool,
-  className: PropTypes.bool
+  className: PropTypes.string
 };

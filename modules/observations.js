@@ -108,7 +108,7 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_LOADING });
 
-    fetch(`${process.env.OTP_API}/api/observation_filters`, {
+    fetch(`${process.env.OTP_API}/observation_filters`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
