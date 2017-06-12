@@ -6,32 +6,61 @@ import isEmpty from 'lodash/isEmpty';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import Tabs from 'components/ui/tabs';
 import Table from 'components/ui/table';
+import Filters from 'components/ui/filters';
+import StaticTabs from 'components/ui/static-tabs';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations } from 'modules/observations';
+
+// Utils
+import {
+  getObservations,
+  getFilters,
+  setFilters,
+  setObservationsUrl,
+  getObservationsUrl
+} from 'modules/observations';
+
+// Constants
+import { FILTERS_REFS } from 'constants/observations';
 
 // Constants
 import { TABS_OBSERVATIONS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tab: 'observations-list'
+    };
+
+    this.triggerChangeTab = this.triggerChangeTab.bind(this);
+  }
 
   componentDidMount() {
-    const { observations } = this.props;
+    const { observations, url } = this.props;
+
     if (isEmpty(observations.data)) {
       this.props.getObservations();
     }
+
+    if (isEmpty(observations.filters.options)) {
+      this.props.getFilters();
+    }
+
+    this.props.getObservationsUrl(url);
+  }
+
+  triggerChangeTab(tab) {
+    this.setState({ tab });
   }
 
   render() {
     const { url, session, observations } = this.props;
-    const tab = url.query.tab || 'observations-list';
-    console.info(observations);
-
 
     return (
       <Layout
@@ -48,7 +77,12 @@ class ObservationsPage extends Page {
           <div className="l-container">
             <div className="row custom-row">
               <div className="columns small-12 medium-4">
-                {/* Filters */}
+                <Filters
+                  options={observations.filters.options}
+                  filters={observations.filters.data}
+                  setFilters={this.props.setFilters}
+                  filtersRefs={FILTERS_REFS}
+                />
               </div>
 
               <div className="columns small-12 medium-6 medium-offset-1">
@@ -59,25 +93,24 @@ class ObservationsPage extends Page {
         </div>
         <div>
           {/* Observations table details */}
-          <Tabs
-            href={{
-              pathname: url.pathname,
-              query: {},
-              as: url.pathname
-            }}
+          <StaticTabs
             options={TABS_OBSERVATIONS}
-            defaultSelected={tab}
-            selected={tab}
-            collapse
+            defaultSelected={this.state.tab}
+            onChange={this.triggerChangeTab}
           />
 
-          {tab === 'observations-list' &&
-            <Table />
-          }
+          <div className="c-section">
+            <div className="l-container">
+              {this.state.tab === 'observations-list' &&
+                <Table />
+              }
 
-          {tab === 'map' &&
-            <div>Map</div>
-          }
+              {this.state.tab === 'map' &&
+                <div>Map</div>
+              }
+
+            </div>
+          </div>
         </div>
       </Layout>
     );
@@ -85,7 +118,9 @@ class ObservationsPage extends Page {
 }
 
 ObservationsPage.propTypes = {
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  observations: PropTypes.object,
+  filters: PropTypes.object
 };
 
 export default withRedux(
@@ -93,5 +128,13 @@ export default withRedux(
   state => ({
     observations: state.observations
   }),
-  { getObservations }
+  dispatch => ({
+    getObservations,
+    getFilters() { dispatch(getFilters()); },
+    getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
+    setFilters(filter) {
+      dispatch(setFilters(filter));
+      dispatch(setObservationsUrl());
+    }
+  })
 )(ObservationsPage);

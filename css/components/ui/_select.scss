@@ -1,0 +1,126 @@
+.c-select {
+
+}
+
+/* Overried react select */
+.is-focused:not(.is-open) > .Select-control {
+  border-color: rgba($color-tertiary, .3);
+  box-shadow: none;
+}
+
+.Select {
+
+  &.-filled {
+    .Select-control {
+      border-bottom: 2px solid rgba($color-tertiary, .2);;
+    }
+  }
+
+  .Select-control {
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    cursor: text;
+
+    &:hover {
+      box-shadow: none;
+    }
+
+    .Select-clear-zone {
+      padding-bottom: 0;
+    }
+
+    .Select-clear {
+      color: rgba($color-white, .54);
+    }
+
+    .Select-arrow-zone {
+      padding: 0;
+
+    }
+
+    .Select-arrow {
+      border: 0;
+      border-right: 2px solid rgba($color-white, .5);
+      border-bottom: 2px solid rgba($color-white, .5);
+      width: 6px;
+      height: 6px;
+      transform: rotate(45deg);
+      margin-right: -9px;
+    }
+
+    .Select-placeholder {
+      color: rgba($color-white, .3);
+      text-transform: uppercase;
+      font-family: $font-family-proximanova;
+      padding-left: 0;
+    }
+  }
+
+  .Select-multi-value-wrapper {
+    .Select-value {
+      position: relative;
+      color: white;
+      background-color: transparent;
+      border-color: rgba($color-white, .3);
+      border-radius: 100px;
+      padding-left: 5px;
+      margin-left: 0;
+      margin-right: 3px;
+      margin-bottom: 5px;
+
+      &.last-child {
+        margin-right: 0;
+      }
+
+      .Select-value-label {
+        font-family: $font-family-proximanova;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 19px;
+        font-weight: 700;
+        font-size: $font-size-small;
+        margin-right: 20px;
+        margin-bottom: -1px;
+      }
+
+      .Select-value-icon {
+        position: absolute;
+        right: 3px;
+        top: 1px;
+        border: 0;
+        font-size: 16px;
+        line-height: 19px;
+        color: $color-white;
+
+        &:hover {
+          background-color: transparent;
+          opacity: .7;
+        }
+      }
+    }
+  }
+
+  .Select-menu-outer {
+    background-color: white;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+
+    .Select-option {
+      text-transform: capitalize;
+
+      &.is-focused {
+        background-color: rgba($color-text-1, .07);
+        color: $color-text-1;
+        font-family: $font-family-proximanova;
+      }
+
+      &:hover {
+        background-color: rgba($color-text-1, .07);
+        color: $color-primary;
+      }
+    }
+  }
+}

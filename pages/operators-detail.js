@@ -70,7 +70,7 @@ class OperatorsDetail extends Page {
           <OperatorsDetailDocumentation />
         }
 
-        {tab === 'operators' &&
+        {tab === 'observations' &&
           <OperatorsDetailObservations />
         }
 
