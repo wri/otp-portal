@@ -25,9 +25,13 @@ export default class Tabs extends React.Component {
   render() {
     const { selected } = this.state;
     const { options, href, collapse } = this.props;
+    const className = classnames({
+      'c-tabs': true,
+      '-collapse': collapse
+    });
 
     return (
-      <header className={`c-tabs ${collapse ? '-collapse' : ''}`}>
+      <header className={className}>
         <div className="l-container">
           <div className="row custom-row">
             {options.map((option) => {
