@@ -3,37 +3,37 @@ const FILTERS_REFS = [
   {
     key: 'type',
     name: 'Type',
-    plural: 'Types'
+    placeholder: 'All Types'
   },
   {
     key: 'country',
     name: 'Country',
-    plural: 'Countries'
+    placeholder: 'All Countries'
   },
   {
     key: 'fmu',
     name: 'FMU',
-    plural: 'fmus'
+    placeholder: 'All FMUS'
   },
   {
     key: 'years',
     name: 'Year',
-    plural: 'Years'
+    placeholder: 'All Years'
   },
   {
     key: 'monitors',
     name: 'Monitor',
-    plural: 'Monitors'
+    placeholder: 'All Monitors'
   },
   {
     key: 'categories',
     name: 'categories',
-    plural: 'Categories'
+    placeholder: 'All Categories'
   },
   {
     key: 'levels',
     name: 'Severity',
-    plural: 'Severities'
+    placeholder: 'All Severities'
   }
 ];
 

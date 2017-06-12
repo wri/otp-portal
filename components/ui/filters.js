@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 
 
 export default class Filters extends React.Component {
@@ -31,7 +30,7 @@ export default class Filters extends React.Component {
             multi
             className={value.length ? '-filled' : ''}
             value={value}
-            placeholder={`All ${f.plural}`}
+            placeholder={f.placeholder}
             onChange={opts => this.setFilter(opts, f.key)}
           />
         </div>
@@ -56,7 +55,6 @@ Filters.propTypes = {
   filtersRefs: PropTypes.array,
   options: PropTypes.object,
   // Actions
-  // onChange: PropTypes.any,
   setFilters: PropTypes.func
 };
 
