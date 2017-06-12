@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Next
-import dynamic from 'next/dynamic';
-
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -59,6 +56,7 @@ class OperatorsPage extends Page {
         url={url}
         session={session}
         className="-fullscreen"
+        footer={false}
       >
         <div className="c-section -map">
           <Sidebar>

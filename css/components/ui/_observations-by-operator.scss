@@ -1,0 +1,59 @@
+.c-observations-by-operator {
+  // YEAR
+  .obo-year-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 0 $space-1;
+  }
+
+  .obo-year-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+  }
+
+  .obo-year-list-item {
+    margin: $space-1 * 2 0 0;
+    &:first-child { margin: 0; }
+  }
+
+  // OBSERVATIONS
+  .obo-observations-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: $font-family-proximanova;
+    font-size: 12px;
+  }
+
+  .obo-observations-list {
+    height: 7px;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &.-big {
+      height: 22px;
+    }
+  }
+
+  .obo-observations-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: $color-text-2;
+    border: 1px solid $color-tertiary;
+    font-family: $font-family-proximanova;
+    font-size: $font-size-small;
+    font-weight: $font-weight-bold;
+
+    &.-severity-0 { background: $color-gray-3; }
+    &.-severity-1 { background: $color-primary; }
+    &.-severity-2 { background: $color-gray-1; }
+    &.-severity-3 { background: $color-secondary; }
+  }
+}

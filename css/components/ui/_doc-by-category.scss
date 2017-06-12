@@ -1,0 +1,44 @@
+.c-doc-by-category {
+  padding: $space-1 * 2 0;
+
+  .doc-by-category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .doc-by-category-list-item {
+    display: flex;
+    align-items: center;
+    margin: $space-1 * 2 0 0;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  .doc-by-category-dots {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 0 0 50%;
+    margin: 0 $space-1 0 0;
+  }
+
+  .doc-by-category-dot {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0 0 0 $space-1/2;
+    border-radius: 50%;
+
+    &.-valid { background: $color-primary; border: 2px solid $color-primary; }
+    &.-not-valid { background: $color-tertiary; border: 2px solid $color-secondary; }
+    &.-not-provided { background: $color-secondary; border: 2px solid $color-secondary; }
+  }
+
+  .doc-by-category-title {
+    flex: 0 0 50%;
+    margin: 0 0 0 $space-1;
+  }
+}

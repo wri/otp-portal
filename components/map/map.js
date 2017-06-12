@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
-
 // Components
 import Spinner from 'components/ui/spinner';
 
@@ -49,10 +48,14 @@ export default class Map extends React.Component {
         ...mapOptions
       });
 
+      this.setState({ loading: true });
+
       this.map.on('load', () => {
+        this.setState({ loading: false });
+
         // Add event mapListeners
         this.props.mapListeners && this.setMapEventListeners();
-        //
+
         // // Exec mapbox methods
         // this.execMethods();
 
@@ -168,7 +171,7 @@ export default class Map extends React.Component {
           }}
           className="map-leaflet"
         />
-        <Spinner isLoading={this.state.loading} className="-map" />
+        <Spinner isLoading={this.state.loading} className="-absolute" />
       </div>
     );
   }

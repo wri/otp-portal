@@ -46,7 +46,7 @@ export default class LayerManager {
     this.map.addSource(layer.id, layer.source);
 
     // Loop trough layers
-    layer.layer.forEach((l) => {
+    layer.layers.forEach((l) => {
       const interactivity = l.interactivity;
 
       // Add layer
@@ -59,6 +59,8 @@ export default class LayerManager {
           this.map.on(i, l.id, iFn);
         });
       }
+
+      this.onLayerAddedSuccess();
     });
   }
 }
