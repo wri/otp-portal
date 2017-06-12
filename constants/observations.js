@@ -34,7 +34,7 @@ const TABLE_HEADERS = [
     accessor: 'category'
   },
   {
-    Header: <span className="sortable">Observation</span>,
+    Header: <span className="sortable">Detail</span>,
     accessor: 'observation'
   },
   {
