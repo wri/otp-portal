@@ -6,25 +6,43 @@ import isEmpty from 'lodash/isEmpty';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Filters from 'components/ui/filters';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getObservations } from 'modules/observations';
+
+// Utils
+import {
+  getObservations,
+  getFilters,
+  setFilters,
+  setObservationsUrl,
+  getObservationsUrl
+} from 'modules/observations';
+
+// Constants
+import { FILTERS_REFS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
 
   componentDidMount() {
-    const { observations } = this.props;
+    const { observations, url } = this.props;
+
     if (isEmpty(observations.data)) {
       this.props.getObservations();
     }
+
+    if (isEmpty(observations.filters.options)) {
+      this.props.getFilters();
+    }
+
+    this.props.getObservationsUrl(url);
   }
 
   render() {
     const { url, session, observations } = this.props;
-    console.info(observations);
 
     return (
       <Layout
@@ -41,7 +59,12 @@ class ObservationsPage extends Page {
           <div className="l-container">
             <div className="row custom-row">
               <div className="columns small-12 medium-4">
-                {/* Filters */}
+                <Filters
+                  options={observations.filters.options}
+                  filters={observations.filters.data}
+                  setFilters={this.props.setFilters}
+                  filtersRefs={FILTERS_REFS}
+                />
               </div>
 
               <div className="columns small-12 medium-6 medium-offset-1">
@@ -59,7 +82,9 @@ class ObservationsPage extends Page {
 }
 
 ObservationsPage.propTypes = {
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  observations: PropTypes.object,
+  filters: PropTypes.object
 };
 
 export default withRedux(
@@ -67,5 +92,13 @@ export default withRedux(
   state => ({
     observations: state.observations
   }),
-  { getObservations }
+  dispatch => ({
+    getObservations,
+    getFilters() { dispatch(getFilters()); },
+    getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
+    setFilters(filter) {
+      dispatch(setFilters(filter));
+      dispatch(setObservationsUrl());
+    }
+  })
 )(ObservationsPage);
