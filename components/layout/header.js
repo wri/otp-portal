@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Link from 'next/link';
 import Icon from 'components/ui/icon';
+import NavigationList from 'components/ui/navigation-list';
 
 export default class Header extends React.Component {
   /**
@@ -19,13 +20,6 @@ export default class Header extends React.Component {
     });
   }
 
-  setActive(pathname) {
-    const { url } = this.props;
-    return classnames({
-      '-active': (pathname.includes(url.pathname))
-    });
-  }
-
   render() {
     return (
       <header className={`c-header ${this.setTheme()}`}>
@@ -37,30 +31,9 @@ export default class Header extends React.Component {
               </Link>
             </h1>
             <nav className="header-nav">
-              <ul className="header-nav-list">
-                <li>
-                  <Link prefetch href="/operators">
-                    <a className={this.setActive(['/operators', '/operators-detail'])}>Operators</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link prefetch href="/observations">
-                    <a className={this.setActive(['/observations'])}>Observations</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link prefetch href="/help">
-                    <a className={this.setActive(['/help'])}>Help</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link prefetch href="/about">
-                    <a className={this.setActive(['/about'])}>About</a>
-                  </Link>
-                </li>
-              </ul>
+              <NavigationList url={this.props.url} className="header-nav-list" />
 
-              <ul className="header-nav-list">
+              <ul className="header-nav-list c-navigation-list">
                 <li>
                   <a>
                     <span>Search operator</span>
