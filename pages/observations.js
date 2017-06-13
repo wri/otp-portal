@@ -53,7 +53,7 @@ class ObservationsPage extends Page {
       >
         <StaticHeader
           title="Observations"
-          background="/static/images/static-header/bg-help.jpg"
+          background="/static/images/static-header/bg-observations.jpg"
         />
         <div className="c-section">
           <div className="l-container">
