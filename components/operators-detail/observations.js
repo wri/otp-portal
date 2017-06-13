@@ -8,6 +8,7 @@ import { OBSERVATIONS_OPERATORS_DETAIL } from 'constants/operators-detail';
 import StaticTabs from 'components/ui/static-tabs';
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
+import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 
 export default class OperatorsDetailObservations extends React.Component {
 
@@ -67,24 +68,36 @@ export default class OperatorsDetailObservations extends React.Component {
             </header>
           </div>
 
-          <StaticTabs
-            options={OperatorsDetailObservations.getYears()}
-            defaultSelected={this.state.year.toString()}
-            onChange={this.onChangeYear}
-          />
+          <div className="content">
+            <StaticTabs
+              options={OperatorsDetailObservations.getYears()}
+              defaultSelected={this.state.year.toString()}
+              onChange={this.onChangeYear}
+            />
 
-          <div className="l-container">
-            <div className="content">
-              {/* CHARTS */}
-              <article className="c-article">
-                <TotalObservationsByOperatorByCategory
-                  data={OBSERVATIONS_OPERATORS_DETAIL}
-                  year={this.state.year}
-                />
-              </article>
+            <div className="l-container">
+              <div className="content">
+                {/* CHARTS */}
+                <article className="c-article">
+                  <TotalObservationsByOperatorByCategory
+                    data={OBSERVATIONS_OPERATORS_DETAIL}
+                    year={parseInt(this.state.year, 10)}
+                  />
+                </article>
+              </div>
             </div>
           </div>
         </article>
+
+        <article className="c-article">
+          <div className="l-container">
+            <TotalObservationsByOperatorByCategorybyIllegality
+              data={OBSERVATIONS_OPERATORS_DETAIL}
+              year={parseInt(this.state.year, 10)}
+            />
+          </div>
+        </article>
+
       </div>
     );
   }
