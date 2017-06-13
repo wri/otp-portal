@@ -110,6 +110,7 @@
 
     .Select-option {
       text-transform: capitalize;
+      font-family: $font-family-proximanova;
 
       &.is-focused {
         background-color: rgba($color-text-1, .07);
@@ -123,4 +124,8 @@
       }
     }
   }
+}
+
+.is-open > .Select-control .Select-arrow {
+  top: auto;
 }

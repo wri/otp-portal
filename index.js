@@ -125,6 +125,7 @@ app.prepare()
     });
 
     server.get('/observations', (req, res) => app.render(req, res, '/observations', Object.assign(req.params, req.query)));
+    server.get('/observations/:tab', (req, res) => app.render(req, res, '/observations', Object.assign(req.params, req.query)));
 
     server.get('/about', (req, res) => app.render(req, res, '/about', req.params));
 
