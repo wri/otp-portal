@@ -48,17 +48,17 @@ const TABLE_HEADERS = [
 
 const FILTERS_REFS = [
   {
-    key: 'type',
+    key: 'types',
     name: 'Type',
     placeholder: 'All Types'
   },
   {
-    key: 'country',
+    key: 'countries',
     name: 'Country',
     placeholder: 'All Countries'
   },
   {
-    key: 'fmu',
+    key: 'fmus',
     name: 'FMU',
     placeholder: 'All FMUS'
   },

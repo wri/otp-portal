@@ -25,9 +25,9 @@ const initialState = {
   error: false,
   filters: {
     data: {
-      type: [],
-      country: [],
-      fmu: [],
+      types: [],
+      countries: [],
+      fmus: [],
       years: [],
       monitors: [],
       categories: [],

@@ -24,14 +24,11 @@ export default class Tabs extends React.Component {
 
   render() {
     const { selected } = this.state;
-    const { options, href, collapse } = this.props;
-    const className = classnames({
-      'c-tabs': true,
-      '-collapse': collapse
-    });
+    const { options, href } = this.props;
+
 
     return (
-      <header className={className}>
+      <header className="c-tabs">
         <div className="l-container">
           <div className="row custom-row">
             {options.map((option) => {
@@ -42,7 +39,7 @@ export default class Tabs extends React.Component {
               return (
                 <div
                   key={option.value}
-                  className={collapse ? '-collapse' : `medium-${12 / options.length} columns`}
+                  className={`medium-${12 / options.length} columns`}
                 >
                   <Link
                     href={{
@@ -73,6 +70,5 @@ Tabs.propTypes = {
   options: PropTypes.array.isRequired,
   href: PropTypes.object.isRequired,
   selected: PropTypes.string.isRequired,
-  defaultSelected: PropTypes.string.isRequired,
-  collapse: PropTypes.bool
+  defaultSelected: PropTypes.string.isRequired
 };
