@@ -34,7 +34,7 @@
 @import 'components/map/popup';
 
 // - ui
-// Select
+@import '../node_modules/react-table/react-table';
 @import '../node_modules/react-select/dist/react-select';
 @import 'components/ui/article';
 @import 'components/ui/aside';
@@ -56,6 +56,7 @@
 @import 'components/ui/spinner';
 @import 'components/ui/tabs';
 @import 'components/ui/title';
+@import 'components/ui/table';
 @import 'components/ui/filters';
 @import 'components/ui/select';
 @import 'components/ui/navigation-list';

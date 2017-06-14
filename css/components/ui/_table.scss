@@ -1,0 +1,99 @@
+
+.c-table {
+  margin: 0 0 30px;
+
+  // Override
+  .ReactTable {
+    border: 0;
+
+    .rt-thead {
+      box-shadow: none;
+    }
+
+    .rt-tr {
+      text-align: left;
+    }
+
+    .rt-th,
+    .rt-td {
+      border-right: 0;
+      $font-size: $font-size-default;
+      line-height: 19px;
+      padding: 26px 30px 45px 0;
+    }
+
+    .rt-th {
+      color: rgba($color-black, .9);
+      font-family: $font-family-proximanova;
+      text-transform: uppercase;
+      padding: 26px 30px 20px 0;
+
+      &.-sort-asc,
+      &.-sort-desc {
+        box-shadow: none;
+        color: $color-primary;
+
+        .sortable {
+          position: relative;
+
+          &:after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: -14px;
+            transform: rotate(45deg);
+            width: 6px;
+            height: 6px;
+          }
+        }
+      }
+
+      &.-sort-desc {
+        .sortable:after {
+          border-right: 2px solid $color-primary;
+          border-bottom: 2px solid $color-primary;
+        }
+      }
+
+      &.-sort-asc {
+        .sortable:after {
+          border-top: 2px solid $color-primary;
+          border-left: 2px solid $color-primary;
+        }
+      }
+    }
+
+    .rt-td {
+      color: rgba($color-black, .9);
+      font-family: $font-family-georgia;
+
+      &.-uppercase {
+        text-transform: uppercase;
+      }
+
+    }
+
+    .severity {
+      display: flex;
+      justify-content: center;
+    }
+
+    .severity-th {
+      text-align: center;
+    }
+
+    .severity-item {
+      font-size: $font-size-huge;
+      line-height: 32px;
+
+      &.-sev-0 { color: $lg-color-0; }
+      &.-sev-1 { color: $lg-color-1; }
+      &.-sev-2 { color: $lg-color-2; }
+      &.-sev-3 { color: $lg-color-3; }
+    }
+
+    .rt-noData {
+      display: none;
+    }
+  }
+}
