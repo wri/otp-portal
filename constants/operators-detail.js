@@ -254,7 +254,7 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2017,
   severity: 1,
   category: 'Use rights',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Harvesting without a permit'
 }, {
   id: 3,
   title: 'Sample observations title lorem',
@@ -268,7 +268,7 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2017,
   severity: 3,
   category: 'Legal registration',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Harvesting without a permit'
 }, {
   id: 5,
   title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
@@ -289,7 +289,7 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2015,
   severity: 0,
   category: 'Harvesting',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Harvesting without a permit'
 }, {
   id: 9,
   title: 'Sample observations title lorem',
@@ -317,14 +317,14 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2016,
   severity: 3,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 13,
   title: 'Sample observations title lorem',
   year: 2016,
   severity: 1,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 14,
   title: 'Sample observations title lorem',
@@ -352,14 +352,14 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2017,
   severity: 0,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 18,
   title: 'Sample observations title lorem',
   year: 2017,
   severity: 0,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 19,
   title: 'Sample observations title lorem',
@@ -401,14 +401,14 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2016,
   severity: 2,
   category: 'Harvesting',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 25,
   title: 'Sample observations title lorem',
   year: 2015,
   severity: 0,
   category: 'Harvesting',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Illegal sub-contrating'
 }, {
   id: 26,
   title: 'Sample observations title lorem',
@@ -422,14 +422,14 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2015,
   severity: 3,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Infraction title a'
 }, {
   id: 28,
   title: 'Sample observations title lorem',
   year: 2017,
   severity: 3,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Infraction title a'
 }, {
   id: 29,
   title: 'Sample observations title lorem',
@@ -478,7 +478,7 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   year: 2013,
   severity: 0,
   category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
+  illegality: 'Infraction title a'
 }, {
   id: 36,
   title: 'Sample observations title lorem',
