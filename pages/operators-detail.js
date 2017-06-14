@@ -5,6 +5,9 @@ import isEmpty from 'lodash/isEmpty';
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
+// Selectors
+import getObservationsByYearCategorySeverity from 'selectors/operators-detail/observations-by-year-category-severity';
+
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -54,7 +57,7 @@ class OperatorsDetail extends Page {
 
 
   render() {
-    const { url, session } = this.props;
+    const { url, session, operatorsDetail } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -83,20 +86,27 @@ class OperatorsDetail extends Page {
 
         {tab === 'overview' &&
           <OperatorsDetailOverview
+            operatorsDetail={operatorsDetail}
             url={url}
           />
         }
 
         {tab === 'documentation' &&
-          <OperatorsDetailDocumentation />
+          <OperatorsDetailDocumentation
+            operatorsDetail={operatorsDetail}
+          />
         }
 
         {tab === 'observations' &&
-          <OperatorsDetailObservations />
+          <OperatorsDetailObservations
+            operatorsDetail={operatorsDetail}
+          />
         }
 
         {tab === 'fmus' &&
-          <OperatorsDetailFMUs />
+          <OperatorsDetailFMUs
+            operatorsDetail={operatorsDetail}
+          />
         }
 
       </Layout>
@@ -113,7 +123,8 @@ OperatorsDetail.propTypes = {
 export default withRedux(
   store,
   state => ({
-    operatorsDetail: state.operatorsDetail
+    operatorsDetail: state.operatorsDetail,
+    observationsByYearCategorySeverity: getObservationsByYearCategorySeverity(state)
   }),
   { getOperator }
 )(OperatorsDetail);
