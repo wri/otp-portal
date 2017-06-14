@@ -53,8 +53,8 @@ export function getOperators() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-
-    fetch(`${process.env.OTP_API}/operators?page[size]=99999`, {
+    // 7 and 47 are the countries associated to COD and COG
+    fetch(`${process.env.OTP_API}/operators?page[size]=99999&country_ids=7,47`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

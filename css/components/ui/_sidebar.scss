@@ -1,4 +1,6 @@
+$sidebar-width: 600px;
+
 .c-sidebar {
-  width: 570px;
+  flex: 0 0 $sidebar-width;
   background: rgba($color-black, .04);
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 const TABS_OBSERVATIONS = [
   {
     label: 'Observations List',

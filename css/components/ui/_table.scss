@@ -1,6 +1,8 @@
 
 .c-table {
-  margin: 0 0 30px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
   // Override
   .ReactTable {
@@ -17,9 +19,13 @@
     .rt-th,
     .rt-td {
       border-right: 0;
-      $font-size: $font-size-default;
+      font-size: $font-size-default;
       line-height: 19px;
       padding: 26px 30px 45px 0;
+
+      &.-number {
+        text-align: right;
+      }
     }
 
     .rt-th {
@@ -39,9 +45,9 @@
           &:after {
             content: '';
             position: absolute;
-            top: 4px;
-            right: -14px;
-            transform: rotate(45deg);
+            top: 50%;
+            right: -10px;
+            transform: rotate(45deg) translate(-50%,-50%);
             width: 6px;
             height: 6px;
           }
@@ -71,6 +77,9 @@
         text-transform: uppercase;
       }
 
+      &.-number {
+        text-align: right;
+      }
     }
 
     .severity {
@@ -94,6 +103,65 @@
 
     .rt-noData {
       display: none;
+    }
+  }
+
+  // SIDEBAR THEME
+  &.-secondary {
+    a {
+      color: $color-text-1;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .rt-th,
+    .rt-td {
+      font-size: $font-size-default;
+      line-height: normal;
+      padding: $space-1 $space-1 * 2;
+      white-space: normal;
+      text-overflow: inherit;
+    }
+
+    .rt-th {
+      font-size: $font-size-small;
+      color: $color-primary;
+      padding: $space-1 * 4 $space-1 * 2 $space-1 * 2;
+      border-bottom: 3px solid rgba($color-primary, 0.2);
+
+      &:first-child {
+        padding: $space-1 * 4 $space-1 * 2 $space-1 * 2 $space-1 * 4;
+      }
+
+      &:last-child {
+        padding: $space-1 * 4 $space-1 * 4 $space-1 * 2 $space-1 * 2;
+      }
+    }
+
+    .rt-td {
+      padding: $space-1 $space-1 * 2;
+
+      &:first-child {
+        padding: $space-1 $space-1 * 2 $space-1 $space-1 * 4;
+      }
+
+      &:last-child {
+        padding: $space-1 $space-1 * 4 $space-1 $space-1 * 2;
+      }
+
+    }
+
+    .rt-resizable-header-content {
+      white-space: normal;
+      text-overflow: inherit;
+      overflow: visible;
+    }
+
+    .rt-tbody .rt-tr-group {
+      border-bottom: none;
     }
   }
 }
