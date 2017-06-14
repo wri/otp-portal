@@ -90,12 +90,10 @@ export default class OperatorsDetailObservations extends React.Component {
         </article>
 
         <article className="c-article">
-          <div className="l-container">
-            <TotalObservationsByOperatorByCategorybyIllegality
-              data={OBSERVATIONS_OPERATORS_DETAIL}
-              year={parseInt(this.state.year, 10)}
-            />
-          </div>
+          <TotalObservationsByOperatorByCategorybyIllegality
+            data={OBSERVATIONS_OPERATORS_DETAIL}
+            year={parseInt(this.state.year, 10)}
+          />
         </article>
 
       </div>
