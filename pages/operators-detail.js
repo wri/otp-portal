@@ -24,6 +24,27 @@ import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
 class OperatorsDetail extends Page {
 
+  /**
+   * HELPERS
+   * - getTabOptions
+  */
+  getTabOptions() {
+    // TODO: handle with documentation percentage
+    const operatorsDetail = this.props.operatorsDetail.data;
+
+    return TABS_OPERATORS_DETAIL.map((tab) => {
+      const tabData = operatorsDetail[tab.value];
+
+      return {
+        ...tab,
+        number: (tabData) ? tabData.length : null
+      };
+    });
+  }
+
+  /**
+   * COMPONENT LIFECYCLE
+  */
   componentDidMount() {
     const { url, operatorsDetail } = this.props;
     if (isEmpty(operatorsDetail.data)) {
@@ -55,7 +76,7 @@ class OperatorsDetail extends Page {
             query: { id },
             as: `/operators/${id}`
           }}
-          options={TABS_OPERATORS_DETAIL}
+          options={this.getTabOptions()}
           defaultSelected={tab}
           selected={tab}
         />
@@ -70,7 +91,7 @@ class OperatorsDetail extends Page {
           <OperatorsDetailDocumentation />
         }
 
-        {tab === 'operators' &&
+        {tab === 'observations' &&
           <OperatorsDetailObservations />
         }
 

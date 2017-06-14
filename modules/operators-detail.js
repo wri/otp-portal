@@ -1,4 +1,4 @@
-import normalize from 'json-api-normalizer';
+import { Deserializer } from 'jsonapi-serializer';
 import fetch from 'isomorphic-fetch';
 
 /* Constants */
@@ -18,7 +18,7 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_OPERATOR_SUCCESS:
-      return Object.assign({}, state, { data: action.payload.data, loading: false, error: false });
+      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
     case GET_OPERATOR_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATOR_LOADING:
@@ -47,12 +47,12 @@ export function getOperator(id) {
         throw new Error(response.statusText);
       })
       .then((operator) => {
-        // Fetch from server ok -> Dispatch operator
-        dispatch({
-          type: GET_OPERATOR_SUCCESS,
-          payload: {
-            data: normalize(operator)
-          }
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        new Deserializer().deserialize(operator, (err, dataParsed) => {
+          dispatch({
+            type: GET_OPERATOR_SUCCESS,
+            payload: dataParsed
+          });
         });
       })
       .catch((err) => {

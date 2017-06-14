@@ -1,6 +1,6 @@
-import Router from 'next/router';
-import normalize from 'json-api-normalizer';
+import { Deserializer } from 'jsonapi-serializer';
 import fetch from 'isomorphic-fetch';
+import Router from 'next/router';
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
@@ -28,7 +28,7 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_OPERATORS_SUCCESS:
-      return Object.assign({}, state, { data: action.payload.data, loading: false, error: false });
+      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
     case GET_OPERATORS_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
@@ -54,7 +54,7 @@ export function getOperators() {
     dispatch({ type: GET_OPERATORS_LOADING });
 
 
-    fetch(`${process.env.OTP_API}/operators`, {
+    fetch(`${process.env.OTP_API}/operators?page[size]=99999`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -66,12 +66,11 @@ export function getOperators() {
         throw new Error(response.statusText);
       })
       .then((operators) => {
-        // Fetch from server ok -> Dispatch operators
-        dispatch({
-          type: GET_OPERATORS_SUCCESS,
-          payload: {
-            data: normalize(operators)
-          }
+        new Deserializer().deserialize(operators, (err, dataParsed) => {
+          dispatch({
+            type: GET_OPERATORS_SUCCESS,
+            payload: dataParsed
+          });
         });
       })
       .catch((err) => {

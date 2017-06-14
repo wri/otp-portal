@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 
 // Constants
-import { PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_DOCUMENTATION } from 'constants/rechart';
+import { PALETTE_COLOR_2, LEGEND_DOCUMENTATION } from 'constants/rechart';
 
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
@@ -44,7 +44,7 @@ export default class DocumentsProvided extends React.Component {
                     innerRadius={162}
                     startAngle={90}
                     endAngle={-270}
-                    {...ANIMATION_TIMES}
+                    isAnimationActive={false}
                   >
                     {groupedByStatus.map(entry =>
                       <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />

@@ -24,7 +24,7 @@ class AboutPage extends Page {
       >
         <StaticHeader
           title="About the portal"
-          background="/static/images/static-header/bg-help.jpg"
+          background="/static/images/static-header/bg-about.jpg"
         />
 
         <div className="c-section">

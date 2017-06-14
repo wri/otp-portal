@@ -34,6 +34,8 @@
 @import 'components/map/popup';
 
 // - ui
+@import '../node_modules/react-table/react-table';
+@import '../node_modules/react-select/dist/react-select';
 @import 'components/ui/article';
 @import 'components/ui/aside';
 @import 'components/ui/button';
@@ -48,7 +50,13 @@
 @import 'components/ui/icon';
 @import 'components/ui/intro';
 @import 'components/ui/modal';
+@import 'components/ui/observations-by-operator';
+@import 'components/ui/observations-by-illegality';
 @import 'components/ui/sidebar';
 @import 'components/ui/spinner';
 @import 'components/ui/tabs';
 @import 'components/ui/title';
+@import 'components/ui/table';
+@import 'components/ui/filters';
+@import 'components/ui/select';
+@import 'components/ui/navigation-list';
