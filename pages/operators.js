@@ -33,12 +33,12 @@ class OperatorsPage extends Page {
    * - getOperatorsTable
   */
   getOperatorsTable() {
-    const { operators } = this.props.operators.data;
-    if (operators) {
+    const operators = this.props.operators.data;
+    if (operators && operators.length) {
       return (
         <ul>
-          {Object.keys(operators).map(o =>
-            <li key={o}>{operators[o].attributes.name}</li>
+          {operators.map(o =>
+            <li key={o.id}>{o.name}</li>
           )}
         </ul>
       );
@@ -60,7 +60,6 @@ class OperatorsPage extends Page {
       >
         <div className="c-section -map">
           <Sidebar>
-            <h2>Sidebar</h2>
             {this.getOperatorsTable()}
           </Sidebar>
 
