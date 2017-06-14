@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Next
+import Link from 'next/link';
+
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -13,7 +16,9 @@ import { MAP_LAYERS_OPERATORS } from 'constants/operators';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
+import Spinner from 'components/ui/spinner';
 import Map from 'components/map/map';
+import Table from 'components/ui/table';
 
 class OperatorsPage extends Page {
 
@@ -30,20 +35,81 @@ class OperatorsPage extends Page {
 
   /**
    * HELPERS
+   * - parseTableData
    * - getOperatorsTable
   */
+
+  parseTableData() {
+    const operators = this.props.operators.data;
+
+    return operators.map(o => ({
+      id: o.id,
+      name: o.name,
+      observations: (o.observations) ? o.observations.length : 0,
+      documentation: (o.documentation) ? o.documentation.length : 0,
+      fmus: (o.fmus) ? o.fmus.length : 0
+    }));
+  }
+
   getOperatorsTable() {
     const operators = this.props.operators.data;
     if (operators && operators.length) {
+      const data = this.parseTableData();
+
       return (
-        <ul>
-          {operators.map(o =>
-            <li key={o.id}>{o.name}</li>
-          )}
-        </ul>
+        <Table
+          data={data}
+          className="-striped -secondary"
+          options={{
+            columns: [{
+              Header: <span className="sortable">Name</span>,
+              accessor: 'name',
+              minWidth: 200,
+              resizable: false,
+              Cell: ({ original }) => {
+                return (
+                  <Link
+                    href={{ pathname: '/operators-detail', query: { id: original.id } }}
+                    as={`/operators/${original.id}`}
+                  >
+                    <a>{original.name}</a>
+                  </Link>
+                );
+              }
+            }, {
+              Header: <span className="sortable">Observations</span>,
+              accessor: 'observations',
+              className: '-number',
+              headerClassName: '-number',
+              minWidth: 140,
+              resizable: false
+            }, {
+              Header: <span className="sortable">FMUs</span>,
+              accessor: 'fmus',
+              className: '-number',
+              headerClassName: '-number',
+              minWidth: 70,
+              resizable: false
+            }, {
+              Header: <span className="sortable">DOC. Uploaded (%)</span>,
+              accessor: 'documentation',
+              minWidth: 160,
+              className: '-number',
+              headerClassName: '-number',
+              resizable: false
+            }],
+            pageSize: operators.length,
+            pagination: false,
+            previousText: '<',
+            nextText: '>',
+            noDataText: 'No rows found',
+            showPageSizeOptions: false,
+            onPageChange: page => this.onPageChange(page)
+          }}
+        />
       );
     }
-    return null;
+    return <Spinner isLoading />;
   }
 
   render() {
