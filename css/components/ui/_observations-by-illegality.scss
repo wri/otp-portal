@@ -34,7 +34,7 @@ $severity-width: 260px;
 
   // ILLEGALITIES
   .obi-illegality-list {
-
+    margin: $space-1 0 0;
   }
 
   .obi-illegality-list-item {
@@ -42,7 +42,7 @@ $severity-width: 260px;
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    padding: $space-1 * 2 0 0;
+    padding: $space-1 0;
   }
 
   .obi-illegality-title {
@@ -86,5 +86,16 @@ $severity-width: 260px;
     &.-severity-1 { background: $color-primary; }
     &.-severity-2 { background: $color-gray-1; }
     &.-severity-3 { background: $color-secondary; }
+  }
+}
+
+
+// INFO
+.obi-illegality-info {
+  background: $color-primary;
+  padding: $space-1 * 6 0;
+
+  .obi-illegality-info-title {
+    color: $color-text-2;
   }
 }

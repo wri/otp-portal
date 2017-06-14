@@ -26,8 +26,7 @@ import {
 } from 'modules/observations';
 
 // Constants
-import { FILTERS_REFS } from 'constants/observations';
-import { TABS_OBSERVATIONS } from 'constants/observations';
+import { FILTERS_REFS, TABS_OBSERVATIONS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
@@ -141,6 +140,7 @@ class ObservationsPage extends Page {
           <div className="c-section -relative">
             <div className="l-container">
               <Spinner isLoading={observations.loading} className="" />
+
               {this.state.tab === 'observations-list' &&
                 <Table
                   data={this.parseTableData()}

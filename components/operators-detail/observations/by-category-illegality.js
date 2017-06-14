@@ -118,9 +118,11 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
 
                         {/* Category */}
                         {selected.category === category && selected.illegality === illegality && selected.year === year &&
-                          <div style={{ width: '100%', height: '500px', background: 'green' }}>
+                          <div className="obi-illegality-info">
                             <div className="l-container">
-                              <h2 className="c-title">{illegality}</h2>
+                              <h2 className="c-title obi-illegality-info-title">{illegality}</h2>
+
+                              {/* Render table with other theme */}
                             </div>
                           </div>
                         }
