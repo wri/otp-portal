@@ -147,12 +147,14 @@ class ObservationsPage extends Page {
                   options={{
                     pageSize: observations.data.length ? 10 : 0,
                     pagination: true,
-                    pages: observations.totalSize,
-                    page: this.state.page - 1,
                     previousText: '<',
                     nextText: '>',
                     noDataText: 'No rows found',
                     showPageSizeOptions: false,
+                    // Api pagination & sort
+                    // pages: observations.totalSize,
+                    // page: this.state.page - 1,
+                    // manual: true
                     onPageChange: page => this.onPageChange(page)
                   }}
                 />

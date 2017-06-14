@@ -22,8 +22,10 @@ export default class StaticSection extends React.Component {
           noDataText={options.noDataText}
           pages={options.pages}
           showPageSizeOptions={options.showPageSizeOptions}
-          manual
-          onPageChange={options.onPageChange}
+          sortable
+          // Api pagination & sort
+          // manual={options.manual}
+          // onPageChange={options.onPageChange}
         />
       </div>
     );

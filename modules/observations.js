@@ -15,7 +15,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
-const OBS_MAX_SIZE = 20;
+const OBS_MAX_SIZE = 1000000000000000;
 
 /* Initial state */
 const initialState = {
@@ -90,10 +90,13 @@ export function getObservations(page) {
       }
     });
 
+    // const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`;
+    const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}`;
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
-    fetch(`${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`, {
+    fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
