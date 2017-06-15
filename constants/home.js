@@ -11,7 +11,8 @@ const MAP_LAYERS_HOME = [
     provider: 'cartodb',
     source: {
       type: 'geojson',
-      data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
+      data: `${process.env.OTP_API}/fmus?country_ids=7,47`
+      // data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
     },
     layers: [{
       id: 'forest_concession_layer',
@@ -24,28 +25,27 @@ const MAP_LAYERS_HOME = [
         'fill-outline-color': '#d07500'
       }
     }]
-  },
-
-
-  {
-    id: 'harvestable_areas',
-    provider: 'cartodb',
-    source: {
-      type: 'geojson',
-      data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
-    },
-    layers: [{
-      id: 'harvestable_areas_layer',
-      type: 'fill',
-      source: 'harvestable_areas',
-      layout: {},
-      paint: {
-        'fill-color': '#005b23',
-        'fill-opacity': 0.8,
-        'fill-outline-color': '#004219'
-      }
-    }]
   }
+
+  // {
+  //   id: 'harvestable_areas',
+  //   provider: 'cartodb',
+  //   source: {
+  //     type: 'geojson',
+  //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
+  //   },
+  //   layers: [{
+  //     id: 'harvestable_areas_layer',
+  //     type: 'fill',
+  //     source: 'harvestable_areas',
+  //     layout: {},
+  //     paint: {
+  //       'fill-color': '#005b23',
+  //       'fill-opacity': 0.8,
+  //       'fill-outline-color': '#004219'
+  //     }
+  //   }]
+  // }
 ];
 
 export { MAP_OPTIONS_HOME, MAP_LAYERS_HOME };

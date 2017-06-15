@@ -10,15 +10,12 @@ import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
 export default function OperatorsDetailOverview(props) {
-  const { url } = props;
-  const id = url.query.id;
-
   return (
     <div
       className="c-section"
     >
       <div className="l-container">
-        <Gallery1 />
+        <Gallery1 {...props} />
         <article className="c-article">
           <div className="row custom-row">
             <div className="columns small-12 medium-8">
@@ -35,7 +32,6 @@ export default function OperatorsDetailOverview(props) {
         </article>
 
         {/* CHARTS */}
-        {/* TODO: move it to a component as long as we need to re-use it in other places */}
         <article className="c-article">
           <header>
             <h2 className="c-title">Observations by category</h2>
@@ -51,5 +47,6 @@ export default function OperatorsDetailOverview(props) {
 }
 
 OperatorsDetailOverview.propTypes = {
-  url: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired,
+  operatorsDetail: PropTypes.object.isRequired
 };

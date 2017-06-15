@@ -7,7 +7,8 @@ const MAP_LAYERS_OPERATORS = [
     provider: 'cartodb',
     source: {
       type: 'geojson',
-      data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
+      data: `${process.env.OTP_API}/fmus?country_ids=7,47`
+      // data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
     },
     layers: [{
       id: 'forest_concession_layer_hover',
@@ -43,6 +44,10 @@ const MAP_LAYERS_OPERATORS = [
               render(
                 Popup({
                   title: props.fmu_name,
+                  operator: {
+                    id: props.operator_id,
+                    name: props.company_na
+                  },
                   list: [{
                     label: 'Company',
                     value: props.company_na
@@ -72,70 +77,71 @@ const MAP_LAYERS_OPERATORS = [
         }
       }
     }]
-  },
-
-
-  {
-    id: 'harvestable_areas',
-    provider: 'cartodb',
-    source: {
-      type: 'geojson',
-      data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
-    },
-    layers: [{
-      id: 'harvestable_areas_layer',
-      type: 'fill',
-      source: 'harvestable_areas',
-      layout: {},
-      paint: {
-        'fill-color': '#005b23',
-        'fill-opacity': 0.8,
-        'fill-outline-color': '#004219'
-      },
-      interactivity: {
-        click(e) {
-          // Remove always the popup if exists and you are using 'closeOnClick'
-          this.popup && this.popup.remove();
-          this.popup = new this.Popup();
-
-          const props = e.features[0].properties;
-
-          this.popup.setLngLat(e.lngLat)
-            .setDOMContent(
-              render(
-                Popup({
-                  title: props.num_ccf,
-                  list: []
-                }),
-                window.document.createElement('div')
-              )
-            )
-            .addTo(this.map);
-        },
-        mouseenter() {
-          this.map.getCanvas().style.cursor = 'pointer';
-          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
-        },
-        mousemove(e) {
-          this.map.getCanvas().style.cursor = 'pointer';
-          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
-        },
-        mouseleave() {
-          this.map.getCanvas().style.cursor = '';
-          this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
-        }
-      }
-    }, {
-      id: 'harvestable_areas_layer_hover',
-      type: 'fill',
-      source: 'harvestable_areas',
-      layout: {},
-      paint: {
-        'fill-color': '#004219'
-      },
-      filter: ['==', 'cartodb_id', '']
-    }]
   }
+  // ,
+  //
+  //
+  // {
+  //   id: 'harvestable_areas',
+  //   provider: 'cartodb',
+  //   source: {
+  //     type: 'geojson',
+  //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
+  //   },
+  //   layers: [{
+  //     id: 'harvestable_areas_layer',
+  //     type: 'fill',
+  //     source: 'harvestable_areas',
+  //     layout: {},
+  //     paint: {
+  //       'fill-color': '#005b23',
+  //       'fill-opacity': 0.8,
+  //       'fill-outline-color': '#004219'
+  //     },
+  //     interactivity: {
+  //       click(e) {
+  //         // Remove always the popup if exists and you are using 'closeOnClick'
+  //         this.popup && this.popup.remove();
+  //         this.popup = new this.Popup();
+  //
+  //         const props = e.features[0].properties;
+  //
+  //         this.popup.setLngLat(e.lngLat)
+  //           .setDOMContent(
+  //             render(
+  //               Popup({
+  //                 title: props.num_ccf,
+  //                 list: []
+  //               }),
+  //               window.document.createElement('div')
+  //             )
+  //           )
+  //           .addTo(this.map);
+  //       },
+  //       mouseenter() {
+  //         this.map.getCanvas().style.cursor = 'pointer';
+  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
+  //       },
+  //       mousemove(e) {
+  //         this.map.getCanvas().style.cursor = 'pointer';
+  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
+  //       },
+  //       mouseleave() {
+  //         this.map.getCanvas().style.cursor = '';
+  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
+  //       }
+  //     }
+  //   }, {
+  //     id: 'harvestable_areas_layer_hover',
+  //     type: 'fill',
+  //     source: 'harvestable_areas',
+  //     layout: {},
+  //     paint: {
+  //       'fill-color': '#004219'
+  //     },
+  //     filter: ['==', 'cartodb_id', '']
+  //   }]
+  // }
 ];
 
 export { MAP_LAYERS_OPERATORS };
