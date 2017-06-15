@@ -84,20 +84,27 @@ class OperatorsDetail extends Page {
 
         {tab === 'overview' &&
           <OperatorsDetailOverview
+            operatorsDetail={operatorsDetail}
             url={url}
           />
         }
 
         {tab === 'documentation' &&
-          <OperatorsDetailDocumentation />
+          <OperatorsDetailDocumentation
+            url={url}
+          />
         }
 
         {tab === 'observations' &&
-          <OperatorsDetailObservations />
+          <OperatorsDetailObservations
+            url={url}
+          />
         }
 
         {tab === 'fmus' &&
-          <OperatorsDetailFMUs />
+          <OperatorsDetailFMUs
+            url={url}
+          />
         }
 
       </Layout>
