@@ -22,6 +22,32 @@ import Table from 'components/ui/table';
 
 class OperatorsPage extends Page {
 
+  static parseData(operators = []) {
+
+    return {
+      table: operators.map((o) => {
+        const certifications = ['FSC', 'PEFC', 'OLB', '-'];
+        const index = Math.floor(Math.random() * certifications.length);
+
+        return {
+          id: o.id,
+          name: o.name,
+          certification: certifications[index],
+          observations: (o.observations) ? o.observations.length : 0,
+          documentation: (o.documentation) ? o.documentation.length : 'not active',
+          fmus: (o.fmus) ? o.fmus.length : 0
+        };
+      }),
+      max: Math.max(...operators.map(o => o.observations.length))
+    };
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = OperatorsPage.parseData(props.operators.data);
+  }
+
   /* Component Lifecycle */
   componentDidMount() {
     const { url } = this.props;
@@ -33,42 +59,22 @@ class OperatorsPage extends Page {
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.operators.data.length !== this.props.operators.data.length) {
+      this.setState(OperatorsPage.parseData(nextProps.operators.data));
+    }
+  }
+
   /**
    * HELPERS
-   * - parseTableData
-   * - getMaxObservations
    * - getOperatorsTable
   */
-
-  parseTableData() {
-    const operators = this.props.operators.data;
-
-    return operators.map(o => ({
-      id: o.id,
-      name: o.name,
-      observations: (o.observations) ? o.observations.length : 0,
-      documentation: (o.documentation) ? o.documentation.length : 'not active',
-      fmus: (o.fmus) ? o.fmus.length : 0
-    }));
-  }
-
-  getMaxObservations(data) {
-    const arr = data.map(d => d.observations);
-    return Math.max(...arr);
-  }
-
   getOperatorsTable() {
     const operators = this.props.operators.data;
     if (operators && operators.length) {
-      // GET the data parsed for the table
-      const data = this.parseTableData();
-
-      // Do stuff related to this data
-      const maxObservations = this.getMaxObservations(data);
-
       return (
         <Table
-          data={data}
+          data={this.state.table}
           className="-striped -secondary"
           options={{
             columns: [{
@@ -95,9 +101,9 @@ class OperatorsPage extends Page {
               resizable: false,
               Cell: ({ original }) => {
                 let stoplight = '';
-                if (original.observations > (maxObservations / 4) * 2) {
+                if (original.observations > (this.state.max / 4) * 2) {
                   stoplight = '-red';
-                } else if (original.observations > (maxObservations / 4)) {
+                } else if (original.observations > (this.state.max / 4)) {
                   stoplight = '-orange';
                 } else {
                   stoplight = '-green';
@@ -118,12 +124,7 @@ class OperatorsPage extends Page {
               Header: <span className="sortable">Certification</span>,
               accessor: 'certification',
               minWidth: 100,
-              resizable: false,
-              Cell: ({ original }) => {
-                const certifications = ['FSC', 'PEFC', 'OLB', '-'];
-                const index = Math.floor(Math.random() * certifications.length);
-                return certifications[index];
-              }
+              resizable: false
             }, {
               Header: <span className="sortable">Upl. docs (%)</span>,
               accessor: 'documentation',

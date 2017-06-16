@@ -13,7 +13,7 @@ const DESERIALIZER = new Deserializer();
 
 /* Initial state */
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: false,
   map: {
