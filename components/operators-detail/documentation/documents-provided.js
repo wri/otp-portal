@@ -23,19 +23,19 @@ export default class DocumentsProvided extends React.Component {
     return [
       {
         name: 'Not provided',
-        value: parseFloat(((grouped['not-provided'].length / length) * 100).toFixed(2)) || 0,
+        value: Math.round((grouped['not-provided'].length / length) * 100) || 0,
         fill: PALETTE_COLOR_2[0].fill,
         stroke: PALETTE_COLOR_2[0].stroke
       },
       {
         name: 'Provided (not valid)',
-        value: parseFloat(((grouped['not-valid'].length / length) * 100).toFixed(2)) || 0,
+        value: Math.round((grouped['not-valid'].length / length) * 100) || 0,
         fill: PALETTE_COLOR_2[1].fill,
         stroke: PALETTE_COLOR_2[1].stroke
       },
       {
         name: 'Provided (valid)',
-        value: parseFloat(((grouped.valid.length / length) * 100).toFixed(2)) || 0,
+        value: Math.round((grouped.valid.length / length) * 100) || 0,
         fill: PALETTE_COLOR_2[2].fill,
         stroke: PALETTE_COLOR_2[2].stroke
       }
@@ -66,9 +66,7 @@ export default class DocumentsProvided extends React.Component {
                     label={{
                       fill: '#333'
                     }}
-                    labelLine={{
-                      stroke: '#333'
-                    }}
+                    labelLine={false}
                   >
                     {groupedByStatus.map(entry =>
                       <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />
