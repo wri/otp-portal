@@ -23,7 +23,6 @@ import Table from 'components/ui/table';
 class OperatorsPage extends Page {
 
   static parseData(operators = []) {
-
     return {
       table: operators.map((o) => {
         const certifications = ['FSC', 'PEFC', 'OLB', '-'];

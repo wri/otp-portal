@@ -16,6 +16,7 @@ export default function OperatorsDetailOverview(props) {
     >
       <div className="l-container">
         <Gallery1 {...props} />
+
         <article className="c-article">
           <div className="row custom-row">
             <div className="columns small-12 medium-8">
@@ -24,7 +25,7 @@ export default function OperatorsDetailOverview(props) {
               </header>
               <div className="content">
                 <div className="description">
-                  <p>REM is a non-profit organisation that operates as Independent Monitor of Law Enforcement and Governance. Our mission is to stimulate government reform and action in natural resource extraction through independent monitoring and credible reporting of illegalities and related governance problems. We use this information to develop, with the concerned actors, constructive and viable solutions and assist in their implementation.</p>
+                  <p>Text presenting the Forest Operator and describing its activities</p>
                 </div>
               </div>
             </div>

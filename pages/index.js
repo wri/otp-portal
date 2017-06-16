@@ -33,8 +33,7 @@ class HomePage extends Page {
           column={9}
         >
           <div className="c-intro">
-            <h2>Level the playing field between good and bad forest products
-              by a <span>legality</span> and <span>sustainability criteria.</span></h2>
+            <h2>Incentivizing <span>legal timber</span> through better information sharing</h2>
           </div>
         </StaticSection>
 
@@ -48,9 +47,9 @@ class HomePage extends Page {
             theme="-secondary"
             letter="A"
             title="Operator transparency rankings"
-            description="Visualize and refine transparency rankings by country or by operator type"
+            description="View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type"
             link={{
-              label: 'Link',
+              label: 'Visualize rankings',
               href: '/operators'
             }}
           />
@@ -72,7 +71,7 @@ class HomePage extends Page {
             theme="-tertiary"
             letter="B"
             title="Operator profiles"
-            description="Explore the profiles of specific operators, view documents provided and observations from Independent Monitors"
+            description="Explore the profiles of specific operators, view documents of legal compliance provided and observations recorded by Independent Monitors (IMs)"
             link={{
               label: 'Explore operators',
               href: '/operators'
@@ -90,9 +89,9 @@ class HomePage extends Page {
             theme="-secondary"
             letter="C"
             title="Forest Management Units"
-            description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore."
+            description="Explore Forest Management Units (FMUs) and forest concessions operators by navigating the data through an interactive map"
             link={{
-              label: 'Link',
+              label: 'Explore the map',
               href: '/operators'
             }}
           />

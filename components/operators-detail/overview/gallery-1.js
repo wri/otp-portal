@@ -10,7 +10,7 @@ import Card from 'components/ui/card';
 const data = [{
   id: 'required-documents-uploaded',
   title: 'Required documents uploaded',
-  description: 'These key documents evidence compliance with legal framework for forest management',
+  description: 'These documents evidence compliance with the country\'s legal framework for forest management',
   letter: '{{DOCUMENTATION}}',
   link: {
     label: 'Link',
