@@ -91,14 +91,14 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                     const total = groupedByIllegality[illegality].length;
 
                     return (
-                      <li key={illegality}>
+                      <li key={category + illegality}>
                         <div className="l-container">
                           <div className="obi-illegality-list-item">
                             {/* Severity list */}
                             <ul className="obi-severity-list">
-                              {groupedByIllegality[illegality].map(({ severity }) => {
+                              {groupedByIllegality[illegality].map(({ severity }, i) => {
                                 return (
-                                  <li className={`obi-severity-list-item -severity-${severity}`} />
+                                  <li key={category + illegality + severity + i} className={`obi-severity-list-item -severity-${severity}`} />
                                 );
                               })}
                             </ul>

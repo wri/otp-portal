@@ -1,7 +1,11 @@
+import fetch from 'isomorphic-fetch';
+
 let Mapboxgl;
 if (typeof window !== 'undefined') {
+  /* eslint-disable global-require */
   Mapboxgl = require('mapbox-gl');
   Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
+  /* eslint-enable global-require */
 }
 
 export default class LayerManager {
@@ -43,24 +47,41 @@ export default class LayerManager {
    * PRIVATE METHODS
    */
   addCartoLayer(layer) {
-    this.map.addSource(layer.id, layer.source);
-
-    // Loop trough layers
-    layer.layers.forEach((l) => {
-      const interactivity = l.interactivity;
-
-      // Add layer
-      this.map.addLayer(l);
-
-      // Add interactivity (if exists)
-      if (interactivity) {
-        Object.keys(interactivity).forEach((i) => {
-          const iFn = interactivity[i].bind(this);
-          this.map.on(i, l.id, iFn);
-        });
+    fetch(layer.source.data, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
       }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((data) => {
+        // Add source
+        this.map.addSource(layer.id, { ...layer.source, data });
 
-      this.onLayerAddedSuccess();
-    });
+        // Loop trough layers
+        layer.layers.forEach((l) => {
+          const interactivity = l.interactivity;
+
+          // Add layer
+          this.map.addLayer(l);
+
+          // Add interactivity (if exists)
+          if (interactivity) {
+            Object.keys(interactivity).forEach((i) => {
+              const iFn = interactivity[i].bind(this);
+              this.map.on(i, l.id, iFn);
+            });
+          }
+
+          this.onLayerAddedSuccess();
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 }

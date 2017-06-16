@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -15,6 +14,7 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
+import Spinner from 'components/ui/spinner';
 
 // Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
@@ -46,27 +46,28 @@ class OperatorsDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url, operatorsDetail } = this.props;
-    if (isEmpty(operatorsDetail.data)) {
-      this.props.getOperator(url.query.id);
-    }
+    const { url } = this.props;
+
+    this.props.getOperator(url.query.id);
   }
 
 
   render() {
-    const { url, session } = this.props;
+    const { url, session, operatorsDetail } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
     return (
       <Layout
-        title="Forest operator's name"
+        title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
         session={session}
       >
+        <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
+
         <StaticHeader
-          title="Forest operator's name"
+          title={operatorsDetail.data.name || '-'}
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
@@ -83,20 +84,27 @@ class OperatorsDetail extends Page {
 
         {tab === 'overview' &&
           <OperatorsDetailOverview
+            operatorsDetail={operatorsDetail}
             url={url}
           />
         }
 
         {tab === 'documentation' &&
-          <OperatorsDetailDocumentation />
+          <OperatorsDetailDocumentation
+            url={url}
+          />
         }
 
         {tab === 'observations' &&
-          <OperatorsDetailObservations />
+          <OperatorsDetailObservations
+            url={url}
+          />
         }
 
         {tab === 'fmus' &&
-          <OperatorsDetailFMUs />
+          <OperatorsDetailFMUs
+            url={url}
+          />
         }
 
       </Layout>

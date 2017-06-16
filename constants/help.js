@@ -14,61 +14,61 @@ const TABS_HELP = [{
 
 
 const HOW_OTP_WORKS_HELP = [{
-  id: 'understanding-the-platform',
-  title: 'Understanding the platform',
-  description: 'The Open Timber Platform aims to track the performance of forest concession operators.',
+  id: 'sources-of-information',
+  title: 'Sources of information',
+  description: 'The OTP compiles information on timber producers from three different sources: Government, Private sector, Third parties (NGOs and other qualified actors)',
   link: {
     label: 'Read more',
-    href: '/help?tab=how-otp-works&article=understanding-the-platform',
-    as: '/help/how-otp-works?article=understanding-the-platform'
+    href: '/help?tab=how-otp-works&article=sources-of-information',
+    as: '/help/how-otp-works?article=sources-of-information'
   }
 }, {
-  id: 'how-the-score-is-calculated',
-  title: 'How the score is calculated',
-  description: 'Registered forest operators are ranked according to their performance against standard legality and sustainability indicators.',
-  link: {
-    label: 'Find out more',
-    href: '/help?tab=how-otp-works&article=how-the-score-is-calculated',
-    as: '/help/how-otp-works?article=how-the-score-is-calculated'
-  }
-}, {
-  id: 'understanding-third-card',
-  title: 'Understanding third card',
-  description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
+  id: 'score-calculation',
+  title: 'Score calculation',
+  description: 'For each operator, a transparency score is calculated based on the percentage of documents the operator provides out of the total number of documents requested.',
   link: {
     label: 'Read more',
-    href: '/help?tab=how-otp-works&article=understanding-third-card',
-    as: '/help/how-otp-works?article=understanding-third-card'
+    href: '/help?tab=how-otp-works&article=score-calculation',
+    as: '/help/how-otp-works?article=score-calculation'
+  }
+}, {
+  id: 'geographical-scope',
+  title: 'Geographical scope',
+  description: 'Beginning with the Republic of Congo and the Democratic Republic of Congo, the OTP will expand to other major timber exporting countries as resources and opportunities allow.',
+  link: {
+    label: 'Read more',
+    href: '/help?tab=how-otp-works&article=geographical-scope',
+    as: '/help/how-otp-works?article=geographical-scope'
   }
 }];
 
 
 const LEGISLATION_AND_REGULATIONS_HELP = [{
-  id: 'understanding-forest-products-and-legality',
-  title: 'Understanding Forest Products and Legality',
+  id: 'forest-products-and-legality',
+  title: 'Forest products and legality',
   description: 'The Risk Information Tool provides an overview of relevant legislations and regulations, information about most commonly traded species, etc.',
   link: {
-    label: 'Learn more',
-    href: '/help?tab=legislation-and-regulations&article=understanding-forest-products-and-legality',
-    as: '/help/legislation-and-regulations?article=understanding-forest-products-and-legality'
+    label: 'Read more',
+    href: '/help?tab=legislation-and-regulations&article=forest-products-and-legality',
+    as: '/help/legislation-and-regulations?article=forest-products-and-legality'
   }
 }, {
-  id: 'understand-timber-trade-and-due-dilligence',
-  title: 'Understand Timber Trade and Due Dilligence',
+  id: 'voluntary-partnership-agreement-vpa-process',
+  title: 'Voluntary partnership agreement (vpa) process',
   description: 'The Timber Trade Portal provides information regarding legal timber trade, due diligence and on country requirements and exports.',
   link: {
-    label: 'Learn more',
-    href: '/help?tab=legislation-and-regulations&article=understand-timber-trade-and-due-dilligence',
-    as: '/help/legislation-and-regulations?article=understand-timber-trade-and-due-dilligence'
+    label: 'Read more',
+    href: '/help?tab=legislation-and-regulations&article=voluntary-partnership-agreement-vpa-process',
+    as: '/help/legislation-and-regulations?article=voluntary-partnership-agreement-vpa-process'
   }
 }, {
-  id: 'understanding-the-voluntary-partnership-agreement-vpa-process',
-  title: 'Understanding the Voluntary Partnership Agreement (VPA) Process',
-  description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
+  id: 'timber-trade-and-due-diligence',
+  title: 'Timber trade and due diligence',
+  description: 'The EU FLEGT Facility provides a website containing extensive information on Voluntary Partnership Agreements, the voluntary bilateral trade agreements between the European Union (EU) and timber-exporting countries outside the EU established to fight against illegal logging.',
   link: {
     label: 'Read more',
-    href: '/help?tab=legislation-and-regulations&article=understanding-the-voluntary-partnership-agreement-vpa-process',
-    as: '/help/legislation-and-regulations?article=understanding-the-voluntary-partnership-agreement-vpa-process'
+    href: '/help?tab=legislation-and-regulations&article=timber-trade-and-due-diligence',
+    as: '/help/legislation-and-regulations?article=timber-trade-and-due-diligence'
   }
 }];
 
@@ -86,7 +86,7 @@ const FAQS_HELP = [{
   title: 'Second FAQ',
   description: 'Registered forest operators are ranked according to their performance against standard legality and sustainability indicators.',
   link: {
-    label: 'Find out more',
+    label: 'Read more',
     href: '/help?tab=faqs&article=second-faq',
     as: '/help/faqs?article=second-faq'
   }
