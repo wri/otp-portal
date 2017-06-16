@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Overview from 'components/observations/overview';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
@@ -125,6 +126,7 @@ class ObservationsPage extends Page {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
+                <Overview />
               </div>
             </div>
           </div>

@@ -15,7 +15,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
-const OBS_MAX_SIZE = 1000000000000000;
+const OBS_MAX_SIZE = 100;
 
 /* Initial state */
 const initialState = {
