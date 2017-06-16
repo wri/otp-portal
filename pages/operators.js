@@ -36,6 +36,7 @@ class OperatorsPage extends Page {
   /**
    * HELPERS
    * - parseTableData
+   * - getMaxObservations
    * - getOperatorsTable
   */
 
@@ -46,15 +47,24 @@ class OperatorsPage extends Page {
       id: o.id,
       name: o.name,
       observations: (o.observations) ? o.observations.length : 0,
-      documentation: (o.documentation) ? o.documentation.length : 0,
+      documentation: (o.documentation) ? o.documentation.length : 'not active',
       fmus: (o.fmus) ? o.fmus.length : 0
     }));
+  }
+
+  getMaxObservations(data) {
+    const arr = data.map(d => d.observations);
+    return Math.max(...arr);
   }
 
   getOperatorsTable() {
     const operators = this.props.operators.data;
     if (operators && operators.length) {
+      // GET the data parsed for the table
       const data = this.parseTableData();
+
+      // Do stuff related to this data
+      const maxObservations = this.getMaxObservations(data);
 
       return (
         <Table
@@ -79,23 +89,47 @@ class OperatorsPage extends Page {
             }, {
               Header: <span className="sortable">Observations</span>,
               accessor: 'observations',
-              className: '-number',
-              headerClassName: '-number',
-              minWidth: 140,
-              resizable: false
+              className: '-a-center',
+              headerClassName: '-a-center',
+              minWidth: 120,
+              resizable: false,
+              Cell: ({ original }) => {
+                let stoplight = '';
+                if (original.observations > (maxObservations / 4) * 2) {
+                  stoplight = '-red';
+                } else if (original.observations > (maxObservations / 4)) {
+                  stoplight = '-orange';
+                } else {
+                  stoplight = '-green';
+                }
+
+                return (
+                  <div className={`stoplight-dot ${stoplight}`} />
+                );
+              }
             }, {
               Header: <span className="sortable">FMUs</span>,
               accessor: 'fmus',
-              className: '-number',
-              headerClassName: '-number',
+              className: '-a-right',
+              headerClassName: '-a-right',
               minWidth: 70,
               resizable: false
             }, {
-              Header: <span className="sortable">DOC. Uploaded (%)</span>,
+              Header: <span className="sortable">Certification</span>,
+              accessor: 'certification',
+              minWidth: 100,
+              resizable: false,
+              Cell: ({ original }) => {
+                const certifications = ['FSC', 'PEFC', 'OLB', '-'];
+                const index = Math.floor(Math.random() * certifications.length);
+                return certifications[index];
+              }
+            }, {
+              Header: <span className="sortable">Upl. docs (%)</span>,
               accessor: 'documentation',
-              minWidth: 160,
-              className: '-number',
-              headerClassName: '-number',
+              minWidth: 130,
+              className: '-a-right',
+              headerClassName: '-a-right',
               resizable: false
             }],
             pageSize: operators.length,

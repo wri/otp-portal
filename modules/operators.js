@@ -9,6 +9,7 @@ const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
 
 const SET_OPERATORS_MAP_LOCATION = 'SET_OPERATORS_MAP_LOCATION';
 
+const DESERIALIZER = new Deserializer();
 
 /* Initial state */
 const initialState = {
@@ -66,7 +67,7 @@ export function getOperators() {
         throw new Error(response.statusText);
       })
       .then((operators) => {
-        new Deserializer().deserialize(operators, (err, dataParsed) => {
+        DESERIALIZER.deserialize(operators, (err, dataParsed) => {
           dispatch({
             type: GET_OPERATORS_SUCCESS,
             payload: dataParsed
