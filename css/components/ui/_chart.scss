@@ -6,15 +6,22 @@
   &.-horizontal {
     .c-chart {
       display: flex;
-      margin-bottom: 18px;
+      align-items: center;
+      flex-direction: row-reverse;
+      margin: 0 0 $space-1 * 4;
+
+      .chart {
+        flex: 1;
+      }
 
       h3 {
-        margin-top: 10px;
+        margin: 0;
+        flex: 0 0 150px;
       }
     }
 
     .chart {
-      margin-right: 25px;
+      margin-left: $space-1 * 4;
     }
   }
 }

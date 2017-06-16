@@ -49,11 +49,11 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
   getAxis(max) {
     return this.props.horizontal ?
     [
-      <XAxis hide axisLine={false} type="number" />,
-      <YAxis hide axisLine domain={[0, max]} orientation="left" type="category" dataKey="name" />
+      <XAxis hide axisLine={false} domain={[0, max]} type="number" />,
+      <YAxis hide axisLine type="category" />
     ] :
     [
-      <XAxis hide axisLine={false} />,
+      <XAxis hide axisLine />,
       <YAxis hide axisLine={false} domain={[0, max]} />
     ];
   }
@@ -73,21 +73,14 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
       'small-6 medium-4 large-2': !horizontal
     });
 
-    const classCChart = classnames({
-      'c-chart': true,
-      row: horizontal
-    });
-
     const classChart = classnames({
       chart: true,
-      '-max-width-100': !horizontal,
-      'column small-12 medium-7': horizontal
+      '-max-width-100': !horizontal
     });
 
     const classTitle = classnames({
       'c-title': true,
-      '-bigger': true,
-      'column small-12 medium-4': horizontal
+      '-bigger': true
     });
 
     return (
@@ -107,7 +100,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
             return (
               <div key={category} className={classColumns}>
                 {/* <div key={category} className="columns small-6 medium-4 large-2"> */}
-                <div className={classCChart}>
+                <div className="c-chart">
                   {/* <div className="chart -max-width-100"> */}
                   <div className={classChart}>
                     <ResponsiveContainer height={horizontal ? 60 : 120}>
@@ -121,10 +114,10 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                       >
                         {this.getAxis(max)}
 
-                        <Bar dataKey="hight" fill={PALETTE_COLOR_1[0].fill} minPointSize={1} />
-                        <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} minPointSize={1} />
-                        <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} minPointSize={1} />
-                        <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} minPointSize={1} />
+                        <Bar dataKey="hight" fill={PALETTE_COLOR_1[0].fill} />
+                        <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} />
+                        <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} />
+                        <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} />
 
                       </BarChart>
                     </ResponsiveContainer>
