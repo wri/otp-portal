@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Link from 'next/link';
+
+// Components
 import Icon from 'components/ui/icon';
 import NavigationList from 'components/ui/navigation-list';
+import Search from 'components/ui/search';
 
 export default class Header extends React.Component {
   /**
@@ -34,11 +37,12 @@ export default class Header extends React.Component {
               <NavigationList url={this.props.url} className="header-nav-list" />
 
               <ul className="header-nav-list c-navigation-list">
-                <li>
-                  <a>
-                    <span>Search operator</span>
-                    <Icon name="icon-search" />
-                  </a>
+                <li className="search">
+                  <Search
+                    list={this.props.searchList}
+                    placeholder="Search operators"
+                    maxItems={8}
+                  />
                 </li>
                 <li>
                   <Link prefetch href="/auth/signin">
@@ -59,5 +63,6 @@ export default class Header extends React.Component {
 
 Header.propTypes = {
   url: PropTypes.object.isRequired,
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  searchList: PropTypes.array
 };

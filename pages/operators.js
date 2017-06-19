@@ -157,6 +157,7 @@ class OperatorsPage extends Page {
         session={session}
         className="-fullscreen"
         footer={false}
+        searchList={this.state.table}
       >
         <div className="c-section -map">
           <Sidebar>
