@@ -49,12 +49,12 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
   getAxis(max) {
     return this.props.horizontal ?
     [
-      <XAxis hide axisLine={false} domain={[0, max]} type="number" />,
-      <YAxis hide axisLine type="category" />
+      <XAxis key="x-axis" hide axisLine={false} domain={[0, max]} type="number" />,
+      <YAxis key="y-axis" hide axisLine type="category" />
     ] :
     [
-      <XAxis hide axisLine />,
-      <YAxis hide axisLine={false} domain={[0, max]} />
+      <XAxis key="x-axis" hide axisLine />,
+      <YAxis key="y-axis" hide axisLine={false} domain={[0, max]} />
     ];
   }
 

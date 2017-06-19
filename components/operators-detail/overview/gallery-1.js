@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import groupBy from 'lodash/groupBy';
 
 // Utils
 import { substitution } from 'utils/text';
@@ -52,12 +53,24 @@ export default class Gallery1 extends React.Component {
         value: '65%'
       }, {
         key: 'OBSERVATIONS_BY_MONITORS',
-        value: '1.49'
+        value: (operatorsDetail.data.observations) ? this.getAvgObservationByMonitors() : '-'
       }, {
         key: 'FMUS',
         value: (operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-'
       }
     ]));
+  }
+
+  getAvgObservationByMonitors() {
+    const { observations } = this.props.operatorsDetail.data;
+    const dates = groupBy(observations.map(o =>
+      new Date(o['publication-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+    ));
+
+    const avg = Object.keys(dates).reduce((sum, k) =>
+      sum + dates[k].length, 0) / (Object.keys(dates).length || 1
+    );
+    return avg.toFixed(1);
   }
 
   render() {
