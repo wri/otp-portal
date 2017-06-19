@@ -53,15 +53,6 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
     as: '/help/legislation-and-regulations?article=forest-products-and-legality'
   }
 }, {
-  id: 'voluntary-partnership-agreement-vpa-process',
-  title: 'Voluntary partnership agreement (vpa) process',
-  description: 'The Timber Trade Portal provides information regarding legal timber trade, due diligence and on country requirements and exports.',
-  link: {
-    label: 'Read more',
-    href: '/help?tab=legislation-and-regulations&article=voluntary-partnership-agreement-vpa-process',
-    as: '/help/legislation-and-regulations?article=voluntary-partnership-agreement-vpa-process'
-  }
-}, {
   id: 'timber-trade-and-due-diligence',
   title: 'Timber trade and due diligence',
   description: 'The EU FLEGT Facility provides a website containing extensive information on Voluntary Partnership Agreements, the voluntary bilateral trade agreements between the European Union (EU) and timber-exporting countries outside the EU established to fight against illegal logging.',
@@ -69,6 +60,15 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=timber-trade-and-due-diligence',
     as: '/help/legislation-and-regulations?article=timber-trade-and-due-diligence'
+  }
+}, {
+  id: 'voluntary-partnership-agreement-vpa-process',
+  title: 'Voluntary partnership agreement (vpa) process',
+  description: 'The Timber Trade Portal provides information regarding legal timber trade, due diligence and on country requirements and exports.',
+  link: {
+    label: 'Read more',
+    href: '/help?tab=legislation-and-regulations&article=voluntary-partnership-agreement-vpa-process',
+    as: '/help/legislation-and-regulations?article=voluntary-partnership-agreement-vpa-process'
   }
 }];
 

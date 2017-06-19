@@ -44,7 +44,7 @@ export default class Header extends React.Component {
                   <Link prefetch href="/auth/signin">
                     <a>
                       <span>Sign in</span>
-                      <Icon name="icon-search" />
+                      <Icon name="icon-user" />
                     </a>
                   </Link>
                 </li>
