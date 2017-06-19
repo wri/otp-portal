@@ -31,7 +31,7 @@ export default function Popup(props) {
 
       {operator && operator.id &&
         <Link href={{ pathname: '/operators-detail', query: { id: operator.id } }} as={`/operators/${operator.id}`}>
-          <a className="c-button -tertiary -fullwidth button">
+          <a className="c-button -tertiary -fullwidth -ellipsis button">
             {operator.name}
           </a>
         </Link>
