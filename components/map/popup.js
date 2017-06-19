@@ -43,5 +43,6 @@ export default function Popup(props) {
 
 Popup.propTypes = {
   title: PropTypes.string,
+  operator: PropTypes.object,
   list: PropTypes.array
 };
