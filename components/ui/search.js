@@ -121,7 +121,7 @@ export default class Search extends React.Component {
 
     return (
       <div className="c-search">
-        <div className="">
+        <div className="search">
           <input
             ref={n => this.input = n}
             type="text"

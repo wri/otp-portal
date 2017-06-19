@@ -2,6 +2,29 @@
 .c-search {
   position: relative;
 
+  .search {
+    display: flex;
+    align-items: center;
+
+    input {
+      margin-right: 5px;
+      border: 0;
+      background-color: transparent;
+      font-family: $font-family-proximanova;
+      font-size: $font-size-small;
+      line-height: 16px;
+      color: rgba($color-text-1, 1);
+
+      &::placeholder {
+        text-transform: uppercase;
+      }
+
+      &:focus { outline: none; }
+    }
+
+    svg { fill: $color-primary; }
+  }
+
   .results-container {
     position: fixed;
     display: none;
@@ -53,6 +76,8 @@
       a {
         color: $color-text-1;
         text-decoration: none;
+
+        &:focus { outline: none; }
       }
     }
   }
