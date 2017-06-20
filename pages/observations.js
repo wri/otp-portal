@@ -16,6 +16,7 @@ import StaticTabs from 'components/ui/static-tabs';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 
 // Utils
 import {
@@ -40,6 +41,14 @@ class ObservationsPage extends Page {
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
+  }
+
+  componentWillMount() {
+    const { operators } = this.props;
+    if (!operators || !operators.data || !operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
   }
 
   componentDidMount() {
@@ -107,6 +116,7 @@ class ObservationsPage extends Page {
         description="Observations description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         <StaticHeader
           title="Observations"
@@ -182,9 +192,11 @@ ObservationsPage.propTypes = {
 export default withRedux(
   store,
   state => ({
-    observations: state.observations
+    observations: state.observations,
+    operators: state.operators
   }),
   dispatch => ({
+    getOperators() { dispatch(getOperators()); },
     getObservations(page) { dispatch(getObservations(page)); },
     getFilters() { dispatch(getFilters()); },
     getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
