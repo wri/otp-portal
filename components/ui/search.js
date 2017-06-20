@@ -20,9 +20,9 @@ export default class Search extends React.Component {
     super(props);
 
     this.state = {
-      results: props.list.length ? props.list.slice(0, props.maxItems) : [],
+      results: [],
       value: '',
-      activeResults: false,
+      active: false,
       index: 0
     };
 
@@ -30,54 +30,103 @@ export default class Search extends React.Component {
 
     // Bindings
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.onWindowClick = this.onWindowClick.bind(this);
+    this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
   }
 
-  componentDidMount() {
-    this.input.addEventListener('keyup', (e) => {
-      switch (e.keyCode) {
-        // Arrow up
-        case 38: this.setItemSelected('up'); break;
-        // Arrow down
-        case 40: this.setItemSelected('down'); break;
-        // Enter
-        case 13: this.onEnterRoute(e); break;
-        // ESC
-        case 27: this.onClose(); break;
-        default: return false;
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.active !== this.state.active) {
+      if (nextState.active) {
+        this.addListeners();
+      } else {
+        this.removeListeners();
       }
-    });
-  }
-
-  onClose() {
-    if (this.state.activeResults) {
-      this.setState({
-        activeResults: false,
-        value: ''
-      });
-      this.input.value = '';
     }
   }
 
-  onKeyUp(e) {
-    const fuse = new Fuse(this.props.list, this.props.options);
-    const result = fuse.search(e.currentTarget.value);
-
-    this.setState({
-      results: result.slice(0, 8),
-      activeResults: e.currentTarget.value !== ''
-    });
+  componentWillUnmount() {
+    this.removeListeners();
   }
 
-  onClick(e) {
-    if (e.target === e.currentTarget) {
+  /**
+   * WINDOW LISTENERS
+   * - onWindowClick
+   * - onWindowKeyUp
+  */
+
+  onWindowClick() {
+    // TODO: check that you have clicked outside the result container
+    if (false) {
       this.onClose();
     }
   }
 
-  onEnterRoute(e) {
-    e.preventDefault();
+  onWindowKeyUp(e) {
+    switch (e.keyCode) {
+      // Arrow up
+      case 38:
+        this.setIndexByDirection('up');
+        break;
+      // Arrow down
+      case 40:
+        this.setIndexByDirection('down');
+        break;
+      // Enter
+      case 13:
+        this.onEnter();
+        break;
+      // ESC
+      case 27:
+        this.onClose();
+        break;
+
+      default: return false;
+    }
+
+    return false;
+  }
+
+  /**
+   * UI EVENTS
+   * - onKeyUp
+   * - onClose
+   * - onEnter
+  */
+  onClose() {
+    if (this.state.active) {
+      this.setState({
+        results: [],
+        value: '',
+        active: false,
+        index: 0
+      });
+      this.input.value = '';
+      this.removeListeners();
+    }
+  }
+
+  onKeyUp(e) {
+    const { value } = this.state;
+    const currentValue = e.currentTarget.value;
+    const isNewValue = currentValue !== value;
+    const active = currentValue !== '';
+
+    if (isNewValue) {
+      const fuse = new Fuse(this.props.list, this.props.options);
+      const result = fuse.search(currentValue);
+
+      this.setState({
+        index: 0,
+        value: e.currentTarget.value,
+        results: result.slice(0, 8),
+        active
+      });
+    }
+  }
+
+  onEnter() {
     const id = this.item[this.state.index].dataset.id;
+
     const location = {
       pathname: '/operators-detail',
       query: { id }
@@ -86,75 +135,97 @@ export default class Search extends React.Component {
     Router.push(location, `/operators/${id}`);
   }
 
-  setItemSelected(direction) {
+  setIndexByDirection(direction) {
     const { index, results } = this.state;
+    let newIndex = index;
 
-    if (direction === 'up' && index > 0) {
-      this.setState({ index: index - 1 });
-    } else if (direction === 'down' && index < results.length - 1) {
-      this.setState({ index: index + 1 });
+    switch (direction) {
+      case 'up':
+        newIndex = (index === 0) ? results.length - 1 : index - 1;
+        break;
+      case 'down':
+        newIndex = (index === results.length - 1) ? 0 : index + 1;
+        break;
+
+      default:
+        console.info('No direction provided');
     }
+
+    this.setIndex(newIndex);
   }
 
-  getResults() {
-    const { results } = this.state;
+  setIndex(index) {
+    this.setState({ index });
+  }
 
-    return (
-      <div className="results">
-        <div>
-          <h1 className="title">Operators</h1>
-          <ul>
-            {results.length ?
-              results.map((op, i) => (
-                <li
-                  key={i}
-                  className={this.state.index === i ? '-active' : ''}
-                  data-id={op.id}
-                >
-                  <Link
-                    href={{ pathname: '/operators', query: { id: op.id } }}
-                    as={`/operators/${op.id}`}
-                  >
-                    <a
-                      ref={n => this.item[i] = n}
-                      data-id={op.id}
-                    >
-                      {op.name}
-                    </a>
-                  </Link>
-                </li>
-              )) :
-              <li>No results</li>
-            }
-          </ul>
-        </div>
-      </div>
-    );
+  /**
+   * HELPERS
+   * - addListeners
+   * - removeListeners
+  */
+  addListeners() {
+    window.addEventListener('click', this.onWindowClick);
+    window.addEventListener('keyup', this.onWindowKeyUp);
+  }
+
+  removeListeners() {
+    window.removeEventListener('click', this.onWindowClick);
+    window.removeEventListener('keyup', this.onWindowKeyUp);
   }
 
   render() {
+    const { active, results } = this.state;
+
     const resultsClass = classnames({
       'results-container': true,
-      '-active': this.state.activeResults
+      '-active': active
     });
 
     return (
       <div className="c-search">
         <div className="search">
           <input
-            ref={n => this.input = n}
+            ref={(n) => { this.input = n; }}
             type="text"
             placeholder={this.props.placeholder}
             onKeyUp={this.onKeyUp}
           />
           <Icon name="icon-search" />
         </div>
-        <div
-          className={resultsClass}
-          ref={n => this.results = n}
-          onClick={this.onClick}
-        >
-          {this.getResults()}
+        <div className={resultsClass}>
+          <div className="results">
+            <h1 className="title">Operators</h1>
+            <ul>
+              {results.length ?
+                results.map((op, i) => {
+                  const activeClass = classnames({
+                    '-active': this.state.index === i
+                  });
+
+                  return (
+                    <li
+                      key={op.id}
+                      className={activeClass}
+                      onMouseOver={() => { this.setIndex(i); }}
+                    >
+                      <Link
+                        href={{ pathname: '/operators-detail', query: { id: op.id } }}
+                        as={`/operators/${op.id}`}
+                      >
+                        <a
+                          ref={(n) => { this.item[i] = n; }}
+                          data-id={op.id}
+                        >
+                          {op.name}
+                        </a>
+                      </Link>
+                    </li>
+                  );
+                }) :
+                <li>No results</li>
+              }
+            </ul>
+          </div>
         </div>
       </div>
     );
@@ -164,13 +235,11 @@ export default class Search extends React.Component {
 Search.propTypes = {
   list: PropTypes.array,
   placeholder: PropTypes.string,
-  maxItems: PropTypes.number,
   options: PropTypes.object
 };
 
 Search.defaultProps = {
   list: [],
-  maxItems: 8,
   placeholder: 'Search',
   options: SEARCH_OPTIONS
 };

@@ -7,6 +7,7 @@ import { TABS_HELP } from 'constants/help';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 
 // Components
 import Page from 'components/layout/page';
@@ -21,6 +22,18 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 
 class HelpPage extends Page {
+  /**
+   * COMPONENT LIFECYCLE
+  */
+  componentDidMount() {
+    const { operators } = this.props;
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
+  }
+
   render() {
     const { url, session } = this.props;
     const tab = url.query.tab || 'overview';
@@ -31,6 +44,7 @@ class HelpPage extends Page {
         description="Help description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         <StaticHeader
           title="Help"
@@ -75,5 +89,9 @@ HelpPage.propTypes = {
 };
 
 export default withRedux(
-  store
+  store,
+  state => ({
+    operators: state.operators
+  }),
+  { getOperators }
 )(HelpPage);

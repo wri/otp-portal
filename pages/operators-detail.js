@@ -7,6 +7,7 @@ import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 
 // Components
@@ -46,7 +47,12 @@ class OperatorsDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url } = this.props;
+    const { url, operators } = this.props;
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
 
     this.props.getOperator(url.query.id);
   }
@@ -63,6 +69,7 @@ class OperatorsDetail extends Page {
         description="Forest operator's name description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
 
@@ -121,7 +128,8 @@ OperatorsDetail.propTypes = {
 export default withRedux(
   store,
   state => ({
+    operators: state.operators,
     operatorsDetail: state.operatorsDetail
   }),
-  { getOperator }
+  { getOperators, getOperator }
 )(OperatorsDetail);

@@ -1,7 +1,7 @@
 
 const SEARCH_OPTIONS = {
   shouldSort: true,
-  threshold: 0.6,
+  threshold: 0.35,
   location: 0,
   distance: 50,
   maxPatternLength: 32,

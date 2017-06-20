@@ -51,7 +51,7 @@ class OperatorsPage extends Page {
   componentDidMount() {
     const { url, operators } = this.props;
 
-    if (!operators || !operators.data || !operators.data.length) {
+    if (!operators.data.length) {
       // Get operators
       this.props.getOperators();
     }

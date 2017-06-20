@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 
 // Components
 import Page from 'components/layout/page';
@@ -11,6 +12,17 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
 class AboutPage extends Page {
+  /**
+   * COMPONENT LIFECYCLE
+  */
+  componentDidMount() {
+    const { operators } = this.props;
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
+  }
 
   render() {
     const { url, session } = this.props;
@@ -21,6 +33,7 @@ class AboutPage extends Page {
         description="About description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         <StaticHeader
           title="About the portal"
@@ -74,5 +87,9 @@ AboutPage.propTypes = {
 };
 
 export default withRedux(
-  store
+  store,
+  state => ({
+    operators: state.operators
+  }),
+  { getOperators }
 )(AboutPage);

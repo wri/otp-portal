@@ -43,22 +43,19 @@ class ObservationsPage extends Page {
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
   }
 
-  componentWillMount() {
-    const { operators } = this.props;
-    if (!operators || !operators.data || !operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-  }
-
   componentDidMount() {
-    const { observations, url } = this.props;
+    const { observations, operators, url } = this.props;
     if (isEmpty(observations.data)) {
       this.props.getObservations(1);
     }
 
     if (isEmpty(observations.filters.options)) {
       this.props.getFilters();
+    }
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
     }
 
     this.props.getObservationsUrl(url);

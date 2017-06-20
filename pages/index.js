@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -16,6 +17,18 @@ import Card from 'components/ui/card';
 import Map from 'components/map/map';
 
 class HomePage extends Page {
+  /**
+   * COMPONENT LIFECYCLE
+  */
+  componentDidMount() {
+    const { operators } = this.props;
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
+  }
+
   render() {
     const { url, session } = this.props;
 
@@ -25,6 +38,7 @@ class HomePage extends Page {
         description="Home description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         {/* INTRO */}
         <StaticSection
@@ -106,5 +120,9 @@ HomePage.propTypes = {
 };
 
 export default withRedux(
-  store
+  store,
+  state => ({
+    operators: state.operators
+  }),
+  { getOperators }
 )(HomePage);

@@ -41,7 +41,6 @@ export default class Header extends React.Component {
                   <Search
                     list={this.props.searchList}
                     placeholder="Search operator"
-                    maxItems={8}
                   />
                 </li>
                 <li>
