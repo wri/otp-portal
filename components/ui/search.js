@@ -1,7 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+// Next
+import Link from 'next/link';
+import Router from 'next/router';
+
+// Other libraries
 import Fuse from 'fuse.js';
 import classnames from 'classnames';
+
+// Components
 import Icon from 'components/ui/icon';
 
 // Constants
@@ -69,7 +77,13 @@ export default class Search extends React.Component {
 
   onEnterRoute(e) {
     e.preventDefault();
-    this.item[this.state.index].click();
+    const id = this.item[this.state.index].dataset.id;
+    const location = {
+      pathname: '/operators-detail',
+      query: { id }
+    };
+
+    Router.push(location, `/operators/${id}`);
   }
 
   setItemSelected(direction) {
@@ -97,12 +111,17 @@ export default class Search extends React.Component {
                   className={this.state.index === i ? '-active' : ''}
                   data-id={op.id}
                 >
-                  <a
-                    ref={n => this.item[i] = n}
-                    href={`/operators/${op.id}`}
+                  <Link
+                    href={{ pathname: '/operators', query: { id: op.id } }}
+                    as={`/operators/${op.id}`}
                   >
-                    {op.name}
-                  </a>
+                    <a
+                      ref={n => this.item[i] = n}
+                      data-id={op.id}
+                    >
+                      {op.name}
+                    </a>
+                  </Link>
                 </li>
               )) :
               <li>No results</li>
