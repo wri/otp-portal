@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
 
+// Utils
+import { HELPERS } from 'utils/observations';
 
 export default class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component {
 
@@ -17,43 +18,17 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
   }
 
   /**
-   * HELPERS
-   * - getGroupedByYear
-   * - getGroupedByCategory
-   * - getGroupedByIllegality
-  */
-  getGroupedByYear(data) {
-    return groupBy(data || this.props.data, 'year');
-  }
-
-  getGroupedByCategory(data) {
-    const { year } = this.props;
-    if (year) {
-      const groupedByYear = this.getGroupedByYear();
-      return groupBy(groupedByYear[year], 'category');
-    }
-    return groupBy(data || this.props.data, 'category');
-  }
-
-  getGroupedByIllegality(data) {
-    return groupBy(data || this.props.data, 'illegality');
-  }
-
-  sortBySeverity(data) {
-    const arr = data || this.props.data;
-    return arr.sort();
-  }
-
-
-  /**
    * UI EVENTS
-   * -triggerSelectedIllegality
+   * - triggerSelectedIllegality
   */
   triggerSelectedIllegality({ category, illegality, year }) {
     const { selected } = this.state;
 
     // Toggle selected
-    if (selected.category === category && selected.illegality === illegality && selected.year === year) {
+    if (selected.category === category &&
+        selected.illegality === illegality &&
+        selected.year === year
+    ) {
       this.setState({
         selected: {}
       });
@@ -69,16 +44,16 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
   }
 
   render() {
-    const groupedByCategory = this.getGroupedByCategory();
     const { selected } = this.state;
-    const { year } = this.props;
+    const { data, year } = this.props;
+    const groupedByCategory = HELPERS.getGroupedByCategory(data, year);
 
     return (
       <div className="c-observations-by-illegality">
         {/* Charts */}
         <ul className="obi-category-list">
           {Object.keys(groupedByCategory).map((category) => {
-            const groupedByIllegality = this.getGroupedByIllegality(groupedByCategory[category]);
+            const groupedByIllegality = HELPERS.getGroupedByIllegality(groupedByCategory[category]);
 
             return (
               <li key={category} className="obi-category-list-item">

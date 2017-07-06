@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
 // Selectors
-import getObservationsByYearCategorySeverity from 'selectors/operators-detail/observations-by-year-category-severity';
+import { getGroupedObservations } from 'selectors/operators-detail/observations';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -71,7 +71,7 @@ class OperatorsDetail extends Page {
 
 
   render() {
-    const { url, session, operatorsDetail } = this.props;
+    const { url, session, operatorsDetail, operatorObservations } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -104,6 +104,7 @@ class OperatorsDetail extends Page {
         {tab === 'overview' &&
           <OperatorsDetailOverview
             operatorsDetail={operatorsDetail}
+            operatorObservations={operatorObservations}
             url={url}
           />
         }
@@ -118,6 +119,7 @@ class OperatorsDetail extends Page {
         {tab === 'observations' &&
           <OperatorsDetailObservations
             operatorsDetail={operatorsDetail}
+            operatorObservations={operatorObservations}
             url={url}
           />
         }
@@ -145,7 +147,7 @@ export default withRedux(
   state => ({
     operators: state.operators,
     operatorsDetail: state.operatorsDetail,
-    observationsByYearCategorySeverity: getObservationsByYearCategorySeverity(state)
+    operatorObservations: getGroupedObservations(state)
   }),
   { getOperators, getOperator }
 )(OperatorsDetail);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 
 // Utils
+import { HELPERS } from 'utils/observations';
 import { substitution } from 'utils/text';
 
 // Components
@@ -43,7 +44,7 @@ const data = [{
 
 export default class Gallery1 extends React.Component {
   getData() {
-    const { url, operatorsDetail } = this.props;
+    const { url, operatorsDetail, operatorObservations } = this.props;
     return JSON.parse(substitution(JSON.stringify(data), [
       {
         key: 'OPERATOR_ID',
@@ -53,24 +54,12 @@ export default class Gallery1 extends React.Component {
         value: '65%'
       }, {
         key: 'OBSERVATIONS_BY_MONITORS',
-        value: (operatorsDetail.data.observations) ? this.getAvgObservationByMonitors() : '-'
+        value: (operatorsDetail.data.observations) ? HELPERS.getAvgObservationByMonitors(operatorObservations) : '-'
       }, {
         key: 'FMUS',
         value: (operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-'
       }
     ]));
-  }
-
-  getAvgObservationByMonitors() {
-    const { observations } = this.props.operatorsDetail.data;
-    const dates = groupBy(observations.map(o =>
-      new Date(o['publication-date']).toJSON().slice(0, 10).replace(/-/g, '/')
-    ));
-
-    const avg = Object.keys(dates).reduce((sum, k) =>
-      sum + dates[k].length, 0) / (Object.keys(dates).length || 1
-    );
-    return avg.toFixed(1);
   }
 
   render() {
@@ -103,5 +92,6 @@ export default class Gallery1 extends React.Component {
 
 Gallery1.propTypes = {
   url: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.object.isRequired
+  operatorsDetail: PropTypes.object.isRequired,
+  operatorObservations: PropTypes.array
 };

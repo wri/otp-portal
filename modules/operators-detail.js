@@ -1,4 +1,4 @@
-import { Deserializer } from 'jsonapi-serializer';
+import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 
 /* Constants */
@@ -13,6 +13,8 @@ const initialState = {
   loading: false,
   error: false
 };
+
+const JSONA = new Jsona();
 
 /* Reducer */
 export default function (state = initialState, action) {
@@ -48,12 +50,10 @@ export function getOperator(id) {
       })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
-        new Deserializer().deserialize(operator, (err, dataParsed) => {
-          console.log(dataParsed);
-          dispatch({
-            type: GET_OPERATOR_SUCCESS,
-            payload: dataParsed
-          });
+        const dataParsed = JSONA.deserialize(operator);
+        dispatch({
+          type: GET_OPERATOR_SUCCESS,
+          payload: dataParsed
         });
       })
       .catch((err) => {

@@ -21,6 +21,7 @@
     "glob": "7.1.1",
     "isomorphic-fetch": "^2.2.1",
     "json-api-normalizer": "^0.4.0",
+    "jsona": "^1.0.9",
     "jsonapi-serializer": "^3.5.3",
     "leaflet": "^1.0.3",
     "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",

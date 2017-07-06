@@ -53,7 +53,7 @@ export default class Tabs extends React.Component {
                   >
                     <a className={`tabs-btn ${btnClasses}`}>
                       <span className="title">{option.label}</span>
-                      {!!option.number && <span className="number">{option.number}</span>}
+                      {(!!option.number || option.number === 0) && <span className="number">{option.number}</span>}
                     </a>
                   </Link>
                 </div>

@@ -2,9 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Constants
-import { OBSERVATIONS_OPERATORS_DETAIL } from 'constants/operators-detail';
-
 // Components
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
@@ -39,7 +36,7 @@ export default function OperatorsDetailOverview(props) {
           </header>
 
           <div className="content">
-            <TotalObservationsByOperatorByCategory data={OBSERVATIONS_OPERATORS_DETAIL} />
+            <TotalObservationsByOperatorByCategory data={props.operatorObservations} />
           </div>
         </article>
       </div>
@@ -48,6 +45,5 @@ export default function OperatorsDetailOverview(props) {
 }
 
 OperatorsDetailOverview.propTypes = {
-  url: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.object.isRequired
+  operatorObservations: PropTypes.array
 };

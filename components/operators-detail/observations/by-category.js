@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
-import flatten from 'lodash/flatten';
 import classnames from 'classnames';
 
 // Constants
 import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rechart';
+
+// Utils
+import { HELPERS } from 'utils/observations';
 
 // Components
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from 'recharts';
@@ -13,39 +14,6 @@ import ChartLegend from 'components/ui/chart-legend';
 
 
 export default class TotalObservationsByOperatorByCategory extends React.Component {
-
-  getGroupedByYear(data) {
-    return groupBy(data || this.props.data, 'year');
-  }
-
-  getGroupedByCategory(data) {
-    const { year } = this.props;
-    if (year) {
-      const groupedByYear = this.getGroupedByYear();
-      return groupBy(groupedByYear[year], 'category');
-    }
-    return groupBy(data || this.props.data, 'category');
-  }
-
-  getGroupedBySeverity(data) {
-    const grouped = groupBy(data || this.props.data, 'severity');
-    return [{
-      hight: (grouped[3]) ? grouped[3].length : 0,
-      medium: (grouped[2]) ? grouped[2].length : 0,
-      low: (grouped[1]) ? grouped[1].length : 0,
-      unknown: (grouped[0]) ? grouped[0].length : 0
-    }];
-  }
-
-  getMaxValue(data) {
-    const arr = flatten(Object.keys(data || this.props.data).map((k) => {
-      const groupedBySeverity = groupBy(data[k], 'severity');
-      return Object.keys(groupedBySeverity).map(s => groupedBySeverity[s].length);
-    }));
-
-    return Math.max(...arr);
-  }
-
   getAxis(max) {
     return this.props.horizontal ?
     [
@@ -59,9 +27,10 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
   }
 
   render() {
-    const { horizontal } = this.props;
-    const groupedByCategory = this.getGroupedByCategory();
-    const max = this.getMaxValue(groupedByCategory);
+    const { data, year, horizontal } = this.props;
+    const groupedByCategory = HELPERS.getGroupedByCategory(data, year);
+    const max = HELPERS.getMaxValue(groupedByCategory);
+
     const className = classnames({
       'c-chart-container': true,
       '-horizontal': !!horizontal
@@ -95,7 +64,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
         {/* Charts */}
         <div className="row custom-row">
           {Object.keys(groupedByCategory).map((category) => {
-            const groupedBySeverity = this.getGroupedBySeverity(groupedByCategory[category]);
+            const groupedBySeverity = HELPERS.getGroupedBySeverity(groupedByCategory[category]);
 
             return (
               <div key={category} className={classColumns}>
