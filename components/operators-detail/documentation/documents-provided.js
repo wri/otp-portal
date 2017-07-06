@@ -18,17 +18,35 @@ export default class DocumentsProvided extends React.Component {
 
   getGroupedByStatus() {
     // TODO: replace to a reseselect from the documentation asociated to an operator
+    const length = this.props.data.length;
     const grouped = groupBy(this.props.data, 'status');
     return [
-      { name: 'Not provided', value: grouped['not-provided'].length || 0, fill: PALETTE_COLOR_2[0].fill, stroke: PALETTE_COLOR_2[0].stroke },
-      { name: 'Provided (not valid)', value: grouped['not-valid'].length, fill: PALETTE_COLOR_2[1].fill, stroke: PALETTE_COLOR_2[1].stroke },
-      { name: 'Provided (valid)', value: grouped.valid.length, fill: PALETTE_COLOR_2[2].fill, stroke: PALETTE_COLOR_2[2].stroke }
+      {
+        name: 'Not provided',
+        value: Math.round((grouped['not-provided'].length / length) * 100) || 0,
+        fill: PALETTE_COLOR_2[0].fill,
+        stroke: PALETTE_COLOR_2[0].stroke
+      },
+      {
+        name: 'Provided (not valid)',
+        value: Math.round((grouped['not-valid'].length / length) * 100) || 0,
+        fill: PALETTE_COLOR_2[1].fill,
+        stroke: PALETTE_COLOR_2[1].stroke
+      },
+      {
+        name: 'Provided (valid)',
+        value: Math.round((grouped.valid.length / length) * 100) || 0,
+        fill: PALETTE_COLOR_2[2].fill,
+        stroke: PALETTE_COLOR_2[2].stroke
+      }
     ];
   }
 
   render() {
     const groupedByCategory = this.getGroupedByCategory();
     const groupedByStatus = this.getGroupedByStatus();
+
+    console.log(groupedByStatus);
 
     return (
       <div className="c-doc-provided">
@@ -45,6 +63,10 @@ export default class DocumentsProvided extends React.Component {
                     startAngle={90}
                     endAngle={-270}
                     isAnimationActive={false}
+                    label={{
+                      fill: '#333'
+                    }}
+                    labelLine={false}
                   >
                     {groupedByStatus.map(entry =>
                       <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />

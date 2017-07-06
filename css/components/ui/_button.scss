@@ -21,9 +21,13 @@
     opacity: .4;
   }
 
+  &.-ellipsis { overflow: hidden; text-overflow: ellipsis; }
+
   // SIZES
   &.-fullwidth { width: 100%; }
   &.-fullheight { height: 100%; }
+
+
 
   // THEMES
   // - primary

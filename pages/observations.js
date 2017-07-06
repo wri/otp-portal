@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
+import Overview from 'components/observations/overview';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
@@ -15,6 +16,7 @@ import StaticTabs from 'components/ui/static-tabs';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 
 // Utils
 import {
@@ -42,13 +44,18 @@ class ObservationsPage extends Page {
   }
 
   componentDidMount() {
-    const { observations, url } = this.props;
+    const { observations, operators, url } = this.props;
     if (isEmpty(observations.data)) {
       this.props.getObservations(1);
     }
 
     if (isEmpty(observations.filters.options)) {
       this.props.getFilters();
+    }
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
     }
 
     this.props.getObservationsUrl(url);
@@ -106,6 +113,7 @@ class ObservationsPage extends Page {
         description="Observations description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
         <StaticHeader
           title="Observations"
@@ -125,6 +133,7 @@ class ObservationsPage extends Page {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
+                <Overview />
               </div>
             </div>
           </div>
@@ -180,9 +189,11 @@ ObservationsPage.propTypes = {
 export default withRedux(
   store,
   state => ({
-    observations: state.observations
+    observations: state.observations,
+    operators: state.operators
   }),
   dispatch => ({
+    getOperators() { dispatch(getOperators()); },
     getObservations(page) { dispatch(getObservations(page)); },
     getFilters() { dispatch(getFilters()); },
     getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -11,6 +10,7 @@ import getObservationsByYearCategorySeverity from 'selectors/operators-detail/ob
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
+import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 
 // Components
@@ -18,6 +18,7 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
+import Spinner from 'components/ui/spinner';
 
 // Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
@@ -49,9 +50,22 @@ class OperatorsDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url, operatorsDetail } = this.props;
-    if (isEmpty(operatorsDetail.data)) {
-      this.props.getOperator(url.query.id);
+    const { url, operators } = this.props;
+
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
+
+    this.props.getOperator(url.query.id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { url } = this.props;
+    const { url: nextUrl } = nextProps;
+
+    if (url.query.id !== nextUrl.query.id) {
+      this.props.getOperator(nextUrl.query.id);
     }
   }
 
@@ -63,13 +77,16 @@ class OperatorsDetail extends Page {
 
     return (
       <Layout
-        title="Forest operator's name"
+        title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
         session={session}
+        searchList={this.props.operators.data}
       >
+        <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
+
         <StaticHeader
-          title="Forest operator's name"
+          title={operatorsDetail.data.name || '-'}
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
@@ -94,18 +111,21 @@ class OperatorsDetail extends Page {
         {tab === 'documentation' &&
           <OperatorsDetailDocumentation
             operatorsDetail={operatorsDetail}
+            url={url}
           />
         }
 
         {tab === 'observations' &&
           <OperatorsDetailObservations
             operatorsDetail={operatorsDetail}
+            url={url}
           />
         }
 
         {tab === 'fmus' &&
           <OperatorsDetailFMUs
             operatorsDetail={operatorsDetail}
+            url={url}
           />
         }
 
@@ -123,8 +143,9 @@ OperatorsDetail.propTypes = {
 export default withRedux(
   store,
   state => ({
+    operators: state.operators,
     operatorsDetail: state.operatorsDetail,
     observationsByYearCategorySeverity: getObservationsByYearCategorySeverity(state)
   }),
-  { getOperator }
+  { getOperators, getOperator }
 )(OperatorsDetail);

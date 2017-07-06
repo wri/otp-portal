@@ -9,10 +9,11 @@ const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
 
 const SET_OPERATORS_MAP_LOCATION = 'SET_OPERATORS_MAP_LOCATION';
 
+const DESERIALIZER = new Deserializer();
 
 /* Initial state */
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: false,
   map: {
@@ -53,8 +54,9 @@ export function getOperators() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-
-    fetch(`${process.env.OTP_API}/operators?page[size]=99999`, {
+    // TODO: change 7 and 47 to COD and COG
+    // TODO: include documentation
+    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47&include=observations,fmus`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ export function getOperators() {
         throw new Error(response.statusText);
       })
       .then((operators) => {
-        new Deserializer().deserialize(operators, (err, dataParsed) => {
+        DESERIALIZER.deserialize(operators, (err, dataParsed) => {
           dispatch({
             type: GET_OPERATORS_SUCCESS,
             payload: dataParsed

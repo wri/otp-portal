@@ -37,6 +37,7 @@ export default class Layout extends React.Component {
         <Header
           url={url}
           session={session}
+          searchList={this.props.searchList}
         />
 
         <div className={`l-main ${classNames}`}>
@@ -59,5 +60,6 @@ Layout.propTypes = {
   session: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
   className: PropTypes.string,
+  searchList: PropTypes.array,
   footer: PropTypes.bool
 };

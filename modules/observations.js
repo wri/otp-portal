@@ -15,7 +15,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
-const OBS_MAX_SIZE = 1000000000000000;
+const OBS_MAX_SIZE = 100;
 
 /* Initial state */
 const initialState = {
@@ -26,12 +26,12 @@ const initialState = {
   filters: {
     data: {
       types: [],
-      countries: [],
-      fmus: [],
+      country_ids: [7, 47],
+      fmu_ids: [],
       years: [],
-      monitors: [],
-      categories: [],
-      levels: []
+      observer_ids: [],
+      category_ids: [],
+      severities: []
     },
     options: {},
     loading: false,
@@ -198,23 +198,15 @@ export function setObservationsUrl() {
 
 export function getObservationsUrl(url) {
   return (dispatch) => {
-    if (url.query.filters) {
-      const filters = decode(url.query.filters);
-      const { type, country, fmu, years, monitors, categories, levels } = filters;
-
-      const startFilters = {
-        type: type || initialState.type,
-        country: country || initialState.country,
-        fmu: fmu || initialState.fmu,
-        years: years || initialState.years,
-        monitors: monitors || initialState.monitors,
-        categories: categories || initialState.categories,
-        levels: levels || initialState.levels
+    const filters = url.query.filters;
+    if (filters) {
+      const payload = {
+        ...decode(url.query.filters)
       };
 
       dispatch({
         type: SET_FILTERS,
-        payload: startFilters
+        payload
       });
     }
   };

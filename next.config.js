@@ -38,6 +38,8 @@ module.exports = {
 
     config.plugins.push(
       new webpack.DefinePlugin({
+        'process.env.ENV': JSON.stringify(process.env.ENV),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.PORT': JSON.stringify(process.env.PORT),
         'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
         'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY),

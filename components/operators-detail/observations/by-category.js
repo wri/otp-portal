@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import classnames from 'classnames';
 
 // Constants
 import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rechart';
@@ -45,12 +46,45 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
     return Math.max(...arr);
   }
 
+  getAxis(max) {
+    return this.props.horizontal ?
+    [
+      <XAxis key="x-axis" hide axisLine={false} domain={[0, max]} type="number" />,
+      <YAxis key="y-axis" hide axisLine type="category" />
+    ] :
+    [
+      <XAxis key="x-axis" hide axisLine />,
+      <YAxis key="y-axis" hide axisLine={false} domain={[0, max]} />
+    ];
+  }
+
   render() {
+    const { horizontal } = this.props;
     const groupedByCategory = this.getGroupedByCategory();
     const max = this.getMaxValue(groupedByCategory);
+    const className = classnames({
+      'c-chart-container': true,
+      '-horizontal': !!horizontal
+    });
+
+    const classColumns = classnames({
+      columns: true,
+      'small-12': horizontal,
+      'small-6 medium-4 large-2': !horizontal
+    });
+
+    const classChart = classnames({
+      chart: true,
+      '-max-width-100': !horizontal
+    });
+
+    const classTitle = classnames({
+      'c-title': true,
+      '-bigger': true
+    });
 
     return (
-      <div className="c-chart-container">
+      <div className={className}>
         {/* Legend */}
         <ChartLegend
           title={LEGEND_SEVERITY.title}
@@ -64,31 +98,32 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
             const groupedBySeverity = this.getGroupedBySeverity(groupedByCategory[category]);
 
             return (
-              <div key={category} className="columns small-6 medium-4 large-2">
+              <div key={category} className={classColumns}>
+                {/* <div key={category} className="columns small-6 medium-4 large-2"> */}
                 <div className="c-chart">
-                  <div className="chart -max-width-100">
-                    <ResponsiveContainer height={120}>
+                  {/* <div className="chart -max-width-100"> */}
+                  <div className={classChart}>
+                    <ResponsiveContainer height={horizontal ? 60 : 120}>
                       <BarChart
+                        layout={horizontal ? 'vertical' : 'horizontal'}
                         data={groupedBySeverity}
-                        barGap={5}
+                        barGap={horizontal ? 3 : 5}
                         barCategoryGap={0}
                         margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
                         {...ANIMATION_TIMES}
                       >
-                        <XAxis hide axisLine={false} />
-                        <YAxis hide axisLine={false} domain={[0, max]} />
+                        {this.getAxis(max)}
 
-                        <Bar dataKey="hight" fill={PALETTE_COLOR_1[0].fill} minPointSize={1} />
-                        <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} minPointSize={1} />
-                        <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} minPointSize={1} />
-                        <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} minPointSize={1} />
+                        <Bar dataKey="hight" fill={PALETTE_COLOR_1[0].fill} />
+                        <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} />
+                        <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} />
+                        <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} />
 
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
 
-                  <h3 className="c-title -bigger">{category}</h3>
-
+                  <h3 className={classTitle}>{category}</h3>
                 </div>
               </div>
             );
@@ -114,5 +149,6 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
 
 TotalObservationsByOperatorByCategory.propTypes = {
   data: PropTypes.array,
-  year: PropTypes.number
+  year: PropTypes.number,
+  horizontal: PropTypes.bool
 };

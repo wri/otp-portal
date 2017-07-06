@@ -1,3 +1,5 @@
+import React from 'react';
+
 const TABS_OBSERVATIONS = [
   {
     label: 'Observations List',
@@ -53,12 +55,12 @@ const FILTERS_REFS = [
     placeholder: 'All Types'
   },
   {
-    key: 'countries',
+    key: 'country_ids',
     name: 'Country',
     placeholder: 'All Countries'
   },
   {
-    key: 'fmus',
+    key: 'fmu_ids',
     name: 'FMU',
     placeholder: 'All FMUS'
   },
@@ -68,17 +70,17 @@ const FILTERS_REFS = [
     placeholder: 'All Years'
   },
   {
-    key: 'monitors',
+    key: 'observer_ids',
     name: 'Monitor',
     placeholder: 'All Monitors'
   },
   {
-    key: 'categories',
+    key: 'category_ids',
     name: 'categories',
     placeholder: 'All Categories'
   },
   {
-    key: 'levels',
+    key: 'severities',
     name: 'Severity',
     placeholder: 'All Severities'
   }
