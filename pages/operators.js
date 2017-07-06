@@ -49,10 +49,12 @@ class OperatorsPage extends Page {
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url } = this.props;
+    const { url, operators } = this.props;
 
-    // Get operators
-    this.props.getOperators();
+    if (!operators.data.length) {
+      // Get operators
+      this.props.getOperators();
+    }
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
@@ -157,6 +159,7 @@ class OperatorsPage extends Page {
         session={session}
         className="-fullscreen"
         footer={false}
+        searchList={this.props.operators.data}
       >
         <div className="c-section -map">
           <Sidebar>

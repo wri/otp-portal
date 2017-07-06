@@ -35,7 +35,7 @@ export function getOperator(id) {
     dispatch({ type: GET_OPERATOR_LOADING });
 
 
-    fetch(`${process.env.OTP_API}/operators/${id}`, {
+    fetch(`${process.env.OTP_API}/operators/${id}?include=observations,observations.severity,observations.subcategory,observations.subcategory.category,fmus`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -49,6 +49,7 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         new Deserializer().deserialize(operator, (err, dataParsed) => {
+          console.log(dataParsed);
           dispatch({
             type: GET_OPERATOR_SUCCESS,
             payload: dataParsed
