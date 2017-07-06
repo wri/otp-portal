@@ -17,12 +17,17 @@
 
       &::placeholder {
         text-transform: uppercase;
+        color: $color-text-1;
       }
 
       &:focus { outline: none; }
     }
 
-    svg { fill: $color-primary; }
+    svg {
+      position: relative;
+      top: -2px;
+      fill: $color-primary;
+    }
   }
 
   .results-container {

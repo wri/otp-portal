@@ -68,6 +68,8 @@
           }
 
           svg {
+            position: relative;
+            top: -2px;
             fill: $color-primary;
           }
 
@@ -112,6 +114,22 @@
           &:hover {
             color: darken($color-white, 20%);
           }
+        }
+      }
+    }
+
+    .c-search {
+      .search {
+        input {
+          color: $color-tertiary;
+
+          &::placeholder {
+            color: $color-tertiary;
+          }
+        }
+
+        svg {
+          fill: $color-tertiary;
         }
       }
     }

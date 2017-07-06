@@ -57,6 +57,15 @@ class OperatorsDetail extends Page {
     this.props.getOperator(url.query.id);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { url } = this.props;
+    const { url: nextUrl } = nextProps;
+
+    if (url.query.id !== nextUrl.query.id) {
+      this.props.getOperator(nextUrl.query.id);
+    }
+  }
+
 
   render() {
     const { url, session, operatorsDetail } = this.props;
