@@ -1,4 +1,4 @@
-import { Deserializer } from 'jsonapi-serializer';
+import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
@@ -15,7 +15,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
-const OBS_MAX_SIZE = 100;
+const OBS_MAX_SIZE = 3000;
 
 /* Initial state */
 const initialState = {
@@ -38,6 +38,8 @@ const initialState = {
     error: false
   }
 };
+
+const JSONA = new Jsona();
 
 /* Reducer */
 export default function (state = initialState, action) {
@@ -77,7 +79,7 @@ export default function (state = initialState, action) {
 }
 
 /* Action creators */
-export function getObservations(page) {
+export function getObservations() {
   return (dispatch, getState) => {
     const filters = getState().observations.filters.data;
     let query = '';
@@ -90,9 +92,10 @@ export function getObservations(page) {
       }
     });
 
-    // const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`;
-    const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}`;
+    const includes = ['subcategory', 'subcategory.category', 'operator']
 
+    // const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`;
+    const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&include=${includes.join(',')}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
@@ -108,16 +111,16 @@ export function getObservations(page) {
         throw new Error(response.statusText);
       })
       .then((observations) => {
-        dispatch({
-          type: GET_OBSERVATIONS_TOTAL_SIZE,
-          payload: Math.ceil(observations.meta.total_items / OBS_MAX_SIZE)
-        });
+        // dispatch({
+        //   type: GET_OBSERVATIONS_TOTAL_SIZE,
+        //   payload: Math.ceil(observations.data.length / OBS_MAX_SIZE)
+        // });
         // Fetch from server ok -> Dispatch observations
-        new Deserializer().deserialize(observations, (err, dataParsed) => {
-          dispatch({
-            type: GET_OBSERVATIONS_SUCCESS,
-            payload: dataParsed
-          });
+        const dataParsed = JSONA.deserialize(observations);
+        console.log(dataParsed);
+        dispatch({
+          type: GET_OBSERVATIONS_SUCCESS,
+          payload: dataParsed
         });
       })
       .catch((err) => {

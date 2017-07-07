@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 
+// Utils
+import { HELPERS } from 'utils/observations';
+
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
@@ -13,7 +16,7 @@ export default class OperatorsDetailObservations extends React.Component {
     super(props);
 
     this.state = {
-      year: this.getMaxYear()
+      year: HELPERS.getMaxYear(props.operatorObservations)
     };
 
     // BINDINGS
@@ -22,7 +25,9 @@ export default class OperatorsDetailObservations extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.operatorObservations !== nextProps.operatorObservations) {
-      this.getMaxYear();
+      this.setState({
+        year: HELPERS.getMaxYear(nextProps.operatorObservations)
+      });
     }
   }
 
@@ -32,20 +37,6 @@ export default class OperatorsDetailObservations extends React.Component {
   */
   onChangeYear(year) {
     this.setState({ year });
-  }
-
-  /**
-   * HELPERS
-   * - getYears
-  */
-  getYears() {
-    const years = Object.keys(groupBy(this.props.operatorObservations, d => d.date.getFullYear()));
-    return years.sort((a, b) => b - a).map(year => ({ label: year, value: year }));
-  }
-
-  getMaxYear() {
-    const years = Object.keys(groupBy(this.props.operatorObservations, d => d.date.getFullYear()));
-    return Math.max(...years);
   }
 
   render() {
@@ -73,7 +64,7 @@ export default class OperatorsDetailObservations extends React.Component {
 
           <div className="content">
             <StaticTabs
-              options={this.getYears()}
+              options={HELPERS.getYears(this.props.operatorObservations)}
               defaultSelected={this.state.year.toString()}
               onChange={this.onChangeYear}
             />

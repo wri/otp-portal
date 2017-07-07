@@ -40,7 +40,7 @@ export default class TotalObservationsByOperator extends React.Component {
               >
                 <header className="obo-observations-header">
                   <span>{year}</span>
-                  <span>{HELPERS.getAvgObservationByMonitors(groupedByYear[year])}</span>
+                  <span>{length} ({HELPERS.getMonitorVisits(groupedByYear[year])})</span>
                 </header>
 
                 {/* SEVERITY LIST */}

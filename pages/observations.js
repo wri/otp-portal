@@ -71,27 +71,14 @@ class ObservationsPage extends Page {
     }
   }
 
-  getCategories(annexOperator, annexGovernance) {
-    const operatorCategories = annexOperator && annexOperator.categories ?
-      annexOperator.categories.map(c => c && c.name ? c.name : '') : [];
-    const governanceCategories = annexGovernance && annexGovernance.categories ?
-      annexGovernance.categories.map(c => c && c.name ? c.name : '') : [];
-
-    return [...operatorCategories, ...governanceCategories];
-  }
-
   parseTableData() {
-    const getCategories = (annexOperator, annexGovernance) => (
-      this.getCategories(annexOperator, annexGovernance)
-    );
-
     return this.props.observations.data.map(o => (
       {
         date: new Date(o['publication-date']).getFullYear(),
         country: o.country && o.country.iso,
         operator: o.operator && o.operator.name,
         fmu: 'N/A',
-        category: getCategories(o['annex-operator'], o['annex-governance']).join(', '),
+        category: o.subcategory.category.name,
         observation: o.details,
         level: 2
       }

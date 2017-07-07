@@ -2,6 +2,7 @@ import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 
 const HELPERS = {
+  // Groups
   getGroupedByYear(data) {
     return groupBy(data, d => d.date.getFullYear());
   },
@@ -31,6 +32,7 @@ const HELPERS = {
     return groupBy(data, 'illegality');
   },
 
+  // Values
   getMaxValue(data) {
     const arr = flatten(Object.keys(data || this.props.data).map((k) => {
       const groupedBySeverity = groupBy(data[k], 'severity');
@@ -43,6 +45,26 @@ const HELPERS = {
   getMaxLength(data) {
     const arr = Object.keys(data).map(k => data[k].length);
     return Math.max(...arr);
+  },
+
+  // Years
+  getYears(data) {
+    const years = Object.keys(groupBy(data, d => d.date.getFullYear()));
+    return years.sort((a, b) => b - a).map(year => ({ label: year, value: year }));
+  },
+
+  getMaxYear(data) {
+    const years = Object.keys(groupBy(data, d => d.date.getFullYear()));
+    return Math.max(...years);
+  },
+
+
+  // Monitors
+  getMonitorVisits(data) {
+    const dates = groupBy(data.map(o =>
+      o.date.toJSON().slice(0, 10).replace(/-/g, '/')
+    ));
+    return Object.keys(dates).length;
   },
 
   getAvgObservationByMonitors(data) {
