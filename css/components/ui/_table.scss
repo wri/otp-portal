@@ -101,10 +101,10 @@
       font-size: $font-size-huge;
       line-height: 32px;
 
-      &.-sev-0 { color: $lg-color-0; }
-      &.-sev-1 { color: $lg-color-1; }
-      &.-sev-2 { color: $lg-color-2; }
-      &.-sev-3 { color: $lg-color-3; }
+      &.-sev-0 { color: $lg-color-3; }
+      &.-sev-1 { color: $lg-color-2; }
+      &.-sev-2 { color: $lg-color-1; }
+      &.-sev-3 { color: $lg-color-0; }
     }
 
     .rt-noData {

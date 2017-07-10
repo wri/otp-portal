@@ -77,10 +77,9 @@ class ObservationsPage extends Page {
         date: new Date(o['publication-date']).getFullYear(),
         country: o.country && o.country.iso,
         operator: o.operator && o.operator.name,
-        fmu: 'N/A',
         category: o.subcategory.category.name,
         observation: o.details,
-        level: 2
+        level: o.severity && o.severity.level
       }
     ));
   }
