@@ -10,7 +10,7 @@ import Table from 'components/ui/table';
 // constants
 import { TABLE_HEADERS_ILLEGALITIES } from 'constants/operators-detail';
 
-const MAX_ROWS_TABLE_ILLEGALITIES = 5;
+const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
 export default class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component {
 
