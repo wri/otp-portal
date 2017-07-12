@@ -23,10 +23,12 @@ export default class OperatorsDetailFMUs extends React.Component {
           layers={JSON.parse(substitution(JSON.stringify(MAP_LAYERS_OPERATORS_DETAIL), [{ key: 'OPERATOR_ID', value: url.query.id }]))}
         />
         {fmus && fmus.length &&
-          <FMUCard
-            title="Forest Management Units"
-            fmus={fmus}
-          />}
+          <div className="l-container">
+            <FMUCard
+              title="Forest Management Units"
+              fmus={fmus}
+            />
+          </div>}
       </div>
     );
   }

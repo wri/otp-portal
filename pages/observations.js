@@ -107,7 +107,7 @@ class ObservationsPage extends Page {
         />
         <div className="c-section">
           <div className="l-container">
-            <div className="row custom-row">
+            <div className="row l-row">
               <div className="columns small-12 medium-4">
                 <Filters
                   options={observations.filters.options}

@@ -50,7 +50,7 @@ export default class DocumentsProvided extends React.Component {
 
     return (
       <div className="c-doc-provided">
-        <div className="row custom-row">
+        <div className="row l-row">
           <div className="columns small-6">
             <div className="c-chart">
               <ResponsiveContainer height={350}>
