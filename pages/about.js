@@ -45,7 +45,7 @@ class AboutPage extends Page {
             <article
               className="c-article"
             >
-              <div className="row custom-row">
+              <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
                     <h2 className="c-title">Background</h2>
@@ -63,7 +63,7 @@ class AboutPage extends Page {
             <article
               className="c-article"
             >
-              <div className="row custom-row">
+              <div className="row l-row">
                 <div className="columns small-12 medium-6">
                   <header>
                     <h2 className="c-title">Contact us</h2>

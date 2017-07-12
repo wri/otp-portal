@@ -11,7 +11,7 @@ export default function Gallery2() {
     <div className="c-gallery">
       <h2 className="c-title">Legislation and Regulations</h2>
 
-      <div className="row custom-row">
+      <div className="row l-row">
         {LEGISLATION_AND_REGULATIONS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 

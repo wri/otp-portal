@@ -26,7 +26,7 @@ export default class DocumentsGallery extends React.Component {
               <h3 className="c-title -proximanova -extrabig -uppercase">{category}</h3>
             </header>
 
-            <div className="row custom-row">
+            <div className="row l-row">
               {groupedByCategory[category].map(card => (
                 <div
                   key={card.id}

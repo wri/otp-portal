@@ -65,7 +65,7 @@ export default class Gallery1 extends React.Component {
   render() {
     return (
       <div className="c-gallery">
-        <div className="row custom-row">
+        <div className="row l-row">
           {this.getData().map((article, i) => {
             const theme = (i === 0) ? '-secondary' : '-primary';
 

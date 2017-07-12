@@ -15,7 +15,7 @@ export default function OperatorsDetailOverview(props) {
         <Gallery1 {...props} />
 
         <article className="c-article">
-          <div className="row custom-row">
+          <div className="row l-row">
             <div className="columns small-12 medium-8">
               <header>
                 <h2 className="c-title">Overview</h2>

@@ -62,7 +62,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
         />
 
         {/* Charts */}
-        <div className="row custom-row">
+        <div className="row l-row">
           {Object.keys(groupedByCategory).map((category) => {
             const groupedBySeverity = HELPERS.getGroupedBySeverity(groupedByCategory[category]);
 

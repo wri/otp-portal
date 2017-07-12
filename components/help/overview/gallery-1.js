@@ -10,7 +10,7 @@ export default function Gallery1() {
     <div className="c-gallery">
       <h2 className="c-title">How the Open Timber Portal Works</h2>
 
-      <div className="row custom-row">
+      <div className="row l-row">
         {HOW_OTP_WORKS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 

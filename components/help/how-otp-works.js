@@ -28,7 +28,7 @@ export default class HelpHowOTPWorks extends React.Component {
       >
         <div className="l-container">
           <StickyContainer>
-            <div className="row custom-row">
+            <div className="row l-row">
               <div className="columns small-12 medium-3">
                 <Sticky>
                   {
