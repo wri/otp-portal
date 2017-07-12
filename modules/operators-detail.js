@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import * as queryString from 'query-string';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -36,8 +37,16 @@ export function getOperator(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
+    const includeFields = ['observations', 'observations.severity',
+      'observations.subcategory', 'observations.documents',
+      'observations.subcategory.category', 'fmus'];
 
-    fetch(`${process.env.OTP_API}/operators/${id}?include=observations,observations.severity,observations.subcategory,observations.subcategory.category,fmus`, {
+    const queryParams = queryString.stringify({
+      include: includeFields.join(',')
+    });
+
+
+    fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

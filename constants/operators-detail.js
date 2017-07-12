@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
@@ -488,11 +489,54 @@ const OBSERVATIONS_OPERATORS_DETAIL = [{
   illegality: 'Harvesting without concession title'
 }];
 
+const TABLE_HEADERS_ILLEGALITIES = [
+  {
+    Header: <span className="sortable">date</span>,
+    accessor: 'date',
+    headerClassName: '-a-left',
+    className: '-a-left',
+    minWidth: 75,
+    Cell: (attr) => {
+      const date = new Date(attr.value);
+      const monthName = date ? date.toLocaleString('en-us', { month: 'short' }) : '-';
+      const year = date ? date.getFullYear() : '-';
+      return <span>{`${monthName} ${year}`}</span>;
+    }
+  },
+  {
+    Header: <span className="sortable">Severity</span>,
+    accessor: 'severity',
+    headerClassName: '-a-center',
+    className: '-a-left severity',
+    minWidth: 150,
+    Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+  },
+  {
+    Header: <span>Description</span>,
+    accessor: 'details',
+    headerClassName: '-a-left',
+    className: 'description',
+    sortable: false,
+    minWidth: 420,
+    Cell: attr => <p>{attr.value}</p>
+  },
+  // not ready
+  {
+    Header: <span>Evidences</span>,
+    accessor: 'documents',
+    sortable: false,
+    headerClassName: '-a-left',
+    minWidth: 150,
+    Cell: attr => <a className="evidence-link" href={attr.link || '#'} target="_blank"rel="noopener noreferrer">document sample</a>
+  }
+];
+
 export {
   TABS_OPERATORS_DETAIL,
   TABS_DOCUMENTATION_OPERATORS_DETAIL,
   DOCUMENTATION_OPERATORS_DETAIL,
   OBSERVATIONS_OPERATORS_DETAIL,
   MAP_OPTIONS_OPERATORS_DETAIL,
-  MAP_LAYERS_OPERATORS_DETAIL
+  MAP_LAYERS_OPERATORS_DETAIL,
+  TABLE_HEADERS_ILLEGALITIES
 };
