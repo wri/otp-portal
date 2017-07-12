@@ -74,13 +74,11 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
 
                 <ul className="obi-illegality-list">
                   {Object.keys(groupedByIllegality).map((illegality) => {
-                    const total = groupedByIllegality[illegality].length;
+                    const legalities = groupedByIllegality[illegality].length;
+                    const paginatedItems = MAX_ROWS_TABLE_ILLEGALITIES * this.state.indexPagination;
 
-                    const pageSize =
-                      (groupedByIllegality[illegality].length -
-                        (MAX_ROWS_TABLE_ILLEGALITIES * this.state.indexPagination)) > MAX_ROWS_TABLE_ILLEGALITIES ?
-                      MAX_ROWS_TABLE_ILLEGALITIES :
-                      groupedByIllegality[illegality].length - (MAX_ROWS_TABLE_ILLEGALITIES * this.state.indexPagination);
+                    const pageSize = (legalities - paginatedItems) > MAX_ROWS_TABLE_ILLEGALITIES ?
+                        MAX_ROWS_TABLE_ILLEGALITIES : (legalities - paginatedItems);
 
                     return (
                       <li key={category + illegality}>
@@ -94,7 +92,7 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                             </ul>
 
                             {/* Illegality total */}
-                            <div className="obi-illegality-total">{total}</div>
+                            <div className="obi-illegality-total">{legalities}</div>
 
                             {/* Illegality title */}
                             <h4
@@ -121,7 +119,7 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                                   className="-light"
                                   data={groupedByIllegality[illegality]}
                                   options={{
-                                    pagination: groupedByIllegality[illegality].length > MAX_ROWS_TABLE_ILLEGALITIES,
+                                    pagination: legalities > MAX_ROWS_TABLE_ILLEGALITIES,
                                     showPageSizeOptions: false,
                                     columns: TABLE_HEADERS_ILLEGALITIES,
                                     nextPageSize: pageSize,
