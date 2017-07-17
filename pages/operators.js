@@ -18,6 +18,9 @@ import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
 import Spinner from 'components/ui/spinner';
 import Map from 'components/map/map';
+import MapControls from 'components/map/map-controls';
+import ZoomControl from 'components/map/controls/zoom-control';
+
 import Table from 'components/ui/table';
 
 class OperatorsPage extends Page {
@@ -149,7 +152,7 @@ class OperatorsPage extends Page {
   }
 
   render() {
-    const { url, session } = this.props;
+    const { url, session, operators } = this.props;
 
     return (
       <Layout
@@ -159,7 +162,7 @@ class OperatorsPage extends Page {
         session={session}
         className="-fullscreen"
         footer={false}
-        searchList={this.props.operators.data}
+        searchList={operators.data}
       >
         <div className="c-section -map">
           <Sidebar>
@@ -167,8 +170,9 @@ class OperatorsPage extends Page {
           </Sidebar>
 
           <div className="c-map-container">
+            {/* Map */}
             <Map
-              mapOptions={this.props.operators.map}
+              mapOptions={operators.map}
               mapListeners={{
                 moveend: (map) => {
                   this.props.setOperatorsMapLocation({
@@ -179,6 +183,19 @@ class OperatorsPage extends Page {
               }}
               layers={MAP_LAYERS_OPERATORS}
             />
+
+            {/* MapControls */}
+            <MapControls>
+              <ZoomControl
+                zoom={operators.map.zoom}
+                onZoomChange={(zoom) => {
+                  this.props.setOperatorsMapLocation({
+                    ...operators.map,
+                    ...{ zoom }
+                  });
+                }}
+              />
+            </MapControls>
           </div>
         </div>
       </Layout>

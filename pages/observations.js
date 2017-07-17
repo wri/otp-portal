@@ -140,7 +140,7 @@ class ObservationsPage extends Page {
                 <Table
                   data={this.parseTableData()}
                   options={{
-                    pageSize: observations.data.length ? 10 : 0,
+                    pageSize: observations.data.length ? 50 : 0,
                     pagination: true,
                     previousText: '<',
                     nextText: '>',

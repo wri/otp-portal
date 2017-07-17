@@ -82,8 +82,8 @@ export default class LayerManager {
             const bounds = getBBox(data);
 
             this.map.fitBounds(bounds, {
-              padding: 40,
-              animate: false
+              padding: 40
+              // animate: false
               // duration: 500,
               // offset: [300, 0]
             });
