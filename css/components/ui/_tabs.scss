@@ -44,6 +44,10 @@
       background: $color-tertiary;
       color: $color-text-1;
 
+      .number {
+        color: $color-primary;
+      }
+
       &:after {
         height: 5px;
         opacity: 1;
