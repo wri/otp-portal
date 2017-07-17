@@ -72,7 +72,6 @@
     "eslint-plugin-import": "https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.2.0.tgz",
     "eslint-plugin-react": "^6.10.3",
     "extract-text-webpack-plugin": "^2.1.0",
-    "postcss-easy-import": "^2.0.0",
     "why-did-you-update": "0.0.8",
     "xo": "^0.17.1"
   },
