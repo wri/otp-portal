@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+import { getOperators } from 'modules/operators';
+
+
+// Selectors
+import { getParsedObservations } from 'selectors/observations/observations';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
@@ -12,11 +21,6 @@ import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
 import StaticTabs from 'components/ui/static-tabs';
-
-// Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
 
 // Utils
 import {
@@ -46,7 +50,7 @@ class ObservationsPage extends Page {
   componentDidMount() {
     const { observations, operators, url } = this.props;
     if (isEmpty(observations.data)) {
-      this.props.getObservations(1);
+      this.props.getObservations();
     }
 
     if (isEmpty(observations.filters.options)) {
@@ -91,7 +95,7 @@ class ObservationsPage extends Page {
   }
 
   render() {
-    const { url, session, observations } = this.props;
+    const { url, session, observations, parsedObservations } = this.props;
 
     return (
       <Layout
@@ -119,7 +123,9 @@ class ObservationsPage extends Page {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview />
+                <Overview
+                  parsedObservations={parsedObservations}
+                />
               </div>
             </div>
           </div>
@@ -176,13 +182,22 @@ export default withRedux(
   store,
   state => ({
     observations: state.observations,
+    parsedObservations: getParsedObservations(state),
     operators: state.operators
   }),
   dispatch => ({
-    getOperators() { dispatch(getOperators()); },
-    getObservations(page) { dispatch(getObservations(page)); },
-    getFilters() { dispatch(getFilters()); },
-    getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
+    getOperators() {
+      dispatch(getOperators());
+    },
+    getObservations() {
+      dispatch(getObservations());
+    },
+    getFilters() {
+      dispatch(getFilters());
+    },
+    getObservationsUrl(url) {
+      dispatch(getObservationsUrl(url));
+    },
     setFilters(filter) {
       dispatch(setFilters(filter));
       dispatch(setObservationsUrl());
