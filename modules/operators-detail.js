@@ -37,9 +37,16 @@ export function getOperator(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
-    const includeFields = ['observations', 'observations.severity',
-      'observations.subcategory', 'observations.documents',
-      'observations.subcategory.category', 'fmus'];
+    const includeFields = [
+      'observations',
+      'observations.severity',
+      'observations.subcategory',
+      'observations.documents',
+      'observations.subcategory.category',
+      'fmus',
+      'operator-documents',
+      'operator-documents.required-operator-document',
+      'operator-documents.required-operator-document.required-operator-document-group'];
 
     const queryParams = queryString.stringify({
       include: includeFields.join(',')
@@ -60,6 +67,8 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
+
         dispatch({
           type: GET_OPERATOR_SUCCESS,
           payload: dataParsed

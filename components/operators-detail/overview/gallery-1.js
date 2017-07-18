@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
 
 // Utils
 import { HELPERS } from 'utils/observations';
@@ -22,7 +21,7 @@ const data = [{
 }, {
   id: 'average-of-observations-by-monitors-visit',
   title: 'Average of observations by monitors visit',
-  description: 'There was 355 observations from 210 independent monitor visits in 2016',
+  description: 'There was {{OBSERVATIONS}} observations from {{VISITS}} independent monitor visits',
   letter: '{{OBSERVATIONS_BY_MONITORS}}',
   link: {
     label: 'Find out more',
@@ -52,6 +51,12 @@ export default class Gallery1 extends React.Component {
       }, {
         key: 'DOCUMENTATION',
         value: '65%'
+      }, {
+        key: 'OBSERVATIONS',
+        value: (operatorsDetail.data.observations) ? operatorsDetail.data.observations.length : '-'
+      }, {
+        key: 'VISITS',
+        value: (operatorsDetail.data.observations) ? HELPERS.getMonitorVisits(operatorObservations) : '-'
       }, {
         key: 'OBSERVATIONS_BY_MONITORS',
         value: (operatorsDetail.data.observations) ? HELPERS.getAvgObservationByMonitors(operatorObservations) : '-'
