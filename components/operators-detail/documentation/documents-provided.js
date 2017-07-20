@@ -1,116 +1,105 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
+
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Constants
-import { PALETTE_COLOR_2, LEGEND_DOCUMENTATION } from 'constants/rechart';
+import { LEGEND_DOCUMENTATION } from 'constants/rechart';
 
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 
-export default class DocumentsProvided extends React.Component {
+export default function DocumentsProvided(props) {
+  const { data } = props;
 
-  getGroupedByCategory() {
-    // TODO: replace to a reseselect from the documentation asociated to an operator
-    return groupBy(this.props.data, 'category');
-  }
+  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
+  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(data);
+  const max = HELPERS_DOC.getMaxLength(groupedByCategory);
 
-  getGroupedByStatus() {
-    // TODO: replace to a reseselect from the documentation asociated to an operator
-    const length = this.props.data.length;
-    const grouped = groupBy(this.props.data, 'status');
-    return [
-      {
-        name: 'Not provided',
-        value: Math.round((grouped['not-provided'].length / length) * 100) || 0,
-        fill: PALETTE_COLOR_2[0].fill,
-        stroke: PALETTE_COLOR_2[0].stroke
-      },
-      {
-        name: 'Provided (not valid)',
-        value: Math.round((grouped['not-valid'].length / length) * 100) || 0,
-        fill: PALETTE_COLOR_2[1].fill,
-        stroke: PALETTE_COLOR_2[1].stroke
-      },
-      {
-        name: 'Provided (valid)',
-        value: Math.round((grouped.valid.length / length) * 100) || 0,
-        fill: PALETTE_COLOR_2[2].fill,
-        stroke: PALETTE_COLOR_2[2].stroke
-      }
-    ];
-  }
+  return (
+    <div className="c-doc-provided">
+      <div className="row l-row">
+        <div className="columns small-6">
+          <div className="c-chart">
+            <ResponsiveContainer height={360}>
+              <PieChart>
+                <Pie
+                  data={groupedByStatusChart}
+                  dataKey="value"
+                  outerRadius={150}
+                  innerRadius={142}
+                  startAngle={90}
+                  endAngle={-270}
+                  isAnimationActive={false}
+                  // If you want to change the labels you should do something similar to this
+                  // https://github.com/recharts/recharts/blob/master/src/polar/Pie.js#L339
+                  label={{
+                    fill: '#333'
+                  }}
+                  labelLine={false}
+                >
+                  {groupedByStatusChart.map(entry =>
+                    <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />
+                  )}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
 
-  render() {
-    const groupedByCategory = this.getGroupedByCategory();
-    const groupedByStatus = this.getGroupedByStatus();
-
-    console.log(groupedByStatus);
-
-    return (
-      <div className="c-doc-provided">
-        <div className="row custom-row">
-          <div className="columns small-6">
-            <div className="c-chart">
-              <ResponsiveContainer height={350}>
-                <PieChart>
-                  <Pie
-                    data={groupedByStatus}
-                    dataKey="value"
-                    outerRadius={170}
-                    innerRadius={162}
-                    startAngle={90}
-                    endAngle={-270}
-                    isAnimationActive={false}
-                    label={{
-                      fill: '#333'
-                    }}
-                    labelLine={false}
-                  >
-                    {groupedByStatus.map(entry =>
-                      <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />
-                    )}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-
-              {/* Legend */}
-              <ChartLegend
-                list={LEGEND_DOCUMENTATION.list}
-                className="-absolute"
-              />
-            </div>
+            {/* Legend */}
+            <ChartLegend
+              list={LEGEND_DOCUMENTATION.list}
+              className="-absolute"
+            />
           </div>
+        </div>
 
-          <div className="columns small-6">
-            <div className="c-doc-by-category">
-              <ul className="doc-by-category-list">
-                {Object.keys(groupedByCategory).map(category => (
+        <div className="columns small-6">
+          <div className="c-doc-by-category">
+            <ul className="doc-by-category-list">
+              {Object.keys(groupedByCategory).map((category) => {
+                const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
+                const width = `${(groupedByCategory[category].length / max) * 100}%`;
+
+                return (
                   <li
                     key={category}
                     className="doc-by-category-list-item"
                   >
-                    <div className="doc-by-category-dots">
-                      {groupedByCategory[category].map(dot => (
-                        <div
-                          key={dot.id}
-                          className={`doc-by-category-dot -${dot.status}`}
-                        />
-                      ))}
-                    </div>
+                    <div className="doc-by-category-chart">
+                      <div
+                        className="doc-by-category-bar"
+                        style={{ width }}
+                      >
+                        {Object.keys(groupedByStatus).sort().map((status) => {
+                          const segmentWidth = `${(groupedByStatus[status].length / groupedByCategory[category].length) * 100}%`;
 
+                          return (
+                            <div
+                              key={status}
+                              className={`doc-by-category-bar-segment -${status}`}
+                              style={{ width: segmentWidth }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                     <h3 className="c-title -default doc-by-category-title">{category}</h3>
                   </li>
-                ))}
-              </ul>
-            </div>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+DocumentsProvided.defaultProps = {
+  data: []
+};
 
 DocumentsProvided.propTypes = {
   data: PropTypes.array

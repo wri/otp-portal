@@ -31,6 +31,7 @@ const MAP_LAYERS_OPERATORS = [
         'fill-opacity': 0.8,
         'fill-outline-color': '#d07500'
       },
+      fitBounds: true,
       interactivity: {
         click(e) {
           // Remove always the popup if exists and you are using 'closeOnClick'

@@ -14,6 +14,12 @@ export default class Tabs extends React.Component {
     this.triggerClickSelected = this.triggerClickSelected.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selected: nextProps.defaultSelected
+    });
+  }
+
   /**
    * UI EVENTS
    * - triggerClickSelected
@@ -31,7 +37,7 @@ export default class Tabs extends React.Component {
     return (
       <header className="c-static-tabs">
         <div className="l-container">
-          <div className="row custom-row">
+          <div className="row l-row">
             {options.map((option) => {
               const btnClasses = classnames({
                 '-active': option.value === selected

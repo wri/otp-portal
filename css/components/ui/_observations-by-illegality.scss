@@ -92,10 +92,12 @@ $severity-width: 260px;
 
 // INFO
 .obi-illegality-info {
-  background: $color-primary;
+  background: $color-green-1;
   padding: $space-1 * 6 0;
 
   .obi-illegality-info-title {
+    margin: 0 0 $space-1 * 5;
+
     color: $color-text-2;
   }
 }

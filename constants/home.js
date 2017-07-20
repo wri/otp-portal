@@ -19,6 +19,7 @@ const MAP_LAYERS_HOME = [
       type: 'fill',
       source: 'forest_concession',
       layout: {},
+      fitBounds: true,
       paint: {
         'fill-color': '#e98300',
         'fill-opacity': 0.8,

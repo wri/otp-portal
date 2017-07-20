@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
 
 // Utils
+import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_DOC } from 'utils/documentation';
 import { substitution } from 'utils/text';
 
 // Components
@@ -12,7 +13,7 @@ const data = [{
   id: 'required-documents-uploaded',
   title: 'Required documents uploaded',
   description: 'These documents evidence compliance with the country\'s legal framework for forest management',
-  letter: '{{DOCUMENTATION}}',
+  letter: '{{DOCUMENTATION}}%',
   link: {
     label: 'Link',
     href: '/operators-detail?tab=documentation&id={{OPERATOR_ID}}',
@@ -21,7 +22,7 @@ const data = [{
 }, {
   id: 'average-of-observations-by-monitors-visit',
   title: 'Average of observations by monitors visit',
-  description: 'There was 355 observations from 210 independent monitor visits in 2016',
+  description: 'There was {{OBSERVATIONS}} observations from {{VISITS}} independent monitor visits',
   letter: '{{OBSERVATIONS_BY_MONITORS}}',
   link: {
     label: 'Find out more',
@@ -43,17 +44,23 @@ const data = [{
 
 export default class Gallery1 extends React.Component {
   getData() {
-    const { url, operatorsDetail } = this.props;
+    const { url, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     return JSON.parse(substitution(JSON.stringify(data), [
       {
         key: 'OPERATOR_ID',
         value: url.query.id
       }, {
         key: 'DOCUMENTATION',
-        value: '65%'
+        value: (operatorDocumentation) ? HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation) : '-'
+      }, {
+        key: 'OBSERVATIONS',
+        value: (operatorsDetail.data.observations) ? operatorsDetail.data.observations.length : '-'
+      }, {
+        key: 'VISITS',
+        value: (operatorsDetail.data.observations) ? HELPERS_OBS.getMonitorVisits(operatorObservations) : '-'
       }, {
         key: 'OBSERVATIONS_BY_MONITORS',
-        value: (operatorsDetail.data.observations) ? this.getAvgObservationByMonitors() : '-'
+        value: (operatorsDetail.data.observations) ? HELPERS_OBS.getAvgObservationByMonitors(operatorObservations) : '-'
       }, {
         key: 'FMUS',
         value: (operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-'
@@ -61,22 +68,10 @@ export default class Gallery1 extends React.Component {
     ]));
   }
 
-  getAvgObservationByMonitors() {
-    const { observations } = this.props.operatorsDetail.data;
-    const dates = groupBy(observations.map(o =>
-      new Date(o['publication-date']).toJSON().slice(0, 10).replace(/-/g, '/')
-    ));
-
-    const avg = Object.keys(dates).reduce((sum, k) =>
-      sum + dates[k].length, 0) / (Object.keys(dates).length || 1
-    );
-    return avg.toFixed(1);
-  }
-
   render() {
     return (
       <div className="c-gallery">
-        <div className="row custom-row">
+        <div className="row l-row">
           {this.getData().map((article, i) => {
             const theme = (i === 0) ? '-secondary' : '-primary';
 
@@ -103,5 +98,7 @@ export default class Gallery1 extends React.Component {
 
 Gallery1.propTypes = {
   url: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.object.isRequired
+  operatorsDetail: PropTypes.object.isRequired,
+  operatorObservations: PropTypes.array,
+  operatorDocumentation: PropTypes.array
 };

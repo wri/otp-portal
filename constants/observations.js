@@ -50,19 +50,14 @@ const TABLE_HEADERS = [
 
 const FILTERS_REFS = [
   {
-    key: 'types',
+    key: 'observation_type',
     name: 'Type',
     placeholder: 'All Types'
   },
   {
-    key: 'country_ids',
+    key: 'country_id',
     name: 'Country',
     placeholder: 'All Countries'
-  },
-  {
-    key: 'fmu_ids',
-    name: 'FMU',
-    placeholder: 'All FMUS'
   },
   {
     key: 'years',
@@ -70,17 +65,17 @@ const FILTERS_REFS = [
     placeholder: 'All Years'
   },
   {
-    key: 'observer_ids',
+    key: 'observer_id',
     name: 'Monitor',
     placeholder: 'All Monitors'
   },
   {
-    key: 'category_ids',
+    key: 'category_id',
     name: 'categories',
     placeholder: 'All Categories'
   },
   {
-    key: 'severities',
+    key: 'severity_level',
     name: 'Severity',
     placeholder: 'All Severities'
   }

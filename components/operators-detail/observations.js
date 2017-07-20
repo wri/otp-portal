@@ -1,8 +1,8 @@
 import React from 'react';
-import groupBy from 'lodash/groupBy';
+import PropTypes from 'prop-types';
 
-// Constants
-import { OBSERVATIONS_OPERATORS_DETAIL } from 'constants/operators-detail';
+// Utils
+import { HELPERS_OBS } from 'utils/observations';
 
 // Components
 import StaticTabs from 'components/ui/static-tabs';
@@ -11,30 +11,23 @@ import TotalObservationsByOperatorByCategory from 'components/operators-detail/o
 import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 
 export default class OperatorsDetailObservations extends React.Component {
-
-  /**
-   * HELPERS
-   * - getYears
-  */
-  static getYears() {
-    const years = Object.keys(groupBy(OBSERVATIONS_OPERATORS_DETAIL, 'year'));
-    return years.sort((a, b) => b - a).map(year => ({ label: year, value: year }));
-  }
-
-  static getMaxYear() {
-    const years = Object.keys(groupBy(OBSERVATIONS_OPERATORS_DETAIL, 'year'));
-    return Math.max(...years);
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      year: OperatorsDetailObservations.getMaxYear()
+      year: HELPERS_OBS.getMaxYear(props.operatorObservations)
     };
 
     // BINDINGS
     this.onChangeYear = this.onChangeYear.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.operatorObservations !== nextProps.operatorObservations) {
+      this.setState({
+        year: HELPERS_OBS.getMaxYear(nextProps.operatorObservations)
+      });
+    }
   }
 
   /**
@@ -56,7 +49,7 @@ export default class OperatorsDetailObservations extends React.Component {
               <h2 className="c-title">Observations from independent monitors</h2>
             </header>
             <div className="content">
-              <TotalObservationsByOperator data={OBSERVATIONS_OPERATORS_DETAIL} />
+              <TotalObservationsByOperator data={this.props.operatorObservations} />
             </div>
           </div>
         </article>
@@ -70,7 +63,7 @@ export default class OperatorsDetailObservations extends React.Component {
 
           <div className="content">
             <StaticTabs
-              options={OperatorsDetailObservations.getYears()}
+              options={HELPERS_OBS.getYears(this.props.operatorObservations)}
               defaultSelected={this.state.year.toString()}
               onChange={this.onChangeYear}
             />
@@ -80,7 +73,7 @@ export default class OperatorsDetailObservations extends React.Component {
                 {/* CHARTS */}
                 <article className="c-article">
                   <TotalObservationsByOperatorByCategory
-                    data={OBSERVATIONS_OPERATORS_DETAIL}
+                    data={this.props.operatorObservations}
                     year={parseInt(this.state.year, 10)}
                   />
                 </article>
@@ -91,7 +84,7 @@ export default class OperatorsDetailObservations extends React.Component {
 
         <article className="c-article">
           <TotalObservationsByOperatorByCategorybyIllegality
-            data={OBSERVATIONS_OPERATORS_DETAIL}
+            data={this.props.operatorObservations}
             year={parseInt(this.state.year, 10)}
           />
         </article>
@@ -102,4 +95,5 @@ export default class OperatorsDetailObservations extends React.Component {
 }
 
 OperatorsDetailObservations.propTypes = {
+  operatorObservations: PropTypes.array
 };

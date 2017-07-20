@@ -5,6 +5,17 @@
   padding: 0 20px;
 }
 
+// GRID
+.l-row {
+  @include flex-grid-row(nest, expand, null, false, $grid-column-gutter);
+
+  &.-equal-heigth {
+    .columns {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
 
 .l-page {
   display: flex;

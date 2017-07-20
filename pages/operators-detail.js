@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
+// Selectors
+import { getParsedObservations } from 'selectors/operators-detail/observations';
+import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
+
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -68,7 +72,7 @@ class OperatorsDetail extends Page {
 
 
   render() {
-    const { url, session, operatorsDetail } = this.props;
+    const { url, session, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -101,24 +105,31 @@ class OperatorsDetail extends Page {
         {tab === 'overview' &&
           <OperatorsDetailOverview
             operatorsDetail={operatorsDetail}
+            operatorDocumentation={operatorDocumentation}
+            operatorObservations={operatorObservations}
             url={url}
           />
         }
 
         {tab === 'documentation' &&
           <OperatorsDetailDocumentation
+            operatorsDetail={operatorsDetail}
+            operatorDocumentation={operatorDocumentation}
             url={url}
           />
         }
 
         {tab === 'observations' &&
           <OperatorsDetailObservations
+            operatorsDetail={operatorsDetail}
+            operatorObservations={operatorObservations}
             url={url}
           />
         }
 
         {tab === 'fmus' &&
           <OperatorsDetailFMUs
+            operatorsDetail={operatorsDetail}
             url={url}
           />
         }
@@ -138,7 +149,9 @@ export default withRedux(
   store,
   state => ({
     operators: state.operators,
-    operatorsDetail: state.operatorsDetail
+    operatorsDetail: state.operatorsDetail,
+    operatorObservations: getParsedObservations(state),
+    operatorDocumentation: getParsedDocumentation(state)
   }),
   { getOperators, getOperator }
 )(OperatorsDetail);

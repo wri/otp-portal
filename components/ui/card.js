@@ -10,10 +10,14 @@ export default function Card({ theme, letter, title, description, link }) {
     [theme]: !!theme
   });
 
+  const letterClassName = classnames({
+    '-number': (letter && !isNaN(parseFloat(letter)))
+  });
+
   return (
     <div className={`c-card ${classNames}`}>
       <div className="card-content">
-        {letter && <div className="card-letter"> {letter} </div>}
+        {letter && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
         <p className="card-description"> {description} </p>

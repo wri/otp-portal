@@ -30,7 +30,7 @@ export default class Tabs extends React.Component {
     return (
       <header className="c-tabs">
         <div className="l-container">
-          <div className="row custom-row">
+          <div className="row l-row">
             {options.map((option) => {
               const btnClasses = classnames({
                 '-active': option.value === selected
@@ -53,7 +53,7 @@ export default class Tabs extends React.Component {
                   >
                     <a className={`tabs-btn ${btnClasses}`}>
                       <span className="title">{option.label}</span>
-                      {!!option.number && <span className="number">{option.number}</span>}
+                      {(!!option.number || option.number === 0) && <span className="number">{option.number}</span>}
                     </a>
                   </Link>
                 </div>

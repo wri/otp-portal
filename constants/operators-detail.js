@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
@@ -20,8 +21,11 @@ const TABS_OPERATORS_DETAIL = [{
 
 
 const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
-  label: 'Documents list',
-  value: 'documents-list'
+  label: 'Operator documents',
+  value: 'operator-documents'
+}, {
+  label: 'FMUs documents',
+  value: 'fmus-documents'
 }, {
   label: 'Chronological view',
   value: 'chronological-view'
@@ -64,6 +68,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
         'fill-opacity': 0.8,
         'fill-outline-color': '#d07500'
       },
+      fitBounds: true,
       interactivity: {
         click(e) {
           // Remove always the popup if exists and you are using 'closeOnClick'
@@ -173,326 +178,52 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 ];
 
 
-// TODO: replace this const to an API call
-const DOCUMENTATION_OPERATORS_DETAIL = [{
-  id: 1,
-  title: 'Sample document title lorem ipsum',
-  date: 'Oct 2015',
-  status: 'valid',
-  fmus: 7,
-  category: 'Use rights'
-}, {
-  id: 2,
-  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
-  date: 'Apr 2015',
-  status: 'not-valid',
-  fmus: 15,
-  category: 'Use rights'
-}, {
-  id: 3,
-  title: 'Sample document title lorem',
-  date: 'Sep 2015',
-  status: 'not-provided',
-  fmus: 5,
-  category: 'Use rights'
-}, {
-  id: 4,
-  title: 'Sample document title lorem ipsum',
-  date: 'Oct 2015',
-  status: 'valid',
-  fmus: 65,
-  category: 'Legal registration'
-}, {
-  id: 5,
-  title: 'Sample document title lorem ipsum title lorem ipsum title lorem ipsum',
-  date: 'Apr 2015',
-  status: 'not-provided',
-  fmus: 15,
-  category: 'Legal registration'
-}, {
-  id: 7,
-  title: 'Sample document title lorem',
-  date: 'Sep 2015',
-  status: 'not-provided',
-  fmus: 5,
-  category: 'Harvesting'
-}, {
-  id: 8,
-  title: 'Sample document title lorem',
-  date: 'Sep 2015',
-  status: 'not-provided',
-  fmus: 5,
-  category: 'Harvesting'
-}, {
-  id: 9,
-  title: 'Sample document title lorem',
-  date: 'Sep 2015',
-  status: 'not-provided',
-  fmus: 5,
-  category: 'Forest Management'
-}, {
-  id: 10,
-  title: 'Sample document title lorem',
-  date: 'Sep 2015',
-  status: 'not-provided',
-  fmus: 5,
-  category: 'Forest Management'
-}];
-
-
-// TODO: replace this const to an API call
-const OBSERVATIONS_OPERATORS_DETAIL = [{
-  id: 1,
-  title: 'Sample observations title lorem ipsum',
-  year: 2017,
-  severity: 1,
-  category: 'Use rights',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 2,
-  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
-  year: 2017,
-  severity: 1,
-  category: 'Use rights',
-  illegality: 'Harvesting without a permit'
-}, {
-  id: 3,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 3,
-  category: 'Use rights',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 4,
-  title: 'Sample observations title lorem ipsum',
-  year: 2017,
-  severity: 3,
-  category: 'Legal registration',
-  illegality: 'Harvesting without a permit'
-}, {
-  id: 5,
-  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
-  year: 2016,
-  severity: 3,
-  category: 'Legal registration',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 7,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 2,
-  category: 'Harvesting',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 8,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 0,
-  category: 'Harvesting',
-  illegality: 'Harvesting without a permit'
-}, {
-  id: 9,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 10,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 11,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 12,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 13,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 1,
-  category: 'Forest Management',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 14,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 1,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 15,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 16,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 17,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 18,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 19,
-  title: 'Sample observations title lorem',
-  year: 2014,
-  severity: 1,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 20,
-  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
-  year: 2017,
-  severity: 1,
-  category: 'Use rights',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 21,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 3,
-  category: 'Use rights',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 22,
-  title: 'Sample observations title lorem ipsum',
-  year: 2017,
-  severity: 3,
-  category: 'Legal registration',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 23,
-  title: 'Sample observations title lorem ipsum title lorem ipsum title lorem ipsum',
-  year: 2016,
-  severity: 3,
-  category: 'Legal registration',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 24,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 2,
-  category: 'Harvesting',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 25,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 0,
-  category: 'Harvesting',
-  illegality: 'Illegal sub-contrating'
-}, {
-  id: 26,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 27,
-  title: 'Sample observations title lorem',
-  year: 2015,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Infraction title a'
-}, {
-  id: 28,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Infraction title a'
-}, {
-  id: 29,
-  title: 'Sample observations title lorem',
-  year: 2013,
-  severity: 3,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 30,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 1,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 31,
-  title: 'Sample observations title lorem',
-  year: 2017,
-  severity: 1,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 32,
-  title: 'Sample observations title lorem',
-  year: 2016,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 33,
-  title: 'Sample observations title lorem',
-  year: 2013,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 34,
-  title: 'Sample observations title lorem',
-  year: 2013,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}, {
-  id: 35,
-  title: 'Sample observations title lorem',
-  year: 2013,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Infraction title a'
-}, {
-  id: 36,
-  title: 'Sample observations title lorem',
-  year: 2014,
-  severity: 0,
-  category: 'Forest Management',
-  illegality: 'Harvesting without concession title'
-}];
+const TABLE_HEADERS_ILLEGALITIES = [
+  {
+    Header: <span className="sortable">date</span>,
+    accessor: 'date',
+    headerClassName: '-a-left',
+    className: '-a-left',
+    minWidth: 75,
+    Cell: (attr) => {
+      const date = new Date(attr.value);
+      const monthName = date ? date.toLocaleString('en-us', { month: 'short' }) : '-';
+      const year = date ? date.getFullYear() : '-';
+      return <span>{`${monthName} ${year}`}</span>;
+    }
+  },
+  {
+    Header: <span className="sortable">Severity</span>,
+    accessor: 'severity',
+    headerClassName: '-a-center',
+    className: '-a-left severity',
+    minWidth: 150,
+    Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+  },
+  {
+    Header: <span>Description</span>,
+    accessor: 'details',
+    headerClassName: '-a-left',
+    className: 'description',
+    sortable: false,
+    minWidth: 420,
+    Cell: attr => <p>{attr.value}</p>
+  },
+  // not ready
+  {
+    Header: <span>Evidences</span>,
+    accessor: 'documents',
+    sortable: false,
+    headerClassName: '-a-left',
+    minWidth: 150,
+    Cell: attr => <a className="evidence-link" href={attr.link || '#'} target="_blank"rel="noopener noreferrer">document sample</a>
+  }
+];
 
 export {
   TABS_OPERATORS_DETAIL,
   TABS_DOCUMENTATION_OPERATORS_DETAIL,
-  DOCUMENTATION_OPERATORS_DETAIL,
-  OBSERVATIONS_OPERATORS_DETAIL,
   MAP_OPTIONS_OPERATORS_DETAIL,
-  MAP_LAYERS_OPERATORS_DETAIL
+  MAP_LAYERS_OPERATORS_DETAIL,
+  TABLE_HEADERS_ILLEGALITIES
 };

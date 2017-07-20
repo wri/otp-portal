@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import getBBox from 'turf-extent';
 
 let Mapboxgl;
 if (typeof window !== 'undefined') {
@@ -64,7 +65,7 @@ export default class LayerManager {
 
         // Loop trough layers
         layer.layers.forEach((l) => {
-          const interactivity = l.interactivity;
+          const { interactivity, fitBounds } = l;
 
           // Add layer
           this.map.addLayer(l);
@@ -74,6 +75,17 @@ export default class LayerManager {
             Object.keys(interactivity).forEach((i) => {
               const iFn = interactivity[i].bind(this);
               this.map.on(i, l.id, iFn);
+            });
+          }
+
+          if (fitBounds) {
+            const bounds = getBBox(data);
+
+            this.map.fitBounds(bounds, {
+              padding: 40
+              // animate: false
+              // duration: 500,
+              // offset: [300, 0]
             });
           }
 

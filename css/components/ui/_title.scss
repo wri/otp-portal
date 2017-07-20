@@ -10,8 +10,9 @@
   // Font sizes
   &.-default { font-size: $font-size-default; }
   &.-big { font-size: $font-size-big; }
-  &.-extrabig { font-size: $font-size-extrabig; }
   &.-bigger { font-size: $font-size-bigger; }
+  &.-extrabig { font-size: $font-size-extrabig; }
+  &.-huge { font-size: $font-size-huge; }
 
   // Text transforms
   &.-uppercase {

@@ -1,5 +1,6 @@
-import { Deserializer } from 'jsonapi-serializer';
+import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import * as queryString from 'query-string';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -13,6 +14,8 @@ const initialState = {
   loading: false,
   error: false
 };
+
+const JSONA = new Jsona();
 
 /* Reducer */
 export default function (state = initialState, action) {
@@ -34,8 +37,24 @@ export function getOperator(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
+    const includeFields = [
+      'observations',
+      'observations.severity',
+      'observations.subcategory',
+      'observations.documents',
+      'observations.subcategory.category',
+      'fmus',
+      'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
+      'operator-document-fmus.fmu',
+      'operator-document-countries.required-operator-document-country.required-operator-document-group'
+    ];
 
-    fetch(`${process.env.OTP_API}/operators/${id}?include=observations,observations.severity,observations.subcategory,observations.subcategory.category,fmus`, {
+    const queryParams = queryString.stringify({
+      include: includeFields.join(',')
+    });
+
+
+    fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -48,12 +67,12 @@ export function getOperator(id) {
       })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
-        new Deserializer().deserialize(operator, (err, dataParsed) => {
-          console.log(dataParsed);
-          dispatch({
-            type: GET_OPERATOR_SUCCESS,
-            payload: dataParsed
-          });
+        const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
+
+        dispatch({
+          type: GET_OPERATOR_SUCCESS,
+          payload: dataParsed
         });
       })
       .catch((err) => {

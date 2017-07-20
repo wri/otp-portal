@@ -13,6 +13,7 @@ $color-tertiary: #f7f6ed;
 $color-gray-1: #333333;
 $color-gray-2: #EDECE3;
 $color-gray-3: #9B9B9B;
+$color-green-1: #32794C;
 
 // Common
 $color-white: white;
@@ -36,6 +37,11 @@ $lg-color-0: #e98300;
 $lg-color-1: #333333;
 $lg-color-2: #005b23;
 $lg-color-3: #9B9B9B;
+
+// Doc status colors
+$color-doc-valid: $color-primary;
+$color-doc-invalid: #F3D3A5;
+$color-doc-not-provided: $color-secondary;
 
 // Zindex
 $z-index-1: 0;

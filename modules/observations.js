@@ -1,7 +1,10 @@
-import { Deserializer } from 'jsonapi-serializer';
+import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
+import compact from 'lodash/compact';
+
+// Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
 /* Constants */
@@ -15,7 +18,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 
-const OBS_MAX_SIZE = 100;
+const OBS_MAX_SIZE = 3000;
 
 /* Initial state */
 const initialState = {
@@ -25,19 +28,21 @@ const initialState = {
   error: false,
   filters: {
     data: {
-      types: [],
-      country_ids: [7, 47],
-      fmu_ids: [],
+      observation_type: [],
+      country_id: [7, 47],
+      fmu_id: [],
       years: [],
-      observer_ids: [],
-      category_ids: [],
-      severities: []
+      observer_id: [],
+      category_id: [],
+      severity_level: []
     },
     options: {},
     loading: false,
     error: false
   }
 };
+
+const JSONA = new Jsona();
 
 /* Reducer */
 export default function (state = initialState, action) {
@@ -77,22 +82,19 @@ export default function (state = initialState, action) {
 }
 
 /* Action creators */
-export function getObservations(page) {
+export function getObservations() {
   return (dispatch, getState) => {
     const filters = getState().observations.filters.data;
-    let query = '';
-    let first = true;
-
-    Object.keys(filters).forEach((key) => {
+    const filtersQuery = compact(Object.keys(filters).map((key) => {
       if (!isEmpty(filters[key])) {
-        query += `${!first ? '&' : ''}${key}=${filters[key].join(',')}`;
-        if (first) first = false;
+        return `filter[${key}]=${filters[key].join(',')}`;
       }
-    });
+      return null;
+    }));
 
-    // const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}&page[number]=${page}`;
-    const url = `${process.env.OTP_API}/observations?${query}&page[size]=${OBS_MAX_SIZE}`;
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity'];
 
+    const url = `${process.env.OTP_API}/observations?page[size]=${OBS_MAX_SIZE}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
@@ -108,16 +110,12 @@ export function getObservations(page) {
         throw new Error(response.statusText);
       })
       .then((observations) => {
+        const dataParsed = JSONA.deserialize(observations);
+        console.log(dataParsed);
+
         dispatch({
-          type: GET_OBSERVATIONS_TOTAL_SIZE,
-          payload: Math.ceil(observations.meta.total_items / OBS_MAX_SIZE)
-        });
-        // Fetch from server ok -> Dispatch observations
-        new Deserializer().deserialize(observations, (err, dataParsed) => {
-          dispatch({
-            type: GET_OBSERVATIONS_SUCCESS,
-            payload: dataParsed
-          });
+          type: GET_OBSERVATIONS_SUCCESS,
+          payload: dataParsed
         });
       })
       .catch((err) => {

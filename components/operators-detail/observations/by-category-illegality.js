@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
 
+// Utils
+import { HELPERS_OBS } from 'utils/observations';
+
+// components
+import Table from 'components/ui/table';
+
+// constants
+import { TABLE_HEADERS_ILLEGALITIES } from 'constants/operators-detail';
+
+const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
 export default class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component {
 
@@ -9,7 +18,8 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
     super(props);
 
     this.state = {
-      selected: {}
+      selected: {},
+      indexPagination: 0
     };
 
     // BINDINGS
@@ -17,48 +27,24 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
   }
 
   /**
-   * HELPERS
-   * - getGroupedByYear
-   * - getGroupedByCategory
-   * - getGroupedByIllegality
-  */
-  getGroupedByYear(data) {
-    return groupBy(data || this.props.data, 'year');
-  }
-
-  getGroupedByCategory(data) {
-    const { year } = this.props;
-    if (year) {
-      const groupedByYear = this.getGroupedByYear();
-      return groupBy(groupedByYear[year], 'category');
-    }
-    return groupBy(data || this.props.data, 'category');
-  }
-
-  getGroupedByIllegality(data) {
-    return groupBy(data || this.props.data, 'illegality');
-  }
-
-  sortBySeverity(data) {
-    const arr = data || this.props.data;
-    return arr.sort();
-  }
-
-
-  /**
    * UI EVENTS
-   * -triggerSelectedIllegality
+   * - triggerSelectedIllegality
   */
   triggerSelectedIllegality({ category, illegality, year }) {
     const { selected } = this.state;
 
     // Toggle selected
-    if (selected.category === category && selected.illegality === illegality && selected.year === year) {
+    if (selected.category === category &&
+        selected.illegality === illegality &&
+        selected.year === year
+    ) {
       this.setState({
+        indexPagination: 0,
         selected: {}
       });
     } else {
       this.setState({
+        indexPagination: 0,
         selected: {
           category,
           illegality,
@@ -69,16 +55,16 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
   }
 
   render() {
-    const groupedByCategory = this.getGroupedByCategory();
     const { selected } = this.state;
-    const { year } = this.props;
+    const { data, year } = this.props;
+    const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
 
     return (
       <div className="c-observations-by-illegality">
         {/* Charts */}
         <ul className="obi-category-list">
           {Object.keys(groupedByCategory).map((category) => {
-            const groupedByIllegality = this.getGroupedByIllegality(groupedByCategory[category]);
+            const groupedByIllegality = HELPERS_OBS.getGroupedByIllegality(groupedByCategory[category]);
 
             return (
               <li key={category} className="obi-category-list-item">
@@ -88,7 +74,11 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
 
                 <ul className="obi-illegality-list">
                   {Object.keys(groupedByIllegality).map((illegality) => {
-                    const total = groupedByIllegality[illegality].length;
+                    const legalities = groupedByIllegality[illegality].length;
+                    const paginatedItems = MAX_ROWS_TABLE_ILLEGALITIES * this.state.indexPagination;
+
+                    const pageSize = (legalities - paginatedItems) > MAX_ROWS_TABLE_ILLEGALITIES ?
+                        MAX_ROWS_TABLE_ILLEGALITIES : (legalities - paginatedItems);
 
                     return (
                       <li key={category + illegality}>
@@ -96,20 +86,20 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                           <div className="obi-illegality-list-item">
                             {/* Severity list */}
                             <ul className="obi-severity-list">
-                              {groupedByIllegality[illegality].map(({ severity }, i) => {
-                                return (
-                                  <li key={category + illegality + severity + i} className={`obi-severity-list-item -severity-${severity}`} />
-                                );
-                              })}
+                              {groupedByIllegality[illegality].map(({ severity, id }) =>
+                                <li key={id} className={`obi-severity-list-item -severity-${severity}`} />
+                              )}
                             </ul>
 
                             {/* Illegality total */}
-                            <div className="obi-illegality-total">{total}</div>
+                            <div className="obi-illegality-total">{legalities}</div>
 
                             {/* Illegality title */}
                             <h4
                               className="c-title -default obi-illegality-title"
-                              onClick={() => this.triggerSelectedIllegality({ category, illegality, year })}
+                              onClick={() =>
+                                this.triggerSelectedIllegality({ category, illegality, year })
+                              }
                             >
                               {illegality}
                             </h4>
@@ -117,12 +107,28 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                         </div>
 
                         {/* Category */}
-                        {selected.category === category && selected.illegality === illegality && selected.year === year &&
+                        {selected.category === category
+                          && selected.illegality === illegality
+                          && selected.year === year &&
                           <div className="obi-illegality-info">
                             <div className="l-container">
                               <h2 className="c-title obi-illegality-info-title">{illegality}</h2>
 
-                              {/* Render table with other theme */}
+                              {groupedByIllegality[illegality].length > 0 &&
+                                <Table
+                                  className="-light"
+                                  data={groupedByIllegality[illegality]}
+                                  options={{
+                                    pagination: legalities > MAX_ROWS_TABLE_ILLEGALITIES,
+                                    showPageSizeOptions: false,
+                                    columns: TABLE_HEADERS_ILLEGALITIES,
+                                    nextPageSize: pageSize,
+                                    pageSize,
+                                    onPageChange: (indexPage) => {
+                                      this.setState({ indexPagination: indexPage });
+                                    }
+                                  }}
+                                />}
                             </div>
                           </div>
                         }

@@ -11,7 +11,7 @@ export default function Gallery3() {
     <div className="c-gallery">
       <h2 className="c-title">FAQs</h2>
 
-      <div className="row custom-row">
+      <div className="row l-row">
         {FAQS_HELP.map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 

@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+import { getOperators } from 'modules/operators';
+
+
+// Selectors
+import { getParsedObservations } from 'selectors/observations/observations';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
@@ -12,11 +21,6 @@ import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
 import StaticTabs from 'components/ui/static-tabs';
-
-// Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
 
 // Utils
 import {
@@ -46,7 +50,7 @@ class ObservationsPage extends Page {
   componentDidMount() {
     const { observations, operators, url } = this.props;
     if (isEmpty(observations.data)) {
-      this.props.getObservations(1);
+      this.props.getObservations();
     }
 
     if (isEmpty(observations.filters.options)) {
@@ -71,29 +75,15 @@ class ObservationsPage extends Page {
     }
   }
 
-  getCategories(annexOperator, annexGovernance) {
-    const operatorCategories = annexOperator && annexOperator.categories ?
-      annexOperator.categories.map(c => c && c.name ? c.name : '') : [];
-    const governanceCategories = annexGovernance && annexGovernance.categories ?
-      annexGovernance.categories.map(c => c && c.name ? c.name : '') : [];
-
-    return [...operatorCategories, ...governanceCategories];
-  }
-
   parseTableData() {
-    const getCategories = (annexOperator, annexGovernance) => (
-      this.getCategories(annexOperator, annexGovernance)
-    );
-
     return this.props.observations.data.map(o => (
       {
         date: new Date(o['publication-date']).getFullYear(),
         country: o.country && o.country.iso,
         operator: o.operator && o.operator.name,
-        fmu: 'N/A',
-        category: getCategories(o['annex-operator'], o['annex-governance']).join(', '),
+        category: o.subcategory.category.name,
         observation: o.details,
-        level: 2
+        level: o.severity && o.severity.level
       }
     ));
   }
@@ -105,7 +95,7 @@ class ObservationsPage extends Page {
   }
 
   render() {
-    const { url, session, observations } = this.props;
+    const { url, session, observations, parsedObservations } = this.props;
 
     return (
       <Layout
@@ -121,7 +111,7 @@ class ObservationsPage extends Page {
         />
         <div className="c-section">
           <div className="l-container">
-            <div className="row custom-row">
+            <div className="row l-row">
               <div className="columns small-12 medium-4">
                 <Filters
                   options={observations.filters.options}
@@ -133,7 +123,9 @@ class ObservationsPage extends Page {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview />
+                <Overview
+                  parsedObservations={parsedObservations}
+                />
               </div>
             </div>
           </div>
@@ -154,7 +146,7 @@ class ObservationsPage extends Page {
                 <Table
                   data={this.parseTableData()}
                   options={{
-                    pageSize: observations.data.length ? 10 : 0,
+                    pageSize: observations.data.length ? 50 : 0,
                     pagination: true,
                     previousText: '<',
                     nextText: '>',
@@ -190,13 +182,22 @@ export default withRedux(
   store,
   state => ({
     observations: state.observations,
+    parsedObservations: getParsedObservations(state),
     operators: state.operators
   }),
   dispatch => ({
-    getOperators() { dispatch(getOperators()); },
-    getObservations(page) { dispatch(getObservations(page)); },
-    getFilters() { dispatch(getFilters()); },
-    getObservationsUrl(url) { dispatch(getObservationsUrl(url)); },
+    getOperators() {
+      dispatch(getOperators());
+    },
+    getObservations() {
+      dispatch(getObservations());
+    },
+    getFilters() {
+      dispatch(getFilters());
+    },
+    getObservationsUrl(url) {
+      dispatch(getObservationsUrl(url));
+    },
     setFilters(filter) {
       dispatch(setFilters(filter));
       dispatch(setObservationsUrl());
