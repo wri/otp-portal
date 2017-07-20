@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Utils
-import { HELPERS } from 'utils/observations';
+import { HELPERS_OBS } from 'utils/observations';
 
 // components
 import Table from 'components/ui/table';
@@ -57,14 +57,14 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
   render() {
     const { selected } = this.state;
     const { data, year } = this.props;
-    const groupedByCategory = HELPERS.getGroupedByCategory(data, year);
+    const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
 
     return (
       <div className="c-observations-by-illegality">
         {/* Charts */}
         <ul className="obi-category-list">
           {Object.keys(groupedByCategory).map((category) => {
-            const groupedByIllegality = HELPERS.getGroupedByIllegality(groupedByCategory[category]);
+            const groupedByIllegality = HELPERS_OBS.getGroupedByIllegality(groupedByCategory[category]);
 
             return (
               <li key={category} className="obi-category-list-item">

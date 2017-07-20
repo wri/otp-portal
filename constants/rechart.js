@@ -6,7 +6,7 @@ const PALETTE_COLOR_1 = [
 ];
 const PALETTE_COLOR_2 = [
   { fill: '#e98300', stroke: '#e98300' },
-  { fill: '#f7f6ed', stroke: '#e98300' },
+  { fill: '#F3D3A5', stroke: '#F3D3A5' },
   { fill: '#005b23', stroke: '#005b23' }
 ];
 

@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Utils
-import { HELPERS } from 'utils/observations';
+import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_DOC } from 'utils/documentation';
 import { substitution } from 'utils/text';
 
 // Components
@@ -43,23 +44,23 @@ const data = [{
 
 export default class Gallery1 extends React.Component {
   getData() {
-    const { url, operatorsDetail, operatorObservations } = this.props;
+    const { url, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     return JSON.parse(substitution(JSON.stringify(data), [
       {
         key: 'OPERATOR_ID',
         value: url.query.id
       }, {
         key: 'DOCUMENTATION',
-        value: '65%'
+        value: (operatorDocumentation) ? HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation) : '-'
       }, {
         key: 'OBSERVATIONS',
         value: (operatorsDetail.data.observations) ? operatorsDetail.data.observations.length : '-'
       }, {
         key: 'VISITS',
-        value: (operatorsDetail.data.observations) ? HELPERS.getMonitorVisits(operatorObservations) : '-'
+        value: (operatorsDetail.data.observations) ? HELPERS_OBS.getMonitorVisits(operatorObservations) : '-'
       }, {
         key: 'OBSERVATIONS_BY_MONITORS',
-        value: (operatorsDetail.data.observations) ? HELPERS.getAvgObservationByMonitors(operatorObservations) : '-'
+        value: (operatorsDetail.data.observations) ? HELPERS_OBS.getAvgObservationByMonitors(operatorObservations) : '-'
       }, {
         key: 'FMUS',
         value: (operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-'
@@ -98,5 +99,6 @@ export default class Gallery1 extends React.Component {
 Gallery1.propTypes = {
   url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object.isRequired,
-  operatorObservations: PropTypes.array
+  operatorObservations: PropTypes.array,
+  operatorDocumentation: PropTypes.array
 };

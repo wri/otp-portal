@@ -1,0 +1,18 @@
+.c-accordion {
+  .accordion-item {
+    margin: $space-1 * 10 0 0;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  .accordion-title {
+    margin: 0;
+  }
+
+  .accordion-content {
+    margin: 0;
+  }
+
+}

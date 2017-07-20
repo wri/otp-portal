@@ -4,7 +4,7 @@ import { createSelector } from 'reselect';
 const operatorsDetail = state => state.operatorsDetail;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
-const getGroupedObservations = createSelector(
+const getParsedObservations = createSelector(
   operatorsDetail,
   (_operatorsDetail) => {
     if (_operatorsDetail.data.observations) {
@@ -24,4 +24,4 @@ const getGroupedObservations = createSelector(
   }
 );
 
-export { getGroupedObservations };
+export { getParsedObservations };

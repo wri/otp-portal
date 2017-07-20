@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Utils
-import { HELPERS } from 'utils/observations';
+import { HELPERS_OBS } from 'utils/observations';
 
 // Constants
 import { LEGEND_SEVERITY } from 'constants/rechart';
@@ -14,8 +14,8 @@ import ChartLegend from 'components/ui/chart-legend';
 export default class TotalObservationsByOperator extends React.Component {
   render() {
     const { data } = this.props;
-    const groupedByYear = HELPERS.getGroupedByYear(data);
-    const max = HELPERS.getMaxLength(groupedByYear);
+    const groupedByYear = HELPERS_OBS.getGroupedByYear(data);
+    const max = HELPERS_OBS.getMaxLength(groupedByYear);
 
     return (
       <div className="c-observations-by-operator">
@@ -27,7 +27,7 @@ export default class TotalObservationsByOperator extends React.Component {
         {/* YEAR LIST */}
         <ul className="obo-year-list">
           {Object.keys(groupedByYear).sort((a, b) => b - a).map((year, i) => {
-            const groupedBySeverity = HELPERS.getGroupedBySeverity(groupedByYear[year], true);
+            const groupedBySeverity = HELPERS_OBS.getGroupedBySeverity(groupedByYear[year], true);
             const length = groupedByYear[year].length;
             const observationListClassNames = classnames({
               '-big': i === 0
@@ -40,7 +40,7 @@ export default class TotalObservationsByOperator extends React.Component {
               >
                 <header className="obo-observations-header">
                   <span>{year}</span>
-                  <span>{length} ({HELPERS.getMonitorVisits(groupedByYear[year])})</span>
+                  <span>{length} ({HELPERS_OBS.getMonitorVisits(groupedByYear[year])})</span>
                 </header>
 
                 {/* SEVERITY LIST */}

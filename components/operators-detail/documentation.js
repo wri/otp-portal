@@ -1,13 +1,17 @@
 import React from 'react';
-import groupBy from 'lodash/groupBy';
+import PropTypes from 'prop-types';
+
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Constants
-import { TABS_DOCUMENTATION_OPERATORS_DETAIL, DOCUMENTATION_OPERATORS_DETAIL } from 'constants/operators-detail';
+import { TABS_DOCUMENTATION_OPERATORS_DETAIL } from 'constants/operators-detail';
 
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
-import DocumentsGallery from 'components/operators-detail/documentation/documents-gallery';
+import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
+import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
 
 export default class OperatorsDetailDocumentation extends React.Component {
 
@@ -15,7 +19,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'documents-list'
+      tab: 'operator-documents'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -26,17 +30,20 @@ export default class OperatorsDetailDocumentation extends React.Component {
   }
 
   render() {
+    const { operatorDocumentation } = this.props;
+    const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
+
     return (
       <div>
         <div className="c-section">
           <div className="l-container">
             <article className="c-article">
               <header>
-                <h2 className="c-title">65% documents provided</h2>
+                <h2 className="c-title">{HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation)}% valid documents provided</h2>
               </header>
 
               <div className="content">
-                <DocumentsProvided data={DOCUMENTATION_OPERATORS_DETAIL} />
+                <DocumentsProvided data={operatorDocumentation} />
               </div>
             </article>
           </div>
@@ -50,8 +57,12 @@ export default class OperatorsDetailDocumentation extends React.Component {
 
         <div className="c-section">
           <div className="l-container">
-            {this.state.tab === 'documents-list' &&
-              <DocumentsGallery data={DOCUMENTATION_OPERATORS_DETAIL} />
+            {this.state.tab === 'operator-documents' &&
+              <DocumentsByOperator data={groupedByType['operator-document-countries']} />
+            }
+
+            {this.state.tab === 'fmus-documents' &&
+              <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} />
             }
 
             {this.state.tab === 'chronological-view' &&
@@ -66,4 +77,5 @@ export default class OperatorsDetailDocumentation extends React.Component {
 }
 
 OperatorsDetailDocumentation.propTypes = {
+  operatorDocumentation: PropTypes.array
 };

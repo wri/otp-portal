@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { PALETTE_COLOR_1, ANIMATION_TIMES, LEGEND_SEVERITY } from 'constants/rechart';
 
 // Utils
-import { HELPERS } from 'utils/observations';
+import { HELPERS_OBS } from 'utils/observations';
 
 // Components
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from 'recharts';
@@ -28,8 +28,8 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
 
   render() {
     const { data, year, horizontal } = this.props;
-    const groupedByCategory = HELPERS.getGroupedByCategory(data, year);
-    const max = HELPERS.getMaxValue(groupedByCategory);
+    const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
+    const max = HELPERS_OBS.getMaxValue(groupedByCategory);
 
     const className = classnames({
       'c-chart-container': true,
@@ -64,7 +64,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
         {/* Charts */}
         <div className="row l-row">
           {Object.keys(groupedByCategory).map((category) => {
-            const groupedBySeverity = HELPERS.getGroupedBySeverity(groupedByCategory[category]);
+            const groupedBySeverity = HELPERS_OBS.getGroupedBySeverity(groupedByCategory[category]);
 
             return (
               <div key={category} className={classColumns}>

@@ -17,7 +17,14 @@
     }
   }
 
-  .doc-by-category-dots {
+  // TITLE
+  .doc-by-category-title {
+    flex: 0 0 50%;
+    margin: 0 0 0 $space-1;
+  }
+
+  // CHART
+  .doc-by-category-chart {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -25,20 +32,17 @@
     margin: 0 $space-1 0 0;
   }
 
-  .doc-by-category-dot {
-    display: block;
-    width: 16px;
-    height: 16px;
-    margin: 0 0 0 $space-1/2;
-    border-radius: 50%;
-
-    &.-valid { background: $color-primary; border: 2px solid $color-primary; }
-    &.-not-valid { background: $color-tertiary; border: 2px solid $color-secondary; }
-    &.-not-provided { background: $color-secondary; border: 2px solid $color-secondary; }
+  .doc-by-category-bar {
+    display: flex;
+    height: 7px;
   }
 
-  .doc-by-category-title {
-    flex: 0 0 50%;
-    margin: 0 0 0 $space-1;
+  .doc-by-category-bar-segment {
+    height: 100%;
+    border-left: 1px solid $color-tertiary;
+
+    &.-doc_valid { background: $color-doc-valid; }
+    &.-doc_invalid { background: $color-doc-invalid; }
+    &.-doc_not_provided { background: $color-doc-not-provided;}
   }
 }

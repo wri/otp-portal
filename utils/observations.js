@@ -1,7 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 
-const HELPERS = {
+const HELPERS_OBS = {
   // Groups
   getGroupedByYear(data) {
     return groupBy(data, d => d.date.getFullYear());
@@ -79,4 +79,4 @@ const HELPERS = {
   }
 };
 
-export { HELPERS };
+export { HELPERS_OBS };

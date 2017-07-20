@@ -4,11 +4,8 @@ import PropTypes from 'prop-types';
 // Components
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
-
 export default function Overview(props) {
   const { parsedObservations } = props;
-
-  console.log(parsedObservations);
 
   return (
     <div className="c-obs-overview">

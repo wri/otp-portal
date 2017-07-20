@@ -44,9 +44,10 @@ export function getOperator(id) {
       'observations.documents',
       'observations.subcategory.category',
       'fmus',
-      'operator-documents',
-      'operator-documents.required-operator-document',
-      'operator-documents.required-operator-document.required-operator-document-group'];
+      'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
+      'operator-document-fmus.fmu',
+      'operator-document-countries.required-operator-document-country.required-operator-document-group'
+    ];
 
     const queryParams = queryString.stringify({
       include: includeFields.join(',')
