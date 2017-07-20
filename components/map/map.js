@@ -63,6 +63,12 @@ export default class Map extends React.Component {
         this.initLayerManager();
         this.props.layers.length && this.addLayer(this.props.layers);
       });
+
+      this.map.on('dataloading', (e) => {
+        if (e.sourceId === 'loss') {
+          console.log(e);
+        }
+      });
     }
   }
 

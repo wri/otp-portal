@@ -78,7 +78,28 @@ const MAP_LAYERS_OPERATORS = [
         }
       }
     }]
+  },
+  {
+    id: 'loss',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        'https://storage.googleapis.com/wri-public/Hansen15/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'loss_layer',
+      type: 'raster',
+      source: 'loss',
+      minzoom: 0,
+      maxzoom: 12,
+      paint: {
+      }
+    }]
   }
+
   // ,
   //
   //

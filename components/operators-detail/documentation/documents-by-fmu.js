@@ -18,7 +18,7 @@ export default function DocumentsByFMU(props) {
 
         return (
           <div key={fmu} className="accordion-item">
-            <h3 className="c-title -proximanova -huge -uppercase accordion-title">{fmu}</h3>
+            <h3 className="c-title -huge -uppercase accordion-title">{fmu}</h3>
             <ul className="c-doc-gallery accordion-content">
               {Object.keys(groupedByCategory).map(category => (
                 <li
