@@ -17,6 +17,11 @@
     font-size: 130px;
     letter-spacing: -3px;
     margin: -#{$space-1 * 2} 0 #{$space-1 * 4};
+
+    &.-number {
+      line-height: $font-size-extrahuge;
+      font-size: $font-size-extrahuge;
+    }
   }
 
   .card-title {

@@ -53,10 +53,13 @@ export function getOperators() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
-
-    // TODO: change 7 and 47 to COD and COG
     // TODO: include documentation
-    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47&include=observations,fmus`, {
+    const includes = [
+      'observations',
+      'fmus'
+    ];
+
+    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47&include=${includes.join(',')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

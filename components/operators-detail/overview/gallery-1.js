@@ -13,7 +13,7 @@ const data = [{
   id: 'required-documents-uploaded',
   title: 'Required documents uploaded',
   description: 'These documents evidence compliance with the country\'s legal framework for forest management',
-  letter: '{{DOCUMENTATION}}',
+  letter: '{{DOCUMENTATION}}%',
   link: {
     label: 'Link',
     href: '/operators-detail?tab=documentation&id={{OPERATOR_ID}}',
