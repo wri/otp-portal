@@ -16,6 +16,7 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 
 function DocumentsByOperator(props) {
   const { data, user, id } = props;
+
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
 
   return (
@@ -40,7 +41,7 @@ function DocumentsByOperator(props) {
                 />
 
                 {((user && user.role === 'admin') ||
-                 (user && user.role === 'operator' && user.operator === id)) &&
+                 (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
                    <DocCardUpload
                      {...card}
                      onChange={() => props.getOperator(id)}
