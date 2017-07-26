@@ -7,6 +7,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import DocCard from 'components/ui/doc-card';
+import DocCardUpload from 'components/ui/doc-card-upload';
 
 export default function DocumentsByOperator(props) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(props.data);
@@ -29,6 +30,10 @@ export default function DocumentsByOperator(props) {
                 className="columns small-12 medium-4"
               >
                 <DocCard
+                  {...card}
+                />
+
+                <DocCardUpload
                   {...card}
                 />
               </div>

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import { setUser } from 'modules/user';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -17,6 +18,14 @@ import Card from 'components/ui/card';
 import Map from 'components/map/map';
 
 class HomePage extends Page {
+  // static async getInitialProps({ req, store }) {
+  //   I don't know why this doesn't work
+  //   store.dispatch(setUser(req.cookies.user));
+  //   return {
+  //
+  //   };
+  // }
+
   /**
    * COMPONENT LIFECYCLE
   */
@@ -30,14 +39,13 @@ class HomePage extends Page {
   }
 
   render() {
-    const { url, session } = this.props;
+    const { url } = this.props;
 
     return (
       <Layout
         title="Home"
         description="Home description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         {/* INTRO */}
@@ -116,7 +124,6 @@ class HomePage extends Page {
 }
 
 HomePage.propTypes = {
-  session: PropTypes.object.isRequired
 };
 
 export default withRedux(
@@ -124,5 +131,5 @@ export default withRedux(
   state => ({
     operators: state.operators
   }),
-  { getOperators }
+  { getOperators, setUser }
 )(HomePage);

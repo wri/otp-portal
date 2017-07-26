@@ -25,14 +25,13 @@ class AboutPage extends Page {
   }
 
   render() {
-    const { url, session } = this.props;
+    const { url } = this.props;
 
     return (
       <Layout
         title="About"
         description="About description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         <StaticHeader

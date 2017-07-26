@@ -7,6 +7,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import DocCard from 'components/ui/doc-card';
+import DocCardUpload from 'components/ui/doc-card-upload';
 
 export default function DocumentsByFMU(props) {
   const groupedByFmu = HELPERS_DOC.getGroupedByFmu(props.data);
@@ -36,6 +37,10 @@ export default function DocumentsByFMU(props) {
                         className="columns small-12 medium-4"
                       >
                         <DocCard
+                          {...card}
+                        />
+
+                        <DocCardUpload
                           {...card}
                         />
                       </div>

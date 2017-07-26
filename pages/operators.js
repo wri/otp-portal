@@ -152,14 +152,13 @@ class OperatorsPage extends Page {
   }
 
   render() {
-    const { url, session, operators } = this.props;
+    const { url, operators } = this.props;
 
     return (
       <Layout
         title="Operators"
         description="Operators description..."
         url={url}
-        session={session}
         className="-fullscreen"
         footer={false}
         searchList={operators.data}
@@ -204,7 +203,6 @@ class OperatorsPage extends Page {
 }
 
 OperatorsPage.propTypes = {
-  session: PropTypes.object.isRequired
 };
 
 export default withRedux(

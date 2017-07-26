@@ -95,14 +95,13 @@ class ObservationsPage extends Page {
   }
 
   render() {
-    const { url, session, observations, parsedObservations } = this.props;
+    const { url, observations, parsedObservations } = this.props;
 
     return (
       <Layout
         title="Observations"
         description="Observations description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         <StaticHeader
@@ -173,7 +172,6 @@ class ObservationsPage extends Page {
 }
 
 ObservationsPage.propTypes = {
-  session: PropTypes.object.isRequired,
   observations: PropTypes.object,
   filters: PropTypes.object
 };
