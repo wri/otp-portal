@@ -50,6 +50,7 @@
     "raw-loader": "^0.5.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-dropzone": "^3.13.3",
     "react-redux": "^4.4.6",
     "react-select": "^1.0.0-rc.5",
     "react-sticky": "^6.0.1",
