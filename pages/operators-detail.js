@@ -72,7 +72,7 @@ class OperatorsDetail extends Page {
 
 
   render() {
-    const { url, session, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
+    const { url, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -81,7 +81,6 @@ class OperatorsDetail extends Page {
         title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
@@ -142,7 +141,6 @@ class OperatorsDetail extends Page {
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
-  session: PropTypes.object.isRequired
 };
 
 export default withRedux(

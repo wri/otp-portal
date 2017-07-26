@@ -2,14 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+import { getOperator } from 'modules/operators-detail';
+
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import DocCard from 'components/ui/doc-card';
+import DocCardUpload from 'components/ui/doc-card-upload';
 
-export default function DocumentsByOperator(props) {
-  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(props.data);
+function DocumentsByOperator(props) {
+  const { data, user, id } = props;
+
+  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
 
   return (
     <ul className="c-doc-gallery">
@@ -31,6 +39,14 @@ export default function DocumentsByOperator(props) {
                 <DocCard
                   {...card}
                 />
+
+                {((user && user.role === 'admin') ||
+                 (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
+                   <DocCardUpload
+                     {...card}
+                     onChange={() => props.getOperator(id)}
+                   />
+                }
               </div>
             ))}
           </div>
@@ -45,5 +61,15 @@ DocumentsByOperator.defaultProps = {
 };
 
 DocumentsByOperator.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  id: PropTypes.string,
+  user: PropTypes.object
 };
+
+export default withRedux(
+  store,
+  state => ({
+    user: state.user
+  }),
+  { getOperator }
+)(DocumentsByOperator);

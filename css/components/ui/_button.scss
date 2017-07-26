@@ -14,6 +14,7 @@
   white-space: nowrap;
   text-decoration: none;
   transition: all .1s linear;
+  cursor: pointer;
 
   // STATES
   &.-disabled {

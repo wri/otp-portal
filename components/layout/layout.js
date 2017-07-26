@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default class Layout extends React.Component {
   render() {
-    const { title, description, url, session, children, className, footer } = this.props;
+    const { title, description, url, children, className, footer } = this.props;
 
     const classNames = classnames({
       [className]: !!className
@@ -36,7 +36,6 @@ export default class Layout extends React.Component {
 
         <Header
           url={url}
-          session={session}
           searchList={this.props.searchList}
         />
 
@@ -57,7 +56,6 @@ Layout.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  session: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
   className: PropTypes.string,
   searchList: PropTypes.array,

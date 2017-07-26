@@ -46,6 +46,7 @@
 @import 'components/ui/chart-legend';
 @import 'components/ui/doc-by-category';
 @import 'components/ui/doc-card';
+@import 'components/ui/doc-card-upload';
 @import 'components/ui/doc-gallery';
 @import 'components/ui/doc-provided';
 @import 'components/ui/filters';
@@ -53,6 +54,7 @@
 @import 'components/ui/gallery';
 @import 'components/ui/icon';
 @import 'components/ui/intro';
+@import 'components/ui/login';
 @import 'components/ui/modal';
 @import 'components/ui/navigation-list';
 @import 'components/ui/observations-by-operator';
@@ -64,3 +66,15 @@
 @import 'components/ui/title';
 @import 'components/ui/search';
 @import 'components/ui/select';
+
+// form
+@import "components/form/form";
+@import "components/form/field";
+@import "components/form/field-container";
+@import "components/form/field-buttons";
+@import "components/form/file";
+@import "components/form/file-image";
+@import "components/form/checkbox";
+@import "components/form/radio";
+@import "components/form/select";
+@import "components/form/token";
