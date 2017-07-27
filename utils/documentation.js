@@ -19,11 +19,29 @@ const PALETTE = {
     name: 'Provided (valid)',
     fill: PALETTE_COLOR_2[2].fill,
     stroke: PALETTE_COLOR_2[2].fill
+  },
+  doc_pending: {
+    name: 'Pending for approval',
+    fill: PALETTE_COLOR_2[3].fill,
+    stroke: PALETTE_COLOR_2[3].fill
   }
 };
 
 
 const HELPERS_DOC = {
+  getMetadata() {
+    return PALETTE;
+  },
+
+  getPercentage(data) {
+    if (data['percentage-valid-documents-all']) {
+      let per = data['percentage-valid-documents-all'] * 100;
+      per = per.toFixed(2).replace(/[.,]00$/, '');
+      return per || 0;
+    }
+    return 0;
+  },
+
   getGroupedByType(data) {
     return groupBy(data, 'type');
   },
@@ -48,7 +66,7 @@ const HELPERS_DOC = {
       return flatten(Object.keys(groupedByStatus).map(status => [
         {
           name: PALETTE[status].name,
-          value: Math.round((groupedByStatus[status].length / length) * 100) || 0,
+          value: parseFloat(((groupedByStatus[status].length / length) * 100).toFixed(2).replace(/[.,]00$/, '')) || 0,
           fill: PALETTE[status].fill,
           stroke: PALETTE[status].stroke
         }

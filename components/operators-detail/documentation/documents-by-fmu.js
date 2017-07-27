@@ -20,14 +20,14 @@ function DocumentsByFMU(props) {
 
   return (
     <div className="c-accordion">
-      {Object.keys(groupedByFmu).map((fmu) => {
+      {sortBy(Object.keys(groupedByFmu)).map((fmu) => {
         const groupedByCategory = HELPERS_DOC.getGroupedByCategory(groupedByFmu[fmu]);
 
         return (
           <div key={fmu} className="accordion-item">
             <h3 className="c-title -proximanova -huge -uppercase accordion-title">{fmu}</h3>
             <ul className="c-doc-gallery accordion-content">
-              {Object.keys(groupedByCategory).map(category => (
+              {sortBy(Object.keys(groupedByCategory)).map(category => (
                 <li
                   key={category}
                   className="doc-gallery-item"
@@ -50,6 +50,7 @@ function DocumentsByFMU(props) {
                          (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
                            <DocCardUpload
                              {...card}
+                             user={user}
                              onChange={() => props.getOperator(id)}
                            />
                         }

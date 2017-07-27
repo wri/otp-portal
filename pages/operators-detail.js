@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
+
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
@@ -34,15 +37,25 @@ class OperatorsDetail extends Page {
    * - getTabOptions
   */
   getTabOptions() {
-    // TODO: handle with documentation percentage
     const operatorsDetail = this.props.operatorsDetail.data;
 
     return TABS_OPERATORS_DETAIL.map((tab) => {
-      const tabData = operatorsDetail[tab.value];
+      let number;
+      switch (tab.value) {
+        case 'documentation': {
+          number = `${HELPERS_DOC.getPercentage(operatorsDetail)}%`;
+          break;
+        }
+
+        default: {
+          const tabData = operatorsDetail[tab.value];
+          number = (tabData) ? tabData.length : null;
+        }
+      }
 
       return {
         ...tab,
-        number: (tabData) ? tabData.length : null
+        number
       };
     });
   }
