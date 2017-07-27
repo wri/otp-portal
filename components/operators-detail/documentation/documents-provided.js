@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -58,7 +59,7 @@ export default function DocumentsProvided(props) {
         <div className="columns small-6">
           <div className="c-doc-by-category">
             <ul className="doc-by-category-list">
-              {Object.keys(groupedByCategory).map((category) => {
+              {sortBy(Object.keys(groupedByCategory)).map((category) => {
                 const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
                 const width = `${(groupedByCategory[category].length / max) * 100}%`;
 
@@ -72,7 +73,7 @@ export default function DocumentsProvided(props) {
                         className="doc-by-category-bar"
                         style={{ width }}
                       >
-                        {Object.keys(groupedByStatus).sort().map((status) => {
+                        {sortBy(Object.keys(groupedByStatus)).map((status) => {
                           const segmentWidth = `${(groupedByStatus[status].length / groupedByCategory[category].length) * 100}%`;
 
                           return (
