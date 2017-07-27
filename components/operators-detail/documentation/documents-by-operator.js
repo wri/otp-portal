@@ -21,7 +21,7 @@ function DocumentsByOperator(props) {
 
   return (
     <ul className="c-doc-gallery">
-      {Object.keys(groupedByCategory).map(category => (
+      {sortBy(Object.keys(groupedByCategory)).map(category => (
         <li
           key={category}
           className="doc-gallery-item"
@@ -44,6 +44,7 @@ function DocumentsByOperator(props) {
                  (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
                    <DocCardUpload
                      {...card}
+                     user={user}
                      onChange={() => props.getOperator(id)}
                    />
                 }

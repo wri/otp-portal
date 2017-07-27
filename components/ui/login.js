@@ -59,7 +59,7 @@ class Login extends React.Component {
   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
-    this.setState({ form }, () => console.info(this.state.form));
+    this.setState({ form });
   }
 
   onSubmit(e) {

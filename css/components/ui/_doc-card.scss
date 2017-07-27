@@ -62,4 +62,13 @@
     .doc-card-status { color: rgba($color-tertiary, 0.5); }
     .doc-card-fmus { color: rgba($color-tertiary, 0.5); }
   }
+
+  &.-doc_pending {
+    background: rgba($color-black, 0.04);
+
+    &:after { background: $color-doc-pending; }
+
+    .doc-card-status { color: $color-doc-pending; }
+  }
+
 }

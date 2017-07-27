@@ -42,6 +42,7 @@
     border-left: 1px solid $color-tertiary;
 
     &.-doc_valid { background: $color-doc-valid; }
+    &.-doc_pending { background: $color-doc-pending; }
     &.-doc_invalid { background: $color-doc-invalid; }
     &.-doc_not_provided { background: $color-doc-not-provided;}
   }

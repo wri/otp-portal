@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Next
 import Link from 'next/link';
@@ -36,7 +35,7 @@ class OperatorsPage extends Page {
           name: o.name,
           certification: certifications[index],
           observations: (o.observations) ? o.observations.length : 0,
-          documentation: (o.documentation) ? o.documentation.length : 'not active',
+          documentation: `${o['percentage-valid-documents-all']}%`,
           fmus: (o.fmus) ? o.fmus.length : 0
         };
       }),

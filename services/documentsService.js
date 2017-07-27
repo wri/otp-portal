@@ -7,18 +7,21 @@ export default class DocumentsService {
     this.opts = options;
   }
 
-  saveDocument({ type, body, id }) {
+  saveDocument({ type, body }) {
     return new Promise((resolve, reject) => {
       post({
-        url: `${process.env.OTP_API}/operator-documents/${id}`,
+        url: `${process.env.OTP_API}/documents`,
         type,
         body,
         headers: [{
           key: 'Content-Type',
-          value: 'application/json' // application/vnd.api+json
+          value: 'application/vnd.api+json' // application/vnd.api+json
         }, {
           key: 'Authorization',
-          value: this.opts.authorization
+          value: `Bearer ${this.opts.authorization}`
+        }, {
+          key: 'OTP-API-KEY',
+          value: process.env.OTP_API_KEY
         }],
         onSuccess: (response) => {
           resolve(response);
@@ -33,10 +36,16 @@ export default class DocumentsService {
   deleteDocument(id) {
     return new Promise((resolve, reject) => {
       remove({
-        url: `${process.env.OTP_API}/operator-documents/${id}`,
+        url: `${process.env.OTP_API}/documents/${id}`,
         headers: [{
+          key: 'Content-Type',
+          value: 'application/json'
+        }, {
           key: 'Authorization',
-          value: this.opts.authorization
+          value: `Bearer ${this.opts.authorization}`
+        }, {
+          key: 'OTP-API-KEY',
+          value: process.env.OTP_API_KEY
         }],
         onSuccess: (response) => {
           resolve(response);

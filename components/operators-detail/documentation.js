@@ -30,7 +30,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
   }
 
   render() {
-    const { operatorDocumentation, url } = this.props;
+    const { operatorsDetail, operatorDocumentation, url } = this.props;
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
 
     return (
@@ -39,7 +39,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
           <div className="l-container">
             <article className="c-article">
               <header>
-                <h2 className="c-title">{HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation)}% valid documents provided</h2>
+                <h2 className="c-title">{HELPERS_DOC.getPercentage(operatorsDetail.data)}% valid documents provided</h2>
               </header>
 
               <div className="content">
@@ -77,6 +77,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
 }
 
 OperatorsDetailDocumentation.propTypes = {
+  operatorsDetail: PropTypes.object,
   operatorDocumentation: PropTypes.array,
   url: PropTypes.object
 };
