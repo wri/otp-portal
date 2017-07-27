@@ -3,6 +3,9 @@ import React from 'react';
 // Next
 import Link from 'next/link';
 
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
+
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -35,7 +38,7 @@ class OperatorsPage extends Page {
           name: o.name,
           certification: certifications[index],
           observations: (o.observations) ? o.observations.length : 0,
-          documentation: `${o['percentage-valid-documents-all']}%`,
+          documentation: HELPERS_DOC.getPercentage(o),
           fmus: (o.fmus) ? o.fmus.length : 0
         };
       }),
