@@ -4,9 +4,10 @@ import classnames from 'classnames';
 
 // Services
 import DocumentsService from 'services/documentsService';
+import modal from 'services/modal';
 
 // Components
-import Spinner from 'components/ui/spinner';
+import DocModal from 'components/ui/doc-modal';
 
 export default class DocCardUpload extends React.Component {
 
@@ -15,37 +16,16 @@ export default class DocCardUpload extends React.Component {
 
     // STATE
     this.state = {
-      uploadLoading: false,
       deleteLoading: false
     };
 
     // BINDINGS
     this.triggerAddFile = this.triggerAddFile.bind(this);
     this.triggerDeleteFile = this.triggerDeleteFile.bind(this);
-    this.triggerChangeFile = this.triggerChangeFile.bind(this);
 
     // SERVICE
     this.documentsService = new DocumentsService({
       authorization: props.user.token
-    });
-  }
-
-  /**
-   * HELPERS
-   * - getBase64
-   * @param  {[type]} file [File]
-   * @return {[type]} bs64 [String]
-  */
-  getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
     });
   }
 
@@ -57,74 +37,31 @@ export default class DocCardUpload extends React.Component {
   */
   triggerAddFile(e) {
     e && e.preventDefault();
-    this.inputFile.click();
+    modal.toggleModal(true, {
+      children: DocModal,
+      childrenProps: {
+        ...this.props
+      }
+    });
   }
 
   triggerDeleteFile(e) {
     e && e.preventDefault();
-    const { id } = this.props;
+    const { documents } = this.props;
+    const id = documents[0].id;
 
-    this.setState({ deleteLoading: true });
 
     this.documentsService.deleteDocument(id)
       .then(() => {
-        this.setState({ deleteLoading: false });
         this.props.onChange && this.props.onChange();
       })
       .catch((err) => {
         console.error(err);
-        this.setState({ deleteLoading: false });
       });
-  }
-
-  triggerChangeFile() {
-    if (this.inputFile.files.length) {
-      this.setState({ uploadLoading: true });
-
-      this.getBase64(this.inputFile.files[0])
-        .then((result) => {
-          const { id, title } = this.props;
-
-          this.documentsService.saveDocument({
-            type: 'POST',
-            body: {
-              data: {
-                type: 'documents',
-                attributes: {
-                  name: title,
-                  'document-type': 'Report',
-                  attachment: result
-                },
-                relationships: {
-                  attacheable: {
-                    data: {
-                      type: 'operator-documents',
-                      id
-                    }
-                  }
-                }
-              }
-            }
-          })
-            .then(() => {
-              this.setState({ uploadLoading: false });
-              this.props.onChange && this.props.onChange();
-            })
-            .catch((err) => {
-              console.error(err);
-              this.setState({ uploadLoading: false });
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-          this.setState({ uploadLoading: false });
-        });
-    }
   }
 
   render() {
     const { status } = this.props;
-    const { uploadLoading, deleteLoading } = this.state;
 
     const classNames = classnames({
       [`-${status}`]: !!status
@@ -132,20 +69,17 @@ export default class DocCardUpload extends React.Component {
 
     return (
       <div className={`c-doc-card-upload ${classNames}`}>
-        {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending') &&
+        {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending' || status === 'doc_expired') &&
           <ul>
             <li>
-              <input ref={(c) => { this.inputFile = c; }} type="file" onChange={this.triggerChangeFile} />
               <button onClick={this.triggerAddFile} className="c-button -primary">
                 Update file
-                <Spinner isLoading={uploadLoading} className="-tiny -transparent" />
               </button>
             </li>
 
             <li>
               <button onClick={this.triggerDeleteFile} className="c-button -primary">
                 Delete
-                <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
               </button>
             </li>
           </ul>
@@ -153,10 +87,8 @@ export default class DocCardUpload extends React.Component {
         {status === 'doc_not_provided' &&
           <ul>
             <li>
-              <input ref={(c) => { this.inputFile = c; }} type="file" onChange={this.triggerChangeFile} />
               <button onClick={this.triggerAddFile} className="c-button -secondary">
                 Add file
-                <Spinner isLoading={uploadLoading} className="-tiny -transparent" />
               </button>
             </li>
           </ul>
@@ -168,9 +100,8 @@ export default class DocCardUpload extends React.Component {
 }
 
 DocCardUpload.propTypes = {
-  id: PropTypes.string,
-  title: PropTypes.string,
   status: PropTypes.string,
   user: PropTypes.object,
+  documents: PropTypes.array,
   onChange: PropTypes.func
 };

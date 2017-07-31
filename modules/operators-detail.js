@@ -46,7 +46,9 @@ export function getOperator(id) {
       'fmus',
       'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
       'operator-document-fmus.fmu',
-      'operator-document-countries.required-operator-document-country.required-operator-document-group'
+      'operator-document-fmus.documents',
+      'operator-document-countries.required-operator-document-country.required-operator-document-group',
+      'operator-document-countries.documents'
     ];
 
     const queryParams = queryString.stringify({

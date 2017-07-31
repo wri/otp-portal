@@ -24,6 +24,11 @@ const PALETTE = {
     name: 'Pending for approval',
     fill: PALETTE_COLOR_2[3].fill,
     stroke: PALETTE_COLOR_2[3].fill
+  },
+  doc_expired: {
+    name: 'Expired',
+    fill: PALETTE_COLOR_2[4].fill,
+    stroke: PALETTE_COLOR_2[4].fill
   }
 };
 

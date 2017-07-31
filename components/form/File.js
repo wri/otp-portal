@@ -4,11 +4,8 @@ import omit from 'lodash/omit';
 
 import Dropzone from 'react-dropzone';
 
-// Utils
-import { post } from 'utils/request';
-
 // Components
-import Spinner from 'components/ui/Spinner';
+import Spinner from 'components/ui/spinner';
 
 import FormElement from './FormElement';
 
@@ -18,7 +15,6 @@ class File extends FormElement {
 
     this.state = {
       ...this.state,
-      validations: props.validations,
       accepted: [],
       rejected: [],
       dropzoneActive: false,
@@ -51,15 +47,22 @@ class File extends FormElement {
   }
 
   onDrop(accepted, rejected) {
-    this.setState({
-      accepted,
-      rejected,
-      dropzoneActive: false
-    }, () => {
-      if (this.state.accepted.length) {
-        this.uploadFile(this.state.accepted[0]);
-      }
-    });
+    if (accepted.length) {
+      this.getBase64(accepted[0])
+        .then((value) => {
+          this.setState({
+            value,
+            accepted,
+            rejected,
+            dropzoneActive: false
+          }, () => {
+            // Publish the new value to the form
+            if (this.props.onChange) this.props.onChange(this.state.value);
+            // Trigger validation
+            this.triggerValidate();
+          });
+        });
+    }
   }
 
   /**
@@ -72,8 +75,7 @@ class File extends FormElement {
     if (accepted.length) {
       this.setState({
         accepted: [],
-        value: '',
-        validations: ['required', 'url']
+        value: ''
       }, () => {
         // Publish the new value to the form
         if (this.props.onChange) this.props.onChange(this.state.value);
@@ -87,8 +89,7 @@ class File extends FormElement {
 
   triggerChange(e) {
     this.setState({
-      value: e.currentTarget.value,
-      validations: ['required', 'url']
+      value: e.currentTarget.value
     }, () => {
       // Publish the new value to the form
       if (this.props.onChange) this.props.onChange(this.state.value);
@@ -100,7 +101,7 @@ class File extends FormElement {
   /**
    * HELPERS
    * - getFileName
-   * - uploadFile
+   * @return {String}
   */
   getFileName() {
     const { accepted } = this.state;
@@ -110,42 +111,24 @@ class File extends FormElement {
       return current.name;
     }
 
-    return 'Select file to import data';
+    return 'Select file';
   }
 
-  uploadFile(file) {
-    const formData = new FormData();
-    formData.append('dataset', file);
-
-    this.setState({ loading: true, errors: [] });
-
-    post({
-      type: 'POST',
-      url: `${process.env.WRI_API_URL}/dataset/upload`,
-      headers: [{
-        key: 'Authorization', value: this.props.properties.authorization
-      }],
-      body: formData,
-      multipart: true,
-      onSuccess: (response) => {
-        this.setState({
-          value: response.connectorUrl,
-          validations: ['required'],
-          loading: false
-        }, () => {
-          // Publish the new value to the form
-          if (this.props.onChange) this.props.onChange(this.state.value);
-          // Trigger validation
-          this.triggerValidate();
-        });
-      },
-      onError: (err) => {
-        this.setState({
-          accepted: [],
-          loading: false
-        });
-        if (this.props.onValid) this.props.onValid(false, err);
-      }
+  /**
+   * - getBase64
+   * @param  {File} file
+   * @return {String} bs64
+  */
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
     });
   }
 
@@ -178,7 +161,7 @@ class File extends FormElement {
           <input
             {...omit(properties, 'authorization')}
             className={`input ${inputClassName}`}
-            value={this.state.value}
+            value={this.getFileName()}
             id={`input-${properties.name}`}
             readOnly={!!accepted.length}
             onChange={this.triggerChange}
@@ -200,7 +183,6 @@ class File extends FormElement {
 
 File.propTypes = {
   properties: React.PropTypes.object.isRequired,
-  validations: React.PropTypes.array,
   onChange: React.PropTypes.func
 };
 

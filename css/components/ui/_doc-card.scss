@@ -71,4 +71,12 @@
     .doc-card-status { color: $color-doc-pending; }
   }
 
+  &.-doc_expired {
+    background: rgba($color-black, 0.04);
+
+    &:after { background: $color-doc-expired; }
+
+    .doc-card-status { color: $color-doc-expired; }
+  }
+
 }
