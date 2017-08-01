@@ -9,7 +9,7 @@ import { getOperator } from 'modules/operators-detail';
 
 // Services
 import modal from 'services/modal';
-import DocumentsService from 'services/documentsService';
+import DocumentationService from 'services/documentationService';
 
 // Components
 import Field from 'components/form/Field';
@@ -55,7 +55,7 @@ class DocModal extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     // Services
-    this.documentsService = new DocumentsService({
+    this.documentationService = new DocumentationService({
       authorization: props.user.token
     });
   }
@@ -86,7 +86,7 @@ class DocModal extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
-        this.documentsService.saveDocument({
+        this.documentationService.saveDocument({
           type: 'POST',
           body: {
             data: {

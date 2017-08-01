@@ -51,7 +51,7 @@ export default class Gallery1 extends React.Component {
         value: url.query.id
       }, {
         key: 'DOCUMENTATION',
-        value: (operatorDocumentation) ? HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation) : '-'
+        value: (operatorDocumentation) ? HELPERS_DOC.getPercentage(operatorsDetail.data) : '-'
       }, {
         key: 'OBSERVATIONS',
         value: (operatorsDetail.data.observations) ? operatorsDetail.data.observations.length : '-'

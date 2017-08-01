@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import { post, remove } from 'utils/request';
 
-export default class DocumentsService {
+export default class DocumentationService {
 
   constructor(options = {}) {
     this.opts = options;

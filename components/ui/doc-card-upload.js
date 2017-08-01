@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Services
-import DocumentsService from 'services/documentsService';
+import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
 
 // Components
@@ -24,7 +24,7 @@ export default class DocCardUpload extends React.Component {
     this.triggerDeleteFile = this.triggerDeleteFile.bind(this);
 
     // SERVICE
-    this.documentsService = new DocumentsService({
+    this.documentationService = new DocumentationService({
       authorization: props.user.token
     });
   }
@@ -52,7 +52,7 @@ export default class DocCardUpload extends React.Component {
     e && e.preventDefault();
     const { id } = this.props;
 
-    this.documentsService.deleteDocument(id)
+    this.documentationService.deleteDocument(id)
       .then(() => {
         this.props.onChange && this.props.onChange();
       })
