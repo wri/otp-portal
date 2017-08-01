@@ -46,7 +46,8 @@ class DocModal extends React.Component {
         date: '',
         file: ''
       },
-      submitting: false
+      submitting: false,
+      errors: []
     };
 
     // Bindings
@@ -66,9 +67,7 @@ class DocModal extends React.Component {
   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
-    this.setState({ form }, () => {
-      console.info(this.state.form);
-    });
+    this.setState({ form });
   }
 
   onSubmit(e) {
@@ -83,7 +82,7 @@ class DocModal extends React.Component {
       const valid = FORM_ELEMENTS.isValid(this.state.form);
 
       if (valid) {
-        const { id, title } = this.props;
+        const { id, operatorId } = this.props;
         // Start the submitting
         this.setState({ submitting: true });
 
@@ -91,31 +90,25 @@ class DocModal extends React.Component {
           type: 'POST',
           body: {
             data: {
-              type: 'documents',
+              type: 'operator-documents',
               attributes: {
-                'document-type': 'Report',
-                name: title,
+                current: true,
+                'operator-id': operatorId,
+                'required-operator-document-id': id,
+                'start-date': this.state.form.date,
                 attachment: this.state.form.file
-              },
-              relationships: {
-                attacheable: {
-                  data: {
-                    id,
-                    type: 'operator-documents',
-                    'start-date': this.state.form.date
-                  }
-                }
               }
             }
           }
         })
           .then(() => {
-            this.setState({ submitting: false });
+            this.setState({ submitting: false, errors: [] });
+            this.props.onChange && this.props.onChange();
             modal.toggleModal(false);
           })
           .catch((err) => {
             console.error(err);
-            this.setState({ submitting: false });
+            this.setState({ submitting: false, errors: err });
           });
       } else {
         // toastr.error('Error', 'Fill all the required fields');
@@ -125,7 +118,7 @@ class DocModal extends React.Component {
 
 
   render() {
-    const { submitting } = this.state;
+    const { submitting, errors } = this.state;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -172,6 +165,10 @@ class DocModal extends React.Component {
             </Field>
           </fieldset>
 
+          {!!errors.length &&
+            errors.map(e => e.title)
+          }
+
           <ul className="c-field-buttons">
             <li>
               <button
@@ -202,10 +199,8 @@ class DocModal extends React.Component {
 
 DocModal.propTypes = {
   id: PropTypes.string,
-  title: PropTypes.string,
-  status: PropTypes.string,
+  operatorId: PropTypes.string,
   user: PropTypes.object,
-  documents: PropTypes.array,
   onChange: PropTypes.func
 };
 

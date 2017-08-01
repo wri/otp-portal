@@ -40,16 +40,17 @@ export default class DocCardUpload extends React.Component {
     modal.toggleModal(true, {
       children: DocModal,
       childrenProps: {
-        ...this.props
+        ...this.props,
+        onChange: () => {
+          this.props.onChange && this.props.onChange();
+        }
       }
     });
   }
 
   triggerDeleteFile(e) {
     e && e.preventDefault();
-    const { documents } = this.props;
-    const id = documents[0].id;
-
+    const { id } = this.props;
 
     this.documentsService.deleteDocument(id)
       .then(() => {
@@ -102,6 +103,6 @@ export default class DocCardUpload extends React.Component {
 DocCardUpload.propTypes = {
   status: PropTypes.string,
   user: PropTypes.object,
-  documents: PropTypes.array,
+  id: PropTypes.string,
   onChange: PropTypes.func
 };

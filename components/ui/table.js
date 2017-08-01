@@ -15,28 +15,25 @@ export default function Table({ data, options, className }) {
 
   return (
     <div className={`c-table ${classNames}`}>
-      {data.length > 0 ?
-        <ReactTable
-          data={data}
-          className={`table ${classNames}`}
-          columns={options.columns || TABLE_HEADERS}
-          defaultPageSize={options.pageSize}
-          pageSize={options.nextPageSize}
-          showPagination={options.pagination}
-          page={options.page}
-          previousText={options.previousText}
-          nextText={options.nextText}
-          noDataText={options.noDataText}
-          pages={options.pages}
-          showPageSizeOptions={options.showPageSizeOptions}
-          sortable
-          resizable={false}
-          // Api pagination & sort
-          // manual={options.manual}
-          onPageChange={options.onPageChange}
-        /> :
-        <p>No results</p>
-      }
+      <ReactTable
+        data={data}
+        className={`table ${classNames}`}
+        columns={options.columns || TABLE_HEADERS}
+        defaultPageSize={options.pageSize}
+        pageSize={options.nextPageSize}
+        showPagination={options.pagination}
+        page={options.page}
+        previousText={options.previousText}
+        nextText={options.nextText}
+        noDataText={options.noDataText}
+        pages={options.pages}
+        showPageSizeOptions={options.showPageSizeOptions}
+        sortable
+        resizable={false}
+        // Api pagination & sort
+        // manual={options.manual}
+        onPageChange={options.onPageChange}
+      />
     </div>
   );
 }

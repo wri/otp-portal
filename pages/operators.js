@@ -29,19 +29,14 @@ class OperatorsPage extends Page {
 
   static parseData(operators = []) {
     return {
-      table: operators.map((o) => {
-        const certifications = ['FSC', 'PEFC', 'OLB', '-'];
-        const index = Math.floor(Math.random() * certifications.length);
-
-        return {
-          id: o.id,
-          name: o.name,
-          certification: certifications[index],
-          observations: (o.observations) ? o.observations.length : 0,
-          documentation: HELPERS_DOC.getPercentage(o),
-          fmus: (o.fmus) ? o.fmus.length : 0
-        };
-      }),
+      table: operators.map(o => ({
+        id: o.id,
+        name: o.name,
+        certification: o.certification,
+        observations: (o.observations) ? o.observations.length : 0,
+        documentation: `${HELPERS_DOC.getPercentage(o)}%`,
+        fmus: (o.fmus) ? o.fmus.length : 0
+      })),
       max: Math.max(...operators.map(o => o.observations.length))
     };
   }
@@ -76,8 +71,8 @@ class OperatorsPage extends Page {
    * - getOperatorsTable
   */
   getOperatorsTable() {
-    const operators = this.props.operators.data;
-    if (operators && operators.length) {
+    const operators = this.props.operators;
+    if (!operators.loading) {
       return (
         <Table
           data={this.state.table}
@@ -88,16 +83,14 @@ class OperatorsPage extends Page {
               accessor: 'name',
               minWidth: 200,
               resizable: false,
-              Cell: ({ original }) => {
-                return (
-                  <Link
-                    href={{ pathname: '/operators-detail', query: { id: original.id } }}
-                    as={`/operators/${original.id}`}
-                  >
-                    <a>{original.name}</a>
-                  </Link>
-                );
-              }
+              Cell: ({ original }) => (
+                <Link
+                  href={{ pathname: '/operators-detail', query: { id: original.id } }}
+                  as={`/operators/${original.id}`}
+                >
+                  <a>{original.name}</a>
+                </Link>
+                )
             }, {
               Header: <span className="sortable">Observations</span>,
               accessor: 'observations',
@@ -139,11 +132,11 @@ class OperatorsPage extends Page {
               headerClassName: '-a-right',
               resizable: false
             }],
-            pageSize: operators.length,
+            pageSize: operators.data.length,
             pagination: false,
             previousText: '<',
             nextText: '>',
-            noDataText: 'No rows found',
+            noDataText: 'No operators found',
             showPageSizeOptions: false,
             onPageChange: page => this.onPageChange(page)
           }}

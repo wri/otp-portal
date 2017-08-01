@@ -60,37 +60,39 @@ export default class LayerManager {
         throw new Error(response.statusText);
       })
       .then((data) => {
-        // Add source
-        this.map.addSource(layer.id, { ...layer.source, data });
+        if (this.map) {
+          // Add source
+          this.map.addSource(layer.id, { ...layer.source, data });
 
-        // Loop trough layers
-        layer.layers.forEach((l) => {
-          const { interactivity, fitBounds } = l;
+          // Loop trough layers
+          layer.layers.forEach((l) => {
+            const { interactivity, fitBounds } = l;
 
-          // Add layer
-          this.map.addLayer(l);
+            // Add layer
+            this.map.addLayer(l);
 
-          // Add interactivity (if exists)
-          if (interactivity) {
-            Object.keys(interactivity).forEach((i) => {
-              const iFn = interactivity[i].bind(this);
-              this.map.on(i, l.id, iFn);
-            });
-          }
+            // Add interactivity (if exists)
+            if (interactivity) {
+              Object.keys(interactivity).forEach((i) => {
+                const iFn = interactivity[i].bind(this);
+                this.map.on(i, l.id, iFn);
+              });
+            }
 
-          if (fitBounds) {
-            const bounds = getBBox(data);
+            if (fitBounds) {
+              const bounds = getBBox(data);
 
-            this.map.fitBounds(bounds, {
-              padding: 40
-              // animate: false
-              // duration: 500,
-              // offset: [300, 0]
-            });
-          }
+              this.map.fitBounds(bounds, {
+                padding: 40
+                // animate: false
+                // duration: 500,
+                // offset: [300, 0]
+              });
+            }
 
-          this.onLayerAddedSuccess();
-        });
+            this.onLayerAddedSuccess();
+          });
+        }
       })
       .catch((err) => {
         console.error(err);

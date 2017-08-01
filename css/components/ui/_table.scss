@@ -134,6 +134,16 @@
       }
     }
 
+    // No data row
+    .rt-noData {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      background: none;
+      padding: $space-1 $space-1 * 2;
+    }
+
     .severity {
       display: flex;
       justify-content: center;
@@ -151,10 +161,6 @@
       &.-sev-1 { color: $lg-color-2; }
       &.-sev-2 { color: $lg-color-1; }
       &.-sev-3 { color: $lg-color-0; }
-    }
-
-    .rt-noData {
-      display: none;
     }
   }
 
@@ -204,6 +210,10 @@
       &:last-child {
         padding: $space-1 $space-1 * 4 $space-1 $space-1 * 2;
       }
+    }
+
+    .rt-noData {
+      padding: $space-1 $space-1 * 4;
     }
 
     .rt-resizable-header-content {

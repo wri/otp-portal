@@ -79,6 +79,7 @@ export function getOperators() {
         });
       })
       .catch((err) => {
+        console.error(err);
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_OPERATORS_ERROR,

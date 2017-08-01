@@ -44,12 +44,14 @@ function DocumentsByFMU(props) {
                       >
                         <DocCard
                           {...card}
+                          operatorId={id}
                         />
 
                         {((user && user.role === 'admin') ||
                          (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
                            <DocCardUpload
                              {...card}
+                             operatorId={id}
                              user={user}
                              onChange={() => props.getOperator(id)}
                            />

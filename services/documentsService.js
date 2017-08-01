@@ -10,7 +10,7 @@ export default class DocumentsService {
   saveDocument({ type, body }) {
     return new Promise((resolve, reject) => {
       post({
-        url: `${process.env.OTP_API}/documents`,
+        url: `${process.env.OTP_API}/operator-documents`,
         type,
         body,
         headers: [{
@@ -36,7 +36,7 @@ export default class DocumentsService {
   deleteDocument(id) {
     return new Promise((resolve, reject) => {
       remove({
-        url: `${process.env.OTP_API}/documents/${id}`,
+        url: `${process.env.OTP_API}/operator-documents/${id}`,
         headers: [{
           key: 'Content-Type',
           value: 'application/json'
