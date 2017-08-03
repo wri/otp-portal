@@ -56,6 +56,10 @@ const LEGEND_DOCUMENTATION = {
     fill: PALETTE_COLOR_2[3].fill,
     stroke: PALETTE_COLOR_2[3].stroke,
     label: 'Pending approval'
+  }, {
+    fill: PALETTE_COLOR_2[4].fill,
+    stroke: PALETTE_COLOR_2[4].stroke,
+    label: 'Expired'
   }]
 };
 
