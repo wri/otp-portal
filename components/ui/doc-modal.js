@@ -15,6 +15,7 @@ import DocumentationService from 'services/documentationService';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import File from 'components/form/File';
+import Spinner from 'components/ui/spinner';
 
 // Constants
 const FORM_ELEMENTS = {
@@ -120,14 +121,17 @@ class DocModal extends React.Component {
 
   render() {
     const { submitting, errors } = this.state;
+    const { title } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
 
     return (
       <div className="c-login">
-        <h2 className="c-title -huge">
-          Upload file
+        <Spinner isLoading={submitting} className="-light" />
+
+        <h2 className="c-title -extrabig">
+          {title}
         </h2>
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
@@ -199,6 +203,7 @@ class DocModal extends React.Component {
 }
 
 DocModal.propTypes = {
+  title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
   operatorId: PropTypes.string,

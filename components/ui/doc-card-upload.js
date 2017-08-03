@@ -8,6 +8,7 @@ import modal from 'services/modal';
 
 // Components
 import DocModal from 'components/ui/doc-modal';
+import Spinner from 'components/ui/spinner';
 
 export default class DocCardUpload extends React.Component {
 
@@ -52,17 +53,22 @@ export default class DocCardUpload extends React.Component {
     e && e.preventDefault();
     const { id, type } = this.props;
 
+    this.setState({ deleteLoading: true });
+
     this.documentationService.deleteDocument(id)
       .then(() => {
+        this.setState({ deleteLoading: false });
         this.props.onChange && this.props.onChange();
       })
       .catch((err) => {
+        this.setState({ deleteLoading: false });
         console.error(err);
       });
   }
 
   render() {
     const { status } = this.props;
+    const { deleteLoading } = this.state;
 
     const classNames = classnames({
       [`-${status}`]: !!status
@@ -81,6 +87,7 @@ export default class DocCardUpload extends React.Component {
             <li>
               <button onClick={this.triggerDeleteFile} className="c-button -primary">
                 Delete
+                <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
               </button>
             </li>
           </ul>
