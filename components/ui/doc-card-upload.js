@@ -52,7 +52,7 @@ export default class DocCardUpload extends React.Component {
     e && e.preventDefault();
     const { id, type } = this.props;
 
-    this.documentationService.deleteDocument({ id, type })
+    this.documentationService.deleteDocument(id)
       .then(() => {
         this.props.onChange && this.props.onChange();
       })

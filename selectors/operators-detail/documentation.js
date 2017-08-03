@@ -12,7 +12,8 @@ const getParsedDocumentation = createSelector(
 
     if (_operatorsDetail.data['operator-document-countries']) {
       countryDocumentation = _operatorsDetail.data['operator-document-countries'].map(doc => ({
-        id: doc['required-operator-document-country'].id,
+        id: doc.id,
+        requiredDocId: doc['required-operator-document-country'].id,
         type: doc.type,
         title: doc['required-operator-document-country'].name,
         category: doc['required-operator-document-country']['required-operator-document-group'].name,
@@ -23,7 +24,8 @@ const getParsedDocumentation = createSelector(
 
     if (_operatorsDetail.data['operator-document-fmus']) {
       fmuDocumentation = _operatorsDetail.data['operator-document-fmus'].map(doc => ({
-        id: doc['required-operator-document-fmu'].id,
+        id: doc.id,
+        requiredDocId: doc['required-operator-document-fmu'].id,
         type: doc.type,
         title: doc['required-operator-document-fmu'].name,
         category: doc['required-operator-document-fmu']['required-operator-document-group'].name,

@@ -82,7 +82,7 @@ class DocModal extends React.Component {
       const valid = FORM_ELEMENTS.isValid(this.state.form);
 
       if (valid) {
-        const { id, type, operatorId } = this.props;
+        const { requiredDocId, type, operatorId } = this.props;
         // Start the submitting
         this.setState({ submitting: true });
 
@@ -95,7 +95,7 @@ class DocModal extends React.Component {
               attributes: {
                 current: true,
                 'operator-id': operatorId,
-                'required-operator-document-id': id,
+                'required-operator-document-id': requiredDocId,
                 'start-date': this.state.form.date,
                 attachment: this.state.form.file
               }
@@ -199,7 +199,7 @@ class DocModal extends React.Component {
 }
 
 DocModal.propTypes = {
-  id: PropTypes.string,
+  requiredDocId: PropTypes.string,
   type: PropTypes.string,
   operatorId: PropTypes.string,
   user: PropTypes.object,
