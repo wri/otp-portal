@@ -18,7 +18,6 @@ export default function Popup(props) {
         <dl className="dl">
           {list.map(item =>
             <div
-              // onClick={() => console.log(item)}
               className="dc"
               key={item.label}
             >
