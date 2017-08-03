@@ -83,25 +83,15 @@ class DocModal extends React.Component {
       const valid = FORM_ELEMENTS.isValid(this.state.form);
 
       if (valid) {
-        const { requiredDocId, type, operatorId } = this.props;
+        const { type } = this.props;
+
         // Start the submitting
         this.setState({ submitting: true });
 
         this.documentationService.saveDocument({
           url: type,
           type: 'POST',
-          body: {
-            data: {
-              type,
-              attributes: {
-                current: true,
-                'operator-id': operatorId,
-                'required-operator-document-id': requiredDocId,
-                'start-date': this.state.form.date,
-                attachment: this.state.form.file
-              }
-            }
-          }
+          body: this.getBody()
         })
           .then(() => {
             this.setState({ submitting: false, errors: [] });
@@ -116,6 +106,29 @@ class DocModal extends React.Component {
         // toastr.error('Error', 'Fill all the required fields');
       }
     }, 0);
+  }
+
+
+  /**
+   * HELPERS
+   * - getBody
+  */
+  getBody() {
+    const { requiredDocId, type, operatorId, fmu } = this.props;
+
+    return {
+      data: {
+        type,
+        attributes: {
+          current: true,
+          'operator-id': operatorId,
+          'required-operator-document-id': requiredDocId,
+          'start-date': this.state.form.date,
+          attachment: this.state.form.file,
+          ...fmu && { 'fmu-id': fmu.id }
+        }
+      }
+    };
   }
 
 
@@ -207,6 +220,7 @@ DocModal.propTypes = {
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
   operatorId: PropTypes.string,
+  fmu: PropTypes.object,
   user: PropTypes.object,
   onChange: PropTypes.func
 };
