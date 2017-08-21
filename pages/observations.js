@@ -143,6 +143,7 @@ class ObservationsPage extends Page {
 
               {this.state.tab === 'observations-list' &&
                 <Table
+                  sortable
                   data={this.parseTableData()}
                   options={{
                     pageSize: observations.data.length ? 50 : 0,

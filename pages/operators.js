@@ -33,7 +33,7 @@ class OperatorsPage extends Page {
         id: o.id,
         name: o.name,
         certification: o.certification,
-        observations: (o.observations) ? o.observations.length : 0,
+        score: o.score || 0,
         documentation: `${HELPERS_DOC.getPercentage(o)}%`,
         fmus: (o.fmus) ? o.fmus.length : 0
       })),
@@ -77,6 +77,7 @@ class OperatorsPage extends Page {
         <Table
           data={this.state.table}
           className="-striped -secondary"
+          sortable
           options={{
             columns: [{
               Header: <span className="sortable">Name</span>,
@@ -93,25 +94,14 @@ class OperatorsPage extends Page {
                 )
             }, {
               Header: <span className="sortable">Observations</span>,
-              accessor: 'observations',
+              accessor: 'score',
               className: '-a-center',
               headerClassName: '-a-center',
               minWidth: 120,
               resizable: false,
-              Cell: ({ original }) => {
-                let stoplight = '';
-                if (original.observations > (this.state.max / 4) * 2) {
-                  stoplight = '-red';
-                } else if (original.observations > (this.state.max / 4)) {
-                  stoplight = '-orange';
-                } else {
-                  stoplight = '-green';
-                }
-
-                return (
-                  <div className={`stoplight-dot ${stoplight}`} />
-                );
-              }
+              Cell: ({ original }) => (
+                <div className={`stoplight-dot -state-${original.score}`} />
+                )
             }, {
               Header: <span className="sortable">FMUs</span>,
               accessor: 'fmus',
