@@ -1,6 +1,6 @@
 {
   "name": "otp-portal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Open Timber Portal description",
   "author": "Vizzuality",
   "license": "ISC",
@@ -83,7 +83,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development node index.js",
-    "build": "node_modules/.bin/next build",
+    "build": "next build",
     "start": "node index.js"
   },
   "engines": {
