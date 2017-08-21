@@ -233,11 +233,12 @@
       height: 10px;
       border-radius: 50%;
       margin: 5px auto 0;
-      background: $color-primary;
+      background: $color-gray-3;
 
-      &.-red { background: $color-error; }
-      &.-orange { background: $color-secondary; }
-      &.-green { background: $color-primary; }
+      &.-state-3 { background: $color-error; }
+      &.-state-2 { background: $color-secondary; }
+      &.-state-1 { background: $color-primary; }
+      &.-state-0 { background: $color-gray-3; }
     }
   }
 

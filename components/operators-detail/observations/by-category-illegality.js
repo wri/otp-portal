@@ -116,6 +116,7 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
 
                               {groupedByIllegality[illegality].length > 0 &&
                                 <Table
+                                  sortable
                                   className="-light"
                                   data={groupedByIllegality[illegality]}
                                   options={{
