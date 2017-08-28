@@ -34,6 +34,7 @@ class OperatorsPage extends Page {
         name: o.name,
         certification: o.certification,
         score: o.score || 0,
+        obs_per_visit: o['obs-per-visit'] || 0,
         documentation: `${HELPERS_DOC.getPercentage(o)}%`,
         fmus: (o.fmus) ? o.fmus.length : 0
       })),
@@ -93,15 +94,18 @@ class OperatorsPage extends Page {
                 </Link>
                 )
             }, {
-              Header: <span className="sortable">Observations</span>,
-              accessor: 'score',
+              Header: <span className="sortable">Observations/Visit</span>,
+              accessor: 'obs-per-visit',
               className: '-a-center',
               headerClassName: '-a-center',
-              minWidth: 120,
+              minWidth: 140,
               resizable: false,
-              Cell: ({ original }) => (
-                <div className={`stoplight-dot -state-${original.score}`} />
-                )
+              Cell: ({ original }) => {
+                if (original.obs_per_visit) {
+                  return original.obs_per_visit;
+                }
+                return <div className="stoplight-dot -state-0}" />;
+              }
             }, {
               Header: <span className="sortable">FMUs</span>,
               accessor: 'fmus',
