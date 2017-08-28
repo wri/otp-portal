@@ -22,17 +22,19 @@ export default class Filters extends React.Component {
 
       return (
         <div key={i} className="field">
-          <h3 className="title">{f.name}</h3>
-          <Select
-            instanceId={f.key}
-            name={f.key}
-            options={options[f.key]}
-            multi
-            className={value.length ? '-filled' : ''}
-            value={value}
-            placeholder={f.placeholder}
-            onChange={opts => this.setFilter(opts, f.key)}
-          />
+          <div className="c-select">
+            <h3 className="title">{f.name}</h3>
+            <Select
+              instanceId={f.key}
+              name={f.key}
+              options={options[f.key]}
+              multi
+              className={value.length ? '-filled' : ''}
+              value={value}
+              placeholder={f.placeholder}
+              onChange={opts => this.setFilter(opts, f.key)}
+            />
+          </div>
         </div>
       );
     });

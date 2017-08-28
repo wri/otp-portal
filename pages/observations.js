@@ -71,12 +71,12 @@ class ObservationsPage extends Page {
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.observations.filters.data, nextProps.observations.filters.data)) {
-      this.props.getObservations(1);
+      this.props.getObservations();
     }
   }
 
   parseTableData() {
-    return this.props.observations.data.map(o => (
+    const obs = this.props.observations.data.map(o => (
       {
         date: new Date(o['publication-date']).getFullYear(),
         country: o.country && o.country.iso,
@@ -86,6 +86,19 @@ class ObservationsPage extends Page {
         level: o.severity && o.severity.level
       }
     ));
+
+    return obs;
+  }
+
+  getPageSize() {
+    const { observations } = this.props;
+
+    if (observations.data.length) {
+      // What if the page only have 5 results...
+      return observations.data.length > 50 ? 50 : observations.data.length;
+    }
+
+    return 1;
   }
 
   onPageChange(page) {
@@ -146,7 +159,7 @@ class ObservationsPage extends Page {
                   sortable
                   data={this.parseTableData()}
                   options={{
-                    pageSize: observations.data.length ? 50 : 0,
+                    pageSize: this.getPageSize(),
                     pagination: true,
                     previousText: '<',
                     nextText: '>',

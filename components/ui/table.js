@@ -20,7 +20,7 @@ export default function Table({ data, options, className }) {
         className={`table ${classNames}`}
         columns={options.columns || TABLE_HEADERS}
         defaultPageSize={options.pageSize}
-        pageSize={options.nextPageSize}
+        pageSize={options.pageSize}
         showPagination={options.pagination}
         page={options.page}
         previousText={options.previousText}
