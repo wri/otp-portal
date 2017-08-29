@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import groupBy from 'lodash/groupBy';
 
+// Redux
+import withRedux from 'next-redux-wrapper';
+import { store } from 'store';
+import { getDocuments } from 'modules/operators-detail';
+
 import Gantt from 'components/ui/gantt';
-
-// Utils
-import { HELPERS_DOC } from 'utils/documentation';
-
 
 class DocumentsByTime extends React.Component {
 
   componentDidMount() {
-    const { data } = this.props;
-    console.log();
+    const { data, id } = this.props;
+
+    this.props.getDocuments(id);
 
     const docs = data.filter(d => d.status !== 'doc_not_provided').map(d => ({
       title: d.title,
@@ -33,7 +35,7 @@ class DocumentsByTime extends React.Component {
     const format = '%m/%Y';
 
     requestAnimationFrame(() => {
-      const ganttInstance = new Gantt('#chart-gantt')
+      const ganttInstance = new Gantt('#chart-gantt');
       ganttInstance.setTitles(titles);
       ganttInstance.setStatus(status);
       ganttInstance.setTimeFormat(format);
@@ -58,7 +60,13 @@ DocumentsByTime.defaultProps = {
 };
 
 DocumentsByTime.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  id: PropTypes.string,
+  getDocuments: PropTypes.func
 };
 
-export default DocumentsByTime;
+export default withRedux(
+  store,
+  null,
+  { getDocuments }
+)(DocumentsByTime);

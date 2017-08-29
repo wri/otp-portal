@@ -7,6 +7,11 @@ const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
 const GET_OPERATOR_ERROR = 'GET_OPERATOR_ERROR';
 const GET_OPERATOR_LOADING = 'GET_OPERATOR_LOADING';
 
+/* Constants */
+const GET_OPERATOR_DOCUMENTS_SUCCESS = 'GET_OPERATOR_DOCUMENTS_SUCCESS';
+const GET_OPERATOR_DOCUMENTS_ERROR = 'GET_OPERATOR_DOCUMENTS_ERROR';
+const GET_OPERATOR_DOCUMENTS_LOADING = 'GET_OPERATOR_DOCUMENTS_LOADING';
+
 
 /* Initial state */
 const initialState = {
@@ -79,6 +84,51 @@ export function getOperator(id) {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_OPERATOR_ERROR,
+          payload: err.message
+        });
+      });
+  };
+}
+
+/* Action creators */
+export function getDocuments(id) {
+  return (dispatch) => {
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_OPERATOR_DOCUMENTS_LOADING });
+
+    const includeFields = [
+      'required-operator-document.required-operator-document-group'
+    ];
+
+    const queryParams = queryString.stringify({
+      include: includeFields.join(',')
+    });
+
+    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((operator) => {
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
+
+        dispatch({
+          type: GET_OPERATOR_DOCUMENTS_SUCCESS,
+          payload: dataParsed
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_OPERATOR_DOCUMENTS_ERROR,
           payload: err.message
         });
       });
