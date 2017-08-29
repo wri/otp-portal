@@ -100,11 +100,19 @@ export function getDocuments(id) {
       'required-operator-document.required-operator-document-group'
     ];
 
+    const filters = {
+      operator: id
+    };
+
     const queryParams = queryString.stringify({
       include: includeFields.join(',')
     });
 
-    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}`, {
+    const filterParams = Object.keys(filters).map(key =>
+      `filter[${key}]=${filters[key]}`
+    ).join('&');
+
+    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}&${filterParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
