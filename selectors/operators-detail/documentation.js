@@ -18,7 +18,8 @@ const getParsedDocumentation = createSelector(
         title: doc['required-operator-document-country'].name,
         category: doc['required-operator-document-country']['required-operator-document-group'].name,
         status: doc.status,
-        date: new Date(doc['updated-at']).toJSON().slice(0, 10).replace(/-/g, '/')
+        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
       }));
     }
 
@@ -31,7 +32,8 @@ const getParsedDocumentation = createSelector(
         category: doc['required-operator-document-fmu']['required-operator-document-group'].name,
         status: doc.status,
         fmu: doc.fmu,
-        date: new Date(doc['updated-at']).toJSON().slice(0, 10).replace(/-/g, '/')
+        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
       }));
 
       return [...fmuDocumentation, ...countryDocumentation];
