@@ -30,7 +30,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
   }
 
   render() {
-    const { operatorDocumentation } = this.props;
+    const { operatorsDetail, operatorDocumentation, url } = this.props;
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
 
     return (
@@ -39,7 +39,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
           <div className="l-container">
             <article className="c-article">
               <header>
-                <h2 className="c-title">{HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation)}% valid documents provided</h2>
+                <h2 className="c-title">{HELPERS_DOC.getPercentage(operatorsDetail.data)}% valid documents provided</h2>
               </header>
 
               <div className="content">
@@ -58,16 +58,16 @@ export default class OperatorsDetailDocumentation extends React.Component {
         <div className="c-section">
           <div className="l-container">
             {this.state.tab === 'operator-documents' &&
-              <DocumentsByOperator data={groupedByType['operator-document-countries']} />
+              <DocumentsByOperator data={groupedByType['operator-document-countries']} id={url.query.id} />
             }
 
             {this.state.tab === 'fmus-documents' &&
-              <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} />
+              <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} id={url.query.id} />
             }
 
-            {this.state.tab === 'chronological-view' &&
+            {/* {this.state.tab === 'chronological-view' &&
               <h2 className="c-title">Chronological view</h2>
-            }
+            } */}
 
           </div>
         </div>
@@ -77,5 +77,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
 }
 
 OperatorsDetailDocumentation.propTypes = {
-  operatorDocumentation: PropTypes.array
+  operatorsDetail: PropTypes.object,
+  operatorDocumentation: PropTypes.array,
+  url: PropTypes.object
 };

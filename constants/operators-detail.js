@@ -26,9 +26,6 @@ const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
 }, {
   label: 'FMUs documents',
   value: 'fmus-documents'
-}, {
-  label: 'Chronological view',
-  value: 'chronological-view'
 }];
 
 

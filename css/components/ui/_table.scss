@@ -134,6 +134,16 @@
       }
     }
 
+    // No data row
+    .rt-noData {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      background: none;
+      padding: $space-1 $space-1 * 2;
+    }
+
     .severity {
       display: flex;
       justify-content: center;
@@ -151,10 +161,6 @@
       &.-sev-1 { color: $lg-color-2; }
       &.-sev-2 { color: $lg-color-1; }
       &.-sev-3 { color: $lg-color-0; }
-    }
-
-    .rt-noData {
-      display: none;
     }
   }
 
@@ -206,6 +212,10 @@
       }
     }
 
+    .rt-noData {
+      padding: $space-1 $space-1 * 4;
+    }
+
     .rt-resizable-header-content {
       white-space: normal;
       text-overflow: inherit;
@@ -223,11 +233,12 @@
       height: 10px;
       border-radius: 50%;
       margin: 5px auto 0;
-      background: $color-primary;
+      background: $color-gray-3;
 
-      &.-red { background: $color-error; }
-      &.-orange { background: $color-secondary; }
-      &.-green { background: $color-primary; }
+      &.-state-3 { background: $color-error; }
+      &.-state-2 { background: $color-secondary; }
+      &.-state-1 { background: $color-primary; }
+      &.-state-0 { background: $color-gray-3; }
     }
   }
 

@@ -1,8 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Next
 import Link from 'next/link';
+
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -27,19 +29,15 @@ class OperatorsPage extends Page {
 
   static parseData(operators = []) {
     return {
-      table: operators.map((o) => {
-        const certifications = ['FSC', 'PEFC', 'OLB', '-'];
-        const index = Math.floor(Math.random() * certifications.length);
-
-        return {
-          id: o.id,
-          name: o.name,
-          certification: certifications[index],
-          observations: (o.observations) ? o.observations.length : 0,
-          documentation: (o.documentation) ? o.documentation.length : 'not active',
-          fmus: (o.fmus) ? o.fmus.length : 0
-        };
-      }),
+      table: operators.map(o => ({
+        id: o.id,
+        name: o.name,
+        certification: o.certification,
+        score: o.score || 0,
+        obs_per_visit: o['obs-per-visit'] || 0,
+        documentation: `${HELPERS_DOC.getPercentage(o)}%`,
+        fmus: (o.fmus) ? o.fmus.length : 0
+      })),
       max: Math.max(...operators.map(o => o.observations.length))
     };
   }
@@ -74,48 +72,39 @@ class OperatorsPage extends Page {
    * - getOperatorsTable
   */
   getOperatorsTable() {
-    const operators = this.props.operators.data;
-    if (operators && operators.length) {
+    const operators = this.props.operators;
+    if (!operators.loading) {
       return (
         <Table
           data={this.state.table}
           className="-striped -secondary"
+          sortable
           options={{
             columns: [{
               Header: <span className="sortable">Name</span>,
               accessor: 'name',
               minWidth: 200,
               resizable: false,
-              Cell: ({ original }) => {
-                return (
-                  <Link
-                    href={{ pathname: '/operators-detail', query: { id: original.id } }}
-                    as={`/operators/${original.id}`}
-                  >
-                    <a>{original.name}</a>
-                  </Link>
-                );
-              }
+              Cell: ({ original }) => (
+                <Link
+                  href={{ pathname: '/operators-detail', query: { id: original.id } }}
+                  as={`/operators/${original.id}`}
+                >
+                  <a>{original.name}</a>
+                </Link>
+                )
             }, {
-              Header: <span className="sortable">Observations</span>,
-              accessor: 'observations',
+              Header: <span className="sortable">Observations/Visit</span>,
+              accessor: 'obs-per-visit',
               className: '-a-center',
               headerClassName: '-a-center',
-              minWidth: 120,
+              minWidth: 140,
               resizable: false,
               Cell: ({ original }) => {
-                let stoplight = '';
-                if (original.observations > (this.state.max / 4) * 2) {
-                  stoplight = '-red';
-                } else if (original.observations > (this.state.max / 4)) {
-                  stoplight = '-orange';
-                } else {
-                  stoplight = '-green';
+                if (original.obs_per_visit) {
+                  return original.obs_per_visit;
                 }
-
-                return (
-                  <div className={`stoplight-dot ${stoplight}`} />
-                );
+                return <div className="stoplight-dot -state-0}" />;
               }
             }, {
               Header: <span className="sortable">FMUs</span>,
@@ -137,11 +126,11 @@ class OperatorsPage extends Page {
               headerClassName: '-a-right',
               resizable: false
             }],
-            pageSize: operators.length,
+            pageSize: operators.data.length,
             pagination: false,
             previousText: '<',
             nextText: '>',
-            noDataText: 'No rows found',
+            noDataText: 'No operators found',
             showPageSizeOptions: false,
             onPageChange: page => this.onPageChange(page)
           }}
@@ -152,14 +141,13 @@ class OperatorsPage extends Page {
   }
 
   render() {
-    const { url, session, operators } = this.props;
+    const { url, operators } = this.props;
 
     return (
       <Layout
         title="Operators"
         description="Operators description..."
         url={url}
-        session={session}
         className="-fullscreen"
         footer={false}
         searchList={operators.data}
@@ -204,7 +192,6 @@ class OperatorsPage extends Page {
 }
 
 OperatorsPage.propTypes = {
-  session: PropTypes.object.isRequired
 };
 
 export default withRedux(

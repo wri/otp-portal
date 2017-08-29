@@ -1,0 +1,20 @@
+.c-doc-card-upload {
+  margin: -$space-1 0 $space-1 * 4;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+
+    li {
+      input[type=file] {
+        position: absolute;
+        visibility: hidden;
+        top: -9999px;
+        left: -9999px;
+      }
+    }
+  }
+}

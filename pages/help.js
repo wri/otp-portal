@@ -35,7 +35,7 @@ class HelpPage extends Page {
   }
 
   render() {
-    const { url, session } = this.props;
+    const { url } = this.props;
     const tab = url.query.tab || 'overview';
 
     return (
@@ -43,7 +43,6 @@ class HelpPage extends Page {
         title="Help"
         description="Help description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         <StaticHeader
@@ -84,8 +83,7 @@ class HelpPage extends Page {
 }
 
 HelpPage.propTypes = {
-  url: PropTypes.object.isRequired,
-  session: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired
 };
 
 export default withRedux(

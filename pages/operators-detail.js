@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Utils
+import { HELPERS_DOC } from 'utils/documentation';
+
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
@@ -34,15 +37,25 @@ class OperatorsDetail extends Page {
    * - getTabOptions
   */
   getTabOptions() {
-    // TODO: handle with documentation percentage
     const operatorsDetail = this.props.operatorsDetail.data;
 
     return TABS_OPERATORS_DETAIL.map((tab) => {
-      const tabData = operatorsDetail[tab.value];
+      let number;
+      switch (tab.value) {
+        case 'documentation': {
+          number = `${HELPERS_DOC.getPercentage(operatorsDetail)}%`;
+          break;
+        }
+
+        default: {
+          const tabData = operatorsDetail[tab.value];
+          number = (tabData) ? tabData.length : null;
+        }
+      }
 
       return {
         ...tab,
-        number: (tabData) ? tabData.length : null
+        number
       };
     });
   }
@@ -72,7 +85,7 @@ class OperatorsDetail extends Page {
 
 
   render() {
-    const { url, session, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
+    const { url, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -81,7 +94,6 @@ class OperatorsDetail extends Page {
         title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
-        session={session}
         searchList={this.props.operators.data}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
@@ -142,7 +154,6 @@ class OperatorsDetail extends Page {
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
-  session: PropTypes.object.isRequired
 };
 
 export default withRedux(

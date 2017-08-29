@@ -75,7 +75,7 @@ const HELPERS_OBS = {
     const avg = Object.keys(dates).reduce((sum, k) =>
       sum + dates[k].length, 0) / (Object.keys(dates).length || 1
     );
-    return avg.toFixed(1);
+    return avg.toFixed(2);
   }
 };
 

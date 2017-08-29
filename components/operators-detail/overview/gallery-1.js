@@ -13,7 +13,7 @@ const data = [{
   id: 'required-documents-uploaded',
   title: 'Required documents uploaded',
   description: 'These documents evidence compliance with the country\'s legal framework for forest management',
-  letter: '{{DOCUMENTATION}}',
+  letter: '{{DOCUMENTATION}}%',
   link: {
     label: 'Link',
     href: '/operators-detail?tab=documentation&id={{OPERATOR_ID}}',
@@ -51,7 +51,7 @@ export default class Gallery1 extends React.Component {
         value: url.query.id
       }, {
         key: 'DOCUMENTATION',
-        value: (operatorDocumentation) ? HELPERS_DOC.getPercentageOfValidDocumentation(operatorDocumentation) : '-'
+        value: (operatorDocumentation) ? HELPERS_DOC.getPercentage(operatorsDetail.data) : '-'
       }, {
         key: 'OBSERVATIONS',
         value: (operatorsDetail.data.observations) ? operatorsDetail.data.observations.length : '-'

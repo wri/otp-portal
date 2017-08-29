@@ -53,6 +53,7 @@
       > li {
         > a {
           color: $color-text-1;
+          cursor: pointer;
 
           &:after {
             content: '';
@@ -106,6 +107,7 @@
       > li {
         > a {
           color: $color-tertiary;
+          cursor: pointer;
 
           svg {
             fill: $color-tertiary;

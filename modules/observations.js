@@ -111,7 +111,6 @@ export function getObservations() {
       })
       .then((observations) => {
         const dataParsed = JSONA.deserialize(observations);
-        console.log(dataParsed);
 
         dispatch({
           type: GET_OBSERVATIONS_SUCCESS,

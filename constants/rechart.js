@@ -7,7 +7,9 @@ const PALETTE_COLOR_1 = [
 const PALETTE_COLOR_2 = [
   { fill: '#e98300', stroke: '#e98300' },
   { fill: '#F3D3A5', stroke: '#F3D3A5' },
-  { fill: '#005b23', stroke: '#005b23' }
+  { fill: '#005b23', stroke: '#005b23' },
+  { fill: '#88bf9d', stroke: '#88bf9d' },
+  { fill: '#de2239', stroke: '#de2239' }
 ];
 
 const ANIMATION_TIMES = {
@@ -50,6 +52,14 @@ const LEGEND_DOCUMENTATION = {
     fill: PALETTE_COLOR_2[2].fill,
     stroke: PALETTE_COLOR_2[2].stroke,
     label: 'Provided (valid)'
+  }, {
+    fill: PALETTE_COLOR_2[3].fill,
+    stroke: PALETTE_COLOR_2[3].stroke,
+    label: 'Pending approval'
+  }, {
+    fill: PALETTE_COLOR_2[4].fill,
+    stroke: PALETTE_COLOR_2[4].stroke,
+    label: 'Expired'
   }]
 };
 

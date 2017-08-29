@@ -1,4 +1,5 @@
 .c-button {
+  position: relative;
   display: inline-block;
   align-items: center;
   padding: 9px 25px 8px;
@@ -14,6 +15,8 @@
   white-space: nowrap;
   text-decoration: none;
   transition: all .1s linear;
+  outline: none;
+  cursor: pointer;
 
   // STATES
   &.-disabled {

@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba($color-primary, .9);
+  background: rgba($color-black, .75);
   transition: all $animation-time $ease-in-sine;
   z-index: 1000; // Just to be sure that is over all the content
   visibility: visible;
@@ -61,7 +61,7 @@
     z-index: 2; /* Otherwise, it won't be reachable */
 
     &:hover {
-      fill: $color-error;
+      fill: darken($color-white, 20%);
     }
   }
 
