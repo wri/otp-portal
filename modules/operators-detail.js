@@ -101,7 +101,7 @@ export function getDocuments(id) {
     ];
 
     const filters = {
-      operator: id
+      operator_id: id
     };
 
     const queryParams = queryString.stringify({

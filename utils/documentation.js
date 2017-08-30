@@ -39,12 +39,14 @@ const HELPERS_DOC = {
   },
 
   getPercentage(data) {
-    if (data['percentage-valid-documents-all']) {
-      let per = data['percentage-valid-documents-all'] * 100;
-      per = per.toFixed(2).replace(/[.,]00$/, '');
-      return per || 0;
-    }
-    return 0;
+    return Math.ceil(Math.random() * 100);
+    // TODO: this shows the correct data
+    // if (data['percentage-valid-documents-all']) {
+    //   let per = data['percentage-valid-documents-all'] * 100;
+    //   per = per.toFixed(2).replace(/[.,]00$/, '');
+    //   return per || 0;
+    // }
+    // return 0;
   },
 
   getGroupedByType(data) {
