@@ -17,19 +17,22 @@
     &.-ta-right { text-align: right; }
     &.-ta-center { text-align: center; }
     &.-ta-left { text-align: left; }
+
+    &.td-documentation {
+      padding-right: $space-1 / 2;
+    }
+
   }
 
   th {
     position: relative;
     padding: $space-1 * 2 $space-1 * 2 $space-1;
     color: $color-primary;
-    border-bottom: $space-1 * 2 solid transparent;
     font-weight: 400;
     white-space: nowrap;
     font-family: $font-family-proximanova;
 
     &:first-child { padding: $space-1*2 $space-1*2 $space-1 0; }
-    &:last-child { padding: $space-1*2 0 $space-1 $space-1*2; }
 
     &:after {
       content: "";
@@ -46,9 +49,9 @@
     position: relative;
     padding: $space-1 / 2 $space-1 * 2;
     font-family: $font-family-georgia;
+    vertical-align: baseline;
 
     &:first-child { padding: $space-1/2 $space-1*2 $space-1/2 0; }
-    &:last-child { padding: $space-1/2 0 $space-1/2 $space-1*2; }
   }
 
   a {

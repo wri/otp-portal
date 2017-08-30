@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import round from 'lodash/round';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
@@ -39,14 +40,14 @@ const HELPERS_DOC = {
   },
 
   getPercentage(data) {
-    return Math.ceil(Math.random() * 100);
+    // return round(Math.random() * 100, 2);
     // TODO: this shows the correct data
-    // if (data['percentage-valid-documents-all']) {
-    //   let per = data['percentage-valid-documents-all'] * 100;
-    //   per = per.toFixed(2).replace(/[.,]00$/, '');
-    //   return per || 0;
-    // }
-    // return 0;
+    if (data['percentage-valid-documents-all']) {
+      let per = data['percentage-valid-documents-all'] * 100;
+      per = per.toFixed(2).replace(/[.,]00$/, '');
+      return per || 0;
+    }
+    return 0;
   },
 
   getGroupedByType(data) {

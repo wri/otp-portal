@@ -23,6 +23,7 @@ import Spinner from 'components/ui/spinner';
 import Map from 'components/map/map';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
+import OperatorsRanking from 'components/operators/ranking';
 
 class OperatorsPage extends Page {
 
@@ -83,7 +84,7 @@ class OperatorsPage extends Page {
                 <th className="-ta-center">Observations/Visit</th>
                 <th>FMUs</th>
                 <th>Certification</th>
-                <th className="-ta-center">Upl. docs (%)</th>
+                <th className="td-documentation -ta-center">Upl. docs (%)</th>
                 <th />
               </tr>
             </thead>
@@ -111,11 +112,13 @@ class OperatorsPage extends Page {
                       {!!r.certification && r.certification}
                       {!r.certification && '-'}
                     </td>
-                    <td> {r.documentation}% </td>
+                    <td id={`td-documentation-${r.id}`} className="td-documentation -ta-right"> {r.documentation}% </td>
 
                     {i === 0 &&
                       <td className="-ta-center" rowSpan={this.state.table.length}>
-                        {this.state.table.length}
+                        <OperatorsRanking
+                          data={this.state.table.map(o => ({ id: o.id, value: o.documentation }))}
+                        />
                       </td>
                     }
                   </tr>
