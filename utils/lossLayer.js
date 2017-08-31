@@ -42,11 +42,9 @@ class LossLayer {
 
     for (let i = 0; i < w; ++i) {
       for (let j = 0; j < h; ++j) {
-        const pixelPos = (j * (w + i)) * components;
+        const pixelPos = ((j * w) + i) * components;
         const intensity = imgData[pixelPos];
         const yearLoss = 2000 + (imgData[pixelPos + 2]);
-
-        console.log(yearLoss);
 
         if (yearLoss >= yearStart && yearLoss < yearEnd) {
           imgData[pixelPos] = 220;
@@ -67,6 +65,7 @@ class LossLayer {
   }
 
   async getCanvasTile(callback) {
+    "use asm";
     const { z, x, y } = this.opts;
     const canvas = new Canvas(256, 256);
     const ctx = canvas.getContext('2d');
@@ -96,9 +95,8 @@ class LossLayer {
     }
 
     const I = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    console.log(I.data, canvas.width, canvas.height);
-    // LossLayer.filterImgData(I.data, canvas.width, canvas.height, z);
-    // ctx.putImageData(I, 0, 0);
+    LossLayer.filterImgData(I.data, canvas.width, canvas.height, z);
+    ctx.putImageData(I, 0, 0);
 
     if (callback && typeof callback === 'function') callback(canvas);
 
