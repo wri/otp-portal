@@ -17,7 +17,12 @@ const GET_OPERATOR_DOCUMENTS_LOADING = 'GET_OPERATOR_DOCUMENTS_LOADING';
 const initialState = {
   data: {},
   loading: false,
-  error: false
+  error: false,
+  documentation: {
+    data: {},
+    loading: false,
+    error: false
+  }
 };
 
 const JSONA = new Jsona();
@@ -25,12 +30,29 @@ const JSONA = new Jsona();
 /* Reducer */
 export default function (state = initialState, action) {
   switch (action.type) {
-    case GET_OPERATOR_SUCCESS:
+    case GET_OPERATOR_SUCCESS: {
       return Object.assign({}, state, { data: action.payload, loading: false, error: false });
-    case GET_OPERATOR_ERROR:
+    }
+    case GET_OPERATOR_ERROR: {
       return Object.assign({}, state, { error: true, loading: false });
-    case GET_OPERATOR_LOADING:
+    }
+    case GET_OPERATOR_LOADING: {
       return Object.assign({}, state, { loading: true, error: false });
+    }
+    case GET_OPERATOR_DOCUMENTS_SUCCESS: {
+      const documentation = Object.assign({}, state.documentation, {
+        data: action.payload, loading: false, error: false
+      });
+      return Object.assign({}, state, { documentation });
+    }
+    case GET_OPERATOR_DOCUMENTS_ERROR: {
+      const documentation = Object.assign({}, state.documentation, { error: true, loading: false });
+      return Object.assign({}, state, { documentation });
+    }
+    case GET_OPERATOR_DOCUMENTS_LOADING: {
+      const documentation = Object.assign({}, state.documentation, { loading: true, error: false });
+      return Object.assign({}, state, { documentation });
+    }
     default:
       return state;
   }
@@ -126,7 +148,6 @@ export function getDocuments(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATOR_DOCUMENTS_SUCCESS,

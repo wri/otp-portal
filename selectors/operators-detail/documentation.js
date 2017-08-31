@@ -43,4 +43,30 @@ const getParsedDocumentation = createSelector(
   }
 );
 
-export { getParsedDocumentation };
+
+// Create a function to compare the current active datatasets and the current datasetsIds
+const getAllParsedDocumentation = createSelector(
+  operatorsDetail,
+  (_operatorsDetail) => {
+    const documentation = _operatorsDetail.documentation.data;
+
+    if (documentation && !!documentation.length) {
+      return documentation.map(doc => {
+        return {
+          id: doc.id,
+          requiredDocId: doc['required-operator-document'].id,
+          type: doc.type,
+          title: doc['required-operator-document'].name,
+          category: doc['required-operator-document']['required-operator-document-group'].name,
+          status: doc.status,
+          startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+          endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+        };
+      });
+    }
+
+    return [];
+  }
+);
+
+export { getParsedDocumentation, getAllParsedDocumentation };
