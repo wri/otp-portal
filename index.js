@@ -1,4 +1,4 @@
-// eslint-disable-line global-require
+require('dotenv').load();
 
 const express = require('express');
 const session = require('express-session');
@@ -6,10 +6,10 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const next = require('next');
+const request = require('request');
 const { parse } = require('url');
 
-// Load environment variables from .env file if present
-require('dotenv').load();
+const LossLayer = require('./utils/lossLayer');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -56,6 +56,17 @@ server.use(session({
 
 app.prepare()
   .then(() => {
+    // Loss layer
+    server.get('/loss-layer/:z/:x/:y', (req, res) => {
+      const { z, x, y } = req.params;
+      const layer = new LossLayer(z, x, y);
+
+      layer.getImageTile('png', (tile) => {
+        res.contentType('png');
+        res.end(tile);
+      });
+    });
+
     server.get('/operators', (req, res) => {
       const { query } = parse(req.url, true);
       return app.render(req, res, '/operators', Object.assign(req.params, query));
