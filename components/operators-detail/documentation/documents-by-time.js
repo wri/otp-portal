@@ -33,6 +33,10 @@ class DocumentsByTime extends React.Component {
   }
 
   drawChart(data) {
+    const selector = '#chart-gantt';
+    // remove current chart if it exists
+    document.querySelector(selector).innerHTML = '';
+
     const status = {
       doc_valid: '-doc_valid',
       doc_pending: '-doc_pending',
@@ -44,7 +48,7 @@ class DocumentsByTime extends React.Component {
     const format = '%m/%Y';
 
     requestAnimationFrame(() => {
-      const ganttInstance = new Gantt('#chart-gantt');
+      const ganttInstance = new Gantt(selector);
       ganttInstance.setTitles(titles);
       ganttInstance.setStatus(status);
       ganttInstance.setTimeFormat(format);

@@ -56,7 +56,7 @@ class Gantt {
 
     // Axis
     this.xAxis = d3.svg.axis().scale(this.x)
-                  .orient('bottom')
+                  .orient('top')
                   .ticks(6)
                   .tickFormat(d3.time.format(this.timeFormat))
                   .tickSubdivide(true)
@@ -64,10 +64,9 @@ class Gantt {
                   .tickPadding(8);
 
     this.yAxis = d3.svg.axis().scale(this.y)
-                  .orient('left')
+                  .orient('right')
                   .tickFormat(d => truncate(d, {
-                    length: 32,
-                    separator: ' '
+                    length: 30
                   }))
                   .tickSize(0)
                   .tickPadding(8);
@@ -97,18 +96,22 @@ class Gantt {
         })
         .attr('y', 5)
         .attr('transform', this.rectTransform)
-        .attr('height', () => this.y.rangeBand() - 10)
+        .attr('height', () => 16)
         .attr('width', d => (this.x(d.endDate) - this.x(d.startDate)));
 
     // Add xAxis
     svg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', `translate(0, ${this.height - this.margin.top - this.margin.bottom})`)
+      .attr('transform', 'translate(0,0)')
       .transition()
       .call(this.xAxis);
 
     // Add yAxis
-    svg.append('g').attr('class', 'y axis').transition().call(this.yAxis);
+    svg.append('g')
+      .attr('class', 'y axis')
+      .attr('transform', `translate(${-this.margin.left},0)`)
+      .transition()
+      .call(this.yAxis);
 
     // tooltip
     d3.selectAll('.y.axis>.tick') // gs for all ticks
@@ -157,6 +160,8 @@ class Gantt {
   setHeight = (value) => {
     if (!arguments.length) { return this.height; }
     this.height = +value;
+    if (this.height < 100) this.height = 100;
+
     return this.gantt;
   };
 

@@ -95,7 +95,6 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,
@@ -134,7 +133,7 @@ export function getDocuments(id) {
       `filter[${key}]=${filters[key]}`
     ).join('&');
 
-    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}&${filterParams}`, {
+    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}&${filterParams}&page[size]=3000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
