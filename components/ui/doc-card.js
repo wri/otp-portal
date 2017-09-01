@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { HELPERS_DOC } from 'utils/documentation';
 
 export default function DocCard(props) {
-  const { date, status, title } = props;
+  const { startDate, endDate, status, title } = props;
 
   const metadata = HELPERS_DOC.getMetadata();
 
@@ -17,7 +17,9 @@ export default function DocCard(props) {
   return (
     <div className={`c-doc-card ${classNames}`}>
       <header className="doc-card-header">
-        <div className="doc-card-date">{date}</div>
+        {startDate !== endDate &&
+          <div className="doc-card-date">{endDate}</div>
+        }
         <div className="doc-card-status">{metadata[status].name}</div>
       </header>
       <div className="doc-card-content">
@@ -30,5 +32,6 @@ export default function DocCard(props) {
 DocCard.propTypes = {
   status: PropTypes.string,
   title: PropTypes.string,
-  date: PropTypes.string
+  startDate: PropTypes.string,
+  endDate: PropTypes.string
 };

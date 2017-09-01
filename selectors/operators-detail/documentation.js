@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import sortBy from 'lodash/sortBy';
 
 // Get the datasets and filters from state
 const operatorsDetail = state => state.operatorsDetail;
@@ -18,7 +19,8 @@ const getParsedDocumentation = createSelector(
         title: doc['required-operator-document-country'].name,
         category: doc['required-operator-document-country']['required-operator-document-group'].name,
         status: doc.status,
-        date: new Date(doc['updated-at']).toJSON().slice(0, 10).replace(/-/g, '/')
+        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
       }));
     }
 
@@ -31,7 +33,8 @@ const getParsedDocumentation = createSelector(
         category: doc['required-operator-document-fmu']['required-operator-document-group'].name,
         status: doc.status,
         fmu: doc.fmu,
-        date: new Date(doc['updated-at']).toJSON().slice(0, 10).replace(/-/g, '/')
+        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
       }));
 
       return [...fmuDocumentation, ...countryDocumentation];
@@ -41,4 +44,30 @@ const getParsedDocumentation = createSelector(
   }
 );
 
-export { getParsedDocumentation };
+
+// Create a function to compare the current active datatasets and the current datasetsIds
+const getAllParsedDocumentation = createSelector(
+  operatorsDetail,
+  (_operatorsDetail) => {
+    const documentation = _operatorsDetail.documentation.data;
+
+    if (documentation && !!documentation.length) {
+      return sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map(doc => {
+        return {
+          id: doc.id,
+          requiredDocId: doc['required-operator-document'].id,
+          type: doc.type,
+          title: doc['required-operator-document'].name,
+          category: doc['required-operator-document']['required-operator-document-group'].name,
+          status: doc.status,
+          startDate: new Date(doc['start-date']),
+          endDate: new Date(doc['expire-date'])
+        };
+      }), 'title');
+    }
+
+    return [];
+  }
+);
+
+export { getParsedDocumentation, getAllParsedDocumentation };

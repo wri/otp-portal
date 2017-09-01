@@ -1,0 +1,23 @@
+.c-gantt {
+  font-family: 'Proxima Nova';
+
+  .axis path, .axis line {
+  	fill: none;
+  	stroke: $color-gray-3;
+  	shape-rendering: crispEdges;
+  }
+
+  .axis text {
+    font-size: $font-size-small;
+  }
+
+  .bar {
+  	fill: $color-gray-2;
+
+    &.-doc_valid { fill: $color-doc-valid; }
+    &.-doc_pending { fill: $color-doc-pending; }
+    &.-doc_invalid { fill: $color-doc-invalid; }
+    &.-doc_expired { fill: $color-doc-expired; }
+    &.-doc_not_provided { fill: $color-doc-not-provided;}
+  }
+}

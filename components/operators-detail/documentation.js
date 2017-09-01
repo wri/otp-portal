@@ -12,6 +12,7 @@ import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
+import DocumentsByTime from 'components/operators-detail/documentation/documents-by-time';
 
 export default class OperatorsDetailDocumentation extends React.Component {
 
@@ -19,7 +20,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'operator-documents'
+      tab: 'chronological-view'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -65,9 +66,9 @@ export default class OperatorsDetailDocumentation extends React.Component {
               <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} id={url.query.id} />
             }
 
-            {/* {this.state.tab === 'chronological-view' &&
-              <h2 className="c-title">Chronological view</h2>
-            } */}
+            {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&
+              <DocumentsByTime data={groupedByType['operator-document-countries']} id={url.query.id} />
+            }
 
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import sortBy from 'lodash/sortBy';
 
 // Next
 import Link from 'next/link';
@@ -22,22 +23,21 @@ import Spinner from 'components/ui/spinner';
 import Map from 'components/map/map';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
-
-import Table from 'components/ui/table';
+import OperatorsRanking from 'components/operators/ranking';
 
 class OperatorsPage extends Page {
 
   static parseData(operators = []) {
     return {
-      table: operators.map(o => ({
+      table: sortBy(operators.map(o => ({
         id: o.id,
         name: o.name,
         certification: o.certification,
         score: o.score || 0,
         obs_per_visit: o['obs-per-visit'] || 0,
-        documentation: `${HELPERS_DOC.getPercentage(o)}%`,
+        documentation: HELPERS_DOC.getPercentage(o),
         fmus: (o.fmus) ? o.fmus.length : 0
-      })),
+      })), o => -o.documentation),
       max: Math.max(...operators.map(o => o.observations.length))
     };
   }
@@ -70,71 +70,63 @@ class OperatorsPage extends Page {
   /**
    * HELPERS
    * - getOperatorsTable
+   * - getOperatorsRanking
   */
   getOperatorsTable() {
     const operators = this.props.operators;
     if (!operators.loading) {
       return (
-        <Table
-          data={this.state.table}
-          className="-striped -secondary"
-          sortable
-          options={{
-            columns: [{
-              Header: <span className="sortable">Name</span>,
-              accessor: 'name',
-              minWidth: 200,
-              resizable: false,
-              Cell: ({ original }) => (
-                <Link
-                  href={{ pathname: '/operators-detail', query: { id: original.id } }}
-                  as={`/operators/${original.id}`}
-                >
-                  <a>{original.name}</a>
-                </Link>
-                )
-            }, {
-              Header: <span className="sortable">Observations/Visit</span>,
-              accessor: 'obs-per-visit',
-              className: '-a-center',
-              headerClassName: '-a-center',
-              minWidth: 140,
-              resizable: false,
-              Cell: ({ original }) => {
-                if (original.obs_per_visit) {
-                  return original.obs_per_visit;
-                }
-                return <div className="stoplight-dot -state-0}" />;
-              }
-            }, {
-              Header: <span className="sortable">FMUs</span>,
-              accessor: 'fmus',
-              className: '-a-right',
-              headerClassName: '-a-right',
-              minWidth: 70,
-              resizable: false
-            }, {
-              Header: <span className="sortable">Certification</span>,
-              accessor: 'certification',
-              minWidth: 100,
-              resizable: false
-            }, {
-              Header: <span className="sortable">Upl. docs (%)</span>,
-              accessor: 'documentation',
-              minWidth: 130,
-              className: '-a-right',
-              headerClassName: '-a-right',
-              resizable: false
-            }],
-            pageSize: operators.data.length,
-            pagination: false,
-            previousText: '<',
-            nextText: '>',
-            noDataText: 'No operators found',
-            showPageSizeOptions: false,
-            onPageChange: page => this.onPageChange(page)
-          }}
-        />
+        <div className="c-ranking">
+          <table>
+            <thead>
+              <tr>
+                <th className="-ta-left">Name</th>
+                <th className="-ta-center">Observations/Visit</th>
+                <th>FMUs</th>
+                <th>Certification</th>
+                <th className="td-documentation -ta-center">Upl. docs (%)</th>
+                <th />
+              </tr>
+            </thead>
+
+            <tbody>
+              {this.state.table.map((r, i) => {
+                return (
+                  <tr key={r.id}>
+                    <td className="-ta-left">
+                      <Link
+                        href={{ pathname: '/operators-detail', query: { id: r.id } }}
+                        as={`/operators/${r.id}`}
+                      >
+                        <a>{r.name}</a>
+                      </Link>
+                    </td>
+                    <td className="-ta-center">
+                      {!!r.obs_per_visit && r.obs_per_visit}
+                      {!r.obs_per_visit &&
+                        <div className="stoplight-dot -state-0}" />
+                      }
+                    </td>
+                    <td className="-ta-right"> {r.fmus} </td>
+                    <td>
+                      {!!r.certification && r.certification}
+                      {!r.certification && '-'}
+                    </td>
+                    <td id={`td-documentation-${r.id}`} className="td-documentation -ta-right"> {r.documentation}% </td>
+
+                    {i === 0 &&
+                      <td className="-ta-center" rowSpan={this.state.table.length}>
+                        <OperatorsRanking
+                          data={this.state.table.map(o => ({ id: o.id, value: o.documentation }))}
+                        />
+                      </td>
+                    }
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       );
     }
     return <Spinner isLoading />;
