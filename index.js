@@ -70,10 +70,7 @@ app.prepare()
       return layer.getImageTile('png', (tile) => {
         // Saving image for next request
         mkdirp(`${tileDirPath}/${z}/${x}`, (err) => {
-          fs.writeFile(tilePath, tile, (er) => {
-            if (er) return console.error(er);
-            return console.info('File created');
-          });
+          fs.writeFile(tilePath, tile);
         });
 
         res.contentType('png');
