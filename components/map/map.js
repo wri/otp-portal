@@ -10,7 +10,7 @@ import LayerManager from 'services/layerManager';
 
 let Mapboxgl;
 if (typeof window !== 'undefined') {
-  Mapboxgl = require('mapbox-gl/dist/mapbox-gl-dev');
+  Mapboxgl = require('mapbox-gl');
   Mapboxgl.accessToken = process.env.MAPBOX_API_KEY;
 }
 
@@ -63,13 +63,6 @@ export default class Map extends React.Component {
         this.initLayerManager();
         this.props.layers.length && this.addLayer(this.props.layers);
       });
-
-      // this.map.on('dataloading', (e) => {
-      // if (e.sourceId === 'loss' && e.tile) {
-      //   console.log(e.tile);
-      //   debugger;
-      // }
-      // });
     }
   }
 
