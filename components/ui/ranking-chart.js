@@ -34,17 +34,20 @@ class RankingChart {
    * DRAW
    * @return {[type]} [description]
   */
-  initScales = (data) => {
+  initScales = (data, sortDirection) => {
     this.min = this.getMin(data);
     this.max = this.getMax(data);
 
+    this.domain = (sortDirection === -1) ? [this.max, this.min] : [this.min, this.max];
+
     this.y = d3.scale.linear()
-      .domain([this.max, this.min])
+      .domain(this.domain)
       .range([this.margin.top, this.height - this.margin.top]);
   }
 
-  draw = (data) => {
-    this.initScales(data);
+  draw = (data, sortDirection) => {
+    this.$selector[0][0].innerHTML = '';
+    this.initScales(data, sortDirection);
 
     const svg = this.$selector
       .append('svg')

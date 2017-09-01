@@ -7,12 +7,18 @@ import RankingChart from 'components/ui/ranking-chart';
 class OperatorsRanking extends React.Component {
 
   componentDidMount() {
-    const { data } = this.props;
+    const { data, sortDirection } = this.props;
 
     requestAnimationFrame(() => {
-      const ranking = new RankingChart('#operators-ranking');
-      ranking.draw(data);
+      this.ranking = new RankingChart('#operators-ranking');
+      this.ranking.draw(data, sortDirection);
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.sortDirection !== this.props.sortDirection) {
+      this.ranking.draw(this.props.data, nextProps.sortDirection);
+    }
   }
 
   shouldComponentUpdate() {
@@ -27,11 +33,13 @@ class OperatorsRanking extends React.Component {
 }
 
 OperatorsRanking.defaultProps = {
-  data: []
+  data: [],
+  sortDirection: -1
 };
 
 OperatorsRanking.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  sortDirection: PropTypes.number
 };
 
 export default OperatorsRanking;

@@ -61,8 +61,8 @@ export default class LayerManager {
         throw new Error(response.statusText);
       })
       .then((data) => {
+        // Add source
         if (this.map) {
-          // Add source
           this.map.addSource(layer.id, { ...layer.source, data });
 
           // Loop trough layers
@@ -102,15 +102,16 @@ export default class LayerManager {
 
   addRasterLayer(layer) {
     // Add source
-    this.map.addSource(layer.id, { ...layer.source });
+    if (this.map) {
+      this.map.addSource(layer.id, { ...layer.source });
 
-    // Loop trough layers
-    layer.layers.forEach((l) => {
-      // Add layer
-      this.map.addLayer(l);
+      // Loop trough layers
+      layer.layers.forEach((l) => {
+        // Add layer
+        this.map.addLayer(l);
 
-      this.onLayerAddedSuccess();
-    });
-
+        this.onLayerAddedSuccess();
+      });
+    }
   }
 }
