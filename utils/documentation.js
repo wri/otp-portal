@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import round from 'lodash/round';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
@@ -39,6 +40,7 @@ const HELPERS_DOC = {
   },
 
   getPercentage(data) {
+    // return round(Math.random() * 100, 2);
     if (data['percentage-valid-documents-all']) {
       let per = data['percentage-valid-documents-all'] * 100;
       per = per.toFixed(2).replace(/[.,]00$/, '');

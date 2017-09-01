@@ -9,6 +9,7 @@
 
   th,
   td {
+    position: relative;
     border-right: 0;
     font-size: $font-size-small;
     line-height: 19px;
@@ -25,7 +26,6 @@
   }
 
   th {
-    position: relative;
     padding: $space-1 * 2 $space-1 * 2 $space-1;
     color: $color-primary;
     font-weight: 400;
@@ -43,10 +43,21 @@
       height: 1px;
       background: rgba($color-primary, 0.1);
     }
+
+    &.-sort {
+      cursor: pointer;
+
+      &:hover {
+        color: darken($color-primary, 15%);
+      }
+
+      svg {
+        margin-left: 5px;
+      }
+    }
   }
 
   td {
-    position: relative;
     padding: $space-1 / 2 $space-1 * 2;
     font-family: $font-family-georgia;
     vertical-align: baseline;

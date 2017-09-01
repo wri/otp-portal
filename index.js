@@ -69,7 +69,7 @@ app.prepare()
       const layer = new LossLayer(z, x, y);
       return layer.getImageTile('png', (tile) => {
         // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}`, (err) => {
+        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, (err) => {
           fs.writeFile(tilePath, tile);
         });
 

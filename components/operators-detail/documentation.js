@@ -20,7 +20,7 @@ export default class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'chronological-view'
+      tab: 'operator-documents'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);

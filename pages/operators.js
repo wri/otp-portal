@@ -20,6 +20,7 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
 import Spinner from 'components/ui/spinner';
+import Icon from 'components/ui/icon';
 import Map from 'components/map/map';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
@@ -29,7 +30,9 @@ class OperatorsPage extends Page {
 
   static parseData(operators = []) {
     return {
-      table: sortBy(operators.map(o => ({
+      sortColumn: 'documentation',
+      sortDirection: -1,
+      table: operators.map(o => ({
         id: o.id,
         name: o.name,
         certification: o.certification,
@@ -37,7 +40,7 @@ class OperatorsPage extends Page {
         obs_per_visit: o['obs-per-visit'] || 0,
         documentation: HELPERS_DOC.getPercentage(o),
         fmus: (o.fmus) ? o.fmus.length : 0
-      })), o => -o.documentation),
+      })),
       max: Math.max(...operators.map(o => o.observations.length))
     };
   }
@@ -68,12 +71,25 @@ class OperatorsPage extends Page {
   }
 
   /**
+   * UI EVENTS
+   * - sortBy
+  */
+  sortBy = (column) => {
+    this.setState({
+      sortColumn: column,
+      sortDirection: this.state.sortDirection * -1
+    });
+  }
+
+  /**
    * HELPERS
    * - getOperatorsTable
    * - getOperatorsRanking
   */
   getOperatorsTable() {
     const operators = this.props.operators;
+    const { sortColumn, sortDirection, table } = this.state;
+
     if (!operators.loading) {
       return (
         <div className="c-ranking">
@@ -84,13 +100,20 @@ class OperatorsPage extends Page {
                 <th className="-ta-center">Observations/Visit</th>
                 <th>FMUs</th>
                 <th>Certification</th>
-                <th className="td-documentation -ta-center">Upl. docs (%)</th>
+                <th
+                  className="td-documentation -ta-center -sort"
+                  onClick={() => { this.sortBy('documentation'); }}
+                >
+                  Upl. docs (%)
+                  {sortDirection === -1 && <Icon name="icon-arrow-down" className="-tiny" />}
+                  {sortDirection === 1 && <Icon name="icon-arrow-up" className="-tiny" />}
+                </th>
                 <th />
               </tr>
             </thead>
 
             <tbody>
-              {this.state.table.map((r, i) => {
+              {sortBy(table, o => sortDirection * o[sortColumn]).map((r, i) => {
                 return (
                   <tr key={r.id}>
                     <td className="-ta-left">
@@ -112,12 +135,19 @@ class OperatorsPage extends Page {
                       {!!r.certification && r.certification}
                       {!r.certification && '-'}
                     </td>
-                    <td id={`td-documentation-${r.id}`} className="td-documentation -ta-right"> {r.documentation}% </td>
+                    <td
+                      id={`td-documentation-${r.id}`}
+                      className="td-documentation -ta-right"
+                    >
+                      {r.documentation}%
+                    </td>
 
                     {i === 0 &&
-                      <td className="-ta-center" rowSpan={this.state.table.length}>
+                      <td className="-ta-center" rowSpan={table.length}>
                         <OperatorsRanking
-                          data={this.state.table.map(o => ({ id: o.id, value: o.documentation }))}
+                          key={`update-${r.id}`}
+                          data={table.map(o => ({ id: o.id, value: o.documentation }))}
+                          sortDirection={sortDirection}
                         />
                       </td>
                     }
