@@ -42,26 +42,26 @@ const MAP_LAYERS_OPERATORS = [
           const props = e.features[0].properties;
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
-              render(
-                Popup({
-                  title: props.fmu_name,
-                  operator: {
-                    id: props.operator_id,
-                    name: props.company_na
-                  },
-                  list: [{
-                    label: 'Company',
-                    value: props.company_na
-                  }, {
-                    label: 'CCF status',
-                    value: props.ccf_status
-                  }, {
-                    label: 'Type',
-                    value: props.fmu_type
-                  }]
-                }),
-                window.document.createElement('div')
-              )
+            render(
+              Popup({
+                title: props.fmu_name,
+                operator: {
+                  id: props.operator_id,
+                  name: props.company_na
+                },
+                list: [{
+                  label: 'Company',
+                  value: props.company_na
+                }, {
+                  label: 'CCF status',
+                  value: props.ccf_status
+                }, {
+                  label: 'Type',
+                  value: props.fmu_type
+                }]
+              }),
+              window.document.createElement('div')
+            )
             )
             .addTo(this.map);
         },
@@ -78,7 +78,29 @@ const MAP_LAYERS_OPERATORS = [
         }
       }
     }]
+  },
+  {
+    id: 'loss',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        '/loss-layer/{z}/{x}/{y}'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'loss_layer',
+      type: 'raster',
+      source: 'loss',
+      minzoom: 0,
+      maxzoom: 12,
+      paint: {
+        'raster-fade-duration': 0
+      }
+    }]
   }
+
   // ,
   //
   //

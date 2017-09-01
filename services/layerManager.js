@@ -25,7 +25,8 @@ export default class LayerManager {
   /* Public methods */
   addLayer(layer, opts = {}) {
     const method = {
-      cartodb: this.addCartoLayer
+      cartodb: this.addCartoLayer,
+      raster: this.addRasterLayer
     }[layer.provider];
 
     method && method.call(this, layer, opts);
@@ -97,5 +98,19 @@ export default class LayerManager {
       .catch((err) => {
         console.error(err);
       });
+  }
+
+  addRasterLayer(layer) {
+    // Add source
+    this.map.addSource(layer.id, { ...layer.source });
+
+    // Loop trough layers
+    layer.layers.forEach((l) => {
+      // Add layer
+      this.map.addLayer(l);
+
+      this.onLayerAddedSuccess();
+    });
+
   }
 }
