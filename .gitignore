@@ -1,5 +1,6 @@
 .next/
 node_modules/
+static/tiles
 /npm-debug.log
 .env
 .DS_Store

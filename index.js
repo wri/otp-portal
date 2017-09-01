@@ -1,4 +1,4 @@
-// eslint-disable-line global-require
+require('dotenv').load();
 
 const express = require('express');
 const session = require('express-session');
@@ -6,10 +6,11 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const next = require('next');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
 const { parse } = require('url');
 
-// Load environment variables from .env file if present
-require('dotenv').load();
+const LossLayer = require('./utils/lossLayer');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -23,11 +24,6 @@ process.on('unhandledRejection', (reason, p) => {
 // `npm run dev` defaults mode to 'development' & port to '3000'
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 process.env.PORT = process.env.PORT || 80;
-
-// Configure a database to store user profiles and email sign in tokens
-// Database connection string for ORM (e.g. MongoDB/Amazon Redshift/SQL DB…)
-// By default it uses SQL Lite to create a DB in /tmp/nextjs-starter.db
-process.env.DB_CONNECTION_STRING = process.env.DB_CONNECTION_STRING || 'sqlite:///tmp/nextjs-starter.db';
 
 // Secret used to encrypt session data stored on the server
 process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'change-me';
@@ -56,6 +52,32 @@ server.use(session({
 
 app.prepare()
   .then(() => {
+    // Loss layer
+    server.get('/loss-layer/:z/:x/:y', (req, res) => {
+      const { z, x, y } = req.params;
+      const tileDirPath = `${__dirname}/static/tiles`;
+      const tilePath = `${tileDirPath}/${z}/${x}/${y}.png`;
+
+      // If image was created before it would be send
+      if (fs.existsSync(tilePath)) {
+        const imageTile = fs.readFileSync(tilePath);
+        res.contentType('png');
+        return res.end(imageTile, 'binary');
+      }
+
+      // Creating new tile
+      const layer = new LossLayer(z, x, y);
+      return layer.getImageTile('png', (tile) => {
+        // Saving image for next request
+        mkdirp(`${tileDirPath}/${z}/${x}`, (err) => {
+          fs.writeFile(tilePath, tile);
+        });
+
+        res.contentType('png');
+        res.end(tile);
+      });
+    });
+
     server.get('/operators', (req, res) => {
       const { query } = parse(req.url, true);
       return app.render(req, res, '/operators', Object.assign(req.params, query));
