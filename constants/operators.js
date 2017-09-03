@@ -99,7 +99,29 @@ const MAP_LAYERS_OPERATORS = [
         'raster-fade-duration': 0
       }
     }]
+  },
+  {
+    id: 'gain',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'gain_layer',
+      type: 'raster',
+      source: 'gain',
+      minzoom: 0,
+      maxzoom: 12,
+      paint: {
+        'raster-fade-duration': 0
+      }
+    }]
   }
+
 
   // ,
   //
