@@ -7,6 +7,56 @@ const MAP_OPTIONS_HOME = {
 
 const MAP_LAYERS_HOME = [
   {
+    id: 'loss',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        '/loss-layer/{z}/{x}/{y}'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'loss_layer',
+      type: 'raster',
+      source: 'loss',
+      minzoom: 0,
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
+  {
+    id: 'gain',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'gain_layer',
+      type: 'raster',
+      source: 'gain',
+      minzoom: 0,
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
+  {
     id: 'forest_concession',
     provider: 'cartodb',
     source: {
@@ -19,12 +69,13 @@ const MAP_LAYERS_HOME = [
       type: 'fill',
       source: 'forest_concession',
       layout: {},
-      fitBounds: true,
+      before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': '#e98300',
-        'fill-opacity': 0.8,
+        'fill-opacity': 0.4,
         'fill-outline-color': '#d07500'
-      }
+      },
+      fitBounds: true
     }]
   }
 

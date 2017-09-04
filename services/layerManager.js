@@ -70,7 +70,7 @@ export default class LayerManager {
             const { interactivity, fitBounds } = l;
 
             // Add layer
-            this.map.addLayer(l);
+            this.map.addLayer(l, l.before);
 
             // Add interactivity (if exists)
             if (interactivity) {
@@ -108,7 +108,7 @@ export default class LayerManager {
       // Loop trough layers
       layer.layers.forEach((l) => {
         // Add layer
-        this.map.addLayer(l);
+        this.map.addLayer(l, l.before);
 
         this.onLayerAddedSuccess();
       });

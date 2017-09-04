@@ -15,9 +15,16 @@ const MAP_LAYERS_OPERATORS = [
     },
     layers: [{
       id: 'loss_layer',
+      name: 'Tree cover loss',
       type: 'raster',
       source: 'loss',
       minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'Tree cover loss', color: '#FF6699' }
+        ]
+      },
       paint: {
         'raster-opacity': 1,
         'raster-hue-rotate': 0,
@@ -40,9 +47,16 @@ const MAP_LAYERS_OPERATORS = [
     },
     layers: [{
       id: 'gain_layer',
+      name: 'Tree cover gain',
       type: 'raster',
       source: 'gain',
       minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'Tree cover gain', color: '#6D6DE5' }
+        ]
+      },
       paint: {
         'raster-opacity': 1,
         'raster-hue-rotate': 0,
@@ -54,7 +68,7 @@ const MAP_LAYERS_OPERATORS = [
     }]
   },
 
-  // RASTER LAYERS (LOSS & GAIN)
+  // FMUS
   {
     id: 'forest_concession',
     provider: 'cartodb',
@@ -65,23 +79,33 @@ const MAP_LAYERS_OPERATORS = [
     },
     layers: [{
       id: 'forest_concession_layer_hover',
+      name: 'Forest managment units',
       type: 'fill',
       source: 'forest_concession',
       layout: {},
+      before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': '#d07500',
-        'fill-opacity': 0.8,
+        'fill-opacity': 0.4,
         'fill-outline-color': '#d07500'
       },
       filter: ['==', 'cartodb_id', '']
     }, {
       id: 'forest_concession_layer',
+      name: 'Forest managment units',
       type: 'fill',
       source: 'forest_concession',
       layout: {},
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'FMUs', color: '#e98300' }
+        ]
+      },
+      before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': '#e98300',
-        'fill-opacity': 0.8,
+        'fill-opacity': 0.4,
         'fill-outline-color': '#d07500'
       },
       fitBounds: true,

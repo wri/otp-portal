@@ -1,0 +1,69 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
+import MapLegendItem from 'components/map/legend/legend-item';
+import Icon from 'components/ui/icon';
+
+export default class MapLegend extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedLayer: null,
+      expanded: props.expanded
+    };
+  }
+
+  toggleExpand() {
+    this.setState({
+      expanded: !this.state.expanded
+    });
+  }
+
+  render() {
+    const { layers, className } = this.props;
+    const { expanded } = this.state;
+
+    const classNames = classnames({
+      [className]: !!className,
+      '-expanded': expanded
+    });
+
+    return (
+      <div className={`c-map-legend ${classNames}`}>
+        <div className="legend-header" onClick={() => this.toggleExpand()}>
+          <span className="legend-header-title">
+            {expanded ? 'Legend' : 'View Legend'}
+          </span>
+          <button className="legend-btn">
+            {!expanded && <Icon name="icon-arrow-up" className="legend-open-icon" />}
+            {expanded && <Icon name="icon-arrow-down" className="legend-close-icon" />}
+          </button>
+        </div>
+        <div className="legend-content">
+          <ul>
+            {layers.map(layer =>
+              <MapLegendItem
+                layer={layer}
+                key={layer.id}
+              />
+            )}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
+
+MapLegend.defaultProps = {
+  expanded: false,
+  layers: [],
+  className: ''
+};
+
+MapLegend.propTypes = {
+  expanded: PropTypes.bool,
+  layers: PropTypes.array,
+  className: PropTypes.string
+};
