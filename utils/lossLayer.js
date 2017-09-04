@@ -51,6 +51,9 @@ class LossLayer {
           imgData[pixelPos + 1] = (72 - z) + 102 - (3 * myscale(intensity) / z);
           imgData[pixelPos + 2] = (33 - z) + 153 - ((intensity) / z);
           imgData[pixelPos + 3] = z < 13 ? myscale(intensity) : intensity;
+
+          // console.log(`${imgData[pixelPos + 0]},${imgData[pixelPos + 1]},${imgData[pixelPos + 2]}`);
+          // console.log(`${imgData[pixelPos + 3]}`);
         } else {
           imgData[pixelPos + 3] = 0;
         }
@@ -65,7 +68,8 @@ class LossLayer {
   }
 
   async getCanvasTile(callback) {
-    "use asm";
+    'use asm';
+
     const { z, x, y } = this.opts;
     const canvas = new Canvas(256, 256);
     const ctx = canvas.getContext('2d');

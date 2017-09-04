@@ -2,6 +2,59 @@ import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
 const MAP_LAYERS_OPERATORS = [
+  // RASTER LAYERS (LOSS & GAIN)
+  {
+    id: 'loss',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        '/loss-layer/{z}/{x}/{y}'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'loss_layer',
+      type: 'raster',
+      source: 'loss',
+      minzoom: 0,
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
+  {
+    id: 'gain',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'gain_layer',
+      type: 'raster',
+      source: 'gain',
+      minzoom: 0,
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
+
+  // RASTER LAYERS (LOSS & GAIN)
   {
     id: 'forest_concession',
     provider: 'cartodb',
@@ -78,59 +131,13 @@ const MAP_LAYERS_OPERATORS = [
         }
       }
     }]
-  },
-  {
-    id: 'loss',
-    provider: 'raster',
-    source: {
-      type: 'raster',
-      tiles: [
-        '/loss-layer/{z}/{x}/{y}'
-      ],
-      tileSize: 256
-    },
-    layers: [{
-      id: 'loss_layer',
-      type: 'raster',
-      source: 'loss',
-      minzoom: 0,
-      maxzoom: 12,
-      paint: {
-        'raster-fade-duration': 0
-      }
-    }]
-  },
-  {
-    id: 'gain',
-    provider: 'raster',
-    source: {
-      type: 'raster',
-      tiles: [
-        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
-      ],
-      tileSize: 256
-    },
-    layers: [{
-      id: 'gain_layer',
-      type: 'raster',
-      source: 'gain',
-      minzoom: 0,
-      maxzoom: 12,
-      paint: {
-        'raster-fade-duration': 0
-      }
-    }]
   }
-
-
-  // ,
-  //
-  //
   // {
   //   id: 'harvestable_areas',
   //   provider: 'cartodb',
   //   source: {
   //     type: 'geojson',
+  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47`
   //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
   //   },
   //   layers: [{
@@ -162,29 +169,8 @@ const MAP_LAYERS_OPERATORS = [
   //             )
   //           )
   //           .addTo(this.map);
-  //       },
-  //       mouseenter() {
-  //         this.map.getCanvas().style.cursor = 'pointer';
-  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
-  //       },
-  //       mousemove(e) {
-  //         this.map.getCanvas().style.cursor = 'pointer';
-  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
-  //       },
-  //       mouseleave() {
-  //         this.map.getCanvas().style.cursor = '';
-  //         this.map.setFilter('harvestable_areas_layer_hover', ['==', 'cartodb_id', '']);
   //       }
   //     }
-  //   }, {
-  //     id: 'harvestable_areas_layer_hover',
-  //     type: 'fill',
-  //     source: 'harvestable_areas',
-  //     layout: {},
-  //     paint: {
-  //       'fill-color': '#004219'
-  //     },
-  //     filter: ['==', 'cartodb_id', '']
   //   }]
   // }
 ];
