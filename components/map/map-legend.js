@@ -32,6 +32,7 @@ export default class MapLegend extends React.Component {
 
     return (
       <div className={`c-map-legend ${classNames}`}>
+        {/* Header */}
         <div className="legend-header" onClick={() => this.toggleExpand()}>
           <span className="legend-header-title">
             {expanded ? 'Legend' : 'View Legend'}
@@ -41,6 +42,8 @@ export default class MapLegend extends React.Component {
             {expanded && <Icon name="icon-arrow-down" className="legend-close-icon" />}
           </button>
         </div>
+
+        {/* Content */}
         <div className="legend-content">
           <ul>
             {layers.map(layer =>

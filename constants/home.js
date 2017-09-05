@@ -58,11 +58,17 @@ const MAP_LAYERS_HOME = [
   },
   {
     id: 'forest_concession',
-    provider: 'cartodb',
+    provider: 'geojson',
     source: {
       type: 'geojson',
-      data: `${process.env.OTP_API}/fmus?country_ids=7,47`
-      // data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
+      data: {
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        }
+      }
     },
     layers: [{
       id: 'forest_concession_layer',
@@ -81,7 +87,7 @@ const MAP_LAYERS_HOME = [
 
   // {
   //   id: 'harvestable_areas',
-  //   provider: 'cartodb',
+  //   provider: 'geojson',
   //   source: {
   //     type: 'geojson',
   //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`

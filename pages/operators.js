@@ -197,7 +197,6 @@ class OperatorsPage extends Page {
             />
 
             <MapLegend
-              expanded
               layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
                 layer.layers.filter(l => l.legendConfig)
               ))}

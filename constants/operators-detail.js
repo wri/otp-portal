@@ -92,11 +92,17 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 
   {
     id: 'forest_concession',
-    provider: 'cartodb',
+    provider: 'geojson',
     source: {
       type: 'geojson',
-      data: `${process.env.OTP_API}/fmus?operator_ids={{OPERATOR_ID}}`
-      // data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM forest_concession')}&format=geojson`
+      data: {
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47&operator_ids={{OPERATOR_ID}}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        }
+      }
     },
     layers: [{
       id: 'forest_concession_layer_hover',

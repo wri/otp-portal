@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import sortBy from 'lodash/sortBy';
 
 export default function FMUCard({ title, theme, fmus }) {
   const classNames = classnames({
@@ -12,7 +13,9 @@ export default function FMUCard({ title, theme, fmus }) {
       <div className="card-container">
         {title && <h3 className="card-title">{title}</h3>}
         <ul className="fmu-list">
-          {fmus.map(fmu => <li key={fmu.id} className="fmu-item">{fmu.name}</li>)}
+          {sortBy(fmus, 'name').map(fmu =>
+            <li key={fmu.id} className="fmu-item">{fmu.name}</li>
+          )}
         </ul>
       </div>
     </div>

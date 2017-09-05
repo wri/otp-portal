@@ -16,11 +16,16 @@ export default class OperatorsDetailFMUs extends React.Component {
   render() {
     const { url, operatorsDetail } = this.props;
     const { fmus } = operatorsDetail && operatorsDetail.data ? operatorsDetail.data : {};
+    const layers = JSON.parse(substitution(
+      JSON.stringify(MAP_LAYERS_OPERATORS_DETAIL),
+      [{ key: 'OPERATOR_ID', value: url.query.id }]
+    ));
+
     return (
       <div className="c-map-container -static">
         <Map
           mapOptions={MAP_OPTIONS_OPERATORS_DETAIL}
-          layers={JSON.parse(substitution(JSON.stringify(MAP_LAYERS_OPERATORS_DETAIL), [{ key: 'OPERATOR_ID', value: url.query.id }]))}
+          layers={layers}
         />
         {fmus && fmus.length &&
           <div className="l-container">
