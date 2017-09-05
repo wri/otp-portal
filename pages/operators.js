@@ -1,5 +1,6 @@
 import React from 'react';
 import sortBy from 'lodash/sortBy';
+import flatten from 'lodash/flatten';
 
 // Next
 import Link from 'next/link';
@@ -22,6 +23,7 @@ import Sidebar from 'components/ui/sidebar';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 import Map from 'components/map/map';
+import MapLegend from 'components/map/map-legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import OperatorsRanking from 'components/operators/ranking';
@@ -192,6 +194,12 @@ class OperatorsPage extends Page {
                 }
               }}
               layers={MAP_LAYERS_OPERATORS}
+            />
+
+            <MapLegend
+              layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
+                layer.layers.filter(l => l.legendConfig)
+              ))}
             />
 
             {/* MapControls */}

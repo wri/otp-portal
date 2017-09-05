@@ -25,7 +25,8 @@ export default class LayerManager {
   /* Public methods */
   addLayer(layer, opts = {}) {
     const method = {
-      cartodb: this.addCartoLayer,
+      geojson: this.addGeojsonLayer,
+      cartodb: this.addCartodbLayer,
       raster: this.addRasterLayer
     }[layer.provider];
 
@@ -48,14 +49,8 @@ export default class LayerManager {
   /**
    * PRIVATE METHODS
    */
-  addCartoLayer(layer) {
-    fetch(layer.source.data, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
+  addGeojsonLayer(layer) {
+    fetch(layer.source.data.url, { ...layer.source.data })
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error(response.statusText);
@@ -70,7 +65,7 @@ export default class LayerManager {
             const { interactivity, fitBounds } = l;
 
             // Add layer
-            this.map.addLayer(l);
+            this.map.addLayer(l, l.before);
 
             // Add interactivity (if exists)
             if (interactivity) {
@@ -84,7 +79,7 @@ export default class LayerManager {
               const bounds = getBBox(data);
 
               this.map.fitBounds(bounds, {
-                padding: 40
+                padding: 50
                 // animate: false
                 // duration: 500,
                 // offset: [300, 0]
@@ -100,6 +95,45 @@ export default class LayerManager {
       });
   }
 
+  addCartodbLayer(layer) {
+    // Add source
+    if (this.map) {
+      if (layer.cartodb) {
+        fetch(`https://${layer.cartodb.account}.carto.com/api/v1/map?stat_tag=API&config=${encodeURIComponent(JSON.stringify(layer.cartodb))}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then((response) => {
+            if (response.ok) return response.json();
+            throw new Error(response.statusText);
+          })
+          .then((data) => {
+            const source = {
+              ...layer.source,
+              tiles: data.cdn_url.templates.https.subdomains.map(s =>
+                `${data.cdn_url.templates.https.url.replace('{s}', s)}/${layer.cartodb.account}/api/v1/map/${data.layergroupid}/{z}/{x}/{y}.png`
+              )
+            };
+
+            this.map.addSource(layer.id, source);
+
+            // Loop trough layers
+            layer.layers.forEach((l) => {
+              // Add layer
+              this.map.addLayer(l, l.before);
+
+              this.onLayerAddedSuccess();
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    }
+  }
+
   addRasterLayer(layer) {
     // Add source
     if (this.map) {
@@ -108,7 +142,7 @@ export default class LayerManager {
       // Loop trough layers
       layer.layers.forEach((l) => {
         // Add layer
-        this.map.addLayer(l);
+        this.map.addLayer(l, l.before);
 
         this.onLayerAddedSuccess();
       });
