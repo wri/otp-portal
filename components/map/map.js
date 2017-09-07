@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
 const MAP_OPTIONS = {
   zoom: 2,
   minZoom: 2,
-  maxZoom: 20,
+  maxZoom: 10,
   style: 'mapbox://styles/mapbox/light-v9',
   center: [0, 0]
 };
