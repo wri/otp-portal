@@ -1,11 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { setUser } from 'modules/user';
+
+// Intl
+import withIntl from 'hoc/with-intl';
+import { FormattedMessage } from 'react-intl';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -18,14 +21,6 @@ import Card from 'components/ui/card';
 import Map from 'components/map/map';
 
 class HomePage extends Page {
-  // static async getInitialProps({ req, store }) {
-  //   I don't know why this doesn't work
-  //   store.dispatch(setUser(req.cookies.user));
-  //   return {
-  //
-  //   };
-  // }
-
   /**
    * COMPONENT LIFECYCLE
   */
@@ -55,7 +50,10 @@ class HomePage extends Page {
           column={9}
         >
           <div className="c-intro">
-            <h2>Incentivizing <span>legal timber</span> through better information sharing</h2>
+
+            <h2>
+              <FormattedMessage id="home.intro" />
+            </h2>
           </div>
         </StaticSection>
 
@@ -126,10 +124,10 @@ class HomePage extends Page {
 HomePage.propTypes = {
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators, setUser }
-)(HomePage);
+)(HomePage));
