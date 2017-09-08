@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
+
 import { login } from 'modules/user';
 
 // Services
@@ -180,8 +180,8 @@ Login.propTypes = {
 };
 
 
-export default withRedux(
-  store,
+export default connect(
+  
   null,
   { login }
 )(Login);

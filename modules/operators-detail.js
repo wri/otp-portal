@@ -94,6 +94,7 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,
