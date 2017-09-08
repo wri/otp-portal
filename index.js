@@ -55,10 +55,6 @@ server.use(session({
 
 app.prepare()
   .then(() => {
-    // req.locale = locale
-    // req.localeDataScript = getLocaleDataScript(locale)
-    // req.messages = dev ? {} : getMessages(locale)
-
     // Loss layer
     server.get('/loss-layer/:z/:x/:y', (req, res) => {
       const { z, x, y } = req.params;

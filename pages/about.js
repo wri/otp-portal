@@ -93,10 +93,10 @@ AboutPage.propTypes = {
   session: PropTypes.object.isRequired
 };
 
-export default withIntl(withRedux(
+export default withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators }
-)(AboutPage));
+)(withIntl(AboutPage));
