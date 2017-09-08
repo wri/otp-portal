@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
+
 import { getOperator } from 'modules/operators-detail';
 
 // Utils
@@ -69,8 +69,8 @@ DocumentsByOperator.propTypes = {
   user: PropTypes.object
 };
 
-export default withRedux(
-  store,
+export default connect(
+
   state => ({
     user: state.user
   }),

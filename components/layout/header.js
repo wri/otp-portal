@@ -6,8 +6,8 @@ import Link from 'next/link';
 // Services
 import modal from 'services/modal';
 
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
+
 import { logout } from 'modules/user';
 
 // Components
@@ -94,8 +94,8 @@ Header.propTypes = {
   logout: PropTypes.func
 };
 
-export default withRedux(
-  store,
+export default connect(
+
   state => ({
     user: state.user
   }),
