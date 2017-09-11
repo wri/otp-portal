@@ -1,6 +1,21 @@
 {
-  "home.intro": "FR() - Incentivizing <span>legal timber</span> through better information sharing",
-  "home.card.a.title": "FR() - Operator transparency rankings",
-  "home.card.a.description": "FR() - View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type",
-  "home.card.a.link": "FR() - Visualize rankings"
+    "nav.operators": "Les opérateurs",
+    "nav.observations": "Observations",
+    "nav.help": "Aidez-moi",
+    "nav.about": "Sur",
+    "nav.search": "Opérateur de recherche",
+    "nav.signin": "se connecter",
+    "nav.signout": "Déconnexion",
+    "home.title": "Accueil",
+    "home.description": "Description de la maison",
+    "home.intro": "Incentivant <span> bois légal </ span> grâce à un meilleur partage d'informations",
+    "home.card.a.title": "Classement de la transparence de l'opérateur",
+    "home.card.a.description": "Consultez le classement mondial de la transparence des concessionnaires forestiers et affinez la recherche en fonction d'un pays spécifique ou par type d'opérateur",
+    "home.card.a.link.label": "Visualiser les classements",
+    "home.card.b.title": "Profils d'opérateur",
+    "home.card.b.description": "Explorez les profils des opérateurs spécifiques, consultez les documents de conformité juridique fournis et les observations enregistrées par les moniteurs indépendants (IM)",
+    "home.card.b.link.label": "Explorer les opérateurs",
+    "home.card.c.title": "Unités de gestion forestière",
+    "home.card.c.description": "Explorez les unités de gestion forestière (UMF) et les exploitants de concessions forestières en naviguant sur les données via une carte interactive",
+    "home.card.c.link.label": "Explorez la carte"
 }

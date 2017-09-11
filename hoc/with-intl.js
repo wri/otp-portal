@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { loadGetInitialProps } from 'next/dist/lib/utils';
+import * as Cookies from 'js-cookie';
 
 import { IntlProvider, addLocaleData, injectIntl } from 'react-intl';
 
@@ -39,27 +38,29 @@ export default function withIntl(Page) {
 
       // Get the `locale` from the request object on the server.
       // In the browser, use the same values that the server serialized.
-      const { req, res } = context;
+      const { req } = context;
 
-      let language = 'en';
+      let language;
+
       if (req) {
-        language = req.query.language || req.cookies.language || req.locale.language;
+        language =
+          req.query.language ||
+          req.cookies.language ||
+          req.locale.language ||
+          'en';
       } else {
-        language = window.__NEXT_DATA__.props.initialProps.language;
+        language = Cookies.get('language') || 'en';
       }
-
-      // // Save the lang in a cookie named 'language'
-      // // TODO: is it working?
-      if (res) {
-        res.cookie('language', language, { maxAge: 10800 });
-      }
-
 
       // Always update the current time on page load/transition because the
       // <IntlProvider> will be a new instance even with pushState routing.
       const now = Date.now();
-
       return { language, now, ...props };
+    }
+
+    componentDidMount() {
+      // Set language cookie
+      Cookies.set('language', this.props.language, { expires: 90 });
     }
 
     render() {
@@ -70,6 +71,7 @@ export default function withIntl(Page) {
           locale={language}
           messages={MESSAGES[language]}
           initialNow={now}
+          defaultLocale="en"
         >
           <IntlPage {...this.props} />
         </IntlProvider>

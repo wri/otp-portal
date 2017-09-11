@@ -1,6 +1,21 @@
 {
-  "home.intro": "Incentivizing <span>legal timber</span> through better information sharing",
-  "home.card.a.title": "Operator transparency rankings",
-  "home.card.a.description": "View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type",
-  "home.card.a.link": "Visualize rankings"
+    "nav.operators": "Operators",
+    "nav.observations": "Observations",
+    "nav.help": "Help",
+    "nav.about": "About",
+    "nav.search": "Search operator",
+    "nav.signin": "Sign in",
+    "nav.signout": "Sign out",
+    "home.title": "Home",
+    "home.description": "Home description",
+    "home.intro": "Incentivizing <span>legal timber</span> through better information sharing",
+    "home.card.a.title": "Operator transparency rankings",
+    "home.card.a.description": "View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type",
+    "home.card.a.link.label": "Visualize rankings",
+    "home.card.b.title": "Operator profiles",
+    "home.card.b.description": "Explore the profiles of specific operators, view documents of legal compliance provided and observations recorded by Independent Monitors (IMs)",
+    "home.card.b.link.label": "Explore operators",
+    "home.card.c.title": "Forest management units",
+    "home.card.c.description": "Explore Forest Management Units (FMUs) and forest concessions operators by navigating the data through an interactive map",
+    "home.card.c.link.label": "Explore the map"
 }

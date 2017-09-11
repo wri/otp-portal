@@ -4,7 +4,6 @@ import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
-import { setUser } from 'modules/user';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -66,10 +65,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="A"
-            title="Operator transparency rankings"
-            description="View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type"
+            title="home.card.a.title"
+            description="home.card.a.description"
             link={{
-              label: 'Visualize rankings',
+              label: 'home.card.a.link.label',
               href: '/operators'
             }}
           />
@@ -90,10 +89,10 @@ class HomePage extends Page {
           <Card
             theme="-tertiary"
             letter="B"
-            title="Operator profiles"
-            description="Explore the profiles of specific operators, view documents of legal compliance provided and observations recorded by Independent Monitors (IMs)"
+            title="home.card.b.title"
+            description="home.card.b.description"
             link={{
-              label: 'Explore operators',
+              label: 'home.card.b.link.label',
               href: '/operators'
             }}
           />
@@ -108,10 +107,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="C"
-            title="Forest Management Units"
-            description="Explore Forest Management Units (FMUs) and forest concessions operators by navigating the data through an interactive map"
+            title="home.card.c.title"
+            description="home.card.c.description"
             link={{
-              label: 'Explore the map',
+              label: 'home.card.c.link.label',
               href: '/operators'
             }}
           />
@@ -124,10 +123,11 @@ class HomePage extends Page {
 HomePage.propTypes = {
 };
 
+
 export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
-  { getOperators, setUser }
+  { getOperators }
 )(HomePage));

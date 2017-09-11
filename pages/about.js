@@ -8,7 +8,6 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { FormattedMessage } from 'react-intl';
 
 // Components
 import Page from 'components/layout/page';
@@ -93,10 +92,10 @@ AboutPage.propTypes = {
   session: PropTypes.object.isRequired
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators }
-)(withIntl(AboutPage));
+)(AboutPage));

@@ -90,10 +90,10 @@ HelpPage.propTypes = {
   url: PropTypes.object.isRequired
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators }
-)(withIntl(HelpPage));
+)(HelpPage));
