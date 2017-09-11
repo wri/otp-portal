@@ -5,6 +5,10 @@ import flatten from 'lodash/flatten';
 // Next
 import Link from 'next/link';
 
+// Intl
+import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
+
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
@@ -98,15 +102,23 @@ class OperatorsPage extends Page {
           <table>
             <thead>
               <tr>
-                <th className="-ta-left">Name</th>
-                <th className="-ta-center">Observations/Visit</th>
-                <th>FMUs</th>
-                <th>Certification</th>
+                <th className="-ta-left">
+                  {this.props.intl.formatMessage({ id: 'operators.table.name' })}
+                </th>
+                <th className="-ta-center">
+                  {this.props.intl.formatMessage({ id: 'operators.table.obs_visit' })}
+                </th>
+                <th>
+                  {this.props.intl.formatMessage({ id: 'operators.table.fmus' })}
+                </th>
+                <th>
+                  {this.props.intl.formatMessage({ id: 'operators.table.certification' })}
+                </th>
                 <th
                   className="td-documentation -ta-center -sort"
                   onClick={() => { this.sortBy('documentation'); }}
                 >
-                  Upl. docs (%)
+                  {this.props.intl.formatMessage({ id: 'operators.table.upload_docs' })}
                   {sortDirection === -1 && <Icon name="icon-arrow-down" className="-tiny" />}
                   {sortDirection === 1 && <Icon name="icon-arrow-up" className="-tiny" />}
                 </th>
@@ -222,9 +234,11 @@ class OperatorsPage extends Page {
 }
 
 OperatorsPage.propTypes = {
+  intl: intlShape.isRequired
 };
 
-export default withRedux(
+
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
@@ -238,4 +252,4 @@ export default withRedux(
       dispatch(setOperatorsUrl());
     }
   })
-)(OperatorsPage);
+)(OperatorsPage));

@@ -7,7 +7,7 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { FormattedHTMLMessage } from 'react-intl';
+import { intlShape } from 'react-intl';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -49,7 +49,11 @@ class HomePage extends Page {
           column={9}
         >
           <div className="c-intro">
-            <FormattedHTMLMessage id="home.intro" tagName="h2" />
+            <h2
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatHTMLMessage({ id: 'home.intro' })
+              }}
+            />
           </div>
         </StaticSection>
 
@@ -62,10 +66,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="A"
-            title="home.card.a.title"
-            description="home.card.a.description"
+            title={this.props.intl.formatMessage({ id: 'home.card.a.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.a.description' })}
             link={{
-              label: 'home.card.a.link.label',
+              label: this.props.intl.formatMessage({ id: 'home.card.a.link.label' }),
               href: '/operators'
             }}
           />
@@ -86,10 +90,10 @@ class HomePage extends Page {
           <Card
             theme="-tertiary"
             letter="B"
-            title="home.card.b.title"
-            description="home.card.b.description"
+            title={this.props.intl.formatMessage({ id: 'home.card.b.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.b.description' })}
             link={{
-              label: 'home.card.b.link.label',
+              label: this.props.intl.formatMessage({ id: 'home.card.b.link.label' }),
               href: '/operators'
             }}
           />
@@ -104,10 +108,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="C"
-            title="home.card.c.title"
-            description="home.card.c.description"
+            title={this.props.intl.formatMessage({ id: 'home.card.c.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.c.description' })}
             link={{
-              label: 'home.card.c.link.label',
+              label: this.props.intl.formatMessage({ id: 'home.card.c.link.label' }),
               href: '/operators'
             }}
           />
@@ -118,6 +122,7 @@ class HomePage extends Page {
 }
 
 HomePage.propTypes = {
+  intl: intlShape.isRequired
 };
 
 

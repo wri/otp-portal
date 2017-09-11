@@ -10,6 +10,9 @@ import Link from 'next/link';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 
+// Intl
+import withIntl from 'hoc/with-intl';
+
 class ErrorPage extends React.Component {
 
   static getInitialProps({ res, xhr }) {
@@ -76,6 +79,6 @@ ErrorPage.propTypes = {
   url: PropTypes.object.isRequired
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store
-)(ErrorPage);
+)(ErrorPage));

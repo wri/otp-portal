@@ -3,18 +3,18 @@ import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
 const TABS_OPERATORS_DETAIL = [{
-  label: 'Overview',
+  label: 'operator-detail.tabs.overview',
   value: 'overview'
 }, {
-  label: 'Documentation',
+  label: 'operator-detail.tabs.documentation',
   value: 'documentation',
   number: '65%'
 }, {
-  label: 'Observations',
+  label: 'operator-detail.tabs.observations',
   value: 'observations',
   number: 120
 }, {
-  label: 'FMUs',
+  label: 'operator-detail.tabs.fmus',
   value: 'fmus',
   number: 7
 }];

@@ -4,9 +4,9 @@ import classnames from 'classnames';
 
 import Link from 'next/link';
 
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
-export default class NavigationList extends React.Component {
+class NavigationList extends React.Component {
   setActive(pathname) {
     const { url } = this.props;
     return classnames({
@@ -26,28 +26,28 @@ export default class NavigationList extends React.Component {
         <li>
           <Link prefetch href="/operators">
             <a className={!hideActive ? this.setActive(['/operators', '/operators-detail']) : ''}>
-              <FormattedMessage id="nav.operators" />
+              {this.props.intl.formatMessage({ id: 'operators' })}
             </a>
           </Link>
         </li>
         <li>
           <Link prefetch href="/observations">
             <a className={!hideActive ? this.setActive(['/observations']) : ''}>
-              <FormattedMessage id="nav.observations" />
+              {this.props.intl.formatMessage({ id: 'observations' })}
             </a>
           </Link>
         </li>
         <li>
           <Link prefetch href="/help">
             <a className={!hideActive ? this.setActive(['/help']) : ''}>
-              <FormattedMessage id="nav.help" />
+              {this.props.intl.formatMessage({ id: 'help' })}
             </a>
           </Link>
         </li>
         <li>
           <Link prefetch href="/about">
             <a className={!hideActive ? this.setActive(['/about']) : ''}>
-              <FormattedMessage id="nav.about" />
+              {this.props.intl.formatMessage({ id: 'about' })}
             </a>
           </Link>
         </li>
@@ -59,5 +59,8 @@ export default class NavigationList extends React.Component {
 NavigationList.propTypes = {
   url: PropTypes.object,
   hideActive: PropTypes.bool,
-  className: PropTypes.string
+  className: PropTypes.string,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(NavigationList);

@@ -1,11 +1,19 @@
 {
-    "nav.operators": "Operators",
-    "nav.observations": "Observations",
-    "nav.help": "Help",
-    "nav.about": "About",
-    "nav.search": "Search operator",
-    "nav.signin": "Sign in",
-    "nav.signout": "Sign out",
+    "home": "Home",
+    "operators": "Operators",
+    "observations": "Observations",
+    "help": "Help",
+    "about": "About",
+    "overview": "Overview",
+    "documentation": "Documentation",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "unknown": "Unknown",
+    "noresults": "No results",
+    "signin": "Sign in",
+    "signout": "Sign out",
+
     "home.title": "Home",
     "home.description": "Home description",
     "home.intro": "Incentivizing <span>legal timber</span> through better information sharing",
@@ -17,5 +25,32 @@
     "home.card.b.link.label": "Explore operators",
     "home.card.c.title": "Forest management units",
     "home.card.c.description": "Explore Forest Management Units (FMUs) and forest concessions operators by navigating the data through an interactive map",
-    "home.card.c.link.label": "Explore the map"
+    "home.card.c.link.label": "Explore the map",
+
+    "operators.table.name": "Name",
+    "operators.table.obs_visit": "Observations/Visit",
+    "operators.table.fmus": "FMUs",
+    "operators.table.certification": "Certification",
+    "operators.table.upload_docs": "Upl. docs (%)",
+    "operators.map.legend.open": "Legend",
+    "operators.map.legend.close": "View legend",
+
+    "operator-detail.tabs.overview": "Overview",
+    "operator-detail.tabs.documentation": "Documentation",
+    "operator-detail.tabs.observations": "Observations",
+    "operator-detail.tabs.fmus": "FMUs",
+
+    "operator-detail.overview.card1.title": "Required documents uploaded",
+    "operator-detail.overview.card1.description": "These documents evidence compliance with the country's legal framework for forest management",
+    "operator-detail.overview.card1.link.label": "Link",
+
+    "operator-detail.overview.card2.title": "Average of observations by monitors visit",
+    "operator-detail.overview.card2.description": "There was {observations} observations from {visits} independent monitor visits",
+    "operator-detail.overview.card2.link.label": "Find out more",
+
+    "operator-detail.overview.card3.title": "Forest management units",
+    "operator-detail.overview.card3.description": "Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod",
+    "operator-detail.overview.card3.link.label": "Read more"
+
+
 }

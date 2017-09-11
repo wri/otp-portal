@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { logout } from 'modules/user';
 
 // Intl
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 // Components
 import Icon from 'components/ui/icon';
@@ -66,7 +66,7 @@ class Header extends React.Component {
                         });
                       }}
                     >
-                      <FormattedMessage id="nav.signin" />
+                      <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
                       <Icon name="icon-user" />
                     </a>
                   }
@@ -76,7 +76,7 @@ class Header extends React.Component {
                         this.props.logout();
                       }}
                     >
-                      <FormattedMessage id="nav.signout" />
+                      <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
                       <Icon name="icon-user" />
                     </a>
                   }
@@ -94,13 +94,14 @@ Header.propTypes = {
   url: PropTypes.object.isRequired,
   user: PropTypes.object,
   searchList: PropTypes.array,
+  intl: intlShape.isRequired,
   logout: PropTypes.func
 };
 
-export default connect(
+export default injectIntl(connect(
 
   state => ({
     user: state.user
   }),
   { logout }
-)(Header);
+)(Header));

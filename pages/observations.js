@@ -8,6 +8,8 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 
+// Intl
+import withIntl from 'hoc/with-intl';
 
 // Selectors
 import { getParsedObservations } from 'selectors/observations/observations';
@@ -190,7 +192,7 @@ ObservationsPage.propTypes = {
   filters: PropTypes.object
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store,
   state => ({
     observations: state.observations,
@@ -215,4 +217,4 @@ export default withRedux(
       dispatch(setObservationsUrl());
     }
   })
-)(ObservationsPage);
+)(ObservationsPage));

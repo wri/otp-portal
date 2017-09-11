@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
+// Intl
+import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
+
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 
@@ -55,6 +59,7 @@ class OperatorsDetail extends Page {
 
       return {
         ...tab,
+        label: this.props.intl.formatMessage({ id: tab.label }),
         number
       };
     });
@@ -154,9 +159,10 @@ class OperatorsDetail extends Page {
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
+  intl: intlShape.isRequired
 };
 
-export default withRedux(
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
@@ -165,4 +171,4 @@ export default withRedux(
     operatorDocumentation: getParsedDocumentation(state)
   }),
   { getOperators, getOperator }
-)(OperatorsDetail);
+)(OperatorsDetail));
