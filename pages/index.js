@@ -7,7 +7,7 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { FormattedMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -49,10 +49,7 @@ class HomePage extends Page {
           column={9}
         >
           <div className="c-intro">
-
-            <h2>
-              <FormattedMessage id="home.intro" />
-            </h2>
+            <FormattedHTMLMessage id="home.intro" tagName="h2" />
           </div>
         </StaticSection>
 

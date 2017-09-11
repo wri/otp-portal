@@ -6,9 +6,12 @@ import Link from 'next/link';
 // Services
 import modal from 'services/modal';
 
+// Redux
 import { connect } from 'react-redux';
-
 import { logout } from 'modules/user';
+
+// Intl
+import { FormattedMessage } from 'react-intl';
 
 // Components
 import Icon from 'components/ui/icon';
@@ -63,7 +66,7 @@ class Header extends React.Component {
                         });
                       }}
                     >
-                      <span>Sign in</span>
+                      <FormattedMessage id="nav.signin" />
                       <Icon name="icon-user" />
                     </a>
                   }
@@ -73,7 +76,7 @@ class Header extends React.Component {
                         this.props.logout();
                       }}
                     >
-                      <span>Log out</span>
+                      <FormattedMessage id="nav.signout" />
                       <Icon name="icon-user" />
                     </a>
                   }
