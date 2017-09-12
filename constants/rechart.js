@@ -23,19 +23,19 @@ const LEGEND_SEVERITY = {
   list: [{
     fill: PALETTE_COLOR_1[0].fill,
     stroke: PALETTE_COLOR_1[0].fill,
-    label: 'High'
+    label: 'high'
   }, {
     fill: PALETTE_COLOR_1[1].fill,
     stroke: PALETTE_COLOR_1[1].fill,
-    label: 'Medium'
+    label: 'medium'
   }, {
     fill: PALETTE_COLOR_1[2].fill,
     stroke: PALETTE_COLOR_1[2].fill,
-    label: 'Low'
+    label: 'low'
   }, {
     fill: PALETTE_COLOR_1[3].fill,
     stroke: PALETTE_COLOR_1[3].fill,
-    label: 'Unknown'
+    label: 'unknown'
   }]
 };
 

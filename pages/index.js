@@ -1,11 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
-import { setUser } from 'modules/user';
+
+// Intl
+import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
 
 // Constants
 import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
@@ -18,14 +20,6 @@ import Card from 'components/ui/card';
 import Map from 'components/map/map';
 
 class HomePage extends Page {
-  // static async getInitialProps({ req, store }) {
-  //   I don't know why this doesn't work
-  //   store.dispatch(setUser(req.cookies.user));
-  //   return {
-  //
-  //   };
-  // }
-
   /**
    * COMPONENT LIFECYCLE
   */
@@ -55,7 +49,11 @@ class HomePage extends Page {
           column={9}
         >
           <div className="c-intro">
-            <h2>Incentivizing <span>legal timber</span> through better information sharing</h2>
+            <h2
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatHTMLMessage({ id: 'home.intro' })
+              }}
+            />
           </div>
         </StaticSection>
 
@@ -68,10 +66,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="A"
-            title="Operator transparency rankings"
-            description="View the global transparency rankings of forest concession operators and refine search based on a specific country or by operator type"
+            title={this.props.intl.formatMessage({ id: 'home.card.a.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.a.description' })}
             link={{
-              label: 'Visualize rankings',
+              label: this.props.intl.formatMessage({ id: 'home.card.a.link.label' }),
               href: '/operators'
             }}
           />
@@ -92,10 +90,10 @@ class HomePage extends Page {
           <Card
             theme="-tertiary"
             letter="B"
-            title="Operator profiles"
-            description="Explore the profiles of specific operators, view documents of legal compliance provided and observations recorded by Independent Monitors (IMs)"
+            title={this.props.intl.formatMessage({ id: 'home.card.b.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.b.description' })}
             link={{
-              label: 'Explore operators',
+              label: this.props.intl.formatMessage({ id: 'home.card.b.link.label' }),
               href: '/operators'
             }}
           />
@@ -110,10 +108,10 @@ class HomePage extends Page {
           <Card
             theme="-secondary"
             letter="C"
-            title="Forest Management Units"
-            description="Explore Forest Management Units (FMUs) and forest concessions operators by navigating the data through an interactive map"
+            title={this.props.intl.formatMessage({ id: 'home.card.c.title' })}
+            description={this.props.intl.formatMessage({ id: 'home.card.c.description' })}
             link={{
-              label: 'Explore the map',
+              label: this.props.intl.formatMessage({ id: 'home.card.c.link.label' }),
               href: '/operators'
             }}
           />
@@ -124,12 +122,14 @@ class HomePage extends Page {
 }
 
 HomePage.propTypes = {
+  intl: intlShape.isRequired
 };
 
-export default withRedux(
+
+export default withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
-  { getOperators, setUser }
-)(HomePage);
+  { getOperators }
+)(HomePage));

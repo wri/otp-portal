@@ -1,33 +1,32 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
-import round from 'lodash/round';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
 
 const PALETTE = {
   doc_not_provided: {
-    name: 'Not provided',
+    label: 'Not provided',
     fill: PALETTE_COLOR_2[0].fill,
     stroke: PALETTE_COLOR_2[0].fill
   },
   doc_invalid: {
-    name: 'Provided (not valid)',
+    label: 'Provided (not valid)',
     fill: PALETTE_COLOR_2[1].fill,
     stroke: PALETTE_COLOR_2[1].fill
   },
   doc_valid: {
-    name: 'Provided (valid)',
+    label: 'Provided (valid)',
     fill: PALETTE_COLOR_2[2].fill,
     stroke: PALETTE_COLOR_2[2].fill
   },
   doc_pending: {
-    name: 'Pending for approval',
+    label: 'Pending for approval',
     fill: PALETTE_COLOR_2[3].fill,
     stroke: PALETTE_COLOR_2[3].fill
   },
   doc_expired: {
-    name: 'Expired',
+    label: 'Expired',
     fill: PALETTE_COLOR_2[4].fill,
     stroke: PALETTE_COLOR_2[4].fill
   }

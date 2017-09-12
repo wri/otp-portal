@@ -6,9 +6,12 @@ import Link from 'next/link';
 // Services
 import modal from 'services/modal';
 
+// Redux
 import { connect } from 'react-redux';
-
 import { logout } from 'modules/user';
+
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
 
 // Components
 import Icon from 'components/ui/icon';
@@ -50,7 +53,6 @@ class Header extends React.Component {
                 <li className="search">
                   <Search
                     list={this.props.searchList}
-                    placeholder="Search operator"
                   />
                 </li>
 
@@ -63,7 +65,7 @@ class Header extends React.Component {
                         });
                       }}
                     >
-                      <span>Sign in</span>
+                      <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
                       <Icon name="icon-user" />
                     </a>
                   }
@@ -73,7 +75,7 @@ class Header extends React.Component {
                         this.props.logout();
                       }}
                     >
-                      <span>Log out</span>
+                      <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
                       <Icon name="icon-user" />
                     </a>
                   }
@@ -91,13 +93,14 @@ Header.propTypes = {
   url: PropTypes.object.isRequired,
   user: PropTypes.object,
   searchList: PropTypes.array,
+  intl: intlShape.isRequired,
   logout: PropTypes.func
 };
 
-export default connect(
+export default injectIntl(connect(
 
   state => ({
     user: state.user
   }),
   { logout }
-)(Header);
+)(Header));

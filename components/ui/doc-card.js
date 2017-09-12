@@ -20,7 +20,7 @@ export default function DocCard(props) {
         {startDate !== endDate &&
           <div className="doc-card-date">{endDate}</div>
         }
-        <div className="doc-card-status">{metadata[status].name}</div>
+        <div className="doc-card-status">{metadata[status].label}</div>
       </header>
       <div className="doc-card-content">
         <h3 className="doc-card-title c-title -big">{title}</h3>

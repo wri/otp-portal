@@ -19,10 +19,12 @@
     "dotenv": "^4.0.0",
     "eventemitter3": "^2.0.3",
     "express": "^4.14.0",
+    "express-locale": "^1.0.2",
     "express-session": "^1.14.2",
     "foundation-sites": "^6.3.1",
     "fuse.js": "^3.0.5",
     "glob": "7.1.1",
+    "intl": "^1.2.5",
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.1.4",
     "json-api-normalizer": "^0.4.0",
@@ -36,6 +38,7 @@
     "moveto": "^1.6.1",
     "next": "beta",
     "next-redux-wrapper": "^1.1.2",
+    "node-fetch": "^1.7.3",
     "node-sass": "^4.5.0",
     "nodemailer": "^2.7.0",
     "normalize.css": "^7.0.0",
@@ -54,6 +57,7 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.3",
+    "react-intl": "^2.4.0",
     "react-redux": "^4.4.6",
     "react-select": "^1.0.0-rc.5",
     "react-sticky": "^6.0.1",
@@ -88,7 +92,9 @@
   "scripts": {
     "dev": "NODE_ENV=development node index.js",
     "build": "next build",
-    "start": "node index.js"
+    "start": "node index.js",
+    "transifex:push": "node transifex/transifex-push.js",
+    "transifex:pull": "node transifex/transifex-pull.js"
   },
   "engines": {
     "node": "7.x.x"
