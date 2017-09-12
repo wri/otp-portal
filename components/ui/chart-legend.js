@@ -21,7 +21,7 @@ function ChartLegend({ title, list, className, intl }) {
           <li key={item.label} className="chart-legend-item">
             <span className="chart-legend-dot" style={{ background: item.fill, border: `2px solid ${item.stroke}` }} />
             <span className="chart-legend-label">
-              {intl.formatMessage({ id: item.label })}
+              {intl.formatMessage({ id: item.id || item.label })}
             </span>
           </li>
         ))}

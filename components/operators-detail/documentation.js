@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
@@ -14,7 +17,7 @@ import DocumentsByOperator from 'components/operators-detail/documentation/docum
 import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
 import DocumentsByTime from 'components/operators-detail/documentation/documents-by-time';
 
-export default class OperatorsDetailDocumentation extends React.Component {
+class OperatorsDetailDocumentation extends React.Component {
 
   constructor(props) {
     super(props);
@@ -34,13 +37,21 @@ export default class OperatorsDetailDocumentation extends React.Component {
     const { operatorsDetail, operatorDocumentation, url } = this.props;
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
 
+    console.log(TABS_DOCUMENTATION_OPERATORS_DETAIL);
+
     return (
       <div>
         <div className="c-section">
           <div className="l-container">
             <article className="c-article">
               <header>
-                <h2 className="c-title">{HELPERS_DOC.getPercentage(operatorsDetail.data)}% valid documents provided</h2>
+                <h2 className="c-title">
+                  {this.props.intl.formatMessage({
+                    id: 'operator-detail.documents.title'
+                  }, {
+                    percentage: HELPERS_DOC.getPercentage(operatorsDetail.data)
+                  })}
+                </h2>
               </header>
 
               <div className="content">
@@ -51,7 +62,9 @@ export default class OperatorsDetailDocumentation extends React.Component {
         </div>
 
         <StaticTabs
-          options={TABS_DOCUMENTATION_OPERATORS_DETAIL}
+          options={TABS_DOCUMENTATION_OPERATORS_DETAIL.map(t => (
+            { ...t, label: this.props.intl.formatMessage({ id: t.value }) }
+          ))}
           defaultSelected={this.state.tab}
           onChange={this.triggerChangeTab}
         />
@@ -80,5 +93,8 @@ export default class OperatorsDetailDocumentation extends React.Component {
 OperatorsDetailDocumentation.propTypes = {
   operatorsDetail: PropTypes.object,
   operatorDocumentation: PropTypes.array,
-  url: PropTypes.object
+  url: PropTypes.object,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(OperatorsDetailDocumentation)

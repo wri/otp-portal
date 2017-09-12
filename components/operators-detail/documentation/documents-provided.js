@@ -5,9 +5,6 @@ import sortBy from 'lodash/sortBy';
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
-// Constants
-import { LEGEND_DOCUMENTATION } from 'constants/rechart';
-
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
@@ -18,6 +15,7 @@ export default function DocumentsProvided(props) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(data);
   const max = HELPERS_DOC.getMaxLength(groupedByCategory);
+  const legend = HELPERS_DOC.getMetadata();
 
   return (
     <div className="c-doc-provided">
@@ -50,7 +48,7 @@ export default function DocumentsProvided(props) {
 
             {/* Legend */}
             <ChartLegend
-              list={LEGEND_DOCUMENTATION.list}
+              list={Object.keys(legend).map(k => ({ id: k, ...legend[k] }))}
               className="-absolute"
             />
           </div>
