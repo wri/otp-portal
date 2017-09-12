@@ -37,8 +37,6 @@ class OperatorsDetailDocumentation extends React.Component {
     const { operatorsDetail, operatorDocumentation, url } = this.props;
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
 
-    console.log(TABS_DOCUMENTATION_OPERATORS_DETAIL);
-
     return (
       <div>
         <div className="c-section">
@@ -97,4 +95,4 @@ OperatorsDetailDocumentation.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default injectIntl(OperatorsDetailDocumentation)
+export default injectIntl(OperatorsDetailDocumentation);

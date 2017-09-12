@@ -2,6 +2,9 @@ import React from 'react';
 import classnames from 'classnames';
 import omit from 'lodash/omit';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 import Dropzone from 'react-dropzone';
 
 // Components
@@ -111,7 +114,7 @@ class File extends FormElement {
       return current.name;
     }
 
-    return 'Select file';
+    return this.props.intl.formatMessage({ id: 'select-file' });
   }
 
   /**
@@ -173,7 +176,10 @@ class File extends FormElement {
             onClick={this.triggerBrowseOrCancel}
           >
             <Spinner className="-light -small" isLoading={loading} />
-            {(accepted.length) ? 'Cancel' : 'Browse file'}
+            {(accepted.length) ?
+              this.props.intl.formatMessage({ id: 'cancel' }) :
+              this.props.intl.formatMessage({ id: 'browse-file' })
+            }
           </button>
         </Dropzone>
       </div>
@@ -183,7 +189,8 @@ class File extends FormElement {
 
 File.propTypes = {
   properties: React.PropTypes.object.isRequired,
-  onChange: React.PropTypes.func
+  onChange: React.PropTypes.func,
+  intl: intlShape.isRequired
 };
 
-export default File;
+export default injectIntl(File);

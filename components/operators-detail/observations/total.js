@@ -5,13 +5,16 @@ import classnames from 'classnames';
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Constants
 import { LEGEND_SEVERITY } from 'constants/rechart';
 
 // Components
 import ChartLegend from 'components/ui/chart-legend';
 
-export default class TotalObservationsByOperator extends React.Component {
+class TotalObservationsByOperator extends React.Component {
   render() {
     const { data } = this.props;
     const groupedByYear = HELPERS_OBS.getGroupedByYear(data);
@@ -20,8 +23,12 @@ export default class TotalObservationsByOperator extends React.Component {
     return (
       <div className="c-observations-by-operator">
         <header className="obo-year-header">
-          <span className="c-title -default -proximanova -uppercase">Year</span>
-          <span className="c-title -default -proximanova -uppercase">Observations (IM Visits)</span>
+          <span className="c-title -default -proximanova -uppercase">
+            {this.props.intl.formatMessage({ id: 'year' })}
+          </span>
+          <span className="c-title -default -proximanova -uppercase">
+            {this.props.intl.formatMessage({ id: 'observations_im_visitis' })}
+          </span>
         </header>
 
         {/* YEAR LIST */}
@@ -80,5 +87,8 @@ export default class TotalObservationsByOperator extends React.Component {
 }
 
 TotalObservationsByOperator.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(TotalObservationsByOperator);

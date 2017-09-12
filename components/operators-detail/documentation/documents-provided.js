@@ -40,7 +40,7 @@ export default function DocumentsProvided(props) {
                   labelLine={false}
                 >
                   {groupedByStatusChart.map(entry =>
-                    <Cell key={entry.name} fill={entry.fill} stroke={entry.stroke} />
+                    <Cell key={entry.label} fill={entry.fill} stroke={entry.stroke} />
                   )}
                 </Pie>
               </PieChart>
