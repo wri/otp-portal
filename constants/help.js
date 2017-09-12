@@ -34,7 +34,7 @@ const HOW_OTP_WORKS_HELP = [{
 }, {
   id: 'geographical-scope',
   title: 'help.tabs.howto.post3.title',
-  description: 'help.tabs.howto.post3.title',
+  description: 'help.tabs.howto.post3.description',
   link: {
     label: 'Read more',
     href: '/help?tab=how-otp-works&article=geographical-scope',
