@@ -10,6 +10,7 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
 
 // Selectors
 import { getParsedObservations } from 'selectors/observations/observations';
@@ -120,7 +121,7 @@ class ObservationsPage extends Page {
         searchList={this.props.operators.data}
       >
         <StaticHeader
-          title="Observations"
+          title={this.props.intl.formatMessage({ id: 'observations' })}
           background="/static/images/static-header/bg-observations.jpg"
         />
         <div className="c-section">
@@ -189,7 +190,8 @@ class ObservationsPage extends Page {
 
 ObservationsPage.propTypes = {
   observations: PropTypes.object,
-  filters: PropTypes.object
+  filters: PropTypes.object,
+  intl: intlShape.isRequired
 };
 
 export default withIntl(withRedux(

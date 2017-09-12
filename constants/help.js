@@ -15,8 +15,8 @@ const TABS_HELP = [{
 
 const HOW_OTP_WORKS_HELP = [{
   id: 'sources-of-information',
-  title: 'Sources of information',
-  description: 'The OTP compiles information on timber producers from three different sources: Government, Private sector, Third parties (NGOs and other qualified actors)',
+  title: 'help.tabs.howto.post1.title',
+  description: 'help.tabs.howto.post1.description',
   link: {
     label: 'Read more',
     href: '/help?tab=how-otp-works&article=sources-of-information',
@@ -24,8 +24,8 @@ const HOW_OTP_WORKS_HELP = [{
   }
 }, {
   id: 'score-calculation',
-  title: 'Score calculation',
-  description: 'For each operator, a transparency score is calculated based on the percentage of documents the operator provides out of the total number of documents requested.',
+  title: 'help.tabs.howto.post2.title',
+  description: 'help.tabs.howto.post2.description',
   link: {
     label: 'Read more',
     href: '/help?tab=how-otp-works&article=score-calculation',
@@ -33,8 +33,8 @@ const HOW_OTP_WORKS_HELP = [{
   }
 }, {
   id: 'geographical-scope',
-  title: 'Geographical scope',
-  description: 'Beginning with the Republic of Congo and the Democratic Republic of Congo, the OTP will expand to other major timber exporting countries as resources and opportunities allow.',
+  title: 'help.tabs.howto.post3.title',
+  description: 'help.tabs.howto.post3.title',
   link: {
     label: 'Read more',
     href: '/help?tab=how-otp-works&article=geographical-scope',
@@ -45,8 +45,8 @@ const HOW_OTP_WORKS_HELP = [{
 
 const LEGISLATION_AND_REGULATIONS_HELP = [{
   id: 'forest-products-and-legality',
-  title: 'Forest products and legality',
-  description: 'The Risk Information Tool provides an overview of relevant legislations and regulations, information about most commonly traded species, etc.',
+  title: 'help.tabs.legislation.post1.title',
+  description: 'help.tabs.legislation.post1.description',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=forest-products-and-legality',
@@ -54,8 +54,8 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   }
 }, {
   id: 'timber-trade-and-due-diligence',
-  title: 'Timber trade and due diligence',
-  description: 'The EU FLEGT Facility provides a website containing extensive information on Voluntary Partnership Agreements, the voluntary bilateral trade agreements between the European Union (EU) and timber-exporting countries outside the EU established to fight against illegal logging.',
+  title: 'help.tabs.legislation.post2.title',
+  description: 'help.tabs.legislation.post2.description',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=timber-trade-and-due-diligence',
@@ -63,8 +63,8 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   }
 }, {
   id: 'voluntary-partnership-agreement-vpa-process',
-  title: 'Voluntary partnership agreement (vpa) process',
-  description: 'The Timber Trade Portal provides information regarding legal timber trade, due diligence and on country requirements and exports.',
+  title: 'help.tabs.legislation.post3.title',
+  description: 'help.tabs.legislation.post3.description',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=voluntary-partnership-agreement-vpa-process',
@@ -74,8 +74,8 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
 
 const FAQS_HELP = [{
   id: 'first-faq',
-  title: 'First FAQ',
-  description: 'The Open Timber Platform aims to track the performance of forest concession operators.',
+  title: 'help.tabs.faqs.post1.title',
+  description: 'help.tabs.faqs.post1.description',
   link: {
     label: 'Read more',
     href: '/help?tab=faqs&article=first-faq',
@@ -83,8 +83,8 @@ const FAQS_HELP = [{
   }
 }, {
   id: 'second-faq',
-  title: 'Second FAQ',
-  description: 'Registered forest operators are ranked according to their performance against standard legality and sustainability indicators.',
+  title: 'help.tabs.faqs.post2.title',
+  description: 'help.tabs.faqs.post2.description',
   link: {
     label: 'Read more',
     href: '/help?tab=faqs&article=second-faq',
@@ -92,8 +92,8 @@ const FAQS_HELP = [{
   }
 }, {
   id: 'third-faq',
-  title: 'Third FAQ',
-  description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.',
+  title: 'help.tabs.faqs.post3.title',
+  description: 'help.tabs.faqs.post3.description',
   link: {
     label: 'Read more',
     href: '/help?tab=faqs&article=third-faq',

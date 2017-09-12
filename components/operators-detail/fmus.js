@@ -2,6 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Utils
 import { substitution } from 'utils/text';
 
@@ -12,7 +15,7 @@ import { MAP_OPTIONS_OPERATORS_DETAIL, MAP_LAYERS_OPERATORS_DETAIL } from 'const
 import Map from 'components/map/map';
 import FMUCard from 'components/ui/fmu-card';
 
-export default class OperatorsDetailFMUs extends React.Component {
+class OperatorsDetailFMUs extends React.Component {
   render() {
     const { url, operatorsDetail } = this.props;
     const { fmus } = operatorsDetail && operatorsDetail.data ? operatorsDetail.data : {};
@@ -30,7 +33,7 @@ export default class OperatorsDetailFMUs extends React.Component {
         {fmus && fmus.length &&
           <div className="l-container">
             <FMUCard
-              title="Forest Management Units"
+              title={this.props.intl.formatMessage({ id: 'forest-management-units' })}
               fmus={fmus}
             />
           </div>}
@@ -40,6 +43,9 @@ export default class OperatorsDetailFMUs extends React.Component {
 }
 
 OperatorsDetailFMUs.propTypes = {
+  intl: intlShape.isRequired,
   url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object.isRequired
 };
+
+export default injectIntl(OperatorsDetailFMUs);

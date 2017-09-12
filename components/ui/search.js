@@ -190,7 +190,7 @@ class Search extends React.Component {
           <input
             ref={(n) => { this.input = n; }}
             type="text"
-            placeholder={this.props.intl.formatMessage({ id: 'nav.search.placeholder' })}
+            placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
             onKeyUp={this.onKeyUp}
           />
           <Icon name="icon-search" />
@@ -198,7 +198,7 @@ class Search extends React.Component {
         <div className={resultsClass}>
           <div className="results">
             <h1 className="title">
-              {this.props.intl.formatMessage({ id: 'nav.search.title' })}
+              {this.props.intl.formatMessage({ id: 'operators' })}
             </h1>
             <ul>
               {results.length ?
@@ -227,7 +227,7 @@ class Search extends React.Component {
                     </li>
                   );
                 }) :
-                <li>{this.props.intl.formatMessage({ id: 'nav.search.noresults' })}</li>
+                <li>{this.props.intl.formatMessage({ id: 'noresults' })}</li>
               }
             </ul>
           </div>
@@ -240,13 +240,11 @@ class Search extends React.Component {
 Search.propTypes = {
   list: PropTypes.array,
   intl: intlShape.isRequired,
-  placeholder: PropTypes.string,
   options: PropTypes.object
 };
 
 Search.defaultProps = {
   list: [],
-  placeholder: 'Search',
   options: SEARCH_OPTIONS
 };
 

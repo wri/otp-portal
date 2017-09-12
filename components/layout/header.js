@@ -53,7 +53,6 @@ class Header extends React.Component {
                 <li className="search">
                   <Search
                     list={this.props.searchList}
-                    placeholder="Search operator"
                   />
                 </li>
 

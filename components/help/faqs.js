@@ -2,9 +2,12 @@ import React from 'react';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 import { FAQS_HELP } from 'constants/help';
 
-export default class HelpFaqs extends React.Component {
+class HelpFaqs extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +36,9 @@ export default class HelpFaqs extends React.Component {
                   {
                     ({ style }) => (
                       <aside className="c-aside" style={style}>
-                        <h3>How OTP Works</h3>
+                        <h3>
+                          {this.props.intl.formatMessage({ id: 'help.tabs.faqs' })}
+                        </h3>
                         <nav>
                           <ul>
                             {FAQS_HELP.map(article =>
@@ -41,7 +46,7 @@ export default class HelpFaqs extends React.Component {
                                 key={article.id}
                                 onClick={() => this.triggerScrollTo(`#${article.id}`)}
                               >
-                                {article.title}
+                                {this.props.intl.formatMessage({ id: article.title })}
                               </li>
                             )}
                           </ul>
@@ -60,12 +65,16 @@ export default class HelpFaqs extends React.Component {
                     className="c-article"
                   >
                     <header>
-                      <h2 className="c-title">{article.title}</h2>
+                      <h2 className="c-title">
+                        {this.props.intl.formatMessage({ id: article.title })}
+                      </h2>
                     </header>
                     <div className="content">
                       <div className="description">
-                        <p>{article.description}</p>
-                        <img src="/static/images/static-header/bg-help.jpg" alt={article.title} />
+                        <p>
+                          {this.props.intl.formatMessage({ id: article.description })}
+                        </p>
+                        <img src="/static/images/static-header/bg-help.jpg" alt={this.props.intl.formatMessage({ id: article.title })} />
                       </div>
                     </div>
                   </article>
@@ -80,4 +89,7 @@ export default class HelpFaqs extends React.Component {
 }
 
 HelpFaqs.propTypes = {
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(HelpFaqs);
