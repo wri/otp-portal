@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { intlShape, injectIntl } from 'react-intl';
+
 import MapLegendItem from 'components/map/legend/legend-item';
 import Icon from 'components/ui/icon';
 
-export default class MapLegend extends React.Component {
+class MapLegend extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,7 +37,7 @@ export default class MapLegend extends React.Component {
         {/* Header */}
         <div className="legend-header" onClick={() => this.toggleExpand()}>
           <span className="legend-header-title">
-            {expanded ? 'Legend' : 'View Legend'}
+            {expanded ? this.props.intl.formatMessage({ id: 'operators.map.legend.open' }) : this.props.intl.formatMessage({ id: 'operators.map.legend.close' })}
           </span>
           <button className="legend-btn">
             {!expanded && <Icon name="icon-arrow-up" className="legend-open-icon" />}
@@ -68,5 +70,8 @@ MapLegend.defaultProps = {
 MapLegend.propTypes = {
   expanded: PropTypes.bool,
   layers: PropTypes.array,
-  className: PropTypes.string
+  className: PropTypes.string,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(MapLegend);

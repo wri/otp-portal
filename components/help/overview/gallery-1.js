@@ -1,14 +1,19 @@
 import React from 'react';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
 
-export default function Gallery1() {
+function Gallery1(props) {
   return (
     <div className="c-gallery">
-      <h2 className="c-title">How the Open Timber Portal Works</h2>
+      <h2 className="c-title">
+        {props.intl.formatMessage({ id: 'help.tabs.howto' })}
+      </h2>
 
       <div className="row l-row">
         {HOW_OTP_WORKS_HELP.map((article, i) => {
@@ -21,8 +26,8 @@ export default function Gallery1() {
             >
               <Card
                 theme={theme}
-                title={article.title}
-                description={article.description}
+                title={props.intl.formatMessage({ id: article.title })}
+                description={props.intl.formatMessage({ id: article.description })}
                 link={article.link}
               />
             </div>
@@ -34,4 +39,8 @@ export default function Gallery1() {
   );
 }
 
-Gallery1.propTypes = {};
+Gallery1.propTypes = {
+  intl: intlShape.isRequired
+};
+
+export default injectIntl(Gallery1);

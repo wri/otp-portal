@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Router from 'next/router';
 
+// Intl
+import { intlShape, injectIntl } from 'react-intl';
+
 // Other libraries
 import Fuse from 'fuse.js';
 import classnames from 'classnames';
@@ -15,7 +18,7 @@ import Icon from 'components/ui/icon';
 // Constants
 import { SEARCH_OPTIONS } from 'constants/general';
 
-export default class Search extends React.Component {
+class Search extends React.Component {
   constructor(props) {
     super(props);
 
@@ -187,14 +190,16 @@ export default class Search extends React.Component {
           <input
             ref={(n) => { this.input = n; }}
             type="text"
-            placeholder={this.props.placeholder}
+            placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
             onKeyUp={this.onKeyUp}
           />
           <Icon name="icon-search" />
         </div>
         <div className={resultsClass}>
           <div className="results">
-            <h1 className="title">Operators</h1>
+            <h1 className="title">
+              {this.props.intl.formatMessage({ id: 'operators' })}
+            </h1>
             <ul>
               {results.length ?
                 results.map((op, i) => {
@@ -222,7 +227,7 @@ export default class Search extends React.Component {
                     </li>
                   );
                 }) :
-                <li>No results</li>
+                <li>{this.props.intl.formatMessage({ id: 'noresults' })}</li>
               }
             </ul>
           </div>
@@ -234,12 +239,13 @@ export default class Search extends React.Component {
 
 Search.propTypes = {
   list: PropTypes.array,
-  placeholder: PropTypes.string,
+  intl: intlShape.isRequired,
   options: PropTypes.object
 };
 
 Search.defaultProps = {
   list: [],
-  placeholder: 'Search',
   options: SEARCH_OPTIONS
 };
+
+export default injectIntl(Search);

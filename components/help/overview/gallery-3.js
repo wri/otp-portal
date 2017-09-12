@@ -1,15 +1,20 @@
 import React from 'react';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Components
 import { FAQS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
 
-export default function Gallery3() {
+function Gallery3(props) {
   return (
     <div className="c-gallery">
-      <h2 className="c-title">FAQs</h2>
+      <h2 className="c-title">
+        {props.intl.formatMessage({ id: 'help.tabs.faqs' })}
+      </h2>
 
       <div className="row l-row">
         {FAQS_HELP.map((article, i) => {
@@ -22,8 +27,8 @@ export default function Gallery3() {
             >
               <Card
                 theme={theme}
-                title={article.title}
-                description={article.description}
+                title={props.intl.formatMessage({ id: article.title })}
+                description={props.intl.formatMessage({ id: article.description })}
                 link={article.link}
               />
             </div>
@@ -34,4 +39,8 @@ export default function Gallery3() {
   );
 }
 
-Gallery3.propTypes = {};
+Gallery3.propTypes = {
+  intl: intlShape.isRequired
+};
+
+export default injectIntl(Gallery3);

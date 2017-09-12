@@ -4,12 +4,14 @@ const express = require('express');
 const session = require('express-session');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
+const localeMiddleware = require('express-locale');
 const bodyParser = require('body-parser');
 const next = require('next');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const { parse } = require('url');
 
+// LossLayer
 const LossLayer = require('./utils/lossLayer');
 
 process.on('uncaughtException', (err) => {
@@ -37,6 +39,7 @@ const handle = app.getRequestHandler();
 const server = express();
 
 // configure Express
+server.use(localeMiddleware());
 server.use(cookieParser());
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());

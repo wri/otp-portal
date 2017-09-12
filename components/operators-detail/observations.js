@@ -4,13 +4,16 @@ import PropTypes from 'prop-types';
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 
-export default class OperatorsDetailObservations extends React.Component {
+class OperatorsDetailObservations extends React.Component {
   constructor(props) {
     super(props);
 
@@ -46,7 +49,9 @@ export default class OperatorsDetailObservations extends React.Component {
         <article className="c-article">
           <div className="l-container">
             <header>
-              <h2 className="c-title">Observations from independent monitors</h2>
+              <h2 className="c-title">
+                {this.props.intl.formatMessage({ id: 'observations_from_independent_monitors' })}
+              </h2>
             </header>
             <div className="content">
               <TotalObservationsByOperator data={this.props.operatorObservations} />
@@ -57,7 +62,9 @@ export default class OperatorsDetailObservations extends React.Component {
         <article className="c-article">
           <div className="l-container">
             <header>
-              <h2 className="c-title">Observations by category</h2>
+              <h2 className="c-title">
+                {this.props.intl.formatMessage({ id: 'observations_by_category' })}
+              </h2>
             </header>
           </div>
 
@@ -95,5 +102,8 @@ export default class OperatorsDetailObservations extends React.Component {
 }
 
 OperatorsDetailObservations.propTypes = {
-  operatorObservations: PropTypes.array
+  operatorObservations: PropTypes.array,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(OperatorsDetailObservations);

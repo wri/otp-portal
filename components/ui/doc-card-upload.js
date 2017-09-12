@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Services
 import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
@@ -10,7 +13,7 @@ import modal from 'services/modal';
 import DocModal from 'components/ui/doc-modal';
 import Spinner from 'components/ui/spinner';
 
-export default class DocCardUpload extends React.Component {
+class DocCardUpload extends React.Component {
 
   constructor(props) {
     super(props);
@@ -80,13 +83,13 @@ export default class DocCardUpload extends React.Component {
           <ul>
             <li>
               <button onClick={this.triggerAddFile} className="c-button -primary">
-                Update file
+                {this.props.intl.formatMessage({ id: 'update-file' })}
               </button>
             </li>
 
             <li>
               <button onClick={this.triggerDeleteFile} className="c-button -primary">
-                Delete
+                {this.props.intl.formatMessage({ id: 'delete' })}
                 <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
               </button>
             </li>
@@ -96,7 +99,7 @@ export default class DocCardUpload extends React.Component {
           <ul>
             <li>
               <button onClick={this.triggerAddFile} className="c-button -secondary">
-                Add file
+                {this.props.intl.formatMessage({ id: 'add-file' })}
               </button>
             </li>
           </ul>
@@ -112,5 +115,8 @@ DocCardUpload.propTypes = {
   status: PropTypes.string,
   user: PropTypes.object,
   id: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(DocCardUpload)

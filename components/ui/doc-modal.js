@@ -4,8 +4,11 @@ import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
-
 import { getOperator } from 'modules/operators-detail';
+
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 
 // Services
 import modal from 'services/modal';
@@ -157,7 +160,7 @@ class DocModal extends React.Component {
               className="-fluid"
               properties={{
                 name: 'date',
-                label: 'Date',
+                label: this.props.intl.formatMessage({ id: 'date' }),
                 type: 'date',
                 required: true,
                 default: this.state.form.email
@@ -174,7 +177,7 @@ class DocModal extends React.Component {
               className="-fluid"
               properties={{
                 name: 'file',
-                label: 'File',
+                label: this.props.intl.formatMessage({ id: 'file' }),
                 required: true,
                 default: this.state.form.file
               }}
@@ -195,7 +198,7 @@ class DocModal extends React.Component {
                 className="c-button -primary -expanded"
                 onClick={() => modal.toggleModal(false)}
               >
-                Cancel
+                {this.props.intl.formatMessage({ id: 'cancel' })}
               </button>
             </li>
             <li>
@@ -205,7 +208,7 @@ class DocModal extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                Upload file
+                {this.props.intl.formatMessage({ id: 'upload-file' })}
               </button>
             </li>
           </ul>
@@ -222,12 +225,12 @@ DocModal.propTypes = {
   operatorId: PropTypes.string,
   fmu: PropTypes.object,
   user: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  intl: intlShape.isRequired
 };
 
 
-export default connect(
-  
+export default injectIntl(connect(
   null,
   { getOperator }
-)(DocModal);
+)(DocModal));

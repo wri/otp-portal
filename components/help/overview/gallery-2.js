@@ -1,15 +1,20 @@
 import React from 'react';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Components
 import { LEGISLATION_AND_REGULATIONS_HELP } from 'constants/help';
 
 // Components
 import Card from 'components/ui/card';
 
-export default function Gallery2() {
+function Gallery2(props) {
   return (
     <div className="c-gallery">
-      <h2 className="c-title">Legislation and Regulations</h2>
+      <h2 className="c-title">
+        {props.intl.formatMessage({ id: 'help.tabs.legislation' })}
+      </h2>
 
       <div className="row l-row">
         {LEGISLATION_AND_REGULATIONS_HELP.map((article, i) => {
@@ -22,8 +27,8 @@ export default function Gallery2() {
             >
               <Card
                 theme={theme}
-                title={article.title}
-                description={article.description}
+                title={props.intl.formatMessage({ id: article.title })}
+                description={props.intl.formatMessage({ id: article.description })}
                 link={article.link}
               />
             </div>
@@ -35,4 +40,8 @@ export default function Gallery2() {
   );
 }
 
-Gallery2.propTypes = {};
+Gallery2.propTypes = {
+  intl: intlShape.isRequired
+};
+
+export default injectIntl(Gallery2);

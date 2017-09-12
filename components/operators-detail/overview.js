@@ -2,11 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Components
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
-export default function OperatorsDetailOverview(props) {
+function OperatorsDetailOverview(props) {
   return (
     <div
       className="c-section"
@@ -18,11 +21,15 @@ export default function OperatorsDetailOverview(props) {
           <div className="row l-row">
             <div className="columns small-12 medium-8">
               <header>
-                <h2 className="c-title">Overview</h2>
+                <h2 className="c-title">
+                  {props.intl.formatMessage({ id: 'overview' })}
+                </h2>
               </header>
               <div className="content">
                 <div className="description">
-                  <p>Text presenting the Forest Operator and describing its activities</p>
+                  <p>
+                    Text presenting the Forest Operator and describing its activities
+                  </p>
                 </div>
               </div>
             </div>
@@ -32,7 +39,9 @@ export default function OperatorsDetailOverview(props) {
         {/* CHARTS */}
         <article className="c-article">
           <header>
-            <h2 className="c-title">Observations by category</h2>
+            <h2 className="c-title">
+              {props.intl.formatMessage({ id: 'observations_by_category' })}
+            </h2>
           </header>
 
           <div className="content">
@@ -45,5 +54,9 @@ export default function OperatorsDetailOverview(props) {
 }
 
 OperatorsDetailOverview.propTypes = {
-  operatorObservations: PropTypes.array
+  operatorObservations: PropTypes.array,
+  intl: intlShape.isRequired
 };
+
+
+export default injectIntl(OperatorsDetailOverview);
