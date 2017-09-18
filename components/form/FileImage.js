@@ -1,9 +1,9 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 
 // Components
 import Dropzone from 'react-dropzone';
-import Icon from 'components/ui/Icon';
+import Icon from 'components/ui/icon';
 
 import FormElement from './FormElement';
 
@@ -188,9 +188,9 @@ class FileImage extends FormElement {
 }
 
 FileImage.propTypes = {
-  properties: React.PropTypes.object.isRequired,
-  validations: React.PropTypes.array,
-  onChange: React.PropTypes.func
+  properties: PropTypes.object.isRequired,
+  validations: PropTypes.array,
+  onChange: PropTypes.func
 };
 
 export default FileImage;
