@@ -62,7 +62,7 @@ const MAP_LAYERS_HOME = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

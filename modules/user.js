@@ -54,6 +54,30 @@ export function login({ body }) {
   });
 }
 
+export function signup({ body }) {
+  return () => new Promise((resolve, reject) => {
+    post({
+      url: `${process.env.OTP_API}/operators`,
+      type: 'POST',
+      body,
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/vnd.api+json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }],
+      onSuccess: (response) => {
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
+}
+
+
 export function logout() {
   return (dispatch) => {
     // Set cookie

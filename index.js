@@ -105,6 +105,9 @@ app.prepare()
     server.get('/help', (req, res) => app.render(req, res, '/help', req.params));
     server.get('/help/:tab', (req, res) => app.render(req, res, '/help', req.params));
 
+    // REGISTER
+    server.get('/signup', (req, res) => app.render(req, res, '/signup', req.params));
+
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));
 
