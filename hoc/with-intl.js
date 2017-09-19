@@ -52,6 +52,8 @@ export default function withIntl(Page) {
         language = Cookies.get('language') || 'en';
       }
 
+      language = (Object.keys(LANGUAGES).includes(language)) ? language : 'en';
+
       // Always update the current time on page load/transition because the
       // <IntlProvider> will be a new instance even with pushState routing.
       const now = Date.now();
