@@ -70,6 +70,7 @@ const HELPERS_REGISTER = {
       certification,
       country,
       fmus,
+      logo,
       name,
       operator_type,
       website
@@ -82,6 +83,7 @@ const HELPERS_REGISTER = {
           name,
           'operator-type': operator_type,
           website,
+          logo,
           address,
           certification
         },

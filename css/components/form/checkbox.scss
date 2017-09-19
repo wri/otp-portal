@@ -1,11 +1,13 @@
+$checkbox-size: 20px;
+
 .c-checkbox {
   label {
     display: block;
-    padding: 2px 0;
+    padding: 2px 0 $space-1 * 2;
     text-transform: none;
     position: relative;
-    padding-left: 14px;
-    font-size: 14px;
+    padding-left: $checkbox-size;
+    font-size: $font-size-default;
     line-height: 1;
     cursor: pointer;
     width: auto;
@@ -22,13 +24,12 @@
 
     .checkbox-icon {
       position: absolute;
-      top: 50%;
+      top: 2px;
       left: 0;
-      width: 14px;
-      height: 14px;
+      width: $checkbox-size;
+      height: $checkbox-size;
       border: 1px solid $color-secondary;
       border-radius: 4px;
-      transform: translate(0,-50%);
 
       &:after {
         content: "";
@@ -36,10 +37,10 @@
         display: block;
         top: calc(50% - 1px);
         left: 50%;
-        width: 6px;
-        height: 3px;
-        border-left: 1px solid $color-secondary;
-        border-bottom: 1px solid $color-secondary;
+        width: 10px;
+        height: 5px;
+        border-left: 2px solid $color-secondary;
+        border-bottom: 2px solid $color-secondary;
         transform: translate(-50%,-50%) rotate(-40deg) scale(0);
         transition: all .16s cubic-bezier(0.445, 0.050, 0.550, 0.950);
       }
@@ -48,6 +49,7 @@
     .item-title {
       display: inline-block;
       margin-left: 5px;
+      margin-top: 2px;
     }
   }
 
