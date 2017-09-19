@@ -170,6 +170,7 @@ class FileImage extends FormElement {
           {!accepted.length &&
             <div className="file-placeholder" onClick={this.triggerBrowseOrCancel}>
               {properties.placeholder}
+              <Icon name="icon-plus" className="-big" />
             </div>
           }
 

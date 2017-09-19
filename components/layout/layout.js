@@ -8,6 +8,7 @@ import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
+import Toastr from 'react-redux-toastr';
 
 if (process.env.NODE_ENV !== 'production') {
   // TODO
@@ -46,6 +47,11 @@ export default class Layout extends React.Component {
         {footer !== false && <Footer />}
 
         <Modal />
+
+        <Toastr
+          transitionIn="fadeIn"
+          transitionOut="fadeOut"
+        />
       </div>
     );
   }

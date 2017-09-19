@@ -6,6 +6,10 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 
 import { login } from 'modules/user';
+import { toastr } from 'react-redux-toastr';
+
+// Next components
+import Link from 'next/link';
 
 // Services
 import modal from 'services/modal';
@@ -79,20 +83,24 @@ class Login extends React.Component {
 
         // Save data
         this.props.login({ body: { auth: this.state.form } })
-          .then((data) => {
+          .then(() => {
             this.setState({ submitting: false });
             modal.toggleModal(false);
-            // toastr.success('Success', `The widget "${data.id}" - "${data.title}" has been uploaded correctly`);
-
-            // if (this.props.onSubmit) this.props.onSubmit();
+            // toastr.success('Success', `Logged`);
           })
-          .catch((err) => {
+          .catch((errors) => {
             this.setState({ submitting: false });
-            // toastr.error('Error', `Oops! There was an error, try again`);
-            console.error(err);
+            console.error(errors);
+            try {
+              errors.forEach(er =>
+                toastr.error('Error', `${er.title}`)
+              );
+            } catch (e) {
+              toastr.error('Error', 'Oops! There was an error, try again');
+            }
           });
       } else {
-        // toastr.error('Error', 'Fill all the required fields');
+        toastr.error('Error', 'Fill all the required fields');
       }
     }, 0);
   }
@@ -147,6 +155,8 @@ class Login extends React.Component {
             </Field>
           </fieldset>
 
+          <p>Not a member yet? <a href="/signup">Register now</a></p>
+
           <ul className="c-field-buttons">
             <li>
               <button
@@ -181,7 +191,6 @@ Login.propTypes = {
 
 
 export default connect(
-  
   null,
   { login }
 )(Login);

@@ -4,3 +4,6 @@ export { default as observations } from './observations';
 export { default as operators } from './operators';
 export { default as operatorsDetail } from './operators-detail';
 export { default as user } from './user';
+
+// Toastr
+export { reducer as toastr } from 'react-redux-toastr';
