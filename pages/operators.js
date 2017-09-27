@@ -127,18 +127,7 @@ class OperatorsPage extends Page {
           <table>
             <thead>
               <tr>
-                <th className="-ta-left">
-                  {this.props.intl.formatMessage({ id: 'operators.table.name' })}
-                </th>
-                <th className="-ta-center">
-                  {this.props.intl.formatMessage({ id: 'operators.table.obs_visit' })}
-                </th>
-                <th>
-                  {this.props.intl.formatMessage({ id: 'operators.table.fmus' })}
-                </th>
-                <th>
-                  {this.props.intl.formatMessage({ id: 'operators.table.certification' })}
-                </th>
+                <th />
                 <th
                   className="td-documentation -ta-center -sort"
                   onClick={() => { this.sortBy('documentation'); }}
@@ -147,7 +136,17 @@ class OperatorsPage extends Page {
                   {sortDirection === -1 && <Icon name="icon-arrow-down" className="-tiny" />}
                   {sortDirection === 1 && <Icon name="icon-arrow-up" className="-tiny" />}
                 </th>
-                <th />
+                <th className="-ta-left">
+                  {this.props.intl.formatMessage({ id: 'operators.table.name' })}
+                </th>
+
+                {/* Other styles */}
+                <th className="-ta-center -break-ponit -contextual">
+                  {this.props.intl.formatMessage({ id: 'operators.table.obs_visit' })}
+                </th>
+                <th className="-contextual">
+                  {this.props.intl.formatMessage({ id: 'operators.table.fmus' })}
+                </th>
               </tr>
             </thead>
 
@@ -155,6 +154,21 @@ class OperatorsPage extends Page {
               {sortBy(table, o => sortDirection * o[sortColumn]).map((r, i) => {
                 return (
                   <tr key={r.id}>
+                    {i === 0 &&
+                      <td className="-ta-center" rowSpan={table.length}>
+                        <OperatorsRanking
+                          key={`update-${r.id}`}
+                          data={table.map(o => ({ id: o.id, value: o.documentation }))}
+                          sortDirection={sortDirection}
+                        />
+                      </td>
+                    }
+                    <td
+                      id={`td-documentation-${r.id}`}
+                      className="td-documentation -ta-left"
+                    >
+                      {r.documentation}%
+                    </td>
                     <td className="-ta-left">
                       <Link
                         href={{ pathname: '/operators-detail', query: { id: r.id } }}
@@ -170,26 +184,6 @@ class OperatorsPage extends Page {
                       }
                     </td>
                     <td className="-ta-right"> {r.fmus} </td>
-                    <td>
-                      {!!r.certification && r.certification}
-                      {!r.certification && '-'}
-                    </td>
-                    <td
-                      id={`td-documentation-${r.id}`}
-                      className="td-documentation -ta-right"
-                    >
-                      {r.documentation}%
-                    </td>
-
-                    {i === 0 &&
-                      <td className="-ta-center" rowSpan={table.length}>
-                        <OperatorsRanking
-                          key={`update-${r.id}`}
-                          data={table.map(o => ({ id: o.id, value: o.documentation }))}
-                          sortDirection={sortDirection}
-                        />
-                      </td>
-                    }
                   </tr>
                 );
               })}

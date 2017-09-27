@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import round from 'lodash/round';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';

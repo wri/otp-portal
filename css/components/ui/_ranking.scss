@@ -19,10 +19,10 @@
     &.-ta-center { text-align: center; }
     &.-ta-left { text-align: left; }
 
+    // Types
     &.td-documentation {
-      padding-right: $space-1 / 2;
+      padding-left: 4px;
     }
-
   }
 
   th {
@@ -31,6 +31,18 @@
     font-weight: 400;
     white-space: nowrap;
     font-family: $font-family-proximanova;
+
+    &.-break-ponit {
+      border-left: $space-1 * 4 solid transparent;
+    }
+
+    &.-contextual {
+      color: $color-text-1;
+
+      &:after {
+        background: rgba($color-text-1, 0.1);
+      }
+    }
 
     &:first-child { padding: $space-1*2 $space-1*2 $space-1 0; }
 
@@ -62,7 +74,11 @@
     font-family: $font-family-georgia;
     vertical-align: baseline;
 
-    &:first-child { padding: $space-1/2 $space-1*2 $space-1/2 0; }
+    // &.-contextual {
+    //   background: $color-tertiary;
+    // }
+
+    // &:first-child { padding: $space-1/2 $space-1*2 $space-1/2 0; }
   }
 
   a {
