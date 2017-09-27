@@ -8,6 +8,7 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
 
 // Components
 import Page from 'components/layout/page';
@@ -50,12 +51,12 @@ class AboutPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">Background</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'about.background' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p>The Open Timber Portal is an initiative launched by the World Resources Institute to help reduce deforestation and incentivize the production of legal timber.</p>
-                      <p>As such, this platform aims to improve access to comprehensive country-specific information about forest management and harvesting, and increase the effectiveness of regulations on illegal logging, such as the US Lacey Act and the EU Timber Regulation (EUTR).</p>
+                      <p>{this.props.intl.formatMessage({ id: 'about.background.description1' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'about.background.description2' })}</p>
                     </div>
                   </div>
                 </div>
@@ -68,11 +69,11 @@ class AboutPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-6">
                   <header>
-                    <h2 className="c-title">Contact us</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'about.contactus' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p>Please get in touch with us with you have any further questions regarding the Open Timber Portal or want to get involved</p>
+                      <p>{this.props.intl.formatMessage({ id: 'about.contactus.description1' })}</p>
                     </div>
                   </div>
                 </div>
@@ -80,8 +81,6 @@ class AboutPage extends Page {
             </article>
           </div>
         </div>
-
-
       </Layout>
     );
   }
@@ -89,7 +88,8 @@ class AboutPage extends Page {
 }
 
 AboutPage.propTypes = {
-  session: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired,
+  intl: intlShape.isRequired
 };
 
 export default withIntl(withRedux(

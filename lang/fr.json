@@ -118,5 +118,10 @@
     "help.tabs.faqs.post2.link.label": "Read more",
     "help.tabs.faqs.post3.title": "Third faq",
     "help.tabs.faqs.post3.description": "Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod.",
-    "help.tabs.faqs.post3.link.label": "Read more"
+    "help.tabs.faqs.post3.link.label": "Read more",
+    "about.background": "Background",
+    "about.background.description1": "The Open Timber Portal is an initiative launched by the World Resources Institute to help reduce deforestation and incentivize the production of legal timber.",
+    "about.background.description2": "As such, this platform aims to improve access to comprehensive country-specific information about forest management and harvesting, and increase the effectiveness of regulations on illegal logging, such as the US Lacey Act and the EU Timber Regulation (EUTR).",
+    "about.contactus": "Contact us",
+    "about.contactus.description1": "Please get in touch with us with you have any further questions regarding the Open Timber Portal or want to get involved"
 }

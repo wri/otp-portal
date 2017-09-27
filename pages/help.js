@@ -11,7 +11,6 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { FormattedMessage } from 'react-intl';
 
 // Components
 import Page from 'components/layout/page';
