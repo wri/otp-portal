@@ -5,8 +5,11 @@
   .search {
     display: flex;
     align-items: center;
+    min-width: 152px;
 
     input {
+      display: block;
+      width: 100%;
       margin-right: 5px;
       border: 0;
       background-color: transparent;

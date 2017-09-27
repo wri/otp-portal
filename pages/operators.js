@@ -2,8 +2,13 @@ import React from 'react';
 import sortBy from 'lodash/sortBy';
 import flatten from 'lodash/flatten';
 
+import * as Cookies from 'js-cookie';
+
 // Next
 import Link from 'next/link';
+
+// Toastr
+import { toastr } from 'react-redux-toastr';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -68,12 +73,32 @@ class OperatorsPage extends Page {
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
+
+    // Set discalimer
+    if (!Cookies.get('operators.disclaimer')) {
+      toastr.info(
+        'Info',
+        this.props.intl.formatMessage({ id: 'operators.disclaimer' }),
+        {
+          className: '-disclaimer',
+          position: 'bottom-right',
+          timeOut: 15000,
+          onCloseButtonClick: () => {
+            Cookies.set('operators.disclaimer', true);
+          }
+        }
+      );
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.operators.data.length !== this.props.operators.data.length) {
       this.setState(OperatorsPage.parseData(nextProps.operators.data));
     }
+  }
+
+  componentWillUnMount() {
+    toastr.remove('operators.disclaimer');
   }
 
   /**

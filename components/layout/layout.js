@@ -49,6 +49,7 @@ export default class Layout extends React.Component {
         <Modal />
 
         <Toastr
+          preventDuplicates
           transitionIn="fadeIn"
           transitionOut="fadeOut"
         />
