@@ -1,0 +1,32 @@
+.redux-toastr {
+  .top-left, .top-right, .top-center, .bottom-left, .bottom-right, .bottom-center {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .toastr {
+    max-width: 300px;
+
+    // Colors
+    &.rrt-info {
+      background-color: $color-primary;
+    }
+
+    .rrt-left-container {
+
+    }
+
+    .rrt-middle-container {
+      width: 80%;
+    }
+
+    .rrt-right-container {
+
+    }
+
+    // Custom
+    &.-disclaimer {
+      max-width: 600px;
+    }
+  }
+}

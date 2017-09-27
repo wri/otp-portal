@@ -38,6 +38,7 @@
 // - ui
 @import '../node_modules/react-table/react-table';
 @import '../node_modules/react-select/dist/react-select';
+@import '../node_modules/react-redux-toastr/src/styles/index';
 @import 'components/ui/accordion';
 @import 'components/ui/article';
 @import 'components/ui/aside';
@@ -68,6 +69,7 @@
 @import 'components/ui/table';
 @import 'components/ui/tabs';
 @import 'components/ui/title';
+@import 'components/ui/toastr';
 @import 'components/ui/search';
 @import 'components/ui/select';
 
@@ -82,6 +84,3 @@
 @import "components/form/radio";
 @import "components/form/select";
 @import "components/form/token";
-
-// toastr
-@import '../node_modules/react-redux-toastr/src/styles/index';

@@ -5,6 +5,11 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 
+import * as Cookies from 'js-cookie';
+
+// Toastr
+import { toastr } from 'react-redux-toastr';
+
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -30,6 +35,26 @@ class HomePage extends Page {
       // Get operators
       this.props.getOperators();
     }
+
+    if (!Cookies.get('home.disclaimer')) {
+      toastr.info(
+        'Info',
+        this.props.intl.formatMessage({ id: 'home.disclaimer' }),
+        {
+          id: 'home.disclaimer',
+          className: '-disclaimer',
+          position: 'bottom-right',
+          timeOut: 15000,
+          onCloseButtonClick: () => {
+            Cookies.set('home.disclaimer', true);
+          }
+        }
+      );
+    }
+  }
+
+  componentWillUnMount() {
+    toastr.remove('home.disclaimer');
   }
 
   render() {
@@ -94,7 +119,7 @@ class HomePage extends Page {
             description={this.props.intl.formatMessage({ id: 'home.card.b.description' })}
             link={{
               label: this.props.intl.formatMessage({ id: 'home.card.b.link.label' }),
-              href: '/operators'
+              href: '/observations'
             }}
           />
         </StaticSection>

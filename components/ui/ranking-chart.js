@@ -75,9 +75,9 @@ class RankingChart {
     // Add bg line
     bg
       .append('line')
-        .attr('x1', this.width - this.radio)
+        .attr('x1', this.radio)
         .attr('y1', () => this.y(this.max))
-        .attr('x2', this.width - this.radio)
+        .attr('x2', this.radio)
         .attr('y2', () => this.y(this.min))
         .attr('stroke-width', 1)
         .attr('stroke-opacity', 0.15)
@@ -89,9 +89,9 @@ class RankingChart {
       .data(data)
       .enter()
       .append('line')
-        .attr('x1', () => this.width - this.radio)
+        .attr('x1', () => this.radio)
         .attr('y1', d => this.y(d.value))
-        .attr('x2', 0)
+        .attr('x2', this.width)
         .attr('y2', this.getLineY2)
         .attr('stroke-width', 1)
         .attr('stroke-opacity', 0.15)
@@ -104,7 +104,7 @@ class RankingChart {
       .enter()
       .append('circle')
         .attr('id', d => d.id)
-        .attr('cx', () => this.width - this.radio)
+        .attr('cx', () => this.radio)
         .attr('cy', d => this.y(d.value))
         .attr('r', this.radio)
         .attr('fill', '#E98300');
