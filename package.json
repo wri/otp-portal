@@ -91,7 +91,7 @@
     "xo": "^0.17.1"
   },
   "scripts": {
-    "dev": "NODE_ENV=development node index.js",
+    "dev": "npm run transifex:pull && NODE_ENV=development node index.js",
     "build": "next build",
     "start": "node index.js",
     "transifex:push": "node transifex/transifex-push.js",
