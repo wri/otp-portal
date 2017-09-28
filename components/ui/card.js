@@ -6,9 +6,10 @@ import omit from 'lodash/omit';
 // Next components
 import Link from 'next/link';
 
-export default function Card({ theme, letter, title, description, link }) {
+export default function Card({ theme, letter, title, description, link, Component }) {
   const classNames = classnames({
-    [theme]: !!theme
+    [theme]: !!theme,
+    '-nolink': !link
   });
 
   const letterClassName = classnames({
@@ -22,11 +23,19 @@ export default function Card({ theme, letter, title, description, link }) {
 
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
         <p className="card-description"> {description} </p>
+
+        {!!Component &&
+          <div className="card-component">
+            {Component}
+          </div>
+        }
       </div>
 
-      <Link {...omit(link, 'label')} >
-        <a className="card-link c-button -primary -fullwidth">{link.label}</a>
-      </Link>
+      {!!link &&
+        <Link {...omit(link, 'label')} >
+          <a className="card-link c-button -primary -fullwidth">{link.label}</a>
+        </Link>
+      }
     </div>
   );
 }
@@ -36,5 +45,6 @@ Card.propTypes = {
   letter: PropTypes.string,
   title: PropTypes.string,
   description: PropTypes.string,
+  Component: PropTypes.any,
   link: PropTypes.object
 };

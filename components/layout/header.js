@@ -52,7 +52,7 @@ class Header extends React.Component {
               <ul className="header-nav-list c-navigation-list">
                 <li className="search">
                   <Search
-                    list={this.props.searchList}
+                    theme={this.setTheme()}
                   />
                 </li>
 

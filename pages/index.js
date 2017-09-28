@@ -23,6 +23,7 @@ import Layout from 'components/layout/layout';
 import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
 import Map from 'components/map/map';
+import Search from 'components/ui/search';
 
 class HomePage extends Page {
   /**
@@ -86,7 +87,7 @@ class HomePage extends Page {
         <StaticSection
           background="/static/images/home/bg-a.jpg"
           position={{ top: true, left: true }}
-          column={4}
+          column={5}
         >
           <Card
             theme="-secondary"
@@ -110,17 +111,15 @@ class HomePage extends Page {
             }
           }}
           position={{ top: true, right: true }}
-          column={4}
+          column={5}
         >
           <Card
             theme="-tertiary"
             letter="B"
             title={this.props.intl.formatMessage({ id: 'home.card.b.title' })}
             description={this.props.intl.formatMessage({ id: 'home.card.b.description' })}
-            link={{
-              label: this.props.intl.formatMessage({ id: 'home.card.b.link.label' }),
-              href: '/observations'
-            }}
+            link={false}
+            Component={<Search theme="-theme-static" />}
           />
         </StaticSection>
 
@@ -128,7 +127,7 @@ class HomePage extends Page {
         <StaticSection
           background="/static/images/home/bg-c.jpg"
           position={{ top: true, left: true }}
-          column={4}
+          column={5}
         >
           <Card
             theme="-secondary"
@@ -137,7 +136,7 @@ class HomePage extends Page {
             description={this.props.intl.formatMessage({ id: 'home.card.c.description' })}
             link={{
               label: this.props.intl.formatMessage({ id: 'home.card.c.link.label' }),
-              href: '/operators'
+              href: '/observations'
             }}
           />
         </StaticSection>

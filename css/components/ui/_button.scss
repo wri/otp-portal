@@ -30,6 +30,12 @@
   &.-fullwidth { width: 100%; }
   &.-fullheight { height: 100%; }
 
+  &.-clean {
+    margin: none;
+    padding: 0;
+    border: none;
+    background: none;
+  }
 
 
   // THEMES
@@ -101,5 +107,9 @@
     &:hover {
       background: darken(#007bb5, 10%);
     }
+  }
+
+  svg {
+    display: block;
   }
 }

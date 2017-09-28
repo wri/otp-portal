@@ -44,6 +44,10 @@
     transform: translate(-50%,0);
   }
 
+  .card-component {
+
+  }
+
   // THEMES
   &.-primary {
     background: rgba($color-black, 0.04);
@@ -67,5 +71,9 @@
 
   &.-tertiary {
     background: $color-tertiary;
+  }
+
+  &.-nolink {
+    padding-bottom: $space-1 * 4;
   }
 }
