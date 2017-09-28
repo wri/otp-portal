@@ -3,6 +3,13 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 require('dotenv').config();
 
+// Create the folder if it doesn't exist
+if (!fs.existsSync(process.env.LOCALES_PATH)) {
+  console.info('Creating lang folder...');
+  fs.mkdirSync(process.env.LOCALES_PATH);
+  console.info('Created!');
+}
+
 // Endpoint for fetching available languages
 const langUrl = `${process.env.TRANSIFEX_URL}/${process.env.TRANSIFEX_PROJECT}/resource/${process.env.TRANSIFEX_SLUG}/?details`;
 
@@ -18,11 +25,11 @@ const fetchConfig = {
 };
 
 // Lets start
-console.log('Fetching available languages...');
+console.info('Fetching available languages...');
 
 fetch(langUrl, fetchConfig)
     .then((res) => {
-      console.log('Languages found!');
+      console.info('Languages found!');
       return res.json();
     })
     .then((json) => {
@@ -36,11 +43,11 @@ fetch(langUrl, fetchConfig)
           .then((json) => {
             fs.writeFile(`${process.env.LOCALES_PATH}/${lang}.json`, JSON.stringify(JSON.parse(json.content), null, 4), (err) => {
               if (err) throw err;
-              console.log(`Translations for ${lang} successfully saved!`);
+              console.info(`Translations for ${lang} successfully saved!`);
             });
           });
       });
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
