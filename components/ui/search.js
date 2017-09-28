@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Redux
+import { connect } from 'react-redux';
+
 // Next
-import Link from 'next/link';
 import Router from 'next/router';
 
 // Intl
@@ -32,6 +34,7 @@ class Search extends React.Component {
     this.item = {};
 
     // Bindings
+    this.onClose = this.onClose.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onWindowClick = this.onWindowClick.bind(this);
     this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
@@ -76,7 +79,7 @@ class Search extends React.Component {
         break;
       // Enter
       case 13:
-        this.onEnter();
+        this.onChangeRoute();
         break;
       // ESC
       case 27:
@@ -93,7 +96,7 @@ class Search extends React.Component {
    * UI EVENTS
    * - onKeyUp
    * - onClose
-   * - onEnter
+   * - onChangeRoute
   */
   onClose() {
     if (this.state.active) {
@@ -127,15 +130,19 @@ class Search extends React.Component {
     }
   }
 
-  onEnter() {
-    const id = this.item[this.state.index].dataset.id;
+  onChangeRoute = () => {
+    const item = this.item[this.state.index];
 
-    const location = {
-      pathname: '/operators-detail',
-      query: { id }
-    };
+    if (item) {
+      const id = item.dataset.id;
 
-    Router.push(location, `/operators/${id}`);
+      const location = {
+        pathname: '/operators-detail',
+        query: { id }
+      };
+      this.onClose();
+      Router.push(location, `/operators/${id}`);
+    }
   }
 
   setIndexByDirection(direction) {
@@ -185,7 +192,7 @@ class Search extends React.Component {
     });
 
     return (
-      <div className="c-search">
+      <div className={`c-search ${this.props.theme}`}>
         <div className="search">
           <input
             ref={(n) => { this.input = n; }}
@@ -193,13 +200,23 @@ class Search extends React.Component {
             placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
             onKeyUp={this.onKeyUp}
           />
-          <Icon name="icon-search" />
+
+          {!!active &&
+            <button
+              className="c-button -clean"
+              onClick={this.onClose}
+            >
+              <Icon name="icon-cross" />
+            </button>
+
+          }
+
+          {!active &&
+            <Icon name="icon-search" />
+          }
         </div>
         <div className={resultsClass}>
           <div className="results">
-            <h1 className="title">
-              {this.props.intl.formatMessage({ id: 'operators' })}
-            </h1>
             <ul>
               {results.length ?
                 results.map((op, i) => {
@@ -213,17 +230,14 @@ class Search extends React.Component {
                       className={activeClass}
                       onMouseOver={() => { this.setIndex(i); }}
                     >
-                      <Link
-                        href={{ pathname: '/operators-detail', query: { id: op.id } }}
-                        as={`/operators/${op.id}`}
+                      <a
+                        ref={(n) => { this.item[i] = n; }}
+                        data-id={op.id}
+                        onClick={() => this.onChangeRoute(i)}
                       >
-                        <a
-                          ref={(n) => { this.item[i] = n; }}
-                          data-id={op.id}
-                        >
-                          {op.name}
-                        </a>
-                      </Link>
+                        {op.name}
+                      </a>
+
                     </li>
                   );
                 }) :
@@ -238,14 +252,20 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
+  theme: PropTypes.string,
   list: PropTypes.array,
   intl: intlShape.isRequired,
   options: PropTypes.object
 };
 
 Search.defaultProps = {
+  theme: '',
   list: [],
   options: SEARCH_OPTIONS
 };
 
-export default injectIntl(Search);
+export default connect(
+  state => ({
+    list: state.operators.data
+  })
+)(injectIntl(Search));
