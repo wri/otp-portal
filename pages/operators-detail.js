@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import * as Cookies from 'js-cookie';
+
+// Toastr
+import { toastr } from 'react-redux-toastr';
+
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
@@ -77,6 +82,23 @@ class OperatorsDetail extends Page {
     }
 
     this.props.getOperator(url.query.id);
+
+    // Set discalimer
+    if (!Cookies.get('operator-detail.disclaimer')) {
+      toastr.info(
+        'Info',
+        this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
+        {
+          className: '-disclaimer',
+          position: 'bottom-right',
+          timeOut: 15000,
+          onCloseButtonClick: () => {
+            Cookies.set('operator-detail.disclaimer', true);
+          }
+        }
+      );
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {

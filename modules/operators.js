@@ -72,6 +72,7 @@ export function getOperators() {
       })
       .then((operators) => {
         const dataParsed = JSONA.deserialize(operators);
+        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATORS_SUCCESS,
