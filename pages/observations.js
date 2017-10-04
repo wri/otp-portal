@@ -86,7 +86,8 @@ class ObservationsPage extends Page {
         operator: o.operator && o.operator.name,
         category: o.subcategory.category.name,
         observation: o.details,
-        level: o.severity && o.severity.level
+        level: o.severity && o.severity.level,
+        fmu: o.fmu && o.fmu.name
       }
     ));
 

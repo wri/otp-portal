@@ -92,7 +92,7 @@ export function getObservations() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu'];
 
     const url = `${process.env.OTP_API}/observations?page[size]=${OBS_MAX_SIZE}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading

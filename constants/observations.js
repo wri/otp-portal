@@ -28,7 +28,6 @@ const TABLE_HEADERS = [
   },
   {
     Header: <span className="sortable">Forest Unit</span>,
-
     accessor: 'fmu'
   },
   {
