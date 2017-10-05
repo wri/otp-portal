@@ -14,6 +14,10 @@
     height: 5px;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   .doc-card-header {
     display: flex;
     justify-content: space-between;
@@ -43,7 +47,16 @@
 
     &:after { background: $color-doc-valid; }
 
+    .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-valid; }
+
+    a {
+      &:hover {
+        .doc-card-title {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 
   &.-doc_invalid {
@@ -51,6 +64,7 @@
 
     &:after { background: $color-doc-invalid; }
 
+    .doc-card-title { color: rgba($color-text-1, 0.5); }
     .doc-card-status { color: $color-doc-not-provided; }
   }
 
