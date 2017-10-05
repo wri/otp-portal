@@ -208,11 +208,27 @@ const TABLE_HEADERS_ILLEGALITIES = [
   // not ready
   {
     Header: <span>Evidences</span>,
-    accessor: 'documents',
+    accessor: 'report',
     sortable: false,
     headerClassName: '-a-left',
     minWidth: 150,
-    Cell: attr => <a className="evidence-link" href={attr.link || '#'} target="_blank"rel="noopener noreferrer">document sample</a>
+    Cell: (attr) => {
+      if (attr.value && attr.value.attachment && attr.value.attachment.url) {
+        return (
+          <a
+            className="evidence-link"
+            href={attr.value.attachment.url || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={attr.value.title}
+          >
+            Document
+          </a>
+        );
+      }
+
+      return null;
+    }
   }
 ];
 

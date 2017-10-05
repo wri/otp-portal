@@ -14,7 +14,8 @@ const getParsedObservations = createSelector(
         severity: obs.severity.level,
         category: obs.subcategory.category.name,
         illegality: obs.subcategory.name,
-        date: new Date(obs['publication-date'])
+        date: new Date(obs['publication-date']),
+        report: obs['observation-report']
       }));
 
       return observations;
