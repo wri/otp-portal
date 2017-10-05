@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import sortBy from 'lodash/sortBy';
+import compact from 'lodash/compact';
 
 // Get the datasets and filters from state
 const operatorsDetail = state => state.operatorsDetail;
@@ -12,32 +13,44 @@ const getParsedDocumentation = createSelector(
     let fmuDocumentation = [];
 
     if (_operatorsDetail.data['operator-document-countries']) {
-      countryDocumentation = _operatorsDetail.data['operator-document-countries'].map(doc => ({
-        id: doc.id,
-        requiredDocId: doc['required-operator-document-country'].id,
-        type: doc.type,
-        title: doc['required-operator-document-country'].name,
-        category: doc['required-operator-document-country']['required-operator-document-group'].name,
-        status: doc.status,
-        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
-      }));
+      countryDocumentation = _operatorsDetail.data['operator-document-countries'].map((doc) => {
+        if (doc['required-operator-document-country']) {
+          return {
+            id: doc.id,
+            requiredDocId: doc['required-operator-document-country'].id,
+            url: doc.attachment.url,
+            type: doc.type,
+            title: doc['required-operator-document-country'].name,
+            category: doc['required-operator-document-country']['required-operator-document-group'].name,
+            status: doc.status,
+            startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+          };
+        }
+        return null;
+      });
     }
 
     if (_operatorsDetail.data['operator-document-fmus']) {
-      fmuDocumentation = _operatorsDetail.data['operator-document-fmus'].map(doc => ({
-        id: doc.id,
-        requiredDocId: doc['required-operator-document-fmu'].id,
-        type: doc.type,
-        title: doc['required-operator-document-fmu'].name,
-        category: doc['required-operator-document-fmu']['required-operator-document-group'].name,
-        status: doc.status,
-        fmu: doc.fmu,
-        startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-        endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
-      }));
+      fmuDocumentation = _operatorsDetail.data['operator-document-fmus'].map((doc) => {
+        if (doc['required-operator-document-fmu']) {
+          return {
+            id: doc.id,
+            requiredDocId: doc['required-operator-document-fmu'].id,
+            url: doc.attachment.url,
+            type: doc.type,
+            title: doc['required-operator-document-fmu'].name,
+            category: doc['required-operator-document-fmu']['required-operator-document-group'].name,
+            status: doc.status,
+            fmu: doc.fmu,
+            startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+          };
+        }
+        return null;
+      });
 
-      return [...fmuDocumentation, ...countryDocumentation];
+      return [...compact(fmuDocumentation), ...compact(countryDocumentation)];
     }
 
     return [];
@@ -52,18 +65,22 @@ const getAllParsedDocumentation = createSelector(
     const documentation = _operatorsDetail.documentation.data;
 
     if (documentation && !!documentation.length) {
-      return sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map(doc => {
-        return {
-          id: doc.id,
-          requiredDocId: doc['required-operator-document'].id,
-          type: doc.type,
-          title: doc['required-operator-document'].name,
-          category: doc['required-operator-document']['required-operator-document-group'].name,
-          status: doc.status,
-          startDate: new Date(doc['start-date']),
-          endDate: new Date(doc['expire-date'])
-        };
-      }), 'title');
+      return compact(sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map((doc) => {
+        if (doc['required-operator-document']) {
+          return {
+            id: doc.id,
+            requiredDocId: doc['required-operator-document'].id,
+            type: doc.type,
+            title: doc['required-operator-document'].name,
+            category: doc['required-operator-document']['required-operator-document-group'].name,
+            status: doc.status,
+            startDate: new Date(doc['start-date']),
+            endDate: new Date(doc['expire-date'])
+          };
+        }
+
+        return null;
+      }), 'title'));
     }
 
     return [];

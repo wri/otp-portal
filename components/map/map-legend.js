@@ -40,8 +40,8 @@ class MapLegend extends React.Component {
             {expanded ? this.props.intl.formatMessage({ id: 'operators.map.legend.open' }) : this.props.intl.formatMessage({ id: 'operators.map.legend.close' })}
           </span>
           <button className="legend-btn">
-            {!expanded && <Icon name="icon-arrow-up" className="legend-open-icon" />}
-            {expanded && <Icon name="icon-arrow-down" className="legend-close-icon" />}
+            {expanded && <Icon name="icon-arrow-up" className="legend-open-icon" />}
+            {!expanded && <Icon name="icon-arrow-down" className="legend-close-icon" />}
           </button>
         </div>
 

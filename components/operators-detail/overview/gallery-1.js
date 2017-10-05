@@ -32,7 +32,7 @@ const data = [{
 }, {
   id: 'forest-management-units',
   title: 'Forest Management Units',
-  description: 'Sociis natoque casius penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum id ligula porta felis euismod',
+  description: 'View all the Forest Management Units under management by this operator and access more information about each concession.',
   letter: '{{FMUS}}',
   link: {
     label: 'Read more',

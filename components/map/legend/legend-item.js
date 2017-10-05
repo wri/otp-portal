@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Components
 import LegendGraph from 'components/map/legend/legend-graph';
@@ -28,7 +29,7 @@ class LegendItem extends React.Component {
 }
 
 LegendItem.propTypes = {
-  layer: React.PropTypes.object
+  layer: PropTypes.object
 };
 
 export default LegendItem;

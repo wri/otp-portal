@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { HELPERS_DOC } from 'utils/documentation';
 
 export default function DocCard(props) {
-  const { startDate, endDate, status, title } = props;
+  const { startDate, endDate, status, title, url } = props;
 
   const metadata = HELPERS_DOC.getMetadata();
 
@@ -16,20 +16,43 @@ export default function DocCard(props) {
 
   return (
     <div className={`c-doc-card ${classNames}`}>
-      <header className="doc-card-header">
-        {startDate !== endDate &&
-          <div className="doc-card-date">{endDate}</div>
-        }
-        <div className="doc-card-status">{metadata[status].label}</div>
-      </header>
-      <div className="doc-card-content">
-        <h3 className="doc-card-title c-title -big">{title}</h3>
-      </div>
+      {!!url && status === 'doc_valid' &&
+        <a rel="noopener noreferrer" target="_blank" href={url}>
+          <header className="doc-card-header">
+            {startDate !== endDate &&
+              <div className="doc-card-date">{endDate}</div>
+            }
+            <div className="doc-card-status">{metadata[status].label}</div>
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+        </a>
+      }
+
+      {!url &&
+        <div>
+          <header className="doc-card-header">
+            {startDate !== endDate &&
+              <div className="doc-card-date">{endDate}</div>
+            }
+            <div className="doc-card-status">{metadata[status].label}</div>
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+        </div>
+      }
     </div>
   );
 }
 
 DocCard.propTypes = {
+  url: PropTypes.string,
   status: PropTypes.string,
   title: PropTypes.string,
   startDate: PropTypes.string,
