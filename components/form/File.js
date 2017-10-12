@@ -194,4 +194,4 @@ File.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default injectIntl(File);
+export default injectIntl(File, { withRef: true });

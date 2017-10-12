@@ -16,7 +16,7 @@ export default function DocCard(props) {
 
   return (
     <div className={`c-doc-card ${classNames}`}>
-      {!!url && status === 'doc_valid' &&
+      {!!url &&
         <a rel="noopener noreferrer" target="_blank" href={url}>
           <header className="doc-card-header">
             {startDate !== endDate &&

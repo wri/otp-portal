@@ -78,7 +78,7 @@ class DocModal extends React.Component {
     e && e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
+    FORM_ELEMENTS.validate();
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
