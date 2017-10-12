@@ -46,5 +46,5 @@ Card.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   Component: PropTypes.any,
-  link: PropTypes.object
+  link: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
