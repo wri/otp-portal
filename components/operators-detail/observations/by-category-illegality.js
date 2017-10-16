@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
 
 // components
 import Table from 'components/ui/table';
 
-// constants
-import { TABLE_HEADERS_ILLEGALITIES } from 'constants/operators-detail';
-
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
-export default class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component {
+class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component {
 
   constructor(props) {
     super(props);
@@ -122,7 +122,63 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
                                   options={{
                                     pagination: legalities > MAX_ROWS_TABLE_ILLEGALITIES,
                                     showPageSizeOptions: false,
-                                    columns: TABLE_HEADERS_ILLEGALITIES,
+                                    columns: [
+                                      {
+                                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
+                                        accessor: 'date',
+                                        headerClassName: '-a-left',
+                                        className: '-a-left',
+                                        minWidth: 75,
+                                        Cell: (attr) => {
+                                          const date = new Date(attr.value);
+                                          const monthName = date ? date.toLocaleString('en-us', { month: 'short' }) : '-';
+                                          const year = date ? date.getFullYear() : '-';
+                                          return <span>{`${monthName} ${year}`}</span>;
+                                        }
+                                      },
+                                      {
+                                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'severity' })}</span>,
+                                        accessor: 'severity',
+                                        headerClassName: '-a-center',
+                                        className: '-a-left severity',
+                                        minWidth: 150,
+                                        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+                                      },
+                                      {
+                                        Header: <span>{this.props.intl.formatMessage({ id: 'description' })}</span>,
+                                        accessor: 'details',
+                                        headerClassName: '-a-left',
+                                        className: 'description',
+                                        sortable: false,
+                                        minWidth: 420,
+                                        Cell: attr => <p>{attr.value}</p>
+                                      },
+                                      // not ready
+                                      {
+                                        Header: <span>{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
+                                        accessor: 'report',
+                                        sortable: false,
+                                        headerClassName: '-a-left',
+                                        minWidth: 150,
+                                        Cell: (attr) => {
+                                          if (attr.value && attr.value.attachment && attr.value.attachment.url) {
+                                            return (
+                                              <a
+                                                className="evidence-link"
+                                                href={attr.value.attachment.url || '#'}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title={attr.value.title}
+                                              >
+                                                Document
+                                              </a>
+                                            );
+                                          }
+
+                                          return null;
+                                        }
+                                      }
+                                    ],
                                     nextPageSize: pageSize,
                                     pageSize,
                                     onPageChange: (indexPage) => {
@@ -148,5 +204,8 @@ export default class TotalObservationsByOperatorByCategorybyIlegallity extends R
 
 TotalObservationsByOperatorByCategorybyIlegallity.propTypes = {
   data: PropTypes.array,
-  year: PropTypes.number
+  year: PropTypes.number,
+  intl: intlShape.isRequired
 };
+
+export default injectIntl(TotalObservationsByOperatorByCategorybyIlegallity);
