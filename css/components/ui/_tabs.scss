@@ -3,7 +3,7 @@
 
   // Tabs-btn
   .tabs-btn {
-    display: flex;
+    display: block;
     justify-content: space-between;
     align-items: center;
     position: relative;
@@ -19,8 +19,11 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    display: block;
     cursor: pointer;
+
+    &.-number {
+      display: flex;
+    }
 
     .number {
       color: $color-secondary;
