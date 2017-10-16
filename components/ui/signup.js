@@ -18,7 +18,7 @@ import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import FileImage from 'components/form/FileImage';
-import CheckboxGroup from 'components/form/CheckboxGroup';
+import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
@@ -55,7 +55,7 @@ class Signup extends React.Component {
         type: '',
         address: '',
         website: '',
-        country: '',
+        country: '47',
         fmus: []
       },
       fmusOptions: [],
@@ -69,6 +69,10 @@ class Signup extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  componentDidMount() {
+    this.getFmus('47');
+  }
+
   /**
    * UI EVENTS
    * - onChange
@@ -76,7 +80,9 @@ class Signup extends React.Component {
   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
+    this.setState({ form }, () => {
+      console.log(form);
+    });
   }
 
   onSubmit(e) {
@@ -163,48 +169,23 @@ class Signup extends React.Component {
                 {Input}
               </Field>
 
-              <div className="c-field-row">
-                <div className="row">
-                  <div className="small-12 medium-6">
-                    {/* Operator type */}
-                    <Field
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
-                      onChange={value => this.onChange({ operator_type: value })}
-                      validations={['required']}
-                      className="-fluid"
-                      options={HELPERS_REGISTER.getOperatorTypes()}
-                      properties={{
-                        name: 'operator_type',
-                        label: 'Operator\'s type',
-                        required: true,
-                        instanceId: 'select.operator_type',
-                        default: this.state.form.operator_type
-                      }}
-                    >
-                      {Select}
-                    </Field>
-                  </div>
-                  <div className="small-12 medium-6">
-                    {/* Certification */}
-                    <Field
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.certification = c; }}
-                      onChange={value => this.onChange({ certification: value })}
-                      validations={['required']}
-                      className="-fluid"
-                      options={HELPERS_REGISTER.getOperatorCertifications()}
-                      properties={{
-                        name: 'certification',
-                        label: 'Certification',
-                        required: true,
-                        instanceId: 'select.certification',
-                        default: this.state.form.certification
-                      }}
-                    >
-                      {Select}
-                    </Field>
-                  </div>
-                </div>
-              </div>
+              {/* Operator type */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                onChange={value => this.onChange({ operator_type: value })}
+                validations={['required']}
+                className="-fluid"
+                options={HELPERS_REGISTER.getOperatorTypes()}
+                properties={{
+                  name: 'operator_type',
+                  label: 'Operator\'s type',
+                  required: true,
+                  instanceId: 'select.operator_type',
+                  default: this.state.form.operator_type
+                }}
+              >
+                {Select}
+              </Field>
 
               {/* Website */}
               <Field
@@ -289,13 +270,9 @@ class Signup extends React.Component {
                 {!!this.state.fmusOptions.length &&
                   <Field
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
+                    name="fmus"
                     onChange={value => this.onChange({ fmus: value })}
                     className="-fluid"
-                    grid={{
-                      small: 12,
-                      medium: 4,
-                      large: 4
-                    }}
                     options={this.state.fmusOptions}
                     properties={{
                       name: 'fmus',
@@ -303,7 +280,7 @@ class Signup extends React.Component {
                       default: this.state.form.fmus
                     }}
                   >
-                    {CheckboxGroup}
+                    {FmusCheckboxGroup}
                   </Field>
                 }
               </div>

@@ -25,24 +25,25 @@ const HELPERS_REGISTER = {
       });
   },
 
-  getOperatorCertifications() {
+  getFMUCertifications() {
     return [
       { label: 'FSC', value: 'fsc' },
-      { label: 'PEF', value: 'pef' },
+      { label: 'PEFC', value: 'pefc' },
       { label: 'OLB', value: 'olb' }
     ];
   },
 
   getOperatorTypes() {
     return [
-      { label: 'Logging Company', value: 'Logging Company' },
+      { label: 'Logging company', value: 'Logging company' },
       { label: 'Artisanal', value: 'Artisanal' },
+      { label: 'Community forest', value: 'Community forest' },
+      { label: 'Estate', value: 'Estate' },
+      { label: 'Industrial agriculture', value: 'Industrial agriculture' },
+      { label: 'Mining company', value: 'Mining company' },
       { label: 'Sawmill', value: 'Sawmill' },
-      { label: 'CommunityForest', value: 'CommunityForest' },
-      { label: 'ARB1327', value: 'ARB1327' },
-      { label: 'PalmOil', value: 'PalmOil' },
-      { label: 'Trader', value: 'Trader' },
-      { label: 'Company', value: 'Company' }
+      { label: 'Other', value: 'Other' },
+      { label: 'Unknown', value: 'Unknown' }
     ];
   },
 
