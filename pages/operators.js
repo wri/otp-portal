@@ -35,7 +35,10 @@ import Map from 'components/map/map';
 import MapLegend from 'components/map/map-legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
+
 import OperatorsRanking from 'components/operators/ranking';
+import CertificationsTd from 'components/operators/certificationsTd';
+
 
 class OperatorsPage extends Page {
 
@@ -46,7 +49,7 @@ class OperatorsPage extends Page {
       table: operators.map(o => ({
         id: o.id,
         name: o.name,
-        certification: o.certification,
+        certification: <CertificationsTd fmus={o.fmus} />,
         score: o.score || 0,
         obs_per_visit: o['obs-per-visit'] || 0,
         documentation: HELPERS_DOC.getPercentage(o),
@@ -147,46 +150,50 @@ class OperatorsPage extends Page {
                 <th className="-contextual">
                   {this.props.intl.formatMessage({ id: 'operators.table.fmus' })}
                 </th>
+                <th className="-contextual">
+                  {this.props.intl.formatMessage({ id: 'operators.table.certification' })}
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {sortBy(table, o => sortDirection * o[sortColumn]).map((r, i) => {
-                return (
-                  <tr key={r.id}>
-                    {i === 0 &&
-                      <td className="-ta-center" rowSpan={table.length}>
-                        <OperatorsRanking
-                          key={`update-${r.id}`}
-                          data={table.map(o => ({ id: o.id, value: o.documentation }))}
-                          sortDirection={sortDirection}
-                        />
-                      </td>
+              {sortBy(table, o => sortDirection * o[sortColumn]).map((r, i) => (
+                <tr key={r.id}>
+                  {i === 0 &&
+                  <td className="-ta-center" rowSpan={table.length}>
+                    <OperatorsRanking
+                      key={`update-${r.id}`}
+                      data={table.map(o => ({ id: o.id, value: o.documentation }))}
+                      sortDirection={sortDirection}
+                    />
+                  </td>
                     }
-                    <td
-                      id={`td-documentation-${r.id}`}
-                      className="td-documentation -ta-left"
+                  <td
+                    id={`td-documentation-${r.id}`}
+                    className="td-documentation -ta-left"
+                  >
+                    {r.documentation}%
+                    </td>
+                  <td className="-ta-left">
+                    <Link
+                      href={{ pathname: '/operators-detail', query: { id: r.id } }}
+                      as={`/operators/${r.id}`}
                     >
-                      {r.documentation}%
-                    </td>
-                    <td className="-ta-left">
-                      <Link
-                        href={{ pathname: '/operators-detail', query: { id: r.id } }}
-                        as={`/operators/${r.id}`}
-                      >
-                        <a>{r.name}</a>
-                      </Link>
-                    </td>
-                    <td className="-ta-center">
-                      {!!r.obs_per_visit && r.obs_per_visit}
-                      {!r.obs_per_visit &&
-                        <div className="stoplight-dot -state-0}" />
+                      <a>{r.name}</a>
+                    </Link>
+                  </td>
+                  <td className="-ta-center">
+                    {!!r.obs_per_visit && r.obs_per_visit}
+                    {!r.obs_per_visit &&
+                    <div className="stoplight-dot -state-0}" />
                       }
-                    </td>
-                    <td className="-ta-right"> {r.fmus} </td>
-                  </tr>
-                );
-              })}
+                  </td>
+                  <td className="-ta-right"> {r.fmus} </td>
+                  <td className="-ta-right">
+                    {r.certification}
+                  </td>
+                </tr>
+                ))}
             </tbody>
           </table>
         </div>
