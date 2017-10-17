@@ -28,7 +28,7 @@ function OperatorsDetailOverview(props) {
               <div className="content">
                 <div className="description">
                   <p>
-                    Text presenting the Forest Operator and describing its activities
+                    {props.operatorsDetail.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
                   </p>
                 </div>
               </div>
@@ -54,6 +54,7 @@ function OperatorsDetailOverview(props) {
 }
 
 OperatorsDetailOverview.propTypes = {
+  operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   intl: intlShape.isRequired
 };
