@@ -71,6 +71,7 @@ export function getOperator(id) {
       'observations.subcategory',
       'observations.subcategory.category',
       'observations.observation-report',
+      'observations.observation-documents',
       'fmus',
       'operator-document-countries.required-operator-document-country.required-operator-document-group',
       'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',

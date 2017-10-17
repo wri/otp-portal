@@ -153,7 +153,6 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         minWidth: 420,
                                         Cell: attr => <p>{attr.value}</p>
                                       },
-                                      // not ready
                                       {
                                         Header: <span>{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
                                         accessor: 'report',
@@ -170,12 +169,39 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                                 rel="noopener noreferrer"
                                                 title={attr.value.title}
                                               >
-                                                Document
+                                                {this.props.intl.formatMessage({ id: 'evidence' })}
                                               </a>
                                             );
                                           }
 
                                           return null;
+                                        }
+                                      },
+                                      {
+                                        Header: <span>{this.props.intl.formatMessage({ id: 'documents' })}</span>,
+                                        accessor: 'documents',
+                                        sortable: false,
+                                        headerClassName: '-a-left',
+                                        minWidth: 150,
+                                        Cell: (attr) => {
+                                          const documents = attr.value;
+
+                                          return documents.map((d) => {
+                                            if (d.attachment && d.attachment.url) {
+                                              return (
+                                                <a
+                                                  className="document-link"
+                                                  href={d.attachment.url || '#'}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  title={d.name}
+                                                >
+                                                  D
+                                                </a>
+                                              );
+                                            }
+                                            return null;
+                                          });
                                         }
                                       }
                                     ],
