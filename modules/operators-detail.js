@@ -65,6 +65,7 @@ export function getOperator(id) {
     dispatch({ type: GET_OPERATOR_LOADING });
 
     const includeFields = [
+      'country',
       'observations',
       'observations.severity',
       'observations.subcategory',

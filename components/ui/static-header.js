@@ -1,10 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class StaticHeader extends React.Component {
+class StaticHeader extends React.Component {
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+    subtitle: PropTypes.string,
+    background: PropTypes.string.isRequired
+  };
+
+  static defaultProptypes = {
+    title: '',
+    subtitle: '',
+    background: ''
+  };
 
   render() {
-    const { title, background } = this.props;
+    const { title, subtitle, background } = this.props;
 
     return (
       <div
@@ -13,13 +24,13 @@ export default class StaticHeader extends React.Component {
           backgroundImage: `url(${background})`
         }}
       >
-        <h2>{title}</h2>
+        <div>
+          <h2>{title}</h2>
+          <h3>{subtitle}</h3>
+        </div>
       </div>
     );
   }
 }
 
-StaticHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  background: PropTypes.string.isRequired
-};
+export default StaticHeader;
