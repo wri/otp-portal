@@ -6,39 +6,36 @@ class PartnerCard extends React.Component {
     logo: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
-    url: PropTypes.string
+    url: PropTypes.string,
+    maxWidth: PropTypes.string
   };
 
   static defaultProps = {
     logo: '',
     title: '',
     description: '',
-    url: ''
+    url: '',
+    maxWidth: ''
   };
 
   render() {
-    const { logo, title, description, url } = this.props;
+    const { logo, title, description, url, maxWidth } = this.props;
     return (
       <div className="c-partner-card">
-        <a rel="noopener noreferrer" target="_blank" href={url}>
-          <div className="partner-card-logo">
-            <img alt={title} src={logo} />
-          </div>
-          <div className="partner-card-content">
-            <p>
-              {description}
-            </p>
-          </div>
-        </a>
+        <div className="partner-card-logo">
+          <a rel="noopener noreferrer" target="_blank" href={url}>
+            <h3>{title}</h3>
+            <img style={{ maxWidth }} alt={title} src={logo} />
+          </a>
+        </div>
+        <div className="partner-card-content">
+          <p>
+            {description}
+          </p>
+        </div>
       </div>
     );
   }
 }
-
-PartnerCard.propTypes = {
-  logo: PropTypes.string,
-  title: PropTypes.string,
-  description: PropTypes.string
-};
 
 export default PartnerCard;
