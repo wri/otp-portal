@@ -14,7 +14,7 @@ const TABS_OPERATORS_DETAIL = [{
   value: 'observations',
   number: 120
 }, {
-  label: 'fmus',
+  label: 'operator-detail.tabs.fmus',
   value: 'fmus',
   number: 7
 }];
