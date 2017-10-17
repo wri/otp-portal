@@ -99,15 +99,14 @@
       .evidence-link {
         position: relative;
         display: inline-block;
-        padding: 11px 25px 15px 15px;
+        padding: 5px 20px;
         border: 1px solid rgba($color-white, .5);
-
         font-family: $font-family-proximanova;
+        font-size: $font-size-small;
         color: rgba($color-text-2, .8);
         text-transform: uppercase;
         text-decoration: none;
         white-space: normal;
-        line-height: 19px;
         letter-spacing: 1px;
 
         &::after {
@@ -117,8 +116,8 @@
           top: 0;
           right: 0;
           transform: translate(50%, -50%) rotate(45deg);
-          width: 30px;
-          height: 30px;
+          width: 10px;
+          height: 10px;
           background: $color-green-1;
           border-bottom: 1px solid rgba($color-white, .5);
           cursor: default;
@@ -134,6 +133,50 @@
           }
         }
       }
+
+      .document-link {
+        position: relative;
+        display: inline-block;
+        padding: 5px;
+        border: 1px solid rgba($color-white, .5);
+        color: rgba($color-text-2, .8);
+        font-family: $font-family-proximanova;
+        font-size: $font-size-small;
+        text-transform: uppercase;
+        text-decoration: none;
+        white-space: normal;
+        letter-spacing: 1px;
+        margin-left: 5px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &::after {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(50%, -50%) rotate(45deg);
+          width: 10px;
+          height: 10px;
+          background: $color-green-1;
+          border-bottom: 1px solid rgba($color-white, .5);
+          cursor: default;
+        }
+
+        &:hover {
+          border: 1px solid rgba($color-white, .8);
+
+          color: $color-text-2;
+
+          &::after {
+            border-bottom: 1px solid rgba($color-white, .8);
+          }
+        }
+      }
+
     }
 
     // No data row
