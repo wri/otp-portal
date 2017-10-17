@@ -36,9 +36,14 @@ class Gallery1 extends React.Component {
           >
             <Card
               theme="-secondary"
-              letter={(operatorDocumentation) ? HELPERS_DOC.getPercentage(operatorsDetail.data) : '-'}
+              letter={(operatorDocumentation) ? `${HELPERS_DOC.getPercentage(operatorsDetail.data)}%` : '-'}
               title={this.props.intl.formatMessage({ id: 'operator-detail.overview.card1.title' })}
-              description={this.props.intl.formatMessage({ id: 'operator-detail.overview.card1.description' })}
+              description={this.props.intl.formatMessage(
+                { id: 'operator-detail.overview.card1.description' },
+                {
+                  percentage: (operatorDocumentation) ? HELPERS_DOC.getPercentage(operatorsDetail.data) : '-'
+                }
+              )}
               link={{
                 label: this.props.intl.formatMessage({ id: 'operator-detail.overview.card1.link.label' }),
                 href: `/operators-detail?tab=documentation&id=${url.query.id}`,
@@ -76,7 +81,13 @@ class Gallery1 extends React.Component {
               theme="-primary"
               letter={(operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-'}
               title={this.props.intl.formatMessage({ id: 'operator-detail.overview.card3.title' })}
-              description={this.props.intl.formatMessage({ id: 'operator-detail.overview.card3.description' })}
+              description={this.props.intl.formatMessage(
+                { id: 'operator-detail.overview.card3.description' },
+                {
+                  fmus: (operatorsDetail.data.fmus) ? operatorsDetail.data.fmus.length : '-',
+                  company_name: operatorsDetail.data.name || ''
+                }
+              )}
               link={{
                 label: this.props.intl.formatMessage({ id: 'operator-detail.overview.card3.link.label' }),
                 href: `/operators-detail?tab=fmus&id=${url.query.id}`,
