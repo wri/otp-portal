@@ -98,7 +98,6 @@ class OperatorsDetail extends Page {
         }
       );
     }
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -127,6 +126,11 @@ class OperatorsDetail extends Page {
 
         <StaticHeader
           title={operatorsDetail.data.name || '-'}
+          subtitle={this.props.intl.formatMessage({ id: 'operator-detail.subtitle' }, {
+            rank: operatorsDetail.data['country-doc-rank'],
+            rankCount: operatorsDetail.data['country-operators'],
+            country: !!operatorsDetail.data.country && operatorsDetail.data.country.name
+          })}
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
