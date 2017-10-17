@@ -35,7 +35,7 @@ class Gallery1 extends React.Component {
             className="columns small-12 medium-4"
           >
             <Card
-              theme="-secondary"
+              theme="-primary"
               letter={(operatorDocumentation) ? `${HELPERS_DOC.getPercentage(operatorsDetail.data)}%` : '-'}
               title={this.props.intl.formatMessage({ id: 'operator-detail.overview.card1.title' })}
               description={this.props.intl.formatMessage(
