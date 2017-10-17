@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -97,16 +98,62 @@ class AboutPage extends Page {
                   </header>
 
                   <div className="content">
+                    <div className="description">
+                      <p>{this.props.intl.formatMessage({ id: 'about.partners.description1' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'about.partners.description2' })}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article
+              className="c-article"
+            >
+              <div className="row l-row">
+                <div className="columns small-12">
+                  <header>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'about.donors' })}</h2>
+                  </header>
+
+                  <div className="content">
+                    <div className="description">
+                      <p>{this.props.intl.formatMessage({ id: 'about.donors.description1' })}</p>
+                    </div>
+
                     <div className="row l-row -equal-heigth">
                       {partners.data.map((p, index) => {
+                        const classNames = classnames({
+                          'medium-6': !!index
+                        });
+
                         return (
-                          <div key={index} className="columns small-12 medium-4">
+                          <div className={`columns small-12 ${classNames}`}>
                             <PartnerCard
+                              key={index}
                               {...p}
                             />
                           </div>
                         );
                       })}
+                    </div>
+
+                    <div className="description">
+                      <p>{this.props.intl.formatMessage({ id: 'about.donors.description2' })}</p>
+                    </div>
+
+                    <div className="row l-row -equal-heigth">
+                      <div className="columns small-12">
+                        <img
+                          alt="Citizen Voices for Change project"
+                          style={{
+                            margin: '24px auto 0',
+                            width: '100%',
+                            maxWidth: '300px'
+                          }}
+                          src="/static/images/logos/voiceforchange.png"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
