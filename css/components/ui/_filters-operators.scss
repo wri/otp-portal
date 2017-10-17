@@ -1,0 +1,21 @@
+
+.c-filters-operators {
+  background-color: $color-primary;
+  padding: $space-1 * 2 $space-1 * 4;
+
+  .c-title {
+    margin-top: 0;
+  }
+
+  .field {
+    .title {
+      font-family: $font-family-georgia;
+      color: $color-white;
+      text-transform: capitalize;
+      margin-bottom: 2px;
+      font-size: $font-size-default;
+      line-height: 26px;
+      font-weight: normal;
+    }
+  }
+}
