@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import modal from 'services/modal';
+
 // Redux
 import { connect } from 'react-redux';
 import { setFilters } from 'modules/operators-ranking';
@@ -11,6 +13,8 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Components
 import Select from 'react-select';
+import Icon from 'components/ui/icon';
+import RankingModal from 'components/ui/ranking-modal';
 
 const FILTERS_REFS = [
   {
@@ -91,11 +95,18 @@ class OperatorsFilters extends React.Component {
 
           <h3 className="c-title -big -light">
             {this.props.intl.formatMessage({ id: 'transparency_ranking' })}
-          </h3>
 
-          <p>
-            {this.props.intl.formatMessage({ id: 'transparency_ranking.description' })}
-          </p>
+            <button
+              className="c-button -clean"
+              onClick={() => {
+                modal.toggleModal(true, {
+                  children: RankingModal
+                });
+              }}
+            >
+              <Icon name="icon-info" className="-small" />
+            </button>
+          </h3>
 
           <div className="filters-content">
             <div className="l-row row">
