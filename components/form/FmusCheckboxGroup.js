@@ -32,6 +32,7 @@ export default class FmusCheckboxGroup extends FormElement {
   /**
    * UI EVENTS
    * - triggerChange
+   * - triggerCertificationsChange
   */
   triggerChange(obj) {
     // Send objects
@@ -55,18 +56,32 @@ export default class FmusCheckboxGroup extends FormElement {
   }
 
   getCheckboxList() {
-    const { grid } = this.props;
-
-    const checkboxList = this.props.options.map((option) => {
-      return (
-        <div>
-          {this.getCheckbox(option)}
-          {this.getCertifications(option)}
-        </div>
-      )
-    });
-
-    return checkboxList;
+    return (
+      <table className="fmus-checkbox-table">
+        <thead>
+          <tr>
+            <th>
+              <h3 className="c-title -default">FMUs</h3>
+            </th>
+            <th className="td-certifications">
+              <h3 className="c-title -default">Certifications</h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.options.map(option => (
+            <tr key={option.value}>
+              <td>
+                {this.getCheckbox(option)}
+              </td>
+              <td className="td-certifications">
+                {this.getCertifications(option)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   }
 
   getCheckbox(option) {
@@ -88,10 +103,11 @@ export default class FmusCheckboxGroup extends FormElement {
   getCertifications(option) {
     return (
       <CheckboxGroup
-        onChange={value => console.info(value)}
-        className="-inline"
+        onChange={value => this.props.onChangeCertifications({ [option.value]: value })}
+        className="-inline -small"
         name={`certification-${option.value}`}
         options={HELPERS_REGISTER.getFMUCertifications()}
+        disabled={!this.state.value.includes(option.value)}
         properties={{
           name: option.value
           // default: this.state.form.fmus
@@ -109,11 +125,7 @@ export default class FmusCheckboxGroup extends FormElement {
     });
 
     return (
-      <div className={`c-checkbox-box ${customClassName}`}>
-        {this.props.title &&
-          <span className="checkbox-box-title">{this.props.title}</span>
-        }
-
+      <div className={`c-fmus-checkbox ${customClassName}`}>
         {this.getCheckboxList()}
       </div>
     );

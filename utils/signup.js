@@ -48,7 +48,7 @@ const HELPERS_REGISTER = {
   },
 
   getOperatorFmus(countryId) {
-    return fetch(`${process.env.OTP_API}/fmus?country_ids=${countryId}&free=true`, {
+    return fetch(`${process.env.OTP_API}/fmus?filter[country]=${countryId}&filter[free]=true`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +68,6 @@ const HELPERS_REGISTER = {
   getBody(form) {
     const {
       address,
-      certification,
       country,
       fmus,
       logo,
@@ -85,8 +84,7 @@ const HELPERS_REGISTER = {
           'operator-type': operator_type,
           website,
           logo,
-          address,
-          certification
+          address
         },
         relationships: {
           country: {
@@ -101,9 +99,19 @@ const HELPERS_REGISTER = {
         }
       }
     };
+  },
+
+  getBodyFmu(certification) {
+    return {
+      data: {
+        attributes: {
+          'certification-fsc': certification.includes('fsc'),
+          'certification-pefc': certification.includes('pefc'),
+          'certification-olb': certification.includes('olb')
+        }
+      }
+    };
   }
-
-
 };
 
 export { HELPERS_REGISTER };

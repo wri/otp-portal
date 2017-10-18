@@ -7,7 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { signup } from 'modules/user';
+import { saveOperator, saveFmu } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
 // Next components
@@ -58,6 +58,7 @@ class Signup extends React.Component {
         country: '47',
         fmus: []
       },
+      certifications: {},
       fmusOptions: [],
       fmusLoading: true,
       submitting: false,
@@ -85,6 +86,13 @@ class Signup extends React.Component {
     });
   }
 
+  onChangeCertifications(value) {
+    const certifications = Object.assign({}, this.state.certifications, value);
+    this.setState({ certifications }, () => {
+      console.log(certifications);
+    });
+  }
+
   onSubmit(e) {
     e && e.preventDefault();
 
@@ -101,10 +109,22 @@ class Signup extends React.Component {
         this.setState({ submitting: true });
 
         // Save data
-        this.props.signup({ body: HELPERS_REGISTER.getBody(this.state.form) })
+        this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
           .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            if (this.props.onSubmit) this.props.onSubmit();
+            const promises = [];
+
+            Object.keys(this.state.certifications).forEach((k) => {
+              promises.push(this.props.saveFmu({
+                id: k,
+                body: HELPERS_REGISTER.getBodyFmus(this.state.certifications[k])
+              }));
+            });
+
+            Promise.all(promises)
+              .then(() => {
+                this.setState({ submitting: false, submitted: true });
+                if (this.props.onSubmit) this.props.onSubmit();
+              });
           })
           .catch((errors) => {
             this.setState({ submitting: false });
@@ -115,7 +135,7 @@ class Signup extends React.Component {
                 toastr.error('Error', `${er.title} - ${er.detail}`)
               );
             } catch (e) {
-              toastr.error('Error', `Oops! There was an error, try again`);
+              toastr.error('Error', 'Oops! There was an error, try again');
             }
           });
       } else {
@@ -272,11 +292,11 @@ class Signup extends React.Component {
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
                     name="fmus"
                     onChange={value => this.onChange({ fmus: value })}
+                    onChangeCertifications={value => this.onChangeCertifications(value)}
                     className="-fluid"
                     options={this.state.fmusOptions}
                     properties={{
                       name: 'fmus',
-                      label: 'FMUs',
                       default: this.state.form.fmus
                     }}
                   >
@@ -335,7 +355,8 @@ class Signup extends React.Component {
 }
 
 Signup.propTypes = {
-  signup: PropTypes.func,
+  saveOperator: PropTypes.func,
+  saveFmu: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
 };
@@ -343,5 +364,5 @@ Signup.propTypes = {
 
 export default injectIntl(connect(
   null,
-  { signup }
+  { saveOperator, saveFmu }
 )(Signup));

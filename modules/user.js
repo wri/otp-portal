@@ -54,11 +54,34 @@ export function login({ body }) {
   });
 }
 
-export function signup({ body }) {
+export function saveOperator({ body }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/operators`,
       type: 'POST',
+      body,
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/vnd.api+json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }],
+      onSuccess: (response) => {
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
+}
+
+export function saveFmus({ id, body }) {
+  return () => new Promise((resolve, reject) => {
+    post({
+      url: `${process.env.OTP_API}/fmus/${id}`,
+      type: 'PATCH',
       body,
       headers: [{
         key: 'Content-Type',

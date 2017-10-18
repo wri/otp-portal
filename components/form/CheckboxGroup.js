@@ -84,7 +84,8 @@ export default class CheckboxGroup extends FormElement {
           title: option.label,
           checked: this.state.value.includes(option.value),
           value: option.value,
-          default: option.value
+          default: option.value,
+          disabled: this.props.disabled
         }}
         onChange={value => this.triggerChange(value)}
       />
