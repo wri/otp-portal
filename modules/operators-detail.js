@@ -65,11 +65,13 @@ export function getOperator(id) {
     dispatch({ type: GET_OPERATOR_LOADING });
 
     const includeFields = [
+      'country',
       'observations',
       'observations.severity',
       'observations.subcategory',
       'observations.subcategory.category',
       'observations.observation-report',
+      'observations.observation-documents',
       'fmus',
       'operator-document-countries.required-operator-document-country.required-operator-document-group',
       'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
@@ -95,6 +97,7 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,

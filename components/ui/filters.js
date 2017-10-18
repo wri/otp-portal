@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
@@ -45,8 +46,14 @@ class Filters extends React.Component {
   }
 
   render() {
+    const { className } = this.props;
+
+    const classNames = classnames({
+      [className]: !!className
+    });
+
     return (
-      <aside className="c-filters">
+      <aside className={`c-filters ${classNames}`}>
         <div className="filters-content">
           <h2 className="c-title -light">
             {this.props.intl.formatMessage({ id: 'filter.title' })}
@@ -63,6 +70,7 @@ Filters.propTypes = {
   filtersRefs: PropTypes.array,
   options: PropTypes.object,
   intl: intlShape.isRequired,
+  className: PropTypes.string,
   // Actions
   setFilters: PropTypes.func
 };

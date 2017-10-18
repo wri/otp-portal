@@ -20,7 +20,8 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getOperators, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators';
+import { getOperators } from 'modules/operators';
+import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
 
 // Constants
 import { MAP_LAYERS_OPERATORS } from 'constants/operators';
@@ -36,8 +37,10 @@ import MapLegend from 'components/map/map-legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 
+// Operators components
 import OperatorsRanking from 'components/operators/ranking';
-import CertificationsTd from 'components/operators/certificationsTd';
+import OperatorsFilters from 'components/operators/filters';
+import OperatorsCertificationsTd from 'components/operators/certificationsTd';
 
 
 class OperatorsPage extends Page {
@@ -49,7 +52,7 @@ class OperatorsPage extends Page {
       table: operators.map(o => ({
         id: o.id,
         name: o.name,
-        certification: <CertificationsTd fmus={o.fmus} />,
+        certification: <OperatorsCertificationsTd fmus={o.fmus} />,
         score: o.score || 0,
         obs_per_visit: o['obs-per-visit'] || 0,
         documentation: HELPERS_DOC.getPercentage(o),
@@ -62,16 +65,22 @@ class OperatorsPage extends Page {
   constructor(props) {
     super(props);
 
-    this.state = OperatorsPage.parseData(props.operators.data);
+    this.state = OperatorsPage.parseData(props.operatorsRanking.data);
   }
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operators } = this.props;
+    const { url, operators, operatorsRanking } = this.props;
 
+    // Get search operators data
     if (!operators.data.length) {
       // Get operators
       this.props.getOperators();
+    }
+
+    if (!operatorsRanking.data.length) {
+      // Get operators
+      this.props.getOperatorsRanking();
     }
 
     // Set location
@@ -95,8 +104,8 @@ class OperatorsPage extends Page {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.operators.data.length !== this.props.operators.data.length) {
-      this.setState(OperatorsPage.parseData(nextProps.operators.data));
+    if (nextProps.operatorsRanking.data.length !== this.props.operatorsRanking.data.length) {
+      this.setState(OperatorsPage.parseData(nextProps.operatorsRanking.data));
     }
   }
 
@@ -121,10 +130,10 @@ class OperatorsPage extends Page {
    * - getOperatorsRanking
   */
   getOperatorsTable() {
-    const operators = this.props.operators;
+    const operatorsRanking = this.props.operatorsRanking;
     const { sortColumn, sortDirection, table } = this.state;
 
-    if (!operators.loading) {
+    if (!operatorsRanking.loading) {
       return (
         <div className="c-ranking">
           <table>
@@ -203,7 +212,7 @@ class OperatorsPage extends Page {
   }
 
   render() {
-    const { url, operators } = this.props;
+    const { url, operators, operatorsRanking } = this.props;
 
     return (
       <Layout
@@ -216,13 +225,14 @@ class OperatorsPage extends Page {
       >
         <div className="c-section -map">
           <Sidebar>
+            <OperatorsFilters />
             {this.getOperatorsTable()}
           </Sidebar>
 
           <div className="c-map-container">
             {/* Map */}
             <Map
-              mapOptions={operators.map}
+              mapOptions={operatorsRanking.map}
               mapListeners={{
                 moveend: (map) => {
                   this.props.setOperatorsMapLocation({
@@ -243,7 +253,7 @@ class OperatorsPage extends Page {
             {/* MapControls */}
             <MapControls>
               <ZoomControl
-                zoom={operators.map.zoom}
+                zoom={operatorsRanking.map.zoom}
                 onZoomChange={(zoom) => {
                   this.props.setOperatorsMapLocation({
                     ...operators.map,
@@ -267,11 +277,15 @@ OperatorsPage.propTypes = {
 export default withIntl(withRedux(
   store,
   state => ({
-    operators: state.operators
+    operators: state.operators,
+    operatorsRanking: state.operatorsRanking
   }),
   dispatch => ({
     getOperators() {
       dispatch(getOperators());
+    },
+    getOperatorsRanking() {
+      dispatch(getOperatorsRanking());
     },
     setOperatorsMapLocation(mapLocation) {
       dispatch(setOperatorsMapLocation(mapLocation));

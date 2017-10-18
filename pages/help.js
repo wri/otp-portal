@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Constants
-import { TABS_HELP } from 'constants/help';
-
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -58,7 +55,19 @@ class HelpPage extends Page {
             query: { },
             as: url.pathname
           }}
-          options={TABS_HELP}
+          options={[{
+            label: this.props.intl.formatMessage({ id: 'overview' }),
+            value: 'overview'
+          }, {
+            label: this.props.intl.formatMessage({ id: 'help.tabs.howto' }),
+            value: 'how-otp-works'
+          }, {
+            label: this.props.intl.formatMessage({ id: 'help.tabs.legislation' }),
+            value: 'legislation-and-regulations'
+          }, {
+            label: this.props.intl.formatMessage({ id: 'help.tabs.faqs' }),
+            value: 'faqs'
+          }]}
           defaultSelected={tab}
           selected={tab}
         />

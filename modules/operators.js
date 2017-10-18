@@ -1,13 +1,10 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import Router from 'next/router';
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
 const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
-
-const SET_OPERATORS_MAP_LOCATION = 'SET_OPERATORS_MAP_LOCATION';
 
 const JSONA = new Jsona();
 
@@ -15,14 +12,7 @@ const JSONA = new Jsona();
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    zoom: 5,
-    center: {
-      lat: 0,
-      lng: 18
-    }
-  }
+  error: false
 };
 
 /* Reducer */
@@ -34,32 +24,18 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
-    case SET_OPERATORS_MAP_LOCATION:
-      return Object.assign({}, state, { map: action.payload });
     default:
       return state;
   }
 }
 
-/* Action creators */
-export function setOperatorsMapLocation(mapLocation) {
-  return {
-    type: SET_OPERATORS_MAP_LOCATION,
-    payload: mapLocation
-  };
-}
 
 export function getOperators() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
-    // TODO: include documentation
-    const includes = [
-      'observations',
-      'fmus'
-    ];
 
-    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47&include=${includes.join(',')}`, {
+    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +48,6 @@ export function getOperators() {
       })
       .then((operators) => {
         const dataParsed = JSONA.deserialize(operators);
-        console.log(dataParsed);
 
         dispatch({
           type: GET_OPERATORS_SUCCESS,
@@ -87,34 +62,5 @@ export function getOperators() {
           payload: err.message
         });
       });
-  };
-}
-
-export function setOperatorsUrl() {
-  return (dispatch, getState) => {
-    const { operators } = getState();
-
-    const location = {
-      pathname: '/operators',
-      query: {
-        lat: operators.map.center.lat.toFixed(2),
-        lng: operators.map.center.lng.toFixed(2),
-        zoom: operators.map.zoom.toFixed(2)
-      }
-    };
-
-    Router.replace(location);
-  };
-}
-
-export function getOperatorsUrl(url) {
-  const { zoom, lat, lng } = url.query;
-
-  return {
-    zoom: +zoom || initialState.map.zoom,
-    center: {
-      lat: +lat || initialState.map.center.lat,
-      lng: +lng || initialState.map.center.lng
-    }
   };
 }
