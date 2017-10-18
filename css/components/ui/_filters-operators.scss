@@ -10,6 +10,23 @@
 
   .c-title {
     margin-top: 0;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: $space-1;
+      width: 20px;
+      height: 20px;
+      border: 1px solid $color-tertiary;
+      border-radius: 50%;
+      fill: $color-tertiary;
+
+      &:hover {
+        background: $color-tertiary;
+        fill: $color-primary;
+      }
+    }
   }
 
   .field {
