@@ -55,7 +55,7 @@ class Signup extends React.Component {
         type: '',
         address: '',
         website: '',
-        country: '47',
+        country: '',
         fmus: []
       },
       certifications: {},
@@ -68,10 +68,6 @@ class Signup extends React.Component {
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    this.getFmus('47');
   }
 
   /**
@@ -113,22 +109,27 @@ class Signup extends React.Component {
           .then(() => {
             const promises = [];
 
-            Object.keys(this.state.certifications).forEach((k) => {
-              promises.push(this.props.saveFmu({
-                id: k,
-                body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
-              }));
-            });
+            if (Object.keys(this.state.certifications).length) {
+              Object.keys(this.state.certifications).forEach((k) => {
+                promises.push(this.props.saveFmu({
+                  id: k,
+                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
+                }));
+              });
 
-            Promise.all(promises)
-              .then(() => {
-                this.setState({ submitting: false, submitted: true });
-                if (this.props.onSubmit) this.props.onSubmit();
-              })
-              .catch((errors) => {
-                this.setState({ submitting: false });
-                console.error(errors);
-              })
+              Promise.all(promises)
+                .then(() => {
+                  this.setState({ submitting: false, submitted: true });
+                  if (this.props.onSubmit) this.props.onSubmit();
+                })
+                .catch((errors) => {
+                  this.setState({ submitting: false });
+                  console.error(errors);
+                })
+            } else {
+              this.setState({ submitting: false, submitted: true });
+              if (this.props.onSubmit) this.props.onSubmit();
+            }
           })
           .catch((errors) => {
             this.setState({ submitting: false });
