@@ -77,7 +77,7 @@ export function saveOperator({ body }) {
   });
 }
 
-export function saveFmus({ id, body }) {
+export function saveFmu({ id, body }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/fmus/${id}`,

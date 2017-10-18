@@ -116,7 +116,7 @@ class Signup extends React.Component {
             Object.keys(this.state.certifications).forEach((k) => {
               promises.push(this.props.saveFmu({
                 id: k,
-                body: HELPERS_REGISTER.getBodyFmus(this.state.certifications[k])
+                body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
               }));
             });
 
@@ -124,7 +124,11 @@ class Signup extends React.Component {
               .then(() => {
                 this.setState({ submitting: false, submitted: true });
                 if (this.props.onSubmit) this.props.onSubmit();
-              });
+              })
+              .catch((errors) => {
+                this.setState({ submitting: false });
+                console.error(errors);
+              })
           })
           .catch((errors) => {
             this.setState({ submitting: false });
