@@ -24,7 +24,7 @@ import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
 import StaticTabs from 'components/ui/static-tabs';
-
+import { ReadMore } from 'react-read-more';
 // Utils
 import {
   getObservations,
@@ -163,6 +163,51 @@ class ObservationsPage extends Page {
                   sortable
                   data={this.parseTableData()}
                   options={{
+                    columns: [
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
+                        accessor: 'date',
+                        minWidth: 75
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
+                        accessor: 'country',
+                        className: '-uppercase',
+                        minWidth: 75
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator' })}</span>,
+                        accessor: 'operator',
+                        className: '-uppercase'
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'fmu' })}</span>,
+                        accessor: 'fmu'
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'category' })}</span>,
+                        accessor: 'category'
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
+                        accessor: 'observation',
+                        headerClassName: '-a-left',
+                        className: 'description',
+                        minWidth: 300,
+                        Cell: attr => (
+                          <ReadMore lines={1} text="more">
+                            {attr.value}
+                          </ReadMore>
+                        )
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'severity' })}</span>,
+                        accessor: 'level',
+                        headerClassName: 'severity-th',
+                        className: 'severity',
+                        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+                      }
+                    ],
                     pageSize: this.getPageSize(),
                     pagination: true,
                     previousText: '<',
