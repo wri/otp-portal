@@ -91,7 +91,17 @@
 
       &.description {
         white-space: normal;
+        a {
+          color: $color-primary;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
         > p {
+          margin: 0;
           line-height: 26px;
         }
       }

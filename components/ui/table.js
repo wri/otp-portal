@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactTable from 'react-table';
 
-
-// Constants
-import { TABLE_HEADERS } from 'constants/observations';
-
-
 export default function Table({ data, options, className }) {
   const classNames = classnames({
     [className]: !!className
@@ -18,7 +13,7 @@ export default function Table({ data, options, className }) {
       <ReactTable
         data={data}
         className={`table ${classNames}`}
-        columns={options.columns || TABLE_HEADERS}
+        columns={options.columns}
         defaultPageSize={options.pageSize}
         pageSize={options.pageSize}
         showPagination={options.pagination}

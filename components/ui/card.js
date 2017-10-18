@@ -42,7 +42,7 @@ export default function Card({ theme, letter, title, description, link, Componen
 
 Card.propTypes = {
   theme: PropTypes.string,
-  letter: PropTypes.string,
+  letter: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   title: PropTypes.string,
   description: PropTypes.string,
   Component: PropTypes.any,
