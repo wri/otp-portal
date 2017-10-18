@@ -92,7 +92,7 @@ export function getObservations() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'severity', 'fmu'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu'];
 
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
