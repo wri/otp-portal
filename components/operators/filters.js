@@ -88,6 +88,15 @@ class OperatorsFilters extends React.Component {
     return (
       <aside className={`c-filters-operators ${classNames}`}>
         <div className="filters-container">
+
+          <h3 className="c-title -big -light">
+            Transparency Ranking
+          </h3>
+
+          <p>
+            This ranking is based on the full list of registered operators in a country. The ranking score is displayed as a percentage. The score represents the percentage of documents available for each company on this site, out of the total number of documents requested. The other columns show which forest  certifications a company holds, and the average number of observations per visit by third-party forest monitors. The filter tool allows you to display the ranking for different geographies, and for companies that are certified with a particular scheme.
+          </p>
+
           <div className="filters-content">
             <div className="l-row row">
               {this.renderFiltersSelects()}

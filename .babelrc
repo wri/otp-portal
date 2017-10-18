@@ -8,6 +8,7 @@
           "components": "./components",
           "constants": "./constants",
           "css": "./css",
+          "lang": "./lang",
           "modules": "./modules",
           "selectors": "./selectors",
           "services": "./services",
