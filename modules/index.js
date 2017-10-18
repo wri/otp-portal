@@ -4,6 +4,7 @@ export { default as observations } from './observations';
 export { default as operators } from './operators';
 export { default as operatorsRanking } from './operators-ranking';
 export { default as operatorsDetail } from './operators-detail';
+export { default as operatorsDetailFmus } from './operators-detail-fmus';
 export { default as partners } from './partners';
 export { default as user } from './user';
 

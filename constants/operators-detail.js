@@ -31,13 +31,6 @@ const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
   value: 'chronological-view'
 }];
 
-
-const MAP_OPTIONS_OPERATORS_DETAIL = {
-  zoom: 5,
-  center: [18, 0],
-  scrollZoom: false
-};
-
 const MAP_LAYERS_OPERATORS_DETAIL = [
   {
     id: 'loss',
@@ -176,6 +169,5 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 export {
   TABS_OPERATORS_DETAIL,
   TABS_DOCUMENTATION_OPERATORS_DETAIL,
-  MAP_OPTIONS_OPERATORS_DETAIL,
   MAP_LAYERS_OPERATORS_DETAIL
 };

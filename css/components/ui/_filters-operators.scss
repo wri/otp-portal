@@ -1,7 +1,12 @@
 
 .c-filters-operators {
   background-color: $color-primary;
-  padding: $space-1 * 2 $space-1 * 4;
+  padding: $space-1 * 4 $space-1 * 4 0;
+  color: $color-tertiary;
+
+  p {
+    line-height: 1.5;
+  }
 
   .c-title {
     margin-top: 0;

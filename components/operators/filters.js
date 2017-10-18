@@ -88,6 +88,15 @@ class OperatorsFilters extends React.Component {
     return (
       <aside className={`c-filters-operators ${classNames}`}>
         <div className="filters-container">
+
+          <h3 className="c-title -big -light">
+            {this.props.intl.formatMessage({ id: 'transparency_ranking' })}
+          </h3>
+
+          <p>
+            {this.props.intl.formatMessage({ id: 'transparency_ranking.description' })}
+          </p>
+
           <div className="filters-content">
             <div className="l-row row">
               {this.renderFiltersSelects()}
