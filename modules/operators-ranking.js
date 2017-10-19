@@ -26,7 +26,9 @@ const initialState = {
     }
   },
   filters: {
-    data: {},
+    data: {
+      fa: true
+    },
     // TODO: get them from API
     options: {
       country: [
