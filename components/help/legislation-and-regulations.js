@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
@@ -16,6 +17,12 @@ class HelpLegislationAndRegulations extends React.Component {
       duration: 500,
       easing: 'easeOutQuart'
     });
+  }
+
+  componentDidMount() {
+    if (this.props.url.query.article) {
+      this.triggerScrollTo(`#${this.props.url.query.article}`);
+    }
   }
 
   triggerScrollTo(id) {
@@ -89,7 +96,8 @@ class HelpLegislationAndRegulations extends React.Component {
 }
 
 HelpLegislationAndRegulations.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  url: PropTypes.object.isRequired
 };
 
 export default injectIntl(HelpLegislationAndRegulations);

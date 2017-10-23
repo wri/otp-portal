@@ -17,7 +17,7 @@ function Gallery3(props) {
       </h2>
 
       <div className="row l-row">
-        {FAQS_HELP.map((article, i) => {
+        {FAQS_HELP.slice(0, 3).map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (

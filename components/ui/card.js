@@ -5,6 +5,7 @@ import omit from 'lodash/omit';
 
 // Next components
 import Link from 'next/link';
+import { Truncate } from 'react-read-more';
 
 export default function Card({ theme, letter, title, description, link, Component }) {
   const classNames = classnames({
@@ -22,7 +23,11 @@ export default function Card({ theme, letter, title, description, link, Componen
         {letter && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
-        <p className="card-description"> {description} </p>
+        <p className="card-description">
+          <Truncate lines={6}>
+            {description}
+          </Truncate>
+        </p>
 
         {!!Component &&
           <div className="card-component">

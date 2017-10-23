@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
@@ -8,15 +9,20 @@ import { injectIntl, intlShape } from 'react-intl';
 import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 class HelpHowOTPWorks extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.moveTo = new MoveTo({
-      tolerance: 50,
+      tolerance: 30,
       duration: 500,
       easing: 'easeOutQuart'
     });
+  }
+
+  componentDidMount() {
+    if (this.props.url.query.article) {
+      this.triggerScrollTo(`#${this.props.url.query.article}`);
+    }
   }
 
   triggerScrollTo(id) {
@@ -90,7 +96,8 @@ class HelpHowOTPWorks extends React.Component {
 }
 
 HelpHowOTPWorks.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  url: PropTypes.object.isRequired
 };
 
 export default injectIntl(HelpHowOTPWorks);
