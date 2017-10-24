@@ -1,9 +1,20 @@
+import Jsona from 'jsona';
+import fetch from 'isomorphic-fetch';
+import * as queryString from 'query-string';
+
+
 import * as Cookies from 'js-cookie';
 import { post } from 'utils/request';
 
 // CONSTANTS
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
+
+const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
+const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
+const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
+
+const JSONA = new Jsona();
 
 // REDUCER
 const initialState = (Cookies.get('user')) ? JSON.parse(Cookies.get('user')) : {};
@@ -12,6 +23,22 @@ export default function (state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return Object.assign({}, state, action.payload);
+    case GET_USER_OPERATOR_SUCCESS: {
+      const operator = Object.assign(
+        {},
+        state.operator,
+        { data: action.payload, loading: false, error: false }
+      );
+      return Object.assign({}, state, { operator });
+    }
+    case GET_USER_OPERATOR_ERROR: {
+      const operator = Object.assign({}, state.operator, { error: true, loading: false });
+      return Object.assign({}, state, { operator });
+    }
+    case GET_USER_OPERATOR_LOADING: {
+      const operator = Object.assign({}, state.operator, { loading: true, error: false });
+      return Object.assign({}, state, { operator });
+    }
     case REMOVE_USER:
       return {};
     default:
@@ -23,6 +50,57 @@ export default function (state = initialState, action) {
 // ACTIONS
 export function setUser(user) {
   return { type: SET_USER, payload: user };
+}
+
+/* Action creators */
+export function getUserOperator(id) {
+  return (dispatch) => {
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_USER_OPERATOR_LOADING });
+
+    const includeFields = [
+      'country',
+      'fmus'
+    ];
+
+    const queryParams = queryString.stringify({
+      include: includeFields.join(',')
+    });
+
+    // Fields
+    const currentFields = { fmus: ['name', 'certification-fsc', 'certification-olb', 'certification-pefc'] };
+    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
+
+
+    fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}&${fields}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((operator) => {
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        const dataParsed = JSONA.deserialize(operator);
+        console.log(dataParsed);
+
+        dispatch({
+          type: GET_USER_OPERATOR_SUCCESS,
+          payload: dataParsed
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_USER_OPERATOR_ERROR,
+          payload: err.message
+        });
+      });
+  };
 }
 
 export function login({ body }) {
@@ -54,11 +132,47 @@ export function login({ body }) {
   });
 }
 
-export function saveOperator({ body }) {
+export function logout() {
+  return (dispatch) => {
+    // Set cookie
+    Cookies.remove('user');
+
+    // Dispatch action
+    dispatch({ type: REMOVE_USER, payload: {} });
+  };
+  // return dispatch => new Promise((resolve, reject) => {
+  //   post({
+  //     url: `${process.env.OTP_API}/logout`,
+  //     type: 'POST',
+  //     body: {},
+  //     headers: [{
+  //       key: 'Content-Type',
+  //       value: 'application/json'
+  //     }, {
+  //       key: 'OTP-API-KEY',
+  //       value: process.env.OTP_API_KEY
+  //     }],
+  //     onSuccess: (response) => {
+  //       // Set cookie
+  //       Cookies.remove('user');
+  //
+  //       // Dispatch action
+  //       dispatch({ type: SET_USER, payload: {} });
+  //
+  //       resolve(response);
+  //     },
+  //     onError: (error) => {
+  //       reject(error);
+  //     }
+  //   });
+  // });
+}
+
+export function saveOperator({ body, type }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/operators`,
-      type: 'POST',
+      type: type || 'POST',
       body,
       headers: [{
         key: 'Content-Type',
@@ -98,41 +212,4 @@ export function saveFmu({ id, body }) {
       }
     });
   });
-}
-
-
-export function logout() {
-  return (dispatch) => {
-    // Set cookie
-    Cookies.remove('user');
-
-    // Dispatch action
-    dispatch({ type: REMOVE_USER, payload: {} });
-  };
-  // return dispatch => new Promise((resolve, reject) => {
-  //   post({
-  //     url: `${process.env.OTP_API}/logout`,
-  //     type: 'POST',
-  //     body: {},
-  //     headers: [{
-  //       key: 'Content-Type',
-  //       value: 'application/json'
-  //     }, {
-  //       key: 'OTP-API-KEY',
-  //       value: process.env.OTP_API_KEY
-  //     }],
-  //     onSuccess: (response) => {
-  //       // Set cookie
-  //       Cookies.remove('user');
-  //
-  //       // Dispatch action
-  //       dispatch({ type: SET_USER, payload: {} });
-  //
-  //       resolve(response);
-  //     },
-  //     onError: (error) => {
-  //       reject(error);
-  //     }
-  //   });
-  // });
 }

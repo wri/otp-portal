@@ -1,5 +1,7 @@
 import Jsona from 'jsona';
 import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
+import compact from 'lodash/compact';
 
 const JSONA = new Jsona();
 
@@ -31,6 +33,19 @@ const HELPERS_REGISTER = {
       { label: 'PEFC', value: 'pefc' },
       { label: 'OLB', value: 'olb' }
     ];
+  },
+
+  getFMUCertificationsValues(fmus) {
+    const fmusGroups = groupBy(fmus, 'id');
+    Object.keys(fmusGroups).forEach((id) => {
+      fmusGroups[id] = compact([
+        !fmusGroups[id]['certification-fsc'] && 'fsc',
+        !!fmusGroups[id]['certification-pefc'] && 'pefc',
+        !!fmusGroups[id]['certification-olb'] && 'olb'
+      ]);
+    });
+
+    return fmusGroups;
   },
 
   getOperatorTypes() {

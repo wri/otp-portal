@@ -17,14 +17,14 @@ export default class FmusCheckboxGroup extends FormElement {
 
     // Initial state
     this.state = {
-      value: this.props.value || []
+      value: props.properties.default || []
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.value, this.props.value)) {
+    if (!isEqual(nextProps.properties.value, this.props.properties.value)) {
       this.setState({
-        value: nextProps.value
+        value: nextProps.properties.value
       });
     }
   }
@@ -92,6 +92,7 @@ export default class FmusCheckboxGroup extends FormElement {
           name: this.props.name,
           title: option.label,
           checked: this.state.value.includes(option.value),
+          disabled: true,
           value: option.value,
           default: option.value
         }}
@@ -109,8 +110,8 @@ export default class FmusCheckboxGroup extends FormElement {
         options={HELPERS_REGISTER.getFMUCertifications()}
         disabled={!this.state.value.includes(option.value)}
         properties={{
-          name: option.value
-          // default: this.state.form.fmus
+          name: option.value,
+          default: this.props.certifications[option.value] || []
         }}
 
       />
@@ -139,5 +140,6 @@ FmusCheckboxGroup.propTypes = {
   className: PropTypes.string,
   options: PropTypes.array,
   grid: PropTypes.object,
+  certifications: PropTypes.object,
   onChange: PropTypes.func
 };

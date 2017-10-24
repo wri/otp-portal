@@ -1,9 +1,11 @@
 import React from 'react';
+import isEmpty from 'lodash/isEmpty';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import { getUserOperator } from 'modules/user';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -13,9 +15,9 @@ import { intlShape } from 'react-intl';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import Signup from 'components/ui/signup';
+import EditOperator from 'components/operators/edit';
 
-class SignUpPage extends Page {
+class OperatorsEdit extends Page {
   /**
    * COMPONENT LIFECYCLE
   */
@@ -26,31 +28,37 @@ class SignUpPage extends Page {
       // Get operators
       this.props.getOperators();
     }
+
+    // Get user operator
+    this.props.getUserOperator(146);
   }
 
   render() {
-    const { url } = this.props;
+    const { url, userOperator } = this.props;
 
     return (
       <Layout
-        title="Register"
-        description="Register description..."
+        title="Edit operator"
+        description="Edit description..."
         url={url}
         searchList={this.props.operators.data}
       >
         <StaticHeader
-          title="Sign up"
+          title="Edit operator"
           background="/static/images/static-header/bg-help.jpg"
         />
 
-        <Signup />
-
+        {userOperator && !isEmpty(userOperator.data) &&
+          <EditOperator
+            operator={userOperator.data}
+          />
+        }
       </Layout>
     );
   }
 }
 
-SignUpPage.propTypes = {
+OperatorsEdit.propTypes = {
   intl: intlShape.isRequired
 };
 
@@ -58,7 +66,8 @@ SignUpPage.propTypes = {
 export default withIntl(withRedux(
   store,
   state => ({
-    operators: state.operators
+    operators: state.operators,
+    userOperator: state.user.operator
   }),
-  { getOperators }
-)(SignUpPage));
+  { getOperators, getUserOperator }
+)(OperatorsEdit));

@@ -155,7 +155,7 @@ class Login extends React.Component {
             </Field>
           </fieldset>
 
-          <p>Not a member yet? <a href="/signup">Register now</a></p>
+          <p>Not a member yet? <a href="/operators/new">Register now</a></p>
 
           <ul className="c-field-buttons">
             <li>

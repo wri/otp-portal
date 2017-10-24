@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -14,12 +16,11 @@ import { toastr } from 'react-redux-toastr';
 import Link from 'next/link';
 
 // Components
-import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import CheckboxGroup from 'components/form/CheckboxGroup';
+import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
@@ -46,23 +47,25 @@ const FORM_ELEMENTS = {
   }
 };
 
-class Signup extends React.Component {
+class EditOperator extends React.Component {
   constructor(props) {
     super(props);
 
+    const { operator } = props;
+
     this.state = {
       form: {
-        name: '',
-        details: '',
-        type: '',
-        address: '',
-        website: '',
-        country: '',
-        fmus: []
+        name: operator.name,
+        details: operator.details,
+        operator_type: operator['operator-type'],
+        address: operator.address || '',
+        website: operator.website || '',
+        country: operator.country.id,
+        fmus: operator.fmus.map(f => f.id)
       },
-      certifications: {},
-      fmusOptions: [],
-      fmusLoading: true,
+      certifications: HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus),
+      fmusOptions: sortBy(operator.fmus.map(f => ({ label: f.name, value: f.id })), 'label'),
+      fmusLoading: false,
       submitting: false,
       submitted: false
     };
@@ -107,10 +110,34 @@ class Signup extends React.Component {
         this.setState({ submitting: true });
 
         // Save data
-        this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
+        this.props.saveOperator({
+          body: HELPERS_REGISTER.getBody(this.state.form),
+          type: 'PATCH'
+        })
           .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            if (this.props.onSubmit) this.props.onSubmit();
+            const promises = [];
+
+            if (Object.keys(this.state.certifications).length) {
+              Object.keys(this.state.certifications).forEach((k) => {
+                promises.push(this.props.saveFmu({
+                  id: k,
+                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
+                }));
+              });
+
+              Promise.all(promises)
+                .then(() => {
+                  this.setState({ submitting: false, submitted: true });
+                  if (this.props.onSubmit) this.props.onSubmit();
+                })
+                .catch((errors) => {
+                  this.setState({ submitting: false });
+                  console.error(errors);
+                })
+            } else {
+              this.setState({ submitting: false, submitted: true });
+              if (this.props.onSubmit) this.props.onSubmit();
+            }
           })
           .catch((errors) => {
             this.setState({ submitting: false });
@@ -130,19 +157,19 @@ class Signup extends React.Component {
     }, 0);
   }
 
-  /**
-   * HELPERS
-   * - getFmus
-   *
-  */
-  async getFmus(countryId) {
-    this.setState({ fmusLoading: true });
-    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
-    this.setState({
-      fmusOptions: fmus,
-      fmusLoading: false
-    });
-  }
+  // /**
+  //  * HELPERS
+  //  * - getFmus
+  //  *
+  // */
+  // async getFmus(countryId) {
+  //   this.setState({ fmusLoading: true });
+  //   const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
+  //   this.setState({
+  //     fmusOptions: fmus,
+  //     fmusLoading: false
+  //   });
+  // }
 
   render() {
     const { submitting, submitted } = this.state;
@@ -262,13 +289,6 @@ class Signup extends React.Component {
                 {/* Country */}
                 <Field
                   ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
-                  onChange={(value) => {
-                    this.onChange({
-                      country: value,
-                      fmus: []
-                    });
-                    this.getFmus(value);
-                  }}
                   validations={['required']}
                   className="-fluid"
                   loadOptions={HELPERS_REGISTER.getCountries}
@@ -276,6 +296,7 @@ class Signup extends React.Component {
                     name: 'country',
                     label: 'Country',
                     required: true,
+                    disabled: true,
                     instanceId: 'select.country',
                     default: this.state.form.country
                   }}
@@ -283,31 +304,25 @@ class Signup extends React.Component {
                   {Select}
                 </Field>
 
-                {!!this.state.form.country &&
-                  <Spinner isLoading={this.state.fmusLoading} />
-                }
-
                 {/* FMUs */}
                 {!!this.state.fmusOptions.length &&
                   <Field
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
+                    name="fmus"
                     onChange={value => this.onChange({ fmus: value })}
+                    onChangeCertifications={value => this.onChangeCertifications(value)}
                     className="-fluid"
-                    grid={{
-                      small: 12,
-                      medium: 4,
-                      large: 4
-                    }}
                     options={this.state.fmusOptions}
+                    certifications={this.state.certifications}
                     properties={{
                       name: 'fmus',
-                      label: 'FMUs',
                       default: this.state.form.fmus
                     }}
                   >
-                    {CheckboxGroup}
+                    {FmusCheckboxGroup}
                   </Field>
                 }
+
               </div>
             </fieldset>
 
@@ -359,7 +374,8 @@ class Signup extends React.Component {
   }
 }
 
-Signup.propTypes = {
+EditOperator.propTypes = {
+  operator: PropTypes.object,
   saveOperator: PropTypes.func,
   saveFmu: PropTypes.func,
   onSubmit: PropTypes.func,
@@ -370,4 +386,4 @@ Signup.propTypes = {
 export default injectIntl(connect(
   null,
   { saveOperator, saveFmu }
-)(Signup));
+)(EditOperator));

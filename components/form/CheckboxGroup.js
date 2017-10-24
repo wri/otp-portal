@@ -12,14 +12,14 @@ export default class CheckboxGroup extends FormElement {
 
     // Initial state
     this.state = {
-      value: this.props.value || []
+      value: props.properties.default || []
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.value, this.props.value)) {
+    if (!isEqual(nextProps.properties.value, this.props.properties.value)) {
       this.setState({
-        value: nextProps.value
+        value: nextProps.properties.value
       });
     }
   }
