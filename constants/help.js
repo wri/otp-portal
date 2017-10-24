@@ -40,6 +40,15 @@ const HOW_OTP_WORKS_HELP = [{
     href: '/help?tab=how-otp-works&article=geographical-scope',
     as: '/help/how-otp-works?article=geographical-scope'
   }
+}, {
+  id: 'assessing-severity-of-observations',
+  title: 'help.tabs.howto.post4.title',
+  description: 'help.tabs.howto.post4.description',
+  link: {
+    label: 'Read more',
+    href: '/help?tab=how-otp-works&article=assessing-severity-of-observations',
+    as: '/help/how-otp-works?article=assessing-severity-of-observations'
+  }
 }];
 
 

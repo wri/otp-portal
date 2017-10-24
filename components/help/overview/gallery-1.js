@@ -16,7 +16,7 @@ function Gallery1(props) {
       </h2>
 
       <div className="row l-row">
-        {HOW_OTP_WORKS_HELP.map((article, i) => {
+        {HOW_OTP_WORKS_HELP.slice(0, 3).map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (

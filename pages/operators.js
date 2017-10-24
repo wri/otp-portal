@@ -172,7 +172,7 @@ class OperatorsPage extends Page {
                   <td className="-ta-center" rowSpan={table.length}>
                     <OperatorsRanking
                       key={`update-${r.id}`}
-                      data={table.map(o => ({ id: o.id, value: o.documentation }))}
+                      data={table.map(o => ({ id: o.id, value: parseInt(o.documentation, 10) }))}
                       sortDirection={sortDirection}
                     />
                   </td>

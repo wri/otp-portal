@@ -94,7 +94,11 @@ export function getObservations() {
 
     const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu'];
 
-    const url = `${process.env.OTP_API}/observations?page[size]=${OBS_MAX_SIZE}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
+    // Fields
+    const currentFields = { fmus: ['name'], operator: ['name'] };
+    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
+
+    const url = `${process.env.OTP_API}/observations?page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 

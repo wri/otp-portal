@@ -22,6 +22,7 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 
 class HelpPage extends Page {
+
   /**
    * COMPONENT LIFECYCLE
   */
@@ -37,6 +38,7 @@ class HelpPage extends Page {
   render() {
     const { url } = this.props;
     const tab = url.query.tab || 'overview';
+    const article = url.query.article;
 
     return (
       <Layout
@@ -77,15 +79,21 @@ class HelpPage extends Page {
         }
 
         {tab === 'how-otp-works' &&
-          <HelpHowOTPWorks />
+          <HelpHowOTPWorks
+            url={url}
+          />
         }
 
         {tab === 'legislation-and-regulations' &&
-          <HelpLegislationAndRegulations />
+          <HelpLegislationAndRegulations
+            url={url}
+          />
         }
 
         {tab === 'faqs' &&
-          <HelpFaqs />
+          <HelpFaqs
+            url={url}
+          />
         }
 
       </Layout>

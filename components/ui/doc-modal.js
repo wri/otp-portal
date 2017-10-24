@@ -47,7 +47,8 @@ class DocModal extends React.Component {
 
     this.state = {
       form: {
-        date: '',
+        startDate: '',
+        expireDate: '',
         file: ''
       },
       submitting: false,
@@ -126,7 +127,8 @@ class DocModal extends React.Component {
           current: true,
           'operator-id': operatorId,
           'required-operator-document-id': requiredDocId,
-          'start-date': this.state.form.date,
+          'start-date': this.state.form.startDate,
+          'expire-date': this.state.form.expireDate,
           attachment: this.state.form.file,
           ...fmu && { 'fmu-id': fmu.id }
         }
@@ -152,22 +154,44 @@ class DocModal extends React.Component {
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
-            {/* DATE */}
-            <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.date = c; }}
-              onChange={value => this.onChange({ date: value })}
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'date',
-                label: this.props.intl.formatMessage({ id: 'date' }),
-                type: 'date',
-                required: true,
-                default: this.state.form.email
-              }}
-            >
-              {Input}
-            </Field>
+            <div className="c-field-row">
+              <div className="l-row row">
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.startDate = c; }}
+                    onChange={value => this.onChange({ startDate: value })}
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'startDate',
+                      label: this.props.intl.formatMessage({ id: 'start_date' }),
+                      type: 'date',
+                      required: true,
+                      default: this.state.form.startDate
+                    }}
+                  >
+                    {Input}
+                  </Field>
+                </div>
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
+                    onChange={value => this.onChange({ expireDate: value })}
+                    className="-fluid"
+                    properties={{
+                      name: 'expireDate',
+                      label: this.props.intl.formatMessage({ id: 'expire_date' }),
+                      type: 'date',
+                      default: this.state.form.expireDate
+                    }}
+                  >
+                    {Input}
+                  </Field>
+                </div>
+              </div>
+            </div>
 
             {/* DOCUMENT */}
             <Field

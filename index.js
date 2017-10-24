@@ -87,8 +87,8 @@ app.prepare()
     });
 
     // REGISTER
-    server.get('/operators/new', (req, res) => app.render(req, res, '/operators-new', req.params));
-    server.get('/operators/edit', (req, res) => app.render(req, res, '/operators-edit', req.params));
+    server.get('/operators/new', (req, res) => app.render(req, res, '/operators-new', Object.assign(req.params, req.query)));
+    server.get('/operators/edit', (req, res) => app.render(req, res, '/operators-edit', Object.assign(req.params, req.query)));
 
     server.get('/operators/:id', (req, res) => {
       const { query } = parse(req.url, true);
@@ -103,11 +103,11 @@ app.prepare()
     server.get('/observations', (req, res) => app.render(req, res, '/observations', Object.assign(req.params, req.query)));
     server.get('/observations/:tab', (req, res) => app.render(req, res, '/observations', Object.assign(req.params, req.query)));
 
-    server.get('/about', (req, res) => app.render(req, res, '/about', req.params));
+    server.get('/about', (req, res) => app.render(req, res, '/about', Object.assign(req.params, req.query)));
 
     // HELP
-    server.get('/help', (req, res) => app.render(req, res, '/help', req.params));
-    server.get('/help/:tab', (req, res) => app.render(req, res, '/help', req.params));
+    server.get('/help', (req, res) => app.render(req, res, '/help', Object.assign(req.params, req.query)));
+    server.get('/help/:tab', (req, res) => app.render(req, res, '/help', Object.assign(req.params, req.query)));
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));

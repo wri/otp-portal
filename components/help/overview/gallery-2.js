@@ -17,7 +17,7 @@ function Gallery2(props) {
       </h2>
 
       <div className="row l-row">
-        {LEGISLATION_AND_REGULATIONS_HELP.map((article, i) => {
+        {LEGISLATION_AND_REGULATIONS_HELP.slice(0, 3).map((article, i) => {
           const theme = (i === 0) ? '-secondary' : '-primary';
 
           return (
