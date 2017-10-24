@@ -17,8 +17,9 @@ import Link from 'next/link';
 import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
+import CheckboxGroup from 'components/form/CheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
@@ -52,6 +53,7 @@ class Signup extends React.Component {
     this.state = {
       form: {
         name: '',
+        details: '',
         type: '',
         address: '',
         website: '',
@@ -107,29 +109,8 @@ class Signup extends React.Component {
         // Save data
         this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
           .then(() => {
-            const promises = [];
-
-            if (Object.keys(this.state.certifications).length) {
-              Object.keys(this.state.certifications).forEach((k) => {
-                promises.push(this.props.saveFmu({
-                  id: k,
-                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
-                }));
-              });
-
-              Promise.all(promises)
-                .then(() => {
-                  this.setState({ submitting: false, submitted: true });
-                  if (this.props.onSubmit) this.props.onSubmit();
-                })
-                .catch((errors) => {
-                  this.setState({ submitting: false });
-                  console.error(errors);
-                })
-            } else {
-              this.setState({ submitting: false, submitted: true });
-              if (this.props.onSubmit) this.props.onSubmit();
-            }
+            this.setState({ submitting: false, submitted: true });
+            if (this.props.onSubmit) this.props.onSubmit();
           })
           .catch((errors) => {
             this.setState({ submitting: false });
@@ -192,6 +173,21 @@ class Signup extends React.Component {
                 }}
               >
                 {Input}
+              </Field>
+
+              {/* Operator description */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
+                onChange={value => this.onChange({ details: value })}
+                className="-fluid"
+                properties={{
+                  name: 'details',
+                  label: 'Operator\'s description',
+                  default: this.state.form.details,
+                  rows: '6'
+                }}
+              >
+                {Textarea}
               </Field>
 
               {/* Operator type */}
@@ -295,17 +291,21 @@ class Signup extends React.Component {
                 {!!this.state.fmusOptions.length &&
                   <Field
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
-                    name="fmus"
                     onChange={value => this.onChange({ fmus: value })}
-                    onChangeCertifications={value => this.onChangeCertifications(value)}
                     className="-fluid"
+                    grid={{
+                      small: 12,
+                      medium: 4,
+                      large: 4
+                    }}
                     options={this.state.fmusOptions}
                     properties={{
                       name: 'fmus',
+                      label: 'FMUs',
                       default: this.state.form.fmus
                     }}
                   >
-                    {FmusCheckboxGroup}
+                    {CheckboxGroup}
                   </Field>
                 }
               </div>
