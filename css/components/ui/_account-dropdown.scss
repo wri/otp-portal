@@ -66,4 +66,26 @@
       }
     }
   }
+
+  &.-theme-home {
+    .dropdown__content {
+      &:after {
+        background: rgba($color-gray-1, 0.9);
+        border-top: 1px solid rgba($color-black, 0.15);
+        border-right: 1px solid rgba($color-black, 0.15);
+      }
+    }
+
+    .account-dropdown-list {
+      min-width: 200px;
+      padding: $space-1 * 2;
+      background: rgba($color-gray-1, 0.9);
+    }
+
+    .account-dropdown-list-item {
+      a {
+        color: $color-tertiary;
+      }
+    }
+  }
 }

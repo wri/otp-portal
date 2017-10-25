@@ -1,6 +1,9 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty';
 
+// Next
+import Router from 'next/router';
+
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
@@ -30,7 +33,14 @@ class OperatorsEdit extends Page {
     }
 
     // // Get user operator
-    this.props.getUserOperator(user.operator);
+    if (user.operator) {
+      this.props.getUserOperator(user.operator);
+    } else {
+      const location = {
+        pathname: '/'
+      };
+      Router.push(location, '/');
+    }
   }
 
   render() {
@@ -68,7 +78,7 @@ export default withIntl(withRedux(
   state => ({
     user: state.user,
     operators: state.operators,
-    userOperator: state.user.operator
+    userOperator: state.user.userOperator
   }),
   { getOperators, getUserOperator }
 )(OperatorsEdit));

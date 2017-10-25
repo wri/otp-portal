@@ -8,13 +8,11 @@ import { connect } from 'react-redux';
 import { login } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
-// Next components
-import Link from 'next/link';
-
 // Services
 import modal from 'services/modal';
 
 // Components
+import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 
@@ -114,6 +112,9 @@ class Login extends React.Component {
 
     return (
       <div className="c-login">
+
+        <Spinner isLoading={submitting} className="-light" />
+
         <h2 className="c-title -huge">
           Log in
         </h2>

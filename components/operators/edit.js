@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
-import groupBy from 'lodash/groupBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -52,8 +51,8 @@ class EditOperator extends React.Component {
 
     this.state = {
       form: {
-        name: operator.name,
-        details: operator.details,
+        name: operator.name || '',
+        details: operator.details || '',
         operator_type: operator['operator-type'],
         address: operator.address || '',
         website: operator.website || '',
@@ -105,8 +104,6 @@ class EditOperator extends React.Component {
       if (valid) {
         // Start the submitting
         this.setState({ submitting: true });
-
-        console.log(this.props.operator);
 
         // Save data
         this.props.updateOperator({

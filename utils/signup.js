@@ -84,6 +84,7 @@ const HELPERS_REGISTER = {
     const {
       address,
       country,
+      details,
       fmus,
       logo,
       name,
@@ -96,6 +97,7 @@ const HELPERS_REGISTER = {
         type: 'operators',
         attributes: {
           name,
+          details,
           'operator-type': operator_type,
           website,
           logo,

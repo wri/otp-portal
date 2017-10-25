@@ -71,18 +71,7 @@ class Header extends React.Component {
                     </a>
                   }
 
-                  {user.token && user.role !== 'operator' &&
-                    <a
-                      onClick={() => {
-                        this.props.logout();
-                      }}
-                    >
-                      <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
-                      <Icon name="icon-user" />
-                    </a>
-                  }
-
-                  {user.token && user.role === 'operator' &&
+                  {user.token &&
                     <Dropdown
                       className={`c-account-dropdown ${this.setTheme()}`}
                       ref={(d) => { this.dropdown = d; }}
@@ -96,13 +85,20 @@ class Header extends React.Component {
 
                       <DropdownContent>
                         <ul className="account-dropdown-list">
-                          <li className="account-dropdown-list-item">
-                            <Link
-                              href="/operators/edit"
-                            >
-                              <a>Profile</a>
-                            </Link>
-                          </li>
+                          {user.role === 'operator' &&
+                            <li className="account-dropdown-list-item">
+                              <Link
+                                href="/operators/edit"
+                              >
+                                <a>Profile</a>
+                              </Link>
+                            </li>
+                          }
+                          {user.role === 'admin' &&
+                            <li className="account-dropdown-list-item">
+                              <a href="/admin" >Admin </a>
+                            </li>
+                          }
                           <li className="account-dropdown-list-item">
                             <a
                               onClick={() => {

@@ -24,20 +24,20 @@ export default function (state = initialState, action) {
     case SET_USER:
       return Object.assign({}, state, action.payload);
     case GET_USER_OPERATOR_SUCCESS: {
-      const operator = Object.assign(
+      const userOperator = Object.assign(
         {},
-        state.operator,
+        state.userOperator,
         { data: action.payload, loading: false, error: false }
       );
-      return Object.assign({}, state, { operator });
+      return Object.assign({}, state, { userOperator });
     }
     case GET_USER_OPERATOR_ERROR: {
-      const operator = Object.assign({}, state.operator, { error: true, loading: false });
-      return Object.assign({}, state, { operator });
+      const userOperator = Object.assign({}, state.userOperator, { error: true, loading: false });
+      return Object.assign({}, state, { userOperator });
     }
     case GET_USER_OPERATOR_LOADING: {
-      const operator = Object.assign({}, state.operator, { loading: true, error: false });
-      return Object.assign({}, state, { operator });
+      const userOperator = Object.assign({}, state.userOperator, { loading: true, error: false });
+      return Object.assign({}, state, { userOperator });
     }
     case REMOVE_USER:
       return {};
