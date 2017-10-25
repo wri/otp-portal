@@ -86,7 +86,6 @@ export function getUserOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-        console.log(dataParsed);
 
         dispatch({
           type: GET_USER_OPERATOR_SUCCESS,
@@ -168,11 +167,11 @@ export function logout() {
   // });
 }
 
-export function saveOperator({ body, type }) {
+export function saveOperator({ body }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/operators`,
-      type: type || 'POST',
+      type: 'POST',
       body,
       headers: [{
         key: 'Content-Type',
@@ -191,7 +190,33 @@ export function saveOperator({ body, type }) {
   });
 }
 
-export function saveFmu({ id, body }) {
+export function updateOperator({ body, id, authorization }) {
+  return () => new Promise((resolve, reject) => {
+    post({
+      url: `${process.env.OTP_API}/operators/${id}`,
+      type: 'PATCH',
+      body,
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/vnd.api+json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }, {
+        key: 'Authorization',
+        value: `Bearer ${authorization}`
+      }],
+      onSuccess: (response) => {
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
+}
+
+export function saveFmu({ id, body, authorization }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/fmus/${id}`,
@@ -200,6 +225,9 @@ export function saveFmu({ id, body }) {
       headers: [{
         key: 'Content-Type',
         value: 'application/vnd.api+json'
+      }, {
+        key: 'Authorization',
+        value: `Bearer ${authorization}`
       }, {
         key: 'OTP-API-KEY',
         value: process.env.OTP_API_KEY

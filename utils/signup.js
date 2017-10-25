@@ -39,7 +39,7 @@ const HELPERS_REGISTER = {
     const fmusGroups = groupBy(fmus, 'id');
     Object.keys(fmusGroups).forEach((id) => {
       fmusGroups[id] = compact([
-        !fmusGroups[id]['certification-fsc'] && 'fsc',
+        !!fmusGroups[id]['certification-fsc'] && 'fsc',
         !!fmusGroups[id]['certification-pefc'] && 'pefc',
         !!fmusGroups[id]['certification-olb'] && 'olb'
       ]);

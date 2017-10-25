@@ -9,11 +9,8 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { saveOperator, saveFmu } from 'modules/user';
+import { updateOperator, saveFmu } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
-
-// Next components
-import Link from 'next/link';
 
 // Components
 import Field from 'components/form/Field';
@@ -109,10 +106,14 @@ class EditOperator extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
+        console.log(this.props.operator);
+
         // Save data
-        this.props.saveOperator({
+        this.props.updateOperator({
           body: HELPERS_REGISTER.getBody(this.state.form),
-          type: 'PATCH'
+          type: 'PATCH',
+          id: this.props.operator.id,
+          authorization: this.props.user.token
         })
           .then(() => {
             const promises = [];
@@ -121,7 +122,8 @@ class EditOperator extends React.Component {
               Object.keys(this.state.certifications).forEach((k) => {
                 promises.push(this.props.saveFmu({
                   id: k,
-                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k])
+                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k]),
+                  authorization: this.props.user.token
                 }));
               });
 
@@ -172,211 +174,181 @@ class EditOperator extends React.Component {
   // }
 
   render() {
-    const { submitting, submitted } = this.state;
+    const { submitting } = this.state;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
 
     return (
       <div className="c-section">
-        {!submitted &&
-          <form className="c-form" onSubmit={this.onSubmit} noValidate>
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                Operator info
-              </h2>
+        <form className="c-form" onSubmit={this.onSubmit} noValidate>
+          <fieldset className="c-field-container">
+            <h2 className="c-title -huge">
+              Operator info
+            </h2>
 
-              {/* Operator name */}
+            {/* Operator name */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+              onChange={value => this.onChange({ name: value })}
+              validations={['required']}
+              className="-fluid"
+              properties={{
+                name: 'name',
+                label: 'Operator\'s name',
+                required: true,
+                default: this.state.form.name
+              }}
+            >
+              {Input}
+            </Field>
+
+            {/* Operator description */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
+              onChange={value => this.onChange({ details: value })}
+              className="-fluid"
+              properties={{
+                name: 'details',
+                label: 'Operator\'s description',
+                default: this.state.form.details,
+                rows: '6'
+              }}
+            >
+              {Textarea}
+            </Field>
+
+            {/* Operator type */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+              onChange={value => this.onChange({ operator_type: value })}
+              validations={['required']}
+              className="-fluid"
+              options={HELPERS_REGISTER.getOperatorTypes()}
+              properties={{
+                name: 'operator_type',
+                label: 'Operator\'s type',
+                required: true,
+                instanceId: 'select.operator_type',
+                default: this.state.form.operator_type
+              }}
+            >
+              {Select}
+            </Field>
+
+            {/* Website */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.website = c; }}
+              onChange={value => this.onChange({ website: value })}
+              validations={['url']}
+              className="-fluid"
+              properties={{
+                name: 'website',
+                label: 'Website',
+                default: this.state.form.website
+              }}
+            >
+              {Input}
+            </Field>
+
+            {/* Address */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.address = c; }}
+              onChange={value => this.onChange({ address: value })}
+              className="-fluid"
+              properties={{
+                name: 'address',
+                label: 'Address',
+                default: this.state.form.address
+              }}
+            >
+              {Input}
+            </Field>
+
+            {/* Logo */}
+            <Field
+              ref={(c) => { if (c) FORM_ELEMENTS.elements.logo = c; }}
+              onChange={value => this.onChange({ logo: value })}
+              className="-fluid"
+              properties={{
+                name: 'logo',
+                label: 'Logo',
+                default: this.state.form.logo
+              }}
+            >
+              {FileImage}
+            </Field>
+
+          </fieldset>
+
+          <fieldset className="c-field-container">
+            <h2 className="c-title -huge">
+              {this.props.intl.formatMessage({ id: 'forest-management-units' })}
+            </h2>
+
+            <div className="c-field-row">
+              {/* Country */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
-                onChange={value => this.onChange({ name: value })}
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
+                loadOptions={HELPERS_REGISTER.getCountries}
                 properties={{
-                  name: 'name',
-                  label: 'Operator\'s name',
+                  name: 'country',
+                  label: 'Country',
                   required: true,
-                  default: this.state.form.name
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Operator description */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
-                onChange={value => this.onChange({ details: value })}
-                className="-fluid"
-                properties={{
-                  name: 'details',
-                  label: 'Operator\'s description',
-                  default: this.state.form.details,
-                  rows: '6'
-                }}
-              >
-                {Textarea}
-              </Field>
-
-              {/* Operator type */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
-                onChange={value => this.onChange({ operator_type: value })}
-                validations={['required']}
-                className="-fluid"
-                options={HELPERS_REGISTER.getOperatorTypes()}
-                properties={{
-                  name: 'operator_type',
-                  label: 'Operator\'s type',
-                  required: true,
-                  instanceId: 'select.operator_type',
-                  default: this.state.form.operator_type
+                  disabled: true,
+                  instanceId: 'select.country',
+                  default: this.state.form.country
                 }}
               >
                 {Select}
               </Field>
 
-              {/* Website */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.website = c; }}
-                onChange={value => this.onChange({ website: value })}
-                validations={['url']}
-                className="-fluid"
-                properties={{
-                  name: 'website',
-                  label: 'Website',
-                  default: this.state.form.website
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Address */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.address = c; }}
-                onChange={value => this.onChange({ address: value })}
-                className="-fluid"
-                properties={{
-                  name: 'address',
-                  label: 'Address',
-                  default: this.state.form.address
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Logo */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.logo = c; }}
-                onChange={value => this.onChange({ logo: value })}
-                className="-fluid"
-                properties={{
-                  name: 'logo',
-                  label: 'Logo',
-                  default: this.state.form.logo
-                }}
-              >
-                {FileImage}
-              </Field>
-
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {this.props.intl.formatMessage({ id: 'forest-management-units' })}
-              </h2>
-
-              <div className="c-field-row">
-                {/* Country */}
+              {/* FMUs */}
+              {!!this.state.fmusOptions.length &&
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
-                  validations={['required']}
+                  ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
+                  name="fmus"
+                  onChange={value => this.onChange({ fmus: value })}
+                  onChangeCertifications={value => this.onChangeCertifications(value)}
                   className="-fluid"
-                  loadOptions={HELPERS_REGISTER.getCountries}
+                  options={this.state.fmusOptions}
+                  certifications={this.state.certifications}
                   properties={{
-                    name: 'country',
-                    label: 'Country',
-                    required: true,
-                    disabled: true,
-                    instanceId: 'select.country',
-                    default: this.state.form.country
+                    name: 'fmus',
+                    default: this.state.form.fmus
                   }}
                 >
-                  {Select}
+                  {FmusCheckboxGroup}
                 </Field>
+              }
 
-                {/* FMUs */}
-                {!!this.state.fmusOptions.length &&
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
-                    name="fmus"
-                    onChange={value => this.onChange({ fmus: value })}
-                    onChangeCertifications={value => this.onChangeCertifications(value)}
-                    className="-fluid"
-                    options={this.state.fmusOptions}
-                    certifications={this.state.certifications}
-                    properties={{
-                      name: 'fmus',
-                      default: this.state.form.fmus
-                    }}
-                  >
-                    {FmusCheckboxGroup}
-                  </Field>
-                }
+            </div>
+          </fieldset>
 
-              </div>
-            </fieldset>
-
-            <ul className="c-field-buttons">
-              <li>
-                <button
-                  type="submit"
-                  name="commit"
-                  disabled={submitting}
-                  className={`c-button -secondary -expanded ${submittingClassName}`}
-                >
-                  Sign up
-                </button>
-              </li>
-            </ul>
-          </form>
-        }
-
-        {submitted &&
-          <div className="c-form">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'thankyou' })}
-            </h2>
-
-            <p>
-              {this.props.intl.formatMessage({ id: 'wait-for-approval' })}
-            </p>
-
-            <ul className="c-field-buttons">
-              <li>
-                <Link href="/operators">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'operators' })}
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/observations">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'observations' })}
-                  </a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        }
+          <ul className="c-field-buttons">
+            <li>
+              <button
+                type="submit"
+                name="commit"
+                disabled={submitting}
+                className={`c-button -secondary -expanded ${submittingClassName}`}
+              >
+                Update
+              </button>
+            </li>
+          </ul>
+        </form>
       </div>
     );
   }
 }
 
 EditOperator.propTypes = {
+  user: PropTypes.object,
   operator: PropTypes.object,
-  saveOperator: PropTypes.func,
+  updateOperator: PropTypes.func,
   saveFmu: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
@@ -384,6 +356,8 @@ EditOperator.propTypes = {
 
 
 export default injectIntl(connect(
-  null,
-  { saveOperator, saveFmu }
+  state => ({
+    user: state.user
+  }),
+  { updateOperator, saveFmu }
 )(EditOperator));

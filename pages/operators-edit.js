@@ -22,15 +22,15 @@ class OperatorsEdit extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators } = this.props;
+    const { operators, user } = this.props;
 
     if (!operators.data.length) {
       // Get operators
       this.props.getOperators();
     }
 
-    // Get user operator
-    this.props.getUserOperator(146);
+    // // Get user operator
+    this.props.getUserOperator(user.operator);
   }
 
   render() {
@@ -66,6 +66,7 @@ OperatorsEdit.propTypes = {
 export default withIntl(withRedux(
   store,
   state => ({
+    user: state.user,
     operators: state.operators,
     userOperator: state.user.operator
   }),

@@ -54,7 +54,7 @@ class DocCardUpload extends React.Component {
 
   triggerDeleteFile(e) {
     e && e.preventDefault();
-    const { id, type } = this.props;
+    const { id } = this.props;
 
     this.setState({ deleteLoading: true });
 
