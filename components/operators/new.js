@@ -7,7 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { signup } from 'modules/user';
+import { saveOperator } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
 // Next components
@@ -17,6 +17,7 @@ import Link from 'next/link';
 import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
 import CheckboxGroup from 'components/form/CheckboxGroup';
 import Select from 'components/form/SelectInput';
@@ -45,19 +46,21 @@ const FORM_ELEMENTS = {
   }
 };
 
-class Signup extends React.Component {
+class NewOperator extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       form: {
         name: '',
+        details: '',
         type: '',
         address: '',
         website: '',
         country: '',
         fmus: []
       },
+      certifications: {},
       fmusOptions: [],
       fmusLoading: true,
       submitting: false,
@@ -76,7 +79,16 @@ class Signup extends React.Component {
   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
+    this.setState({ form }, () => {
+      console.log(form);
+    });
+  }
+
+  onChangeCertifications(value) {
+    const certifications = Object.assign({}, this.state.certifications, value);
+    this.setState({ certifications }, () => {
+      console.log(certifications);
+    });
   }
 
   onSubmit(e) {
@@ -95,7 +107,7 @@ class Signup extends React.Component {
         this.setState({ submitting: true });
 
         // Save data
-        this.props.signup({ body: HELPERS_REGISTER.getBody(this.state.form) })
+        this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
           .then(() => {
             this.setState({ submitting: false, submitted: true });
             if (this.props.onSubmit) this.props.onSubmit();
@@ -109,7 +121,7 @@ class Signup extends React.Component {
                 toastr.error('Error', `${er.title} - ${er.detail}`)
               );
             } catch (e) {
-              toastr.error('Error', `Oops! There was an error, try again`);
+              toastr.error('Error', 'Oops! There was an error, try again');
             }
           });
       } else {
@@ -140,11 +152,13 @@ class Signup extends React.Component {
 
     return (
       <div className="c-section">
+        <Spinner isLoading={submitting} className="-light -fixed" />
+
         {!submitted &&
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
               <h2 className="c-title -huge">
-                Operator info
+                {this.props.intl.formatMessage({ id: 'info.operator' })}
               </h2>
 
               {/* Operator name */}
@@ -163,48 +177,38 @@ class Signup extends React.Component {
                 {Input}
               </Field>
 
-              <div className="c-field-row">
-                <div className="row">
-                  <div className="small-12 medium-6">
-                    {/* Operator type */}
-                    <Field
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
-                      onChange={value => this.onChange({ operator_type: value })}
-                      validations={['required']}
-                      className="-fluid"
-                      options={HELPERS_REGISTER.getOperatorTypes()}
-                      properties={{
-                        name: 'operator_type',
-                        label: 'Operator\'s type',
-                        required: true,
-                        instanceId: 'select.operator_type',
-                        default: this.state.form.operator_type
-                      }}
-                    >
-                      {Select}
-                    </Field>
-                  </div>
-                  <div className="small-12 medium-6">
-                    {/* Certification */}
-                    <Field
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.certification = c; }}
-                      onChange={value => this.onChange({ certification: value })}
-                      validations={['required']}
-                      className="-fluid"
-                      options={HELPERS_REGISTER.getOperatorCertifications()}
-                      properties={{
-                        name: 'certification',
-                        label: 'Certification',
-                        required: true,
-                        instanceId: 'select.certification',
-                        default: this.state.form.certification
-                      }}
-                    >
-                      {Select}
-                    </Field>
-                  </div>
-                </div>
-              </div>
+              {/* Operator description */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
+                onChange={value => this.onChange({ details: value })}
+                className="-fluid"
+                properties={{
+                  name: 'details',
+                  label: 'Operator\'s description',
+                  default: this.state.form.details,
+                  rows: '6'
+                }}
+              >
+                {Textarea}
+              </Field>
+
+              {/* Operator type */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                onChange={value => this.onChange({ operator_type: value })}
+                validations={['required']}
+                className="-fluid"
+                options={HELPERS_REGISTER.getOperatorTypes()}
+                properties={{
+                  name: 'operator_type',
+                  label: 'Operator\'s type',
+                  required: true,
+                  instanceId: 'select.operator_type',
+                  default: this.state.form.operator_type
+                }}
+              >
+                {Select}
+              </Field>
 
               {/* Website */}
               <Field
@@ -317,7 +321,7 @@ class Signup extends React.Component {
                   disabled={submitting}
                   className={`c-button -secondary -expanded ${submittingClassName}`}
                 >
-                  Sign up
+                  {this.props.intl.formatMessage({ id: 'create.operator' })}
                 </button>
               </li>
             </ul>
@@ -357,8 +361,8 @@ class Signup extends React.Component {
   }
 }
 
-Signup.propTypes = {
-  signup: PropTypes.func,
+NewOperator.propTypes = {
+  saveOperator: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
 };
@@ -366,5 +370,5 @@ Signup.propTypes = {
 
 export default injectIntl(connect(
   null,
-  { signup }
-)(Signup));
+  { saveOperator }
+)(NewOperator));

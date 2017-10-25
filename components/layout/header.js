@@ -18,6 +18,7 @@ import Icon from 'components/ui/icon';
 import NavigationList from 'components/ui/navigation-list';
 import Search from 'components/ui/search';
 import Login from 'components/ui/login';
+import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
 class Header extends React.Component {
   /**
@@ -69,15 +70,47 @@ class Header extends React.Component {
                       <Icon name="icon-user" />
                     </a>
                   }
+
                   {user.token &&
-                    <a
-                      onClick={() => {
-                        this.props.logout();
-                      }}
+                    <Dropdown
+                      className={`c-account-dropdown ${this.setTheme()}`}
+                      ref={(d) => { this.dropdown = d; }}
                     >
-                      <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
-                      <Icon name="icon-user" />
-                    </a>
+                      <DropdownTrigger>
+                        <div className="header-nav-list-item">
+                          <span>My account</span>
+                          <Icon name="icon-user" />
+                        </div>
+                      </DropdownTrigger>
+
+                      <DropdownContent>
+                        <ul className="account-dropdown-list">
+                          {user.role === 'operator' &&
+                            <li className="account-dropdown-list-item">
+                              <Link
+                                href="/operators/edit"
+                              >
+                                <a>Profile</a>
+                              </Link>
+                            </li>
+                          }
+                          {user.role === 'admin' &&
+                            <li className="account-dropdown-list-item">
+                              <a href="/admin" >Admin </a>
+                            </li>
+                          }
+                          <li className="account-dropdown-list-item">
+                            <a
+                              onClick={() => {
+                                this.props.logout();
+                              }}
+                            >
+                              <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </DropdownContent>
+                    </Dropdown>
                   }
                 </li>
               </ul>
@@ -92,7 +125,6 @@ class Header extends React.Component {
 Header.propTypes = {
   url: PropTypes.object.isRequired,
   user: PropTypes.object,
-  searchList: PropTypes.array,
   intl: intlShape.isRequired,
   logout: PropTypes.func
 };

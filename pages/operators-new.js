@@ -13,9 +13,9 @@ import { intlShape } from 'react-intl';
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import Signup from 'components/ui/signup';
+import NewOperator from 'components/operators/new';
 
-class SignUpPage extends Page {
+class OperatorsNew extends Page {
   /**
    * COMPONENT LIFECYCLE
   */
@@ -33,24 +33,24 @@ class SignUpPage extends Page {
 
     return (
       <Layout
-        title="Register"
-        description="Register description..."
+        title={this.props.intl.formatMessage({ id: 'new.operators' })}
+        description={this.props.intl.formatMessage({ id: 'new.operators.description' })}
         url={url}
         searchList={this.props.operators.data}
       >
         <StaticHeader
-          title="Sign up"
+          title={this.props.intl.formatMessage({ id: 'new.operators' })}
           background="/static/images/static-header/bg-help.jpg"
         />
 
-        <Signup />
+        <NewOperator />
 
       </Layout>
     );
   }
 }
 
-SignUpPage.propTypes = {
+OperatorsNew.propTypes = {
   intl: intlShape.isRequired
 };
 
@@ -61,4 +61,4 @@ export default withIntl(withRedux(
     operators: state.operators
   }),
   { getOperators }
-)(SignUpPage));
+)(OperatorsNew));

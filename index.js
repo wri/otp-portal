@@ -86,6 +86,10 @@ app.prepare()
       return app.render(req, res, '/operators', Object.assign(req.params, query));
     });
 
+    // REGISTER
+    server.get('/operators/new', (req, res) => app.render(req, res, '/operators-new', Object.assign(req.params, req.query)));
+    server.get('/operators/edit', (req, res) => app.render(req, res, '/operators-edit', Object.assign(req.params, req.query)));
+
     server.get('/operators/:id', (req, res) => {
       const { query } = parse(req.url, true);
       return app.render(req, res, '/operators-detail', Object.assign(req.params, query));
@@ -104,9 +108,6 @@ app.prepare()
     // HELP
     server.get('/help', (req, res) => app.render(req, res, '/help', Object.assign(req.params, req.query)));
     server.get('/help/:tab', (req, res) => app.render(req, res, '/help', Object.assign(req.params, req.query)));
-
-    // REGISTER
-    server.get('/signup', (req, res) => app.render(req, res, '/signup', Object.assign(req.params, req.query)));
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));

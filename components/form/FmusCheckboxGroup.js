@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
 
+// Utils
+import { HELPERS_REGISTER } from 'utils/signup';
+
+// Components
 import Checkbox from './Checkbox';
+import CheckboxGroup from './CheckboxGroup';
 import FormElement from './FormElement';
 
-export default class CheckboxGroup extends FormElement {
+export default class FmusCheckboxGroup extends FormElement {
   constructor(props) {
     super(props);
 
@@ -27,6 +32,7 @@ export default class CheckboxGroup extends FormElement {
   /**
    * UI EVENTS
    * - triggerChange
+   * - triggerCertificationsChange
   */
   triggerChange(obj) {
     // Send objects
@@ -50,29 +56,32 @@ export default class CheckboxGroup extends FormElement {
   }
 
   getCheckboxList() {
-    const { grid } = this.props;
-
-    const checkboxList = this.props.options.map((option) => {
-      if (this.props.grid) {
-        const gridClassNames = classnames({
-          [`small-${grid.small || 12}`]: true,
-          [`medium-${grid.medium || 12}`]: true,
-          [`large-${grid.large || 12}`]: true
-        });
-
-        return (
-          <div key={option.value} className={`column ${gridClassNames}`}>
-            {this.getCheckbox(option)}
-          </div>
-        );
-      }
-
-      return this.getCheckbox(option);
-    });
-
-    return (grid) ?
-      <div className="row l-row">{checkboxList}</div> :
-      checkboxList;
+    return (
+      <table className="fmus-checkbox-table">
+        <thead>
+          <tr>
+            <th>
+              <h3 className="c-title -default">FMUs</h3>
+            </th>
+            <th className="td-certifications">
+              <h3 className="c-title -default">Certifications</h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.options.map(option => (
+            <tr key={option.value}>
+              <td>
+                {this.getCheckbox(option)}
+              </td>
+              <td className="td-certifications">
+                {this.getCertifications(option)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   }
 
   getCheckbox(option) {
@@ -83,11 +92,28 @@ export default class CheckboxGroup extends FormElement {
           name: this.props.name,
           title: option.label,
           checked: this.state.value.includes(option.value),
+          disabled: true,
           value: option.value,
-          default: option.value,
-          disabled: this.props.disabled
+          default: option.value
         }}
         onChange={value => this.triggerChange(value)}
+      />
+    );
+  }
+
+  getCertifications(option) {
+    return (
+      <CheckboxGroup
+        onChange={value => this.props.onChangeCertifications({ [option.value]: value })}
+        className="-inline -small"
+        name={`certification-${option.value}`}
+        options={HELPERS_REGISTER.getFMUCertifications()}
+        disabled={!this.state.value.includes(option.value)}
+        properties={{
+          name: option.value,
+          default: this.props.certifications[option.value] || []
+        }}
+
       />
     );
   }
@@ -100,23 +126,20 @@ export default class CheckboxGroup extends FormElement {
     });
 
     return (
-      <div className={`c-checkbox-box ${customClassName}`}>
-        {this.props.title &&
-          <span className="checkbox-box-title">{this.props.title}</span>
-        }
-
+      <div className={`c-fmus-checkbox ${customClassName}`}>
         {this.getCheckboxList()}
       </div>
     );
   }
 }
 
-CheckboxGroup.propTypes = {
+FmusCheckboxGroup.propTypes = {
   name: PropTypes.string,
   title: PropTypes.string,
   value: PropTypes.array,
   className: PropTypes.string,
   options: PropTypes.array,
   grid: PropTypes.object,
+  certifications: PropTypes.object,
   onChange: PropTypes.func
 };

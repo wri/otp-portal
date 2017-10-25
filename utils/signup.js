@@ -1,5 +1,7 @@
 import Jsona from 'jsona';
 import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
+import compact from 'lodash/compact';
 
 const JSONA = new Jsona();
 
@@ -25,29 +27,43 @@ const HELPERS_REGISTER = {
       });
   },
 
-  getOperatorCertifications() {
+  getFMUCertifications() {
     return [
       { label: 'FSC', value: 'fsc' },
-      { label: 'PEF', value: 'pef' },
+      { label: 'PEFC', value: 'pefc' },
       { label: 'OLB', value: 'olb' }
     ];
   },
 
+  getFMUCertificationsValues(fmus) {
+    const fmusGroups = groupBy(fmus, 'id');
+    Object.keys(fmusGroups).forEach((id) => {
+      fmusGroups[id] = compact([
+        !!fmusGroups[id][0]['certification-fsc'] && 'fsc',
+        !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
+        !!fmusGroups[id][0]['certification-olb'] && 'olb'
+      ]);
+    });
+
+    return fmusGroups;
+  },
+
   getOperatorTypes() {
     return [
-      { label: 'Logging Company', value: 'Logging Company' },
+      { label: 'Logging company', value: 'Logging company' },
       { label: 'Artisanal', value: 'Artisanal' },
+      { label: 'Community forest', value: 'Community forest' },
+      { label: 'Estate', value: 'Estate' },
+      { label: 'Industrial agriculture', value: 'Industrial agriculture' },
+      { label: 'Mining company', value: 'Mining company' },
       { label: 'Sawmill', value: 'Sawmill' },
-      { label: 'CommunityForest', value: 'CommunityForest' },
-      { label: 'ARB1327', value: 'ARB1327' },
-      { label: 'PalmOil', value: 'PalmOil' },
-      { label: 'Trader', value: 'Trader' },
-      { label: 'Company', value: 'Company' }
+      { label: 'Other', value: 'Other' },
+      { label: 'Unknown', value: 'Unknown' }
     ];
   },
 
   getOperatorFmus(countryId) {
-    return fetch(`${process.env.OTP_API}/fmus?country_ids=${countryId}&free=true`, {
+    return fetch(`${process.env.OTP_API}/fmus?filter[country]=${countryId}&filter[free]=true`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -64,11 +80,11 @@ const HELPERS_REGISTER = {
       });
   },
 
-  getBody(form) {
+  getBody(form, id) {
     const {
       address,
-      certification,
       country,
+      details,
       fmus,
       logo,
       name,
@@ -79,13 +95,14 @@ const HELPERS_REGISTER = {
     return {
       data: {
         type: 'operators',
+        ...!!id && { id },
         attributes: {
           name,
+          details,
           'operator-type': operator_type,
           website,
           logo,
-          address,
-          certification
+          address
         },
         relationships: {
           country: {
@@ -100,9 +117,21 @@ const HELPERS_REGISTER = {
         }
       }
     };
+  },
+
+  getBodyFmu(certification, id) {
+    return {
+      data: {
+        ...!!id && { id },
+        type: 'fmus',
+        attributes: {
+          'certification-fsc': certification.includes('fsc'),
+          'certification-pefc': certification.includes('pefc'),
+          'certification-olb': certification.includes('olb')
+        }
+      }
+    };
   }
-
-
 };
 
 export { HELPERS_REGISTER };

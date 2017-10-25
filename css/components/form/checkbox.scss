@@ -1,4 +1,5 @@
 $checkbox-size: 20px;
+$checkbox-size-small: 14px;
 
 .c-checkbox {
   label {
@@ -64,6 +65,11 @@ $checkbox-size: 20px;
       }
     }
   }
+
+  input[type=checkbox]:disabled + label {
+    opacity: 0.5;
+  }
+
 }
 
 .c-checkbox-box {
@@ -79,6 +85,25 @@ $checkbox-size: 20px;
       margin: 0 16px 0 0;
       &:last-child {
         margin: 0;
+      }
+    }
+  }
+
+  &.-small {
+    .c-checkbox {
+      label {
+        font-size: $font-size-small;
+
+        .checkbox-icon {
+          width: $checkbox-size-small;
+          height: $checkbox-size-small;
+        }
+
+        .item-title {
+          display: inline-block;
+          margin-left: 5px;
+          margin-top: 2px;
+        }
       }
     }
   }
