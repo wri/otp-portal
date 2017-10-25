@@ -39,9 +39,9 @@ const HELPERS_REGISTER = {
     const fmusGroups = groupBy(fmus, 'id');
     Object.keys(fmusGroups).forEach((id) => {
       fmusGroups[id] = compact([
-        !!fmusGroups[id]['certification-fsc'] && 'fsc',
-        !!fmusGroups[id]['certification-pefc'] && 'pefc',
-        !!fmusGroups[id]['certification-olb'] && 'olb'
+        !!fmusGroups[id][0]['certification-fsc'] && 'fsc',
+        !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
+        !!fmusGroups[id][0]['certification-olb'] && 'olb'
       ]);
     });
 
@@ -80,7 +80,7 @@ const HELPERS_REGISTER = {
       });
   },
 
-  getBody(form) {
+  getBody(form, id) {
     const {
       address,
       country,
@@ -95,6 +95,7 @@ const HELPERS_REGISTER = {
     return {
       data: {
         type: 'operators',
+        ...!!id && { id },
         attributes: {
           name,
           details,
@@ -118,9 +119,11 @@ const HELPERS_REGISTER = {
     };
   },
 
-  getBodyFmu(certification) {
+  getBodyFmu(certification, id) {
     return {
       data: {
+        ...!!id && { id },
+        type: 'fmus',
         attributes: {
           'certification-fsc': certification.includes('fsc'),
           'certification-pefc': certification.includes('pefc'),

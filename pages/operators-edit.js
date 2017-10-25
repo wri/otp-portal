@@ -35,7 +35,19 @@ class OperatorsEdit extends Page {
     // // Get user operator
     if (user.operator) {
       this.props.getUserOperator(user.operator);
-    } else {
+    }
+
+    if (!user.operator) {
+      const location = {
+        pathname: '/'
+      };
+      Router.push(location, '/');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // // Get user operator
+    if (!nextProps.user.operator) {
       const location = {
         pathname: '/'
       };
@@ -44,17 +56,22 @@ class OperatorsEdit extends Page {
   }
 
   render() {
-    const { url, userOperator } = this.props;
+    const { url, user, userOperator } = this.props;
+    console.log(user.operator);
+
+    if (!user.operator) {
+      return null;
+    }
 
     return (
       <Layout
-        title="Edit operator"
-        description="Edit description..."
+        title={this.props.intl.formatMessage({ id: 'edit.operators' })}
+        description={this.props.intl.formatMessage({ id: 'edit.operators.description' })}
         url={url}
         searchList={this.props.operators.data}
       >
         <StaticHeader
-          title="Edit operator"
+          title={this.props.intl.formatMessage({ id: 'edit.operators' })}
           background="/static/images/static-header/bg-help.jpg"
         />
 

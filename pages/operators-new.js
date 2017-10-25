@@ -33,13 +33,13 @@ class OperatorsNew extends Page {
 
     return (
       <Layout
-        title="Register operator"
-        description="Register description..."
+        title={this.props.intl.formatMessage({ id: 'new.operators' })}
+        description={this.props.intl.formatMessage({ id: 'new.operators.description' })}
         url={url}
         searchList={this.props.operators.data}
       >
         <StaticHeader
-          title="Register operator"
+          title={this.props.intl.formatMessage({ id: 'new.operators' })}
           background="/static/images/static-header/bg-help.jpg"
         />
 

@@ -152,11 +152,13 @@ class NewOperator extends React.Component {
 
     return (
       <div className="c-section">
+        <Spinner isLoading={submitting} className="-light -fixed" />
+
         {!submitted &&
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
               <h2 className="c-title -huge">
-                Operator info
+                {this.props.intl.formatMessage({ id: 'info.operator' })}
               </h2>
 
               {/* Operator name */}
@@ -319,7 +321,7 @@ class NewOperator extends React.Component {
                   disabled={submitting}
                   className={`c-button -secondary -expanded ${submittingClassName}`}
                 >
-                  Sign up
+                  {this.props.intl.formatMessage({ id: 'create.operator' })}
                 </button>
               </li>
             </ul>

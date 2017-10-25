@@ -8,7 +8,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { updateOperator, saveFmu } from 'modules/user';
+import { updateOperator, updateFmu } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
 // Components
@@ -18,6 +18,7 @@ import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
 import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
+import Spinner from 'components/ui/spinner';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -107,7 +108,7 @@ class EditOperator extends React.Component {
 
         // Save data
         this.props.updateOperator({
-          body: HELPERS_REGISTER.getBody(this.state.form),
+          body: HELPERS_REGISTER.getBody(this.state.form, this.props.operator.id),
           type: 'PATCH',
           id: this.props.operator.id,
           authorization: this.props.user.token
@@ -117,15 +118,19 @@ class EditOperator extends React.Component {
 
             if (Object.keys(this.state.certifications).length) {
               Object.keys(this.state.certifications).forEach((k) => {
-                promises.push(this.props.saveFmu({
+                promises.push(this.props.updateFmu({
                   id: k,
-                  body: HELPERS_REGISTER.getBodyFmu(this.state.certifications[k]),
+                  body: HELPERS_REGISTER.getBodyFmu(
+                    this.state.certifications[k],
+                    k
+                  ),
                   authorization: this.props.user.token
                 }));
               });
 
               Promise.all(promises)
                 .then(() => {
+                  toastr.success('Great!!', 'Profile saved correctly');
                   this.setState({ submitting: false, submitted: true });
                   if (this.props.onSubmit) this.props.onSubmit();
                 })
@@ -178,10 +183,13 @@ class EditOperator extends React.Component {
 
     return (
       <div className="c-section">
+
+        <Spinner isLoading={submitting} className="-light -fixed" />
+
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
             <h2 className="c-title -huge">
-              Operator info
+              {this.props.intl.formatMessage({ id: 'info.operator' })}
             </h2>
 
             {/* Operator name */}
@@ -332,7 +340,7 @@ class EditOperator extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                Update
+                {this.props.intl.formatMessage({ id: 'update.operator' })}
               </button>
             </li>
           </ul>
@@ -346,7 +354,7 @@ EditOperator.propTypes = {
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
-  saveFmu: PropTypes.func,
+  updateFmu: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
 };
@@ -356,5 +364,5 @@ export default injectIntl(connect(
   state => ({
     user: state.user
   }),
-  { updateOperator, saveFmu }
+  { updateOperator, updateFmu }
 )(EditOperator));

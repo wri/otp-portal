@@ -37,7 +37,7 @@ const initialState = {
       ],
       certification: [
         { label: 'FSC', value: 'fsc' },
-        { label: 'PEF', value: 'pef' },
+        { label: 'PEFC', value: 'pefc' },
         { label: 'OLB', value: 'olb' }
       ]
     },

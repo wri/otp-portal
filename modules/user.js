@@ -216,7 +216,7 @@ export function updateOperator({ body, id, authorization }) {
   });
 }
 
-export function saveFmu({ id, body, authorization }) {
+export function updateFmu({ id, body, authorization }) {
   return () => new Promise((resolve, reject) => {
     post({
       url: `${process.env.OTP_API}/fmus/${id}`,
