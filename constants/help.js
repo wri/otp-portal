@@ -56,6 +56,7 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   id: 'forest-products-and-legality',
   title: 'help.tabs.legislation.post1.title',
   description: 'help.tabs.legislation.post1.description',
+  site: 'http://www.forestlegality.org/risk-tool',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=forest-products-and-legality',
@@ -65,6 +66,7 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   id: 'timber-trade-and-due-diligence',
   title: 'help.tabs.legislation.post2.title',
   description: 'help.tabs.legislation.post2.description',
+  site: 'http://www.euflegt.efi.int/home/',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=timber-trade-and-due-diligence',
@@ -74,6 +76,7 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   id: 'voluntary-partnership-agreement-vpa-process',
   title: 'help.tabs.legislation.post3.title',
   description: 'help.tabs.legislation.post3.description',
+  site: 'http://www.timbertradeportal.com/',
   link: {
     label: 'Read more',
     href: '/help?tab=legislation-and-regulations&article=voluntary-partnership-agreement-vpa-process',
