@@ -56,11 +56,26 @@ $severity-width: 260px;
   }
 
   .obi-illegality-total {
+    position: relative;
     width: $illegality-total-width;
     font-family: $font-family-proximanova;
     font-size: $font-size-small;
     font-weight: 700;
     text-align: center;
+
+    &.-selected {
+      &:after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: $space-1 * 2;
+        height: $space-1 * 2;
+        background: $color-green-1;
+        transform: rotate(45deg);
+        transform-origin: 0 0;
+      }
+    }
   }
 
 
@@ -94,6 +109,7 @@ $severity-width: 260px;
 .obi-illegality-info {
   background: $color-green-1;
   padding: $space-1 * 6 0;
+  margin: 0 0 $space-1 * 2;
 
   .obi-illegality-info-title {
     margin: 0 0 $space-1 * 5;

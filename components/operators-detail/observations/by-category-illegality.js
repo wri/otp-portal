@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -80,10 +81,18 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                     const pageSize = (legalities - paginatedItems) > MAX_ROWS_TABLE_ILLEGALITIES ?
                         MAX_ROWS_TABLE_ILLEGALITIES : (legalities - paginatedItems);
 
+                    const isSelected = selected.category === category
+                      && selected.illegality === illegality
+                      && selected.year === year;
+
+                    const listItemClassNames = classnames({
+                      '-selected': isSelected
+                    });
+
                     return (
                       <li key={category + illegality}>
                         <div className="l-container">
-                          <div className="obi-illegality-list-item">
+                          <div className={`obi-illegality-list-item ${listItemClassNames}`}>
                             {/* Severity list */}
                             <ul className="obi-severity-list">
                               {groupedByIllegality[illegality].map(({ severity, id }) =>
@@ -92,7 +101,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                             </ul>
 
                             {/* Illegality total */}
-                            <div className="obi-illegality-total">{legalities}</div>
+                            <div className={`obi-illegality-total ${listItemClassNames}`}>{legalities}</div>
 
                             {/* Illegality title */}
                             <h4
@@ -107,9 +116,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                         </div>
 
                         {/* Category */}
-                        {selected.category === category
-                          && selected.illegality === illegality
-                          && selected.year === year &&
+                        {isSelected &&
                           <div className="obi-illegality-info">
                             <div className="l-container">
                               <h2 className="c-title obi-illegality-info-title">{illegality}</h2>
@@ -154,7 +161,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         Cell: attr => <p>{attr.value}</p>
                                       },
                                       {
-                                        Header: <span>{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
+                                        Header: <span>{this.props.intl.formatMessage({ id: 'report' })}</span>,
                                         accessor: 'report',
                                         sortable: false,
                                         headerClassName: '-a-left',
@@ -169,7 +176,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                                 rel="noopener noreferrer"
                                                 title={attr.value.title}
                                               >
-                                                {this.props.intl.formatMessage({ id: 'evidence' })}
+                                                {this.props.intl.formatMessage({ id: 'report' })}
                                               </a>
                                             );
                                           }
@@ -178,7 +185,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         }
                                       },
                                       {
-                                        Header: <span>{this.props.intl.formatMessage({ id: 'documents' })}</span>,
+                                        Header: <span>{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
                                         accessor: 'documents',
                                         sortable: false,
                                         headerClassName: '-a-left',
@@ -196,7 +203,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                                   rel="noopener noreferrer"
                                                   title={d.name}
                                                 >
-                                                  D
+                                                  {this.props.intl.formatMessage({ id: 'evidence' }).charAt(0)}
                                                 </a>
                                               );
                                             }
