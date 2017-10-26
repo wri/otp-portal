@@ -66,8 +66,8 @@ class Header extends React.Component {
                         });
                       }}
                     >
-                      <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
                       <Icon name="icon-user" />
+                      <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
                     </a>
                   }
 
@@ -78,8 +78,8 @@ class Header extends React.Component {
                     >
                       <DropdownTrigger>
                         <div className="header-nav-list-item">
-                          <span>My account</span>
                           <Icon name="icon-user" />
+                          <span>My account</span>
                         </div>
                       </DropdownTrigger>
 

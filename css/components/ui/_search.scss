@@ -5,12 +5,11 @@
   .search {
     display: flex;
     align-items: center;
-    min-width: 160px;
+    margin: 0;
 
     input {
       display: block;
       width: 100%;
-      margin-right: 5px;
       border: 0;
       background-color: transparent;
       font-family: $font-family-proximanova;
@@ -28,8 +27,8 @@
 
     svg {
       position: relative;
+      margin-right: 5px;
       top: -2px;
-      margin-right: $space-1;
       fill: $color-primary;
     }
   }
@@ -131,7 +130,7 @@
       }
 
       svg {
-        margin-right: $space-1 * 2;
+        margin-left: $space-1 * 2;
       }
     }
 

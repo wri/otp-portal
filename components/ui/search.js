@@ -194,13 +194,6 @@ class Search extends React.Component {
     return (
       <div className={`c-search ${this.props.theme}`}>
         <div className="search">
-          <input
-            ref={(n) => { this.input = n; }}
-            type="text"
-            placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
-            onKeyUp={this.onKeyUp}
-          />
-
           {!!active &&
             <button
               className="c-button -clean"
@@ -214,6 +207,13 @@ class Search extends React.Component {
           {!active &&
             <Icon name="icon-search" />
           }
+
+          <input
+            ref={(n) => { this.input = n; }}
+            type="text"
+            placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
+            onKeyUp={this.onKeyUp}
+          />
         </div>
         <div className={resultsClass}>
           <div className="results">

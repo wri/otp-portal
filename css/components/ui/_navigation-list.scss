@@ -32,7 +32,7 @@
   }
 
   > li {
-    margin-right: 45px;
+    margin-right: $space-1 * 4;
     &:last-child { margin-right: 0; }
 
     > a,
