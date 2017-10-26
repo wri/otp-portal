@@ -45,7 +45,14 @@
   }
 
   .card-component {
+    a {
+      color: $color-primary;
+      text-decoration: none;
 
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
   // THEMES
