@@ -28,7 +28,7 @@ function OperatorsDetailOverview(props) {
               <div className="content">
                 <div className="description">
                   <p>
-                    {props.operatorsDetail.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
+                    {props.operatorsDetail.data.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
                   </p>
                 </div>
               </div>
