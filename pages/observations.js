@@ -173,27 +173,33 @@ class ObservationsPage extends Page {
                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
                         accessor: 'country',
                         className: '-uppercase',
-                        minWidth: 75
+                        minWidth: 100
                       },
                       {
                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator' })}</span>,
                         accessor: 'operator',
-                        className: '-uppercase'
+                        className: '-uppercase description',
+                        minWidth: 120
                       },
                       {
                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'fmu' })}</span>,
-                        accessor: 'fmu'
+                        accessor: 'fmu',
+                        className: 'description',
+                        minWidth: 120
                       },
                       {
                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'category' })}</span>,
-                        accessor: 'category'
+                        accessor: 'category',
+                        headerClassName: '-a-left',
+                        className: 'description',
+                        minWidth: 120
                       },
                       {
                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
                         accessor: 'observation',
                         headerClassName: '-a-left',
                         className: 'description',
-                        minWidth: 300,
+                        minWidth: 250,
                         Cell: attr => (
                           <ReadMore lines={1} text="more">
                             {attr.value}
