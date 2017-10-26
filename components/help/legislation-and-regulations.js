@@ -81,7 +81,7 @@ class HelpLegislationAndRegulations extends React.Component {
                         <p>
                           {this.props.intl.formatMessage({ id: article.description })}
                         </p>
-                        <p><a href={article.site} target="_blank" rel="noopener noreferrer">Go to site</a></p>
+                        <p><a href={article.site} target="_blank" rel="noopener noreferrer">{this.props.intl.formatMessage({ id: 'go_to_site' })}</a></p>
                         <img src="/static/images/static-header/bg-help.jpg" alt={this.props.intl.formatMessage({ id: article.title })} />
                       </div>
                     </div>
