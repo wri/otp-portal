@@ -30,7 +30,7 @@ function Gallery2(props) {
                 title={props.intl.formatMessage({ id: article.title })}
                 description={props.intl.formatMessage({ id: article.description })}
                 link={article.link}
-                Component={<a href={article.site} target="_blank" rel="noopener noreferrer">Go to site</a>}
+                Component={<a href={article.site} target="_blank" rel="noopener noreferrer">{props.intl.formatMessage({ id: 'go_to_site' })}</a>}
               />
             </div>
           );

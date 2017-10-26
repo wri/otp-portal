@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Link from 'next/link';
+import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -23,6 +24,30 @@ class NavigationList extends React.Component {
 
     return (
       <ul className={classNames}>
+        {hideActive &&
+          <li>
+            <Dropdown
+              className="c-language-dropdown"
+            >
+              <DropdownTrigger>
+                <div className="header-nav-list-item">
+                  <span>{this.props.intl.formatMessage({ id: 'select_language' })}</span>
+                </div>
+              </DropdownTrigger>
+
+              <DropdownContent>
+                <ul className="language-dropdown-list">
+                  <li className="language-dropdown-list-item">
+                    <a href="?language=en">English</a>
+                  </li>
+                  <li className="language-dropdown-list-item">
+                    <a href="?language=fr">Français</a>
+                  </li>
+                </ul>
+              </DropdownContent>
+            </Dropdown>
+          </li>
+        }
         <li>
           <Link prefetch href="/operators">
             <a className={!hideActive ? this.setActive(['/operators', '/operators-detail']) : ''}>
