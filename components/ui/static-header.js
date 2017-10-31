@@ -5,7 +5,7 @@ class StaticHeader extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string,
-    Component: PropTypes.element,
+    Component: PropTypes.oneOfType([PropTypes.element, PropTypes.bool]),
     background: PropTypes.string.isRequired
   };
 
