@@ -1,6 +1,7 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
+import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -79,7 +80,8 @@ export function getOperator(id) {
     ];
 
     const queryParams = queryString.stringify({
-      include: includeFields.join(',')
+      include: includeFields.join(','),
+      locale: Cookies.get('language')
     });
 
 

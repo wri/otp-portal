@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import * as Cookies from 'js-cookie';
+
 import Link from 'next/link';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
@@ -13,6 +15,10 @@ class NavigationList extends React.Component {
     return classnames({
       '-active': (pathname.includes(url.pathname))
     });
+  }
+
+  changeLanguage(language) {
+    Cookies.set('language', language);
   }
 
   render() {
@@ -38,10 +44,10 @@ class NavigationList extends React.Component {
               <DropdownContent>
                 <ul className="language-dropdown-list">
                   <li className="language-dropdown-list-item">
-                    <a href="?language=en">English</a>
+                    <a onClick={() => this.changeLanguage('en')} href="?language=en">English</a>
                   </li>
                   <li className="language-dropdown-list-item">
-                    <a href="?language=fr">Français</a>
+                    <a onClick={() => this.changeLanguage('fr')} href="?language=fr">Français</a>
                   </li>
                 </ul>
               </DropdownContent>

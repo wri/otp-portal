@@ -3,6 +3,8 @@ import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import compact from 'lodash/compact';
 
+import * as Cookies from 'js-cookie';
+
 /* Constants */
 const GET_OPERATORS_RANKING_SUCCESS = 'GET_OPERATORS_RANKING_SUCCESS';
 const GET_OPERATORS_RANKING_ERROR = 'GET_OPERATORS_RANKING_ERROR';
@@ -103,7 +105,7 @@ export function getOperatorsRanking() {
     const filters = getSQLFilters(getState().operatorsRanking.filters.data);
 
 
-    fetch(`${process.env.OTP_API}/operators?page[size]=2000&${fields}&include=${includes}${filters}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${Cookies.get('language')}&page[size]=2000&${fields}&include=${includes}${filters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

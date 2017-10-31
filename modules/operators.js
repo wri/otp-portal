@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
@@ -35,7 +36,7 @@ export function getOperators() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-    fetch(`${process.env.OTP_API}/operators?page[size]=2000&filter[country]=7,47&filter[fa]=true}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${Cookies.get('language')}&page[size]=2000&filter[country]=7,47&filter[fa]=true}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

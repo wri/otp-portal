@@ -1,6 +1,5 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
-import round from 'lodash/round';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
@@ -30,6 +29,11 @@ const PALETTE = {
     label: 'Expired',
     fill: PALETTE_COLOR_2[4].fill,
     stroke: PALETTE_COLOR_2[4].fill
+  },
+  doc_not_required: {
+    label: 'Not required',
+    fill: PALETTE_COLOR_2[5].fill,
+    stroke: PALETTE_COLOR_2[5].fill
   }
 };
 
