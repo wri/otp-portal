@@ -37,6 +37,11 @@
     background: none;
   }
 
+  // SIZES
+  &.-small {
+    padding: 5px 15px 4px;
+    font-size: $font-size-small;
+  }
 
   // THEMES
   // - primary

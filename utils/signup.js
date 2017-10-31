@@ -27,6 +27,13 @@ const HELPERS_REGISTER = {
       });
   },
 
+  getOperators(operators = []) {
+    return sortBy(operators.map(o => ({
+      label: o.name,
+      value: o.id
+    })), 'label');
+  },
+
   getFMUCertifications() {
     return [
       { label: 'FSC', value: 'fsc' },
@@ -115,6 +122,14 @@ const HELPERS_REGISTER = {
             data: fmus.map(f => ({ type: 'fmus', id: f }))
           }
         }
+      }
+    };
+  },
+
+  getUserBody(form) {
+    return {
+      user: {
+        ...form
       }
     };
   },

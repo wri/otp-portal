@@ -57,7 +57,6 @@ class OperatorsEdit extends Page {
 
   render() {
     const { url, user, userOperator } = this.props;
-    console.log(user.operator);
 
     if (!user.operator) {
       return null;

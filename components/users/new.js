@@ -7,7 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { saveOperator } from 'modules/user';
+import { saveUser } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
 // Next components
@@ -17,9 +17,6 @@ import Link from 'next/link';
 import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
-import Textarea from 'components/form/Textarea';
-import FileImage from 'components/form/FileImage';
-import CheckboxGroup from 'components/form/CheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
@@ -46,23 +43,20 @@ const FORM_ELEMENTS = {
   }
 };
 
-class NewOperator extends React.Component {
+class UserNewForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       form: {
         name: '',
-        details: '',
-        type: '',
-        address: '',
-        website: '',
-        country: '',
-        fmus: []
+        nickname: '',
+        email: '',
+        operator_id: '',
+        password: '',
+        password_confirmation: '',
+        permissions_request: 'operator'
       },
-      certifications: {},
-      fmusOptions: [],
-      fmusLoading: true,
       submitting: false,
       submitted: false
     };
@@ -82,11 +76,6 @@ class NewOperator extends React.Component {
     this.setState({ form });
   }
 
-  onChangeCertifications(value) {
-    const certifications = Object.assign({}, this.state.certifications, value);
-    this.setState({ certifications });
-  }
-
   onSubmit(e) {
     e && e.preventDefault();
 
@@ -103,7 +92,7 @@ class NewOperator extends React.Component {
         this.setState({ submitting: true });
 
         // Save data
-        this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
+        this.props.saveUser({ body: HELPERS_REGISTER.getUserBody(this.state.form) })
           .then(() => {
             this.setState({ submitting: false, submitted: true });
             if (this.props.onSubmit) this.props.onSubmit();
@@ -126,20 +115,6 @@ class NewOperator extends React.Component {
     }, 0);
   }
 
-  /**
-   * HELPERS
-   * - getFmus
-   *
-  */
-  async getFmus(countryId) {
-    this.setState({ fmusLoading: true });
-    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
-    this.setState({
-      fmusOptions: fmus,
-      fmusLoading: false
-    });
-  }
-
   render() {
     const { submitting, submitted } = this.state;
     const submittingClassName = classnames({
@@ -153,11 +128,26 @@ class NewOperator extends React.Component {
         {!submitted &&
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {this.props.intl.formatMessage({ id: 'info.operator' })}
-              </h2>
+              {/* Operators */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                onChange={value => this.onChange({ operator_id: value })}
+                validations={['required']}
+                className="-fluid"
+                hint={`${this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">${this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a>`}
+                options={HELPERS_REGISTER.getOperators(this.props.operators.data)}
+                properties={{
+                  name: 'operator_id',
+                  label: 'Producer',
+                  required: true,
+                  instanceId: 'select.operator_id',
+                  default: this.state.form.operator_id
+                }}
+              >
+                {Select}
+              </Field>
 
-              {/* Operator name */}
+              {/* Name */}
               <Field
                 ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
                 onChange={value => this.onChange({ name: value })}
@@ -165,7 +155,7 @@ class NewOperator extends React.Component {
                 className="-fluid"
                 properties={{
                   name: 'name',
-                  label: 'Operator\'s name',
+                  label: 'Name',
                   required: true,
                   default: this.state.form.name
                 }}
@@ -173,140 +163,77 @@ class NewOperator extends React.Component {
                 {Input}
               </Field>
 
-              {/* Operator description */}
+              {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
-                onChange={value => this.onChange({ details: value })}
-                className="-fluid"
-                properties={{
-                  name: 'details',
-                  label: 'Operator\'s description',
-                  default: this.state.form.details,
-                  rows: '6'
-                }}
-              >
-                {Textarea}
-              </Field>
-
-              {/* Operator type */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
-                onChange={value => this.onChange({ operator_type: value })}
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.nickname = c; }}
+                onChange={value => this.onChange({ nickname: value })}
                 validations={['required']}
                 className="-fluid"
-                options={HELPERS_REGISTER.getOperatorTypes()}
                 properties={{
-                  name: 'operator_type',
-                  label: 'Operator\'s type',
+                  name: 'nickname',
+                  label: 'Nickname',
                   required: true,
-                  instanceId: 'select.operator_type',
-                  default: this.state.form.operator_type
-                }}
-              >
-                {Select}
-              </Field>
-
-              {/* Website */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.website = c; }}
-                onChange={value => this.onChange({ website: value })}
-                validations={['url']}
-                className="-fluid"
-                properties={{
-                  name: 'website',
-                  label: 'Website',
-                  default: this.state.form.website
+                  default: this.state.form.nickname
                 }}
               >
                 {Input}
               </Field>
 
-              {/* Address */}
+              {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.address = c; }}
-                onChange={value => this.onChange({ address: value })}
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.email = c; }}
+                onChange={value => this.onChange({ email: value })}
+                validations={['required', 'email']}
                 className="-fluid"
                 properties={{
-                  name: 'address',
-                  label: 'Address',
-                  default: this.state.form.address
+                  name: 'email',
+                  label: 'Email',
+                  required: true,
+                  default: this.state.form.email
                 }}
               >
                 {Input}
               </Field>
 
-              {/* Logo */}
+              {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.logo = c; }}
-                onChange={value => this.onChange({ logo: value })}
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.password = c; }}
+                onChange={value => this.onChange({ password: value })}
+                validations={['required']}
                 className="-fluid"
                 properties={{
-                  name: 'logo',
-                  label: 'Logo',
-                  default: this.state.form.logo
+                  name: 'password',
+                  label: 'Password',
+                  type: 'password',
+                  required: true,
+                  default: this.state.form.password
                 }}
               >
-                {FileImage}
+                {Input}
               </Field>
 
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {this.props.intl.formatMessage({ id: 'forest-management-units' })}
-              </h2>
-
-              <div className="c-field-row">
-                {/* Country */}
-                <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
-                  onChange={(value) => {
-                    this.onChange({
-                      country: value,
-                      fmus: []
-                    });
-                    this.getFmus(value);
-                  }}
-                  validations={['required']}
-                  className="-fluid"
-                  loadOptions={HELPERS_REGISTER.getCountries}
-                  properties={{
-                    name: 'country',
-                    label: 'Country',
-                    required: true,
-                    instanceId: 'select.country',
-                    default: this.state.form.country
-                  }}
-                >
-                  {Select}
-                </Field>
-
-                {!!this.state.form.country &&
-                  <Spinner isLoading={this.state.fmusLoading} />
-                }
-
-                {/* FMUs */}
-                {!!this.state.fmusOptions.length &&
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
-                    onChange={value => this.onChange({ fmus: value })}
-                    className="-fluid"
-                    grid={{
-                      small: 12,
-                      medium: 4,
-                      large: 4
-                    }}
-                    options={this.state.fmusOptions}
-                    properties={{
-                      name: 'fmus',
-                      label: 'FMUs',
-                      default: this.state.form.fmus
-                    }}
-                  >
-                    {CheckboxGroup}
-                  </Field>
-                }
-              </div>
+              {/* Name */}
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.password_confirmation = c; }}
+                onChange={value => this.onChange({ password_confirmation: value })}
+                validations={[
+                  'required',
+                  {
+                    type: 'isEqual',
+                    condition: this.state.form.password
+                  }
+                ]}
+                className="-fluid"
+                properties={{
+                  name: 'password_confirmation',
+                  label: 'Password confirmation',
+                  type: 'password',
+                  required: true,
+                  default: this.state.form.password_confirmation
+                }}
+              >
+                {Input}
+              </Field>
             </fieldset>
 
             <ul className="c-field-buttons">
@@ -317,7 +244,7 @@ class NewOperator extends React.Component {
                   disabled={submitting}
                   className={`c-button -secondary -expanded ${submittingClassName}`}
                 >
-                  {this.props.intl.formatMessage({ id: 'create.operator' })}
+                  {this.props.intl.formatMessage({ id: 'signup' })}
                 </button>
               </li>
             </ul>
@@ -357,14 +284,17 @@ class NewOperator extends React.Component {
   }
 }
 
-NewOperator.propTypes = {
-  saveOperator: PropTypes.func,
+UserNewForm.propTypes = {
+  operators: PropTypes.object,
+  saveUser: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
 };
 
 
 export default injectIntl(connect(
-  null,
-  { saveOperator }
-)(NewOperator));
+  state => ({
+    operators: state.operators
+  }),
+  { saveUser }
+)(UserNewForm));

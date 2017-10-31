@@ -5,6 +5,9 @@ import classnames from 'classnames';
 // Redux
 import { connect } from 'react-redux';
 
+// Intl
+import { intlShape, injectIntl } from 'react-intl';
+
 import { login } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
@@ -116,7 +119,7 @@ class Login extends React.Component {
         <Spinner isLoading={submitting} className="-light" />
 
         <h2 className="c-title -huge">
-          Log in
+          {this.props.intl.formatMessage({ id: 'login' })}
         </h2>
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
@@ -156,7 +159,9 @@ class Login extends React.Component {
             </Field>
           </fieldset>
 
-          <p>Not a member yet? <a href="/operators/new">Register now</a></p>
+          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_member' })} <a href="/signup">{this.props.intl.formatMessage({ id: 'signin.register_now' })}</a></p>
+
+          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">{this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a></p>
 
           <ul className="c-field-buttons">
             <li>
@@ -166,7 +171,7 @@ class Login extends React.Component {
                 className="c-button -primary -expanded"
                 onClick={() => modal.toggleModal(false)}
               >
-                Cancel
+                {this.props.intl.formatMessage({ id: 'cancel' })}
               </button>
             </li>
             <li>
@@ -176,7 +181,7 @@ class Login extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                Log in
+                {this.props.intl.formatMessage({ id: 'login' })}
               </button>
             </li>
           </ul>
@@ -187,6 +192,7 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
+  intl: intlShape.isRequired,
   login: PropTypes.func.isRequired
 };
 
@@ -194,4 +200,4 @@ Login.propTypes = {
 export default connect(
   null,
   { login }
-)(Login);
+)(injectIntl(Login));

@@ -79,16 +79,12 @@ class EditOperator extends React.Component {
   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
-    this.setState({ form }, () => {
-      console.log(form);
-    });
+    this.setState({ form });
   }
 
   onChangeCertifications(value) {
     const certifications = Object.assign({}, this.state.certifications, value);
-    this.setState({ certifications }, () => {
-      console.log(certifications);
-    });
+    this.setState({ certifications });
   }
 
   onSubmit(e) {
