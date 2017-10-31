@@ -19,6 +19,7 @@ import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
+import Spinner from 'components/ui/spinner';
 
 class OperatorsEdit extends Page {
   /**
@@ -73,6 +74,10 @@ class OperatorsEdit extends Page {
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
           background="/static/images/static-header/bg-help.jpg"
         />
+
+        {userOperator && userOperator.loading &&
+          <Spinner isLoading={userOperator.loading} className="-light -fixed" />
+        }
 
         {userOperator && !isEmpty(userOperator.data) &&
           <EditOperator
