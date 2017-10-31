@@ -49,6 +49,15 @@ class Validator {
         message(condition) {
           return `The field should be lower than ${condition}`;
         }
+      },
+
+      isEqual: {
+        validate(value, condition) {
+          return value === condition;
+        },
+        message() {
+          return 'The field should be equal to password';
+        }
       }
 
     };

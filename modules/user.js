@@ -167,6 +167,29 @@ export function logout() {
   // });
 }
 
+export function saveUser({ body }) {
+  return () => new Promise((resolve, reject) => {
+    post({
+      url: `${process.env.OTP_API}/register`,
+      type: 'POST',
+      body,
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/vnd.api+json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }],
+      onSuccess: (response) => {
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
+}
+
 export function saveOperator({ body }) {
   return () => new Promise((resolve, reject) => {
     post({
