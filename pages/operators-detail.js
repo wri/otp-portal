@@ -26,6 +26,8 @@ import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 
+import Link from 'next/link';
+
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
@@ -132,6 +134,11 @@ class OperatorsDetail extends Page {
             country: !!operatorsDetail.data.country && operatorsDetail.data.country.name
           })}
           background="/static/images/static-header/bg-operator-detail.jpg"
+          Component={
+            <Link href="/operators/edit" >
+              <a className="c-button -secondary -small">{this.props.intl.formatMessage({ id: 'update.profile' })}</a>
+            </Link>
+          }
         />
 
         <Tabs
