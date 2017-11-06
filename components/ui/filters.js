@@ -7,11 +7,16 @@ import Select from 'react-select';
 
 
 class Filters extends React.Component {
-  setFilter(opts, key) {
+  setFilter(selected, key) {
     const filter = {};
-    filter[key] = opts.map(opt => opt.value || opt);
+    filter[key] = selected.map((opt) => {
+      const isVal = (opt.value !== null && typeof opt.value !== 'undefined');
+      return (isVal) ? opt.value : opt;
+    });
+
     this.props.setFilters(filter);
   }
+
 
   renderFiltersSelects() {
     const { options, filters } = this.props;
@@ -37,7 +42,7 @@ class Filters extends React.Component {
               className={value.length ? '-filled' : ''}
               value={value}
               placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
-              onChange={opts => this.setFilter(opts, f.key)}
+              onChange={selected => this.setFilter(selected, f.key)}
             />
           </div>
         </div>
