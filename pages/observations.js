@@ -52,6 +52,9 @@ class ObservationsPage extends Page {
 
   componentDidMount() {
     const { observations, operators, url } = this.props;
+
+    this.props.getObservationsUrl(url);
+
     if (isEmpty(observations.data)) {
       this.props.getObservations();
     }
@@ -64,8 +67,6 @@ class ObservationsPage extends Page {
       // Get operators
       this.props.getOperators();
     }
-
-    this.props.getObservationsUrl(url);
   }
 
   triggerChangeTab(tab) {
