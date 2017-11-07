@@ -61,7 +61,7 @@ export default class Map extends React.Component {
 
         // Add layers
         this.initLayerManager();
-        this.props.layers.length && this.addLayer(this.props.layers);
+        this.props.layers.length && this.addLayer(this.props.layers, { filters: this.props.mapFilters });
       });
     }
   }
@@ -75,7 +75,12 @@ export default class Map extends React.Component {
     // Layers
     if (!isEqual(this.props.layers, nextProps.layers)) {
       this.layerManager.removeAllLayers();
-      this.addLayer(nextProps.layers);
+      this.addLayer(nextProps.layers, { filters: nextProps.mapFilters });
+    }
+
+    // Filters
+    if (!isEqual(this.props.mapFilters, nextProps.mapFilters)) {
+      this.updateLayer(nextProps.layers, { filters: nextProps.mapFilters });
     }
 
     // Zoom
@@ -139,18 +144,31 @@ export default class Map extends React.Component {
 
     this.layerManager = new LayerManager(this.map, {
       onLayerAddedSuccess: stopLoading,
-      onLayerAddedError: stopLoading
+      onLayerAddedError: stopLoading,
+      onLayerEvent: !!this.props.onLayerEvent && this.props.onLayerEvent
     });
   }
 
   /* Layer methods */
-  addLayer(layer) {
+  addLayer(layer, opts) {
     this.setState({ loading: true });
+
     if (Array.isArray(layer)) {
-      layer.forEach(l => this.layerManager.addLayer(l));
+      layer.forEach(l => this.layerManager.addLayer(l, opts));
       return;
     }
-    this.layerManager.addLayer(layer);
+
+    this.layerManager.addLayer(layer, opts);
+  }
+
+  /* Layer methods */
+  updateLayer(layer, opts) {
+    if (Array.isArray(layer)) {
+      layer.forEach(l => this.layerManager.updateLayer(l, opts));
+      return;
+    }
+
+    this.layerManager.updateLayer(layer, opts);
   }
 
   removeLayer(layer) {
@@ -158,6 +176,7 @@ export default class Map extends React.Component {
       layer.forEach(l => this.layerManager.removeLayer(l.id));
       return;
     }
+
     this.layerManager.removeLayer(layer.id);
   }
 
@@ -181,12 +200,16 @@ Map.propTypes = {
   mapOptions: PropTypes.object,
   mapMethods: PropTypes.object,
   mapListeners: PropTypes.object,
-  layers: PropTypes.array
+  mapFilters: PropTypes.object,
+  layers: PropTypes.array,
+  onLayerEvent: PropTypes.func
 };
 
 Map.defaultProps = {
   mapOptions: {},
   mapMethods: {},
   mapListeners: {},
-  layers: []
+  mapFilters: {},
+  layers: [],
+  onLayerEvent: null
 };

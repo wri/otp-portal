@@ -1,6 +1,9 @@
 import fetch from 'isomorphic-fetch';
 import getBBox from 'turf-extent';
 
+// Utils
+import { substitution } from 'utils/text';
+
 let Mapboxgl;
 if (typeof window !== 'undefined') {
   /* eslint-disable global-require */
@@ -17,6 +20,7 @@ export default class LayerManager {
     this.mapLayers = {};
     this.onLayerAddedSuccess = options.onLayerAddedSuccess;
     this.onLayerAddedError = options.onLayerAddedError;
+    this.onLayerEvent = options.onLayerEvent;
 
     // Inits
     this.Popup = Mapboxgl.Popup;
@@ -33,24 +37,42 @@ export default class LayerManager {
     method && method.call(this, layer, opts);
   }
 
+  updateLayer(layer, opts) {
+    const method = {
+      geojson: this.updateGeojsonLayer,
+      cartodb: this.updateCartodbLayer,
+      raster: this.updateRasterLayer
+    }[layer.provider];
+
+    method && method.call(this, layer, opts);
+  }
+
   removeLayer(layerId) {
-    if (this.mapLayers[layerId]) {
-      this.map.removeLayer(this.mapLayers[layerId]);
-      delete this.mapLayers[layerId];
-    }
+    this.map.removeLayer(layerId);
+    delete this.mapLayers[layerId];
   }
 
   removeAllLayers() {
     const layerIds = Object.keys(this.mapLayers);
     if (!layerIds.length) return;
+
     layerIds.forEach(id => this.removeLayer(id));
   }
 
   /**
    * PRIVATE METHODS
    */
-  addGeojsonLayer(layer) {
-    fetch(layer.source.data.url, { ...layer.source.data })
+  addGeojsonLayer(layer, opts) {
+    const { filters } = opts;
+
+    const sourceParsed = JSON.parse(substitution(
+      JSON.stringify(layer.source),
+      Object.keys(filters || {}).map(k => ({
+        key: k, value: filters[k]
+      }))
+    ));
+
+    fetch(sourceParsed.data.url, { ...sourceParsed.data })
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error(response.statusText);
@@ -58,7 +80,9 @@ export default class LayerManager {
       .then((data) => {
         // Add source
         if (this.map) {
-          this.map.addSource(layer.id, { ...layer.source, data });
+          if (!this.map.getSource(layer.id)) {
+            this.map.addSource(layer.id, { ...sourceParsed, data });
+          }
 
           // Loop trough layers
           layer.layers.forEach((l) => {
@@ -71,7 +95,11 @@ export default class LayerManager {
             if (interactivity) {
               Object.keys(interactivity).forEach((i) => {
                 const iFn = interactivity[i].bind(this);
-                this.map.on(i, l.id, iFn);
+                this.map.on(i, l.id, (e) => {
+                  iFn(e, () => {
+                    this.onLayerEvent(i, l.id, e);
+                  });
+                });
               });
             }
 
@@ -87,12 +115,25 @@ export default class LayerManager {
             }
 
             this.onLayerAddedSuccess();
+            this.mapLayers[l.id] = l;
           });
         }
       })
       .catch((err) => {
         console.error(err);
       });
+  }
+
+  updateGeojsonLayer(layer, opts) {
+    const { filters } = opts;
+
+    // Loop trough layers
+    layer.layers.forEach((l) => {
+      if (l.update) {
+        const update = l.update.bind(this);
+        update(filters);
+      }
+    });
   }
 
   addCartodbLayer(layer) {
@@ -117,7 +158,9 @@ export default class LayerManager {
               )
             };
 
-            this.map.addSource(layer.id, source);
+            if (!this.map.getSource(layer.id)) {
+              this.map.addSource(layer.id, source);
+            }
 
             // Loop trough layers
             layer.layers.forEach((l) => {
@@ -125,6 +168,7 @@ export default class LayerManager {
               this.map.addLayer(l, l.before);
 
               this.onLayerAddedSuccess();
+              this.mapLayers[l.id] = l;
             });
           })
           .catch((err) => {
@@ -137,7 +181,9 @@ export default class LayerManager {
   addRasterLayer(layer) {
     // Add source
     if (this.map) {
-      this.map.addSource(layer.id, { ...layer.source });
+      if (!this.map.getSource(layer.id)) {
+        this.map.addSource(layer.id, { ...layer.source });
+      }
 
       // Loop trough layers
       layer.layers.forEach((l) => {
@@ -145,6 +191,7 @@ export default class LayerManager {
         this.map.addLayer(l, l.before);
 
         this.onLayerAddedSuccess();
+        this.mapLayers[l.id] = l;
       });
     }
   }

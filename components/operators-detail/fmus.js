@@ -4,13 +4,10 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import { setMapLocation } from 'modules/operators-detail-fmus';
+import { setMapLocation, setFmuSelected, setAnalysis } from 'modules/operators-detail-fmus';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
-
-// Utils
-import { substitution } from 'utils/text';
 
 // Constants
 import { MAP_LAYERS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -26,10 +23,7 @@ class OperatorsDetailFMUs extends React.Component {
   render() {
     const { url, operatorsDetail, operatorsDetailFmus } = this.props;
     const { fmus } = operatorsDetail && operatorsDetail.data ? operatorsDetail.data : {};
-    const layers = JSON.parse(substitution(
-      JSON.stringify(MAP_LAYERS_OPERATORS_DETAIL),
-      [{ key: 'OPERATOR_ID', value: url.query.id }]
-    ));
+    const layers = MAP_LAYERS_OPERATORS_DETAIL;
 
     return (
       <div className="c-section -map">
@@ -47,6 +41,10 @@ class OperatorsDetailFMUs extends React.Component {
         <div className="c-map-container -static">
           <Map
             mapOptions={operatorsDetailFmus.map}
+            mapFilters={{
+              OPERATOR_ID: url.query.id,
+              FMU_ID: operatorsDetailFmus.fmu.id
+            }}
             mapListeners={{
               moveend: (map) => {
                 this.props.setMapLocation({
@@ -56,6 +54,22 @@ class OperatorsDetailFMUs extends React.Component {
               }
             }}
             layers={layers}
+            onLayerEvent={(eventName, layerId, e) => {
+              switch (`${eventName}-${layerId}`) {
+                case 'click-forest_concession_layer': {
+                  const fmu = fmus.find(f => parseInt(f.id, 10) === e.features[0].properties.id);
+
+                  this.props.setFmuSelected(fmu);
+
+                  if (!operatorsDetailFmus.analysis.data[fmu.id]) {
+                    this.props.setAnalysis(fmu);
+                  }
+                  break;
+                }
+                default:
+
+              }
+            }}
           />
 
           {/* MapControls */}
@@ -81,7 +95,9 @@ OperatorsDetailFMUs.propTypes = {
   url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object.isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
-  setMapLocation: PropTypes.func.isRequired
+  setMapLocation: PropTypes.func.isRequired,
+  setFmuSelected: PropTypes.func.isRequired,
+  setAnalysis: PropTypes.func.isRequired
 };
 
 export default connect(
@@ -89,6 +105,6 @@ export default connect(
     operatorsDetailFmus: state.operatorsDetailFmus
   }),
   {
-    setMapLocation
+    setMapLocation, setFmuSelected, setAnalysis
   }
 )(injectIntl(OperatorsDetailFMUs));
