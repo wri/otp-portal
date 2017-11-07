@@ -1,21 +1,14 @@
 .c-fmu-card {
-  position: absolute;
-  top: 50px;
-
+  min-width: 320px;
   padding: $space-1 * 4 $space-1 * 6 $space-1 * 4 $space-1 * 4;
-  background: $color-secondary;
 
   > .card-container {
-    max-height: 270px;
-    overflow-y: auto;
-
     > .card-title {
       margin: 0 0 $space-1 * 2;
       font-family: $font-family-proximanova;
       font-size: $font-size-default;
       font-weight: $font-weight-default;
       line-height: 1.25;
-      color: $color-text-2;
       text-transform: uppercase;
     }
 

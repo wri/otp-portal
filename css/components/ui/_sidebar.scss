@@ -4,5 +4,9 @@ $sidebar-width: 600px;
   z-index: 2;
   flex: 0 0 $sidebar-width;
   background: rgba($color-black, .04);
-  box-shadow: 0 0 5px rgba($color-black, .25)
+  box-shadow: 0 0 5px rgba($color-black, .25);
+
+  &.-fluid {
+    flex: 1;
+  }
 }
