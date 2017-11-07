@@ -26,6 +26,7 @@ class DocCardUpload extends React.Component {
     // BINDINGS
     this.triggerAddFile = this.triggerAddFile.bind(this);
     this.triggerDeleteFile = this.triggerDeleteFile.bind(this);
+    this.triggerNotRequiredFile = this.triggerNotRequiredFile.bind(this);
 
     // SERVICE
     this.documentationService = new DocumentationService({
@@ -41,10 +42,26 @@ class DocCardUpload extends React.Component {
   */
   triggerAddFile(e) {
     e && e.preventDefault();
+
     modal.toggleModal(true, {
       children: DocModal,
       childrenProps: {
         ...this.props,
+        onChange: () => {
+          this.props.onChange && this.props.onChange();
+        }
+      }
+    });
+  }
+
+  triggerNotRequiredFile(e) {
+    e && e.preventDefault();
+
+    modal.toggleModal(true, {
+      children: DocModal,
+      childrenProps: {
+        ...this.props,
+        notRequired: true,
         onChange: () => {
           this.props.onChange && this.props.onChange();
         }
@@ -82,13 +99,13 @@ class DocCardUpload extends React.Component {
         {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending' || status === 'doc_expired') &&
           <ul>
             <li>
-              <button onClick={this.triggerAddFile} className="c-button -primary">
+              <button onClick={this.triggerAddFile} className="c-button -small -primary">
                 {this.props.intl.formatMessage({ id: 'update-file' })}
               </button>
             </li>
 
             <li>
-              <button onClick={this.triggerDeleteFile} className="c-button -primary">
+              <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
                 {this.props.intl.formatMessage({ id: 'delete' })}
                 <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
               </button>
@@ -98,20 +115,33 @@ class DocCardUpload extends React.Component {
         {status === 'doc_not_provided' &&
           <ul>
             <li>
-              <button onClick={this.triggerAddFile} className="c-button -secondary">
+              <button onClick={this.triggerAddFile} className="c-button -small -secondary">
                 {this.props.intl.formatMessage({ id: 'add-file' })}
+              </button>
+            </li>
+            <li>
+              <button onClick={this.triggerNotRequiredFile} className="c-button -small -primary">
+                {this.props.intl.formatMessage({ id: 'notrequired-file' })}
               </button>
             </li>
           </ul>
         }
 
+        {status === 'doc_not_required' &&
+          <ul>
+            <li>
+              <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
+                {this.props.intl.formatMessage({ id: 'required-file' })}
+              </button>
+            </li>
+          </ul>
+        }
       </div>
     );
   }
 }
 
 DocCardUpload.propTypes = {
-  type: PropTypes.string,
   status: PropTypes.string,
   user: PropTypes.object,
   id: PropTypes.string,
