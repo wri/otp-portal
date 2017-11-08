@@ -45,6 +45,7 @@ module.exports = {
         'process.env.ENV': JSON.stringify(process.env.ENV),
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.PORT': JSON.stringify(process.env.PORT),
+        'process.env.RW_API': JSON.stringify(process.env.RW_API),
         'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
         'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY),
         'process.env.MAPBOX_API_KEY': JSON.stringify(process.env.MAPBOX_API_KEY)

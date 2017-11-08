@@ -75,7 +75,7 @@ export default class FmusCheckboxGroup extends FormElement {
                 {this.getCheckbox(option)}
               </td>
               <td className="td-certifications">
-                {this.getCertifications(option)}
+                {this.getAllCertifications(option)}
               </td>
             </tr>
           ))}
@@ -101,7 +101,7 @@ export default class FmusCheckboxGroup extends FormElement {
     );
   }
 
-  getCertifications(option) {
+  getAllCertifications(option) {
     return (
       <CheckboxGroup
         onChange={value => this.props.onChangeCertifications({ [option.value]: value })}

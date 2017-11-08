@@ -94,6 +94,15 @@ class Header extends React.Component {
                               </Link>
                             </li>
                           }
+                          {user.role === 'operator' &&
+                            <li className="account-dropdown-list-item">
+                              <Link
+                                href={`/operators/${user.operator}/documentation`}
+                              >
+                                <a>My documents</a>
+                              </Link>
+                            </li>
+                          }
                           {user.role === 'admin' &&
                             <li className="account-dropdown-list-item">
                               <a href="/admin" >Admin </a>

@@ -1,36 +1,71 @@
 .c-fmu-card {
-  position: absolute;
-  top: 50px;
-
+  min-width: 320px;
   padding: $space-1 * 4 $space-1 * 6 $space-1 * 4 $space-1 * 4;
-  background: $color-secondary;
 
   > .card-container {
-    max-height: 270px;
-    overflow-y: auto;
-
     > .card-title {
       margin: 0 0 $space-1 * 2;
       font-family: $font-family-proximanova;
       font-size: $font-size-default;
       font-weight: $font-weight-default;
       line-height: 1.25;
-      color: $color-text-2;
       text-transform: uppercase;
     }
 
-    > .fmu-list {
+    .fmu-list {
       padding: 0;
       margin: 0;
     }
 
-    > .fmu-list > .fmu-item {
+    .fmu-item {
       list-style: none;
       font-size: $font-size-default;
       color: rgba($color-black, .8);
 
       &:not(:first-child) {
         margin: $space-1 0 0;
+      }
+    }
+
+    .fmu-item-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      > * {
+        margin: 0 0 0 $space-1;
+
+        &:first-child { margin: 0; }
+      }
+    }
+
+    .fmu-item-content {
+      position: relative;
+    }
+
+    .fmu-definition-list {
+      padding: 0 0 0 $space-1 * 2;
+      margin: 0;
+      list-style: none;
+
+      > li {
+        margin: $space-1 * 2 0 0;
+      }
+
+      .fmu-definition-term {
+        margin: 0;
+        font-family: $font-family-proximanova;
+        font-size: $font-size-small;
+
+      }
+
+      .fmu-definition-description {
+        font-size: $font-size-small;
       }
     }
   }

@@ -17,6 +17,7 @@ import DocumentationService from 'services/documentationService';
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
 
@@ -49,7 +50,8 @@ class DocModal extends React.Component {
       form: {
         startDate: '',
         expireDate: '',
-        file: ''
+        file: '',
+        reason: ''
       },
       submitting: false,
       errors: []
@@ -130,6 +132,7 @@ class DocModal extends React.Component {
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
           attachment: this.state.form.file,
+          reason: this.state.form.reason,
           ...fmu && { 'fmu-id': fmu.id }
         }
       }
@@ -139,7 +142,7 @@ class DocModal extends React.Component {
 
   render() {
     const { submitting, errors } = this.state;
-    const { title } = this.props;
+    const { title, notRequired } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -194,20 +197,41 @@ class DocModal extends React.Component {
             </div>
 
             {/* DOCUMENT */}
-            <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-              onChange={value => this.onChange({ file: value })}
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'file',
-                label: this.props.intl.formatMessage({ id: 'file' }),
-                required: true,
-                default: this.state.form.file
-              }}
-            >
-              {File}
-            </Field>
+            {!notRequired &&
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                onChange={value => this.onChange({ file: value })}
+                validations={['required']}
+                className="-fluid"
+                properties={{
+                  name: 'file',
+                  label: this.props.intl.formatMessage({ id: 'file' }),
+                  required: true,
+                  default: this.state.form.file
+                }}
+              >
+                {File}
+              </Field>
+            }
+
+            {/* REASON */}
+            {notRequired &&
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.reason = c; }}
+                onChange={value => this.onChange({ reason: value })}
+                className="-fluid"
+                validations={['required']}
+                properties={{
+                  name: 'reason',
+                  label: this.props.intl.formatMessage({ id: 'why-is-it-not-required' }),
+                  required: true,
+                  rows: '6',
+                  default: this.state.form.reason
+                }}
+              >
+                {Textarea}
+              </Field>
+            }
           </fieldset>
 
           {!!errors.length &&
@@ -232,7 +256,9 @@ class DocModal extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                {this.props.intl.formatMessage({ id: 'upload-file' })}
+                {this.props.intl.formatMessage({
+                  id: (notRequired) ? 'submit' : 'upload-file'
+                })}
               </button>
             </li>
           </ul>
@@ -247,6 +273,7 @@ DocModal.propTypes = {
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
   operatorId: PropTypes.string,
+  notRequired: PropTypes.bool,
   fmu: PropTypes.object,
   user: PropTypes.object,
   onChange: PropTypes.func,

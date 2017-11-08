@@ -23,6 +23,7 @@ const getParsedDocumentation = createSelector(
             title: doc['required-operator-document-country'].name,
             category: doc['required-operator-document-country']['required-operator-document-group'].name,
             status: doc.status,
+            reason: doc.reason,
             startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
             endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
           };
@@ -42,6 +43,7 @@ const getParsedDocumentation = createSelector(
             title: doc['required-operator-document-fmu'].name,
             category: doc['required-operator-document-fmu']['required-operator-document-group'].name,
             status: doc.status,
+            reason: doc.reason,
             fmu: doc.fmu,
             startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
             endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')

@@ -98,7 +98,24 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       }
     },
     layers: [{
+      id: 'forest_concession_layer_selected',
+      name: 'Forest managment units',
+      type: 'fill',
+      source: 'forest_concession',
+      layout: {},
+      before: ['loss_layer', 'gain_layer'],
+      paint: {
+        'fill-color': '#d07500',
+        'fill-opacity': 1,
+        'fill-outline-color': 'green'
+      },
+      filter: ['==', 'id', ''],
+      update(filters) {
+        this.map.setFilter('forest_concession_layer_selected', ['==', 'id', parseInt(filters.FMU_ID, 10)]);
+      }
+    }, {
       id: 'forest_concession_layer_hover',
+      name: 'Forest managment units',
       type: 'fill',
       source: 'forest_concession',
       layout: {},
@@ -122,33 +139,8 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       },
       fitBounds: true,
       interactivity: {
-        click(e) {
-          // Remove always the popup if exists and you are using 'closeOnClick'
-          // You will prevent a bug that doesn't show the popup again
-          this.popup && this.popup.remove();
-          this.popup = new this.Popup();
-
-          const props = e.features[0].properties;
-          this.popup.setLngLat(e.lngLat)
-            .setDOMContent(
-              render(
-                Popup({
-                  title: props.fmu_name,
-                  list: [{
-                    label: 'Company',
-                    value: props.company_na
-                  }, {
-                    label: 'CCF status',
-                    value: props.ccf_status
-                  }, {
-                    label: 'Type',
-                    value: props.fmu_type
-                  }]
-                }),
-                window.document.createElement('div')
-              )
-            )
-            .addTo(this.map);
+        click(e, callback) {
+          callback(e);
         },
         mouseenter() {
           this.map.getCanvas().style.cursor = 'pointer';
