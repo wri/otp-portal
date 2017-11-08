@@ -140,25 +140,6 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       fitBounds: true,
       interactivity: {
         click(e, callback) {
-          // Remove always the popup if exists and you are using 'closeOnClick'
-          // You will prevent a bug that doesn't show the popup again
-          // this.popup && this.popup.remove();
-          // this.popup = new this.Popup();
-
-          // this.map.setFilter('forest_concession_layer_selected', ['==', 'id', e.features[0].properties.id]);
-
-          // const props = e.features[0].properties;
-          // this.popup.setLngLat(e.lngLat)
-          //   .setDOMContent(
-          //     render(
-          //       Popup({
-          //         title: props.fmu_name
-          //       }),
-          //       window.document.createElement('div')
-          //     )
-          //   )
-          //   .addTo(this.map);
-
           callback(e);
         },
         mouseenter() {

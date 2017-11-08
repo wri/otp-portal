@@ -7,6 +7,9 @@ import sortBy from 'lodash/sortBy';
 import { connect } from 'react-redux';
 import { setFmuSelected, setAnalysis } from 'modules/operators-detail-fmus';
 
+// Utils
+import { HELPERS_FMU } from 'utils/fmu';
+
 // Components
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
@@ -49,6 +52,7 @@ class FMUCard extends React.Component {
           <ul className="fmu-list">
             {sortBy(fmus, 'name').map(fmu => {
               const isSelected = operatorsDetailFmus.fmu.id === fmu.id;
+              const data = operatorsDetailFmus.analysis.data[fmu.id];
 
               return (
                 <li
@@ -57,7 +61,7 @@ class FMUCard extends React.Component {
                   onClick={() => this.triggerSelectedFmu(fmu)}
                 >
                   <div className="fmu-item-header">
-                    {fmu.name}
+                    <span>{fmu.name}</span>
 
                     {isSelected &&
                       <Icon name="icon-arrow-up" className="-smaller" />
@@ -66,30 +70,32 @@ class FMUCard extends React.Component {
                       <Icon name="icon-arrow-down" className="-smaller" />
                     }
                   </div>
+
                   {isSelected &&
                     <div className="fmu-item-content">
                       {!operatorsDetailFmus.analysis.data[fmu.id] &&
                         <Spinner isLoading className="-transparent -tiny" />
                       }
 
-                      <ul>
+                      <ul className="fmu-definition-list">
                         <li>
-                          <h3>LOSS 2001-2016 with >30% canopy density</h3>
-                          <div>
-                            {
-                              operatorsDetailFmus.analysis.data[fmu.id] &&
-                              operatorsDetailFmus.analysis.data[fmu.id].loss
-                            }
+                          <h3 className="fmu-definition-term">LOSS 2001-2016 with >30% canopy density</h3>
+                          <div className="fmu-definition-description">
+                            {data && data.loss.toLocaleString()} ha
                           </div>
                         </li>
 
                         <li>
-                          <h3>GAIN 2001-2012</h3>
-                          <div>
-                            {
-                              operatorsDetailFmus.analysis.data[fmu.id] &&
-                              operatorsDetailFmus.analysis.data[fmu.id].gain
-                            }
+                          <h3 className="fmu-definition-term">GAIN 2001-2012</h3>
+                          <div className="fmu-definition-description">
+                            {data && data.gain.toLocaleString()} ha
+                          </div>
+                        </li>
+
+                        <li>
+                          <h3 className="fmu-definition-term">Certifications</h3>
+                          <div className="fmu-definition-description">
+                            {HELPERS_FMU.getCertifications(fmu)}
                           </div>
                         </li>
                       </ul>
