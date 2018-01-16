@@ -28,7 +28,10 @@ function Gallery1(props) {
                 theme={theme}
                 title={props.intl.formatMessage({ id: article.title })}
                 description={props.intl.formatMessage({ id: article.description })}
-                link={article.link}
+                link={{
+                  label: props.intl.formatMessage({ id: article.link.label }),
+                  href: article.link.href
+                }}
               />
             </div>
           );
