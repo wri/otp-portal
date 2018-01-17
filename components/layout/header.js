@@ -105,7 +105,7 @@ class Header extends React.Component {
                           }
                           {user.role === 'admin' &&
                             <li className="account-dropdown-list-item">
-                              <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
+                              <a href="/admin" >{this.props.intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
                             </li>
                           }
                           <li className="account-dropdown-list-item">
