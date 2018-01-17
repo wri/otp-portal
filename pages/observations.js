@@ -225,7 +225,11 @@ class ObservationsPage extends Page {
                     // pages: observations.totalSize,
                     // page: this.state.page - 1,
                     // manual: true
-                    onPageChange: page => this.onPageChange(page)
+                    onPageChange: page => this.onPageChange(page),
+                    defaultSorted: [{
+                      id: 'date',
+                      desc: false
+                    }]
                   }}
                 />
               }
