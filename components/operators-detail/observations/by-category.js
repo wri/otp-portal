@@ -49,7 +49,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
 
     const classTitle = classnames({
       'c-title': true,
-      '-bigger': true
+      '-big': true
     });
 
     return (
@@ -78,15 +78,43 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         data={groupedBySeverity}
                         barGap={horizontal ? 3 : 5}
                         barCategoryGap={0}
-                        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                        margin={{ top: 15, right: 0, bottom: 0, left: 0 }}
                         {...ANIMATION_TIMES}
                       >
                         {this.getAxis(max)}
 
-                        <Bar dataKey="hight" fill={PALETTE_COLOR_1[0].fill} />
-                        <Bar dataKey="medium" fill={PALETTE_COLOR_1[1].fill} />
-                        <Bar dataKey="low" fill={PALETTE_COLOR_1[2].fill} />
-                        <Bar dataKey="unknown" fill={PALETTE_COLOR_1[3].fill} />
+                        <Bar
+                          dataKey="hight"
+                          fill={PALETTE_COLOR_1[0].fill}
+                          label={{
+                            position: horizontal ? 'right' : 'top',
+                            formatter: v => v || null
+                          }}
+                        />
+                        <Bar
+                          dataKey="medium"
+                          fill={PALETTE_COLOR_1[1].fill}
+                          label={{
+                            position: horizontal ? 'right' : 'top',
+                            formatter: v => v || null
+                          }}
+                        />
+                        <Bar
+                          dataKey="low"
+                          fill={PALETTE_COLOR_1[2].fill}
+                          label={{
+                            position: horizontal ? 'right' : 'top',
+                            formatter: v => v || null
+                          }}
+                        />
+                        <Bar
+                          dataKey="unknown"
+                          fill={PALETTE_COLOR_1[3].fill}
+                          label={{
+                            position: horizontal ? 'right' : 'top',
+                            formatter: v => v || null
+                          }}
+                        />
 
                       </BarChart>
                     </ResponsiveContainer>
