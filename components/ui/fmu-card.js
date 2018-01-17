@@ -81,14 +81,14 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">LOSS 2001-2016 with >30% canopy density</h3>
                           <div className="fmu-definition-description">
-                            {data && data.loss.toLocaleString()} ha
+                            {data && data.lossGains.loss.toLocaleString()} ha
                           </div>
                         </li>
 
                         <li>
                           <h3 className="fmu-definition-term">GAIN 2001-2012</h3>
                           <div className="fmu-definition-description">
-                            {data && data.gain.toLocaleString()} ha
+                            {data && data.lossGains.gain.toLocaleString()} ha
                           </div>
                         </li>
 
@@ -96,6 +96,12 @@ class FMUCard extends React.Component {
                           <h3 className="fmu-definition-term">Certifications</h3>
                           <div className="fmu-definition-description">
                             {HELPERS_FMU.getCertifications(fmu)}
+                          </div>
+                        </li>
+                        <li>
+                          <h3 className="fmu-definition-term">GLAD alerts</h3>
+                          <div className="fmu-definition-description">
+                            {data && data.gladAlerts.value.toLocaleString()} ha
                           </div>
                         </li>
                       </ul>

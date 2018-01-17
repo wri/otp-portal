@@ -73,9 +73,9 @@ export function setFmuSelected(fmu) {
   };
 }
 
-
 // GEOSTORE
 export function setAnalysis(fmu) {
+  const requestSettings = [{ path: 'umd-loss-gain' }, { path: 'glad-alerts' }];
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FMU_ANALYSIS_LOADING });
@@ -87,14 +87,13 @@ export function setAnalysis(fmu) {
       },
       body: JSON.stringify({ geojson: fmu.geojson })
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        // Fetch analysis
-        // https://production-api.globalforestwatch.org/v1/umd-loss-gain?geostore=57f5e6db01f63b061cb3f45d746a6d34&period=2001-01-01%2C2016-12-31&thresh=30&_=1510065426854
-        fetch(`${process.env.RW_API}/umd-loss-gain?geostore=${data.id}`, {
+    .then((response) => {
+      if (response.ok) return response.json();
+      throw new Error(response.statusText);
+    })
+    .then(({ data }) => {
+      Promise.all(
+        requestSettings.map(config => fetch(`${process.env.RW_API}/${config.path}?geostore=${data.id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -103,22 +102,23 @@ export function setAnalysis(fmu) {
         .then((response) => {
           if (response.ok) return response.json();
           throw new Error(response.statusText);
-        })
-        .then(({ data: d }) => {
-          dispatch({
-            type: GET_FMU_ANALYSIS_SUCCESS,
-            payload: {
-              [fmu.id]: d.attributes
-            }
-          });
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
+        }))
+      )
+      .then((values) => {
+        const [lossGains, gladAlerts] = values;
+
         dispatch({
-          type: GET_FMU_ANALYSIS_ERROR,
-          payload: err.message
+          type: GET_FMU_ANALYSIS_SUCCESS,
+          payload: {
+            [fmu.id]: {
+              lossGains: lossGains.data.attributes,
+              gladAlerts: gladAlerts.data.attributes
+            }
+          }
         });
       });
+    })
+    .catch(error => console.error(error.message));
   };
 }
+
