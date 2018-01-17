@@ -141,7 +141,9 @@ class Search extends React.Component {
         query: { id }
       };
       this.onClose();
-      Router.push(location, `/operators/${id}`);
+      Router
+        .push(location, `/operators/${id}`)
+          .then(() => window.scrollTo(0, 0));
     }
   }
 
