@@ -49,7 +49,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
 
     const classTitle = classnames({
       'c-title': true,
-      '-big': true
+      '-default': true
     });
 
     return (
@@ -72,13 +72,18 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                 <div className="c-chart">
                   {/* <div className="chart -max-width-100"> */}
                   <div className={classChart}>
-                    <ResponsiveContainer height={horizontal ? 60 : 120}>
+                    <ResponsiveContainer height={horizontal ? 100 : 120}>
                       <BarChart
                         layout={horizontal ? 'vertical' : 'horizontal'}
                         data={groupedBySeverity}
                         barGap={horizontal ? 3 : 5}
                         barCategoryGap={0}
-                        margin={{ top: 15, right: 0, bottom: 0, left: 0 }}
+                        margin={{
+                          top: 20,
+                          right: 20,
+                          bottom: 20,
+                          left: 20
+                        }}
                         {...ANIMATION_TIMES}
                       >
                         {this.getAxis(max)}
