@@ -1,6 +1,10 @@
 {
   "name": "otp-portal",
+<<<<<<< HEAD
   "version": "0.0.4",
+=======
+  "version": "0.0.5",
+>>>>>>> develop
   "description": "Open Timber Portal description",
   "author": "Vizzuality",
   "license": "ISC",
