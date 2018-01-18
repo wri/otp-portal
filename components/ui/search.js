@@ -40,6 +40,10 @@ class Search extends React.Component {
     this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
   }
 
+  componentDidMount() {
+    this.input.setAttribute('size', this.input.getAttribute('placeholder').length + 5);
+  }
+
   componentWillUpdate(nextProps, nextState) {
     if (nextState.active !== this.state.active) {
       if (nextState.active) {
