@@ -10,31 +10,7 @@ const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
-  data: [
-    {
-      logo: '/static/images/logos/usaid.png',
-      logo2: '/static/images/logos/carpe.png',
-      title: 'U. S. Agency for International Development (USAID)',
-      description: 'The U.S. Agency for International Development’s (USAID) Central Africa Regional Program for the Environment (CARPE) supports initiatives to improve the management of the Congo Basin’s biodiversity and natural resources. It is implemented in collaboration with African Parks, the African Wildlife Foundation, U.S. Fish and Wildlife Service, the U.S. Forest Service, the University of Maryland, the Wildlife Conservation Society, World Resources Institute, World Wildlife Fund and other partners.',
-      maxWidth: '500px',
-      url: 'https://www.usaid.gov',
-      featured: true
-    },
-    {
-      logo: '/static/images/logos/ukaid.png',
-      title: 'UK Department of International Development (DFID)',
-      description: '',
-      maxWidth: '220px',
-      url: 'https://www.ukaiddirect.org/'
-    },
-    {
-      logo: '/static/images/logos/norwegian.png',
-      title: 'Norwegian Ministry of Climate and Environment ',
-      description: '',
-      maxWidth: '220px',
-      url: 'https://www.regjeringen.no/en/id4/'
-    }
-  ],
+  data: [],
   loading: false,
   error: false,
   map: {
