@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
+// Redux
+import { connect } from 'react-redux';
+
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
@@ -9,8 +12,8 @@ import { HELPERS_DOC } from 'utils/documentation';
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 
-export default function DocumentsProvided(props) {
-  const { data } = props;
+function DocumentsProvided(props) {
+  const { data, user, router } = props;
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(data);
@@ -48,7 +51,16 @@ export default function DocumentsProvided(props) {
 
             {/* Legend */}
             <ChartLegend
-              list={Object.keys(legend).map(k => ({ id: k, ...legend[k] }))}
+              list={Object.keys(legend)
+                .map(k => ({ id: k, ...legend[k] }))
+                .filter((k) => {
+                  if (user.token && user.role === 'operator' && user.operator.toString() === router.query.id) {
+                    return true;
+                  }
+
+                  return !k.user;
+                })
+              }
               className="-absolute"
             />
           </div>
@@ -101,5 +113,14 @@ DocumentsProvided.defaultProps = {
 };
 
 DocumentsProvided.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  user: PropTypes.object,
+  router: PropTypes.object
 };
+
+export default connect(
+  state => ({
+    user: state.user,
+    router: state.router
+  })
+)(DocumentsProvided);

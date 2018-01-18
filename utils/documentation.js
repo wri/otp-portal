@@ -13,7 +13,8 @@ const PALETTE = {
   doc_invalid: {
     label: 'Provided (not valid)',
     fill: PALETTE_COLOR_2[1].fill,
-    stroke: PALETTE_COLOR_2[1].fill
+    stroke: PALETTE_COLOR_2[1].fill,
+    user: true
   },
   doc_valid: {
     label: 'Provided (valid)',
@@ -23,7 +24,8 @@ const PALETTE = {
   doc_pending: {
     label: 'Pending for approval',
     fill: PALETTE_COLOR_2[3].fill,
-    stroke: PALETTE_COLOR_2[3].fill
+    stroke: PALETTE_COLOR_2[3].fill,
+    user: true
   },
   doc_expired: {
     label: 'Expired',

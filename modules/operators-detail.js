@@ -61,7 +61,8 @@ export default function (state = initialState, action) {
 
 /* Action creators */
 export function getOperator(id) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { user } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
@@ -89,7 +90,8 @@ export function getOperator(id) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
+        'OTP-API-KEY': process.env.OTP_API_KEY,
+        Authorization: user.token ? `Bearer ${user.token}` : undefined
       }
     })
       .then((response) => {

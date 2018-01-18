@@ -80,7 +80,6 @@ DocumentsByFMU.propTypes = {
 };
 
 export default connect(
-  
   state => ({
     user: state.user
   }),
