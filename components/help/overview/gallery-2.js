@@ -29,7 +29,10 @@ function Gallery2(props) {
                 theme={theme}
                 title={props.intl.formatMessage({ id: article.title })}
                 description={props.intl.formatMessage({ id: article.description })}
-                link={article.link}
+                link={{
+                  label: props.intl.formatMessage({ id: article.link.label }),
+                  href: article.link.href
+                }}
                 Component={<a href={article.site} target="_blank" rel="noopener noreferrer">{props.intl.formatMessage({ id: 'go_to_site' })}</a>}
               />
             </div>
