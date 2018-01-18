@@ -28,6 +28,7 @@ export default function Table({ data, options, className }) {
         // Api pagination & sort
         // manual={options.manual}
         onPageChange={options.onPageChange}
+        defaultSorted={options.defaultSorted}
       />
     </div>
   );

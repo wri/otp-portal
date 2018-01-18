@@ -126,14 +126,17 @@ class EditOperator extends React.Component {
 
               Promise.all(promises)
                 .then(() => {
-                  toastr.success('Great!!', 'Profile saved correctly');
+                  toastr.success(
+                    this.props.intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
+                    this.props.intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
+                  );
                   this.setState({ submitting: false, submitted: true });
                   if (this.props.onSubmit) this.props.onSubmit();
                 })
                 .catch((errors) => {
                   this.setState({ submitting: false });
                   console.error(errors);
-                })
+                });
             } else {
               this.setState({ submitting: false, submitted: true });
               if (this.props.onSubmit) this.props.onSubmit();
