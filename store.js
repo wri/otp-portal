@@ -7,9 +7,10 @@ const reducer = combineReducers({
   ...reducers
 });
 
-const store = () =>
+const store = (initialState = {}) =>
   createStore(
     reducer,
+    initialState,
     compose(
       applyMiddleware(thunk),
       /* Redux dev tool, install chrome extension in
