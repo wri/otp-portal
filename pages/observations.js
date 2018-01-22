@@ -150,7 +150,9 @@ class ObservationsPage extends Page {
         <div>
           {/* Observations table details */}
           <StaticTabs
-            options={TABS_OBSERVATIONS}
+            options={
+              TABS_OBSERVATIONS.map(tab => ({ ...tab, ...{ label: this.props.intl.formatMessage({ id: tab.labelKey }) } }))
+            }
             defaultSelected={this.state.tab}
             onChange={this.triggerChangeTab}
           />
