@@ -1,25 +1,38 @@
 .c-partner-card {
-  padding: $space-1 * 2;
+  margin-top: $space-1 * 4;
 
-  h3 {
-    text-align: center;
+  .partner-card-title {
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px; width: 1px;
+    margin: -1px; padding: 0; border: 0;
+  }
+
+  .partner-card-logo {
+    margin: 0;
+    max-height: 120px;
+  }
+
+  .partner-card-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    background-color: rgba(0,0,0,0.04);
+  }
+
+  .partner-card-content {
+    margin-top: $space-1 * 2;
     font-size: $font-size-default;
   }
 
-  img {
-    width: 100%;
-    max-width: 500px;
-    margin: $space-1 * 3 auto 0;
+  .partner-card-text {
+    margin-bottom: 0;
+    line-height: $font-size-extrabig;
   }
 
-  p {
-    font-size: 18px;
-    text-align: center;
-    max-width: 60ch;
-    margin: 0 auto;
-  }
-
-  a {
+  .partner-card-link {
     color: $color-text-1;
     text-decoration: none;
   }

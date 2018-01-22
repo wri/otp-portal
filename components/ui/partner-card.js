@@ -1,35 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
 class PartnerCard extends React.Component {
   static propTypes = {
-    logo: PropTypes.string,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    url: PropTypes.string,
-    maxWidth: PropTypes.string
-  };
-
-  static defaultProps = {
-    logo: '',
-    title: '',
-    description: '',
-    url: '',
-    maxWidth: ''
+    logo: PropTypes.object,
+    name: PropTypes.string,
+    website: PropTypes.string,
+    description: PropTypes.string
   };
 
   render() {
-    const { logo, title, description, url, maxWidth } = this.props;
+    const { logo, name, website, description } = this.props;
+
     return (
       <div className="c-partner-card">
-        <div className="partner-card-logo">
-          <a rel="noopener noreferrer" target="_blank" href={url}>
-            <h3>{title}</h3>
-            <img style={{ maxWidth }} alt={title} src={logo} />
+        <div className="partner-card-logo-container">
+          <a rel="noopener noreferrer" target="_blank" href={website}>
+            <h3 className="partner-card-title">{name}</h3>
+            <picture>
+              {logo.medium && <source srcSet={logo.medium.url} media="(min-width: 640px)" />}
+              <img className="partner-card-logo" src={logo.url} alt={name} />
+            </picture>
           </a>
         </div>
         <div className="partner-card-content">
-          <p>
+          <p className="partner-card-text">
             {description}
           </p>
         </div>
