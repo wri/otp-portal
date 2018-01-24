@@ -25,7 +25,8 @@ const getParsedDocumentation = createSelector(
             status: doc.status,
             reason: doc.reason,
             startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+            annexes: doc['operator-document-annexes'] ? doc['operator-document-annexes'] : []
           };
         }
         return null;
@@ -46,7 +47,8 @@ const getParsedDocumentation = createSelector(
             reason: doc.reason,
             fmu: doc.fmu,
             startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/')
+            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+            annexes: doc['operator-document-annexes'] ? doc['operator-document-annexes'] : []
           };
         }
         return null;

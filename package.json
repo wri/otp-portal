@@ -54,6 +54,7 @@
     "prop-types": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.7.tgz",
     "query-string": "^4.3.4",
     "raw-loader": "^0.5.1",
+    "rc-tooltip": "^3.7.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.3",
