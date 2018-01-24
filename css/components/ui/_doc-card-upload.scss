@@ -16,5 +16,18 @@
         left: -9999px;
       }
     }
+
+    li:first-child {
+      margin-right: 5px;
+    }
+
+    li:nth-child(n+2) {
+      margin-left: 5px;
+    }
+
+    button {
+      white-space: normal;
+      height: 100%;
+    }
   }
 }
