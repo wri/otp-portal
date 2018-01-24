@@ -133,18 +133,8 @@ app.prepare()
     });
 
     server.get('/logout', (req, res) => {
-      request({
-        url: `${process.env.OTP_API}/logout`,
-        headers: {
-          'OTP-API-KEY': process.env.OTP_API_KEY
-        },
-        json: true
-      })
-        .then(() => {
-          req.session = null;
-          res.json({});
-        })
-        .catch(() => res.status(401).send('User unathorized'));
+      req.session = null;
+      res.json({});
     });
 
     // Default catch-all handler to allow Next.js to handle all other routes
