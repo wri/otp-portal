@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
+const request = require('request-promise');
 const localeMiddleware = require('express-locale');
 const bodyParser = require('body-parser');
 const next = require('next');
@@ -72,7 +73,7 @@ app.prepare()
       const layer = new LossLayer(z, x, y);
       return layer.getImageTile('png', (tile) => {
         // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, (err) => {
+        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, () => {
           fs.writeFile(tilePath, tile);
         });
 
@@ -112,6 +113,39 @@ app.prepare()
 
     // SIGNUP
     server.get('/signup', (req, res) => app.render(req, res, '/signup', Object.assign(req.params, req.query)));
+
+    // LOGIN
+    server.post('/login', (req, res) => {
+      request({
+        url: `${process.env.OTP_API}/login`,
+        headers: {
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        },
+        body: req.body,
+        method: 'POST',
+        json: true
+      })
+        .then((data) => {
+          req.session.user = data;
+          res.json(data);
+        })
+        .catch(() => res.status(401).send('User unathorized'));
+    });
+
+    server.get('/logout', (req, res) => {
+      request({
+        url: `${process.env.OTP_API}/logout`,
+        headers: {
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        },
+        json: true
+      })
+        .then(() => {
+          req.session = null;
+          res.json({});
+        })
+        .catch(() => res.status(401).send('User unathorized'));
+    });
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));
