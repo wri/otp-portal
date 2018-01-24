@@ -120,67 +120,67 @@ class DocCard extends React.Component {
                   {title}
                 </h3>
               </a>
-              <div>
-                <div className="doc-card-annexes-info">
-                  <h3 className="c-title -default">Annexes:</h3>
-                  {isActiveUser &&
-                    <button
-                      className="c-button -small -secondary"
-                      type="button"
-                      onClick={this.handleAddAnnex}
-                      >
-                      <Icon className="" name="icon-plus" />
-                    </button>
-                  }
-                </div>
-                {annexes.length > 0 ?
-                  <ul className="doc-card-list">
-                    {annexes.map(annex => (
-                      <li className="doc-card-list-item" key={annex.id}>
-                        <Tooltip
-                          placement="bottom"
-                          trigger={['hover']}
-                          overlay={
-                            <div>
-                              <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-                              <h4>{annex.name}</h4>
-                              <dl className="tooltip-content">
-                                <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-                                <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
-                                <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-                                <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
-                              </dl>
-                              <div className="tooltip-footer">
-                                {annex.attachment &&
-                                  <a href={annex.attachment.url} className="c-button -small -primary">{this.props.intl.formatMessage({ id: 'file' })}</a>
-                                }
-                                {isActiveUser &&
-                                  <button
-                                    className="c-button -small -secondary"
-                                    type="button"
-                                    onClick={() => this.handleRemoveIndex(annex.id)}
-                                    >
-                                    <Icon className="" name="icon-bin" />
-                                  </button>
-                                }
-                              </div>
-                            </div>
-                          }
-                          overlayClassName="c-tooltip"
-                        >
-                          <button
-                            className="c-button"
-                            type="button"
-                          >
-                            <Icon className="" name="icon-file-empty" />
-                          </button>
-                        </Tooltip>
-                      </li>
-                    ))}
-                  </ul> :
-                  <p>No annexes</p>
+            </div>
+            <div className="doc-card-footer">
+              <div className="doc-card-annexes-info">
+                <h3 className="c-title -default">Annexes:</h3>
+                {isActiveUser &&
+                  <button
+                    className="c-button -small -secondary"
+                    type="button"
+                    onClick={this.handleAddAnnex}
+                    >
+                    <Icon className="" name="icon-plus" />
+                  </button>
                 }
               </div>
+              {annexes.length > 0 ?
+                <ul className="doc-card-list">
+                  {annexes.map(annex => (
+                    <li className="doc-card-list-item" key={annex.id}>
+                      <Tooltip
+                        placement="bottom"
+                        trigger={['hover']}
+                        overlay={
+                          <div>
+                            <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
+                            <h4>{annex.name}</h4>
+                            <dl className="tooltip-content">
+                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
+                              <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
+                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
+                              <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
+                            </dl>
+                            <div className="tooltip-footer">
+                              {annex.attachment &&
+                                <a href={annex.attachment.url} className="c-button -small -primary">{this.props.intl.formatMessage({ id: 'file' })}</a>
+                              }
+                              {isActiveUser &&
+                                <button
+                                  className="c-button -small -secondary"
+                                  type="button"
+                                  onClick={() => this.handleRemoveIndex(annex.id)}
+                                  >
+                                  <Icon className="" name="icon-bin" />
+                                </button>
+                              }
+                            </div>
+                          </div>
+                        }
+                        overlayClassName="c-tooltip"
+                      >
+                        <button
+                          className="c-button"
+                          type="button"
+                        >
+                          <Icon className="" name="icon-file-empty" />
+                        </button>
+                      </Tooltip>
+                    </li>
+                  ))}
+                </ul> :
+                <p>No annexes</p>
+              }
             </div>
           </div>
         }
