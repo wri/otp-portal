@@ -1,7 +1,7 @@
 .c-tooltip {
   padding: 20px;
   min-width: 200px;
-  background: $color-white;
+  background-color: $color-primary;
 
   .tooltip-title {
     margin-top: 0;
@@ -15,6 +15,23 @@
   dd {
     margin-left: 0;
   }
+
+  .c-button {
+    &.-primary {
+      color: white;
+      border-color: white;
+    }
+
+    &.-secondary {
+      border-color: white;
+      background: white;
+    }
+
+    .c-icon {
+      fill: $color-primary;
+    }
+  }
+
 
   .tooltip-hidden-button-text {
     position: absolute;
@@ -33,11 +50,12 @@
 
     .rc-tooltip-inner {
       border: none;
+      color: $color-white;
+      background-color: $color-primary;
     }
 
     .rc-tooltip-arrow {
-      border-bottom-color: $color-white;
+      border-bottom-color: $color-primary;
     }
   }
 }
-
