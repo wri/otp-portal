@@ -42,10 +42,10 @@
   }
 
   .doc-card-list {
-    list-style: none;
-    padding: 0;
     display: flex;
     flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
 
     .doc-card-list-item {
       margin-top: 10px;
@@ -54,6 +54,25 @@
     .doc-card-list-item:nth-child(n+1) {
       margin-right: 10px;
     }
+
+    .doc-card-list-button {
+      margin-top: 10px;
+
+      button {
+        padding: 5px;
+      }
+    }
+  }
+
+  .doc-card-hidden-button-text {
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
   }
 
   .doc-card-list-item {
@@ -104,19 +123,12 @@
     }
   }
 
-  .doc-card-annexes-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: s;
+  .doc-card-annexes-title {
+    margin: 0;
+  }
 
-    h3 {
-      margin: 0;
-    }
-
-    button {
-      padding: 5px;
-    }
+  .doc-card-annex-text {
+    font-size: $font-size-small;
   }
 
   .doc-card-date {
