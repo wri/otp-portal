@@ -45,6 +45,7 @@ function DocumentsByFMU(props) {
                         <DocCard
                           {...card}
                           operatorId={id}
+                          onChange={() => props.getOperator(id)}
                         />
 
                         {((user && user.role === 'admin') ||

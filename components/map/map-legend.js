@@ -50,7 +50,14 @@ class MapLegend extends React.Component {
           <ul>
             {layers.map(layer =>
               <MapLegendItem
-                layer={layer}
+                layer={{ ...layer,
+                  name: this.props.intl.formatMessage({ id: `operators.map.legend.item.${layer.id}` }),
+                  legendConfig: { ...layer.legendConfig,
+                    items: layer.legendConfig.items.map(
+                      item => ({ ...item, name: this.props.intl.formatMessage({ id: `operators.map.legend.item.${layer.id}.legendConfig.name` }) })
+                    )
+                  }
+                }}
                 key={layer.id}
               />
             )}

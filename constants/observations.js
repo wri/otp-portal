@@ -1,11 +1,11 @@
-import React from 'react';
-
 const TABS_OBSERVATIONS = [
   {
+    labelKey: 'observations.tab.observations-list',
     label: 'Observations List',
     value: 'observations-list'
   },
   {
+    labelKey: 'observations.tab.map',
     label: 'Map View',
     value: 'map'
   }

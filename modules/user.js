@@ -4,7 +4,7 @@ import * as queryString from 'query-string';
 
 
 import * as Cookies from 'js-cookie';
-import { post } from 'utils/request';
+import { get, post } from 'utils/request';
 
 // CONSTANTS
 const SET_USER = 'SET_USER';
@@ -105,7 +105,7 @@ export function getUserOperator(id) {
 export function login({ body }) {
   return dispatch => new Promise((resolve, reject) => {
     post({
-      url: `${process.env.OTP_API}/login`,
+      url: '/login',
       type: 'POST',
       body,
       headers: [{
@@ -132,39 +132,27 @@ export function login({ body }) {
 }
 
 export function logout() {
-  return (dispatch) => {
-    // Set cookie
-    Cookies.remove('user');
+  return dispatch => new Promise((resolve, reject) => {
+    get({
+      url: '/logout',
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }],
+      onSuccess: (response) => {
+        // Dispatch action
+        dispatch({ type: REMOVE_USER });
 
-    // Dispatch action
-    dispatch({ type: REMOVE_USER, payload: {} });
-  };
-  // return dispatch => new Promise((resolve, reject) => {
-  //   post({
-  //     url: `${process.env.OTP_API}/logout`,
-  //     type: 'POST',
-  //     body: {},
-  //     headers: [{
-  //       key: 'Content-Type',
-  //       value: 'application/json'
-  //     }, {
-  //       key: 'OTP-API-KEY',
-  //       value: process.env.OTP_API_KEY
-  //     }],
-  //     onSuccess: (response) => {
-  //       // Set cookie
-  //       Cookies.remove('user');
-  //
-  //       // Dispatch action
-  //       dispatch({ type: SET_USER, payload: {} });
-  //
-  //       resolve(response);
-  //     },
-  //     onError: (error) => {
-  //       reject(error);
-  //     }
-  //   });
-  // });
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
 }
 
 export function saveUser({ body }) {
