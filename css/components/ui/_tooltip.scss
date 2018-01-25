@@ -16,23 +16,6 @@
     margin-left: 0;
   }
 
-  .c-button {
-    &.-primary {
-      color: white;
-      border-color: white;
-    }
-
-    &.-secondary {
-      border-color: white;
-      background: white;
-    }
-
-    .c-icon {
-      fill: $color-primary;
-    }
-  }
-
-
   .tooltip-hidden-button-text {
     position: absolute;
     overflow: hidden;

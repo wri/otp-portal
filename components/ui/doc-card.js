@@ -143,11 +143,11 @@ class DocCard extends React.Component {
                           </dl>
                           <div className="tooltip-footer">
                             {annex.attachment &&
-                              <a href={annex.attachment.url} className="c-button -small -primary">{this.props.intl.formatMessage({ id: 'file' })}</a>
+                              <a href={annex.attachment.url} className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
                             }
                             {isActiveUser &&
                               <button
-                                className="c-button -small -secondary"
+                                className="c-button -small -tooltip -tooltip-secondary"
                                 type="button"
                                 onClick={() => this.handleRemoveIndex(annex.id)}
                               >
