@@ -4,6 +4,30 @@
   flex-direction: column;
   flex: 1;
 
+  .report-item {
+    display: flex;
+    position: relative;
+    background: none;
+    border: 0;
+    border: 1px solid rgba($color-text-1, 0.8);
+    cursor: pointer;
+    padding: 5px;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      background: $color-tertiary;
+      border-bottom: 1px solid rgba($color-text-1, 0.8);
+      cursor: default;
+    }
+  }
+
   // Override
   .ReactTable {
     border: 0;
@@ -87,6 +111,19 @@
 
       &.-a-right {
         text-align: right;
+      }
+
+      &.report {
+        text-align: center;
+
+        .report-item-wrapper {
+          display: inline-block;
+        }
+
+        .report-item-text {
+          font-size: 48px;
+          line-height: 32px;
+        }
       }
 
       &.description {
@@ -210,7 +247,6 @@
 
     .severity-item {
       font-size: $font-size-huge;
-      line-height: 32px;
 
       &.-sev-0 { color: $lg-color-3; }
       &.-sev-1 { color: $lg-color-2; }

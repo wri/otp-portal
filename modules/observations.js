@@ -94,7 +94,7 @@ export function getObservations() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report'];
 
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };

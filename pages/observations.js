@@ -13,7 +13,8 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Selectors
-import { getParsedObservations } from 'selectors/observations/observations';
+import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
+import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 
 // Components
 import Page from 'components/layout/page';
@@ -25,6 +26,8 @@ import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
 import StaticTabs from 'components/ui/static-tabs';
 import { ReadMore } from 'react-read-more';
+import Icon from 'components/ui/icon';
+
 // Utils
 import {
   getObservations,
@@ -79,22 +82,6 @@ class ObservationsPage extends Page {
     }
   }
 
-  parseTableData() {
-    const obs = this.props.observations.data.map(o => (
-      {
-        date: new Date(o['publication-date']).getFullYear(),
-        country: o.country && o.country.iso,
-        operator: o.operator && o.operator.name,
-        category: o.subcategory.category.name,
-        observation: o.details,
-        level: o.severity && o.severity.level,
-        fmu: o.fmu && o.fmu.name
-      }
-    ));
-
-    return obs;
-  }
-
   getPageSize() {
     const { observations } = this.props;
 
@@ -113,7 +100,7 @@ class ObservationsPage extends Page {
   }
 
   render() {
-    const { url, observations, parsedObservations } = this.props;
+    const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
 
     return (
       <Layout
@@ -141,7 +128,7 @@ class ObservationsPage extends Page {
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
                 <Overview
-                  parsedObservations={parsedObservations}
+                  parsedChartObservations={parsedChartObservations}
                 />
               </div>
             </div>
@@ -164,7 +151,7 @@ class ObservationsPage extends Page {
               {this.state.tab === 'observations-list' &&
                 <Table
                   sortable
-                  data={this.parseTableData()}
+                  data={parsedTableObservations}
                   options={{
                     columns: [
                       {
@@ -215,6 +202,22 @@ class ObservationsPage extends Page {
                         headerClassName: 'severity-th',
                         className: 'severity',
                         Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+                      },
+                      {
+                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'report' })}</span>,
+                        accessor: 'report',
+                        headerClassName: '',
+                        className: 'report',
+                        Cell: attr =>
+                          <div className="report-item-wrapper">
+                            { attr.value ?
+                              <a href={attr.value} className="report-item">
+                                <Icon className="" name="icon-file-empty" />
+                              </a>
+                            :
+                              <span className="report-item-text">-</span>
+                          }
+                          </div>
                       }
                     ],
                     pageSize: this.getPageSize(),
@@ -257,7 +260,8 @@ export default withIntl(withRedux(
   store,
   state => ({
     observations: state.observations,
-    parsedObservations: getParsedObservations(state),
+    parsedChartObservations: getParsedChartObservations(state),
+    parsedTableObservations: getParsedTableObservations(state),
     operators: state.operators
   }),
   dispatch => ({
