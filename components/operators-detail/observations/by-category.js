@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createElement } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -14,16 +14,20 @@ import ChartLegend from 'components/ui/chart-legend';
 
 
 export default class TotalObservationsByOperatorByCategory extends React.Component {
-  getAxis(max) {
-    return this.props.horizontal ?
-    [
-      <XAxis key="x-axis" hide axisLine={false} domain={[0, max]} type="number" />,
-      <YAxis key="y-axis" hide axisLine type="category" />
-    ] :
-    [
-      <XAxis key="x-axis" hide axisLine />,
-      <YAxis key="y-axis" hide axisLine={false} domain={[0, max]} />
-    ];
+  getXAxis = (max) => {
+    if (this.props.horizontal) {
+      return <XAxis key="x-axis" hide axisLine={false} domain={[0, max]} type="number" />;
+    }
+
+    return <XAxis key="x-axis" hide axisLine />;
+  }
+
+  getYAxis = (max) => {
+    if (this.props.horizontal) {
+      return <YAxis key="y-axis" hide axisLine type="category" />;
+    }
+
+    return <YAxis key="y-axis" hide axisLine={false} domain={[0, max]} />;
   }
 
   render() {
@@ -86,7 +90,8 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         }}
                         {...ANIMATION_TIMES}
                       >
-                        {this.getAxis(max)}
+                        {this.getXAxis(max)}
+                        {this.getYAxis(max)}
 
                         <Bar
                           dataKey="hight"
