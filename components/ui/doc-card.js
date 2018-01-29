@@ -20,9 +20,21 @@ import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
-import { log } from 'util';
 
 class DocCard extends React.Component {
+  static propTypes = {
+    user: PropTypes.object,
+    url: PropTypes.string,
+    status: PropTypes.string,
+    title: PropTypes.string,
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    operatorId: PropTypes.string,
+    annexes: PropTypes.array,
+    intl: intlShape.isRequired,
+    onChange: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 
@@ -33,15 +45,6 @@ class DocCard extends React.Component {
     deleteLoading: false
   }
 
-  static propTypes = {
-    url: PropTypes.string,
-    status: PropTypes.string,
-    title: PropTypes.string,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    annexes: PropTypes.array,
-    intl: intlShape.isRequired
-  };
 
   triggerWhy(e) {
     e && e.preventDefault();
@@ -94,7 +97,7 @@ class DocCard extends React.Component {
 
   render() {
     const { user, startDate, endDate, status, title, url, annexes, operatorId } = this.props;
-    const {deleteLoading} = this.state;
+    const { deleteLoading } = this.state;
     const isActiveUser = ((user && user.role === 'admin') ||
       (user && user.role === 'operator' && user.operator && user.operator.toString() === operatorId));
 
@@ -122,64 +125,65 @@ class DocCard extends React.Component {
               </a>
             </div>
             <div className="doc-card-footer">
-              <div className="doc-card-annexes-info">
-                <h3 className="c-title -default">Annexes:</h3>
-                {isActiveUser &&
-                  <button
-                    className="c-button -small -secondary"
-                    type="button"
-                    onClick={this.handleAddAnnex}
-                    >
-                    <Icon className="" name="icon-plus" />
-                  </button>
-                }
-              </div>
-              {annexes.length > 0 ?
-                <ul className="doc-card-list">
-                  {annexes.map(annex => (
-                    <li className="doc-card-list-item" key={annex.id}>
-                      <Tooltip
-                        placement="bottom"
-                        trigger={['hover']}
-                        overlay={
-                          <div>
-                            <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-                            <h4>{annex.name}</h4>
-                            <dl className="tooltip-content">
-                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-                              <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
-                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-                              <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
-                            </dl>
-                            <div className="tooltip-footer">
-                              {annex.attachment &&
-                                <a href={annex.attachment.url} className="c-button -small -primary">{this.props.intl.formatMessage({ id: 'file' })}</a>
-                              }
-                              {isActiveUser &&
-                                <button
-                                  className="c-button -small -secondary"
-                                  type="button"
-                                  onClick={() => this.handleRemoveIndex(annex.id)}
-                                  >
-                                  <Icon className="" name="icon-bin" />
-                                </button>
-                              }
-                            </div>
+              <h3 className="c-title -default doc-card-annexes-title">Annexes:</h3>
+              <ul className="doc-card-list">
+                {annexes.map(annex => (
+                  <li className="doc-card-list-item" key={annex.id}>
+                    <Tooltip
+                      placement="bottom"
+                      overlay={
+                        <div>
+                          <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
+                          <h4 className="c-title -default tooltip-title">{annex.name}</h4>
+                          <dl className="tooltip-content">
+                            <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
+                            <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
+                            <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
+                            <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
+                          </dl>
+                          <div className="tooltip-footer">
+                            {annex.attachment &&
+                              <a href={annex.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
+                            }
+                            {isActiveUser &&
+                              <button
+                                className="c-button -small -tooltip -tooltip-secondary"
+                                type="button"
+                                onClick={() => this.handleRemoveIndex(annex.id)}
+                              >
+                                <span className="tooltip-hidden-button-text">Remove an annex</span>
+                                <Icon className="" name="icon-bin" />
+                              </button>
+                            }
                           </div>
-                        }
-                        overlayClassName="c-tooltip"
+                        </div>
+                      }
+                      overlayClassName="c-tooltip"
+                    >
+                      <button
+                        className="c-button"
+                        type="button"
                       >
-                        <button
-                          className="c-button"
-                          type="button"
-                        >
-                          <Icon className="" name="icon-file-empty" />
-                        </button>
-                      </Tooltip>
-                    </li>
-                  ))}
-                </ul> :
-                <p>No annexes</p>
+                        <Icon className="" name="icon-file-empty" />
+                      </button>
+                    </Tooltip>
+                  </li>
+                ))}
+                {isActiveUser &&
+                  <li className="doc-card-list-button" key="add-annex">
+                    <button
+                      className="c-button -small -secondary"
+                      type="button"
+                      onClick={this.handleAddAnnex}
+                    >
+                      <span className="doc-card-hidden-button-text">Add an annex</span>
+                      <Icon className="" name="icon-plus" />
+                    </button>
+                  </li>
+                }
+              </ul>
+              {!isActiveUser &&
+                <p className="doc-card-annex-text">No annexes</p>
               }
             </div>
           </div>

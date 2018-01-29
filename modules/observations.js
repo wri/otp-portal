@@ -19,6 +19,7 @@ const GET_FILTERS_SUCCESS = 'GET_FILTERS_SUCCESS';
 const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
+const SET_ACTIVE_COLUMNS = 'SET_ACTIVE_COLUMNS';
 
 const OBS_MAX_SIZE = 3000;
 
@@ -41,7 +42,8 @@ const initialState = {
     options: {},
     loading: false,
     error: false
-  }
+  },
+  columns: ['date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
 };
 
 const JSONA = new Jsona();
@@ -78,6 +80,9 @@ export default function (state = initialState, action) {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
     }
+    case SET_ACTIVE_COLUMNS: {
+      return Object.assign({}, state, { columns: action.payload });
+    }
     default:
       return state;
   }
@@ -94,7 +99,7 @@ export function getObservations() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report'];
 
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
@@ -163,6 +168,15 @@ export function getFilters() {
           payload: err.message
         });
       });
+  };
+}
+
+export function setActiveColumns(activeColumns) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_ACTIVE_COLUMNS,
+      payload: activeColumns
+    });
   };
 }
 

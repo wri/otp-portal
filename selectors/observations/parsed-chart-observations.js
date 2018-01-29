@@ -4,7 +4,7 @@ import { createSelector } from 'reselect';
 const observations = state => state.observations;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
-const getParsedObservations = createSelector(
+const getParsedChartObservations = createSelector(
   observations,
   (_observations) => {
     if (_observations.data && _observations.data.length) {
@@ -22,4 +22,4 @@ const getParsedObservations = createSelector(
   }
 );
 
-export { getParsedObservations };
+export { getParsedChartObservations };

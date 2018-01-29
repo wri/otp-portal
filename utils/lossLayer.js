@@ -30,9 +30,8 @@ async function getTile(z, x, y) {
     };
   }
 
-  // console.log(`https://storage.googleapis.com/wri-public/Hansen15/tiles/hansen_world/v1/tc30/${coords.z}/${coords.x}/${coords.y}.png`);
+  const TILE_URL = `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/${coords.z}/${coords.x}/${coords.y}.png`;
 
-  const TILE_URL = `https://storage.googleapis.com/wri-public/Hansen15/tiles/hansen_world/v1/tc30/${coords.z}/${coords.x}/${coords.y}.png`;
   const response = await doRequest({
     uri: TILE_URL,
     method: 'GET',
