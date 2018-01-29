@@ -160,20 +160,6 @@ class EditOperator extends React.Component {
     }, 0);
   }
 
-  // /**
-  //  * HELPERS
-  //  * - getFmus
-  //  *
-  // */
-  // async getFmus(countryId) {
-  //   this.setState({ fmusLoading: true });
-  //   const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
-  //   this.setState({
-  //     fmusOptions: fmus,
-  //     fmusLoading: false
-  //   });
-  // }
-
   render() {
     const { submitting } = this.state;
     const submittingClassName = classnames({
