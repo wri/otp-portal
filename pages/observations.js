@@ -179,7 +179,12 @@ class ObservationsPage extends Page {
         Cell: attr =>
           <div className="report-item-wrapper">
             { attr.value ?
-              <a href={attr.value} className="report-item">
+              <a
+                href={attr.value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="report-item"
+              >
                 <Icon className="" name="icon-file-empty" />
               </a>
             :
