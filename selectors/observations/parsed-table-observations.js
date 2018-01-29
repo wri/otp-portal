@@ -13,7 +13,7 @@ const getParsedTableObservations = createSelector(
         date: new Date(obs['publication-date']).getFullYear(),
         country: obs.country.iso,
         operator: obs.operator.name,
-        category: obs.subcategory.name,
+        category: obs.subcategory.category.name,
         observation: obs.details,
         level: obs.severity.level,
         fmu: obs.fmu.name,
