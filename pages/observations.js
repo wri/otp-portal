@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
+import capitalize from 'lodash/capitalize';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -109,7 +110,7 @@ class ObservationsPage extends Page {
 
     const tableOptions = inputs
       .map(column => ({
-        label: `${column.charAt(0).toUpperCase()}${column.slice(1)}`,
+        label: column !== 'operator' ? capitalize(column) : 'Producer',
         value: column
       }));
 
