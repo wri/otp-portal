@@ -55,6 +55,7 @@ class EditOperator extends React.Component {
         name: operator.name || '',
         details: operator.details || '',
         operator_type: operator['operator-type'],
+        logo: operator.logo && operator.logo.url,
         address: operator.address || '',
         website: operator.website || '',
         country: operator.country.id,
