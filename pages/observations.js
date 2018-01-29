@@ -106,11 +106,18 @@ class ObservationsPage extends Page {
     const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
 
     // Hard coded values
-    const inputs = ['date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report'];
+    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report'];
+    const changeOfLabelLookup = {
+      operator: 'Producer',
+      fmu: 'FMU',
+      observation: 'Detail',
+      level: 'Severity'
+    };
 
     const tableOptions = inputs
       .map(column => ({
-        label: column !== 'operator' ? capitalize(column) : 'Producer',
+        label: Object.keys(changeOfLabelLookup).includes(column) ? changeOfLabelLookup[column] :
+          capitalize(column),
         value: column
       }));
 
