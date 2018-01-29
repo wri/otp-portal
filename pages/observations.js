@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
+import capitalize from 'lodash/capitalize';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -27,6 +28,7 @@ import Spinner from 'components/ui/spinner';
 import StaticTabs from 'components/ui/static-tabs';
 import { ReadMore } from 'react-read-more';
 import Icon from 'components/ui/icon';
+import CheckboxGroup from 'components/form/CheckboxGroup';
 
 // Utils
 import {
@@ -34,7 +36,8 @@ import {
   getFilters,
   setFilters,
   setObservationsUrl,
-  getObservationsUrl
+  getObservationsUrl,
+  setActiveColumns
 } from 'modules/observations';
 
 // Constants
@@ -102,6 +105,90 @@ class ObservationsPage extends Page {
   render() {
     const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
 
+    // Hard coded values
+    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report'];
+    const changeOfLabelLookup = {
+      operator: 'Producer',
+      fmu: 'FMU',
+      observation: 'Detail',
+      level: 'Severity'
+    };
+
+    const tableOptions = inputs
+      .map(column => ({
+        label: Object.keys(changeOfLabelLookup).includes(column) ? changeOfLabelLookup[column] :
+          capitalize(column),
+        value: column
+      }));
+
+    const columnHeaders = [
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
+        accessor: 'date',
+        minWidth: 75
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
+        accessor: 'country',
+        className: '-uppercase',
+        minWidth: 100
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator' })}</span>,
+        accessor: 'operator',
+        className: '-uppercase description',
+        minWidth: 120
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'fmu' })}</span>,
+        accessor: 'fmu',
+        className: 'description',
+        minWidth: 120
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'category' })}</span>,
+        accessor: 'category',
+        headerClassName: '-a-left',
+        className: 'description',
+        minWidth: 120
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
+        accessor: 'observation',
+        headerClassName: '-a-left',
+        className: 'description',
+        minWidth: 250,
+        Cell: attr => (
+          <ReadMore lines={1} text="more">
+            {attr.value}
+          </ReadMore>
+        )
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'severity' })}</span>,
+        accessor: 'level',
+        headerClassName: 'severity-th',
+        className: 'severity',
+        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'report' })}</span>,
+        accessor: 'report',
+        headerClassName: '',
+        className: 'report',
+        Cell: attr =>
+          <div className="report-item-wrapper">
+            { attr.value ?
+              <a href={attr.value} className="report-item">
+                <Icon className="" name="icon-file-empty" />
+              </a>
+            :
+              <span className="report-item-text">-</span>
+          }
+          </div>
+      }
+    ];
+
     return (
       <Layout
         title="Observations"
@@ -128,7 +215,7 @@ class ObservationsPage extends Page {
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
                 <Overview
-                  parsedChartObservations={parsedChartObservations}
+                  parsedObservations={parsedChartObservations}
                 />
               </div>
             </div>
@@ -147,79 +234,22 @@ class ObservationsPage extends Page {
           <div className="c-section -relative">
             <div className="l-container">
               <Spinner isLoading={observations.loading} className="" />
+              <div className="c-field -fluid -valid">
+                <CheckboxGroup
+                  className="-inline -small -single-row"
+                  name="observations-columns"
+                  onChange={value => this.props.setActiveColumns(value)}
+                  properties={{ default: observations.columns, name: 'observations-columns' }}
+                  options={tableOptions}
+                />
+              </div>
 
               {this.state.tab === 'observations-list' &&
                 <Table
                   sortable
                   data={parsedTableObservations}
                   options={{
-                    columns: [
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
-                        accessor: 'date',
-                        minWidth: 75
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
-                        accessor: 'country',
-                        className: '-uppercase',
-                        minWidth: 100
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator' })}</span>,
-                        accessor: 'operator',
-                        className: '-uppercase description',
-                        minWidth: 120
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'fmu' })}</span>,
-                        accessor: 'fmu',
-                        className: 'description',
-                        minWidth: 120
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'category' })}</span>,
-                        accessor: 'category',
-                        headerClassName: '-a-left',
-                        className: 'description',
-                        minWidth: 120
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
-                        accessor: 'observation',
-                        headerClassName: '-a-left',
-                        className: 'description',
-                        minWidth: 250,
-                        Cell: attr => (
-                          <ReadMore lines={1} text="more">
-                            {attr.value}
-                          </ReadMore>
-                        )
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'severity' })}</span>,
-                        accessor: 'level',
-                        headerClassName: 'severity-th',
-                        className: 'severity',
-                        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
-                      },
-                      {
-                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'report' })}</span>,
-                        accessor: 'report',
-                        headerClassName: '',
-                        className: 'report',
-                        Cell: attr =>
-                          <div className="report-item-wrapper">
-                            { attr.value ?
-                              <a href={attr.value} className="report-item">
-                                <Icon className="" name="icon-file-empty" />
-                              </a>
-                            :
-                              <span className="report-item-text">-</span>
-                          }
-                          </div>
-                      }
-                    ],
+                    columns: columnHeaders.filter(header => observations.columns.includes(header.accessor)),
                     pageSize: this.getPageSize(),
                     pagination: true,
                     previousText: '<',
@@ -280,6 +310,9 @@ export default withIntl(withRedux(
     setFilters(filter) {
       dispatch(setFilters(filter));
       dispatch(setObservationsUrl());
+    },
+    setActiveColumns(activeColumns) {
+      dispatch(setActiveColumns(activeColumns));
     }
   })
 )(ObservationsPage));

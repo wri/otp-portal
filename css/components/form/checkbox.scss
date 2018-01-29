@@ -108,6 +108,14 @@ $checkbox-size-small: 14px;
     }
   }
 
+  &.-single-row {
+    flex-wrap: wrap;
+
+    label {
+      padding-bottom: 2px;
+    }
+  }
+
   .checkbox-box-title {
     display: inline-block;
     margin-bottom: 16px;
