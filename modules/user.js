@@ -131,6 +131,8 @@ export function login({ body }) {
         dispatch({ type: SET_USER, payload: response });
 
         resolve(response);
+
+        window.location.reload();
       },
       onError: (error) => {
         reject(error);
@@ -155,6 +157,8 @@ export function logout() {
         dispatch({ type: REMOVE_USER });
 
         resolve(response);
+
+        window.location.reload();
       },
       onError: (error) => {
         reject(error);
