@@ -40,10 +40,6 @@ class Search extends React.Component {
     this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
   }
 
-  componentDidMount() {
-    this.input.setAttribute('size', this.input.getAttribute('placeholder').length + 5);
-  }
-
   componentWillUpdate(nextProps, nextState) {
     if (nextState.active !== this.state.active) {
       if (nextState.active) {
@@ -215,8 +211,8 @@ class Search extends React.Component {
           }
 
           <input
-            ref={(n) => { this.input = n; }}
             type="text"
+            size={this.props.intl.formatMessage({ id: 'search.operators' }).length + 5}
             placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
             onKeyUp={this.onKeyUp}
           />
