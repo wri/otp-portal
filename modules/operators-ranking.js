@@ -40,7 +40,10 @@ const initialState = {
       certification: [
         { label: 'FSC', value: 'fsc' },
         { label: 'PEFC', value: 'pefc' },
-        { label: 'OLB', value: 'olb' }
+        { label: 'OLB', value: 'olb' },
+        { label: 'VLC', value: 'vlc' },
+        { label: 'VLO', value: 'vlo' },
+        { label: 'TLTV', value: 'tltv' }
       ]
     },
     loading: false,
@@ -98,7 +101,14 @@ export function getOperatorsRanking() {
     ].join(',');
 
     // Fields
-    const currentFields = { fmus: ['certification-fsc', 'certification-olb', 'certification-pefc'] };
+    const currentFields = { fmus: [
+      'certification-fsc',
+      'certification-olb',
+      'certification-pefc',
+      'certification-vlc',
+      'certification-vlo',
+      'certification-tltv'
+    ] };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
     // Filters

@@ -38,7 +38,10 @@ const HELPERS_REGISTER = {
     return [
       { label: 'FSC', value: 'fsc' },
       { label: 'PEFC', value: 'pefc' },
-      { label: 'OLB', value: 'olb' }
+      { label: 'OLB', value: 'olb' },
+      { label: 'VLC', value: 'vlc' },
+      { label: 'VLO', value: 'vlo' },
+      { label: 'TLTV', value: 'tltv' }
     ];
   },
 
@@ -48,7 +51,10 @@ const HELPERS_REGISTER = {
       fmusGroups[id] = compact([
         !!fmusGroups[id][0]['certification-fsc'] && 'fsc',
         !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
-        !!fmusGroups[id][0]['certification-olb'] && 'olb'
+        !!fmusGroups[id][0]['certification-olb'] && 'olb',
+        !!fmusGroups[id][0]['certification-vlc'] && 'vlc',
+        !!fmusGroups[id][0]['certification-vlo'] && 'vlo',
+        !!fmusGroups[id][0]['certification-tltv'] && 'tltv'
       ]);
     });
 
@@ -142,7 +148,10 @@ const HELPERS_REGISTER = {
         attributes: {
           'certification-fsc': certification.includes('fsc'),
           'certification-pefc': certification.includes('pefc'),
-          'certification-olb': certification.includes('olb')
+          'certification-olb': certification.includes('olb'),
+          'certification-vlc': certification.includes('vlc'),
+          'certification-vlo': certification.includes('vlo'),
+          'certification-tltv': certification.includes('tltv')
         }
       }
     };

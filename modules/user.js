@@ -68,7 +68,15 @@ export function getUserOperator(id) {
     });
 
     // Fields
-    const currentFields = { fmus: ['name', 'certification-fsc', 'certification-olb', 'certification-pefc'] };
+    const currentFields = { fmus: [
+      'name',
+      'certification-fsc',
+      'certification-olb',
+      'certification-pefc',
+      'certification-vlc',
+      'certification-vlo',
+      'certification-tltv'
+    ] };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
 
