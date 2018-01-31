@@ -155,7 +155,99 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
         }
       }
     }]
+  },
+  {
+    id: 'sawmills',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: `${process.env.OTP_API}/sawmills?country_ids=7,47&operator_ids={{OPERATOR_ID}}&format=geojson`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        }
+      }
+    },
+    layers: [
+      // {
+      //   id: 'sawmills_layer_selected',
+      //   name: 'Forest managment units',
+      //   type: 'fill',
+      //   source: 'sawmills',
+      //   layout: {},
+      //   before: ['loss_layer', 'gain_layer'],
+      //   paint: {
+      //     'fill-color': '#d07500',
+      //     'fill-opacity': 1,
+      //     'fill-outline-color': 'green'
+      //   },
+      //   filter: ['==', 'id', ''],
+      //   update(filters) {
+      //     this.map.setFilter('sawmills_layer_selected', ['==', 'id', parseInt(filters.FMU_ID, 10)]);
+      //   }
+      // },
+      {
+        id: 'sawmills_layer_hover',
+        name: 'Sawmills',
+        type: 'circle',
+        source: 'sawmills',
+        layout: {},
+        before: ['loss_layer', 'gain_layer'],
+        paint: {
+          'circle-color': '#d07500',
+          'circle-opacity': 0.4,
+          'circle-radius': 12
+        },
+        filter: ['==', 'id', '']
+      },
+      {
+        id: 'sawmills_layer',
+        type: 'circle',
+        source: 'sawmills',
+        layout: {},
+        before: ['loss_layer', 'gain_layer'],
+        paint: {
+          'circle-color': '#e98300',
+          'circle-opacity': 1,
+          'circle-radius': 10
+        },
+        interactivity: {
+          click(e) {
+          // Remove always the popup if exists and you are using 'closeOnClick'
+          // You will prevent a bug that doesn't show the popup again
+            this.popup && this.popup.remove();
+            this.popup = new this.Popup();
+
+            const props = e.features[0].properties;
+            this.popup.setLngLat(e.lngLat)
+            .setDOMContent(
+            render(
+              Popup({
+                title: props.name
+              }),
+              window.document.createElement('div')
+            )
+            )
+            .addTo(this.map);
+          }
+          // mouseenter() {
+          //   this.map.getCanvas().style.cursor = 'pointer';
+          // },
+          // mousemove(e) {
+          //   this.map.getCanvas().style.cursor = 'pointer';
+          //   this.map.setFilter('sawmills_layer_hover', ['==', 'id', e.features[0].properties.id]);
+          // },
+          // mouseleave() {
+          //   this.map.getCanvas().style.cursor = '';
+          //   this.map.setFilter('sawmills_layer_hover', ['==', 'id', '']);
+          // }
+        }
+      }
+    ]
   }
+
 ];
 
 export {
