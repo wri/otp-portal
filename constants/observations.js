@@ -41,6 +41,21 @@ const FILTERS_REFS = [
     key: 'severity_level',
     name: 'Severity',
     placeholder: 'All Severities'
+  },
+  {
+    key: 'fmu_id',
+    name: 'Forest Management Unit',
+    placeholder: 'All FMUs'
+  },
+  {
+    key: 'observation-report',
+    name: 'Report',
+    placeholder: 'All reports'
+  },
+  {
+    key: 'operator',
+    name: 'Producer',
+    placeholder: 'All producers'
   }
 ];
 
