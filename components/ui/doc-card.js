@@ -16,6 +16,7 @@ import DocumentationService from 'services/documentationService';
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
+import DocInfoModal from 'components/ui/doc-info-modal';
 import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import Icon from 'components/ui/icon';
@@ -27,6 +28,7 @@ class DocCard extends React.Component {
     url: PropTypes.string,
     status: PropTypes.string,
     title: PropTypes.string,
+    explanation: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
     operatorId: PropTypes.string,
@@ -80,7 +82,6 @@ class DocCard extends React.Component {
 
   handleRemoveIndex = (id) => {
     const { user } = this.props;
-    const { deleteLoading } = this.state;
 
     this.setState({ deleteLoading: true });
 
@@ -96,7 +97,7 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, startDate, endDate, status, title, url, annexes, operatorId } = this.props;
+    const { user, startDate, endDate, status, title, explanation, url, annexes, operatorId } = this.props;
     const { deleteLoading } = this.state;
     const isActiveUser = ((user && user.role === 'admin') ||
       (user && user.role === 'operator' && user.operator && user.operator.toString() === operatorId));
@@ -109,6 +110,26 @@ class DocCard extends React.Component {
 
     return (
       <div className={`c-doc-card ${classNames}`}>
+        <div className="doc-card-info">
+          <button
+            className="c-button -clean -icon"
+            onClick={() => {
+              modal.toggleModal(true, {
+                children: DocInfoModal,
+                childrenProps: {
+                  title,
+                  explanation
+                }
+              });
+            }}
+          >
+            <Icon
+              name="icon-info"
+              className="-smaller"
+            />
+          </button>
+        </div>
+
         {!!url && status !== 'doc_not_provided' &&
           <div className="doc-card-content-container">
             <header className="doc-card-header">
@@ -243,4 +264,3 @@ export default injectIntl(connect(
     user: state.user
   })
 )(DocCard));
-
