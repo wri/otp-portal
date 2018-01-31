@@ -12,11 +12,11 @@ const getParsedTableObservations = createSelector(
         id: obs.id,
         date: new Date(obs['publication-date']).getFullYear(),
         country: obs.country.iso,
-        operator: obs.operator.name,
+        operator: !!obs.operator && obs.operator.name,
         category: obs.subcategory.category.name,
         observation: obs.details,
         level: obs.severity.level,
-        fmu: obs.fmu.name,
+        fmu: !!obs.fmu && obs.fmu.name,
         report: obs['observation-report'] ? obs['observation-report'].attachment.url : null
       }));
     }

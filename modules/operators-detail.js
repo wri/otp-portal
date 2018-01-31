@@ -13,6 +13,10 @@ const GET_OPERATOR_DOCUMENTS_SUCCESS = 'GET_OPERATOR_DOCUMENTS_SUCCESS';
 const GET_OPERATOR_DOCUMENTS_ERROR = 'GET_OPERATOR_DOCUMENTS_ERROR';
 const GET_OPERATOR_DOCUMENTS_LOADING = 'GET_OPERATOR_DOCUMENTS_LOADING';
 
+/* Constants sawmills */
+const GET_SAWMILLS_SUCCESS = 'GET_SAWMILLS_SUCCESS';
+const GET_SAWMILLS_ERROR = 'GET_SAWMILLS_ERROR';
+const GET_SAWMILLS_LOADING = 'GET_SAWMILLS_LOADING';
 
 /* Initial state */
 const initialState = {
@@ -21,6 +25,11 @@ const initialState = {
   error: false,
   documentation: {
     data: {},
+    loading: false,
+    error: false
+  },
+  sawmills: {
+    data: [],
     loading: false,
     error: false
   }
@@ -53,6 +62,20 @@ export default function (state = initialState, action) {
     case GET_OPERATOR_DOCUMENTS_LOADING: {
       const documentation = Object.assign({}, state.documentation, { loading: true, error: false });
       return Object.assign({}, state, { documentation });
+    }
+    case GET_SAWMILLS_SUCCESS: {
+      const sawmills = Object.assign({}, state.sawmills, {
+        data: action.payload, loading: false, error: false
+      });
+      return Object.assign({}, state, { sawmills });
+    }
+    case GET_SAWMILLS_ERROR: {
+      const sawmills = Object.assign({}, state.sawmills, { error: true, loading: false });
+      return Object.assign({}, state, { sawmills });
+    }
+    case GET_SAWMILLS_LOADING: {
+      const sawmills = Object.assign({}, state.sawmills, { loading: true, error: false });
+      return Object.assign({}, state, { sawmills });
     }
     default:
       return state;
@@ -165,6 +188,42 @@ export function getDocuments(id) {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_OPERATOR_DOCUMENTS_ERROR,
+          payload: err.message
+        });
+      });
+  };
+}
+
+/* Action creators */
+export function getSawMillsByOperatorId(id) {
+  return (dispatch) => {
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_SAWMILLS_LOADING });
+
+    fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((data) => {
+        // Fetch from server ok -> Dispatch geojson sawmill data
+        const dataParsed = JSONA.deserialize(data);
+
+        dispatch({
+          type: GET_SAWMILLS_SUCCESS,
+          payload: dataParsed
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_SAWMILLS_ERROR,
           payload: err.message
         });
       });

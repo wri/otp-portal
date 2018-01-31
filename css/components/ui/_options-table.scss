@@ -1,0 +1,46 @@
+.c-options-table {
+  width: 100%;
+  min-height: 100px;
+  position: relative;
+
+  table {
+    width: 100%;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  td {
+    min-width: 100px;
+  }
+
+  .option-header-center {
+    text-align: center;
+  }
+
+  .options-checkbox {
+    label {
+      padding: 0;
+      width: 20px;
+      height: 20px;
+    }
+
+    .checkbox-icon {
+      top: 0;
+    }
+  }
+
+  .options-checkbox-column {
+    display: flex;
+    justify-content: center;
+  }
+
+  .options-button:first-child {
+    margin-right: 20px;
+  }
+
+  .options-button {
+    padding: 5px;
+  }
+}
