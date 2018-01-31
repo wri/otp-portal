@@ -41,20 +41,20 @@ const FORM_ELEMENTS = {
 };
 
 class DocAnnexesModal extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    intl: intlShape.isRequired,
+    user: PropTypes.object,
+    id: PropTypes.string,
+    onChange: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
     this.documentationService = new DocumentationService({
       authorization: props.user.token
     });
   }
-
-  static propTypes = {
-    title: PropTypes.string,
-    intl: intlShape.isRequired,
-    user: PropTypes.object,
-    id: PropTypes.string,
-    annexes: PropTypes.array
-  };
 
   state = {
     form: {
@@ -65,6 +65,24 @@ class DocAnnexesModal extends React.Component {
     },
     submitting: false,
     errors: []
+  }
+
+  getBody() {
+    const { id } = this.props;
+
+    return {
+      data: {
+        type: 'operator-document-annexes', // TODO: Confirm if server side can accommodate -countries / -fmu
+        attributes: {
+          'operator-document-id': id,
+          name: this.state.form.name,
+          status: 'doc_valid',
+          'start-date': this.state.form.startDate,
+          'expire-date': this.state.form.expireDate,
+          attachment: this.state.form.file
+        }
+      }
+    };
   }
 
   handleChange(value) {
@@ -86,8 +104,6 @@ class DocAnnexesModal extends React.Component {
 
       if (valid) {
         // Start the submitting
-        const { type } = this.props;
-
         this.setState({ submitting: true });
 
         this.documentationService.saveAnnex({
@@ -104,37 +120,15 @@ class DocAnnexesModal extends React.Component {
           console.error(err);
           this.setState({ submitting: false, errors: err });
         });
-      }  else {
+      } else {
         // toastr.error('Error', 'Fill all the required fields');
       }
     }, 0);
   }
 
-  /**
-   * HELPERS
-   * - getBody
-  */
-  getBody() {
-    const { id, type } = this.props;
-
-    return {
-      data: {
-        type: 'operator-document-annexes', // TODO: Confirm if server side can accommodate -countries / -fmu
-        attributes: {
-          'operator-document-id': id,
-          name: this.state.form.name,
-          status: 'doc_valid',
-          'start-date': this.state.form.startDate,
-          'expire-date': this.state.form.expireDate,
-          attachment: this.state.form.file
-        }
-      }
-    };
-  }
-
   render() {
-    const { submitting, errors } = this.state;
-    const { title, annexes } = this.props;
+    const { submitting } = this.state;
+    const { title } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });

@@ -78,9 +78,8 @@ class DocCard extends React.Component {
     this.triggerAddAnnexModal();
   }
 
-  handleRemoveIndex = (id) => {
+  handleRemoveAnnex = (id) => {
     const { user } = this.props;
-    const { deleteLoading } = this.state;
 
     this.setState({ deleteLoading: true });
 
@@ -149,7 +148,7 @@ class DocCard extends React.Component {
                               <button
                                 className="c-button -small -tooltip -tooltip-secondary"
                                 type="button"
-                                onClick={() => this.handleRemoveIndex(annex.id)}
+                                onClick={() => this.handleRemoveAnnex(annex.id)}
                               >
                                 <span className="tooltip-hidden-button-text">Remove an annex</span>
                                 <Icon className="" name="icon-bin" />
