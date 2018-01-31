@@ -7,12 +7,25 @@
     width: 100%;
   }
 
-  th {
+  th:first-child {
     text-align: left;
+    width: 100%;
+  }
+
+  th {
+    min-width: 140px;
   }
 
   td {
-    min-width: 100px;
+    min-width: 140px;
+  }
+
+  td:first-child {
+    width: 100%;
+  }
+
+  td:last-child {
+    text-align: right;
   }
 
   .option-header-center {
