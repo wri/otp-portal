@@ -231,18 +231,18 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
             )
             )
             .addTo(this.map);
-          },
-          mouseenter() {
-            this.map.getCanvas().style.cursor = 'pointer';
-          },
-          mousemove(e) {
-            this.map.getCanvas().style.cursor = 'pointer';
-            this.map.setFilter('sawmills_layer_hover', ['==', 'id', e.features[0].properties.id]);
-          },
-          mouseleave() {
-            this.map.getCanvas().style.cursor = '';
-            this.map.setFilter('sawmills_layer_hover', ['==', 'id', '']);
           }
+          // mouseenter() {
+          //   this.map.getCanvas().style.cursor = 'pointer';
+          // },
+          // mousemove(e) {
+          //   this.map.getCanvas().style.cursor = 'pointer';
+          //   this.map.setFilter('sawmills_layer_hover', ['==', 'id', e.features[0].properties.id]);
+          // },
+          // mouseleave() {
+          //   this.map.getCanvas().style.cursor = '';
+          //   this.map.setFilter('sawmills_layer_hover', ['==', 'id', '']);
+          // }
         }
       }
     ]
