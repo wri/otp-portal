@@ -9,7 +9,11 @@ import { injectIntl, intlShape } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { updateOperator, updateFmu } from 'modules/user';
+import { getSawMillsByOperatorId } from 'modules/operators-detail';
 import { toastr } from 'react-redux-toastr';
+
+// Services
+import modal from 'services/modal';
 
 // Components
 import Field from 'components/form/Field';
@@ -19,6 +23,9 @@ import FileImage from 'components/form/FileImage';
 import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
 import Spinner from 'components/ui/spinner';
+import SawmillsTable from 'components/ui/sawmills-table';
+import SawmillModal from 'components/ui/sawmill-modal';
+
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -70,6 +77,11 @@ class EditOperator extends React.Component {
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.fetchSawmills = this.fetchSawmills.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchSawmills();
   }
 
   /**
@@ -160,8 +172,27 @@ class EditOperator extends React.Component {
     }, 0);
   }
 
+  fetchSawmills() {
+    const { operator } = this.props;
+    this.props.getSawMillsByOperatorId(operator.id);
+  }
+
+  handleAddSawmill = (e) => {
+    e && e.preventDefault();
+
+    modal.toggleModal(true, {
+      children: SawmillModal,
+      childrenProps: {
+        ...this.props,
+        onChange: this.fetchSawmills
+      }
+    });
+  }
+
   render() {
     const { submitting } = this.state;
+    const { sawmills } = this.props;
+
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -317,6 +348,27 @@ class EditOperator extends React.Component {
             </div>
           </fieldset>
 
+          <fieldset className="c-field-container">
+            <h2 className="c-title -huge">
+              {this.props.intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
+            </h2>
+
+            <SawmillsTable
+              sawmills={sawmills.data}
+              onChange={this.fetchSawmills}
+            />
+
+            {!sawmills.data.length > 0 &&
+              <p>{this.props.intl.formatMessage({ id: 'edit.operators.sawmills.empty' })}</p>
+            }
+
+            <button
+              onClick={this.handleAddSawmill} className="c-button -small -secondary"
+            >
+              {this.props.intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
+            </button>
+          </fieldset>
+
           <ul className="c-field-buttons">
             <li>
               <button
@@ -341,13 +393,16 @@ EditOperator.propTypes = {
   updateOperator: PropTypes.func,
   updateFmu: PropTypes.func,
   onSubmit: PropTypes.func,
+  sawmills: PropTypes.object,
+  getSawMillsByOperatorId: PropTypes.func,
   intl: intlShape.isRequired
 };
 
 
 export default injectIntl(connect(
   state => ({
-    user: state.user
+    user: state.user,
+    sawmills: state.operatorsDetail.sawmills
   }),
-  { updateOperator, updateFmu }
+  { updateOperator, updateFmu, getSawMillsByOperatorId }
 )(EditOperator));
