@@ -2,7 +2,7 @@
   flex: 1;
   position: relative;
   width: 100%;
-  padding: $space-1 * 3 $space-1 * 4;
+  padding: $space-1 * 5 $space-1 * 4 $space-1 * 3;
   margin: 0 0 20px;
 
   &:after {
@@ -21,6 +21,12 @@
         text-decoration: underline;
       }
     }
+  }
+
+  .doc-card-info {
+    position: absolute;
+    top: 12px;
+    right: 12px;
   }
 
   .doc-card-content-container {
@@ -157,6 +163,19 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-valid; }
+    .doc-card-info {
+      button {
+        border: 1px solid $color-doc-valid;
+        border-radius: 50%;
+        fill: $color-doc-valid;
+
+        &:hover {
+          background: $color-doc-valid;
+          fill: $color-white;
+        }
+      }
+    }
+
   }
 
   &.-doc_invalid {
@@ -175,6 +194,18 @@
     .doc-card-date { color: rgba($color-tertiary, 0.5); }
     .doc-card-status { color: rgba($color-tertiary, 0.5); }
     .doc-card-fmus { color: rgba($color-tertiary, 0.5); }
+    .doc-card-info {
+      button {
+        border: 1px solid $color-tertiary;
+        border-radius: 50%;
+        fill: $color-tertiary;
+
+        &:hover {
+          background: $color-tertiary;
+          fill: $color-doc-not-provided;
+        }
+      }
+    }
   }
 
   &.-doc_pending {
@@ -184,6 +215,19 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-pending; }
+    .doc-card-info {
+      button {
+        border: 1px solid $color-doc-pending;
+        border-radius: 50%;
+        fill: $color-doc-pending;
+
+        &:hover {
+          background: $color-doc-pending;
+          fill: $color-white;
+        }
+      }
+    }
+
   }
 
   &.-doc_expired {
@@ -193,6 +237,18 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-expired; }
+    .doc-card-info {
+      button {
+        border: 1px solid $color-doc-expired;
+        border-radius: 50%;
+        fill: $color-doc-expired;
+
+        &:hover {
+          background: $color-doc-expired;
+          fill: $color-white;
+        }
+      }
+    }
   }
 
   &.-doc_not_required {
@@ -202,6 +258,18 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.5); }
     .doc-card-status { color: $color-doc-not-required; }
+    .doc-card-info {
+      button {
+        border: 1px solid $color-doc-not-required;
+        border-radius: 50%;
+        fill: $color-doc-not-required;
+
+        &:hover {
+          background: $color-doc-not-required;
+          fill: $color-white;
+        }
+      }
+    }
   }
 
 
