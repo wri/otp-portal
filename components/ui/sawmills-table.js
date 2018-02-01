@@ -119,6 +119,9 @@ class SawmillsTable extends React.Component {
           ))}
           </tbody>
         </table>
+        {!sawmills.length > 0 &&
+          <p>{this.props.intl.formatMessage({ id: 'edit.operators.sawmills.empty' })}</p>
+        }
       </div>
     );
   }

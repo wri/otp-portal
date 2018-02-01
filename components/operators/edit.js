@@ -359,10 +359,6 @@ class EditOperator extends React.Component {
               onChange={this.fetchSawmills}
             />
 
-            {!sawmills.data.length > 0 &&
-              <p>{this.props.intl.formatMessage({ id: 'edit.operators.sawmills.empty' })}</p>
-            }
-
             <button
               onClick={this.handleAddSawmill} className="c-button -small -secondary"
             >
