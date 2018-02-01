@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
+import omit from 'lodash/omit';
 
 // Redux
 import { connect } from 'react-redux';
@@ -15,10 +16,13 @@ import ChartLegend from 'components/ui/chart-legend';
 function DocumentsProvided(props) {
   const { data, user, router } = props;
 
-  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
-  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(data);
+  const filteredData = data.filter(d => d.status !== 'doc_not_required');
+
+  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(filteredData);
+  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(filteredData);
+
   const max = HELPERS_DOC.getMaxLength(groupedByCategory);
-  const legend = HELPERS_DOC.getMetadata();
+  const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
 
   return (
     <div className="c-doc-provided">

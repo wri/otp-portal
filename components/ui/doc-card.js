@@ -48,7 +48,7 @@ class DocCard extends React.Component {
   }
 
 
-  triggerWhy(e) {
+  triggerWhy = (e) => {
     e && e.preventDefault();
 
     modal.toggleModal(true, {
@@ -62,7 +62,7 @@ class DocCard extends React.Component {
     });
   }
 
-  triggerAddAnnexModal() {
+  triggerAddAnnexModal = () => {
     modal.toggleModal(true, {
       children: DocAnnexesModal,
       childrenProps: {
@@ -75,12 +75,7 @@ class DocCard extends React.Component {
     });
   }
 
-  handleAddAnnex = (e) => {
-    e.preventDefault();
-    this.triggerAddAnnexModal();
-  }
-
-  handleRemoveAnnex = (id) => {
+  triggerRemoveAnnex = (id) => {
     const { user } = this.props;
 
     this.setState({ deleteLoading: true });
@@ -195,7 +190,7 @@ class DocCard extends React.Component {
                     <button
                       className="c-button -small -secondary"
                       type="button"
-                      onClick={this.handleAddAnnex}
+                      onClick={this.triggerAddAnnexModal}
                     >
                       <span className="doc-card-hidden-button-text">Add an annex</span>
                       <Icon className="" name="icon-plus" />
