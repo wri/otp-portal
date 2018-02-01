@@ -78,6 +78,7 @@ const HELPERS_DOC = {
 
       return flatten(Object.keys(groupedByStatus).map(status => [
         {
+          id: status,
           label: PALETTE[status].label,
           value: parseFloat(((groupedByStatus[status].length / length) * 100).toFixed(2).replace(/[.,]00$/, '')) || 0,
           fill: PALETTE[status].fill,
