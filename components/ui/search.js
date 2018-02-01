@@ -211,6 +211,7 @@ class Search extends React.Component {
           }
 
           <input
+            ref={(input) => { this.input = input; }}
             type="text"
             size={this.props.intl.formatMessage({ id: 'search.operators' }).length + 5}
             placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
