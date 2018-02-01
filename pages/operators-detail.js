@@ -25,6 +25,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
+import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
 
@@ -195,7 +196,7 @@ OperatorsDetail.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     user: state.user,
@@ -205,4 +206,4 @@ export default withIntl(withRedux(
     operatorDocumentation: getParsedDocumentation(state)
   }),
   { getOperators, getOperator }
-)(OperatorsDetail));
+)(OperatorsDetail)));
