@@ -107,6 +107,7 @@ $severity-width: 260px;
 
 // INFO
 .obi-illegality-info {
+  position: relative;
   background: $color-green-1;
   padding: $space-1 * 6 0;
   margin: 0 0 $space-1 * 2;
@@ -115,5 +116,20 @@ $severity-width: 260px;
     margin: 0 0 $space-1 * 5;
 
     color: $color-text-2;
+  }
+
+  .obi-illegality-info-close {
+    fill: $color-text-1;
+    background: none;
+    border: none;
+    outline: none;
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    cursor: pointer;
   }
 }

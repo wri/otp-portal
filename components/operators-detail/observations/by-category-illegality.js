@@ -10,6 +10,7 @@ import { HELPERS_OBS } from 'utils/observations';
 
 // components
 import Table from 'components/ui/table';
+import Icon from 'components/ui/icon';
 
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
@@ -39,10 +40,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
         selected.illegality === illegality &&
         selected.year === year
     ) {
-      this.setState({
-        indexPagination: 0,
-        selected: {}
-      });
+      this.resetSelected();
     } else {
       this.setState({
         indexPagination: 0,
@@ -53,6 +51,13 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
         }
       });
     }
+  }
+
+  resetSelected = () => {
+    this.setState({
+      indexPagination: 0,
+      selected: {}
+    });
   }
 
   render() {
@@ -119,6 +124,12 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                         {isSelected &&
                           <div className="obi-illegality-info">
                             <div className="l-container">
+                              <button
+                                className="obi-illegality-info-close"
+                                onClick={this.resetSelected}
+                              >
+                                <Icon name="icon-cross" className="-big" />
+                              </button>
                               <h2 className="c-title obi-illegality-info-title">{illegality}</h2>
 
                               {groupedByIllegality[illegality].length > 0 &&
