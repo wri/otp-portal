@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
+
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -10,6 +12,8 @@ import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
 function OperatorsDetailOverview(props) {
+  const { logo, address, website } = props.operatorsDetail.data;
+
   return (
     <div
       className="c-section"
@@ -18,22 +22,50 @@ function OperatorsDetailOverview(props) {
         <Gallery1 {...props} />
 
         <article className="c-article">
-          <div className="row l-row">
-            <div className="columns small-12 medium-8">
-              <header>
-                <h2 className="c-title">
-                  {props.intl.formatMessage({ id: 'overview' })}
-                </h2>
-              </header>
-              <div className="content">
-                <div className="description">
-                  <p>
-                    {props.operatorsDetail.data.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
-                  </p>
-                </div>
+          <header>
+            <h2 className="c-title">
+              {props.intl.formatMessage({ id: 'overview' })}
+            </h2>
+          </header>
+          <div className="content">
+
+            <div className="row l-row -equal-heigth">
+              <div className="columns small-12 medium-8">
+                <p className="description">
+                  {props.operatorsDetail.data.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
+                </p>
+
+                { (Boolean(address) || Boolean(website)) &&
+                  <ul className="details-list">
+                    { address &&
+                      <li key="address" className="">
+                        <span>
+                          <strong>Adress:</strong>
+                          <address>{address}</address>
+                        </span>
+                      </li>
+                    }
+                    { website &&
+                      <li key="website" className="">
+                        <strong>Website:</strong>
+                        <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
+                      </li>
+                    }
+                  </ul>
+                }
               </div>
+
+              { !isEmpty(logo) &&
+                <div className="columns small-12 medium-4">
+                  <div className="c-card -primary -nolink -center-content">
+                    <img src={props.operatorsDetail.data.logo.thumbnail.url} alt={`${props.operatorsDetail.data.name} logo`} />
+                  </div>
+                </div>
+              }
+
             </div>
           </div>
+
         </article>
 
         {/* CHARTS */}

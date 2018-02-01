@@ -20,6 +20,28 @@
     }
   }
 
+  .details-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    li {
+      margin: 10px 0;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      margin-right: 10px;
+    }
+
+    address {
+      display: inline-block;
+    }
+  }
+
   a {
     color: $color-primary;
     text-decoration: none;
