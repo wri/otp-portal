@@ -80,6 +80,8 @@ class DocCard extends React.Component {
 
     this.setState({ deleteLoading: true });
 
+    console.log(user);
+
     this.documentationService.deleteAnnex(id, user)
       .then(() => {
         this.setState({ deleteLoading: false });
@@ -165,7 +167,7 @@ class DocCard extends React.Component {
                               <button
                                 className="c-button -small -tooltip -tooltip-secondary"
                                 type="button"
-                                onClick={() => this.handleRemoveAnnex(annex.id)}
+                                onClick={() => this.triggerRemoveAnnex(annex.id)}
                               >
                                 <span className="tooltip-hidden-button-text">Remove an annex</span>
                                 <Icon className="" name="icon-bin" />
