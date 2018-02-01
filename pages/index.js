@@ -4,6 +4,7 @@ import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import withTracker from 'components/layout/with-tracker';
 
 import * as Cookies from 'js-cookie';
 
@@ -150,10 +151,10 @@ HomePage.propTypes = {
 };
 
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators }
-)(HomePage));
+)(HomePage)));

@@ -8,6 +8,7 @@ import capitalize from 'lodash/capitalize';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -291,7 +292,7 @@ ObservationsPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     observations: state.observations,
@@ -320,4 +321,4 @@ export default withIntl(withRedux(
       dispatch(setActiveColumns(activeColumns));
     }
   })
-)(ObservationsPage));
+)(ObservationsPage)));

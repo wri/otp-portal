@@ -22,6 +22,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
+import withTracker from 'components/layout/with-tracker';
 
 // Constants
 import { MAP_LAYERS_OPERATORS } from 'constants/operators';
@@ -274,7 +275,7 @@ OperatorsPage.propTypes = {
 };
 
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
@@ -292,4 +293,4 @@ export default withIntl(withRedux(
       dispatch(setOperatorsUrl());
     }
   })
-)(OperatorsPage));
+)(OperatorsPage)));

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -106,10 +107,10 @@ HelpPage.propTypes = {
   url: PropTypes.object.isRequired
 };
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators
   }),
   { getOperators }
-)(HelpPage));
+)(HelpPage)));
