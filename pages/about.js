@@ -6,6 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getPartners } from 'modules/partners';
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -166,11 +167,11 @@ AboutPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
     partners: state.partners
   }),
   { getOperators, getPartners }
-)(AboutPage));
+)(AboutPage)));

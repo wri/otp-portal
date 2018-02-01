@@ -58,6 +58,7 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.3",
+    "react-ga": "^2.4.1",
     "react-intl": "^2.4.0",
     "react-read-more": "^1.0.0",
     "react-redux": "^4.4.6",

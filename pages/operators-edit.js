@@ -9,6 +9,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getUserOperator } from 'modules/user';
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -94,7 +95,7 @@ OperatorsEdit.propTypes = {
 };
 
 
-export default withIntl(withRedux(
+export default withTracker(withIntl(withRedux(
   store,
   state => ({
     user: state.user,
@@ -102,4 +103,4 @@ export default withIntl(withRedux(
     userOperator: state.user.userOperator
   }),
   { getOperators, getUserOperator }
-)(OperatorsEdit));
+)(OperatorsEdit)));
