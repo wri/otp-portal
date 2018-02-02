@@ -83,4 +83,11 @@
   &.-nolink {
     padding-bottom: $space-1 * 4;
   }
+
+  &.-center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 }
