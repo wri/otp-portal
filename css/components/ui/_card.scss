@@ -84,6 +84,10 @@
     padding-bottom: $space-1 * 4;
   }
 
+  &.-trailing {
+    margin-top: 20px;
+  }
+
   &.-center-content {
     display: flex;
     align-items: center;

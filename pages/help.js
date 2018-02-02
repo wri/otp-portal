@@ -6,6 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
+import { getFAQs } from 'modules/help';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -31,15 +32,14 @@ class HelpPage extends Page {
     const { operators } = this.props;
 
     if (!operators.data.length) {
-      // Get operators
       this.props.getOperators();
+      this.props.getFAQs();
     }
   }
 
   render() {
-    const { url } = this.props;
+    const { url, faqs } = this.props;
     const tab = url.query.tab || 'overview';
-    const article = url.query.article;
 
     return (
       <Layout
@@ -76,7 +76,9 @@ class HelpPage extends Page {
         />
 
         {tab === 'overview' &&
-          <HelpOverview />
+          <HelpOverview
+            faqs={faqs}
+          />
         }
 
         {tab === 'how-otp-works' &&
@@ -94,6 +96,7 @@ class HelpPage extends Page {
         {tab === 'faqs' &&
           <HelpFaqs
             url={url}
+            faqs={faqs}
           />
         }
 
@@ -110,7 +113,8 @@ HelpPage.propTypes = {
 export default withTracker(withIntl(withRedux(
   store,
   state => ({
-    operators: state.operators
+    operators: state.operators,
+    faqs: state.help.faqs
   }),
-  { getOperators }
+  { getOperators, getFAQs }
 )(HelpPage)));
