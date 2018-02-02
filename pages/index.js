@@ -91,7 +91,7 @@ class HomePage extends Page {
           column={5}
         >
           <Card
-            theme="-secondary"
+            theme="-secondary -theme-home"
             letter="A"
             title={this.props.intl.formatMessage({ id: 'home.card.a.title' })}
             description={this.props.intl.formatMessage({ id: 'home.card.a.description' })}
@@ -115,7 +115,7 @@ class HomePage extends Page {
           column={5}
         >
           <Card
-            theme="-tertiary"
+            theme="-tertiary -theme-home"
             letter="B"
             title={this.props.intl.formatMessage({ id: 'home.card.b.title' })}
             description={this.props.intl.formatMessage({ id: 'home.card.b.description' })}
@@ -131,7 +131,7 @@ class HomePage extends Page {
           column={5}
         >
           <Card
-            theme="-secondary"
+            theme="-secondary -theme-home"
             letter="C"
             title={this.props.intl.formatMessage({ id: 'home.card.c.title' })}
             description={this.props.intl.formatMessage({ id: 'home.card.c.description' })}
