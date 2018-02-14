@@ -1,23 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
 
 class StaticHeader extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string,
     Component: PropTypes.oneOfType([PropTypes.element, PropTypes.bool]),
-    background: PropTypes.string.isRequired
+    background: PropTypes.string.isRequired,
+    tabs: PropTypes.bool
   };
 
   static defaultProptypes = {
     title: '',
     subtitle: '',
     Component: null,
-    background: ''
+    background: '',
+    tabs: false
   };
 
   render() {
-    const { title, subtitle, background, Component } = this.props;
+    const { title, subtitle, background, Component, tabs } = this.props;
+    const customClassName = classnames({
+      'container -tabs': tabs
+    });
 
     return (
       <div
@@ -26,7 +33,7 @@ class StaticHeader extends React.Component {
           backgroundImage: `url(${background})`
         }}
       >
-        <div>
+        <div className={customClassName}>
           <h2>{title}</h2>
           <h3>{subtitle}</h3>
 
