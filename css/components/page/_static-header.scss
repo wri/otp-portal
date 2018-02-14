@@ -29,6 +29,12 @@
     color: $color-white;
   }
 
+  .container {
+    &.-tabs {
+      margin-bottom: 45px;
+    }
+  }
+
   .static-header-component {
     margin: $space-1 * 3 0 0;
   }

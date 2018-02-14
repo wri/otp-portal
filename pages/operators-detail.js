@@ -140,6 +140,7 @@ class OperatorsDetail extends Page {
               <a className="c-button -secondary -small">{this.props.intl.formatMessage({ id: 'update.profile' })}</a>
             </Link>
           }
+          tabs
         />
 
         <Tabs
