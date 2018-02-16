@@ -27,7 +27,7 @@ export default class Map extends React.Component {
 
   /**
    * CONSTRUCTOR
-  **/
+  * */
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ export default class Map extends React.Component {
 
   /**
    * COMPONENT LYFECYLE
-  **/
+  * */
   componentDidMount() {
     this.mounted = true;
     if (Mapboxgl) {

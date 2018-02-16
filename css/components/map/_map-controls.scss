@@ -45,6 +45,7 @@ $button-size: 36px;
       border: none;
       background-color: $color-white;
       transition: background-color linear $animation-time;
+      cursor: pointer;
 
       &:not(:first-child) {
         border-top: 1px solid $border-color-2;
@@ -61,6 +62,21 @@ $button-size: 36px;
 
       > svg {
         fill: $color-text-1;
+      }
+
+      &.-active {
+        border-color: $border-color-3;
+        fill: $color-text-2;
+        background: $color-gray-1;
+
+        &:hover {
+          color: darken($color-text-2, 10%);
+          fill: darken($color-text-2, 10%);
+        }
+
+        > svg {
+          fill: $color-text-2;
+        }
       }
     }
   }

@@ -1,9 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 
 // Redux
 import { connect } from 'react-redux';
+import { setMapLocation } from 'modules/operators-detail-fmus';
+import { setMarkerLocation, setMarkerMode, getSawMillLocationById, unmountMap } from 'modules/sawmill-map';
+
+
+// Constants
+import { MAP_SAWMILL_LAYER, MAP_SAWMILL_SOURCE_DEFAULT } from 'constants/sawmills';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -17,6 +25,10 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Checkbox from 'components/form/Checkbox';
 import Spinner from 'components/ui/spinner';
+import Map from 'components/map/map';
+import MapControls from 'components/map/map-controls';
+import ZoomControl from 'components/map/controls/zoom-control';
+import PickerControl from 'components/map/controls/picker-control';
 
 // Constants
 const FORM_ELEMENTS = {
@@ -41,10 +53,20 @@ const FORM_ELEMENTS = {
 
 class SawmillModal extends React.Component {
   static propTypes = {
+    markerMode: PropTypes.bool,
     user: PropTypes.object,
     sawmill: PropTypes.object,
     intl: PropTypes.object,
-    onChange: PropTypes.func
+    operatorsDetailFmus: PropTypes.object,
+    sawmillMap: PropTypes.object,
+    lngLat: PropTypes.object,
+    sawmillStartGeojson: PropTypes.object,
+    onChange: PropTypes.func,
+    setMapLocation: PropTypes.func,
+    setMarkerLocation: PropTypes.func,
+    setMarkerMode: PropTypes.func,
+    getSawMillLocationById: PropTypes.func,
+    unmountMap: PropTypes.func
   };
 
   constructor(props) {
@@ -56,10 +78,11 @@ class SawmillModal extends React.Component {
     const { sawmill } = this.props;
     const emptyFormState = {
       name: '',
-      lat: -1.920800,
-      lng: 20.108810,
+      lat: '',
+      lng: '',
       'is-active': false
     };
+
     const formState = sawmill || emptyFormState;
 
     this.state = {
@@ -67,24 +90,45 @@ class SawmillModal extends React.Component {
         ...formState
       },
       submitting: false,
-      errors: []
+      errors: [],
+      hasMapLayer: false
     };
   }
 
-  state = {
-    form: {
-      name: this.props.sawmill && this.props.sawmill.name ?
-        this.props.sawmill.name : '',
-      lat: this.props.sawmill && this.props.sawmill.lat ?
-        this.props.sawmill.lat : -1.920800, // Remove after testing
-      lng: this.props.sawmill && this.props.sawmill.lng ?
-      this.props.sawmill.lng : 20.108810, // Remove
-      isActive: this.props.sawmill && this.props.sawmill['is-active'] ?
-        this.props.sawmill['is-active'] : false
-    },
-    submitting: false,
-    errors: []
-  };
+  componentDidMount() {
+    const { sawmill } = this.props;
+    if (sawmill) this.props.getSawMillLocationById(sawmill.id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // LngLat
+    if (!isEqual(this.props.lngLat, nextProps.lngLat)) {
+      const { lng, lat } = nextProps.lngLat;
+      this.updateMarkerLoacation(this.mapContainer, lng, lat);
+    }
+
+    // sawmillStartGeojson
+    if (!isEqual(this.props.sawmillStartGeojson, nextProps.sawmillStartGeojson)) {
+      const { coordinates } = nextProps.sawmillStartGeojson.features[0].geometry;
+      this.setState({ form: { ...this.state.form, lng: coordinates[0], lat: coordinates[1] } });
+      this.props.setMarkerLocation({ lng: coordinates[0], lat: coordinates[1] });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.state.hasMapLayer) return;
+
+    if (isEmpty(prevProps.sawmillStartGeojson)) {
+      this.addInitialEmptyLayer();
+      return;
+    }
+
+    this.addInitialLayer();
+  }
+
+  componentWillUnmount() {
+    this.props.unmountMap();
+  }
 
   getBody() {
     const { sawmill } = this.props;
@@ -94,8 +138,8 @@ class SawmillModal extends React.Component {
         type: 'sawmills',
         attributes: {
           name: this.state.form.name,
-          lat: this.state.form.lat,
-          lng: this.state.form.lng,
+          lat: Number(this.state.form.lat),
+          lng: Number(this.state.form.lng),
           'is-active': this.state.form['is-active']
         }
       }
@@ -141,69 +185,179 @@ class SawmillModal extends React.Component {
     this.setState({ form });
   }
 
+  handleMarkerLocationChange(value) {
+    if (!this.state.hasMapLayer) {
+      if (isEmpty(this.props.sawmillStartGeojson)) {
+        this.addInitialEmptyLayer();
+      } else {
+        this.addInitialLayer();
+      }
+    }
+    const property = Object.keys(value)[0];
+    const newLngLat = { ...this.props.lngLat, [property]: Number(value[property]) };
+
+    this.props.setMarkerLocation(newLngLat);
+
+    const key = Object.keys(value)[0];
+    this.setState({ form: { ...this.state.form, [key]: value[key] } });
+  }
+
+  addInitialEmptyLayer() {
+    this.mapContainer.map.addSource('sawmill', {
+      type: 'geojson',
+      data: MAP_SAWMILL_SOURCE_DEFAULT
+    });
+
+    this.mapContainer.map.addLayer(MAP_SAWMILL_LAYER);
+
+    this.setState({
+      hasMapLayer: true
+    });
+  }
+
+  addInitialLayer() {
+    const { sawmillStartGeojson } = this.props;
+
+    this.mapContainer.map.addSource('sawmill', {
+      type: 'geojson',
+      data: sawmillStartGeojson
+    });
+
+    this.mapContainer.map.addLayer(MAP_SAWMILL_LAYER);
+
+      // Dispatch to update sawmill map state
+    const { coordinates } = sawmillStartGeojson.features[0].geometry;
+    this.props.setMarkerLocation({ lng: coordinates[0], lat: coordinates[1] });
+
+    this.setState({
+      hasMapLayer: true
+    });
+  }
+
+  updateMarkerLoacation(map, lng = 0, lat = 0) {
+    const { sawmillStartGeojson } = this.props;
+
+    const geojson = isEmpty(sawmillStartGeojson) ? MAP_SAWMILL_SOURCE_DEFAULT :
+      sawmillStartGeojson;
+
+    geojson.features[0].geometry.coordinates = [lng, lat];
+
+    const source = this.mapContainer.map.getSource('sawmill');
+    source.setData(geojson);
+
+    // Dispatch to update sawmill map state
+    this.setState({ form: { ...this.state.form, lng, lat } });
+    this.props.setMarkerLocation({ lng, lat });
+  }
+
+  handleMapClick = (map, event) => {
+    const { markerMode } = this.props;
+    const { lng, lat } = event.lngLat;
+    if (!markerMode) return;
+    this.updateMarkerLoacation(map, lng, lat);
+  }
+
   render() {
     const { submitting } = this.state;
+    const {
+      operatorsDetailFmus,
+      markerMode,
+      sawmill,
+      sawmillMap
+    } = this.props;
+
     const submittingClassName = classnames({
       '-submitting': submitting
+    });
+
+    const mapContainerClassName = classnames({
+      '-picker': markerMode
     });
 
     return (
       <div className="c-login">
         <Spinner isLoading={submitting} className="-light" />
-        <h2 className="c-title -extrabig">{this.props.intl.formatMessage({ id: 'sawmills.modal.title' })}</h2>
+        <h2 className="c-title -extrabig">
+          {
+          sawmill ? 'Edit sawmill' : this.props.intl.formatMessage({ id: 'sawmills.modal.title' }) // TODO: Add locisation
+          }
+        </h2>
         <form className="c-form" onSubmit={e => this.handleSubmit(e)} noValidate>
           <fieldset className="c-field-container" name="add-sawmill">
             <div className="c-field-row">
               <div className="l-row row -equal-heigth">
                 <div className="columns medium-8 small-12">
-                  <div className="c-field">
-                    <Field
-                      onChange={value => this.handleChange({ name: value })}
-                      className="-fluid"
-                      validations={['required']}
-                      properties={{
-                        name: 'name',
-                        label: this.props.intl.formatMessage({ id: 'sawmills.modal.name' }),
-                        required: true,
-                        type: 'text',
-                        default: this.state.form.name
-                      }}
-                    >
-                      {Input}
-                    </Field>
-                  </div>
+                  <Field
+                    onChange={value => this.handleChange({ name: value })}
+                    className="-fluid"
+                    validations={['required']}
+                    properties={{
+                      name: 'name',
+                      label: this.props.intl.formatMessage({ id: 'sawmills.modal.name' }),
+                      required: true,
+                      type: 'text',
+                      default: this.state.form.name
+                    }}
+                  >
+                    {Input}
+                  </Field>
                 </div>
                 <div className="columns medium-4 small-12">
-                  <div className="c-field">
-                    <Field
-                      onChange={value => this.handleChange({ 'is-active': value.checked })}
-                      className="-fluid"
-                      properties={{
-                        name: 'is-active',
-                        label: this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
-                        checked: this.state.form['is-active']
-                      }}
-                    >
-                      {Checkbox}
-                    </Field>
-                  </div>
+                  <Field
+                    onChange={value => this.handleChange({ 'is-active': value.checked })}
+                    className="-fluid"
+                    properties={{
+                      name: 'is-active',
+                      label: this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
+                      checked: this.state.form['is-active']
+                    }}
+                  >
+                    {Checkbox}
+                  </Field>
                 </div>
               </div>
+            </div>
+            <div className={`c-map-container -modal ${mapContainerClassName}`}>
+              <Spinner isLoading={sawmillMap.loading} className="-light" />
+              <Map
+                ref={(map) => { this.mapContainer = map; }}
+                zoom={operatorsDetailFmus.map.zoom}
+                mapOptions={operatorsDetailFmus.map}
+                mapListeners={{
+                  click: (map, event) => {
+                    this.handleMapClick(map, event);
+                  }
+                }}
+              />
+              <MapControls>
+                <ZoomControl
+                  zoom={operatorsDetailFmus.map.zoom}
+                  onZoomChange={(zoom) => {
+                    this.props.setMapLocation({
+                      ...operatorsDetailFmus.map,
+                      ...{ zoom }
+                    });
+                  }}
+                />
+                <PickerControl
+                  pickerMode={markerMode}
+                  setMarkerMode={this.props.setMarkerMode}
+                />
+              </MapControls>
             </div>
             <div className="c-field-row">
               <div className="l-row row -equal-heigth">
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
                   <Field
-                    onChange={value => this.handleChange({ lat: value })}
-                    validations={['required']}
+                    onChange={value => this.handleMarkerLocationChange({ lat: value })}
                     className="-fluid"
                     properties={{
                       name: 'lat',
                       label: this.props.intl.formatMessage({ id: 'sawmills.modal.lat' }),
                       type: 'number',
-                      required: true,
-                      default: this.state.form.lat
+                      default: this.state.form.lat,
+                      value: this.props.lngLat.lat
                     }}
                   >
                     {Input}
@@ -212,13 +366,14 @@ class SawmillModal extends React.Component {
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
                   <Field
-                    onChange={value => this.handleChange({ expireDate: value })}
+                    onChange={value => this.handleMarkerLocationChange({ lng: value })}
                     className="-fluid"
                     properties={{
                       name: 'lng',
                       label: this.props.intl.formatMessage({ id: 'sawmills.modal.lng' }),
                       type: 'number',
-                      default: this.state.form.lng
+                      default: this.state.form.lng,
+                      value: this.props.lngLat.lng
                     }}
                   >
                     {Input}
@@ -227,6 +382,8 @@ class SawmillModal extends React.Component {
               </div>
             </div>
           </fieldset>
+
+
           <ul className="c-field-buttons">
             <li>
               <button
@@ -257,6 +414,17 @@ class SawmillModal extends React.Component {
 
 export default injectIntl(connect(
   state => ({
-    user: state.user
-  })
+    user: state.user,
+    operatorsDetailFmus: state.operatorsDetailFmus,
+    sawmillMap: state.sawmillMap,
+    markerMode: state.sawmillMap.markerMode,
+    lngLat: state.sawmillMap.lngLat,
+    sawmillStartGeojson: state.sawmillMap.sawmillStartGeojson
+  }), {
+    setMapLocation,
+    setMarkerLocation,
+    setMarkerMode,
+    getSawMillLocationById,
+    unmountMap
+  }
 )(SawmillModal));

@@ -157,80 +157,87 @@ class DocModal extends React.Component {
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
-            <div className="c-field-row">
-              <div className="l-row row">
-                <div className="columns medium-6 small-12">
-                  {/* DATE */}
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.startDate = c; }}
-                    onChange={value => this.onChange({ startDate: value })}
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'startDate',
-                      label: this.props.intl.formatMessage({ id: 'doc.start_date' }),
-                      type: 'date',
-                      required: true,
-                      default: this.state.form.startDate
-                    }}
-                  >
-                    {Input}
-                  </Field>
-                </div>
-                <div className="columns medium-6 small-12">
-                  {/* DATE */}
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
-                    onChange={value => this.onChange({ expireDate: value })}
-                    className="-fluid"
-                    properties={{
-                      name: 'expireDate',
-                      label: this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
-                      type: 'date',
-                      default: this.state.form.expireDate
-                    }}
-                  >
-                    {Input}
-                  </Field>
-                </div>
+
+            <div className="l-row row">
+              <div className="columns medium-6 small-12">
+                {/* DATE */}
+                <Field
+                  ref={(c) => { if (c) FORM_ELEMENTS.elements.startDate = c; }}
+                  onChange={value => this.onChange({ startDate: value })}
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'startDate',
+                    label: this.props.intl.formatMessage({ id: 'doc.start_date' }),
+                    type: 'date',
+                    required: true,
+                    default: this.state.form.startDate
+                  }}
+                >
+                  {Input}
+                </Field>
+              </div>
+              <div className="columns medium-6 small-12">
+                {/* DATE */}
+                <Field
+                  ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
+                  onChange={value => this.onChange({ expireDate: value })}
+                  className="-fluid"
+                  properties={{
+                    name: 'expireDate',
+                    label: this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
+                    type: 'date',
+                    default: this.state.form.expireDate
+                  }}
+                >
+                  {Input}
+                </Field>
               </div>
             </div>
 
             {/* DOCUMENT */}
             {!notRequired &&
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-                onChange={value => this.onChange({ file: value })}
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'file',
-                  label: this.props.intl.formatMessage({ id: 'file' }),
-                  required: true,
-                  default: this.state.form.file
-                }}
-              >
-                {File}
-              </Field>
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                    onChange={value => this.onChange({ file: value })}
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'file',
+                      label: this.props.intl.formatMessage({ id: 'file' }),
+                      required: true,
+                      default: this.state.form.file
+                    }}
+                  >
+                    {File}
+                  </Field>
+                </div>
+              </div>
             }
 
             {/* REASON */}
             {notRequired &&
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.reason = c; }}
-                onChange={value => this.onChange({ reason: value })}
-                className="-fluid"
-                validations={['required']}
-                properties={{
-                  name: 'reason',
-                  label: this.props.intl.formatMessage({ id: 'why-is-it-not-required' }),
-                  required: true,
-                  rows: '6',
-                  default: this.state.form.reason
-                }}
-              >
-                {Textarea}
-              </Field>
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.reason = c; }}
+                    onChange={value => this.onChange({ reason: value })}
+                    className="-fluid"
+                    validations={['required']}
+                    properties={{
+                      name: 'reason',
+                      label: this.props.intl.formatMessage({ id: 'why-is-it-not-required' }),
+                      required: true,
+                      rows: '6',
+                      default: this.state.form.reason
+                    }}
+                  >
+                    {Textarea}
+                  </Field>
+                </div>
+              </div>
             }
           </fieldset>
 
