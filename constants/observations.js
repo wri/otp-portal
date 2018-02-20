@@ -1,14 +1,8 @@
-const TABS_OBSERVATIONS = [
-  {
-    labelKey: 'observations.tab.observations-list',
-    label: 'Observations List',
-    value: 'observations-list'
-  },
-  {
-    labelKey: 'observations.tab.map',
-    label: 'Map View',
-    value: 'map'
-  }
+const PALETTE_COLOR_1 = [
+  { fill: '#9B9B9B' },
+  { fill: '#005b23' },
+  { fill: '#333333' },
+  { fill: '#e98300' }
 ];
 
 const FILTERS_REFS = [
@@ -59,4 +53,7 @@ const FILTERS_REFS = [
   }
 ];
 
-export { TABS_OBSERVATIONS, FILTERS_REFS };
+export {
+  FILTERS_REFS,
+  PALETTE_COLOR_1
+};

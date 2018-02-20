@@ -17,7 +17,8 @@ const getParsedTableObservations = createSelector(
         observation: obs.details,
         level: obs.severity.level,
         fmu: !!obs.fmu && obs.fmu.name,
-        report: obs['observation-report'] ? obs['observation-report'].attachment.url : null
+        report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
+        location: (!!obs.lat && !!obs.lng) ? { lat: Number(obs.lat), lng: Number(obs.lng) } : {}
       }));
     }
 
