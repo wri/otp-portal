@@ -29,7 +29,7 @@ export default class LayerManager {
   /* Public methods */
   addLayer(layer, opts = {}) {
     const method = {
-      geojson: this.addGeojsonLayer,
+      geojson: this.getGeojsonLayer,
       cartodb: this.addCartodbLayer,
       raster: this.addRasterLayer
     }[layer.provider];
@@ -49,20 +49,63 @@ export default class LayerManager {
 
   removeLayer(layerId) {
     this.map.removeLayer(layerId);
+    this.map.removeSource(layerId);
     delete this.mapLayers[layerId];
   }
 
   removeAllLayers() {
     const layerIds = Object.keys(this.mapLayers);
     if (!layerIds.length) return;
-
     layerIds.forEach(id => this.removeLayer(id));
   }
 
   /**
    * PRIVATE METHODS
    */
-  addGeojsonLayer(layer, opts) {
+  addGeojsonLayer(layer, data) {
+        // Add source
+    if (this.map) {
+      if (!this.map.getSource(layer.id)) {
+        this.map.addSource(layer.id, data);
+      }
+
+          // Loop trough layers
+      layer.layers.forEach((l) => {
+        const { interactivity, fitBounds } = l;
+
+            // Add layer
+        this.map.addLayer(l, l.before);
+
+            // Add interactivity (if exists)
+        if (interactivity) {
+          Object.keys(interactivity).forEach((i) => {
+            const iFn = interactivity[i].bind(this);
+            this.map.on(i, l.id, (e) => {
+              iFn(e, () => {
+                this.onLayerEvent(i, l.id, e);
+              });
+            });
+          });
+        }
+
+        if (fitBounds) {
+          const bounds = getBBox(data);
+
+          this.map.fitBounds(bounds, {
+            padding: 50
+                // animate: false
+                // duration: 500,
+                // offset: [300, 0]
+          });
+        }
+
+        this.onLayerAddedSuccess();
+        this.mapLayers[l.id] = l;
+      });
+    }
+  }
+
+  getGeojsonLayer(layer, opts) {
     const { filters } = opts;
 
     const sourceParsed = JSON.parse(substitution(
@@ -72,56 +115,22 @@ export default class LayerManager {
       }))
     ));
 
-    fetch(sourceParsed.data.url, { ...sourceParsed.data })
+    if (sourceParsed.data.url) {
+      fetch(sourceParsed.data.url, { ...sourceParsed.data })
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error(response.statusText);
       })
       .then((data) => {
-        // Add source
-        if (this.map) {
-          if (!this.map.getSource(layer.id)) {
-            this.map.addSource(layer.id, { ...sourceParsed, data });
-          }
-
-          // Loop trough layers
-          layer.layers.forEach((l) => {
-            const { interactivity, fitBounds } = l;
-
-            // Add layer
-            this.map.addLayer(l, l.before);
-
-            // Add interactivity (if exists)
-            if (interactivity) {
-              Object.keys(interactivity).forEach((i) => {
-                const iFn = interactivity[i].bind(this);
-                this.map.on(i, l.id, (e) => {
-                  iFn(e, () => {
-                    this.onLayerEvent(i, l.id, e);
-                  });
-                });
-              });
-            }
-
-            if (fitBounds) {
-              const bounds = getBBox(data);
-
-              this.map.fitBounds(bounds, {
-                padding: 50
-                // animate: false
-                // duration: 500,
-                // offset: [300, 0]
-              });
-            }
-
-            this.onLayerAddedSuccess();
-            this.mapLayers[l.id] = l;
-          });
-        }
+        const dataParsed = { ...sourceParsed, data };
+        this.addGeojsonLayer(layer, dataParsed);
       })
       .catch((err) => {
         console.error(err);
       });
+    } else {
+      this.addGeojsonLayer(layer, sourceParsed);
+    }
   }
 
   updateGeojsonLayer(layer, opts) {

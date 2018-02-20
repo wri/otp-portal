@@ -1,20 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
 
 // Redux
 import { connect } from 'react-redux';
-import { setMapLocation } from 'modules/operators-detail-fmus';
-import { setMarkerLocation, setMarkerMode, getSawMillLocationById, unmountMap } from 'modules/sawmill-map';
-
-
-// Constants
-import { MAP_SAWMILL_LAYER, MAP_SAWMILL_SOURCE_DEFAULT } from 'constants/sawmills';
+import { setMarkerLocation, setMarkerMode, getSawMillLocationById, setMapLocation, unmountMap } from 'modules/sawmill-map';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -56,16 +49,13 @@ class SawmillModal extends React.Component {
     markerMode: PropTypes.bool,
     user: PropTypes.object,
     sawmill: PropTypes.object,
-    intl: PropTypes.object,
-    operatorsDetailFmus: PropTypes.object,
+    intl: intlShape.isRequired,
     sawmillMap: PropTypes.object,
     lngLat: PropTypes.object,
-    sawmillStartGeojson: PropTypes.object,
     onChange: PropTypes.func,
     setMapLocation: PropTypes.func,
     setMarkerLocation: PropTypes.func,
     setMarkerMode: PropTypes.func,
-    getSawMillLocationById: PropTypes.func,
     unmountMap: PropTypes.func
   };
 
@@ -97,55 +87,78 @@ class SawmillModal extends React.Component {
 
   componentDidMount() {
     const { sawmill } = this.props;
-    if (sawmill) this.props.getSawMillLocationById(sawmill.id);
-  }
 
-  componentWillReceiveProps(nextProps) {
-    // LngLat
-    if (!isEqual(this.props.lngLat, nextProps.lngLat)) {
-      const { lng, lat } = nextProps.lngLat;
-      this.updateMarkerLoacation(this.mapContainer, lng, lat);
+    if (sawmill) {
+      this.props.setMapLocation({
+        center: {
+          lat: sawmill.lat, lng: sawmill.lng
+        }
+      });
+      this.props.setMarkerLocation({ lat: sawmill.lat, lng: sawmill.lng });
     }
-
-    // sawmillStartGeojson
-    if (!isEqual(this.props.sawmillStartGeojson, nextProps.sawmillStartGeojson)) {
-      const { coordinates } = nextProps.sawmillStartGeojson.features[0].geometry;
-      this.setState({ form: { ...this.state.form, lng: coordinates[0], lat: coordinates[1] } });
-      this.props.setMarkerLocation({ lng: coordinates[0], lat: coordinates[1] });
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.state.hasMapLayer) return;
-
-    if (isEmpty(prevProps.sawmillStartGeojson)) {
-      this.addInitialEmptyLayer();
-      return;
-    }
-
-    this.addInitialLayer();
   }
 
   componentWillUnmount() {
     this.props.unmountMap();
   }
 
+  // HELPERS
   getBody() {
-    const { sawmill } = this.props;
+    const { sawmill, lngLat } = this.props;
     return {
       data: {
         ...!!sawmill && !!sawmill.id && { id: sawmill.id },
         type: 'sawmills',
         attributes: {
           name: this.state.form.name,
-          lat: Number(this.state.form.lat),
-          lng: Number(this.state.form.lng),
+          lat: lngLat.lat,
+          lng: lngLat.lng,
           'is-active': this.state.form['is-active']
         }
       }
     };
   }
 
+  getMarkerLayers(lng, lat, sawmill) {
+    const { lngLat } = this.props;
+    if (!lngLat) return [];
+
+    return [
+      {
+        id: 'sawmill',
+        provider: 'geojson',
+        source: {
+          type: 'geojson',
+          data: {
+            ...!sawmill && {
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [lngLat.lng, lngLat.lat]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        layers: [{
+          id: 'sawmill',
+          source: 'sawmill',
+          name: 'Sawmill',
+          type: 'circle',
+          paint: {
+            'circle-color': '#e98300',
+            'circle-radius': 10
+          }
+        }]
+      }
+    ];
+  }
+
+  // UI EVENTS
   handleSubmit(e) {
     e.preventDefault();
     const { sawmill } = this.props;
@@ -185,82 +198,39 @@ class SawmillModal extends React.Component {
     this.setState({ form });
   }
 
-  handleMarkerLocationChange(value) {
-    if (!this.state.hasMapLayer) {
-      if (isEmpty(this.props.sawmillStartGeojson)) {
-        this.addInitialEmptyLayer();
-      } else {
-        this.addInitialLayer();
-      }
-    }
-    const property = Object.keys(value)[0];
-    const newLngLat = { ...this.props.lngLat, [property]: Number(value[property]) };
-
-    this.props.setMarkerLocation(newLngLat);
-
-    const key = Object.keys(value)[0];
-    this.setState({ form: { ...this.state.form, [key]: value[key] } });
-  }
-
-  addInitialEmptyLayer() {
-    this.mapContainer.map.addSource('sawmill', {
-      type: 'geojson',
-      data: MAP_SAWMILL_SOURCE_DEFAULT
-    });
-
-    this.mapContainer.map.addLayer(MAP_SAWMILL_LAYER);
-
-    this.setState({
-      hasMapLayer: true
-    });
-  }
-
-  addInitialLayer() {
-    const { sawmillStartGeojson } = this.props;
-
-    this.mapContainer.map.addSource('sawmill', {
-      type: 'geojson',
-      data: sawmillStartGeojson
-    });
-
-    this.mapContainer.map.addLayer(MAP_SAWMILL_LAYER);
-
-      // Dispatch to update sawmill map state
-    const { coordinates } = sawmillStartGeojson.features[0].geometry;
-    this.props.setMarkerLocation({ lng: coordinates[0], lat: coordinates[1] });
-
-    this.setState({
-      hasMapLayer: true
-    });
-  }
-
-  updateMarkerLoacation(map, lng = 0, lat = 0) {
-    const { sawmillStartGeojson } = this.props;
-
-    const geojson = isEmpty(sawmillStartGeojson) ? MAP_SAWMILL_SOURCE_DEFAULT :
-      sawmillStartGeojson;
-
-    geojson.features[0].geometry.coordinates = [lng, lat];
-
-    const source = this.mapContainer.map.getSource('sawmill');
-    source.setData(geojson);
-
-    // Dispatch to update sawmill map state
-    this.setState({ form: { ...this.state.form, lng, lat } });
-    this.props.setMarkerLocation({ lng, lat });
-  }
-
   handleMapClick = (map, event) => {
     const { markerMode } = this.props;
     const { lng, lat } = event.lngLat;
     if (!markerMode) return;
-    this.updateMarkerLoacation(map, lng, lat);
+
+    this.props.setMapLocation({
+      center: {
+        lat, lng
+      }
+    });
+
+    this.props.setMarkerLocation({ lat, lng });
+  }
+
+  handleMarkerLocationChange({ lat, lng }) {
+    const { lngLat } = this.props;
+
+    this.props.setMapLocation({
+      center: {
+        lat: lat || lngLat.lat,
+        lng: lng || lngLat.lng
+      }
+    });
+
+    this.props.setMarkerLocation({
+      lat: lat || lngLat.lat,
+      lng: lng || lngLat.lng
+    });
   }
 
   render() {
     const { submitting } = this.state;
     const {
-      operatorsDetailFmus,
       markerMode,
       sawmill,
       sawmillMap
@@ -279,7 +249,8 @@ class SawmillModal extends React.Component {
         <Spinner isLoading={submitting} className="-light" />
         <h2 className="c-title -extrabig">
           {
-          sawmill ? 'Edit sawmill' : this.props.intl.formatMessage({ id: 'sawmills.modal.title' }) // TODO: Add locisation
+          sawmill ? this.props.intl.formatMessage({ id: 'sawmills.modal.title.edit' }) :
+            this.props.intl.formatMessage({ id: 'sawmills.modal.title' })
           }
         </h2>
         <form className="c-form" onSubmit={e => this.handleSubmit(e)} noValidate>
@@ -317,25 +288,25 @@ class SawmillModal extends React.Component {
                 </div>
               </div>
             </div>
+
             <div className={`c-map-container -modal ${mapContainerClassName}`}>
               <Spinner isLoading={sawmillMap.loading} className="-light" />
               <Map
                 ref={(map) => { this.mapContainer = map; }}
-                zoom={operatorsDetailFmus.map.zoom}
-                mapOptions={operatorsDetailFmus.map}
+                mapOptions={sawmillMap.mapOptions}
                 mapListeners={{
                   click: (map, event) => {
                     this.handleMapClick(map, event);
                   }
                 }}
+                layers={this.getMarkerLayers()}
               />
               <MapControls>
                 <ZoomControl
-                  zoom={operatorsDetailFmus.map.zoom}
+                  zoom={sawmillMap.mapOptions.zoom}
                   onZoomChange={(zoom) => {
                     this.props.setMapLocation({
-                      ...operatorsDetailFmus.map,
-                      ...{ zoom }
+                      zoom
                     });
                   }}
                 />
@@ -345,6 +316,7 @@ class SawmillModal extends React.Component {
                 />
               </MapControls>
             </div>
+
             <div className="c-field-row">
               <div className="l-row row -equal-heigth">
                 <div className="columns medium-6 small-12">
@@ -383,7 +355,6 @@ class SawmillModal extends React.Component {
             </div>
           </fieldset>
 
-
           <ul className="c-field-buttons">
             <li>
               <button
@@ -418,8 +389,7 @@ export default injectIntl(connect(
     operatorsDetailFmus: state.operatorsDetailFmus,
     sawmillMap: state.sawmillMap,
     markerMode: state.sawmillMap.markerMode,
-    lngLat: state.sawmillMap.lngLat,
-    sawmillStartGeojson: state.sawmillMap.sawmillStartGeojson
+    lngLat: state.sawmillMap.lngLat
   }), {
     setMapLocation,
     setMarkerLocation,

@@ -73,7 +73,7 @@ export default class Map extends React.Component {
     }
 
     // Layers
-    if (!isEqual(this.props.layers, nextProps.layers)) {
+    if (this.layerManager && !isEqual(this.props.layers, nextProps.layers)) {
       this.layerManager.removeAllLayers();
       this.addLayer(nextProps.layers, { filters: nextProps.mapFilters });
     }
@@ -86,6 +86,11 @@ export default class Map extends React.Component {
     // Zoom
     if (this.props.mapOptions.zoom !== nextProps.mapOptions.zoom) {
       this.map.setZoom(nextProps.mapOptions.zoom);
+    }
+
+    // Center
+    if (!isEqual(this.props.mapOptions.center, nextProps.mapOptions.center)) {
+      this.map.panTo(nextProps.mapOptions.center);
     }
   }
 

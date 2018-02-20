@@ -1,4 +1,5 @@
 import React from 'react';
+import debounce from 'lodash/debounce';
 import sortBy from 'lodash/sortBy';
 import flatten from 'lodash/flatten';
 
@@ -235,12 +236,12 @@ class OperatorsPage extends Page {
             <Map
               mapOptions={operatorsRanking.map}
               mapListeners={{
-                moveend: (map) => {
+                moveend: debounce((map) => {
                   this.props.setOperatorsMapLocation({
                     zoom: map.getZoom(),
                     center: map.getCenter()
                   });
-                }
+                }, 100)
               }}
               layers={MAP_LAYERS_OPERATORS}
             />
@@ -257,7 +258,6 @@ class OperatorsPage extends Page {
                 zoom={operatorsRanking.map.zoom}
                 onZoomChange={(zoom) => {
                   this.props.setOperatorsMapLocation({
-                    ...operators.map,
                     ...{ zoom }
                   });
                 }}

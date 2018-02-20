@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
+const SAWMILL_MAP_LOCATION = 'SAWMILL_MAP_LOCATION';
 const SAWMILL_UNMOUNT_MAP = 'SAWMILL_UNMOUNT_MAP';
 const SAWMILL_SET_MARKER_MODE = 'SAWMILL_SET_MARKER_MODE';
 const SAWMILL_SET_MARKER_LOCATION = 'SAWMILL_SET_MARKER_LOCATION';
@@ -25,6 +26,9 @@ const initialState = {
 /* Reducer */
 export default function (state = initialState, action) {
   switch (action.type) {
+    case SAWMILL_MAP_LOCATION: {
+      return Object.assign({}, state, { mapOptions: { ...state.mapOptions, ...action.payload } });
+    }
 
     case SAWMILL_UNMOUNT_MAP: {
       return Object.assign({}, state, { ...initialState });
@@ -67,6 +71,13 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function setMapLocation(mapLocation) {
+  return {
+    type: SAWMILL_MAP_LOCATION,
+    payload: mapLocation
+  };
 }
 
 export function getSawMillLocationById(id) {
@@ -113,12 +124,10 @@ export function setMarkerMode(mode) {
 }
 
 
-export function setMarkerLocation(lngLat) {
-  return (dispatch) => {
-    dispatch({
-      type: SAWMILL_SET_MARKER_LOCATION,
-      payload: lngLat
-    });
+export function setMarkerLocation(payload) {
+  return {
+    type: SAWMILL_SET_MARKER_LOCATION,
+    payload
   };
 }
 
