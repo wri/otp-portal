@@ -22,6 +22,7 @@ import Map from 'components/map/map';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import PickerControl from 'components/map/controls/picker-control';
+import LocationSearch from 'components/map/location-search';
 
 // Constants
 const FORM_ELEMENTS = {
@@ -291,6 +292,7 @@ class SawmillModal extends React.Component {
 
             <div className={`c-map-container -modal ${mapContainerClassName}`}>
               <Spinner isLoading={sawmillMap.loading} className="-light" />
+              <LocationSearch />
               <Map
                 ref={(map) => { this.mapContainer = map; }}
                 mapOptions={sawmillMap.mapOptions}
