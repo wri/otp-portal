@@ -9,7 +9,10 @@ import { injectIntl, intlShape } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { updateOperator, updateFmu } from 'modules/user';
-import { getSawMillsByOperatorId } from 'modules/operators-detail';
+import {
+  getSawMillsByOperatorId,
+  getSawMillsLocationByOperatorId
+} from 'modules/operators-detail';
 import { toastr } from 'react-redux-toastr';
 
 // Services
@@ -176,6 +179,7 @@ class EditOperator extends React.Component {
   fetchSawmills() {
     const { operator } = this.props;
     this.props.getSawMillsByOperatorId(operator.id);
+    this.props.getSawMillsLocationByOperatorId(operator.id);
   }
 
   handleAddSawmill = (e) => {
@@ -392,6 +396,7 @@ EditOperator.propTypes = {
   onSubmit: PropTypes.func,
   sawmills: PropTypes.object,
   getSawMillsByOperatorId: PropTypes.func,
+  getSawMillsLocationByOperatorId: PropTypes.func,
   intl: intlShape.isRequired
 };
 
@@ -401,5 +406,9 @@ export default injectIntl(connect(
     user: state.user,
     sawmills: state.operatorsDetail.sawmills
   }),
-  { updateOperator, updateFmu, getSawMillsByOperatorId }
+  { updateOperator,
+    updateFmu,
+    getSawMillsByOperatorId,
+    getSawMillsLocationByOperatorId
+  }
 )(EditOperator));

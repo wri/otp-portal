@@ -18,6 +18,10 @@ const GET_SAWMILLS_SUCCESS = 'GET_SAWMILLS_SUCCESS';
 const GET_SAWMILLS_ERROR = 'GET_SAWMILLS_ERROR';
 const GET_SAWMILLS_LOADING = 'GET_SAWMILLS_LOADING';
 
+const GET_SAWMILLS_LOCATIONS_SUCCESS = 'GET_SAWMILLS_LOCATION_SUCCESS';
+const GET_SAWMILLS_LOCATIONS_LOADING = 'GET_SAWMILLS_LOCATION_LOADING';
+const GET_SAWMILLS_LOCATIONS_ERROR = 'GET_SAWMILLS_LOCATION_ERROR';
+
 /* Initial state */
 const initialState = {
   data: {},
@@ -29,6 +33,11 @@ const initialState = {
     error: false
   },
   sawmills: {
+    data: [],
+    loading: false,
+    error: false
+  },
+  sawmillsLocations: {
     data: [],
     loading: false,
     error: false
@@ -77,6 +86,31 @@ export default function (state = initialState, action) {
       const sawmills = Object.assign({}, state.sawmills, { loading: true, error: false });
       return Object.assign({}, state, { sawmills });
     }
+
+    // Get all sawmills geojson by Operator ID
+    case GET_SAWMILLS_LOCATIONS_SUCCESS: {
+      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
+        data: action.payload.features,
+        loading: false,
+        error: false
+      });
+      return Object.assign({}, state, { sawmillsLocations });
+    }
+    case GET_SAWMILLS_LOCATIONS_LOADING: {
+      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
+        loading: true,
+        error: false
+      });
+      return Object.assign({}, state, { sawmillsLocations });
+    }
+    case GET_SAWMILLS_LOCATIONS_ERROR: {
+      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
+        error: true,
+        loading: false
+      });
+      return Object.assign({}, state, { sawmillsLocations });
+    }
+
     default:
       return state;
   }
@@ -224,6 +258,39 @@ export function getSawMillsByOperatorId(id) {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_SAWMILLS_ERROR,
+          payload: err.message
+        });
+      });
+  };
+}
+
+export function getSawMillsLocationByOperatorId(id) {
+  return (dispatch) => {
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_SAWMILLS_LOCATIONS_LOADING });
+
+    fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}&format=geojson`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((data) => {
+        // Fetch from server ok -> Dispatch geojson sawmill data
+        dispatch({
+          type: GET_SAWMILLS_LOCATIONS_SUCCESS,
+          payload: data
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_SAWMILLS_LOCATIONS_ERROR,
           payload: err.message
         });
       });

@@ -29,6 +29,7 @@ export default function Table({ data, options, className }) {
         // manual={options.manual}
         onPageChange={options.onPageChange}
         defaultSorted={options.defaultSorted}
+        SubComponent={options.showSubComponent && options.subComponent}
       />
     </div>
   );

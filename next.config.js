@@ -48,7 +48,8 @@ module.exports = {
         'process.env.RW_API': JSON.stringify(process.env.RW_API),
         'process.env.OTP_API': JSON.stringify(process.env.OTP_API),
         'process.env.OTP_API_KEY': JSON.stringify(process.env.OTP_API_KEY),
-        'process.env.MAPBOX_API_KEY': JSON.stringify(process.env.MAPBOX_API_KEY)
+        'process.env.MAPBOX_API_KEY': JSON.stringify(process.env.MAPBOX_API_KEY),
+        'process.env.GOOGLE_API_KEY': JSON.stringify(process.env.GOOGLE_API_KEY)
       })
     );
 

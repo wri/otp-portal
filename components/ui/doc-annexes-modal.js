@@ -140,23 +140,21 @@ class DocAnnexesModal extends React.Component {
         <form className="c-form" onSubmit={e => this.handleSubmit(e)} noValidate>
           <fieldset className="c-field-container">
             <div className="c-field-row">
-              <div className="c-field">
-                <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
-                  onChange={value => this.handleChange({ name: value })}
-                  className="-fluid"
-                  validations={['required']}
-                  properties={{
-                    name: 'name',
-                    label: this.props.intl.formatMessage({ id: 'annex.form.name' }),
-                    required: true,
-                    type: 'text',
-                    default: this.state.form.name
-                  }}
-                >
-                  {Input}
-                </Field>
-              </div>
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+                onChange={value => this.handleChange({ name: value })}
+                className="-fluid"
+                validations={['required']}
+                properties={{
+                  name: 'name',
+                  label: this.props.intl.formatMessage({ id: 'annex.form.name' }),
+                  required: true,
+                  type: 'text',
+                  default: this.state.form.name
+                }}
+              >
+                {Input}
+              </Field>
             </div>
             <div className="c-field-row">
               <div className="l-row row">
@@ -196,22 +194,24 @@ class DocAnnexesModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="c-field-row">
-              <div className="c-field">
-                <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-                  onChange={value => this.handleChange({ file: value })}
-                  validations={['required']}
-                  className="-fluid"
-                  properties={{
-                    name: 'file',
-                    label: this.props.intl.formatMessage({ id: 'file' }),
-                    required: true,
-                    default: this.state.form.file
-                  }}
-                >
-                  {File}
-                </Field>
+            <div className="l-row row">
+              <div className="columns small-12">
+                <div className="c-field-row">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                    onChange={value => this.handleChange({ file: value })}
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'file',
+                      label: this.props.intl.formatMessage({ id: 'file' }),
+                      required: true,
+                      default: this.state.form.file
+                    }}
+                  >
+                    {File}
+                  </Field>
+                </div>
               </div>
             </div>
           </fieldset>
