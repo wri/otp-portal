@@ -23,6 +23,9 @@ function DocumentsProvided(props) {
 
   const max = HELPERS_DOC.getMaxLength(groupedByCategory);
   const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
+  groupedByStatusChart.forEach((item) => {
+    legend[item.id].value = item.value;
+  });
 
   return (
     <div className="c-doc-provided">
@@ -41,10 +44,6 @@ function DocumentsProvided(props) {
                   isAnimationActive={false}
                   // If you want to change the labels you should do something similar to this
                   // https://github.com/recharts/recharts/blob/master/src/polar/Pie.js#L339
-                  label={{
-                    fill: '#333'
-                  }}
-                  labelLine={false}
                 >
                   {groupedByStatusChart.map(entry =>
                     <Cell key={entry.label} fill={entry.fill} stroke={entry.stroke} />
