@@ -73,7 +73,7 @@ function DocumentsProvided(props) {
         <div className="columns small-6">
           <div className="c-doc-by-category">
             <ul className="doc-by-category-list">
-              {sortBy(Object.keys(groupedByCategory)).map((category) => {
+              {Object.keys(groupedByCategory).map((category) => {
                 const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
                 const width = `${(groupedByCategory[category].length / max) * 100}%`;
 

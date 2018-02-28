@@ -21,7 +21,7 @@ function DocumentsByOperator(props) {
 
   return (
     <ul className="c-doc-gallery">
-      {sortBy(Object.keys(groupedByCategory)).map(category => (
+      {Object.keys(groupedByCategory).map(category => (
         <li
           key={category}
           className="doc-gallery-item"

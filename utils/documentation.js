@@ -1,5 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
@@ -60,7 +62,15 @@ const HELPERS_DOC = {
   },
 
   getGroupedByCategory(data) {
-    return groupBy(data, 'category');
+    const lookup = sortBy(uniqBy(data, 'category'), 'categoryPosition').map(item => item.category);
+    const childObj = groupBy(data, 'category');
+    const parentObj = {};
+
+    for (let i = 0; i < lookup.length; ++i) {
+      parentObj[lookup[i]] = childObj[lookup[i]];
+    }
+
+    return parentObj;
   },
 
   getGroupedByStatus(data) {
