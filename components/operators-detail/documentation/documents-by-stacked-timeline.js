@@ -27,11 +27,14 @@ class DocumentsStackedTimeline extends React.Component {
     }
   }
 
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.documentation.length !== this.props.documentation.length) {
       this.drawChart(nextProps.documentation);
     }
+  }
+
+  shouldComponentUpdate() {
+    return false;
   }
 
   componentWillUnmount() {
