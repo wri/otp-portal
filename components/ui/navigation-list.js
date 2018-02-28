@@ -82,6 +82,13 @@ class NavigationList extends React.Component {
             </a>
           </Link>
         </li>
+        <li>
+          <Link prefetch href="/terms">
+            <a className={!hideActive ? this.setActive(['/terms']) : ''}>
+              {this.props.intl.formatMessage({ id: 'terms' })}
+            </a>
+          </Link>
+        </li>
       </ul>
     );
   }
