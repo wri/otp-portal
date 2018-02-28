@@ -132,25 +132,8 @@ class AboutPage extends Page {
                     <div className="description">
                       <p>{this.props.intl.formatMessage({ id: 'about.donors.description1' })}</p>
                     </div>
-
-                    <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'about.donors.description2' })}</p>
-                    </div>
-
-                    <div className="row l-row -equal-heigth">
-                      <div className="columns small-12">
-                        <img
-                          alt="Citizen Voices for Change project"
-                          style={{
-                            margin: '24px auto 0',
-                            width: '100%',
-                            maxWidth: '300px'
-                          }}
-                          src="/static/images/logos/voiceforchange.png"
-                        />
-                      </div>
-                    </div>
                   </div>
+
                 </div>
               </div>
             </article>
