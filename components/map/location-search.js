@@ -2,9 +2,6 @@ import React from 'react';
 import Geosuggest from 'react-geosuggest';
 import PropTypes from 'prop-types';
 
-// Redux
-import { connect } from 'react-redux';
-import { setMarkerLocation, setMapLocation } from 'modules/sawmill-map';
 
 class LocationSearch extends React.Component {
   static propTypes = {
@@ -39,11 +36,4 @@ class LocationSearch extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    lngLat: state.sawmillMap.lngLat
-  }), {
-    setMarkerLocation,
-    setMapLocation
-  }
-)(LocationSearch);
+export default LocationSearch;

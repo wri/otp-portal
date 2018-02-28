@@ -4,7 +4,13 @@ import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
-import { setMarkerLocation, setMarkerMode, getSawMillLocationById, setMapLocation, unmountMap } from 'modules/sawmill-map';
+import {
+  setMarkerLocation,
+  setMarkerMode,
+  getSawMillLocationById,
+  setMapLocation,
+  unmountMap
+} from 'modules/sawmill-map';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -292,7 +298,10 @@ class SawmillModal extends React.Component {
 
             <div className={`c-map-container -modal ${mapContainerClassName}`}>
               <Spinner isLoading={sawmillMap.loading} className="-light" />
-              <LocationSearch />
+              <LocationSearch
+                setMapLocation={this.props.setMapLocation}
+                setMarkerLocation={this.props.setMarkerLocation}
+              />
               <Map
                 ref={(map) => { this.mapContainer = map; }}
                 mapOptions={sawmillMap.mapOptions}
