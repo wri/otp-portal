@@ -194,23 +194,25 @@ class DocAnnexesModal extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="l-row row">
-              <div className="columns small-12">
-                <div className="c-field-row">
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-                    onChange={value => this.handleChange({ file: value })}
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'file',
-                      label: this.props.intl.formatMessage({ id: 'file' }),
-                      required: true,
-                      default: this.state.form.file
-                    }}
-                  >
-                    {File}
-                  </Field>
+            <div>
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <div className="c-field-row">
+                    <Field
+                      ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                      onChange={value => this.handleChange({ file: value })}
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'file',
+                        label: this.props.intl.formatMessage({ id: 'file' }),
+                        required: true,
+                        default: this.state.form.file
+                      }}
+                    >
+                      {File}
+                    </Field>
+                  </div>
                 </div>
               </div>
             </div>
