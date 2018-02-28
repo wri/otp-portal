@@ -37,12 +37,20 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+
+      path.domain{
+        stroke: $color-gray-2;
+      }
     }
 
     path {
       fill: none;
       stroke: $color-gray-1;
       shape-rendering: crispEdges;
+    }
+
+    path.domain {
+      stroke: none;
     }
   }
 
