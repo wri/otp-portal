@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import ReactTable from 'react-table';
+import ReactTable from 'react-table/react-table';
 
 export default function Table({ data, options, className }) {
   const classNames = classnames({
