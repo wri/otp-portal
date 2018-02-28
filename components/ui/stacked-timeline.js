@@ -117,10 +117,10 @@ class StackedTimeline {
       limitDatesToData: true
     };
 
-    d3.select('#chart-stacked-timeline')
+    this.$selector
       .stackedTimeline(options)
       .minDate(this.minDate)
-      .maxDate(new Date());
+      .maxDate(new Date(new Date().setFullYear(new Date().getFullYear() + 2)));
   }
 }
 
