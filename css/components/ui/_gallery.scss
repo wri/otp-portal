@@ -8,6 +8,11 @@
     margin: 0 0 $space-1 * 5;
   }
 
+  .gallery-content {
+    position: relative;
+    min-height: 200px;
+  }
+
   .columns {
     display: flex;
   }

@@ -63,7 +63,9 @@
 @import 'components/ui/icon';
 @import 'components/ui/intro';
 @import 'components/ui/language-dropdown';
+@import 'components/ui/location-search';
 @import 'components/ui/login';
+@import 'components/ui/map-sub-component';
 @import 'components/ui/modal';
 @import 'components/ui/navigation-list';
 @import 'components/ui/observations-by-operator';
@@ -82,6 +84,7 @@
 @import 'components/ui/tooltip';
 @import 'components/ui/search';
 @import 'components/ui/select';
+@import 'components/ui/stacked-timeline';
 
 // form
 @import "components/form/form";

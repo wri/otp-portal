@@ -80,8 +80,18 @@
     background: $color-tertiary;
   }
 
+  &.-theme-home {
+    .card-description {
+      font-size: $font-size-default;
+    }
+  }
+
   &.-nolink {
     padding-bottom: $space-1 * 4;
+  }
+
+  &.-trailing {
+    margin-top: 20px;
   }
 
   &.-center-content {

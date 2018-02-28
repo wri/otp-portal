@@ -13,9 +13,24 @@
     height: 600px;
   }
 
+  &.-modal {
+    height: 300px;
+    margin-top: 20px;
+  }
+
+  &.-table {
+    height: 300px;
+  }
+
   &.-absolute {
     position: absolute;
     top: 0;
     left: 0;
+  }
+
+  &.-picker {
+    canvas {
+      cursor: crosshair;
+    }
   }
 }

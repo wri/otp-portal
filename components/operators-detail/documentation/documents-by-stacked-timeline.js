@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import groupBy from 'lodash/groupBy';
 
 // Redux
 import { connect } from 'react-redux';
@@ -8,9 +7,15 @@ import { getDocuments } from 'modules/operators-detail';
 import { getAllParsedDocumentation } from 'selectors/operators-detail/documentation';
 
 
-import Gantt from 'components/ui/gantt';
+import StackedTimeline from 'components/ui/stacked-timeline';
 
-class DocumentsByTime extends React.Component {
+// Components
+import Spinner from 'components/ui/spinner';
+
+class DocumentsStackedTimeline extends React.Component {
+  state = {
+    loading: true
+  };
 
   componentDidMount() {
     const { id } = this.props;
@@ -22,53 +27,39 @@ class DocumentsByTime extends React.Component {
     }
   }
 
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.documentation.length !== this.props.documentation.length) {
       this.drawChart(nextProps.documentation);
     }
   }
 
-  shouldComponentUpdate() {
-    return false;
+  componentWillUnmount() {
+    delete this.chartInstance;
   }
 
   drawChart(data) {
-    const selector = '#chart-gantt';
+    const selector = '#chart-stacked-timeline';
     // remove current chart if it exists
+    this.setState({
+      loading: false
+    });
+
     document.querySelector(selector).innerHTML = '';
 
-    const status = {
-      doc_valid: '-doc_valid',
-      doc_pending: '-doc_pending',
-      doc_invalid: '-doc_invalid',
-      doc_expired: '-doc_expired'
-    };
-
-    const titles = Object.keys(groupBy(data, 'title'));
-    const format = '%m/%Y';
-
-    requestAnimationFrame(() => {
-      const ganttInstance = new Gantt(selector);
-      ganttInstance.setTitles(titles);
-      ganttInstance.setStatus(status);
-      ganttInstance.setTimeFormat(format);
-      ganttInstance.setHeight(titles.length * 40);
-      ganttInstance.gantt(data);
-    });
+    this.chartInstance = new StackedTimeline(selector, data);
   }
 
   render() {
     return (
-      <div className="c-gantt" id="chart-gantt" />
+      <div className="c-stacked-timeline" id="chart-stacked-timeline">
+        <Spinner className="-transparent -small" isLoading={this.state.loading} />
+      </div>
     );
   }
 }
 
-DocumentsByTime.defaultProps = {
-
-};
-
-DocumentsByTime.propTypes = {
+DocumentsStackedTimeline.propTypes = {
   id: PropTypes.string,
   documentation: PropTypes.array,
   getDocuments: PropTypes.func
@@ -79,4 +70,4 @@ export default connect(
     documentation: getAllParsedDocumentation(state)
   }),
   { getDocuments }
-)(DocumentsByTime);
+)(DocumentsStackedTimeline);

@@ -1,49 +1,60 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
 // Components
-import { FAQS_HELP } from 'constants/help';
+import Spinner from 'components/ui/spinner';
 
 // Components
 import Card from 'components/ui/card';
 
 function Gallery3(props) {
+  const { data, loading, error } = props.faqs;
+
   return (
     <div className="c-gallery">
       <h2 className="c-title">
         {props.intl.formatMessage({ id: 'help.tabs.faqs' })}
       </h2>
-
-      <div className="row l-row">
-        {FAQS_HELP.slice(0, 3).map((article, i) => {
-          const theme = (i === 0) ? '-secondary' : '-primary';
-
-          return (
-            <div
-              key={article.id}
-              className="columns small-12 medium-4"
-            >
-              <Card
-                theme={theme}
-                title={props.intl.formatMessage({ id: article.title })}
-                description={props.intl.formatMessage({ id: article.description })}
-                link={{
-                  label: props.intl.formatMessage({ id: article.link.label }),
-                  href: article.link.href
-                }}
-              />
-            </div>
-          );
-        })}
+      <div className="gallery-content">
+        <div className="row l-row">
+          <Spinner className="-transparent -small" isLoading={loading || error} />
+          {data.map((faq, i) => {
+            let theme = (i % 3 === 0) ? '-secondary' : '-primary';
+            theme += `${i >= 3 ? ' -trailing' : ''}`;
+            return (
+              <div
+                key={faq.id}
+                className="columns small-12 medium-4"
+              >
+                <Card
+                  theme={theme}
+                  title={faq.question}
+                  description={faq.answer}
+                  link={{
+                    label: props.intl.formatMessage({ id: 'help.tabs.faqs.overview.link.label' }),
+                    href: `/help/faqs?article=faq-article-${faq.id}`
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {data.length === 0 &&
+          <p>
+            {props.intl.formatMessage({ id: 'help.tabs.faqs.overview.no_faqs' }) }
+          </p>
+        }
       </div>
     </div>
   );
 }
 
 Gallery3.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  faqs: PropTypes.object
 };
 
 export default injectIntl(Gallery3);

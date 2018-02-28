@@ -15,7 +15,7 @@ import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
-import DocumentsByTime from 'components/operators-detail/documentation/documents-by-time';
+import DocumentsStackedTimeline from 'components/operators-detail/documentation/documents-by-stacked-timeline';
 
 class OperatorsDetailDocumentation extends React.Component {
 
@@ -78,7 +78,7 @@ class OperatorsDetailDocumentation extends React.Component {
             }
 
             {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&
-              <DocumentsByTime data={groupedByType['operator-document-countries']} id={url.query.id} />
+              <DocumentsStackedTimeline data={groupedByType['operator-document-countries']} id={url.query.id} />
             }
 
           </div>

@@ -20,7 +20,7 @@ function DocumentsByFMU(props) {
 
   return (
     <div className="c-accordion">
-      {sortBy(Object.keys(groupedByFmu)).map((fmu) => {
+      {Object.keys(groupedByFmu).map((fmu) => {
         const groupedByCategory = HELPERS_DOC.getGroupedByCategory(groupedByFmu[fmu]);
 
         return (

@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
+import Spinner from 'components/ui/spinner';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
-
-import { FAQS_HELP } from 'constants/help';
 
 class HelpFaqs extends React.Component {
   constructor(props) {
@@ -19,7 +18,7 @@ class HelpFaqs extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentWillReceiveProps() {
     if (this.props.url.query.article) {
       this.triggerScrollTo(`#${this.props.url.query.article}`);
     }
@@ -31,10 +30,13 @@ class HelpFaqs extends React.Component {
   }
 
   render() {
+    const { data, loading, error } = this.props.faqs;
+
     return (
       <div
         className="c-section"
       >
+        <Spinner className="-transparent -small" isLoading={loading || error} />
         <div className="l-container">
           <StickyContainer>
             <div className="row l-row">
@@ -48,12 +50,12 @@ class HelpFaqs extends React.Component {
                         </h3>
                         <nav>
                           <ul>
-                            {FAQS_HELP.map(article =>
+                            {data.map(faq =>
                               <li
-                                key={article.id}
-                                onClick={() => this.triggerScrollTo(`#${article.id}`)}
+                                key={faq.id}
+                                onClick={() => this.triggerScrollTo(`#faq-article-${faq.id}`)}
                               >
-                                {this.props.intl.formatMessage({ id: article.title })}
+                                {faq.question}
                               </li>
                             )}
                           </ul>
@@ -65,23 +67,22 @@ class HelpFaqs extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {FAQS_HELP.map(article =>
+                {data.map(faq =>
                   <article
-                    key={article.id}
-                    id={article.id}
+                    key={faq.id}
+                    id={`faq-article-${faq.id}`}
                     className="c-article"
                   >
                     <header>
                       <h2 className="c-title">
-                        {this.props.intl.formatMessage({ id: article.title })}
+                        {faq.question}
                       </h2>
                     </header>
                     <div className="content">
                       <div className="description">
                         <p>
-                          {this.props.intl.formatMessage({ id: article.description })}
+                          {faq.answer}
                         </p>
-                        <img src="/static/images/static-header/bg-help.jpg" alt={this.props.intl.formatMessage({ id: article.title })} />
                       </div>
                     </div>
                   </article>
@@ -97,7 +98,8 @@ class HelpFaqs extends React.Component {
 
 HelpFaqs.propTypes = {
   intl: intlShape.isRequired,
-  url: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired,
+  faqs: PropTypes.object
 };
 
 export default injectIntl(HelpFaqs);

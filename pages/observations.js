@@ -26,7 +26,7 @@ import Overview from 'components/observations/overview';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
-import StaticTabs from 'components/ui/static-tabs';
+import MapSubComponent from 'components/ui/map-sub-component';
 import { ReadMore } from 'react-read-more';
 import Icon from 'components/ui/icon';
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -42,7 +42,7 @@ import {
 } from 'modules/observations';
 
 // Constants
-import { FILTERS_REFS, TABS_OBSERVATIONS } from 'constants/observations';
+import { FILTERS_REFS } from 'constants/observations';
 
 
 class ObservationsPage extends Page {
@@ -107,7 +107,7 @@ class ObservationsPage extends Page {
     const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
 
     // Hard coded values
-    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report'];
+    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report', 'location'];
     const changeOfLabelLookup = {
       operator: 'Producer',
       fmu: 'FMU',
@@ -177,7 +177,7 @@ class ObservationsPage extends Page {
         accessor: 'report',
         headerClassName: '',
         className: 'report',
-        Cell: attr =>
+        Cell: attr => (
           <div className="report-item-wrapper">
             { attr.value ?
               <a
@@ -188,9 +188,29 @@ class ObservationsPage extends Page {
               >
                 <Icon className="" name="icon-file-empty" />
               </a>
-            :
+              :
               <span className="report-item-text">-</span>
-          }
+              }
+          </div>
+          )
+      },
+      {
+        Header: '',
+        accessor: 'location',
+        headerClassName: '',
+        className: 'location',
+        expander: true,
+        Expander: ({ isExpanded }) =>
+          <div className="location-item-wrapper">
+            { isExpanded ?
+              <button className="c-button -small -secondary">
+                <Icon name="icon-cross" />
+              </button>
+              :
+              <button className="c-button -small -primary">
+                <Icon name="icon-location" />
+              </button>
+            }
           </div>
       }
     ];
@@ -227,60 +247,52 @@ class ObservationsPage extends Page {
             </div>
           </div>
         </div>
-        <div>
-          {/* Observations table details */}
-          <StaticTabs
-            options={
-              TABS_OBSERVATIONS.map(tab => ({ ...tab, ...{ label: this.props.intl.formatMessage({ id: tab.labelKey }) } }))
-            }
-            defaultSelected={this.state.tab}
-            onChange={this.triggerChangeTab}
-          />
 
-          <div className="c-section -relative">
-            <div className="l-container">
-              <Spinner isLoading={observations.loading} className="" />
-              <div className="c-field -fluid -valid">
-                <CheckboxGroup
-                  className="-inline -small -single-row"
-                  name="observations-columns"
-                  onChange={value => this.props.setActiveColumns(value)}
-                  properties={{ default: observations.columns, name: 'observations-columns' }}
-                  options={tableOptions}
-                />
-              </div>
+        <section className="c-section -relative">
+          <div className="l-container">
+            <h2 className="c-title">{this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }) }</h2>
+            <Spinner isLoading={observations.loading} />
+            <div className="c-field -fluid -valid">
+              <CheckboxGroup
+                className="-inline -small -single-row"
+                name="observations-columns"
+                onChange={value => this.props.setActiveColumns(value)}
+                properties={{ default: observations.columns, name: 'observations-columns' }}
+                options={tableOptions}
+              />
+            </div>
 
-              {this.state.tab === 'observations-list' &&
-                <Table
-                  sortable
-                  data={parsedTableObservations}
-                  options={{
-                    columns: columnHeaders.filter(header => observations.columns.includes(header.accessor)),
-                    pageSize: this.getPageSize(),
-                    pagination: true,
-                    previousText: '<',
-                    nextText: '>',
-                    noDataText: 'No rows found',
-                    showPageSizeOptions: false,
+            <Table
+              sortable
+              data={parsedTableObservations}
+              options={{
+                columns: columnHeaders.filter(header => observations.columns.includes(header.accessor)),
+                pageSize: this.getPageSize(),
+                pagination: true,
+                previousText: '<',
+                nextText: '>',
+                noDataText: 'No rows found',
+                showPageSizeOptions: false,
                     // Api pagination & sort
                     // pages: observations.totalSize,
                     // page: this.state.page - 1,
                     // manual: true
-                    onPageChange: page => this.onPageChange(page),
-                    defaultSorted: [{
-                      id: 'date',
-                      desc: false
-                    }]
-                  }}
-                />
-              }
-
-              {this.state.tab === 'map' &&
-                <div>Map</div>
-              }
-            </div>
+                onPageChange: page => this.onPageChange(page),
+                defaultSorted: [{
+                  id: 'date',
+                  desc: false
+                }],
+                showSubComponent: observations.columns.includes('location'),
+                subComponent: row => observations.columns.includes('location') &&
+                  <MapSubComponent
+                    id={row.original.id}
+                    location={row.original.location}
+                    level={row.original.level}
+                  />
+              }}
+            />
           </div>
-        </div>
+        </section>
       </Layout>
     );
   }
@@ -289,6 +301,7 @@ class ObservationsPage extends Page {
 ObservationsPage.propTypes = {
   observations: PropTypes.object,
   filters: PropTypes.object,
+  isExpanded: PropTypes.bool,
   intl: intlShape.isRequired
 };
 

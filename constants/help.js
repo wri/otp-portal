@@ -84,32 +84,4 @@ const LEGISLATION_AND_REGULATIONS_HELP = [{
   }
 }];
 
-const FAQS_HELP = [{
-  id: 'first-faq',
-  title: 'help.tabs.faqs.post1.title',
-  description: 'help.tabs.faqs.post1.description',
-  link: {
-    label: 'help.tabs.faqs.post1.link.label',
-    href: '/help?tab=faqs&article=first-faq',
-    as: '/help/faqs?article=first-faq'
-  }
-}, {
-  id: 'second-faq',
-  title: 'help.tabs.faqs.post2.title',
-  description: 'help.tabs.faqs.post2.description',
-  link: {
-    label: 'help.tabs.faqs.post2.link.label',
-    href: '/help?tab=faqs&article=second-faq',
-    as: '/help/faqs?article=second-faq'
-  }
-}, {
-  id: 'third-faq',
-  title: 'help.tabs.faqs.post3.title',
-  description: 'help.tabs.faqs.post3.description',
-  link: {
-    label: 'help.tabs.faqs.post3.link.label',
-    href: '/help?tab=faqs&article=third-faq',
-    as: '/help/faqs?article=third-faq'
-  }
-}];
-export { TABS_HELP, HOW_OTP_WORKS_HELP, LEGISLATION_AND_REGULATIONS_HELP, FAQS_HELP };
+export { TABS_HELP, HOW_OTP_WORKS_HELP, LEGISLATION_AND_REGULATIONS_HELP };

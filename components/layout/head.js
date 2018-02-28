@@ -44,6 +44,7 @@ export default class Head extends React.Component {
         {/* Styles and scripts */}
         {Head.getStyles()}
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
+        <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} />
       </HeadNext>
     );
   }

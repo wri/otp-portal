@@ -7,7 +7,9 @@ export { default as operatorsDetail } from './operators-detail';
 export { default as operatorsDetailFmus } from './operators-detail-fmus';
 export { default as partners } from './partners';
 export { default as router } from './router';
+export { default as sawmillMap } from './sawmill-map';
 export { default as user } from './user';
+export { default as help } from './help';
 
 // Toastr
 export { reducer as toastr } from 'react-redux-toastr';
