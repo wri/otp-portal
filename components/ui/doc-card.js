@@ -80,8 +80,6 @@ class DocCard extends React.Component {
 
     this.setState({ deleteLoading: true });
 
-    console.log(user);
-
     this.documentationService.deleteAnnex(id, user)
       .then(() => {
         this.setState({ deleteLoading: false });
@@ -100,6 +98,8 @@ class DocCard extends React.Component {
       (user && user.role === 'operator' && user.operator && user.operator.toString() === operatorId));
 
     const metadata = HELPERS_DOC.getMetadata();
+
+    const approvedAnnexes = annexes.filter(a => a.name);
 
     const classNames = classnames({
       [`-${status}`]: !!status
@@ -145,7 +145,7 @@ class DocCard extends React.Component {
             <div className="doc-card-footer">
               <h3 className="c-title -default doc-card-annexes-title">Annexes:</h3>
               <ul className="doc-card-list">
-                {annexes.map(annex => (
+                {approvedAnnexes.map(annex => (
                   <li className="doc-card-list-item" key={annex.id}>
                     <Tooltip
                       placement="bottom"
@@ -200,7 +200,7 @@ class DocCard extends React.Component {
                   </li>
                 }
               </ul>
-              {!isActiveUser &&
+              {!approvedAnnexes.length &&
                 <p className="doc-card-annex-text">No annexes</p>
               }
             </div>
