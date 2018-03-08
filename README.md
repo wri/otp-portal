@@ -21,11 +21,11 @@ If you wanted to run this site in production run:
 You should run the the build step again any time you make changes to pages or
 components.
 
-## Deploy landing
+## Deploy landing
 
     git push heroku landing:master
 
-## Deploy app
+## Deploy app
 
     git push deploy master
 
