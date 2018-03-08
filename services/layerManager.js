@@ -50,7 +50,7 @@ export default class LayerManager {
   removeLayer(layerId) {
     if (this.map.getLayer(layerId)) {
       this.map.removeLayer(layerId);
-      // this.map.removeSource(layerId);
+      this.map.removeSource(layerId);
       delete this.mapLayers[layerId];
     }
   }
@@ -117,6 +117,7 @@ export default class LayerManager {
       }))
     ));
 
+
     if (sourceParsed.data.url) {
       fetch(sourceParsed.data.url, { ...sourceParsed.data })
       .then((response) => {
@@ -124,7 +125,11 @@ export default class LayerManager {
         throw new Error(response.statusText);
       })
       .then((data) => {
-        const dataParsed = { ...sourceParsed, data };
+        const dataParsed = {
+          ...sourceParsed,
+          data: layer.source.data.parse ? layer.source.data.parse(data) : data
+        };
+
         this.addGeojsonLayer(layer, dataParsed);
       })
       .catch((err) => {
@@ -142,7 +147,7 @@ export default class LayerManager {
     layer.layers.forEach((l) => {
       if (l.update) {
         const update = l.update.bind(this);
-        update(filters);
+        update(filters, l);
       }
     });
   }
