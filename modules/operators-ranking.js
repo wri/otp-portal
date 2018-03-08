@@ -34,8 +34,8 @@ const initialState = {
     // TODO: get them from API
     options: {
       country: [
-        { label: 'Congo', value: 47 },
-        { label: 'Democratic Republic of the Congo', value: 7 }
+        { label: 'Congo', value: 47, iso: 'COG' },
+        { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' }
       ],
       certification: [
         { label: 'FSC', value: 'fsc' },

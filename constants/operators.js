@@ -160,7 +160,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids={{COUNTRY_IDS}}&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

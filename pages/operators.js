@@ -2,6 +2,7 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 import sortBy from 'lodash/sortBy';
 import flatten from 'lodash/flatten';
+import fetch from 'isomorphic-fetch';
 
 import * as Cookies from 'js-cookie';
 
@@ -67,7 +68,11 @@ class OperatorsPage extends Page {
   constructor(props) {
     super(props);
 
-    this.state = OperatorsPage.parseData(props.operatorsRanking.data);
+    this.state = {
+      ...OperatorsPage.parseData(props.operatorsRanking.data),
+      countryLayers: [],
+      filteredCountryLayers: []
+    };
   }
 
   /* Component Lifecycle */
@@ -103,11 +108,67 @@ class OperatorsPage extends Page {
         }
       );
     }
+
+    this.getCountryGeojson();
+  }
+
+  getCountryGeojson() {
+    const countries = this.props.operatorsRanking.filters.options.country;
+
+    const promises = countries.map(country => fetch(`https://api.resourcewatch.org/v1/geostore/admin/${country.iso}`)
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      }));
+
+
+    Promise.all(promises).then((values) => {
+      const countryLayers = values.map(geoStore => ({
+        id: `${geoStore.data.attributes.info.iso}`,
+        provider: 'geojson',
+        source: {
+          type: 'geojson',
+          data: geoStore.data.attributes.geojson
+        },
+        layers: [{
+          id: `${geoStore.data.attributes.info.iso}`,
+          name: `${geoStore.data.attributes.info.name}`,
+          type: 'line',
+          before: [],
+          source: `${geoStore.data.attributes.info.iso}`,
+          minzoom: 0,
+          paint: {
+            'line-color': '#333333',
+            'line-width': 2,
+            'line-opacity': 0.8
+          }
+        }]
+      }));
+
+      this.setState({
+        countryLayers,
+        layers: [...MAP_LAYERS_OPERATORS, ...countryLayers]
+      });
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.operatorsRanking.data.length !== this.props.operatorsRanking.data.length) {
       this.setState(OperatorsPage.parseData(nextProps.operatorsRanking.data));
+
+      const activeCountryIds = nextProps.operatorsRanking.filters.data.country ||
+      nextProps.operatorsRanking.filters.options.country.map(country => country.value);
+
+      const activeIsos = nextProps.operatorsRanking.filters.options.country
+      .filter(country => activeCountryIds.indexOf(country.value) !== -1)
+      .map(country => country.iso);
+
+      const filteredCountryLayers = activeIsos.length === 0 ? this.state.countryLayers :
+      this.state.countryLayers.filter(layer => (activeIsos.indexOf(layer.id) !== -1));
+
+      const layers = [...MAP_LAYERS_OPERATORS, ...filteredCountryLayers];
+
+      this.setState({ layers });
     }
   }
 
@@ -215,6 +276,10 @@ class OperatorsPage extends Page {
 
   render() {
     const { url, operators, operatorsRanking } = this.props;
+    const { layers } = this.state;
+
+    const activeCountryIds = operatorsRanking.filters.data.country ||
+      operatorsRanking.filters.options.country.map(country => country.value);
 
     return (
       <Layout
@@ -234,6 +299,9 @@ class OperatorsPage extends Page {
           <div className="c-map-container">
             {/* Map */}
             <Map
+              mapFilters={{
+                COUNTRY_IDS: activeCountryIds
+              }}
               mapOptions={operatorsRanking.map}
               mapListeners={{
                 moveend: debounce((map) => {
@@ -243,7 +311,7 @@ class OperatorsPage extends Page {
                   });
                 }, 100)
               }}
-              layers={MAP_LAYERS_OPERATORS}
+              layers={layers}
             />
 
             <MapLegend

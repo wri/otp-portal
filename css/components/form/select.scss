@@ -65,6 +65,7 @@
 }
 .is-searchable.is-focused:not(.is-open) > .Select-control {
   cursor: text;
+  background-color: transparent;
 }
 .is-focused:not(.is-open) > .Select-control {
   // border-color: #007eff;

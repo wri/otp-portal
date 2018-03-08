@@ -48,9 +48,11 @@ export default class LayerManager {
   }
 
   removeLayer(layerId) {
-    this.map.removeLayer(layerId);
-    this.map.removeSource(layerId);
-    delete this.mapLayers[layerId];
+    if (this.map.getLayer(layerId)) {
+      this.map.removeLayer(layerId);
+      // this.map.removeSource(layerId);
+      delete this.mapLayers[layerId];
+    }
   }
 
   removeAllLayers() {
