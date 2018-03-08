@@ -1,7 +1,8 @@
 # Open Timber Portal
-Description...
 
-Link?...
+Landing: http://www.opentimberportal.org
+App: http://otp.vizzuality.com/
+
 
 ## Running locally in development mode
 
