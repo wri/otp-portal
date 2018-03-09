@@ -67,7 +67,9 @@ class OperatorsPage extends Page {
   constructor(props) {
     super(props);
 
-    this.state = OperatorsPage.parseData(props.operatorsRanking.data);
+    this.state = {
+      ...OperatorsPage.parseData(props.operatorsRanking.data)
+    };
   }
 
   /* Component Lifecycle */
@@ -216,6 +218,10 @@ class OperatorsPage extends Page {
   render() {
     const { url, operators, operatorsRanking } = this.props;
 
+    // Country filters
+    const countryOptions = operatorsRanking.filters.options.country.map(country => country.value);
+    const activeCountryIds = operatorsRanking.filters.data.country || [];
+
     return (
       <Layout
         title="Operators"
@@ -234,6 +240,9 @@ class OperatorsPage extends Page {
           <div className="c-map-container">
             {/* Map */}
             <Map
+              mapFilters={{
+                COUNTRY_IDS: (activeCountryIds.length) ? activeCountryIds : countryOptions
+              }}
               mapOptions={operatorsRanking.map}
               mapListeners={{
                 moveend: debounce((map) => {
