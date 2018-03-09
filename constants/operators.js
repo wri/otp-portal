@@ -246,7 +246,7 @@ const MAP_LAYERS_OPERATORS = [
         }
       }
     }]
-  }
+  },
   // {
   //   id: 'harvestable_areas',
   //   provider: 'geojson',
@@ -288,6 +288,82 @@ const MAP_LAYERS_OPERATORS = [
   //     }
   //   }]
   // }
+
+  {
+    id: 'COG',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v1/geostore/admin/COG',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'COG_layer',
+      name: 'COG country layer',
+      type: 'line',
+      before: [],
+      source: 'COG',
+      minzoom: 0,
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(47)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+
+          this.removeLayer(l.id);
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
+  },
+
+  {
+    id: 'COD',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v1/geostore/admin/COD',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'COD_layer',
+      name: 'COD country layer',
+      type: 'line',
+      before: [],
+      source: 'COD',
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(7)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      minzoom: 0,
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
+  }
+
+
 ];
 
 export { MAP_LAYERS_OPERATORS };
