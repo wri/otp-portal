@@ -19,8 +19,8 @@ class PartnerCard extends React.Component {
           <a rel="noopener noreferrer" target="_blank" href={website}>
             <h3 className="partner-card-title">{name}</h3>
             <picture>
-              {logo.medium && <source srcSet={logo.medium.url} media="(min-width: 640px)" />}
-              <img className="partner-card-logo" src={logo.url} alt={name} />
+              {logo.unmodified && <source srcSet={logo.unmodified.url} media="(min-width: 640px)" />}
+              {logo.unmodified && <img className="partner-card-logo" src={logo.unmodified.url} alt={name} />}
             </picture>
           </a>
         </div>
