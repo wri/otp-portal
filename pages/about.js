@@ -6,6 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getPartners } from 'modules/partners';
+import { getDonors } from 'modules/donors';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -23,7 +24,7 @@ class AboutPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, partners } = this.props;
+    const { operators, partners, donors } = this.props;
 
     if (!operators.data.length) {
       // Get operators
@@ -34,10 +35,15 @@ class AboutPage extends Page {
       // Get partners
       this.props.getPartners();
     }
+
+    if (!donors.data.length) {
+      // Get partners
+      this.props.getDonors();
+    }
   }
 
   render() {
-    const { partners, url } = this.props;
+    const { partners, donors, url } = this.props;
 
     return (
       <Layout
@@ -134,6 +140,17 @@ class AboutPage extends Page {
                     </div>
                   </div>
 
+                  <div className="row l-row -equal-heigth">
+                    {donors.data.map(d => (
+                      <div className={'columns small-12 medium-6 large-4'}>
+                        <PartnerCard
+                          key={d.id}
+                          {...d}
+                        />
+                      </div>
+                      ))}
+                  </div>
+
                 </div>
               </div>
             </article>
@@ -154,7 +171,8 @@ export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
-    partners: state.partners
+    partners: state.partners,
+    donors: state.donors
   }),
-  { getOperators, getPartners }
+  { getOperators, getPartners, getDonors }
 )(AboutPage)));
