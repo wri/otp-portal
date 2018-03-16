@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
+import difference from 'lodash/difference';
 import capitalize from 'lodash/capitalize';
 
 // Redux
@@ -40,6 +41,7 @@ import {
   getObservationsUrl,
   setActiveColumns
 } from 'modules/observations';
+import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
@@ -101,6 +103,21 @@ class ObservationsPage extends Page {
     this.setState({ page: page + 1 }, () => {
       this.props.getObservations(page + 1);
     });
+  }
+
+  logFilter = (action, label) => {
+    logEvent('Observations', action, label);
+  }
+
+  setActiveColumns(value) {
+    const { observations } = this.props;
+    const addColumn = difference(value, observations.columns);
+    const removeColumn = difference(observations.columns, value);
+
+    if (addColumn.length) logEvent('Observations', 'Add Column', addColumn[0]);
+    if (removeColumn.length) logEvent('Observations', 'Remove Column', removeColumn[0]);
+
+    this.props.setActiveColumns(value);
   }
 
   render() {
@@ -235,6 +252,7 @@ class ObservationsPage extends Page {
                   filters={observations.filters.data}
                   setFilters={this.props.setFilters}
                   filtersRefs={FILTERS_REFS}
+                  logFilter={this.logFilter}
                 />
               </div>
 
@@ -256,7 +274,7 @@ class ObservationsPage extends Page {
               <CheckboxGroup
                 className="-inline -small -single-row"
                 name="observations-columns"
-                onChange={value => this.props.setActiveColumns(value)}
+                onChange={value => this.setActiveColumns(value)}
                 properties={{ default: observations.columns, name: 'observations-columns' }}
                 options={tableOptions}
               />

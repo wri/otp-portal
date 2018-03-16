@@ -10,6 +10,9 @@ import Router from 'next/router';
 // Intl
 import { intlShape, injectIntl } from 'react-intl';
 
+// Utils
+import { logEvent } from 'utils/analytics';
+
 // Other libraries
 import Fuse from 'fuse.js';
 import classnames from 'classnames';
@@ -144,6 +147,8 @@ class Search extends React.Component {
       Router
         .push(location, `/operators/${id}`)
           .then(() => window.scrollTo(0, 0));
+
+      logEvent('Search', 'User completes search', item.text);
     }
   }
 
@@ -236,7 +241,7 @@ class Search extends React.Component {
                       <a
                         ref={(n) => { this.item[i] = n; }}
                         data-id={op.id}
-                        onClick={() => this.onChangeRoute(i)}
+                        onClick={() => this.onChangeRoute()}
                       >
                         {op.name}
                       </a>

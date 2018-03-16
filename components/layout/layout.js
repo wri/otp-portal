@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+// Utils
+import { initGA, logPageView } from 'utils/analytics';
+
 // Components
 import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
@@ -19,6 +22,15 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default class Layout extends React.Component {
+  componentDidMount() {
+    // Google Analytics
+    if (!window.GA_INITIALIZED) {
+      initGA();
+      window.GA_INITIALIZED = true;
+    }
+    logPageView();
+  }
+
   render() {
     const { title, description, url, children, className, footer } = this.props;
 
