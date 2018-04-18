@@ -8,6 +8,7 @@ import { toastr } from 'react-redux-toastr';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
+import { logEvent } from 'utils/analytics';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -109,6 +110,11 @@ class OperatorsDetail extends Page {
 
     if (url.query.id !== nextUrl.query.id) {
       this.props.getOperator(nextUrl.query.id);
+    }
+
+    if (url.query.tab !== nextUrl.query.tab) {
+      const { tab } = nextUrl.query || 'overview';
+      logEvent('Producers', 'Change tab', tab);
     }
   }
 

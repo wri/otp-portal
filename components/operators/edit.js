@@ -298,8 +298,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'logo',
-                label: 'Logo',
-                default: this.state.form.logo
+                label: 'Logo'
               }}
             >
               {FileImage}

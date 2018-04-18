@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 
 // Redux
 import withRedux from 'next-redux-wrapper';
@@ -44,6 +45,7 @@ class AboutPage extends Page {
 
   render() {
     const { partners, donors, url } = this.props;
+    const prioritisedDonors = sortBy(donors.data, 'priority') || donors.data;
 
     return (
       <Layout
@@ -111,9 +113,11 @@ class AboutPage extends Page {
 
                     <div className="row l-row -equal-heigth">
                       {partners.data.map(p => (
-                        <div className={'columns small-12 medium-6 large-4'}>
+                        <div
+                          className={'columns small-12 medium-6 large-4'}
+                          key={p.id}
+                        >
                           <PartnerCard
-                            key={p.id}
                             {...p}
                           />
                         </div>
@@ -141,10 +145,12 @@ class AboutPage extends Page {
                   </div>
 
                   <div className="row l-row -equal-heigth">
-                    {donors.data.map(d => (
-                      <div className={'columns small-12 medium-6 large-4'}>
+                    {prioritisedDonors.map(d => (
+                      <div
+                        className={'columns small-12 medium-6 large-4'}
+                        key={d.id}
+                      >
                         <PartnerCard
-                          key={d.id}
                           {...d}
                         />
                       </div>
