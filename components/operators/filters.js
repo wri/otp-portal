@@ -4,6 +4,9 @@ import classnames from 'classnames';
 
 import modal from 'services/modal';
 
+// Utils
+import { logEvent } from 'utils/analytics';
+
 // Redux
 import { connect } from 'react-redux';
 import { setFilters } from 'modules/operators-ranking';
@@ -45,6 +48,11 @@ class OperatorsFilters extends React.Component {
   setFilter(opts, key) {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
+
+    if (opts.length) {
+      logEvent('Producers', `Filter ranking ${key}`, opts.map(opt => opt.label).join(', '));
+    }
+
     this.props.setFilters(filter);
   }
 
@@ -102,6 +110,7 @@ class OperatorsFilters extends React.Component {
                 modal.toggleModal(true, {
                   children: RankingModal
                 });
+                logEvent('Producers', 'Info', 'Ranking menu');
               }}
             >
               <Icon name="icon-info" className="-small" />
