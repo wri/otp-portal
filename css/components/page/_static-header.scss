@@ -18,6 +18,14 @@
     font-size: $font-size-extrahuge;
     font-weight: $font-weight-default;
     color: $color-white;
+
+    @media screen and (max-width: 1024px) {
+      font-size: $font-size-huge;
+    }
+
+    @media screen and (max-width: 780px) {
+      font-size: $font-size-large;
+    }
   }
 
   h3 {
