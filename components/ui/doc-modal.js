@@ -168,7 +168,9 @@ class DocModal extends React.Component {
                   className="-fluid"
                   properties={{
                     name: 'startDate',
-                    label: this.props.intl.formatMessage({ id: 'doc.start_date' }),
+                    label: notRequired ?
+                      this.props.intl.formatMessage({ id: 'start_date' }) :
+                      this.props.intl.formatMessage({ id: 'doc.start_date' }),
                     type: 'date',
                     required: true,
                     default: this.state.form.startDate
@@ -185,7 +187,9 @@ class DocModal extends React.Component {
                   className="-fluid"
                   properties={{
                     name: 'expireDate',
-                    label: this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
+                    label: notRequired ?
+                      this.props.intl.formatMessage({ id: 'expire_date' }) :
+                      this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
                     type: 'date',
                     default: this.state.form.expireDate
                   }}
