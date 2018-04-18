@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_DONORS_SUCCESS = 'GET_DONORS_SUCCESS';
@@ -41,7 +42,7 @@ export function getDonors() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DONORS_LOADING });
 
-    fetch(`${process.env.OTP_API}/donors?page[size]=2000`, {
+    fetch(`${process.env.OTP_API}/donors?locale=${Cookies.get('language')}&page[size]=2000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
