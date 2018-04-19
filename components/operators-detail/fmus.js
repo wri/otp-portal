@@ -1,6 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import PropTypes from 'prop-types';
+import flatten from 'lodash/flatten';
 
 // Redux
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ import { MAP_LAYERS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Components
 import Map from 'components/map/map';
 import MapControls from 'components/map/map-controls';
+import MapLegend from 'components/map/map-legend';
 import ZoomControl from 'components/map/controls/zoom-control';
 import Sidebar from 'components/ui/sidebar';
 import FMUCard from 'components/ui/fmu-card';
@@ -70,6 +72,12 @@ class OperatorsDetailFMUs extends React.Component {
 
               }
             }}
+          />
+
+          <MapLegend
+            layers={flatten(MAP_LAYERS_OPERATORS_DETAIL.map(layer =>
+                layer.layers.filter(l => l.legendConfig)
+              ))}
           />
 
           {/* MapControls */}
