@@ -150,8 +150,8 @@ const d3 = require('d3');
     const rect = svg.append('rect')
               .attr('class', 'pane');
 
-    const hoverDiv = this.append('div')
-                  .attr('class', 'hover-div')
+    const hoverDiv = d3.select('body').append('div')
+                  .attr('class', 'c-stacked-timeline-tooltip')
                   .style({ display: 'none', position: 'absolute' });
 
     const scrollbar = this.append('div')
@@ -302,14 +302,19 @@ const d3 = require('d3');
         return;
       }
 
-      hoverDiv.text(hoverElement.attr('data-hover'));
+      hoverDiv.html(hoverElement.attr('data-hover'));
       const ow = hoverDiv[0][0].offsetWidth;
+      const oh = hoverDiv[0][0].offsetHeight;
 
-              // calc position of hover
-      const topDiff = outerContainer[0][0].offsetTop - document.body.scrollTop;
-      const leftDiff = outerContainer[0][0].offsetLeft - document.body.scrollLeft;
+      // calc position of hover
+      const doc = document.documentElement;
+      const left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 
-      hoverDiv.style({ left: `${(currentX - leftDiff) - (ow / 4)}px`, top: `${(currentY - topDiff) + 25}px`, display: 'block' });
+      const topDiff = d3.event.clientY + ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0));
+      const leftDiff = d3.event.clientX + ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0));
+
+      hoverDiv.style({ left: `${(leftDiff) - (ow / 4)}px`, top: `${(topDiff) - oh - 10}px`, display: 'block', 'pointer-events': 'none' });
     });
 
     rect.on('mouseout', (d, e) => {
@@ -403,13 +408,14 @@ const d3 = require('d3');
       let tx = t[0];
       let ty = t[1];
 
-              // limit panning to the bounds of the y-axis count and/or the specified date bounds
+      // limit panning to the bounds of the y-axis count and/or the specified date bounds
       ty = Math.min(ty, 0);
       ty = Math.max(ty, chartHeight - totalRowHeight);
 
       if (limitDatesToData || (maxDate || minDate)) {
         const max = (limitDatesToData || maxDate) ? d3.max(x.range()) : Infinity;
-        const min = (limitDatesToData || minDate) ? 0 : Infinity;
+        const min = (limitDatesToData || minDate) ? d3.min(x.range()) : 0;
+
         tx = Math.max(tx, width - (max * d3.event.scale));
         tx = Math.min(min, tx);
       }
@@ -417,7 +423,7 @@ const d3 = require('d3');
       zoom.translate([tx, ty]);
 
       if (isPanning) {
-                  // if panning manually update the y domain. This is so the y-axis can be panned, but y scale isn't included in the zoom object so that y-axis it doesn't get zoomed in or out.
+        // if panning manually update the y domain. This is so the y-axis can be panned, but y scale isn't included in the zoom object so that y-axis it doesn't get zoomed in or out.
         y.domain(yCopy.range().map(y => (y - ty) / 1).map(yCopy.invert));
         cyt = ty;
 
