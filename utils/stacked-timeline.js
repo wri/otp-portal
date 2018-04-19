@@ -303,18 +303,16 @@ const d3 = require('d3');
       }
 
       hoverDiv.html(hoverElement.attr('data-hover'));
+      hoverDiv.style({ display: 'block' });
       const ow = hoverDiv[0][0].offsetWidth;
       const oh = hoverDiv[0][0].offsetHeight;
 
       // calc position of hover
       const doc = document.documentElement;
-      const left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 
-      const topDiff = d3.event.clientY + ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0));
-      const leftDiff = d3.event.clientX + ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0));
-
-      hoverDiv.style({ left: `${(leftDiff) - (ow / 4)}px`, top: `${(topDiff) - oh - 10}px`, display: 'block', 'pointer-events': 'none' });
+      const topDiff = event.clientY + ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0));
+      const leftDiff = event.clientX + ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0));
+      hoverDiv.style({ left: `${(leftDiff) - (ow / 4)}px`, top: `${(topDiff) - oh - 10}px`, 'pointer-events': 'none' });
     });
 
     rect.on('mouseout', (d, e) => {
