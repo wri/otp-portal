@@ -2,6 +2,38 @@ import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
 const MAP_LAYERS_OPERATORS = [
+  {
+    id: 'glad',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        '/glad-layer/{z}/{x}/{y}'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'glad_layer',
+      name: 'GLAD alerts layer',
+      type: 'raster',
+      source: 'glad',
+      minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'GLAD alerts (1 January 2015 - today)', color: '#FF6699' }
+        ]
+      },
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
   // RASTER LAYERS (LOSS & GAIN)
   {
     id: 'loss',
