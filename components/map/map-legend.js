@@ -24,7 +24,7 @@ class MapLegend extends React.Component {
   }
 
   render() {
-    const { layers, className } = this.props;
+    const { layers, className, toggleLayers, activeLayers } = this.props;
     const { expanded } = this.state;
 
     const classNames = classnames({
@@ -58,6 +58,8 @@ class MapLegend extends React.Component {
                     )
                   }
                 }}
+                toggleLayers={toggleLayers}
+                activeLayers={activeLayers}
                 key={layer.id}
               />
             )}
@@ -75,6 +77,8 @@ MapLegend.defaultProps = {
 };
 
 MapLegend.propTypes = {
+  toggleLayers: PropTypes.func,
+  activeLayers: PropTypes.array,
   expanded: PropTypes.bool,
   layers: PropTypes.array,
   className: PropTypes.string,

@@ -20,6 +20,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'glad' },
+        color: '#FF6699',
         items: [
           { name: 'GLAD alerts (1 January 2015 - today)', color: '#FF6699' }
         ]
@@ -53,6 +55,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'loss' },
+        color: '#FF6699',
         items: [
           { name: 'Tree cover loss', color: '#FF6699' }
         ]
@@ -85,6 +89,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'gain' },
+        color: '#6D6DE5',
         items: [
           { name: 'Tree cover gain', color: '#6D6DE5' }
         ]
@@ -173,6 +179,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'protected_areas' },
+        color: '#5ca2d1',
         items: [
           { name: 'Protected areas', color: '#5ca2d1' }
         ]
@@ -221,6 +229,8 @@ const MAP_LAYERS_OPERATORS = [
       layout: {},
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'forest_concession' },
+        color: '#e98300',
         items: [
           { name: 'FMUs', color: '#e98300' }
         ]
