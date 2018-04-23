@@ -132,7 +132,7 @@ class SawmillModal extends React.Component {
 
     return [
       {
-        id: 'sawmill',
+        id: `sawmill-${lngLat.lat}-${lngLat.lng}`,
         provider: 'geojson',
         source: {
           type: 'geojson',
@@ -153,7 +153,7 @@ class SawmillModal extends React.Component {
         },
         layers: [{
           id: 'sawmill',
-          source: 'sawmill',
+          source: `sawmill-${lngLat.lat}-${lngLat.lng}`,
           name: 'Sawmill',
           type: 'circle',
           paint: {

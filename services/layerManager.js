@@ -50,7 +50,10 @@ export default class LayerManager {
   removeLayer(layerId) {
     if (this.map.getLayer(layerId)) {
       this.map.removeLayer(layerId);
-      this.map.removeSource(layerId);
+
+      const source = this.map.getSource(layerId);
+      if (source) this.map.removeSource(source);
+
       delete this.mapLayers[layerId];
     }
   }

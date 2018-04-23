@@ -1,0 +1,31 @@
+.c-toggle-switch {
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+  width: 17px;
+  height: 10px;
+  background: $color-gray-3;
+  border-radius: 5px;
+  margin-right: 5px;
+
+  .toggle-slider {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 6px;
+    height: 6px;
+    background: $color-white;
+    transform: translate(0px, 0%);
+    border-radius: 4px;
+    transition: all 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  }
+
+  input {
+    display: none;
+  }
+
+  input:checked + .toggle-slider {
+    left: calc(100% - 2px);
+    transform: translateX(-100%);
+  }
+}

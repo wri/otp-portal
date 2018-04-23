@@ -21,7 +21,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Redux
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { getOperators, setActiveMapLayers } from 'modules/operators';
 import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
 import withTracker from 'components/layout/with-tracker';
 
@@ -128,6 +128,15 @@ class OperatorsPage extends Page {
     });
   }
 
+  toggleLayers = (id, checked) => {
+    const { activeLayers } = this.props.operators.map;
+
+    const toggledLayers = checked ?
+      [...activeLayers, id] : activeLayers.filter(layerId => layerId !== id);
+
+    this.props.setActiveMapLayers(toggledLayers);
+  }
+
   /**
    * HELPERS
    * - getOperatorsTable
@@ -217,6 +226,10 @@ class OperatorsPage extends Page {
 
   render() {
     const { url, operators, operatorsRanking } = this.props;
+    const { activeLayers } = operators.map;
+
+
+    const mapLayers = MAP_LAYERS_OPERATORS.filter(layer => activeLayers.includes(layer.id));
 
     // Country filters
     const countryOptions = operatorsRanking.filters.options.country.map(country => country.value);
@@ -252,13 +265,15 @@ class OperatorsPage extends Page {
                   });
                 }, 100)
               }}
-              layers={MAP_LAYERS_OPERATORS}
+              layers={mapLayers}
             />
 
             <MapLegend
               layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
                 layer.layers.filter(l => l.legendConfig)
               ))}
+              toggleLayers={this.toggleLayers}
+              activeLayers={activeLayers}
             />
 
             {/* MapControls */}
@@ -300,6 +315,9 @@ export default withTracker(withIntl(withRedux(
     setOperatorsMapLocation(mapLocation) {
       dispatch(setOperatorsMapLocation(mapLocation));
       dispatch(setOperatorsUrl());
+    },
+    setActiveMapLayers(activeLayers) {
+      dispatch(setActiveMapLayers(activeLayers));
     }
   })
 )(OperatorsPage)));
