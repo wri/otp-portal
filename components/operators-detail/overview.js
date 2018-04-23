@@ -12,7 +12,7 @@ import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
 function OperatorsDetailOverview(props) {
-  const { logo, address, website } = props.operatorsDetail.data;
+  const { address, website } = props.operatorsDetail.data;
 
   return (
     <div
@@ -54,15 +54,6 @@ function OperatorsDetailOverview(props) {
                   </ul>
                 }
               </div>
-
-              { !isEmpty(logo) &&
-                <div className="columns small-12 medium-4">
-                  <div className="c-card -primary -nolink -center-content">
-                    <img src={props.operatorsDetail.data.logo.thumbnail.url} alt={`${props.operatorsDetail.data.name} logo`} />
-                  </div>
-                </div>
-              }
-
             </div>
           </div>
 
