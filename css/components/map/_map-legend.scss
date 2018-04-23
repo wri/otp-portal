@@ -98,10 +98,10 @@
   &.-toggle {
     .legend-item-header {
       justify-content: flex-start;
-      align-items: center;
+      align-items: flex-start;
 
       & ~ * {
-        margin-left: $space-1 * 2;
+        margin-left: $space-1 * 3;
       }
     }
   }

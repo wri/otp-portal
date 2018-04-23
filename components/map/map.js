@@ -73,9 +73,20 @@ export default class Map extends React.Component {
     }
 
     // Layers
-    if (this.layerManager && !isEqual(this.props.layers, nextProps.layers)) {
-      this.layerManager.removeAllLayers();
-      this.addLayer(nextProps.layers, { filters: nextProps.mapFilters });
+    const unionLayers = new Set([...this.props.layers, ...nextProps.layers]);
+
+    const oldLayersIds = this.props.layers.map(l => l.id);
+    const nextLayersIds = nextProps.layers.map(l => l.id);
+
+    if (this.layerManager && !isEqual(oldLayersIds, nextLayersIds)) {
+      // Test whether old & new layers are the same
+      unionLayers.forEach((layer) => {
+        if (!oldLayersIds.includes(layer.id)) {
+          this.addLayer([layer]);
+        } else if (!nextLayersIds.includes(layer.id)) {
+          layer.layers.forEach(l => this.removeLayer([l]));
+        }
+      });
     }
 
     // Filters

@@ -17,7 +17,7 @@ const initialState = {
   loading: false,
   error: false,
   map: {
-    activeLayers: ['loss', 'gain', 'glad']
+    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD']
   }
 };
 
