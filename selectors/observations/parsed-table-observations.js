@@ -18,7 +18,12 @@ const getParsedTableObservations = createSelector(
         level: obs.severity.level,
         fmu: !!obs.fmu && obs.fmu.name,
         report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
-        location: (!!obs.lat && !!obs.lng) ? { lat: Number(obs.lat), lng: Number(obs.lng) } : {}
+        location: (!!obs.lat && !!obs.lng) ? { lat: Number(obs.lat), lng: Number(obs.lng) } : {},
+        'observation-type': obs['observation-type'],
+        'operator-type': obs.operator.type,
+        subcategory: obs.subcategory.name,
+        evidence: obs.evidence,
+        'litigation-status': obs['litigation-status']
       }));
     }
 

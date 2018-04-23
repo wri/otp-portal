@@ -122,14 +122,32 @@ class ObservationsPage extends Page {
 
   render() {
     const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
-
     // Hard coded values
-    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report', 'location'];
+    const inputs = [
+      'date',
+      'country',
+      'operator',
+      'fmu',
+      'category',
+      'observation',
+      'level',
+      'report',
+      'observation-type',
+      'operator-type',
+      'subcategory',
+      'evidence',
+      'litigation-status',
+      'location'
+    ];
+
     const changeOfLabelLookup = {
       operator: 'Producer',
       fmu: 'FMU',
       observation: 'Detail',
-      level: 'Severity'
+      level: 'Severity',
+      'observation-type': 'Observation Type',
+      'operator-type': 'Operator Type',
+      'litigation-status': 'Litigation Status'
     };
 
     const tableOptions = inputs
@@ -170,6 +188,46 @@ class ObservationsPage extends Page {
         className: 'description',
         minWidth: 120
       },
+
+
+      {
+        Header: <span className="sortable">Observation Type</span>,
+        accessor: 'observation-type',
+        headerClassName: '-a-left',
+        className: 'observer-type',
+        minWidth: 250
+
+      },
+      {
+        Header: <span className="sortable">Operator Type</span>,
+        accessor: 'operator-type',
+        headerClassName: '-a-left',
+        className: 'operator-type',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">Subcategory</span>,
+        accessor: 'subcategory',
+        headerClassName: '-a-left',
+        className: 'subcategory',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">Evidence</span>,
+        accessor: 'evidence',
+        headerClassName: '-a-left',
+        className: 'evidence',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">Litigation Status</span>,
+        accessor: 'litigation-status',
+        headerClassName: '-a-left',
+        className: 'litigation-status',
+        minWidth: 250
+      },
+
+
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
         accessor: 'observation',
