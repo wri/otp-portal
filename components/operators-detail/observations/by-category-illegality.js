@@ -146,7 +146,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         accessor: 'date',
                                         headerClassName: '-a-left',
                                         className: '-a-left',
-                                        minWidth: 75,
+                                        minWidth: 100,
                                         Cell: (attr) => {
                                           const date = new Date(attr.value);
                                           const monthName = date ? date.toLocaleString('en-us', { month: 'short' }) : '-';
