@@ -269,6 +269,10 @@
       &.-sev-2 { color: $lg-color-1; }
       &.-sev-3 { color: $lg-color-0; }
     }
+
+    .cell-list {
+      margin: 0;
+    }
   }
 
   // SIDEBAR THEME

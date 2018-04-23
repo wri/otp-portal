@@ -19,11 +19,12 @@ const getParsedTableObservations = createSelector(
         fmu: !!obs.fmu && obs.fmu.name,
         report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
         location: (!!obs.lat && !!obs.lng) ? { lat: Number(obs.lat), lng: Number(obs.lng) } : {},
-        'observation-type': obs['observation-type'],
         'operator-type': obs.operator.type,
         subcategory: obs.subcategory.name,
         evidence: obs.evidence,
-        'litigation-status': obs['litigation-status']
+        'litigation-status': obs['litigation-status'],
+        'observer-types': obs.observers.map(observer => observer['observer-type']),
+        'observer-organizations': obs.observers.map(observer => observer.organization)
       }));
     }
 
