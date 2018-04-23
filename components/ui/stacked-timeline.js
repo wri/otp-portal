@@ -40,9 +40,12 @@ class StackedTimeline {
           '-was-valid': event.startDate < timeNow && event.endDate < timeNow
         });
 
+        const formatTime = d3.time.format('%B %d, %Y');
+
         return {
           start: event.startDate,
           end: event.endDate,
+          hoverText: `<h3>${event.title}</h3><p>${formatTime(event.startDate)} - ${formatTime(event.endDate)}</p>`,
           className: `report-item ${customClassName}`
         };
       }), 'end'
@@ -113,14 +116,13 @@ class StackedTimeline {
       labelWidth: 400,
       rowHeight,
       xAxisPosition: 'top',
-      timeRangeFormat: d3.time.format('%Y'),
-      limitDatesToData: true
+      timeRangeFormat: d3.time.format('%Y')
     };
 
     this.$selector
       .stackedTimeline(options)
       .minDate(this.minDate)
-      .maxDate(new Date(new Date().setFullYear(new Date().getFullYear() + 2)));
+      .maxDate(this.maxDate);
   }
 }
 
