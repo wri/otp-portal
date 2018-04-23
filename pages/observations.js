@@ -122,14 +122,34 @@ class ObservationsPage extends Page {
 
   render() {
     const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
-
     // Hard coded values
-    const inputs = ['date', 'country', 'operator', 'fmu', 'category', 'observation', 'level', 'report', 'location'];
+    const inputs = [
+      'category',
+      'country',
+      'date',
+      'evidence',
+      'fmu',
+      'level',
+      'litigation-status',
+      'location',
+      'observation',
+      'observer-organizations',
+      'observer-types',
+      'operator-type',
+      'operator',
+      'report',
+      'subcategory'
+    ];
+
     const changeOfLabelLookup = {
-      operator: 'Producer',
+      'litigation-status': 'Litigation Status',
+      'observer-organizations': 'Observer Organizations',
+      'observer-types': 'Observer Types',
+      'operator-type': 'Operator Type',
       fmu: 'FMU',
+      level: 'Severity',
       observation: 'Detail',
-      level: 'Severity'
+      operator: 'Producer'
     };
 
     const tableOptions = inputs
@@ -169,6 +189,52 @@ class ObservationsPage extends Page {
         headerClassName: '-a-left',
         className: 'description',
         minWidth: 120
+      },
+
+
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'observer-types' })}</span>,
+        accessor: 'observer-types',
+        headerClassName: '-a-left',
+        className: 'observer-types',
+        minWidth: 250,
+        Cell: attr => <ul className="cell-list">{attr.value.map(type => (<li>{type}</li>))}</ul>
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'observer-organizations' })}</span>,
+        accessor: 'observer-organizations',
+        headerClassName: '-a-left',
+        className: 'observer-organizations',
+        minWidth: 250,
+        Cell: attr => <ul className="cell-list">{attr.value.map(type => (<li>{type}</li>))}</ul>
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator-type' })}</span>,
+        accessor: 'operator-type',
+        headerClassName: '-a-left',
+        className: 'operator-type',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'subcategory' })}</span>,
+        accessor: 'subcategory',
+        headerClassName: '-a-left',
+        className: 'subcategory',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
+        accessor: 'evidence',
+        headerClassName: '-a-left',
+        className: 'evidence',
+        minWidth: 250
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'litigation-status' })}</span>,
+        accessor: 'litigation-status',
+        headerClassName: '-a-left',
+        className: 'litigation-status',
+        minWidth: 250
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
