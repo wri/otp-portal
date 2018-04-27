@@ -50,7 +50,7 @@ class FMUCard extends React.Component {
           {title && <h3 className="card-title">{title}</h3>}
 
           <ul className="fmu-list">
-            {sortBy(fmus, 'name').map(fmu => {
+            {sortBy(fmus, 'name').map((fmu) => {
               const isSelected = operatorsDetailFmus.fmu.id === fmu.id;
               const data = operatorsDetailFmus.analysis.data[fmu.id];
 
@@ -81,14 +81,14 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">LOSS 2001-2016 with >30% canopy density</h3>
                           <div className="fmu-definition-description">
-                            {data && data.lossGains.loss.toLocaleString()} ha
+                            {data && data.lossGains.loss ? data.lossGains.loss.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
                         <li>
                           <h3 className="fmu-definition-term">GAIN 2001-2012</h3>
                           <div className="fmu-definition-description">
-                            {data && data.lossGains.gain.toLocaleString()} ha
+                            {data && data.lossGains.gain ? data.lossGains.gain.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
@@ -101,7 +101,7 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">GLAD alerts</h3>
                           <div className="fmu-definition-description">
-                            {data && data.gladAlerts.value.toLocaleString()} ha
+                            {data && data.gladAlerts.value ? data.gladAlerts.value.toLocaleString() : '-'} ha
                           </div>
                         </li>
                       </ul>
