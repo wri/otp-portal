@@ -23,7 +23,7 @@ class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'operator-documents'
+      tab: this.props.url.query.subtab || 'operator-documents'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -74,7 +74,11 @@ class OperatorsDetailDocumentation extends React.Component {
             }
 
             {this.state.tab === 'fmus-documents' &&
-              <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} id={url.query.id} />
+              <DocumentsByFMU
+                group="fmu" data={groupedByType['operator-document-fmus']}
+                id={url.query.id}
+                query={url.query}
+              />
             }
 
             {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&
