@@ -2,6 +2,40 @@ import { render } from 'react-dom';
 import Popup from 'components/map/popup';
 
 const MAP_LAYERS_OPERATORS = [
+  {
+    id: 'glad',
+    provider: 'raster',
+    source: {
+      type: 'raster',
+      tiles: [
+        '/glad-layer/{z}/{x}/{y}'
+      ],
+      tileSize: 256
+    },
+    layers: [{
+      id: 'glad_layer',
+      name: 'GLAD alerts layer',
+      type: 'raster',
+      source: 'glad',
+      minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        toggle: { layerId: 'glad' },
+        color: '#FF6699',
+        items: [
+          { name: 'GLAD alerts (1 January 2015 - today)', color: '#FF6699' }
+        ]
+      },
+      paint: {
+        'raster-opacity': 1,
+        'raster-hue-rotate': 0,
+        'raster-brightness-min': 0,
+        'raster-brightness-max': 1,
+        'raster-saturation': 0,
+        'raster-contrast': 0
+      }
+    }]
+  },
   // RASTER LAYERS (LOSS & GAIN)
   {
     id: 'loss',
@@ -21,6 +55,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'loss' },
+        color: '#FF6699',
         items: [
           { name: 'Tree cover loss', color: '#FF6699' }
         ]
@@ -53,6 +89,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'gain' },
+        color: '#6D6DE5',
         items: [
           { name: 'Tree cover gain', color: '#6D6DE5' }
         ]
@@ -141,6 +179,8 @@ const MAP_LAYERS_OPERATORS = [
       minzoom: 0,
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'protected_areas' },
+        color: '#5ca2d1',
         items: [
           { name: 'Protected areas', color: '#5ca2d1' }
         ]
@@ -189,6 +229,8 @@ const MAP_LAYERS_OPERATORS = [
       layout: {},
       legendConfig: {
         type: 'basic',
+        toggle: { layerId: 'forest_concession' },
+        color: '#e98300',
         items: [
           { name: 'FMUs', color: '#e98300' }
         ]

@@ -7,13 +7,18 @@ const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
 const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
 
+const SET_ACTIVE_MAP_LAYERS = 'SET_ACTIVE_MAP_LAYERS';
+
 const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
   data: [],
   loading: false,
-  error: false
+  error: false,
+  map: {
+    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD']
+  }
 };
 
 /* Reducer */
@@ -25,6 +30,8 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
+    case SET_ACTIVE_MAP_LAYERS:
+      return Object.assign({}, state, { map: { activeLayers: action.payload } });
     default:
       return state;
   }
@@ -63,5 +70,12 @@ export function getOperators() {
           payload: err.message
         });
       });
+  };
+}
+
+export function setActiveMapLayers(activeLayerIds) {
+  return {
+    type: SET_ACTIVE_MAP_LAYERS,
+    payload: activeLayerIds
   };
 }

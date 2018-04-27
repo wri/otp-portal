@@ -47,6 +47,12 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       type: 'raster',
       source: 'loss',
       minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'Tree cover loss', color: '#FF6699' }
+        ]
+      },
       paint: {
         'raster-opacity': 1,
         'raster-hue-rotate': 0,
@@ -72,6 +78,12 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       type: 'raster',
       source: 'gain',
       minzoom: 0,
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'Tree cover gain', color: '#6D6DE5' }
+        ]
+      },
       paint: {
         'raster-opacity': 1,
         'raster-hue-rotate': 0,
@@ -130,6 +142,12 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       id: 'forest_concession_layer',
       type: 'fill',
       source: 'forest_concession',
+      legendConfig: {
+        type: 'basic',
+        items: [
+          { name: 'FMUs', color: '#e98300' }
+        ]
+      },
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {

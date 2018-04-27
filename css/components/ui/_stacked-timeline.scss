@@ -83,3 +83,11 @@
     }
   }
 }
+
+.c-stacked-timeline-tooltip {
+  padding: $space-1 * 2;
+  background: $color-white;
+  font-size: $font-size-small;
+  max-width: 250px;
+  box-shadow: 0 1px 4px rgba($color-gray-1, 0.2);
+}
