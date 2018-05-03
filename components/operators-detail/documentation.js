@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Router from 'next/router';
+
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -23,13 +25,25 @@ class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'operator-documents'
+      tab: this.props.url.query.subtab || 'operator-documents'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
   }
 
   triggerChangeTab(tab) {
+    const { id } = this.props.url.query;
+
+    const location = {
+      pathname: 'operators-detail',
+      query: {
+        id,
+        tab: 'documentation',
+        subtab: tab
+      }
+    };
+
+    Router.replace(location);
     this.setState({ tab });
   }
 
@@ -74,7 +88,11 @@ class OperatorsDetailDocumentation extends React.Component {
             }
 
             {this.state.tab === 'fmus-documents' &&
-              <DocumentsByFMU group="fmu" data={groupedByType['operator-document-fmus']} id={url.query.id} />
+              <DocumentsByFMU
+                group="fmu" data={groupedByType['operator-document-fmus']}
+                id={url.query.id}
+                query={url.query}
+              />
             }
 
             {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&

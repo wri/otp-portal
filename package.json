@@ -7,6 +7,7 @@
   "repository": "https://github.com/iaincollins/nextjs-starter.git",
   "main": "index.js",
   "dependencies": {
+    "animated-scroll-to": "^1.2.0",
     "autoprefixer": "^6.7.6",
     "babel-plugin-module-resolver": "https://registry.npmjs.org/babel-plugin-module-resolver/-/babel-plugin-module-resolver-2.6.2.tgz",
     "babel-plugin-wrap-in-js": "^1.1.1",
