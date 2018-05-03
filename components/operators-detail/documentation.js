@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Router from 'next/router';
+
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -30,6 +32,18 @@ class OperatorsDetailDocumentation extends React.Component {
   }
 
   triggerChangeTab(tab) {
+    const { id } = this.props.url.query;
+
+    const location = {
+      pathname: 'operators-detail',
+      query: {
+        id,
+        tab: 'documentation',
+        subtab: tab
+      }
+    };
+
+    Router.replace(location);
     this.setState({ tab });
   }
 

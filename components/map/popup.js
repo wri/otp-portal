@@ -31,7 +31,7 @@ export default function Popup(props) {
       }
 
       {list && operator && operator.id &&
-        <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: 'fmus-documents', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation`}>
+        <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: 'fmus-documents', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation?fmuId=${id}&subtab=fmus-documents`}>
           <a className="c-button -tertiary -fullwidth -ellipsis button">
             Documentation
           </a>

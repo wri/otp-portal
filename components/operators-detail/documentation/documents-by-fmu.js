@@ -17,10 +17,11 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 
 
 class DocumentsByFMU extends React.Component {
-  componentDidMount() {
+  componentDidUpdate() {
+    const { data } = this.props;
     const { fmuId } = this.props.query;
 
-    if (fmuId) scrollTo(this[fmuId]);
+    if (fmuId && data.length) scrollTo(this[fmuId]);
   }
 
   render() {
