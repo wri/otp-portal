@@ -35,7 +35,7 @@ class OperatorsDetailDocumentation extends React.Component {
     const { id } = this.props.url.query;
 
     const location = {
-      pathname: 'operators-detail',
+      pathname: '/operators-detail',
       query: {
         id,
         tab: 'documentation',
@@ -43,7 +43,7 @@ class OperatorsDetailDocumentation extends React.Component {
       }
     };
 
-    Router.replace(location);
+    Router.replace(location, `/operators/${id}/documentation?subtab=${tab}`);
     this.setState({ tab });
   }
 
