@@ -123,6 +123,7 @@ class OperatorsDetail extends Page {
     const { url, user, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
+    const logoPath = operatorsDetail.data.logo ? operatorsDetail.data.logo.url : '';
 
     return (
       <Layout
@@ -147,6 +148,7 @@ class OperatorsDetail extends Page {
             </Link>
           }
           tabs
+          logo={logoPath !== '/api/placeholder.png' ? logoPath : ''}
         />
 
         <Tabs

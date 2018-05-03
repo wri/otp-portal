@@ -9,7 +9,8 @@ class StaticHeader extends React.Component {
     subtitle: PropTypes.string,
     Component: PropTypes.oneOfType([PropTypes.element, PropTypes.bool]),
     background: PropTypes.string.isRequired,
-    tabs: PropTypes.bool
+    tabs: PropTypes.bool,
+    logo: PropTypes.string
   };
 
   static defaultProptypes = {
@@ -17,32 +18,55 @@ class StaticHeader extends React.Component {
     subtitle: '',
     Component: null,
     background: '',
-    tabs: false
+    tabs: false,
+    logo: ''
   };
 
   render() {
-    const { title, subtitle, background, Component, tabs } = this.props;
-    const customClassName = classnames({
-      'container -tabs': tabs
+    const { title, subtitle, background, Component, tabs, logo } = this.props;
+    const customClasses = classnames({
+      '-tabs': tabs,
+      '-logo': !!logo
     });
 
     return (
       <div
-        className="c-static-header"
+        className={`c-static-header ${customClasses}`}
         style={{
           backgroundImage: `url(${background})`
         }}
       >
-        <div className={customClassName}>
-          <h2>{title}</h2>
-          <h3>{subtitle}</h3>
+        { tabs ?
 
-          {!!Component &&
-            <div className="static-header-component">
-              {Component}
+          <div className="wrapper">
+            <div className="container">
+              { logo &&
+                <div className="logo-container">
+                  <img
+                    src={`${process.env.NODE_ENV !== 'production' ? process.env.OTP_API : ''}${logo}`}
+                    alt={`${title} logo`}
+                    className="logo"
+                  />
+                </div>
+              }
+
+              <h2>{title}</h2>
+              <h3>{subtitle}</h3>
+
+              {!!Component &&
+                <div className="static-header-component">
+                  {Component}
+                </div>
+              }
             </div>
-          }
-        </div>
+          </div>
+        :
+          <div>
+            <h2>{title}</h2>
+            <h3>{subtitle}</h3>
+          </div>
+
+        }
       </div>
     );
   }

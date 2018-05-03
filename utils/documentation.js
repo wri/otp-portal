@@ -78,7 +78,11 @@ const HELPERS_DOC = {
   },
 
   getGroupedByFmu(data) {
-    return groupBy(data, d => d.fmu.name);
+    return groupBy(data, d => d.fmu.id);
+  },
+
+  getFMUName(data, id) {
+    return uniqBy(data.map(doc => doc.fmu), 'id').filter(fmu => fmu.id === id)[0].name;
   },
 
   getGroupedByStatusChart(data) {

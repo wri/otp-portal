@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 export default function Popup(props) {
-  const { title, operator, list } = props;
+  const { title, operator, list, id } = props;
 
   const parse = (v) => {
     if (!v || v === 'null') { return '-'; }
     return v;
   };
+
 
   return (
     <div className="c-popup">
@@ -28,9 +29,17 @@ export default function Popup(props) {
         </dl>
       }
 
+      {list && operator && operator.id &&
+        <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: 'fmus-documents', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation?fmuId=${id}&subtab=fmus-documents`}>
+          <a className="c-button -tertiary -fullwidth -ellipsis -small button">
+            Documentation
+          </a>
+        </Link>
+      }
+
       {operator && operator.id &&
         <Link href={{ pathname: '/operators-detail', query: { id: operator.id } }} as={`/operators/${operator.id}`}>
-          <a className="c-button -tertiary -fullwidth -ellipsis button">
+          <a className="c-button -tertiary -fullwidth -ellipsis -small button">
             {operator.name}
           </a>
         </Link>
@@ -41,6 +50,7 @@ export default function Popup(props) {
 }
 
 Popup.propTypes = {
+  id: PropTypes.string,
   title: PropTypes.string,
   operator: PropTypes.object,
   list: PropTypes.array

@@ -254,6 +254,7 @@ const MAP_LAYERS_OPERATORS = [
             .setDOMContent(
             render(
               Popup({
+                id: props.id,
                 title: props.fmu_name,
                 operator: {
                   id: props.operator_id,
