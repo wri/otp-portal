@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
+// Utils
+import { encode } from 'utils/general';
+
 export default function Popup(props) {
   const { title, operator, list, id } = props;
 
@@ -9,7 +12,6 @@ export default function Popup(props) {
     if (!v || v === 'null') { return '-'; }
     return v;
   };
-
 
   return (
     <div className="c-popup">
@@ -32,15 +34,23 @@ export default function Popup(props) {
 
       {list && operator && operator.id &&
         <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: 'fmus-documents', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation?fmuId=${id}&subtab=fmus-documents`}>
-          <a className="c-button -tertiary -fullwidth -ellipsis -small button">
+          <a className="c-button -tertiary -fullwidth -ellipsis -small">
             Documentation
+          </a>
+        </Link>
+      }
+
+      { id &&
+        <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [id] }) } }}>
+          <a className="c-button -tertiary -fullwidth -ellipsis -small">
+            Observations
           </a>
         </Link>
       }
 
       {operator && operator.id &&
         <Link href={{ pathname: '/operators-detail', query: { id: operator.id } }} as={`/operators/${operator.id}`}>
-          <a className="c-button -tertiary -fullwidth -ellipsis -small button">
+          <a className="c-button -tertiary -fullwidth -ellipsis -small">
             {operator.name}
           </a>
         </Link>
