@@ -6,11 +6,14 @@ import { connect } from 'react-redux';
 import { getDocuments } from 'modules/operators-detail';
 import { getAllParsedDocumentation } from 'selectors/operators-detail/documentation';
 
-
 import StackedTimeline from 'components/ui/stacked-timeline';
+
+// Constants
+import { LEGEND_CHRONOLOGICAL } from 'constants/rechart';
 
 // Components
 import Spinner from 'components/ui/spinner';
+import ChartLegend from 'components/ui/chart-legend';
 
 class DocumentsStackedTimeline extends React.Component {
   state = {
@@ -44,19 +47,24 @@ class DocumentsStackedTimeline extends React.Component {
   drawChart(data) {
     const selector = '#chart-stacked-timeline';
     // remove current chart if it exists
-    this.setState({
-      loading: false
-    });
-
     document.querySelector(selector).innerHTML = '';
 
     this.chartInstance = new StackedTimeline(selector, data);
+
+    this.setState({
+      loading: false
+    });
   }
 
   render() {
     return (
-      <div className="c-stacked-timeline" id="chart-stacked-timeline">
+      <div className="c-stacked-timeline">
         <Spinner className="-transparent -small" isLoading={this.state.loading} />
+        <ChartLegend
+          list={LEGEND_CHRONOLOGICAL.list}
+          className="-horizontal -no-gutter-top"
+        />
+        <div className="stacked-timeline-chart" id="chart-stacked-timeline" />
       </div>
     );
   }

@@ -13,10 +13,32 @@ const PALETTE_COLOR_2 = [
   { fill: '#333333', stroke: '#333333' }
 ];
 
+const PALETTE_COLOR_3 = [
+  { fill: '#e98300', stroke: '#e98300' },
+  { fill: '#32794C', stroke: '#32794C' },
+  { fill: '#005b23', stroke: '#005b23' }
+];
+
 const ANIMATION_TIMES = {
   animationBegin: 250,
   animationDuration: 500,
   animationEasing: 'ease-in-out'
+};
+
+const LEGEND_CHRONOLOGICAL = {
+  list: [{
+    fill: PALETTE_COLOR_3[0].fill,
+    stroke: PALETTE_COLOR_3[0].fill,
+    label: 'doc_not_provided'
+  }, {
+    fill: PALETTE_COLOR_3[1].fill,
+    stroke: PALETTE_COLOR_3[1].fill,
+    label: 'doc_was_valid'
+  }, {
+    fill: PALETTE_COLOR_3[2].fill,
+    stroke: PALETTE_COLOR_3[2].fill,
+    label: 'doc_valid'
+  }]
 };
 
 const LEGEND_SEVERITY = {
@@ -64,4 +86,4 @@ const LEGEND_DOCUMENTATION = {
   }]
 };
 
-export { PALETTE_COLOR_1, PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_SEVERITY, LEGEND_DOCUMENTATION };
+export { PALETTE_COLOR_1, PALETTE_COLOR_2, ANIMATION_TIMES, LEGEND_SEVERITY, LEGEND_DOCUMENTATION, LEGEND_CHRONOLOGICAL };

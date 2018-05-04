@@ -5,10 +5,12 @@ import sortBy from 'lodash/sortBy';
 
 // Redux
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import { setFmuSelected, setAnalysis } from 'modules/operators-detail-fmus';
 
 // Utils
 import { HELPERS_FMU } from 'utils/fmu';
+import { encode } from 'utils/general';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -50,7 +52,7 @@ class FMUCard extends React.Component {
           {title && <h3 className="card-title">{title}</h3>}
 
           <ul className="fmu-list">
-            {sortBy(fmus, 'name').map(fmu => {
+            {sortBy(fmus, 'name').map((fmu) => {
               const isSelected = operatorsDetailFmus.fmu.id === fmu.id;
               const data = operatorsDetailFmus.analysis.data[fmu.id];
 
@@ -81,14 +83,14 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">LOSS 2001-2016 with >30% canopy density</h3>
                           <div className="fmu-definition-description">
-                            {data && data.loss.toLocaleString()} ha
+                            {data && data.lossGains.loss ? data.lossGains.loss.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
                         <li>
                           <h3 className="fmu-definition-term">GAIN 2001-2012</h3>
                           <div className="fmu-definition-description">
-                            {data && data.gain.toLocaleString()} ha
+                            {data && data.lossGains.gain ? data.lossGains.gain.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
@@ -98,7 +100,19 @@ class FMUCard extends React.Component {
                             {HELPERS_FMU.getCertifications(fmu)}
                           </div>
                         </li>
+                        <li>
+                          <h3 className="fmu-definition-term">GLAD alerts</h3>
+                          <div className="fmu-definition-description">
+                            {data && data.gladAlerts.value ? data.gladAlerts.value.toLocaleString() : '-'} ha
+                          </div>
+                        </li>
                       </ul>
+
+                      <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [Number(fmu.id)] }) } }}>
+                        <a className="c-button -primary -fullwidth -ellipsis -small">
+                          Observations
+                        </a>
+                      </Link>
                     </div>
                   }
                 </li>

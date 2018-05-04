@@ -66,6 +66,10 @@
     align-items: center;
     padding: $space-1 * 4 0 $space-1 * 6;
 
+    &.-no-gutter-top {
+      padding-top: 0;
+    }
+
     .chart-legend-list {
       display: flex;
       margin: 0 0 0 $space-1 * 3;
