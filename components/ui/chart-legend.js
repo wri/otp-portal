@@ -34,7 +34,7 @@ function ChartLegend({ title, list, className, intl }) {
 
       <ul className="chart-legend-list">
         {list.map(item => (
-          <li key={item.id} className="chart-legend-item">
+          <li key={item.id || item.label} className="chart-legend-item">
             <span className="chart-legend-dot" style={{ background: item.fill, border: `2px solid ${item.stroke}` }} />
             <span className="chart-legend-label">
               {intl.formatMessage({ id: item.id || item.label })}
