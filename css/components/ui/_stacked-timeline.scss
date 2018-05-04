@@ -1,8 +1,11 @@
 .c-stacked-timeline {
-  width: 100%;
-  min-height: 300px;
-  text-align: center;
   position: relative;
+
+  .stacked-timeline-chart {
+    width: 100%;
+    min-height: 300px;
+    text-align: center;
+  }
 
   .report-item {
     fill: $lg-color-2;
