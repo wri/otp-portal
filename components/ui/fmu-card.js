@@ -5,10 +5,12 @@ import sortBy from 'lodash/sortBy';
 
 // Redux
 import { connect } from 'react-redux';
+import Link from 'next/link';
 import { setFmuSelected, setAnalysis } from 'modules/operators-detail-fmus';
 
 // Utils
 import { HELPERS_FMU } from 'utils/fmu';
+import { encode } from 'utils/general';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -50,7 +52,7 @@ class FMUCard extends React.Component {
           {title && <h3 className="card-title">{title}</h3>}
 
           <ul className="fmu-list">
-            {sortBy(fmus, 'name').map(fmu => {
+            {sortBy(fmus, 'name').map((fmu) => {
               const isSelected = operatorsDetailFmus.fmu.id === fmu.id;
               const data = operatorsDetailFmus.analysis.data[fmu.id];
 
@@ -99,6 +101,12 @@ class FMUCard extends React.Component {
                           </div>
                         </li>
                       </ul>
+
+                      <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [Number(fmu.id)] }) } }}>
+                        <a className="c-button -primary -fullwidth -ellipsis -small">
+                          Observations
+                        </a>
+                      </Link>
                     </div>
                   }
                 </li>
