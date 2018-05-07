@@ -54,7 +54,8 @@ class FMUCard extends React.Component {
           <ul className="fmu-list">
             {sortBy(fmus, 'name').map((fmu) => {
               const isSelected = operatorsDetailFmus.fmu.id === fmu.id;
-              const data = operatorsDetailFmus.analysis.data[fmu.id];
+              const data = operatorsDetailFmus.analysis.data[fmu.id] || {};
+              const { lossGains = {}, gladAlerts = {} } = data;
 
               return (
                 <li
@@ -83,14 +84,14 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">LOSS 2001-2016 with >30% canopy density</h3>
                           <div className="fmu-definition-description">
-                            {data && data.lossGains.loss ? data.lossGains.loss.toLocaleString() : '-'} ha
+                            {lossGains && lossGains.loss ? data.lossGains.loss.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
                         <li>
                           <h3 className="fmu-definition-term">GAIN 2001-2012</h3>
                           <div className="fmu-definition-description">
-                            {data && data.lossGains.gain ? data.lossGains.gain.toLocaleString() : '-'} ha
+                            {lossGains && lossGains.gain ? data.lossGains.gain.toLocaleString() : '-'} ha
                           </div>
                         </li>
 
@@ -103,7 +104,7 @@ class FMUCard extends React.Component {
                         <li>
                           <h3 className="fmu-definition-term">GLAD alerts</h3>
                           <div className="fmu-definition-description">
-                            {data && data.gladAlerts.value ? data.gladAlerts.value.toLocaleString() : '-'} ha
+                            {gladAlerts && gladAlerts.value ? data.gladAlerts.value.toLocaleString() : '-'} ha
                           </div>
                         </li>
                       </ul>
