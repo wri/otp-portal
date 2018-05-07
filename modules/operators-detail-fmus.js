@@ -101,18 +101,20 @@ export function setAnalysis(fmu) {
         })
         .then((response) => {
           if (response.ok) return response.json();
-          throw new Error(response.statusText);
-        }))
+        })
+        .catch((error) => { throw new Error(error); })
+      )
       )
       .then((values) => {
-        const [lossGains, gladAlerts] = values;
+        const lossGains = values[0] || {};
+        const gladAlerts = values[1] || {};
 
         dispatch({
           type: GET_FMU_ANALYSIS_SUCCESS,
           payload: {
             [fmu.id]: {
-              lossGains: lossGains.data.attributes,
-              gladAlerts: gladAlerts.data.attributes
+              lossGains: lossGains.data && lossGains.data.attributes,
+              gladAlerts: gladAlerts.data && gladAlerts.data.attributes
             }
           }
         });
