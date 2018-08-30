@@ -17,7 +17,7 @@ const initialState = {
   loading: false,
   error: false,
   map: {
-    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD']
+    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD', 'CMR']
   }
 };
 
@@ -43,7 +43,7 @@ export function getOperators() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-    fetch(`${process.env.OTP_API}/operators?locale=${Cookies.get('language')}&page[size]=2000&filter[country]=7,47&filter[fa]=true}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${Cookies.get('language')}&page[size]=2000&filter[country]=7,47,45&filter[fa]=true}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -200,7 +200,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -281,11 +281,11 @@ const MAP_LAYERS_OPERATORS = [
         },
         mousemove(e) {
           this.map.getCanvas().style.cursor = 'pointer';
-          this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
+          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', e.features[0].properties.id]);
         },
         mouseleave() {
           this.map.getCanvas().style.cursor = '';
-          this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', '']);
+          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', '']);
         }
       }
     }]
@@ -295,7 +295,7 @@ const MAP_LAYERS_OPERATORS = [
   //   provider: 'geojson',
   //   source: {
   //     type: 'geojson',
-  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47`
+  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47,45`
   //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
   //   },
   //   layers: [{
@@ -389,6 +389,42 @@ const MAP_LAYERS_OPERATORS = [
       source: 'COD',
       update({ COUNTRY_IDS }, l) {
         if (!COUNTRY_IDS.includes(7)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      minzoom: 0,
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
+  },
+
+  {
+    id: 'CMR',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v1/geostore/admin/CMR',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'CMR_layer',
+      name: 'CMR country layer',
+      type: 'line',
+      before: [],
+      source: 'CMR',
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(45)) {
           if (this.map.getLayer(l.id)) {
             this.map.removeLayer(l.id);
             delete this.mapLayers[l.id];
