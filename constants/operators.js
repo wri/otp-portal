@@ -166,7 +166,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\')')}&format=geojson`,
+        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\', \'CMR\')')}&format=geojson`,
         method: 'GET'
       }
     },
