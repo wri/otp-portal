@@ -237,7 +237,12 @@ const MAP_LAYERS_OPERATORS = [
       },
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#e98300',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#f00']],
+          default: '#e98300'
+        },
         'fill-opacity': 0.4,
         'fill-outline-color': '#d07500'
       },
@@ -250,6 +255,7 @@ const MAP_LAYERS_OPERATORS = [
           this.popup = new this.Popup();
 
           const props = e.features[0].properties;
+
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
             render(
@@ -269,6 +275,9 @@ const MAP_LAYERS_OPERATORS = [
                 }, {
                   label: 'Type',
                   value: props.fmu_type
+                }, {
+                  label: 'Exploitant',
+                  value: props.exploitant
                 }]
               }),
               window.document.createElement('div')

@@ -151,7 +151,12 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#e98300',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#f00']],
+          default: '#e98300'
+        },
         'fill-opacity': 0.4,
         'fill-outline-color': '#d07500'
       },
