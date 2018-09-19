@@ -216,9 +216,19 @@ const MAP_LAYERS_OPERATORS = [
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#d07500',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          default: '#d07500'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          default: '#d07500'
+        }
       },
       filter: ['==', 'cartodb_id', '']
     }, {
@@ -240,11 +250,17 @@ const MAP_LAYERS_OPERATORS = [
         'fill-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#f00']],
+          stops: [['ventes_de_coupe', '#AA0000'], ['ufa', '#00AA00'], ['communal', '#0000AA']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          default: '#d07500'
+        }
       },
       fitBounds: true,
       interactivity: {
