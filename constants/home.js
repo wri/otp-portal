@@ -80,7 +80,7 @@ const MAP_LAYERS_HOME = [
         'fill-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#AA0000'], ['ufa', '#00AA00'], ['communal', '#0000AA']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
@@ -88,7 +88,7 @@ const MAP_LAYERS_HOME = [
         'fill-outline-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
           default: '#d07500'
         }
       },

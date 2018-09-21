@@ -267,7 +267,9 @@ class OperatorsPage extends Page {
               }}
               layers={mapLayers}
             />
-
+            {console.log(flatten(MAP_LAYERS_OPERATORS.map(layer =>
+              layer.layers.filter(l => l.legendConfig)
+            )))}
             <MapLegend
               layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
                 layer.layers.filter(l => l.legendConfig)

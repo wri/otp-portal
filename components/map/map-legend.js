@@ -54,7 +54,12 @@ class MapLegend extends React.Component {
                   name: this.props.intl.formatMessage({ id: `operators.map.legend.item.${layer.id}` }),
                   legendConfig: { ...layer.legendConfig,
                     items: layer.legendConfig.items.map(
-                      item => ({ ...item, name: this.props.intl.formatMessage({ id: `operators.map.legend.item.${layer.id}.legendConfig.name` }) })
+                      item => ({
+                        ...item,
+                        ...(layer.id !== 'forest_concession_layer') && {
+                          name: this.props.intl.formatMessage({ id: `operators.map.legend.item.${layer.id}.legendConfig.name` })
+                        }
+                      })
                     )
                   }
                 }}

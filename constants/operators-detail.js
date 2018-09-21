@@ -136,11 +136,16 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
         'fill-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
           default: '#d07500'
         },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       filter: ['==', 'cartodb_id', '']
     }, {
@@ -150,7 +155,10 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       legendConfig: {
         type: 'basic',
         items: [
-          { name: 'FMUs', color: '#e98300' }
+          { name: 'Uncategorized', color: '#e98300' },
+          { name: 'Ventes de coupe', color: '#e92000' },
+          { name: 'UFA', color: '#e95800' },
+          { name: 'Communal', color: '#e9A700' }
         ]
       },
       layout: {},
@@ -159,7 +167,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
         'fill-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#AA0000'], ['ufa', '#00AA00'], ['communal', '#0000AA']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
@@ -167,7 +175,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
         'fill-outline-color': {
           property: 'fmu_type',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#f00'], ['ufa', '#0f0'], ['communal', '#00f']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
           default: '#d07500'
         }
       },
