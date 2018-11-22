@@ -27,6 +27,9 @@ components.
     git push heroku landing:master
 
 ## Deploy app
-
+    // PRODUCTION
     git push deploy master
+
+    // STAGING
+    git push staging develop
 
