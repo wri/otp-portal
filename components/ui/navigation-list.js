@@ -49,6 +49,9 @@ class NavigationList extends React.Component {
                   <li className="language-dropdown-list-item">
                     <a onClick={() => this.changeLanguage('fr')} href="?language=fr">Français</a>
                   </li>
+                  <li className="language-dropdown-list-item">
+                    <a onClick={() => this.changeLanguage('zh')} href="?language=zh">中文</a>
+                  </li>
                 </ul>
               </DropdownContent>
             </Dropdown>

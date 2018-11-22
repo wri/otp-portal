@@ -6,12 +6,15 @@ import { IntlProvider, addLocaleData, injectIntl } from 'react-intl';
 
 import langEn from 'lang/en.json';
 import langFr from 'lang/fr.json';
+import langZhCN from 'lang/zh_CN.json';
 
 import en from 'react-intl/locale-data/en';
 import fr from 'react-intl/locale-data/fr';
+import zh from 'react-intl/locale-data/zh';
 
-const LANGUAGES = { en, fr };
-const MESSAGES = { en: langEn, fr: langFr };
+
+const LANGUAGES = { en, fr, zh };
+const MESSAGES = { en: langEn, fr: langFr, zh: langZhCN };
 
 
 // Register React Intl's locale data for the user's locale in the browser
