@@ -139,11 +139,11 @@ export function getOperator(id) {
       'operator-document-fmus.fmu'
     ];
 
-    const language = Cookies.get('language');
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
     const queryParams = queryString.stringify({
       include: includeFields.join(','),
-      locale: language === 'zh' ? 'zh-CN' : language // This is not very good...
+      locale: language
     });
 
 

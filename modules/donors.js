@@ -42,7 +42,9 @@ export function getDonors() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DONORS_LOADING });
 
-    fetch(`${process.env.OTP_API}/donors?locale=${Cookies.get('language')}&page[size]=2000`, {
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+
+    fetch(`${process.env.OTP_API}/donors?locale=${language}&page[size]=2000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

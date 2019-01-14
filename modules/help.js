@@ -49,7 +49,9 @@ export function getFAQs() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FAQS_LOADING });
 
-    fetch(`${process.env.OTP_API}/faqs?locale=${Cookies.get('language')}`, {
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+
+    fetch(`${process.env.OTP_API}/faqs?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
