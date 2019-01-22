@@ -44,7 +44,7 @@ const PALETTE = {
 
 const HELPERS_DOC = {
   getMetadata() {
-    return PALETTE;
+    return JSON.parse(JSON.stringify(PALETTE));
   },
 
   getPercentage(data) {
