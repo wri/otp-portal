@@ -38,9 +38,7 @@ function ChartLegend({ title, list, className, intl }) {
             <span className="chart-legend-dot" style={{ background: item.fill, border: `2px solid ${item.stroke}` }} />
             <span className="chart-legend-label">
               {intl.formatMessage({ id: item.id || item.label })}
-              { !!item.value &&
-                <span> ({item.value}%)</span>
-              }
+              {!!item.value && <span> ({item.value}%)</span>}
             </span>
           </li>
         ))}

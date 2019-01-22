@@ -78,7 +78,6 @@
     "reselect": "^3.0.1",
     "sass-loader": "^5.0.1",
     "session-file-store": "^1.0.0",
-    "sqlite3": "^3.1.8",
     "turf-extent": "^1.0.4",
     "uuid": "^3.0.1",
     "webpack": "https://registry.npmjs.org/webpack/-/webpack-2.4.0.tgz"
@@ -104,5 +103,8 @@
     "start": "node index.js",
     "transifex:push": "node transifex/transifex-push.js",
     "transifex:pull": "node transifex/transifex-pull.js"
+  },
+  "engines": {
+    "node": "8.x.x"
   }
 }
