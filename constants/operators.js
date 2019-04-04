@@ -166,7 +166,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\')')}&format=geojson`,
+        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\', \'CMR\')')}&format=geojson`,
         method: 'GET'
       }
     },
@@ -200,7 +200,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -216,9 +216,19 @@ const MAP_LAYERS_OPERATORS = [
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#d07500',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       filter: ['==', 'cartodb_id', '']
     }, {
@@ -232,14 +242,28 @@ const MAP_LAYERS_OPERATORS = [
         toggle: { layerId: 'forest_concession' },
         color: '#e98300',
         items: [
-          { name: 'FMUs', color: '#e98300' }
+          { name: 'Uncategorized', color: '#e98300' },
+          { name: 'Ventes de coupe', color: '#e92000' },
+          { name: 'UFA', color: '#e95800' },
+          { name: 'Communal', color: '#e9A700' }
         ]
       },
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#e98300',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          default: '#e98300'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       fitBounds: true,
       interactivity: {
@@ -250,6 +274,7 @@ const MAP_LAYERS_OPERATORS = [
           this.popup = new this.Popup();
 
           const props = e.features[0].properties;
+
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
             render(
@@ -269,6 +294,9 @@ const MAP_LAYERS_OPERATORS = [
                 }, {
                   label: 'Type',
                   value: props.fmu_type
+                }, {
+                  label: 'Exploitant',
+                  value: props.exploitant
                 }]
               }),
               window.document.createElement('div')
@@ -281,11 +309,11 @@ const MAP_LAYERS_OPERATORS = [
         },
         mousemove(e) {
           this.map.getCanvas().style.cursor = 'pointer';
-          this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', e.features[0].properties.cartodb_id]);
+          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', e.features[0].properties.id]);
         },
         mouseleave() {
           this.map.getCanvas().style.cursor = '';
-          this.map.setFilter('forest_concession_layer_hover', ['==', 'cartodb_id', '']);
+          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', '']);
         }
       }
     }]
@@ -295,7 +323,7 @@ const MAP_LAYERS_OPERATORS = [
   //   provider: 'geojson',
   //   source: {
   //     type: 'geojson',
-  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47`
+  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47,45`
   //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
   //   },
   //   layers: [{
@@ -389,6 +417,42 @@ const MAP_LAYERS_OPERATORS = [
       source: 'COD',
       update({ COUNTRY_IDS }, l) {
         if (!COUNTRY_IDS.includes(7)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      minzoom: 0,
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
+  },
+
+  {
+    id: 'CMR',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v1/geostore/admin/CMR',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'CMR_layer',
+      name: 'CMR country layer',
+      type: 'line',
+      before: [],
+      source: 'CMR',
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(45)) {
           if (this.map.getLayer(l.id)) {
             this.map.removeLayer(l.id);
             delete this.mapLayers[l.id];

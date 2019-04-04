@@ -32,7 +32,7 @@ const initialState = {
   filters: {
     data: {
       observation_type: [],
-      country_id: [7, 47],
+      country_id: [7, 47, 45],
       fmu_id: [],
       years: [],
       observer_id: [],
@@ -104,8 +104,9 @@ export function getObservations() {
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    const url = `${process.env.OTP_API}/observations?locale=${Cookies.get('language')}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
+    const url = `${process.env.OTP_API}/observations?locale=${language}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
@@ -143,7 +144,9 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_LOADING });
 
-    fetch(`${process.env.OTP_API}/observation_filters?locale=${Cookies.get('language')}`, {
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+
+    fetch(`${process.env.OTP_API}/observation_filters?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

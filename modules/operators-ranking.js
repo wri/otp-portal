@@ -35,7 +35,8 @@ const initialState = {
     options: {
       country: [
         { label: 'Congo', value: 47, iso: 'COG' },
-        { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' }
+        { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' },
+        { label: 'Cameroon', value: 45, iso: 'CMR' }
       ],
       certification: [
         { label: 'FSC', value: 'fsc' },
@@ -114,8 +115,9 @@ export function getOperatorsRanking() {
     // Filters
     const filters = getSQLFilters(getState().operatorsRanking.filters.data);
 
+    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/operators?locale=${Cookies.get('language')}&page[size]=2000&${fields}&include=${includes}${filters}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&${fields}&include=${includes}${filters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

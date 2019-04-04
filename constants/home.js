@@ -62,7 +62,7 @@ const MAP_LAYERS_HOME = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -77,9 +77,20 @@ const MAP_LAYERS_HOME = [
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#e98300',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          default: '#e98300'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       fitBounds: true
     }]

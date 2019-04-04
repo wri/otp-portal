@@ -101,7 +101,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47&operator_ids={{OPERATOR_ID}}&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&operator_ids={{OPERATOR_ID}}&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -133,9 +133,19 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#d07500',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       filter: ['==', 'cartodb_id', '']
     }, {
@@ -145,15 +155,29 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       legendConfig: {
         type: 'basic',
         items: [
-          { name: 'FMUs', color: '#e98300' }
+          { name: 'Uncategorized', color: '#e98300' },
+          { name: 'Ventes de coupe', color: '#e92000' },
+          { name: 'UFA', color: '#e95800' },
+          { name: 'Communal', color: '#e9A700' }
         ]
       },
       layout: {},
       before: ['loss_layer', 'gain_layer'],
       paint: {
-        'fill-color': '#e98300',
+        'fill-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          default: '#e98300'
+        },
         'fill-opacity': 0.4,
-        'fill-outline-color': '#d07500'
+
+        'fill-outline-color': {
+          property: 'fmu_type',
+          type: 'categorical',
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          default: '#d07500'
+        }
       },
       fitBounds: true,
       interactivity: {
@@ -180,7 +204,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/sawmills?country_ids=7,47&operator_ids={{OPERATOR_ID}}&format=geojson`,
+        url: `${process.env.OTP_API}/sawmills?country_ids=7,47,45&operator_ids={{OPERATOR_ID}}&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

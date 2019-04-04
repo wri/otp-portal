@@ -26,7 +26,6 @@ const fetchConfig = {
 
 // Lets start
 console.info('Fetching available languages...');
-
 fetch(langUrl, fetchConfig)
     .then((res) => {
       console.info('Languages found!');
