@@ -45,7 +45,7 @@ export function getOperators() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&filter[country]=7,47,45&filter[fa]=true}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&filter[country]=7,47,45&filter[fa]=true`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
