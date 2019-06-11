@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 import Spinner from 'components/ui/spinner';
+import Html from 'components/html';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
+let MoveTo;
+
 class HelpFaqs extends React.Component {
-  constructor(props) {
-    super(props);
+
+  componentDidMount() {
+    MoveTo = require('moveto'); //eslint-disable-line
 
     this.moveTo = new MoveTo({
       tolerance: 50,
@@ -18,9 +21,10 @@ class HelpFaqs extends React.Component {
     });
   }
 
-  componentWillReceiveProps() {
+  componentDidUpdate() {
     if (this.props.url.query.article) {
-      this.triggerScrollTo(`#${this.props.url.query.article}`);
+      const target = document.querySelector(`#${this.props.url.query.article}`);
+      this.moveTo.move(target);
     }
   }
 
@@ -80,9 +84,7 @@ class HelpFaqs extends React.Component {
                     </header>
                     <div className="content">
                       <div className="description">
-                        <p>
-                          {faq.answer}
-                        </p>
+                        <Html html={faq.answer} />
                       </div>
                     </div>
                   </article>

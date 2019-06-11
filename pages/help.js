@@ -29,10 +29,13 @@ class HelpPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators } = this.props;
+    const { operators, faqs } = this.props;
 
     if (!operators.data.length) {
       this.props.getOperators();
+    }
+
+    if (!faqs.data.length) {
       this.props.getFAQs();
     }
   }
