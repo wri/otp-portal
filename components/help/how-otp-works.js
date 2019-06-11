@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MoveTo from 'moveto';
 import { StickyContainer, Sticky } from 'react-sticky';
 
 // Intl
@@ -8,20 +7,24 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
+let MoveTo;
+
 class HelpHowOTPWorks extends React.Component {
-  constructor(props) {
-    super(props);
+
+  componentDidMount() {
+    MoveTo = require('moveto'); //eslint-disable-line
 
     this.moveTo = new MoveTo({
-      tolerance: 30,
+      tolerance: 50,
       duration: 500,
       easing: 'easeOutQuart'
     });
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     if (this.props.url.query.article) {
-      this.triggerScrollTo(`#${this.props.url.query.article}`);
+      const target = document.querySelector(`#${this.props.url.query.article}`);
+      this.moveTo.move(target);
     }
   }
 
