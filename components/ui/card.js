@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import omit from 'lodash/omit';
+import renderHTML from 'react-render-html';
 
 // Next components
 import Link from 'next/link';
@@ -25,7 +26,7 @@ export default function Card({ theme, letter, title, description, link, Componen
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
         <p className="card-description">
           <Truncate lines={6}>
-            {description}
+            {renderHTML(description)}
           </Truncate>
         </p>
 
