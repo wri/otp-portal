@@ -27,7 +27,7 @@ function Gallery3(props) {
             return (
               <div
                 key={faq.id}
-                className="columns small-12 medium-4"
+                className="columns small-12 medium-6"
               >
                 <Card
                   theme={theme}
