@@ -97,8 +97,6 @@ class DocCard extends React.Component {
     const isActiveUser = ((user && user.role === 'admin') ||
       (user && user.role === 'operator' && user.operator && user.operator.toString() === operatorId));
 
-    const metadata = HELPERS_DOC.getMetadata();
-
     const approvedAnnexes = annexes.filter(a => a.name);
 
     const classNames = classnames({
@@ -133,7 +131,7 @@ class DocCard extends React.Component {
               {startDate !== endDate &&
                 <div className="doc-card-date">{endDate}</div>
               }
-              <div className="doc-card-status">{metadata[status].label}</div>
+              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
               <a rel="noopener noreferrer" target="_blank" href={url}>
@@ -143,7 +141,7 @@ class DocCard extends React.Component {
               </a>
             </div>
             <div className="doc-card-footer">
-              <h3 className="c-title -default doc-card-annexes-title">Annexes:</h3>
+              <h3 className="c-title -default doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</h3>
               <ul className="doc-card-list">
                 {approvedAnnexes.map(annex => (
                   <li className="doc-card-list-item" key={annex.id}>
@@ -169,7 +167,7 @@ class DocCard extends React.Component {
                                 type="button"
                                 onClick={() => this.triggerRemoveAnnex(annex.id)}
                               >
-                                <span className="tooltip-hidden-button-text">Remove an annex</span>
+                                <span className="tooltip-hidden-button-text">{this.props.intl.formatMessage({ id: 'annex.remove' })}</span>
                                 <Icon className="" name="icon-bin" />
                               </button>
                             }
@@ -212,7 +210,7 @@ class DocCard extends React.Component {
               {startDate !== endDate &&
                 <div className="doc-card-date">{endDate}</div>
               }
-              <div className="doc-card-status">{metadata[status].label}</div>
+              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
               <h3 className="doc-card-title c-title -big">
@@ -221,10 +219,11 @@ class DocCard extends React.Component {
             </div>
           </div>
         }
+
         {status === 'doc_not_provided' &&
           <div>
             <header className="doc-card-header">
-              <div className="doc-card-status">{metadata[status].label}</div>
+              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
               <h3 className="doc-card-title c-title -big">
@@ -237,7 +236,7 @@ class DocCard extends React.Component {
         {status === 'doc_not_required' &&
           <div>
             <header className="doc-card-header">
-              <div className="doc-card-status">{metadata[status].label}</div>
+              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
               <div className="doc-card-why">
                 <button onClick={this.triggerWhy} className="c-button -small -clean">
                   {this.props.intl.formatMessage({ id: 'why' })}
