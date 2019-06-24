@@ -37,14 +37,13 @@ class TermsPage extends Page {
             >
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
-                  <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.privacypolicy.title' })}</h2>
-                  </header>
                   <div className="content">
                     <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'terms.privacypolicy.description1' })}</p>
-                      <p>{this.props.intl.formatMessage({ id: 'terms.privacypolicy.description2' })}</p>
-                      <p>{this.props.intl.formatMessage({ id: 'terms.privacypolicy.description3' })}</p>
+                      <p>
+                        <strong>{this.props.intl.formatMessage({ id: 'terms.contact.address1' })}</strong> <br />
+                        <strong>{this.props.intl.formatMessage({ id: 'terms.contact.address2' })}</strong> <br />
+                        <strong>{this.props.intl.formatMessage({ id: 'terms.contact.address3' })}</strong>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -57,13 +56,28 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.whatinformation.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.privacy' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'terms.whatinformation.description1' })}</p>
-                      <p>{this.props.intl.formatMessage({ id: 'terms.whatinformation.description2' })}</p>
-                      <p>{this.props.intl.formatMessage({ id: 'terms.whatinformation.description3' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'terms.privacy.pharagraph1' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'terms.privacy.pharagraph2' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'terms.privacy.pharagraph3' })}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article
+              className="c-article"
+            >
+              <div className="row l-row">
+                <div className="columns small-12 medium-8">
+                  <div className="content">
+                    <div className="description">
+                      <p>{this.props.intl.formatMessage({ id: 'terms.pharagraph1' })}</p>
+                      <p>{this.props.intl.formatMessage({ id: 'terms.pharagraph2' })}</p>
                     </div>
                   </div>
                 </div>
@@ -76,15 +90,16 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.whycollect.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.usage' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.whycollect.description' })
-                        }}
-                      />
+                      <p>{this.props.intl.formatMessage({ id: 'terms.usage.pharagraph1' })}</p>
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.usage.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.usage.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.usage.listitem3' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -97,16 +112,17 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.whycollect.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.accounts' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'terms.shareinformation.description1' })}</p>
-                      <ul
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.shareinformation.description2' })
-                        }}
-                      />
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.accounts.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.accounts.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.accounts.listitem3' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.accounts.listitem4' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.accounts.listitem5' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -119,15 +135,15 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.security.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.third-party' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.security.description' })
-                        }}
-                      />
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.third-party.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.third-party.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.third-party.listitem3' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -140,25 +156,15 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.trackingtechnology.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.submitted-content' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.trackingtechnology.description1' })
-                        }}
-                      />
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.trackingtechnology.description2' })
-                        }}
-                      />
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.trackingtechnology.description3' })
-                        }}
-                      />
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.submitted-content.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.submitted-content.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.submitted-content.listitem3' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -171,15 +177,15 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.cookies.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.disclaimers' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.cookies.description' })
-                        }}
-                      />
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.disclaimers.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.disclaimers.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.disclaimers.listitem3' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -192,30 +198,16 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.choices.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.compliance' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.choices.description1' })
-                        }}
-                      />
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.choices.description2' })
-                        }}
-                      />
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.choices.description3' })
-                        }}
-                      />
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.choices.description4' })
-                        }}
-                      />
+                      <p>{this.props.intl.formatMessage({ id: 'terms.compliance.pharagraph1' })}</p>
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.compliance.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.compliance.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.compliance.listitem3' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -228,33 +220,17 @@ class TermsPage extends Page {
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
                   <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.updates.title' })}</h2>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.additional' })}</h2>
                   </header>
                   <div className="content">
                     <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'terms.updates.description' })}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article
-              className="c-article"
-            >
-              <div className="row l-row">
-                <div className="columns small-12 medium-8">
-                  <header>
-                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.contact.title' })}</h2>
-                  </header>
-                  <div className="content">
-                    <div className="description">
-                      <p>{this.props.intl.formatMessage({ id: 'terms.contact.description1' })}</p>
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: this.props.intl.formatHTMLMessage({ id: 'terms.contact.description2' })
-                        }}
-                      />
+                      <ol>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.additional.listitem1' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.additional.listitem2' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.additional.listitem3' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.additional.listitem4' })}</li>
+                        <li>{this.props.intl.formatMessage({ id: 'terms.additional.listitem5' })}</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
@@ -273,8 +249,5 @@ TermsPage.propTypes = {
 };
 
 export default withTracker(withIntl(withRedux(
-  store,
-  state => ({
-
-  })
+  store
 )(TermsPage)));
