@@ -17,27 +17,23 @@ function Gallery2(props) {
       </h2>
 
       <div className="row l-row">
-        {LEGISLATION_AND_REGULATIONS_HELP.slice(0, 3).map((article, i) => {
-          const theme = (i === 0) ? '-secondary' : '-primary';
-
-          return (
-            <div
-              key={article.id}
-              className="columns small-12 medium-4"
-            >
-              <Card
-                theme={theme}
-                title={props.intl.formatMessage({ id: article.title })}
-                description={props.intl.formatMessage({ id: article.description })}
-                link={{
-                  label: props.intl.formatMessage({ id: article.link.label }),
-                  href: article.link.href
-                }}
-                Component={<a href={article.site} target="_blank" rel="noopener noreferrer">{props.intl.formatMessage({ id: 'go_to_site' })}</a>}
-              />
-            </div>
-          );
-        })}
+        {LEGISLATION_AND_REGULATIONS_HELP.slice(0, 3).map(article => (
+          <div
+            key={article.id}
+            className="columns small-12 medium-4"
+          >
+            <Card
+              theme="-primary"
+              title={props.intl.formatMessage({ id: article.title })}
+              description={props.intl.formatMessage({ id: article.description })}
+              link={{
+                label: props.intl.formatMessage({ id: article.link.label }),
+                href: article.link.href
+              }}
+              Component={<a href={article.site} target="_blank" rel="noopener noreferrer">{props.intl.formatMessage({ id: 'go_to_site' })}</a>}
+            />
+          </div>
+          ))}
 
       </div>
     </div>

@@ -16,26 +16,22 @@ function Gallery1(props) {
       </h2>
 
       <div className="row l-row">
-        {HOW_OTP_WORKS_HELP.slice(0, 3).map((article, i) => {
-          const theme = (i === 0) ? '-secondary' : '-primary';
-
-          return (
-            <div
-              key={article.id}
-              className="columns small-12 medium-4"
-            >
-              <Card
-                theme={theme}
-                title={props.intl.formatMessage({ id: article.title })}
-                description={props.intl.formatMessage({ id: article.description })}
-                link={{
-                  label: props.intl.formatMessage({ id: article.link.label }),
-                  href: article.link.href
-                }}
-              />
-            </div>
-          );
-        })}
+        {HOW_OTP_WORKS_HELP.slice(0, 3).map(article => (
+          <div
+            key={article.id}
+            className="columns small-12 medium-4"
+          >
+            <Card
+              theme="-primary"
+              title={props.intl.formatMessage({ id: article.title })}
+              description={props.intl.formatMessage({ id: article.description })}
+              link={{
+                label: props.intl.formatMessage({ id: article.link.label }),
+                href: article.link.href
+              }}
+            />
+          </div>
+          ))}
 
       </div>
     </div>
