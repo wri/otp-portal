@@ -46,7 +46,7 @@ class HomePage extends Page {
           id: 'home.disclaimer',
           className: '-disclaimer',
           position: 'bottom-right',
-          timeOut: 15000,
+          timeOut: 0,
           onCloseButtonClick: () => {
             Cookies.set('home.disclaimer', true);
           }
