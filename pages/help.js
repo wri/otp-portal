@@ -6,7 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
-import { getFAQs } from 'modules/help';
+import { getFAQs, getTutorials } from 'modules/help';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -29,7 +29,7 @@ class HelpPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, faqs } = this.props;
+    const { operators, faqs, tutorials } = this.props;
 
     if (!operators.data.length) {
       this.props.getOperators();
@@ -38,10 +38,14 @@ class HelpPage extends Page {
     if (!faqs.data.length) {
       this.props.getFAQs();
     }
+
+    if (!tutorials.data.length) {
+      this.props.getTutorials();
+    }
   }
 
   render() {
-    const { url, faqs } = this.props;
+    const { url, faqs, tutorials } = this.props;
     const tab = url.query.tab || 'overview';
 
     return (
@@ -81,12 +85,14 @@ class HelpPage extends Page {
         {tab === 'overview' &&
           <HelpOverview
             faqs={faqs}
+            tutorials={tutorials}
           />
         }
 
         {tab === 'how-otp-works' &&
           <HelpHowOTPWorks
             url={url}
+            tutorials={tutorials}
           />
         }
 
@@ -117,7 +123,8 @@ export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
-    faqs: state.help.faqs
+    faqs: state.help.faqs,
+    tutorials: state.help.tutorials
   }),
-  { getOperators, getFAQs }
+  { getOperators, getFAQs, getTutorials }
 )(HelpPage)));

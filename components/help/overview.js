@@ -11,7 +11,9 @@ const HelpOverview = props => (
     className="c-section"
   >
     <div className="l-container">
-      <Gallery1 />
+      <Gallery1
+        tutorials={props.tutorials}
+      />
       <Gallery2 />
       <Gallery3
         faqs={props.faqs}
@@ -21,7 +23,8 @@ const HelpOverview = props => (
   );
 
 HelpOverview.propTypes = {
-  faqs: PropTypes.object
+  faqs: PropTypes.object,
+  tutorials: PropTypes.object
 };
 
 export default HelpOverview;

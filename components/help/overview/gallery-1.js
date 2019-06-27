@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -6,40 +7,55 @@ import { injectIntl, intlShape } from 'react-intl';
 import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 // Components
+import Spinner from 'components/ui/spinner';
+
+// Components
 import Card from 'components/ui/card';
 
 function Gallery1(props) {
+  const { data, loading, error } = props.tutorials;
+
   return (
     <div className="c-gallery">
       <h2 className="c-title">
         {props.intl.formatMessage({ id: 'help.tabs.howto' })}
       </h2>
 
-      <div className="row l-row">
-        {HOW_OTP_WORKS_HELP.slice(0, 3).map(article => (
-          <div
-            key={article.id}
-            className="columns small-12 medium-4"
-          >
-            <Card
-              theme="-primary"
-              title={props.intl.formatMessage({ id: article.title })}
-              description={props.intl.formatMessage({ id: article.description })}
-              link={{
-                label: props.intl.formatMessage({ id: article.link.label }),
-                href: article.link.href
-              }}
-            />
-          </div>
+      <div className="gallery-content">
+        <div className="row l-row">
+          <Spinner className="-transparent -small" isLoading={loading || error} />
+
+          {data.slice(0, 3).map(tutorial => (
+            <div
+              key={tutorial.id}
+              className="columns small-12 medium-4"
+            >
+              <Card
+                theme="-primary"
+                title={tutorial.name}
+                description={tutorial.description}
+                link={{
+                  label: 'Read more',
+                  href: `/help/how-otp-works?article=tutorial-article-${tutorial.id}`
+                }}
+              />
+            </div>
           ))}
 
+        </div>
+        {data.length === 0 &&
+          <p>
+            {props.intl.formatMessage({ id: 'help.tabs.faqs.overview.no_faqs' }) }
+          </p>
+        }
       </div>
     </div>
   );
 }
 
 Gallery1.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  tutorials: PropTypes.object
 };
 
 export default injectIntl(Gallery1);
