@@ -6,6 +6,11 @@ class Validator {
         validate(value) {
           const regex = /.*\S.*/;
           const val = (typeof value !== 'undefined' && value !== null) ? value : '';
+
+          if (typeof value === 'boolean') {
+            return value;
+          }
+
           return regex.test(val);
         },
         message() {

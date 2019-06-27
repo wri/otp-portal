@@ -18,6 +18,7 @@ import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Select from 'components/form/SelectInput';
+import Checkbox from 'components/form/Checkbox';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -55,7 +56,8 @@ class UserNewForm extends React.Component {
         operator_id: '',
         password: '',
         password_confirmation: '',
-        permissions_request: 'operator'
+        permissions_request: 'operator',
+        agree: false
       },
       submitting: false,
       submitted: false
@@ -233,6 +235,21 @@ class UserNewForm extends React.Component {
                 }}
               >
                 {Input}
+              </Field>
+
+              <Field
+                ref={(c) => { if (c) FORM_ELEMENTS.elements.agree = c; }}
+                onChange={value => this.onChange({ agree: value.checked })}
+                className="-fluid"
+                validations={['required']}
+                properties={{
+                  required: true,
+                  name: 'agree',
+                  label: 'by creating your account, you agree to the terms of service', // this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
+                  checked: this.state.form.agree
+                }}
+              >
+                {Checkbox}
               </Field>
             </fieldset>
 
