@@ -316,7 +316,25 @@
             margin: 0 0 0 5px;
           }
         }
+
+        .graph-list-group-item {
+          margin-top: $space-1;
+
+          > .label {
+            display: block;
+            line-height: 1.25;
+            color: $color-text-1;
+            font-size: $font-size-small;
+            font-weight: 500;
+          }
+
+          .graph-list {
+            margin-top: $space-1;
+            margin-left: $space-1 * 2;
+          }
+        }
       }
+
 
       &.-disclaimer {
         margin: #{$space-1 * 2} 0 0;

@@ -155,10 +155,16 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       legendConfig: {
         type: 'basic',
         items: [
-          { name: 'Uncategorized', color: '#e98300' },
-          { name: 'Ventes de coupe', color: '#e92000' },
-          { name: 'UFA', color: '#e95800' },
-          { name: 'Communal', color: '#e9A700' }
+          { name: 'FMU', color: '#e98300' },
+          {
+            name: 'Cameroon',
+            group: true,
+            items: [
+              { name: 'Ventes de coupe', color: '#e92000' },
+              { name: 'UFA', color: '#e95800' },
+              { name: 'Communal', color: '#e9A700' }
+            ]
+          }
         ]
       },
       layout: {},
