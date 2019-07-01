@@ -26,14 +26,6 @@ process.on('unhandledRejection', (reason, p) => {
   console.info('Unhandled Rejection: Promise:', p, 'Reason:', reason);
 });
 
-function ensureSec(req, res, callback) {
-  if (process.env.NODE_ENV === 'development' || req.headers['x-forwarded-proto'] === 'https') {
-    return callback();
-  }
-
-  return res.redirect(`https://${req.headers.host}${req.path}`);
-}
-
 // Default when run with `npm start` is 'production' and default port is '80'
 // `npm run dev` defaults mode to 'development' & port to '3000'
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -157,7 +149,7 @@ app.prepare()
     server.get('/signup', (req, res) => app.render(req, res, '/signup', Object.assign(req.params, req.query)));
 
     // LOGIN
-    server.post('/login', ensureSec, (req, res) => {
+    server.post('/login', (req, res) => {
       request({
         url: `${process.env.OTP_API}/login`,
         headers: {
