@@ -204,6 +204,8 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         Cell: (attr) => {
                                           const documents = attr.value;
 
+                                          if (!documents.length) return null;
+
                                           return documents.map((d) => {
                                             if (d.attachment && d.attachment.url) {
                                               return (
