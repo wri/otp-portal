@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { encode } from 'utils/general';
 
 export default function Popup(props) {
-  const { title, operator, list, id } = props;
+  const { title, operator, list, id, fmu_type: fmuType } = props;
 
   const parse = (v) => {
     if (!v || v === 'null') { return '-'; }
@@ -32,14 +32,14 @@ export default function Popup(props) {
       }
 
       {list && operator && operator.id &&
-        <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: 'fmus-documents', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation?fmuId=${id}&subtab=fmus-documents`}>
+        <Link href={{ pathname: '/operators-detail', query: { id: operator.id, subtab: fmuType || 'fmu', tab: 'documentation', fmuId: id } }} as={`/operators/${operator.id}/documentation?fmuId=${id}&subtab=${fmuType || 'fmu'}`}>
           <a className="c-button -tertiary -fullwidth -ellipsis -small">
             Documentation
           </a>
         </Link>
       }
 
-      { id &&
+      {id &&
         <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [id] }) } }}>
           <a className="c-button -tertiary -fullwidth -ellipsis -small">
             Observations
@@ -62,6 +62,7 @@ export default function Popup(props) {
 Popup.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
+  fmu_type: PropTypes.string,
   operator: PropTypes.object,
   list: PropTypes.array
 };

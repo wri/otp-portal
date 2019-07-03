@@ -19,18 +19,6 @@ const TABS_OPERATORS_DETAIL = [{
   number: 7
 }];
 
-
-const TABS_DOCUMENTATION_OPERATORS_DETAIL = [{
-  label: 'Operator documents',
-  value: 'operator-documents'
-}, {
-  label: 'FMUs documents',
-  value: 'fmus-documents'
-}, {
-  label: 'Chronological view',
-  value: 'chronological-view'
-}];
-
 const MAP_LAYERS_OPERATORS_DETAIL = [
   {
     id: 'loss',
@@ -300,6 +288,5 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
 
 export {
   TABS_OPERATORS_DETAIL,
-  TABS_DOCUMENTATION_OPERATORS_DETAIL,
   MAP_LAYERS_OPERATORS_DETAIL
 };

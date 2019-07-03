@@ -291,6 +291,7 @@ const MAP_LAYERS_OPERATORS = [
                   id: props.operator_id,
                   name: props.company_na
                 },
+                fmu_type: props.fmu_type,
                 list: [{
                   label: 'Company',
                   value: props.company_na
