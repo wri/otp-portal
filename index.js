@@ -163,7 +163,10 @@ app.prepare()
           req.session.user = data;
           res.json(data);
         })
-        .catch(() => res.status(401).send('User unathorized'));
+        .catch((e) => {
+          console.error(e);
+          res.status(401).send('Something went wrong!!. User unauthorized.');
+        });
     });
 
     server.get('/logout', (req, res) => {

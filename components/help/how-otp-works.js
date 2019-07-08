@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StickyContainer, Sticky } from 'react-sticky';
+import Spinner from 'components/ui/spinner';
+import Html from 'components/html';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
-
-import { HOW_OTP_WORKS_HELP } from 'constants/help';
 
 let MoveTo;
 
@@ -34,10 +34,13 @@ class HelpHowOTPWorks extends React.Component {
   }
 
   render() {
+    const { data, loading, error } = this.props.tutorials;
+
     return (
       <div
         className="c-section"
       >
+        <Spinner className="-transparent -small" isLoading={loading || error} />
         <div className="l-container">
           <StickyContainer>
             <div className="row l-row">
@@ -51,12 +54,12 @@ class HelpHowOTPWorks extends React.Component {
                         </h3>
                         <nav>
                           <ul>
-                            {HOW_OTP_WORKS_HELP.map(article =>
+                            {data.map(tutorial =>
                               <li
-                                key={article.id}
-                                onClick={() => this.triggerScrollTo(`#${article.id}`)}
+                                key={tutorial.id}
+                                onClick={() => this.triggerScrollTo(`#tutorial-article-${tutorial.id}`)}
                               >
-                                {this.props.intl.formatMessage({ id: article.title })}
+                                {tutorial.name}
                               </li>
                             )}
                           </ul>
@@ -68,23 +71,20 @@ class HelpHowOTPWorks extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {HOW_OTP_WORKS_HELP.map(article =>
+                {data.map(tutorial =>
                   <article
-                    key={article.id}
-                    id={article.id}
+                    key={tutorial.id}
+                    id={`tutorial-article-${tutorial.id}`}
                     className="c-article"
                   >
                     <header>
                       <h2 className="c-title">
-                        {this.props.intl.formatMessage({ id: article.title })}
+                        {tutorial.name}
                       </h2>
                     </header>
                     <div className="content">
                       <div className="description">
-                        <p>
-                          {this.props.intl.formatMessage({ id: article.description })}
-                        </p>
-                        <img src="/static/images/static-header/bg-help.jpg" alt={this.props.intl.formatMessage({ id: article.title })} />
+                        <Html html={tutorial.description} />
                       </div>
                     </div>
                   </article>
@@ -100,7 +100,8 @@ class HelpHowOTPWorks extends React.Component {
 
 HelpHowOTPWorks.propTypes = {
   intl: intlShape.isRequired,
-  url: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired,
+  tutorials: PropTypes.object
 };
 
 export default injectIntl(HelpHowOTPWorks);

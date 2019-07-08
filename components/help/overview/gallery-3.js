@@ -21,26 +21,22 @@ function Gallery3(props) {
       <div className="gallery-content">
         <div className="row l-row">
           <Spinner className="-transparent -small" isLoading={loading || error} />
-          {data.map((faq, i) => {
-            let theme = (i % 3 === 0) ? '-secondary' : '-primary';
-            theme += `${i >= 3 ? ' -trailing' : ''}`;
-            return (
-              <div
-                key={faq.id}
-                className="columns small-12 medium-6"
-              >
-                <Card
-                  theme={theme}
-                  title={faq.question}
-                  description={faq.answer}
-                  link={{
-                    label: props.intl.formatMessage({ id: 'help.tabs.faqs.overview.link.label' }),
-                    href: `/help/faqs?article=faq-article-${faq.id}`
-                  }}
-                />
-              </div>
-            );
-          })}
+          {data.map(faq => (
+            <div
+              key={faq.id}
+              className="columns small-12 medium-6"
+            >
+              <Card
+                theme="-primary"
+                title={faq.question}
+                description={faq.answer}
+                link={{
+                  label: props.intl.formatMessage({ id: 'help.tabs.faqs.overview.link.label' }),
+                  href: `/help/faqs?article=faq-article-${faq.id}`
+                }}
+              />
+            </div>
+          ))}
         </div>
         {data.length === 0 &&
           <p>

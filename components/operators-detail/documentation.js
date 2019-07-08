@@ -9,9 +9,6 @@ import { injectIntl, intlShape } from 'react-intl';
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
-// Constants
-import { TABS_DOCUMENTATION_OPERATORS_DETAIL } from 'constants/operators-detail';
-
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
@@ -50,6 +47,7 @@ class OperatorsDetailDocumentation extends React.Component {
   render() {
     const { operatorsDetail, operatorDocumentation, url } = this.props;
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
+    const groupedByForestType = HELPERS_DOC.getGroupedByForestType(operatorDocumentation);
 
     return (
       <div>
@@ -74,9 +72,19 @@ class OperatorsDetailDocumentation extends React.Component {
         </div>
 
         <StaticTabs
-          options={TABS_DOCUMENTATION_OPERATORS_DETAIL.map(t => (
-            { ...t, label: this.props.intl.formatMessage({ id: t.value }) }
-          ))}
+          options={[
+            {
+              label: 'Operator documents',
+              value: 'operator-documents'
+            },
+            ...Object.keys(groupedByForestType).map(t => (
+              { label: `${t} ${this.props.intl.formatMessage({ id: 'documents' })}`, value: t }
+            )),
+            {
+              label: 'Chronological view',
+              value: 'chronological-view'
+            }
+          ]}
           defaultSelected={this.state.tab}
           onChange={this.triggerChangeTab}
         />
@@ -87,13 +95,21 @@ class OperatorsDetailDocumentation extends React.Component {
               <DocumentsByOperator data={groupedByType['operator-document-countries']} id={url.query.id} />
             }
 
-            {this.state.tab === 'fmus-documents' &&
-              <DocumentsByFMU
-                group="fmu" data={groupedByType['operator-document-fmus']}
-                id={url.query.id}
-                query={url.query}
-              />
-            }
+            {Object.keys(groupedByForestType).map((k) => {
+              if (this.state.tab === k) {
+                return (
+                  <DocumentsByFMU
+                    key={k}
+                    group="fmu"
+                    data={groupedByForestType[k]}
+                    id={url.query.id}
+                    query={url.query}
+                  />
+                );
+              }
+
+              return null;
+            })}
 
             {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&
               <DocumentsStackedTimeline data={groupedByType['operator-document-countries']} id={url.query.id} />

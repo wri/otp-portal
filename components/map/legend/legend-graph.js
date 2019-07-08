@@ -22,12 +22,30 @@ class LegendGraph extends React.Component {
         return (
           <div className={`graph -${config.type}`}>
             <div className="graph-list">
-              {config.items.map(item => (
-                <div className="graph-list-item" key={item.name}>
-                  <span className="color" style={{ background: item.color }} />
-                  <span className="label">{item.name}</span>
-                </div>
-              ))}
+              {config.items.map((item) => {
+                const className = classnames({
+                  'graph-list-item': !item.group,
+                  'graph-list-group-item': item.group
+                });
+
+                return (
+                  <div className={className} key={item.name}>
+                    {!item.group && <span className="color" style={{ background: item.color }} />}
+                    <span className="label">{item.name}</span>
+
+                    {!!item.group && (
+                      <div className="graph-list">
+                        {item.items.map(i => (
+                          <div className="graph-list-item" key={i.name}>
+                            <span className="color" style={{ background: i.color }} />
+                            <span className="label">{i.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         );

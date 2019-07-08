@@ -25,9 +25,7 @@ class DocumentsStackedTimeline extends React.Component {
 
     this.props.getDocuments(id);
 
-    if (this.props.documentation.length) {
-      this.drawChart(this.props.documentation);
-    }
+    this.drawChart(this.props.documentation);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,20 +34,18 @@ class DocumentsStackedTimeline extends React.Component {
     }
   }
 
-  shouldComponentUpdate() {
-    return false;
-  }
-
   componentWillUnmount() {
     delete this.chartInstance;
   }
 
   drawChart(data) {
-    const selector = '#chart-stacked-timeline';
-    // remove current chart if it exists
-    document.querySelector(selector).innerHTML = '';
+    if (data.length) {
+      const selector = '#chart-stacked-timeline';
+      // remove current chart if it exists
+      document.querySelector(selector).innerHTML = '';
 
-    this.chartInstance = new StackedTimeline(selector, data);
+      this.chartInstance = new StackedTimeline(selector, data);
+    }
 
     this.setState({
       loading: false
@@ -60,6 +56,7 @@ class DocumentsStackedTimeline extends React.Component {
     return (
       <div className="c-stacked-timeline">
         <Spinner className="-transparent -small" isLoading={this.state.loading} />
+
         <ChartLegend
           list={LEGEND_CHRONOLOGICAL.list}
           className="-horizontal -no-gutter-top"

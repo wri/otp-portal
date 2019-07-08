@@ -71,7 +71,7 @@ class HelpFaqs extends React.Component {
               </div>
 
               <div className="columns small-12 medium-8 medium-offset-1">
-                {data.map(faq =>
+                {data.slice(0, 3).map(faq =>
                   <article
                     key={faq.id}
                     id={`faq-article-${faq.id}`}

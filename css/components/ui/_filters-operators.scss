@@ -3,6 +3,8 @@
   background-color: $color-primary;
   padding: $space-1 * 4 $space-1 * 4 0;
   color: $color-tertiary;
+  position: relative;
+  z-index: 2;
 
   p {
     line-height: 1.5;

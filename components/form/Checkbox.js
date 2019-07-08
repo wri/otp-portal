@@ -11,6 +11,10 @@ export default class Checkbox extends FormElement {
    * - triggerChange
   */
   triggerChange(evt) {
+    this.setState({
+      value: evt.currentTarget.checked
+    });
+
     const { value } = this.props.properties;
 
     this.props.onChange && this.props.onChange({

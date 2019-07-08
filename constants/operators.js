@@ -242,10 +242,16 @@ const MAP_LAYERS_OPERATORS = [
         toggle: { layerId: 'forest_concession' },
         color: '#e98300',
         items: [
-          { name: 'Uncategorized', color: '#e98300' },
-          { name: 'Ventes de coupe', color: '#e92000' },
-          { name: 'UFA', color: '#e95800' },
-          { name: 'Communal', color: '#e9A700' }
+          { name: 'FMU', color: '#e98300' },
+          {
+            name: 'Cameroon',
+            group: true,
+            items: [
+              { name: 'Ventes de coupe', color: '#e92000' },
+              { name: 'UFA', color: '#e95800' },
+              { name: 'Communal', color: '#e9A700' }
+            ]
+          }
         ]
       },
       before: ['loss_layer', 'gain_layer'],
@@ -285,6 +291,7 @@ const MAP_LAYERS_OPERATORS = [
                   id: props.operator_id,
                   name: props.company_na
                 },
+                fmu_type: props.fmu_type,
                 list: [{
                   label: 'Company',
                   value: props.company_na
