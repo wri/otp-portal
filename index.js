@@ -111,6 +111,19 @@ app.prepare()
       });
     });
 
+    // COUNTRIES
+    server.get('/countries', (req, res) => {
+      const { query } = parse(req.url, true);
+      return app.render(req, res, '/countries', Object.assign(req.params, query));
+    });
+
+
+    server.get('/countries/:id', (req, res) => {
+      const { query } = parse(req.url, true);
+      return app.render(req, res, '/countries-detail', Object.assign(req.params, query));
+    });
+
+
     // OPERATORS
     server.get('/operators', (req, res) => {
       const { query } = parse(req.url, true);

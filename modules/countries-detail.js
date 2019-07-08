@@ -67,7 +67,7 @@ export function getCountry(id) {
     dispatch({ type: GET_COUNTRY_LOADING });
 
     const includeFields = [
-      // 'country',
+      'required-operator-documents'
       // 'observations',
       // 'observations.severity',
       // 'observations.subcategory',

@@ -1,3 +1,4 @@
+export { default as countries } from './countries';
 export { default as countriesDetail } from './countries-detail';
 export { default as home } from './home';
 export { default as modal } from './modal';

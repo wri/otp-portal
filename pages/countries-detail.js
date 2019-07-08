@@ -88,14 +88,14 @@ class CountriesDetail extends Page {
           //   rankCount: countriesDetail.data['country-operators'],
           //   country: !!countriesDetail.data.country && countriesDetail.data.country.name
           // })}
-          background="/static/images/static-header/bg-country-detail.jpg"
+          background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
-        <CountriesDetailDocumentation
+        {/* <CountriesDetailDocumentation
           countriesDetail={countriesDetail}
           countryDocumentation={countryDocumentation}
           url={url}
-        />
+        /> */}
       </Layout>
     );
   }
