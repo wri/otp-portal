@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
-import { HOW_OTP_WORKS_HELP } from 'constants/help';
-
 // Components
 import Spinner from 'components/ui/spinner';
 

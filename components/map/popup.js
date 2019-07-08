@@ -10,6 +10,7 @@ export default function Popup(props) {
 
   const parse = (v) => {
     if (!v || v === 'null') { return '-'; }
+
     return v;
   };
 
