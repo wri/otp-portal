@@ -18,6 +18,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Spinner from 'components/ui/spinner';
 
+import CountriesList from 'components/countries/list';
 
 class CountriesDetail extends Page {
   /**
@@ -55,6 +56,13 @@ class CountriesDetail extends Page {
           // })}
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
+
+        <div className="c-section">
+          <div className="l-container">
+            <CountriesList />
+          </div>
+        </div>
+
       </Layout>
     );
   }
