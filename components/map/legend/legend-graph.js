@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 class LegendGraph extends React.Component {
 
   constructor(props) {
@@ -17,6 +20,7 @@ class LegendGraph extends React.Component {
 
   getLegendGraph() {
     const config = this.props.config;
+
     switch (config.type) {
       case 'basic': {
         return (
@@ -31,14 +35,14 @@ class LegendGraph extends React.Component {
                 return (
                   <div className={className} key={item.name}>
                     {!item.group && <span className="color" style={{ background: item.color }} />}
-                    <span className="label">{item.name}</span>
+                    <span className="label">{this.props.intl.formatMessage({ id: item.name })}</span>
 
                     {!!item.group && (
                       <div className="graph-list">
                         {item.items.map(i => (
                           <div className="graph-list-item" key={i.name}>
                             <span className="color" style={{ background: i.color }} />
-                            <span className="label">{i.name}</span>
+                            <span className="label">{this.props.intl.formatMessage({ id: i.name })}</span>
                           </div>
                         ))}
                       </div>
@@ -68,14 +72,14 @@ class LegendGraph extends React.Component {
                     onClick={() => this.triggerToggleGroup(item)}
                   >
                     <span className={colorClass} style={{ background: itemColor }} />
-                    {item.name}
+                    {this.props.intl.formatMessage({ id: item.name })}
                   </div>
                   {this.state.groups[item.name] &&
                     <div className="graph-list">
                       {item.items.map(it => (
                         <div className="graph-list-item" key={it.name}>
                           <span className="color" style={{ background: it.color }} />
-                          <span className="label">{it.name}</span>
+                          <span className="label">{this.props.intl.formatMessage({ id: it.name })}</span>
                         </div>
                       ))}
                     </div>
@@ -96,7 +100,7 @@ class LegendGraph extends React.Component {
               {config.items.map(item => (
                 <div className="graph-list-item" key={item.name}>
                   <span className="color" style={{ background: item.color }} />
-                  <span className="label">{item.name}</span>
+                  <span className="label">{this.props.intl.formatMessage({ id: item.name })}</span>
                 </div>
               ))}
             </div>
@@ -136,7 +140,7 @@ class LegendGraph extends React.Component {
                   {config.disclaimer.map(item => (
                     <div className="graph-list-item" key={item.name}>
                       <span className="color" style={{ background: item.color }} />
-                      <span className="label">{item.name}</span>
+                      <span className="label">{this.props.intl.formatMessage({ id: item.name })}</span>
                     </div>
                   ))}
                 </div>
@@ -172,7 +176,8 @@ class LegendGraph extends React.Component {
 }
 
 LegendGraph.propTypes = {
+  intl: intlShape.isRequired,
   config: PropTypes.object
 };
 
-export default LegendGraph;
+export default injectIntl(LegendGraph);

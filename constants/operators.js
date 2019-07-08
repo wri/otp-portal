@@ -247,9 +247,9 @@ const MAP_LAYERS_OPERATORS = [
             name: 'Cameroon',
             group: true,
             items: [
-              { name: 'Ventes de coupe', color: '#e92000' },
-              { name: 'UFA', color: '#e95800' },
-              { name: 'Communal', color: '#e9A700' }
+              { name: 'ventes_de_coupe', color: '#e92000' },
+              { name: 'ufa', color: '#e95800' },
+              { name: 'communal', color: '#e9A700' }
             ]
           }
         ]
