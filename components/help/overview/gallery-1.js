@@ -43,9 +43,10 @@ function Gallery1(props) {
           ))}
 
         </div>
+
         {data.length === 0 &&
           <p>
-            {props.intl.formatMessage({ id: 'help.tabs.faqs.overview.no_faqs' }) }
+            {props.intl.formatMessage({ id: 'help.tabs.howto.overview.no_data' }) }
           </p>
         }
       </div>
