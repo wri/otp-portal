@@ -67,7 +67,9 @@ export function getCountry(id) {
     dispatch({ type: GET_COUNTRY_LOADING });
 
     const includeFields = [
-      'required-operator-documents'
+      // 'governments',
+      // 'required-operator-documents',
+      // 'required-operator-documents.required-operator-document-group'
       // 'observations',
       // 'observations.severity',
       // 'observations.subcategory',
@@ -85,7 +87,7 @@ export function getCountry(id) {
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
     const queryParams = queryString.stringify({
-      include: includeFields.join(','),
+      ...!!includeFields.length && { include: includeFields.join(',') },
       locale: language
     });
 
@@ -115,58 +117,6 @@ export function getCountry(id) {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_COUNTRY_ERROR,
-          payload: err.message
-        });
-      });
-  };
-}
-
-/* Action creators */
-export function getDocuments(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_COUNTRY_DOCUMENTS_LOADING });
-
-    const includeFields = [
-      'required-country-document.required-country-document-group'
-    ];
-
-    const filters = {
-      country_id: id
-    };
-
-    const queryParams = queryString.stringify({
-      include: includeFields.join(',')
-    });
-
-    const filterParams = Object.keys(filters).map(key =>
-      `filter[${key}]=${filters[key]}`
-    ).join('&');
-
-    fetch(`${process.env.OTP_API}/country-documents/?${queryParams}&${filterParams}&page[size]=3000`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then((country) => {
-        // Fetch from server ok -> Dispatch country and deserialize the data
-        const dataParsed = JSONA.deserialize(country);
-
-        dispatch({
-          type: GET_COUNTRY_DOCUMENTS_SUCCESS,
-          payload: dataParsed
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_COUNTRY_DOCUMENTS_ERROR,
           payload: err.message
         });
       });
