@@ -373,7 +373,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/COG',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/COG',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
@@ -411,7 +411,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/COD',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/COD',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
@@ -447,7 +447,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/CMR',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/CMR',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
