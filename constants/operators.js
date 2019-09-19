@@ -1,5 +1,6 @@
 import { render } from 'react-dom';
 import Popup from 'components/map/popup';
+import * as Cookies from 'js-cookie';
 
 const MAP_LAYERS_OPERATORS = [
   {
@@ -281,6 +282,25 @@ const MAP_LAYERS_OPERATORS = [
 
           const props = e.features[0].properties;
 
+          // TODO: to translate popup we need to refactor all the map
+          const fmuTypes = {
+            en: {
+              ufa: 'UFA',
+              ventes_de_coupe: 'Sale of standing volume',
+              communal: 'Communal forest'
+            },
+            fr: {
+              ufa: 'UFA',
+              ventes_de_coupe: 'Vente de coupe',
+              communal: 'Forêt communale'
+            },
+            ch: {
+              ufa: 'UFA',
+              ventes_de_coupe: 'Vente de coupe',
+              communal: 'Communal'
+            }
+          };
+
           this.popup.setLngLat(e.lngLat)
             .setDOMContent(
             render(
@@ -300,7 +320,7 @@ const MAP_LAYERS_OPERATORS = [
                   value: props.ccf_status
                 }, {
                   label: 'Type',
-                  value: props.fmu_type
+                  value: fmuTypes[Cookies.get('language') || 'en'][props.fmu_type]
                 }, {
                   label: 'Exploitant',
                   value: props.exploitant
@@ -373,7 +393,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/COG',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/COG?simplify=0.0000001',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
@@ -411,7 +431,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/COD',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/COD?simplify=0.0000001',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
@@ -447,7 +467,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: 'https://api.resourcewatch.org/v1/geostore/admin/CMR',
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/CMR?simplify=0.0000001',
         method: 'GET',
         parse: data => data.data.attributes.geojson
       }
