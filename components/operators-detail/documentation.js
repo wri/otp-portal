@@ -78,7 +78,7 @@ class OperatorsDetailDocumentation extends React.Component {
               value: 'operator-documents'
             },
             ...Object.keys(groupedByForestType).map(t => (
-              { label: `${t} ${this.props.intl.formatMessage({ id: 'documents' })}`, value: t }
+              { label: `${this.props.intl.formatMessage({ id: t })} ${this.props.intl.formatMessage({ id: 'documents' }).toLowerCase()}`, value: t }
             )),
             {
               label: 'Chronological view',
