@@ -74,6 +74,9 @@ class TermsPage extends Page {
             >
               <div className="row l-row">
                 <div className="columns small-12 medium-8">
+                  <header>
+                    <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.service' })}</h2>
+                  </header>
                   <div className="content">
                     <div className="description">
                       <p>{this.props.intl.formatMessage({ id: 'terms.pharagraph1' })}</p>
