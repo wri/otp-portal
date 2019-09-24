@@ -91,11 +91,11 @@ class CountriesDetail extends Page {
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
-        {/* <CountriesDetailDocumentation
+        <CountriesDetailDocumentation
           countriesDetail={countriesDetail}
           countryDocumentation={countryDocumentation}
           url={url}
-        /> */}
+        />
       </Layout>
     );
   }

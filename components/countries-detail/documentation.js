@@ -44,9 +44,8 @@ class OperatorsDetailDocumentation extends React.Component {
   }
 
   render() {
-    const { operatorsDetail, operatorDocumentation, url } = this.props;
-    const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
-    const groupedByForestType = HELPERS_DOC.getGroupedByForestType(operatorDocumentation);
+    const { countriesDetail, countryDocumentation, url } = this.props;
+    const groupedByType = HELPERS_DOC.getGroupedByType(countryDocumentation);
 
     return (
       <div>
@@ -58,13 +57,13 @@ class OperatorsDetailDocumentation extends React.Component {
                   {this.props.intl.formatMessage({
                     id: 'operator-detail.documents.title'
                   }, {
-                    percentage: HELPERS_DOC.getPercentage(operatorsDetail.data)
+                    percentage: HELPERS_DOC.getPercentage(countriesDetail.data)
                   })}
                 </h2>
               </header>
 
               <div className="content">
-                <DocumentsProvided data={operatorDocumentation} />
+                <DocumentsProvided data={countryDocumentation} />
               </div>
             </article>
           </div>
@@ -75,13 +74,6 @@ class OperatorsDetailDocumentation extends React.Component {
             {
               label: 'Operator documents',
               value: 'operator-documents'
-            },
-            ...Object.keys(groupedByForestType).map(t => (
-              { label: `${t} ${this.props.intl.formatMessage({ id: 'documents' })}`, value: t }
-            )),
-            {
-              label: 'Chronological view',
-              value: 'chronological-view'
             }
           ]}
           defaultSelected={this.state.tab}
@@ -93,22 +85,6 @@ class OperatorsDetailDocumentation extends React.Component {
             {this.state.tab === 'operator-documents' &&
               <DocumentsByOperator data={groupedByType['operator-document-countries']} id={url.query.id} />
             }
-
-            {Object.keys(groupedByForestType).map((k) => {
-              if (this.state.tab === k) {
-                return (
-                  <DocumentsByFMU
-                    key={k}
-                    group="fmu"
-                    data={groupedByForestType[k]}
-                    id={url.query.id}
-                    query={url.query}
-                  />
-                );
-              }
-
-              return null;
-            })}
           </div>
         </div>
       </div>
@@ -117,8 +93,8 @@ class OperatorsDetailDocumentation extends React.Component {
 }
 
 OperatorsDetailDocumentation.propTypes = {
-  operatorsDetail: PropTypes.object,
-  operatorDocumentation: PropTypes.array,
+  countriesDetail: PropTypes.object,
+  countryDocumentation: PropTypes.array,
   url: PropTypes.object,
   intl: intlShape.isRequired
 };

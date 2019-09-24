@@ -67,21 +67,10 @@ export function getCountry(id) {
     dispatch({ type: GET_COUNTRY_LOADING });
 
     const includeFields = [
-      // 'governments',
-      // 'required-operator-documents',
-      // 'required-operator-documents.required-operator-document-group'
-      // 'observations',
-      // 'observations.severity',
-      // 'observations.subcategory',
-      // 'observations.subcategory.category',
-      // 'observations.observation-report',
-      // 'observations.observation-documents',
-      // 'fmus',
-      // 'operator-document-countries.required-operator-document-country.required-operator-document-group',
-      // 'operator-document-countries.operator-document-annexes',
-      // 'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
-      // 'operator-document-fmus.operator-document-annexes',
-      // 'operator-document-fmus.fmu'
+      'governments',
+      'required-gov-documents',
+      'required-gov-documents.required-gov-document-group',
+      'required-gov-documents.gov-documents'
     ];
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
