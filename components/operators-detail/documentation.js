@@ -74,14 +74,14 @@ class OperatorsDetailDocumentation extends React.Component {
         <StaticTabs
           options={[
             {
-              label: 'Operator documents',
+              label: this.props.intl.formatMessage({ id: 'operator-documents' }),
               value: 'operator-documents'
             },
             ...Object.keys(groupedByForestType).map(t => (
-              { label: `${this.props.intl.formatMessage({ id: t || 'fmu' })} ${this.props.intl.formatMessage({ id: 'documents' }).toLowerCase()}`, value: t }
+              { label: `${this.props.intl.formatMessage({ id: `${(t || 'fmus')}-documents` })}`, value: t }
             )),
             {
-              label: 'Chronological view',
+              label: this.props.intl.formatMessage({ id: 'chronological-view' }),
               value: 'chronological-view'
             }
           ]}
