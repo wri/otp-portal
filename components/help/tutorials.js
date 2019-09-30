@@ -9,7 +9,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 let MoveTo;
 
-class HelpTools extends React.Component {
+class HelpTutorials extends React.Component {
 
   componentDidMount() {
     MoveTo = require('moveto'); //eslint-disable-line
@@ -34,7 +34,7 @@ class HelpTools extends React.Component {
   }
 
   render() {
-    const { data, loading, error } = this.props.tools;
+    const { data, loading, error } = this.props.tutorials;
 
     return (
       <div
@@ -98,10 +98,10 @@ class HelpTools extends React.Component {
   }
 }
 
-HelpTools.propTypes = {
+HelpTutorials.propTypes = {
   intl: intlShape.isRequired,
   url: PropTypes.object.isRequired,
-  tools: PropTypes.object
+  tutorials: PropTypes.object
 };
 
-export default injectIntl(HelpTools);
+export default injectIntl(HelpTutorials);

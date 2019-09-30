@@ -1,47 +1,60 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
 // Components
-import { LEGISLATION_AND_REGULATIONS_HELP } from 'constants/help';
+import Spinner from 'components/ui/spinner';
 
 // Components
 import Card from 'components/ui/card';
 
 function Gallery2(props) {
+  const { data, loading, error } = props.tools;
+
   return (
     <div className="c-gallery">
       <h2 className="c-title">
         {props.intl.formatMessage({ id: 'help.tabs.legislation' })}
       </h2>
 
-      <div className="row l-row">
-        {LEGISLATION_AND_REGULATIONS_HELP.slice(0, 3).map(article => (
-          <div
-            key={article.id}
-            className="columns small-12 medium-4"
-          >
-            <Card
-              theme="-primary"
-              title={props.intl.formatMessage({ id: article.title })}
-              description={props.intl.formatMessage({ id: article.description })}
-              link={{
-                label: props.intl.formatMessage({ id: article.link.label }),
-                href: article.link.href
-              }}
-              Component={<a href={article.site} target="_blank" rel="noopener noreferrer">{props.intl.formatMessage({ id: 'go_to_site' })}</a>}
-            />
-          </div>
+      <div className="gallery-content">
+        <div className="row l-row">
+          <Spinner className="-transparent -small" isLoading={loading || error} />
+
+          {data.slice(0, 3).map(tutorial => (
+            <div
+              key={tutorial.id}
+              className="columns small-12 medium-4"
+            >
+              <Card
+                theme="-primary"
+                title={tutorial.name}
+                description={tutorial.description}
+                link={{
+                  label: props.intl.formatMessage({ id: 'help.tabs.howto.post1.link.label' }),
+                  href: `/help/how-otp-works?article=tutorial-article-${tutorial.id}`
+                }}
+              />
+            </div>
           ))}
 
+        </div>
+
+        {data.length === 0 &&
+          <p>
+            {props.intl.formatMessage({ id: 'help.tabs.howto.overview.no_data' }) }
+          </p>
+        }
       </div>
     </div>
   );
 }
 
 Gallery2.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  tools: PropTypes.object
 };
 
 export default injectIntl(Gallery2);

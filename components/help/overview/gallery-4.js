@@ -11,12 +11,12 @@ import Spinner from 'components/ui/spinner';
 import Card from 'components/ui/card';
 
 function Gallery1(props) {
-  const { data, loading, error } = props.howtos;
+  const { data, loading, error } = props.tutorials;
 
   return (
     <div className="c-gallery">
       <h2 className="c-title">
-        {props.intl.formatMessage({ id: 'help.tabs.howto' })}
+        {props.intl.formatMessage({ id: 'help.tabs.tutorials' })}
       </h2>
 
       <div className="gallery-content">
@@ -54,7 +54,7 @@ function Gallery1(props) {
 
 Gallery1.propTypes = {
   intl: intlShape.isRequired,
-  howtos: PropTypes.object
+  tutorials: PropTypes.object
 };
 
 export default injectIntl(Gallery1);
