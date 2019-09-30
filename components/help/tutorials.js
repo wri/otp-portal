@@ -50,7 +50,7 @@ class HelpTutorials extends React.Component {
                     ({ style }) => (
                       <aside className="c-aside" style={style}>
                         <h3>
-                          {this.props.intl.formatMessage({ id: 'help.tabs.howto' })}
+                          {this.props.intl.formatMessage({ id: 'help.tabs.tutorials' })}
                         </h3>
                         <nav>
                           <ul>
