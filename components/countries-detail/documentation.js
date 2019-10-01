@@ -21,7 +21,7 @@ class OperatorsDetailDocumentation extends React.Component {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'operator-documents'
+      tab: this.props.url.query.subtab || 'country-documents'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -31,7 +31,7 @@ class OperatorsDetailDocumentation extends React.Component {
     const { id } = this.props.url.query;
 
     const location = {
-      pathname: '/operators-detail',
+      pathname: '/countries-detail',
       query: {
         id,
         tab: 'documentation',
@@ -39,7 +39,7 @@ class OperatorsDetailDocumentation extends React.Component {
       }
     };
 
-    Router.replace(location, `/operators/${id}/documentation?subtab=${tab}`);
+    Router.replace(location, `/countries/${id}/documentation?subtab=${tab}`);
     this.setState({ tab });
   }
 
@@ -72,8 +72,8 @@ class OperatorsDetailDocumentation extends React.Component {
         <StaticTabs
           options={[
             {
-              label: 'Operator documents',
-              value: 'operator-documents'
+              label: 'Country documents',
+              value: 'country-documents'
             }
           ]}
           defaultSelected={this.state.tab}
@@ -82,8 +82,8 @@ class OperatorsDetailDocumentation extends React.Component {
 
         <div className="c-section">
           <div className="l-container">
-            {this.state.tab === 'operator-documents' &&
-              <DocumentsByOperator data={groupedByType['operator-document-countries']} id={url.query.id} />
+            {this.state.tab === 'country-documents' &&
+              <DocumentsByOperator data={groupedByType['gov-documents']} id={url.query.id} />
             }
           </div>
         </div>

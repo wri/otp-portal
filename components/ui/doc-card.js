@@ -37,6 +37,10 @@ class DocCard extends React.Component {
     onChange: PropTypes.func
   };
 
+  static defaultProps = {
+    annexes: []
+  }
+
   constructor(props) {
     super(props);
 

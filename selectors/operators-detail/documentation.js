@@ -11,6 +11,7 @@ const getParsedDocumentation = createSelector(
   (_operatorsDetail) => {
     let countryDocumentation = [];
     let fmuDocumentation = [];
+    debugger;
 
     if (_operatorsDetail.data['operator-document-countries']) {
       countryDocumentation = _operatorsDetail.data['operator-document-countries'].map((doc) => {

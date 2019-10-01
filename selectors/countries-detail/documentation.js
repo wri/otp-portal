@@ -10,58 +10,31 @@ const getParsedDocumentation = createSelector(
   countriesDetail,
   (_countriesDetail) => {
     let countryDocumentation = [];
-    let fmuDocumentation = [];
 
-    if (_countriesDetail.data['country-document-countries']) {
-      countryDocumentation = _countriesDetail.data['country-document-countries'].map((doc) => {
-        if (doc['required-country-document-country']) {
-          return {
-            id: doc.id,
-            requiredDocId: doc['required-country-document-country'].id,
-            url: doc.attachment.url,
-            type: doc.type,
-            title: doc['required-country-document-country'].name,
-            explanation: doc['required-country-document-country'].explanation,
-            category: doc['required-country-document-country']['required-country-document-group'].name,
-            categoryPosition: doc['required-country-document-country']['required-country-document-group'].position,
-            status: doc.status,
-            reason: doc.reason,
-            startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
-          };
-        }
-        return null;
+    if (_countriesDetail.data['required-gov-documents']) {
+      countryDocumentation = _countriesDetail.data['required-gov-documents'].map((requiredDoc) => {
+
+        const doc = requiredDoc['gov-documents'].find(d => d.current);
+
+        return {
+          id: doc.id,
+          requiredDocId: requiredDoc.id,
+          // url: doc.attachment.url,
+          type: doc.type,
+          title: requiredDoc.name,
+          explanation: requiredDoc.explanation,
+          category: requiredDoc['required-gov-document-group'].name,
+          categoryPosition: requiredDoc['required-gov-document-group'].position,
+          status: doc.status,
+          reason: doc.reason,
+          startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+          endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+          // annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
+        };
       });
     }
 
-    if (_countriesDetail.data['country-document-fmus']) {
-      fmuDocumentation = _countriesDetail.data['country-document-fmus'].map((doc) => {
-        if (doc['required-country-document-fmu']) {
-          return {
-            id: doc.id,
-            requiredDocId: doc['required-country-document-fmu'].id,
-            url: doc.attachment.url,
-            type: doc.type,
-            title: doc['required-country-document-fmu'].name,
-            explanation: doc['required-country-document-fmu'].explanation,
-            category: doc['required-country-document-fmu']['required-country-document-group'].name,
-            categoryPosition: doc['required-country-document-fmu']['required-country-document-group'].position,
-            status: doc.status,
-            reason: doc.reason,
-            fmu: doc.fmu,
-            startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-            annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
-          };
-        }
-        return null;
-      });
-
-      return [...compact(fmuDocumentation), ...compact(countryDocumentation)];
-    }
-
-    return [];
+    return countryDocumentation;
   }
 );
 
