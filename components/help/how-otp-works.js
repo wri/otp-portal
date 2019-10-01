@@ -34,7 +34,7 @@ class HelpHowOTPWorks extends React.Component {
   }
 
   render() {
-    const { data, loading, error } = this.props.tutorials;
+    const { data, loading, error } = this.props.howtos;
 
     return (
       <div
@@ -101,7 +101,7 @@ class HelpHowOTPWorks extends React.Component {
 HelpHowOTPWorks.propTypes = {
   intl: intlShape.isRequired,
   url: PropTypes.object.isRequired,
-  tutorials: PropTypes.object
+  howtos: PropTypes.object
 };
 
 export default injectIntl(HelpHowOTPWorks);
