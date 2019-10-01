@@ -13,7 +13,6 @@ import { HELPERS_DOC } from 'utils/documentation';
 import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
-import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
 
 class OperatorsDetailDocumentation extends React.Component {
 
