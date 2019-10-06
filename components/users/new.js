@@ -19,6 +19,7 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Select from 'components/form/SelectInput';
 import Checkbox from 'components/form/Checkbox';
+import RadioGroup from 'components/form/RadioGroup';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -54,6 +55,7 @@ class UserNewForm extends React.Component {
         nickname: '',
         email: '',
         operator_id: '',
+        country_id: '',
         password: '',
         password_confirmation: '',
         permissions_request: 'operator',
@@ -130,24 +132,68 @@ class UserNewForm extends React.Component {
         {!submitted &&
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
-              {/* Operators */}
+              {/* Permission request */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
-                onChange={value => this.onChange({ operator_id: value })}
+                ref={(c) => { { if (c) FORM_ELEMENTS.elements.permissions_request = c; } }}
+                onChange={value => this.onChange({ permissions_request: value })}
                 validations={['required']}
                 className="-fluid"
-                hint={`${this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">${this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a>`}
-                options={HELPERS_REGISTER.getOperators(this.props.operators.data)}
+                options={[
+                  { label: 'Producer', value: 'operator' },
+                  { label: 'Government', value: 'government' }
+                ]}
+                hint={this.props.intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
                 properties={{
-                  name: 'operator_id',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),
+                  name: 'permissions_request',
+                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.permissions_request' }),
                   required: true,
-                  instanceId: 'select.operator_id',
-                  default: this.state.form.operator_id
+                  default: this.state.form.permissions_request
                 }}
               >
-                {Select}
+                {RadioGroup}
               </Field>
+
+
+              {/* Countries */}
+              {this.state.form.permissions_request === 'government' &&
+                <Field
+                  ref={(c) => { if (c) FORM_ELEMENTS.elements.country_id = c; }}
+                  onChange={value => this.onChange({ country_id: value })}
+                  validations={['required']}
+                  className="-fluid"
+                  options={HELPERS_REGISTER.getOperators(this.props.countries.data)}
+                  properties={{
+                    name: 'country_id',
+                    label: this.props.intl.formatMessage({ id: 'signup.user.form.field.country' }),
+                    required: true,
+                    instanceId: 'select.country_id',
+                    default: this.state.form.country_id
+                  }}
+                >
+                  {Select}
+                </Field>
+              }
+
+              {/* Operators */}
+              {this.state.form.permissions_request === 'operator' &&
+                <Field
+                  ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                  onChange={value => this.onChange({ operator_id: value })}
+                  validations={['required']}
+                  className="-fluid"
+                  hint={`${this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">${this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a>`}
+                  options={HELPERS_REGISTER.getOperators(this.props.operators.data)}
+                  properties={{
+                    name: 'operator_id',
+                    label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),
+                    required: true,
+                    instanceId: 'select.operator_id',
+                    default: this.state.form.operator_id
+                  }}
+                >
+                  {Select}
+                </Field>
+              }
 
               {/* Name */}
               <Field
@@ -303,6 +349,7 @@ class UserNewForm extends React.Component {
 
 UserNewForm.propTypes = {
   operators: PropTypes.object,
+  countries: PropTypes.object,
   saveUser: PropTypes.func,
   onSubmit: PropTypes.func,
   intl: intlShape.isRequired
@@ -311,7 +358,8 @@ UserNewForm.propTypes = {
 
 export default injectIntl(connect(
   state => ({
-    operators: state.operators
+    operators: state.operators,
+    countries: state.countries
   }),
   { saveUser }
 )(UserNewForm));

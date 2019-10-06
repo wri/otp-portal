@@ -13,11 +13,11 @@ const getParsedDocumentation = createSelector(
 
     if (_countriesDetail.data['required-gov-documents']) {
       countryDocumentation = _countriesDetail.data['required-gov-documents'].map((requiredDoc) => {
-
         const doc = requiredDoc['gov-documents'].find(d => d.current);
 
         return {
           id: doc.id,
+          docType: requiredDoc['document-type'],
           requiredDocId: requiredDoc.id,
           // url: doc.attachment.url,
           type: doc.type,

@@ -120,8 +120,7 @@ class DocModal extends React.Component {
    * - getBody
   */
   getBody() {
-    const { requiredDocId, type, properties, fmu } = this.props;
-    const { id, type: typeDoc } = properties;
+    const { requiredDocId, type, docType } = this.props;
 
     return {
       data: {
@@ -130,16 +129,10 @@ class DocModal extends React.Component {
           current: true,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
-          attachment: this.state.form.file,
-          reason: this.state.form.reason,
-          ...fmu && { 'fmu-id': fmu.id },
-          ...typeDoc === 'operator' && {
-            'operator-id': id,
-            'required-operator-document-id': requiredDocId
-          },
-          ...typeDoc === 'government' && {
-            'country-id': id,
-            'required-gov-document-id': requiredDocId
+          'required-gov-document-id': requiredDocId,
+          ...docType === 'stats' && {
+            value: this.state.form.value,
+            units: this.state.form.units
           }
         }
       }
@@ -149,7 +142,7 @@ class DocModal extends React.Component {
 
   render() {
     const { submitting, errors } = this.state;
-    const { title, notRequired } = this.props;
+    const { title, docType, notRequired } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -206,46 +199,38 @@ class DocModal extends React.Component {
               </div>
             </div>
 
-            {/* DOCUMENT */}
-            {!notRequired &&
+            {docType === 'stats' &&
               <div className="l-row row">
-                <div className="columns small-12">
+                <div className="columns small-6">
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-                    onChange={value => this.onChange({ file: value })}
-                    validations={['required']}
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.value = c; }}
+                    onChange={value => this.onChange({ value: value })}
                     className="-fluid"
                     properties={{
-                      name: 'file',
-                      label: this.props.intl.formatMessage({ id: 'file' }),
-                      required: true,
-                      default: this.state.form.file
+                      name: 'value',
+                      label: this.props.intl.formatMessage({ id: 'value' }),
+                      type: 'number',
+                      default: this.state.form.value
                     }}
+
                   >
-                    {File}
+                    {Input}
                   </Field>
                 </div>
-              </div>
-            }
 
-            {/* REASON */}
-            {notRequired &&
-              <div className="l-row row">
-                <div className="columns small-12">
+                <div className="columns small-6">
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.reason = c; }}
-                    onChange={value => this.onChange({ reason: value })}
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.units = c; }}
+                    onChange={value => this.onChange({ units: value })}
                     className="-fluid"
-                    validations={['required']}
                     properties={{
-                      name: 'reason',
-                      label: this.props.intl.formatMessage({ id: 'why-is-it-not-required' }),
-                      required: true,
-                      rows: '6',
-                      default: this.state.form.reason
+                      name: 'units',
+                      label: this.props.intl.formatMessage({ id: 'units' }),
+                      type: 'text',
+                      default: this.state.form.units
                     }}
                   >
-                    {Textarea}
+                    {Input}
                   </Field>
                 </div>
               </div>
@@ -275,7 +260,7 @@ class DocModal extends React.Component {
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
                 {this.props.intl.formatMessage({
-                  id: (notRequired) ? 'submit' : 'upload-file'
+                  id: 'upload-file'
                 })}
               </button>
             </li>
@@ -292,7 +277,7 @@ DocModal.propTypes = {
   type: PropTypes.string,
   properties: PropTypes.object,
   notRequired: PropTypes.bool,
-  fmu: PropTypes.object,
+  docType: PropTypes.string,
   user: PropTypes.object,
   onChange: PropTypes.func,
   intl: intlShape.isRequired

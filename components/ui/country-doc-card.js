@@ -19,9 +19,10 @@ import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
 
-class DocCard extends React.Component {
+class CountryDocCard extends React.Component {
   static propTypes = {
     user: PropTypes.object,
+    docType: PropTypes.string,
     url: PropTypes.string,
     status: PropTypes.string,
     title: PropTypes.string,
@@ -262,4 +263,4 @@ export default injectIntl(connect(
   state => ({
     user: state.user
   })
-)(DocCard));
+)(CountryDocCard));

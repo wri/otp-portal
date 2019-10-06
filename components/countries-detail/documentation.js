@@ -11,8 +11,8 @@ import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import StaticTabs from 'components/ui/static-tabs';
-import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
-import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
+import DocumentsProvided from 'components/countries-detail/documentation/documents-provided';
+import DocumentsByCountry from 'components/countries-detail/documentation/documents-by-country';
 
 class OperatorsDetailDocumentation extends React.Component {
 
@@ -82,7 +82,7 @@ class OperatorsDetailDocumentation extends React.Component {
         <div className="c-section">
           <div className="l-container">
             {this.state.tab === 'country-documents' &&
-              <DocumentsByOperator data={groupedByType['gov-documents']} id={url.query.id} />
+              <DocumentsByCountry data={groupedByType['gov-documents']} id={url.query.id} />
             }
           </div>
         </div>

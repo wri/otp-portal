@@ -4,6 +4,7 @@ import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
+import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -21,7 +22,12 @@ class SignUp extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators } = this.props;
+    const { countries, operators } = this.props;
+
+    if (!countries.data.length) {
+      // Get countries
+      this.props.getCountries();
+    }
 
     if (!operators.data.length) {
       // Get operators
@@ -59,7 +65,8 @@ SignUp.propTypes = {
 export default withTracker(withIntl(withRedux(
   store,
   state => ({
-    operators: state.operators
+    operators: state.operators,
+    countries: state.countries
   }),
-  { getOperators }
+  { getOperators, getCountries }
 )(SignUp)));

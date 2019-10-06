@@ -57,7 +57,7 @@ function DocumentsProvided(props) {
               list={Object.keys(legend)
                 .map(k => ({ id: k, ...legend[k] }))
                 .filter((k) => {
-                  if (user.token && user.role === 'operator' && user.operator.toString() === router.query.id) {
+                  if (user.token && user.role === 'government' && user.country && user.country.toString() === router.query.id) {
                     return true;
                   }
 
