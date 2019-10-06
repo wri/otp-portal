@@ -133,6 +133,9 @@ class DocModal extends React.Component {
           ...docType === 'stats' && {
             value: this.state.form.value,
             units: this.state.form.units
+          },
+          ...docType === 'link' && {
+            link: this.state.form.link
           }
         }
       }
@@ -204,12 +207,14 @@ class DocModal extends React.Component {
                 <div className="columns small-6">
                   <Field
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.value = c; }}
-                    onChange={value => this.onChange({ value: value })}
+                    onChange={value => this.onChange({ value })}
                     className="-fluid"
+                    validations={['required']}
                     properties={{
                       name: 'value',
                       label: this.props.intl.formatMessage({ id: 'value' }),
                       type: 'number',
+                      required: true,
                       default: this.state.form.value
                     }}
 
@@ -223,12 +228,37 @@ class DocModal extends React.Component {
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.units = c; }}
                     onChange={value => this.onChange({ units: value })}
                     className="-fluid"
+                    validations={['required']}
                     properties={{
                       name: 'units',
                       label: this.props.intl.formatMessage({ id: 'units' }),
                       type: 'text',
+                      required: true,
                       default: this.state.form.units
                     }}
+                  >
+                    {Input}
+                  </Field>
+                </div>
+              </div>
+            }
+
+            {docType === 'link' &&
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.link = c; }}
+                    onChange={value => this.onChange({ link: value })}
+                    className="-fluid"
+                    validations={['required', 'url']}
+                    properties={{
+                      name: 'link',
+                      label: this.props.intl.formatMessage({ id: 'link' }),
+                      type: 'text',
+                      required: true,
+                      default: this.state.form.link
+                    }}
+
                   >
                     {Input}
                   </Field>
@@ -275,7 +305,6 @@ DocModal.propTypes = {
   title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
-  properties: PropTypes.object,
   notRequired: PropTypes.bool,
   docType: PropTypes.string,
   user: PropTypes.object,
