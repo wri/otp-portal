@@ -17,7 +17,6 @@ import DocumentationService from 'services/documentationService';
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
-import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
 
@@ -51,7 +50,10 @@ class DocModal extends React.Component {
         startDate: '',
         expireDate: '',
         file: '',
-        reason: ''
+        reason: '',
+        link: '',
+        units: '',
+        value: ''
       },
       submitting: false,
       errors: []
@@ -261,6 +263,27 @@ class DocModal extends React.Component {
 
                   >
                     {Input}
+                  </Field>
+                </div>
+              </div>
+            }
+
+            {docType === 'file' &&
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                    onChange={value => this.onChange({ file: value })}
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'file',
+                      label: this.props.intl.formatMessage({ id: 'file' }),
+                      required: true,
+                      default: this.state.form.file
+                    }}
+                  >
+                    {File}
                   </Field>
                 </div>
               </div>

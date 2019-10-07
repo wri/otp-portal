@@ -33,10 +33,10 @@ export default class DocumentationService {
     });
   }
 
-  deleteDocument(id) {
+  deleteDocument(id, path = 'operator-documents') {
     return new Promise((resolve, reject) => {
       remove({
-        url: `${process.env.OTP_API}/operator-documents/${id}`,
+        url: `${process.env.OTP_API}/${path}/${id}`,
         headers: [{
           key: 'Content-Type',
           value: 'application/json'

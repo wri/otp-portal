@@ -75,7 +75,7 @@ class CountryDocCardUpload extends React.Component {
 
     this.setState({ deleteLoading: true });
 
-    this.documentationService.deleteDocument(id)
+    this.documentationService.deleteDocument(id, 'gov-documents')
       .then(() => {
         this.setState({ deleteLoading: false });
         this.props.onChange && this.props.onChange();

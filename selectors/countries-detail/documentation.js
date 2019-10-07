@@ -29,6 +29,10 @@ const getParsedDocumentation = createSelector(
           reason: doc.reason,
           startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
           endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+
+          link: doc.link,
+          units: doc.units,
+          value: doc.value
           // annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
         };
       });
