@@ -12,6 +12,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
+import DocumentsCertification from 'components/operators-detail/documentation/documents-certification';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsByFMU from 'components/operators-detail/documentation/documents-by-fmu';
 import DocumentsStackedTimeline from 'components/operators-detail/documentation/documents-by-stacked-timeline';
@@ -53,6 +54,10 @@ class OperatorsDetailDocumentation extends React.Component {
       <div>
         <div className="c-section">
           <div className="l-container">
+            <DocumentsCertification
+              id={url.query.id}
+            />
+
             <article className="c-article">
               <header>
                 <h2 className="c-title">

@@ -87,7 +87,7 @@ class DocCardUpload extends React.Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { status, buttons } = this.props;
     const { deleteLoading } = this.state;
 
     const classNames = classnames({
@@ -98,42 +98,53 @@ class DocCardUpload extends React.Component {
       <div className={`c-doc-card-upload ${classNames}`}>
         {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending' || status === 'doc_expired') &&
           <ul>
-            <li>
-              <button onClick={this.triggerAddFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'update-file' })}
-              </button>
-            </li>
+            {buttons.update &&
+              <li>
+                <button onClick={this.triggerAddFile} className="c-button -small -primary">
+                  {this.props.intl.formatMessage({ id: 'update-file' })}
+                </button>
+              </li>
+            }
 
-            <li>
-              <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'delete' })}
-                <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-              </button>
-            </li>
+            {buttons.delete &&
+              <li>
+                <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
+                  {this.props.intl.formatMessage({ id: 'delete' })}
+                  <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
+                </button>
+              </li>
+            }
           </ul>
         }
         {status === 'doc_not_provided' &&
           <ul>
-            <li>
-              <button onClick={this.triggerAddFile} className="c-button -small -secondary">
-                {this.props.intl.formatMessage({ id: 'add-file' })}
-              </button>
-            </li>
-            <li>
-              <button onClick={this.triggerNotRequiredFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'notrequired-file' })}
-              </button>
-            </li>
+            {buttons.add &&
+              <li>
+                <button onClick={this.triggerAddFile} className="c-button -small -secondary">
+                  {this.props.intl.formatMessage({ id: 'add-file' })}
+                </button>
+              </li>
+            }
+
+            {buttons.not_required &&
+              <li>
+                <button onClick={this.triggerNotRequiredFile} className="c-button -small -primary">
+                  {this.props.intl.formatMessage({ id: 'notrequired-file' })}
+                </button>
+              </li>
+            }
           </ul>
         }
 
         {status === 'doc_not_required' &&
           <ul>
-            <li>
-              <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'required-file' })}
-              </button>
-            </li>
+            {buttons.not_required &&
+              <li>
+                <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
+                  {this.props.intl.formatMessage({ id: 'required-file' })}
+                </button>
+              </li>
+            }
           </ul>
         }
       </div>
@@ -146,7 +157,17 @@ DocCardUpload.propTypes = {
   user: PropTypes.object,
   id: PropTypes.string,
   onChange: PropTypes.func,
+  buttons: PropTypes.shape({}),
   intl: intlShape.isRequired
+};
+
+DocCardUpload.defaultProps = {
+  buttons: {
+    add: true,
+    update: true,
+    delete: true,
+    not_required: true
+  }
 };
 
 export default injectIntl(DocCardUpload)

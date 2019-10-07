@@ -1,18 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import sortBy from "lodash/sortBy";
+import React from 'react';
+import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 
 // Redux
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import { getOperator } from "modules/operators-detail";
+import { getOperator } from 'modules/operators-detail';
 
 // Utils
-import { HELPERS_DOC } from "utils/documentation";
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
-import DocCard from "components/ui/doc-card";
-import DocCardUpload from "components/ui/doc-card-upload";
+import DocCard from 'components/ui/doc-card';
+import DocCardUpload from 'components/ui/doc-card-upload';
 
 function DocumentsByOperator(props) {
   const { data, user, id } = props;

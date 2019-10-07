@@ -132,6 +132,7 @@ export function getOperator(id) {
       'observations.observation-report',
       'observations.observation-documents',
       'fmus',
+      'operator-documents.required-operator-document.required-operator-document-group',
       'operator-document-countries.required-operator-document-country.required-operator-document-group',
       'operator-document-countries.operator-document-annexes',
       'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
