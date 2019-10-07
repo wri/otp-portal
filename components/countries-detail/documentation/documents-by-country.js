@@ -5,14 +5,14 @@ import sortBy from "lodash/sortBy";
 // Redux
 import { connect } from "react-redux";
 
-import { getOperator } from "modules/operators-detail";
+import { getCountry } from "modules/countries-detail";
 
 // Utils
 import { HELPERS_DOC } from "utils/documentation";
 
 // Components
-import DocCard from "components/ui/doc-card";
-import DocCardUpload from "components/ui/doc-card-upload";
+import CountryDocCard from "components/ui/country-doc-card";
+import CountryDocCardUpload from "components/ui/country-doc-card-upload";
 
 function DocumentsByOperator(props) {
   const { data, user, id } = props;
@@ -32,25 +32,25 @@ function DocumentsByOperator(props) {
           <div className="row l-row -equal-heigth">
             {sortBy(groupedByCategory[category], doc => doc.title).map(card => (
               <div key={card.id} className="columns small-12 medium-4">
-                <DocCard
+                <CountryDocCard
                   {...card}
                   properties={{
-                    type: 'operator',
+                    type: 'government',
                     id
                   }}
-                  onChange={() => props.getOperator(id)}
+                  onChange={() => props.getCountry(id)}
                 />
 
                 {((user && user.role === 'admin') ||
-                  (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
-                    <DocCardUpload
+                  (user && user.role === 'government' && user.country && user.country.toString() === id)) && (
+                    <CountryDocCardUpload
                       {...card}
                       properties={{
-                        type: 'operator',
+                        type: 'government',
                         id
                       }}
                       user={user}
-                      onChange={() => props.getOperator(id)}
+                      onChange={() => props.getCountry(id)}
                     />
                 )}
               </div>
@@ -76,5 +76,5 @@ export default connect(
   state => ({
     user: state.user
   }),
-  { getOperator }
+  { getCountry }
 )(DocumentsByOperator);

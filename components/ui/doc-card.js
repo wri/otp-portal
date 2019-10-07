@@ -12,9 +12,6 @@ import { injectIntl, intlShape } from 'react-intl';
 import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
-// Utils
-import { HELPERS_DOC } from 'utils/documentation';
-
 // Components
 import DocInfoModal from 'components/ui/doc-info-modal';
 import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
@@ -31,11 +28,15 @@ class DocCard extends React.Component {
     explanation: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
-    operatorId: PropTypes.string,
+    properties: PropTypes.object,
     annexes: PropTypes.array,
     intl: intlShape.isRequired,
     onChange: PropTypes.func
   };
+
+  static defaultProps = {
+    annexes: []
+  }
 
   constructor(props) {
     super(props);
@@ -92,10 +93,12 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, startDate, endDate, status, title, explanation, url, annexes, operatorId } = this.props;
+    const { user, startDate, endDate, status, title, explanation, url, annexes, properties } = this.props;
+    const { id } = properties;
     const { deleteLoading } = this.state;
-    const isActiveUser = ((user && user.role === 'admin') ||
-      (user && user.role === 'operator' && user.operator && user.operator.toString() === operatorId));
+    const isActiveUser = (user && user.role === 'admin') ||
+      (user && user.role === 'operator' && user.operator && user.operator.toString() === id) ||
+      (user && user.role === 'government' && user.country && user.country.toString() === id);
 
     const approvedAnnexes = annexes.filter(a => a.name);
 
