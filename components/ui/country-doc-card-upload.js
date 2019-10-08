@@ -87,7 +87,7 @@ class CountryDocCardUpload extends React.Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { status, docType } = this.props;
     const { deleteLoading } = this.state;
 
     const classNames = classnames({
@@ -100,7 +100,7 @@ class CountryDocCardUpload extends React.Component {
           <ul>
             <li>
               <button onClick={this.triggerAddFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'update-file' })}
+                {this.props.intl.formatMessage({ id: `update-${docType}` })}
               </button>
             </li>
 
@@ -116,7 +116,7 @@ class CountryDocCardUpload extends React.Component {
           <ul>
             <li>
               <button onClick={this.triggerAddFile} className="c-button -small -secondary">
-                {this.props.intl.formatMessage({ id: 'add-file' })}
+                {this.props.intl.formatMessage({ id: `add-${docType}` })}
               </button>
             </li>
             <li>
@@ -143,10 +143,11 @@ class CountryDocCardUpload extends React.Component {
 
 CountryDocCardUpload.propTypes = {
   status: PropTypes.string,
+  docType: PropTypes.string,
   user: PropTypes.object,
   id: PropTypes.string,
   onChange: PropTypes.func,
   intl: intlShape.isRequired
 };
 
-export default injectIntl(CountryDocCardUpload)
+export default injectIntl(CountryDocCardUpload);

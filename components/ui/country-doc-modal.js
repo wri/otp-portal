@@ -313,7 +313,7 @@ class DocModal extends React.Component {
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
                 {this.props.intl.formatMessage({
-                  id: 'upload-file'
+                  id: 'submit'
                 })}
               </button>
             </li>
