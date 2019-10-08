@@ -44,6 +44,10 @@ function DocumentsCertification(props) {
                   type: 'operator',
                   id
                 }}
+                layout={{
+                  info: false,
+                  annexes: false
+                }}
                 onChange={() => props.getOperator(id)}
               />
 
