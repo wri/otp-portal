@@ -53,7 +53,8 @@ class DocModal extends React.Component {
         reason: '',
         link: '',
         units: '',
-        value: ''
+        value: '',
+        files: ['']
       },
       submitting: false,
       errors: []
@@ -62,6 +63,8 @@ class DocModal extends React.Component {
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeFiles = this.onChangeFiles.bind(this);
+    this.onAddFiles = this.onAddFiles.bind(this);
 
     // Services
     this.documentationService = new DocumentationService({
@@ -79,6 +82,22 @@ class DocModal extends React.Component {
     this.setState({ form });
   }
 
+  onChangeFiles(index, value) {
+    const files = this.state.form.files.slice(0);
+    files[index] = value;
+
+    const form = Object.assign({}, this.state.form, { files });
+    this.setState({ form });
+  }
+
+  onAddFiles() {
+    const files = this.state.form.files.slice(0);
+    if (files[files.length - 1]) {
+      const form = Object.assign({}, this.state.form, { files: [...files, ''] });
+      this.setState({ form });
+    }
+  }
+
   onSubmit(e) {
     e && e.preventDefault();
 
@@ -91,7 +110,7 @@ class DocModal extends React.Component {
       const valid = FORM_ELEMENTS.isValid(this.state.form);
 
       if (valid) {
-        const { type } = this.props;
+        const { type, docType } = this.props;
 
         // Start the submitting
         this.setState({ submitting: true });
@@ -101,10 +120,23 @@ class DocModal extends React.Component {
           type: 'POST',
           body: this.getBody()
         })
-          .then(() => {
-            this.setState({ submitting: false, errors: [] });
-            this.props.onChange && this.props.onChange();
-            modal.toggleModal(false);
+          .then(({ data }) => {
+            if (docType === 'file') {
+              const promises = this.state.form.files.map(file => this.documentationService.saveGovFiles({
+                body: this.getFilesBody(data.id, file)
+              }));
+
+              Promise.all(promises)
+              .then(() => {
+                this.setState({ submitting: false, errors: [] });
+                this.props.onChange && this.props.onChange();
+                modal.toggleModal(false);
+              });
+            } else {
+              this.setState({ submitting: false, errors: [] });
+              this.props.onChange && this.props.onChange();
+              modal.toggleModal(false);
+            }
           })
           .catch((err) => {
             console.error(err);
@@ -139,6 +171,18 @@ class DocModal extends React.Component {
           ...docType === 'link' && {
             link: this.state.form.link
           }
+        }
+      }
+    };
+  }
+
+  getFilesBody(id, attachment) {
+    return {
+      data: {
+        type: 'gov-files',
+        attributes: {
+          attachment,
+          'gov-document-id': id
         }
       }
     };
@@ -271,20 +315,41 @@ class DocModal extends React.Component {
             {docType === 'file' &&
               <div className="l-row row">
                 <div className="columns small-12">
-                  <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
-                    onChange={value => this.onChange({ file: value })}
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'file',
-                      label: this.props.intl.formatMessage({ id: 'file' }),
-                      required: true,
-                      default: this.state.form.file
+                  {this.state.form.files.map((file, i) => (
+                    <Field
+                      ref={(c) => { if (c) FORM_ELEMENTS.elements.files = c; }}
+                      onChange={value => this.onChangeFiles(i, value)}
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'file',
+                        label: i === 0 && this.props.intl.formatMessage({ id: 'files' }),
+                        required: true,
+                        default: file
+                      }}
+                    >
+                      {File}
+                    </Field>
+                  ))}
+
+                  <div
+                    style={{
+                      padding: 16,
+                      background: '#EDECE3'
                     }}
                   >
-                    {File}
-                  </Field>
+                    <button
+                      type="button"
+                      disabled={!this.state.form.files[this.state.form.files.length - 1]}
+                      className={classnames({
+                        'c-button -primary -small -fullwidth': true,
+                        '-disabled': !this.state.form.files[this.state.form.files.length - 1]
+                      })}
+                      onClick={this.onAddFiles}
+                    >
+                      Add More
+                    </button>
+                  </div>
                 </div>
               </div>
             }
