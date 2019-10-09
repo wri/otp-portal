@@ -16,6 +16,7 @@ import { getContractSignatureDocumentation } from 'selectors/operators-detail/do
 
 function DocumentsCertification(props) {
   const { intl, doc, user, id } = props;
+  const { status } = doc;
 
   const isLogged = ((user && user.role === 'admin') || (user && user.role === 'operator' && user.operator && user.operator.toString() === id));
 
@@ -31,9 +32,11 @@ function DocumentsCertification(props) {
             <h3 className="c-title -proximanova -extrabig -uppercase">
               {intl.formatMessage({ id: 'operator-detail.license' })}
             </h3>
-            <p>
-              {intl.formatMessage({ id: 'operator-detail.license.description' })}
-            </p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: intl.formatHTMLMessage({ id: `operator-detail.license.${status}` })
+              }}
+            />
           </header>
 
           <div className="row l-row -equal-heigth">
