@@ -55,6 +55,13 @@ const HELPERS_DOC = {
       per = per.toFixed(2).replace(/[.,]00$/, '');
       return per || 0;
     }
+
+    if (data['percentage-valid-documents']) {
+      let per = data['percentage-valid-documents'] * 100;
+      per = per.toFixed(2).replace(/[.,]00$/, '');
+      return per || 0;
+    }
+
     return 0;
   },
 

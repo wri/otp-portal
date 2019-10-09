@@ -317,6 +317,7 @@ class DocModal extends React.Component {
                 <div className="columns small-12">
                   {this.state.form.files.map((file, i) => (
                     <Field
+                      key={i}
                       ref={(c) => { if (c) FORM_ELEMENTS.elements.files = c; }}
                       onChange={value => this.onChangeFiles(i, value)}
                       validations={['required']}

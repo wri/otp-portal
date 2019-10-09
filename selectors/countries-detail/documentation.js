@@ -32,7 +32,8 @@ const getParsedDocumentation = createSelector(
 
           link: doc.link,
           units: doc.units,
-          value: doc.value
+          value: doc.value,
+          govFiles: doc['gov-files']
           // annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
         };
       });

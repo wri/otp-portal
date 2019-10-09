@@ -70,7 +70,8 @@ export function getCountry(id) {
       'governments',
       'required-gov-documents',
       'required-gov-documents.required-gov-document-group',
-      'required-gov-documents.gov-documents'
+      'required-gov-documents.gov-documents',
+      'required-gov-documents.gov-documents.gov-files'
     ];
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
