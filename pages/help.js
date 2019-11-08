@@ -6,7 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
-import { getFAQs, getTutorials } from 'modules/help';
+import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -22,6 +22,7 @@ import HelpOverview from 'components/help/overview';
 import HelpHowOTPWorks from 'components/help/how-otp-works';
 import HelpLegislationAndRegulations from 'components/help/legislation-and-regulations';
 import HelpFaqs from 'components/help/faqs';
+import HelpTutorials from 'components/help/tutorials';
 
 class HelpPage extends Page {
 
@@ -29,10 +30,18 @@ class HelpPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, faqs, tutorials } = this.props;
+    const { operators, howtos, tools, faqs, tutorials } = this.props;
 
     if (!operators.data.length) {
       this.props.getOperators();
+    }
+
+    if (!howtos.data.length) {
+      this.props.getHowtos();
+    }
+
+    if (!tools.data.length) {
+      this.props.getTools();
     }
 
     if (!faqs.data.length) {
@@ -45,7 +54,7 @@ class HelpPage extends Page {
   }
 
   render() {
-    const { url, faqs, tutorials } = this.props;
+    const { url, howtos, tools, faqs, tutorials } = this.props;
     const tab = url.query.tab || 'overview';
 
     return (
@@ -59,6 +68,7 @@ class HelpPage extends Page {
           title={this.props.intl.formatMessage({ id: 'help.title' })}
           background="/static/images/static-header/bg-help.jpg"
         />
+
         <Tabs
           href={{
             pathname: url.pathname,
@@ -77,6 +87,9 @@ class HelpPage extends Page {
           }, {
             label: this.props.intl.formatMessage({ id: 'help.tabs.faqs' }),
             value: 'faqs'
+          }, {
+            label: this.props.intl.formatMessage({ id: 'help.tabs.tutorials' }),
+            value: 'tutorials'
           }]}
           defaultSelected={tab}
           selected={tab}
@@ -84,6 +97,8 @@ class HelpPage extends Page {
 
         {tab === 'overview' &&
           <HelpOverview
+            howtos={howtos}
+            tools={tools}
             faqs={faqs}
             tutorials={tutorials}
           />
@@ -92,13 +107,14 @@ class HelpPage extends Page {
         {tab === 'how-otp-works' &&
           <HelpHowOTPWorks
             url={url}
-            tutorials={tutorials}
+            howtos={howtos}
           />
         }
 
         {tab === 'legislation-and-regulations' &&
           <HelpLegislationAndRegulations
             url={url}
+            tools={tools}
           />
         }
 
@@ -106,6 +122,13 @@ class HelpPage extends Page {
           <HelpFaqs
             url={url}
             faqs={faqs}
+          />
+        }
+
+        {tab === 'tutorials' &&
+          <HelpTutorials
+            url={url}
+            tutorials={tutorials}
           />
         }
 
@@ -123,8 +146,10 @@ export default withTracker(withIntl(withRedux(
   store,
   state => ({
     operators: state.operators,
+    howtos: state.help.howtos,
+    tools: state.help.tools,
     faqs: state.help.faqs,
     tutorials: state.help.tutorials
   }),
-  { getOperators, getFAQs, getTutorials }
+  { getOperators, getHowtos, getTools, getFAQs, getTutorials }
 )(HelpPage)));
