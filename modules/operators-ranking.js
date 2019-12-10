@@ -36,7 +36,9 @@ const initialState = {
       country: [
         { label: 'Congo', value: 47, iso: 'COG' },
         { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' },
-        { label: 'Cameroon', value: 45, iso: 'CMR' }
+        { label: 'Cameroon', value: 45, iso: 'CMR' },
+        { label: 'Central African Republic', value: 188, iso: 'CAF' },
+        { label: 'Gabon', value: 53, iso: 'GAB' }
       ],
       certification: [
         { label: 'FSC', value: 'fsc' },

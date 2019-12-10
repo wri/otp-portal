@@ -167,7 +167,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\', \'CMR\')')}&format=geojson`,
+        url: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM wdpa_protected_areas WHERE iso3 IN (\'COG\', \'COD\', \'CMR\', \'CAF\', \'GAB\')')}&format=geojson`,
         method: 'GET'
       }
     },
@@ -201,7 +201,7 @@ const MAP_LAYERS_OPERATORS = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -335,8 +335,10 @@ const MAP_LAYERS_OPERATORS = [
           this.map.getCanvas().style.cursor = 'pointer';
         },
         mousemove(e) {
+          const value = e.features[0].properties.id || false;
+
           this.map.getCanvas().style.cursor = 'pointer';
-          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', e.features[0].properties.id]);
+          this.map.setFilter('forest_concession_layer_hover', ['==', 'id', value]);
         },
         mouseleave() {
           this.map.getCanvas().style.cursor = '';
@@ -350,7 +352,7 @@ const MAP_LAYERS_OPERATORS = [
   //   provider: 'geojson',
   //   source: {
   //     type: 'geojson',
-  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47,45`
+  //     data: `${process.env.OTP_API}/harvestable_areas?country_ids=7,47,45,188,53`
   //     data: `https://simbiotica.carto.com/api/v2/sql?q=${encodeURIComponent('SELECT * FROM harvestable_areas')}&format=geojson`
   //   },
   //   layers: [{
@@ -495,9 +497,79 @@ const MAP_LAYERS_OPERATORS = [
         'line-opacity': 0.8
       }
     }]
+  },
+
+  {
+    id: 'GAB',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/GAB?simplify=0.0000001',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'GAB_layer',
+      name: 'GAB country layer',
+      type: 'line',
+      before: [],
+      source: 'GAB',
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(53)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      minzoom: 0,
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
+  },
+
+  {
+    id: 'CAF',
+    provider: 'geojson',
+    source: {
+      type: 'geojson',
+      data: {
+        url: 'https://api.resourcewatch.org/v2/geostore/admin/CAF?simplify=0.0000001',
+        method: 'GET',
+        parse: data => data.data.attributes.geojson
+      }
+    },
+    layers: [{
+      id: 'CAF_layer',
+      name: 'CAF country layer',
+      type: 'line',
+      before: [],
+      source: 'CAF',
+      update({ COUNTRY_IDS }, l) {
+        if (!COUNTRY_IDS.includes(188)) {
+          if (this.map.getLayer(l.id)) {
+            this.map.removeLayer(l.id);
+            delete this.mapLayers[l.id];
+          }
+        } else if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l);
+        }
+      },
+      minzoom: 0,
+      paint: {
+        'line-color': '#333333',
+        'line-width': 2,
+        'line-opacity': 0.8
+      }
+    }]
   }
-
-
 ];
 
 export { MAP_LAYERS_OPERATORS };
