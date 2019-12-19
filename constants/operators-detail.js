@@ -122,16 +122,16 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         },
         'fill-opacity': 0.4,
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },
@@ -142,6 +142,7 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       source: 'forest_concession',
       legendConfig: {
         type: 'basic',
+        color: '#e98300',
         items: [
           { name: 'FMU', color: '#e98300' },
           {
@@ -152,6 +153,21 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
               { name: 'ufa', color: '#e95800' },
               { name: 'communal', color: '#e9A700' }
             ]
+          },
+          {
+            name: 'Central African Republic',
+            group: true,
+            items: [
+              { name: 'PEA', color: '#e9D400' }
+            ]
+          },
+          {
+            name: 'Gabon',
+            group: true,
+            items: [
+              { name: 'CPAET', color: '#e9F200' },
+              { name: 'CFAD', color: '#e9FF00' }
+            ]
           }
         ]
       },
@@ -159,17 +175,17 @@ const MAP_LAYERS_OPERATORS_DETAIL = [
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A600'], ['PEA', '#e9D400'], ['CPAET', '#e9F200'], ['CFAD', '#e9FF00']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
 
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },

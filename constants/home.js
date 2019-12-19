@@ -78,17 +78,17 @@ const MAP_LAYERS_HOME = [
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A600'], ['PEA', '#e9D400'], ['CPAET', '#e9F200'], ['CFAD', '#e9FF00']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
 
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },

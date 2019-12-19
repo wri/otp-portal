@@ -78,6 +78,7 @@ class OperatorsDetailFMUs extends React.Component {
             layers={flatten(MAP_LAYERS_OPERATORS_DETAIL.map(layer =>
                 layer.layers.filter(l => l.legendConfig)
               ))}
+            activeLayers={[]}
           />
 
           {/* MapControls */}

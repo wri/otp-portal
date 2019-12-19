@@ -106,61 +106,6 @@ const MAP_LAYERS_OPERATORS = [
       }
     }]
   },
-
-  // PROTECTED AREAS
-  // {
-  //   id: 'protected_areas',
-  //   provider: 'cartodb',
-  //   cartodb: {
-  //     account: 'wri-01',
-  //     minzoom: 0,
-  //     maxzoom: 20,
-  //     version: '1.3.0',
-  //     stat_tag: 'API',
-  //     layers: [
-  //       {
-  //         type: 'cartodb',
-  //         options: {
-  //           sql: 'SELECT the_geom_webmercator, the_geom,iucn_cat, desig_eng, iso3 as country, name, wdpaid as id, wdpa_protected_areas as layer FROM wdpa_protected_areas',
-  //           cartocss: '#wdpa_protected_areas { polygon-opacity: 0.5; polygon-fill: #5ca2d1; line-width: 0.2; line-opacity: 1;}',
-  //           // cartocss: '#wdpa_protected_areas { polygon-opacity: 0.5; line-width: 0.2; line-opacity: 1;}#wdpa_protected_areas[iucn_cat="Ia"] { polygon-fill: #5ca2d1; line-color: #5ca2d1;}#wdpa_protected_areas[iucn_cat="Ib"] { polygon-fill: #3e7bb6; line-color: #3e7bb6;}#wdpa_protected_areas[iucn_cat="II"] { polygon-fill: #0f3b82; line-color: #0f3b82;}#wdpa_protected_areas[iucn_cat="III"] { polygon-fill: #c9ddff; line-color: #c9ddff;}#wdpa_protected_areas[iucn_cat="IV"] { polygon-fill: #b9b2a1; line-color: #b9b2a1;}#wdpa_protected_areas[iucn_cat="V"] { polygon-fill: #ae847e; line-color: #ae847e;}#wdpa_protected_areas[iucn_cat="VI"] { polygon-fill: #daa89b; line-color: #daa89b;}#wdpa_protected_areas[iucn_cat="Not Applicable"] { polygon-fill: #eed54c; line-color: #eed54c;}#wdpa_protected_areas[iucn_cat="Not Assigned"] { polygon-fill: #e7ab36; line-color: #e7ab36;}#wdpa_protected_areas[iucn_cat="Not Reported"] { polygon-fill: #fa894b; line-color: #fa894b;}',
-  //           cartocss_version: '2.3.0'
-  //         }
-  //       }
-  //     ]
-  //
-  //   },
-  //   source: {
-  //     type: 'raster',
-  //     tiles: [
-  //       // to be loaded
-  //     ],
-  //     tileSize: 256
-  //   },
-  //   layers: [{
-  //     id: 'protected_areas_layer',
-  //     name: 'Protected areas',
-  //     type: 'raster',
-  //     source: 'protected_areas',
-  //     before: ['loss_layer', 'gain_layer', 'forest_concession_layer', 'forest_concession_layer_hover'],
-  //     minzoom: 0,
-  //     legendConfig: {
-  //       type: 'basic',
-  //       items: [
-  //         { name: 'Protected areas', color: '#5ca2d1' }
-  //       ]
-  //     },
-  //     paint: {
-  //       'raster-opacity': 1,
-  //       'raster-hue-rotate': 0,
-  //       'raster-brightness-min': 0,
-  //       'raster-brightness-max': 1,
-  //       'raster-saturation': 0,
-  //       'raster-contrast': 0
-  //     }
-  //   }]
-  // },
-
   {
     id: 'protected_areas',
     provider: 'geojson',
@@ -218,16 +163,16 @@ const MAP_LAYERS_OPERATORS = [
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         },
         'fill-opacity': 0.4,
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },
@@ -252,23 +197,38 @@ const MAP_LAYERS_OPERATORS = [
               { name: 'ufa', color: '#e95800' },
               { name: 'communal', color: '#e9A700' }
             ]
+          },
+          {
+            name: 'Central African Republic',
+            group: true,
+            items: [
+              { name: 'PEA', color: '#e9D400' }
+            ]
+          },
+          {
+            name: 'Gabon',
+            group: true,
+            items: [
+              { name: 'CPAET', color: '#e9F200' },
+              { name: 'CFAD', color: '#e9FF00' }
+            ]
           }
         ]
       },
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A600'], ['PEA', '#e9D400'], ['CPAET', '#e9F200'], ['CFAD', '#e9FF00']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
 
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },
@@ -281,6 +241,8 @@ const MAP_LAYERS_OPERATORS = [
           this.popup = new this.Popup();
 
           const props = e.features[0].properties;
+
+          console.log(props);
 
           // TODO: to translate popup we need to refactor all the map
           const fmuTypes = {

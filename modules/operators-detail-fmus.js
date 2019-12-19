@@ -13,7 +13,8 @@ const initialState = {
       lat: 0,
       lng: 18
     },
-    scrollZoom: false
+    scrollZoom: false,
+    activeLayers: []
   },
   fmu: {},
   analysis: {

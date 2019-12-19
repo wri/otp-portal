@@ -193,8 +193,6 @@
       }
 
       .graph-list {
-        display: flex;
-
         .graph-list-item {
           .color {
             display: block;
@@ -288,9 +286,6 @@
     // BASIC
     &.-basic {
       .graph-list {
-        display: flex;
-        flex-wrap: wrap;
-
         .graph-list-item {
           display: flex;
           width: 100%;
