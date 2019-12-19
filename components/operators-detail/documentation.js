@@ -50,8 +50,6 @@ class OperatorsDetailDocumentation extends React.Component {
     const groupedByType = HELPERS_DOC.getGroupedByType(operatorDocumentation);
     const groupedByForestType = HELPERS_DOC.getGroupedByForestType(operatorDocumentation);
 
-    console.log(groupedByForestType);
-
     return (
       <div>
         <div className="c-section">
