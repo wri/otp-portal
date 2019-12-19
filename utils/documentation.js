@@ -70,6 +70,7 @@ const HELPERS_DOC = {
   },
 
   getGroupedByForestType(data) {
+    console.log(data);
     const groups = groupBy(data, (d) => {
       const { fmu, type } = d;
 

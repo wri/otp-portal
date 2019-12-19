@@ -248,16 +248,25 @@ const MAP_LAYERS_OPERATORS = [
           const fmuTypes = {
             en: {
               ufa: 'UFA',
+              PEA: 'PEA',
+              CPAET: 'CPAET',
+              CFAD: 'CFAD',
               ventes_de_coupe: 'Sale of standing volume',
               communal: 'Communal forest'
             },
             fr: {
               ufa: 'UFA',
+              PEA: 'PEA',
+              CPAET: 'CPAET',
+              CFAD: 'CFAD',
               ventes_de_coupe: 'Vente de coupe',
               communal: 'Forêt communale'
             },
             ch: {
               ufa: 'UFA',
+              PEA: 'PEA',
+              CPAET: 'CPAET',
+              CFAD: 'CFAD',
               ventes_de_coupe: 'Vente de coupe',
               communal: 'Communal'
             }
@@ -273,7 +282,7 @@ const MAP_LAYERS_OPERATORS = [
                   id: props.operator_id,
                   name: props.company_na
                 },
-                fmu_type: props.fmu_type,
+                fmu_type: props.fmu_type_label,
                 list: [{
                   label: 'Company',
                   value: props.company_na
@@ -282,7 +291,7 @@ const MAP_LAYERS_OPERATORS = [
                   value: props.ccf_status
                 }, {
                   label: 'Type',
-                  value: fmuTypes[Cookies.get('language') || 'en'][props.fmu_type]
+                  value: fmuTypes[Cookies.get('language') || 'en'][props.fmu_type_label]
                 }, {
                   label: 'Exploitant',
                   value: props.exploitant
