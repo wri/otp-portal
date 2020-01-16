@@ -1,8 +1,7 @@
 import React from 'react';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 
@@ -151,8 +150,7 @@ HomePage.propTypes = {
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
   state => ({
     operators: state.operators
   }),

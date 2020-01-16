@@ -14,7 +14,7 @@ import { intlShape } from 'react-intl';
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getCountry } from 'modules/countries-detail';
@@ -107,8 +107,8 @@ CountriesDetail.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
     operators: state.operators,

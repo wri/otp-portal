@@ -43,7 +43,7 @@ class Header extends React.Component {
         <div className="l-container">
           <div className="header-container">
             <h1 className="header-logo">
-              <Link prefetch href="/">
+              <Link href="/">
                 <a>Open Timber Portal</a>
               </Link>
             </h1>

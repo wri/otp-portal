@@ -6,7 +6,7 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux';
 import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
@@ -74,8 +74,8 @@ CountriesDetail.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
     operators: state.operators,

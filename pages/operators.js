@@ -12,7 +12,7 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux';
 import { store } from 'store';
 import { getOperators, setActiveMapLayers } from 'modules/operators';
 import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
@@ -158,8 +158,8 @@ OperatorsPage.propTypes = {
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     operators: state.operators,
     operatorsRanking: state.operatorsRanking

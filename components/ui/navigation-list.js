@@ -58,42 +58,42 @@ class NavigationList extends React.Component {
           </li>
         }
         <li>
-          <Link prefetch href="/countries">
+          <Link href="/countries">
             <a className={!hideActive ? this.setActive(['/countries', '/countries-detail']) : ''}>
               {this.props.intl.formatMessage({ id: 'countries' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/operators">
+          <Link href="/operators">
             <a className={!hideActive ? this.setActive(['/operators', '/operators-detail']) : ''}>
               {this.props.intl.formatMessage({ id: 'operators' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/observations">
+          <Link href="/observations">
             <a className={!hideActive ? this.setActive(['/observations']) : ''}>
               {this.props.intl.formatMessage({ id: 'observations' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/help">
+          <Link href="/help">
             <a className={!hideActive ? this.setActive(['/help']) : ''}>
               {this.props.intl.formatMessage({ id: 'help' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/about">
+          <Link href="/about">
             <a className={!hideActive ? this.setActive(['/about']) : ''}>
               {this.props.intl.formatMessage({ id: 'about' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/terms">
+          <Link href="/terms">
             <a className={!hideActive ? this.setActive(['/terms']) : ''}>
               {this.props.intl.formatMessage({ id: 'terms' })}
             </a>
