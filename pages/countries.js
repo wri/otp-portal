@@ -7,7 +7,6 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';

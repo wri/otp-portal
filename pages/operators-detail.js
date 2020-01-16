@@ -23,7 +23,6 @@ import { getParsedDocumentation } from 'selectors/operators-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 import withTracker from 'components/layout/with-tracker';

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';

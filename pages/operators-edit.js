@@ -6,7 +6,6 @@ import Router from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getUserOperator } from 'modules/user';
 import withTracker from 'components/layout/with-tracker';

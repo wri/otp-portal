@@ -15,7 +15,6 @@ import { getParsedDocumentation } from 'selectors/countries-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators } from 'modules/operators';
 import { getCountry } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';

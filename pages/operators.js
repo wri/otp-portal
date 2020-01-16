@@ -13,7 +13,6 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { store } from 'store';
 import { getOperators, setActiveMapLayers } from 'modules/operators';
 import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
 import withTracker from 'components/layout/with-tracker';
