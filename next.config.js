@@ -45,8 +45,6 @@ module.exports = {
     config.resolve.alias.store = path.join(__dirname, 'store');
     config.resolve.alias.utils = path.join(__dirname, 'utils');
 
-    config.module.noParse = /(mapbox-gl)\.js$/;
-
     config.plugins = config.plugins.filter(
       plugin => (plugin.constructor.name !== 'UglifyJsPlugin')
     );

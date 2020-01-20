@@ -17,6 +17,8 @@
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.2",
     "d3": "3.5.17",
+    "d3-ease": "^1.0.6",
+    "deck.gl": "^8.0.7",
     "dotenv": "^4.0.0",
     "eventemitter3": "^2.0.3",
     "express": "^4.14.0",
@@ -34,6 +36,7 @@
     "layer-manager": "^2.0.2",
     "leaflet": "^1.0.3",
     "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
+    "luma.gl": "^7.3.2",
     "lusca": "^1.4.1",
     "mapbox-gl": "^0.39.1",
     "mkdirp": "^0.5.1",
@@ -54,7 +57,7 @@
     "passport-twitter": "^1.0.4",
     "postcss-easy-import": "^3.0.0",
     "postcss-loader": "^3.0.0",
-    "prop-types": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.7.tgz",
+    "prop-types": "^15.7.2",
     "query-string": "^4.3.4",
     "raw-loader": "^0.5.1",
     "rc-tooltip": "^3.7.0",
@@ -83,6 +86,7 @@
     "session-file-store": "^1.0.0",
     "turf-extent": "^1.0.4",
     "uuid": "^3.0.1",
+    "viewport-mercator-project": "^7.0.1",
     "webpack": "^4.41.5"
   },
   "devDependencies": {

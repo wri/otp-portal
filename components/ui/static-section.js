@@ -33,9 +33,9 @@ export default class StaticSection extends React.Component {
           backgroundImage: background ? `url(${background})` : 'none'
         }}
       >
-        {this.props.map && this.props.map.component &&
+        {!!this.props.map &&
           <div className="c-map-container -absolute" type="full">
-            <this.props.map.component {...this.props.map.props} />
+            {React.cloneElement(this.props.map)}
           </div>
         }
 
