@@ -119,6 +119,17 @@ class HomePage extends Page {
               scrollZoom={false}
               dragPan={false}
               dragRotate={false}
+              transformRequest={(url, resourceType)=> {
+                if(resourceType == 'Source' && url.startsWith(process.env.OTP_API)) {
+                  return {
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'OTP-API-KEY': process.env.OTP_API_KEY
+                    }
+                  }
+                }
+              }}
             >
               {map => {
                 return (
@@ -128,21 +139,21 @@ class HomePage extends Page {
                       map={map}
                       layers={[
                         {
-                          id: 'gain',
-                          layerType: 'raster',
-                          layerConfig: {
-                            body: {
-                              url: `http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png`
-                            }
+                          id: "gain",
+                          type: "raster",
+                          source: {
+                            tiles: [
+                              "http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png"
+                            ]
                           }
                         },
                         {
-                          id: 'loss',
-                          layerType: 'raster',
-                          layerConfig: {
-                            body: {
-                              url: `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png`
-                            }
+                          id: "loss",
+                          type: "raster",
+                          source: {
+                            tiles: [
+                              `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png`
+                            ]
                           },
                           decodeParams: {
                             startYear: 2001,
@@ -178,6 +189,90 @@ class HomePage extends Page {
                               alpha = 0.;
                             }
                           `
+                        },
+                        {
+                          id: "forest_concession",
+                          type: "geojson",
+                          source: {
+                            type: "geojson",
+                            data: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&format=geojson`
+                          },
+                          render: {
+                            layers: [
+                              {
+                                type: "fill",
+                                source: "forest_concession",
+                                paint: {
+                                  "fill-color": {
+                                    property: "fmu_type_label",
+                                    type: "categorical",
+                                    stops: [
+                                      ["ventes_de_coupe", "#e92000"],
+                                      ["ufa", "#e95800"],
+                                      ["communal", "#e9A600"],
+                                      ["PEA", "#e9D400"],
+                                      ["CPAET", "#e9E200"],
+                                      ["CFAD", "#e9FF00"]
+                                    ],
+                                    default: "#e98300"
+                                  },
+                                  "fill-opacity": 0.9
+                                }
+                              },
+                              {
+                                type: "line",
+                                source: "forest_concession",
+                                paint: {
+                                  "line-color": "#000000",
+                                  "line-opacity": 0.1
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          id: "protected-areas",
+                          type: "vector",
+                          source: {
+                            type: "vector",
+                            provider: {
+                              type: 'carto',
+                              options: {
+                                account: "wri-01",
+                                // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
+                                layers: [
+                                  {
+                                    options: {
+                                      cartocss: "#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }",
+                                      cartocss_version: "2.3.0",
+                                      sql: "SELECT * FROM wdpa_protected_areas"
+                                    },
+                                    type: "cartodb"
+                                  }
+                                ]
+                              }
+                            },
+                          },
+                          render: {
+                            layers: [
+                              {
+                                type: "fill",
+                                "source-layer": "layer0",
+                                paint: {
+                                  'fill-color': '#5ca2d1',
+                                  'fill-opacity': 1
+                                }
+                              },
+                              {
+                                type: "line",
+                                "source-layer": "layer0",
+                                paint: {
+                                  "line-color": "#000000",
+                                  "line-opacity": 0.1
+                                }
+                              }
+                            ]
+                          }
                         }
                       ]}
                     />
