@@ -8,3 +8,7 @@ static/tiles
 
 package-lock.json
 yarn.lock
+
+
+# vscode
+.vscode
