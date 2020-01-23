@@ -24,6 +24,7 @@ class DocCard extends React.Component {
     user: PropTypes.object,
     url: PropTypes.string,
     status: PropTypes.string,
+    public: PropTypes.bool,
     title: PropTypes.string,
     explanation: PropTypes.string,
     startDate: PropTypes.string,
@@ -98,7 +99,7 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, startDate, endDate, status, title, explanation, url, annexes, layout, properties } = this.props;
+    const { user, public: publicState, startDate, endDate, status, title, explanation, url, annexes, layout, properties } = this.props;
     const { id } = properties;
     const { deleteLoading } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
@@ -113,6 +114,12 @@ class DocCard extends React.Component {
 
     return (
       <div className={`c-doc-card ${classNames}`}>
+        {!publicState &&
+          <div className="doc-card-private">
+            {this.props.intl.formatMessage({ id: 'private' })}
+          </div>
+        }
+
         {layout.info &&
           <div className="doc-card-info">
             <button

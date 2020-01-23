@@ -23,6 +23,20 @@
     }
   }
 
+  .doc-card-private {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    text-transform: uppercase;
+    font-family: $font-family-proximanova;
+    font-size: $font-size-small;
+    font-weight: $font-weight-bold;
+    letter-spacing: 2px;
+    color: $color-white;
+    padding: 2px 8px;
+    z-index: 1;
+  }
+
   .doc-card-info {
     position: absolute;
     top: 12px;
@@ -163,6 +177,7 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-valid; }
+    .doc-card-private { background: $color-doc-valid; }
     .doc-card-info {
       button {
         border: 1px solid $color-doc-valid;
@@ -185,6 +200,7 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.5); }
     .doc-card-status { color: $color-doc-not-provided; }
+    .doc-card-private { background: $color-doc-not-provided; }
   }
 
   &.-doc_not_provided {
@@ -193,6 +209,7 @@
     .doc-card-title { color: $color-tertiary; }
     .doc-card-date { color: rgba($color-tertiary, 0.5); }
     .doc-card-status { color: rgba($color-tertiary, 0.5); }
+    .doc-card-private { background: $color-doc-not-provided; }
     .doc-card-fmus { color: rgba($color-tertiary, 0.5); }
     .doc-card-info {
       button {
@@ -215,6 +232,7 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-pending; }
+    .doc-card-private { background: $color-doc-pending; }
     .doc-card-info {
       button {
         border: 1px solid $color-doc-pending;
@@ -237,6 +255,7 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.8); }
     .doc-card-status { color: $color-doc-expired; }
+    .doc-card-private { background: $color-doc-expired; }
     .doc-card-info {
       button {
         border: 1px solid $color-doc-expired;
@@ -258,6 +277,7 @@
 
     .doc-card-title { color: rgba($color-text-1, 0.5); }
     .doc-card-status { color: $color-doc-not-required; }
+    .doc-card-private { background: $color-doc-not-required; }
     .doc-card-info {
       button {
         border: 1px solid $color-doc-not-required;
