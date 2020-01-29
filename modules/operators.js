@@ -15,43 +15,49 @@ const JSONA = new Jsona();
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD', 'CMR', 'CAF', 'GAB']
-  }
+  error: false
 };
 
 /* Reducer */
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_OPERATORS_SUCCESS:
-      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
+      return Object.assign({}, state, {
+        data: action.payload,
+        loading: false,
+        error: false
+      });
     case GET_OPERATORS_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
     case SET_ACTIVE_MAP_LAYERS:
-      return Object.assign({}, state, { map: { activeLayers: action.payload } });
+      return Object.assign({}, state, {
+        map: { activeLayers: action.payload }
+      });
     default:
       return state;
   }
 }
-
 
 export function getOperators() {
   return (dispatch) => {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const language =
+      Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&filter[country]=7,47,45,188,53&filter[fa]=true`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
+    fetch(
+      `${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&filter[country]=7,47,45,188,53&filter[fa]=true`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY
+        }
       }
-    })
+    )
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error(response.statusText);

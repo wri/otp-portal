@@ -24,7 +24,7 @@ module.exports = {
         use: ['babel-loader', 'raw-loader', 'postcss-loader',
           { loader: 'sass-loader',
             options: {
-              includePaths: ['css', 'node_modules']
+              includePaths: ['css', 'node_modules', 'components']
                 .map(d => path.join(__dirname, d))
                 .map(g => glob.sync(g))
                 .reduce((a, c) => a.concat(c), [])

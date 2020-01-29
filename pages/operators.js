@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import debounce from 'lodash/debounce';
-import flatten from 'lodash/flatten';
 
 import * as Cookies from 'js-cookie';
 
@@ -13,18 +12,20 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators, setActiveMapLayers } from 'modules/operators';
-import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
-import withTracker from 'components/layout/with-tracker';
+import { getOperators } from 'modules/operators';
+import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsMapInteractions, setOperatorsMapHoverInteractions, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
+import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getPopup } from 'selectors/operators-ranking';
 
-// Constants
-import { MAP_LAYERS_OPERATORS } from 'constants/operators';
+import withTracker from 'components/layout/with-tracker';
 
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
-import Map from 'components/map/map';
+import Map from 'components/map-new';
+import LayerManager from 'components/map-new/layer-manager';
+import Popup from 'components/map-new/popup';
+
 import MapLegend from 'components/map/map-legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
@@ -74,25 +75,48 @@ class OperatorsPage extends Page {
     toastr.remove('operators.disclaimer');
   }
 
-  toggleLayers = (id, checked) => {
-    const { activeLayers } = this.props.operators.map;
-
-    const toggledLayers = checked ?
-      [...activeLayers, id] : activeLayers.filter(layerId => layerId !== id);
-
-    this.props.setActiveMapLayers(toggledLayers);
+  onClick = (e) => {
+    if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
+      const { features, lngLat } = e;
+      this.props.setOperatorsMapInteractions({ features, lngLat });
+    } else {
+      this.props.setOperatorsMapInteractions({});
+    }
   }
 
+  onHover = (e) => {
+    if (e.features && e.features.length) {
+      const { features, lngLat } = e;
+      this.props.setOperatorsMapHoverInteractions({ features, lngLat });
+    } else {
+      this.props.setOperatorsMapHoverInteractions({});
+    }
+  }
+
+  // toggleLayers = (id, checked) => {
+  //   const { layersActive } = this.props.operators.map;
+
+  //   const toggledLayers = checked ?
+  //     [...layersActive, id] : layersActive.filter(layerId => layerId !== id);
+
+  //   this.props.setActiveMapLayers(toggledLayers);
+  // }
+
+  setMapocation = debounce((mapLocation) => {
+    this.props.setOperatorsMapLocation(mapLocation);
+  }, 500);
+
+
   render() {
-    const { url, operators, operatorsRanking } = this.props;
-    const { activeLayers } = operators.map;
-
-
-    const mapLayers = MAP_LAYERS_OPERATORS.filter(layer => activeLayers.includes(layer.id));
-
-    // Country filters
-    const countryOptions = operatorsRanking.filters.options.country.map(country => country.value);
-    const activeCountryIds = operatorsRanking.filters.data.country || [];
+    const {
+      url,
+      operators,
+      operatorsRanking,
+      activeLayers,
+      activeInteractiveLayers,
+      activeInteractiveLayersIds,
+      popup
+    } = this.props;
 
     return (
       <Layout
@@ -112,30 +136,56 @@ class OperatorsPage extends Page {
           <div className="c-map-container -absolute" style={{ width: 'calc(100% - 650px)', left: 650 }}>
             {/* Map */}
             <Map
-              mapFilters={{
-                COUNTRY_IDS: (activeCountryIds.length) ? activeCountryIds : countryOptions
+              mapStyle="mapbox://styles/mapbox/light-v9"
+
+              // viewport
+              viewport={operatorsRanking.map}
+              onViewportChange={this.setMapocation}
+
+              // Interaction
+              interactiveLayerIds={activeInteractiveLayersIds}
+              onClick={this.onClick}
+              onHover={this.onHover}
+
+              // Options
+              transformRequest={(url, resourceType) => {
+                if (resourceType == 'Source' && url.startsWith(process.env.OTP_API)) {
+                  return {
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'OTP-API-KEY': process.env.OTP_API_KEY
+                    }
+                  };
+                }
               }}
-              mapOptions={operatorsRanking.map}
-              mapListeners={{
-                moveend: debounce((map) => {
-                  this.props.setOperatorsMapLocation({
-                    zoom: map.getZoom(),
-                    center: map.getCenter()
-                  });
-                }, 100)
-              }}
-              layers={mapLayers}
-            />
-            <MapLegend
+            >
+              {map => (
+                <Fragment>
+                  <Popup
+                    popup={popup}
+                    layers={activeInteractiveLayers}
+                    onClose={() => this.props.setOperatorsMapInteractions({})}
+                  />
+                  {/* LAYER MANAGER */}
+                  <LayerManager
+                    map={map}
+                    layers={activeLayers}
+                  />
+                </Fragment>
+              )}
+            </Map>
+
+            {/* <MapLegend
               layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
                 layer.layers.filter(l => l.legendConfig)
               ))}
               toggleLayers={this.toggleLayers}
-              activeLayers={activeLayers}
-            />
+              layersActive={layersActive}
+            /> */}
 
             {/* MapControls */}
-            <MapControls>
+            {/* <MapControls>
               <ZoomControl
                 zoom={operatorsRanking.map.zoom}
                 onZoomChange={(zoom) => {
@@ -144,7 +194,7 @@ class OperatorsPage extends Page {
                   });
                 }}
               />
-            </MapControls>
+            </MapControls> */}
           </div>
         </div>
       </Layout>
@@ -161,7 +211,11 @@ export default withTracker(withIntl(connect(
 
   state => ({
     operators: state.operators,
-    operatorsRanking: state.operatorsRanking
+    operatorsRanking: state.operatorsRanking,
+    activeLayers: getActiveLayers(state),
+    activeInteractiveLayers: getActiveInteractiveLayers(state),
+    activeInteractiveLayersIds: getActiveInteractiveLayersIds(state),
+    popup: getPopup(state)
   }),
   dispatch => ({
     getOperators() {
@@ -172,10 +226,13 @@ export default withTracker(withIntl(connect(
     },
     setOperatorsMapLocation(mapLocation) {
       dispatch(setOperatorsMapLocation(mapLocation));
-      dispatch(setOperatorsUrl());
+      dispatch(setOperatorsUrl(mapLocation));
     },
-    setActiveMapLayers(activeLayers) {
-      dispatch(setActiveMapLayers(activeLayers));
+    setOperatorsMapInteractions(obj) {
+      dispatch(setOperatorsMapInteractions(obj));
+    },
+    setOperatorsMapHoverInteractions(obj) {
+      dispatch(setOperatorsMapHoverInteractions(obj));
     }
   })
 )(OperatorsPage)));
