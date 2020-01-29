@@ -185,16 +185,18 @@ class OperatorsPage extends Page {
             /> */}
 
             {/* MapControls */}
-            {/* <MapControls>
+            <MapControls>
               <ZoomControl
                 zoom={operatorsRanking.map.zoom}
                 onZoomChange={(zoom) => {
                   this.props.setOperatorsMapLocation({
-                    ...{ zoom }
+                    ...operatorsRanking.map,
+                    zoom,
+                    transitionDuration: 500
                   });
                 }}
               />
-            </MapControls> */}
+            </MapControls>
           </div>
         </div>
       </Layout>
