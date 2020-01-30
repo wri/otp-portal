@@ -133,7 +133,7 @@ class OperatorsPage extends Page {
             <OperatorsTable operators={operatorsRanking.data} />
           </Sidebar>
 
-          <div className="c-map-container -absolute" style={{ width: 'calc(100% - 650px)', left: 650 }}>
+          <div className="c-map-container -absolute" style={{ width: 'calc(100% - 600px)', left: 600 }}>
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"

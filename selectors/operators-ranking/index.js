@@ -86,7 +86,6 @@ export const getActiveLayers = createSelector(
 export const getActiveInteractiveLayersIds = createSelector(
   [layers, layersSettings, layersActive],
   (_layers, _layersSettings, _layersActive) => {
-    console.log(_layers);
     if (!_layers) return [];
 
     const getIds = (layer) => {
