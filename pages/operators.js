@@ -13,8 +13,17 @@ import { intlShape } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
-import { getOperatorsRanking, setOperatorsMapLocation, setOperatorsMapInteractions, setOperatorsMapHoverInteractions, setOperatorsUrl, getOperatorsUrl } from 'modules/operators-ranking';
-import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getPopup } from 'selectors/operators-ranking';
+import {
+  getOperatorsRanking,
+  setOperatorsMapLocation,
+  setOperatorsMapInteractions,
+  setOperatorsMapHoverInteractions,
+  setOperatorsMapLayersActive,
+  setOperatorsMapLayersSettings,
+  setOperatorsUrl,
+  getOperatorsUrl
+} from 'modules/operators-ranking';
+import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup } from 'selectors/operators-ranking';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -25,8 +34,8 @@ import Sidebar from 'components/ui/sidebar';
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
 import Popup from 'components/map-new/popup';
+import Legend from 'components/map-new/legend';
 
-import MapLegend from 'components/map/map-legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 
@@ -115,6 +124,7 @@ class OperatorsPage extends Page {
       activeLayers,
       activeInteractiveLayers,
       activeInteractiveLayersIds,
+      legendLayers,
       popup
     } = this.props;
 
@@ -176,13 +186,11 @@ class OperatorsPage extends Page {
               )}
             </Map>
 
-            {/* <MapLegend
-              layers={flatten(MAP_LAYERS_OPERATORS.map(layer =>
-                layer.layers.filter(l => l.legendConfig)
-              ))}
-              toggleLayers={this.toggleLayers}
-              layersActive={layersActive}
-            /> */}
+            <Legend
+              layerGroups={legendLayers}
+              sortable={false}
+              setLayerSettings={this.props.setOperatorsMapLayersSettings}
+            />
 
             {/* MapControls */}
             <MapControls>
@@ -217,6 +225,7 @@ export default withTracker(withIntl(connect(
     activeLayers: getActiveLayers(state),
     activeInteractiveLayers: getActiveInteractiveLayers(state),
     activeInteractiveLayersIds: getActiveInteractiveLayersIds(state),
+    legendLayers: getLegendLayers(state),
     popup: getPopup(state)
   }),
   dispatch => ({
@@ -235,6 +244,12 @@ export default withTracker(withIntl(connect(
     },
     setOperatorsMapHoverInteractions(obj) {
       dispatch(setOperatorsMapHoverInteractions(obj));
+    },
+    setOperatorsMapLayersActive(obj) {
+      dispatch(setOperatorsMapLayersActive(obj));
+    },
+    setOperatorsMapLayersSettings(obj) {
+      dispatch(setOperatorsMapLayersSettings(obj));
     }
   })
 )(OperatorsPage)));

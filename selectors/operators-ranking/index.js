@@ -5,6 +5,8 @@ import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
 
+import { replace } from 'layer-manager';
+
 import { getParams } from './utils';
 
 // Get the datasets and filters from state
@@ -61,6 +63,7 @@ export const getActiveLayers = createSelector(
         return {
           id,
           ...l.config,
+          ...settings,
 
           ...(!!paramsConfig) && {
             params: getParams(paramsConfig, settings.params)
@@ -152,6 +155,65 @@ export const getActiveInteractiveLayers = createSelector(
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
 
     return interactiveLayers.map(l => ({ ...l, data: _interactions[l.id] }));
+  }
+);
+
+export const getLegendLayers = createSelector(
+  [layers, layersSettings, layersActive], (_layers, _layersSettings, _layersActive) => {
+    if (!_layers) return [];
+    const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
+
+    const layerGroups = [];
+
+    _layersActive.forEach((lid) => {
+      const layer = legendLayers.find(r => r.id === lid);
+      if (!layer) return false;
+
+      const { id, name, description, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
+
+      const lSettings = _layersSettings[id] || {};
+
+      const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
+      const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
+      const decodeParams = (!!decodeConfig) && getParams(decodeConfig, lSettings.decodeParams);
+
+      layerGroups.push({
+        id,
+        dataset: id,
+        name,
+        description,
+        layers: [{
+          ...layer,
+          opacity: 1,
+          active: true,
+          legendConfig,
+          ...lSettings,
+          ...(!!paramsConfig) && {
+            params
+          },
+
+          ...(!!sqlConfig) && {
+            sqlParams
+          },
+
+          ...(!!decodeConfig) && {
+            decodeParams
+          },
+
+          ...!!timelineConfig && {
+            timelineParams: {
+              ...JSON.parse(replace(JSON.stringify(timelineConfig), params)),
+              ...getParams(paramsConfig, lSettings.params),
+              ...getParams(decodeConfig, lSettings.decodeParams)
+            }
+          }
+        }],
+        visibility: true,
+        ...lSettings
+      });
+    });
+
+    return layerGroups;
   }
 );
 

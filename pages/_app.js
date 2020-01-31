@@ -5,7 +5,6 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper';
 
-
 import * as reducers from 'modules';
 
 

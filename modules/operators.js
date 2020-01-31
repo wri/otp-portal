@@ -80,10 +80,3 @@ export function getOperators() {
       });
   };
 }
-
-export function setActiveMapLayers(activeLayerIds) {
-  return {
-    type: SET_ACTIVE_MAP_LAYERS,
-    payload: activeLayerIds
-  };
-}

@@ -13,6 +13,8 @@ const GET_OPERATORS_RANKING_LOADING = 'GET_OPERATORS_RANKING_LOADING';
 const SET_OPERATORS_RANKING_MAP_LOCATION = 'SET_OPERATORS_RANKING_MAP_LOCATION';
 const SET_OPERATORS_MAP_INTERACTIONS = 'SET_OPERATORS_MAP_INTERACTIONS';
 const SET_OPERATORS_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_MAP_HOVER_INTERACTIONS';
+const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
+const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
 
 const JSONA = new Jsona();
@@ -39,7 +41,7 @@ const initialState = {
   layers: [
     {
       id: 'gain',
-
+      name: 'Tree cover gain',
       config: {
         type: 'raster',
         source: {
@@ -57,6 +59,7 @@ const initialState = {
     },
     {
       id: 'loss',
+      name: 'Tree cover loss',
       config: {
         type: 'raster',
         source: {
@@ -72,12 +75,37 @@ const initialState = {
         items: []
       },
       decodeConfig: [
-        { key: 'startYear', default: 2001 },
-        { key: 'endYear', default: 2018 }
+        {
+          default: '2001-01-01',
+          key: 'startDate',
+          required: true
+        },
+        {
+          default: '2018-12-31',
+          key: 'endDate',
+          required: true
+        }
       ],
-      decodeParams: {
-        startYear: 2001,
-        endYear: 2018
+      timelineConfig: {
+        step: 1,
+        speed: 250,
+        interval: 'years',
+        dateFormat: 'YYYY',
+        trimEndDate: '2018-12-31',
+        maxDate: '2018-12-31',
+        minDate: '2001-01-01',
+        canPlay: true,
+        railStyle: {
+          background: '#FFF'
+        },
+        trackStyle: [
+          {
+            background: '#dc6c9a'
+          },
+          {
+            background: '#982d5f'
+          }
+        ]
       },
       decodeFunction: `
         // values for creating power scale, domain (input), and range (output)
@@ -112,6 +140,7 @@ const initialState = {
     },
     {
       id: 'fmus',
+      name: 'Fores managment units',
       config: {
         type: 'geojson',
         source: {
@@ -175,6 +204,7 @@ const initialState = {
     },
     {
       id: 'protected-areas',
+      name: 'Protected areas',
       config: {
         type: 'vector',
         source: {
@@ -314,6 +344,23 @@ export default function (state = initialState, action) {
         hoverInteractions
       };
     }
+    case SET_OPERATORS_MAP_LAYERS_SETTINGS: {
+      const { id, settings } = action.payload;
+
+      const layersSettings = {
+        ...state.layersSettings,
+        [id]: {
+          ...state.layersSettings[id],
+          ...settings
+        }
+      };
+
+      return {
+        ...state,
+        layersSettings
+      };
+    }
+
     case SET_FILTERS_RANKING: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
@@ -425,26 +472,38 @@ export function getOperatorsUrl(url) {
 
 
 // SETTERS
-export function setOperatorsMapLocation(mapLocation) {
+export function setOperatorsMapLocation(payload) {
   return {
     type: SET_OPERATORS_RANKING_MAP_LOCATION,
-    payload: mapLocation
+    payload
   };
 }
 
-// SETTERS
-export function setOperatorsMapInteractions(features) {
+export function setOperatorsMapInteractions(payload) {
   return {
     type: SET_OPERATORS_MAP_INTERACTIONS,
-    payload: features
+    payload
   };
 }
 
-// SETTERS
-export function setOperatorsMapHoverInteractions(features) {
+export function setOperatorsMapHoverInteractions(payload) {
   return {
     type: SET_OPERATORS_MAP_HOVER_INTERACTIONS,
-    payload: features
+    payload
+  };
+}
+
+export function setOperatorsMapLayersActive(payload) {
+  return {
+    type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
+    payload
+  };
+}
+
+export function setOperatorsMapLayersSettings(payload) {
+  return {
+    type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+    payload
   };
 }
 

@@ -10,6 +10,8 @@
 @include foundation-flex-grid;
 @include foundation-responsive-embed;
 
+@import '~vizzuality-components/dist/bundle';
+
 // Common
 @import 'base';
 @import 'fonts';
@@ -31,6 +33,7 @@
 // - map
 @import '../node_modules/mapbox-gl/dist/mapbox-gl';
 @import 'components/map/map';
+@import 'components/map/legend';
 @import 'components/map/map-legend';
 @import 'components/map/map-controls';
 @import 'components/map/popup';
