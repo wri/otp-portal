@@ -14,6 +14,8 @@ import {
   LegendItemTimeStep
 } from 'vizzuality-components';
 
+import TEMPLATES from './templates';
+
 class LegendComponent extends PureComponent {
   static propTypes = {
     layerGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -82,14 +84,13 @@ class LegendComponent extends PureComponent {
 
 
   render() {
-    const { sortable, collapsable, expanded, layerGroups } = this.props;
+    const { sortable, collapsable, expanded, layerGroups, setLayerSettings } = this.props;
 
     return (
       <div
         className="c-legend"
       >
         <Legend
-          maxHeight={'65vh'}
           sortable={sortable}
           collapsable={collapsable}
           expanded={expanded}
@@ -98,7 +99,7 @@ class LegendComponent extends PureComponent {
           {layerGroups.map((layerGroup, i) => (
             <LegendListItem
               index={i}
-              key={layerGroup.slug}
+              key={layerGroup.id}
               layerGroup={layerGroup}
               toolbar={
                 <LegendItemToolbar>
@@ -119,6 +120,12 @@ class LegendComponent extends PureComponent {
               onChangeOpacity={(l, opacity) => this.onChangeOpacity(l, opacity, layerGroup.id)}
               onRemoveLayer={(l) => { this.onRemoveLayer(l); }}
             >
+              {!!TEMPLATES[layerGroup.id] &&
+                React.createElement(TEMPLATES[layerGroup.id], {
+                  setLayerSettings
+                })
+              }
+
               <LegendItemTypes />
 
               <LegendItemTimeStep

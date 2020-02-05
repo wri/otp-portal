@@ -1,0 +1,7 @@
+.c-legend-template-glad {
+  > * {
+    margin: 0 0 0 $space-1;
+
+    &:first-child { margin: 0;}
+  }
+}

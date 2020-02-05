@@ -97,7 +97,7 @@ const initialState = {
         minDate: '2001-01-01',
         canPlay: true,
         railStyle: {
-          background: '#FFF'
+          background: '#DDD'
         },
         trackStyle: [
           {
@@ -217,7 +217,7 @@ const initialState = {
         minDate: '2015-01-01',
         canPlay: true,
         railStyle: {
-          background: '#FFF'
+          background: '#DDD'
         },
         trackStyle: [
           {
