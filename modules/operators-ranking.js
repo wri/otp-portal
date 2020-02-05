@@ -221,10 +221,10 @@ const initialState = {
         },
         trackStyle: [
           {
-            background: '#dc6c9a'
+            background: '#FF0000'
           },
           {
-            background: '#982d5f'
+            background: '#CC0000'
           }
         ]
       }

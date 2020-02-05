@@ -9,7 +9,8 @@ import { replace } from 'layer-manager';
 
 import { getParams } from './utils';
 
-// Get the datasets and filters from state
+const intl = (state, props) => props.intl;
+
 const layersActive = state => state.operatorsRanking.layersActive;
 const layers = state => state.operatorsRanking.layers;
 const layersSettings = state => state.operatorsRanking.layersSettings;
@@ -159,7 +160,7 @@ export const getActiveInteractiveLayers = createSelector(
 );
 
 export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive], (_layers, _layersSettings, _layersActive) => {
+  [layers, layersSettings, layersActive, intl], (_layers, _layersSettings, _layersActive, _intl) => {
     if (!_layers) return [];
     const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
 
@@ -180,13 +181,28 @@ export const getLegendLayers = createSelector(
       layerGroups.push({
         id,
         dataset: id,
-        name,
+        name: _intl.formatMessage({ id: name || '-' }),
         description,
         layers: [{
           ...layer,
           opacity: 1,
           active: true,
-          legendConfig,
+          legendConfig: {
+            ...legendConfig,
+            ...legendConfig.items && {
+              items: legendConfig.items.map(i => ({
+                ...i,
+                ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
+                ...i.items && {
+                  items: i.items.map(ii => ({
+                    ...ii,
+                    ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                  }))
+                }
+
+              }))
+            }
+          },
           ...lSettings,
           ...(!!paramsConfig) && {
             params

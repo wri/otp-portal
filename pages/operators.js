@@ -221,14 +221,14 @@ OperatorsPage.propTypes = {
 
 export default withTracker(withIntl(connect(
 
-  state => ({
+  (state, props) => ({
     operators: state.operators,
     operatorsRanking: state.operatorsRanking,
-    activeLayers: getActiveLayers(state),
-    activeInteractiveLayers: getActiveInteractiveLayers(state),
-    activeInteractiveLayersIds: getActiveInteractiveLayersIds(state),
-    legendLayers: getLegendLayers(state),
-    popup: getPopup(state)
+    activeLayers: getActiveLayers(state, props),
+    activeInteractiveLayers: getActiveInteractiveLayers(state, props),
+    activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
+    legendLayers: getLegendLayers(state, props),
+    popup: getPopup(state, props)
   }),
   dispatch => ({
     getOperators() {
