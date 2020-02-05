@@ -54,7 +54,9 @@ const initialState = {
       },
       legendConfig: {
         type: 'basic',
-        items: []
+        items: [
+          { name: 'Tree cover gain', color: '#6D6DE5' }
+        ]
       }
     },
     {
@@ -71,8 +73,7 @@ const initialState = {
         }
       },
       legendConfig: {
-        type: 'basic',
-        items: []
+        enabled: true
       },
       decodeConfig: [
         {
@@ -139,8 +140,99 @@ const initialState = {
       `
     },
     {
+      id: 'glad',
+      name: 'GLAD alerts',
+      config: {
+        type: 'raster',
+        source: {
+          tiles: [
+            'https://tiles.globalforestwatch.org/glad_prod/tiles/{z}/{x}/{y}.png'
+          ],
+          minzoom: 2,
+          maxzoom: 12
+        }
+      },
+      legendConfig: {
+        enabled: true
+      },
+      decodeConfig: [
+        {
+          default: '2015-01-01',
+          key: 'startDate',
+          required: true
+        },
+        {
+          default: '2020-01-30',
+          key: 'endDate',
+          required: true,
+          url: 'https://production-api.globalforestwatch.org/v1/glad-alerts/latest'
+        },
+        {
+          default: 1,
+          key: 'confirmedOnly',
+          required: true
+        }
+      ],
+      decodeFunction: `
+        // values for creating power scale, domain (input), and range (output)
+        float confidenceValue = 0.;
+        if (confirmedOnly > 0.) {
+          confidenceValue = 200.;
+        }
+        float day = color.r * 255. * 255. + (color.g * 255.);
+        float confidence = color.b * 255.;
+        if (
+          day > 0. &&
+          day >= startDayIndex &&
+          day <= endDayIndex &&
+          confidence >= confidenceValue
+        ) {
+          // get intensity
+          float intensity = mod(confidence, 100.) * 50.;
+          if (intensity > 255.) {
+            intensity = 255.;
+          }
+          if (day >= numberOfDays - 7. && day <= numberOfDays) {
+            color.r = 255. / 255.;
+            color.g = 255. / 255.;
+            color.b = 0.;
+            alpha = intensity / 255.;
+          } else {
+            color.r = 255. / 255.;
+            color.g = 0. / 255.;
+            color.b = 0. / 255.;
+            alpha = intensity / 255.;
+          }
+        } else {
+          alpha = 0.;
+        }
+      `,
+      timelineConfig: {
+        step: 7,
+        speed: 100,
+        interval: 'days',
+        dateFormat: 'YYYY-MM-DD',
+        trimEndDate: '2020-01-30',
+        maxDate: '2020-01-30',
+        minDate: '2015-01-01',
+        canPlay: true,
+        railStyle: {
+          background: '#FFF'
+        },
+        trackStyle: [
+          {
+            background: '#dc6c9a'
+          },
+          {
+            background: '#982d5f'
+          }
+        ]
+      }
+
+    },
+    {
       id: 'fmus',
-      name: 'Fores managment units',
+      name: 'Forest managment units',
       config: {
         type: 'geojson',
         source: {
@@ -182,7 +274,37 @@ const initialState = {
       },
       legendConfig: {
         type: 'basic',
-        items: []
+        color: '#e98300',
+        items: [
+          {
+            name: 'FMUs',
+            color: '#e98300'
+          },
+          {
+            name: 'Cameroon',
+            hideIcon: true,
+            items: [
+              { name: 'ventes_de_coupe', color: '#e92000' },
+              { name: 'ufa', color: '#e95800' },
+              { name: 'communal', color: '#e9A700' }
+            ]
+          },
+          {
+            name: 'Central African Republic',
+            hideIcon: true,
+            items: [
+              { name: 'PEA', color: '#e9D400' }
+            ]
+          },
+          {
+            name: 'Gabon',
+            hideIcon: true,
+            items: [
+              { name: 'CPAET', color: '#e9F200' },
+              { name: 'CFAD', color: '#e9FF00' }
+            ]
+          }
+        ]
       },
       interactionConfig: {
         enable: true,
@@ -249,13 +371,16 @@ const initialState = {
       },
       legendConfig: {
         type: 'basic',
-        items: []
+        items: [
+          { name: 'Protected areas', color: '#5ca2d1' }
+        ]
       }
     }
   ],
   layersActive: [
     'gain',
     'loss',
+    'glad',
     'fmus',
     'protected-areas'
   ],

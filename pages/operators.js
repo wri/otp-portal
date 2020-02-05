@@ -189,6 +189,8 @@ class OperatorsPage extends Page {
             <Legend
               layerGroups={legendLayers}
               sortable={false}
+              collapsable={false}
+              expanded={false}
               setLayerSettings={this.props.setOperatorsMapLayersSettings}
             />
 

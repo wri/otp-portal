@@ -56,7 +56,7 @@ export const getActiveLayers = createSelector(
 
     // Layers
     const aLayers = _layers.map((l) => {
-      const { id, paramsConfig, decodeConfig, decodeFunction } = l;
+      const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
       const settings = _layersSettings[id] || {};
 
       if (_layersActive.includes(id)) {
@@ -70,7 +70,7 @@ export const getActiveLayers = createSelector(
           },
 
           ...(!!decodeConfig) && {
-            decodeParams: getParams(decodeConfig, settings.decodeParams),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams }),
             decodeFunction
           }
         };
@@ -175,7 +175,7 @@ export const getLegendLayers = createSelector(
 
       const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
       const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
-      const decodeParams = (!!decodeConfig) && getParams(decodeConfig, lSettings.decodeParams);
+      const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
 
       layerGroups.push({
         id,

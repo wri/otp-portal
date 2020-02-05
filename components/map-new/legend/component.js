@@ -11,7 +11,6 @@ import {
   LegendItemButtonInfo,
   LegendItemButtonOpacity,
   LegendItemButtonVisibility,
-  LegendItemButtonRemove,
   LegendItemTimeStep
 } from 'vizzuality-components';
 
@@ -19,13 +18,17 @@ class LegendComponent extends PureComponent {
   static propTypes = {
     layerGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
     sortable: PropTypes.bool,
+    collapsable: PropTypes.bool,
+    expanded: PropTypes.bool,
 
     setLayerSettings: PropTypes.func.isRequired,
     setLayerOrder: PropTypes.func.isRequired
   }
 
   static defaultProps = {
-    sortable: true
+    sortable: true,
+    collapsable: true,
+    expanded: true
   }
 
   onChangeInfo = (info, id) => {
@@ -79,7 +82,7 @@ class LegendComponent extends PureComponent {
 
 
   render() {
-    const { sortable, layerGroups } = this.props;
+    const { sortable, collapsable, expanded, layerGroups } = this.props;
 
     return (
       <div
@@ -88,6 +91,8 @@ class LegendComponent extends PureComponent {
         <Legend
           maxHeight={'65vh'}
           sortable={sortable}
+          collapsable={collapsable}
+          expanded={expanded}
           onChangeOrder={this.onChangeOrder}
         >
           {layerGroups.map((layerGroup, i) => (

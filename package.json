@@ -34,7 +34,7 @@
     "json-api-normalizer": "^0.4.0",
     "jsona": "^1.0.9",
     "jsonapi-serializer": "^3.5.3",
-    "layer-manager": "^3.0.0-beta.6",
+    "layer-manager": "^3.0.0-beta.7",
     "leaflet": "^1.0.3",
     "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
     "luma.gl": "7.3.2",
@@ -89,7 +89,7 @@
     "turf-extent": "^1.0.4",
     "uuid": "^3.0.1",
     "viewport-mercator-project": "6.1.1",
-    "vizzuality-components": "^3.0.0",
+    "vizzuality-components": "^3.0.1",
     "webpack": "^4.41.5"
   },
   "devDependencies": {
