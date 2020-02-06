@@ -1,0 +1,27 @@
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+
+import Spinner from 'components/ui/spinner';
+
+class LegendAnalysisGLAD extends PureComponent {
+  static propTypes = {
+    analysis: PropTypes.shape({}).isRequired
+  }
+
+  render() {
+    const { analysis } = this.props;
+    const { data, loading } = analysis;
+
+    return (
+      <div className="c-legend-analysis">
+        {loading && <Spinner className="-transparent -tiny -relative" isLoading={loading} />}
+
+        {!loading && data &&
+          `There were ${data.areaHa.toLocaleString()} ha GLAD alerts`
+        }
+      </div>
+    );
+  }
+}
+
+export default LegendAnalysisGLAD;

@@ -37,7 +37,16 @@ $spinner-tiny-size: 20px;
   // Position
   &.-absolute { position: absolute;}
   &.-fixed { position: fixed;}
-  &.-relative { position: relative;}
+  &.-relative {
+    position: relative;
+
+    > .spinner-box {
+      position: relative;
+      top: 0%;
+      left: 50%;
+      transform: translate(-50%,0%);
+    }
+  }
 
   // Sizes
   &.-tiny {

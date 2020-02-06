@@ -11,50 +11,23 @@ import { getParams } from '../utils';
 
 const intl = (state, props) => props.intl;
 
-const layersActive = state => state.operatorsRanking.layersActive;
-const layers = state => state.operatorsRanking.layers;
-const layersSettings = state => state.operatorsRanking.layersSettings;
+const operatorsDetail = state => state.operatorsDetail.data;
 
-const countryOptions = state => state.operatorsRanking.filters.options.country;
-const countryActive = state => state.operatorsRanking.filters.data.country;
+const layersActive = state => state.operatorsDetailFmus.layersActive;
+const layers = state => state.operatorsDetailFmus.layers;
+const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 
-const interactions = state => state.operatorsRanking.interactions;
-const latlng = state => state.operatorsRanking.latlng;
+const interactions = state => state.operatorsDetailFmus.interactions;
+const latlng = state => state.operatorsDetailFmus.latlng;
+
+const fmu = state => state.operatorsDetailFmus.fmu;
+const analysis = state => state.operatorsDetailFmus.analysis;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 export const getActiveLayers = createSelector(
-  layersActive, layers, layersSettings, countryOptions, countryActive,
-  (_layersActive, _layers, _layersSettings, _countryOptions, _countryActive) => {
-    // Country layers
-    const cLayers = _countryOptions.map((c) => {
-      let opacity = 1;
-
-      if (_countryActive && _countryActive.length) {
-        opacity = Number(_countryActive.includes(c.value));
-      }
-
-      return {
-        id: c.iso,
-        type: 'geojson',
-        opacity,
-        source: {
-          type: 'geojson',
-          data: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`,
-          parse: data => data.data.attributes.geojson
-        },
-        render: {
-          layers: [{
-            type: 'line',
-            paint: {
-              'line-color': '#333333',
-              'line-width': 2,
-              'line-opacity': 0.8
-            }
-          }]
-        }
-      };
-    });
-
+  layersActive, layers, layersSettings, operatorsDetail,
+  (_layersActive, _layers, _layersSettings, _operatorsDetail) => {
+    const { id: operator_id } = _operatorsDetail;
     // Layers
     const aLayers = _layers.map((l) => {
       const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
@@ -67,11 +40,11 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, settings.params)
+            params: getParams(paramsConfig, { ...settings.params, operator_id })
           },
 
           ...(!!decodeConfig) && {
-            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams }),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id }),
             decodeFunction
           }
         };
@@ -81,7 +54,6 @@ export const getActiveLayers = createSelector(
     });
 
     return compact([
-      ...cLayers,
       ...aLayers
     ]);
   }
@@ -160,7 +132,7 @@ export const getActiveInteractiveLayers = createSelector(
 );
 
 export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive, intl], (_layers, _layersSettings, _layersActive, _intl) => {
+  [layers, layersSettings, layersActive, analysis, fmu, intl], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl) => {
     if (!_layers) return [];
     const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
 
@@ -172,17 +144,26 @@ export const getLegendLayers = createSelector(
 
       const { id, name, description, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
 
+
       const lSettings = _layersSettings[id] || {};
 
       const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
       const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
       const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
 
+      const f = _fmu;
+      const i = id === 'gain' ? 'loss' : id;
+      const analysisParams = {
+        loading: _analysis.loading[i],
+        ..._analysis.data[f] && { data: _analysis.data[f][id] }
+      };
+
       layerGroups.push({
         id,
         dataset: id,
         name: _intl.formatMessage({ id: name || '-' }),
         description,
+        analysis: analysisParams,
         layers: [{
           ...layer,
           opacity: 1,
@@ -246,5 +227,49 @@ export const getPopup = createSelector(
     };
 
     return popup;
+  }
+);
+
+export const getFMUs = createSelector(
+  operatorsDetail,
+  (_operatorsDetail) => {
+    const { fmus } = _operatorsDetail;
+    return fmus || [];
+  }
+);
+
+export const getFMU = createSelector(
+  getFMUs, fmu, layersActive, layers, layersSettings,
+  (_fmus, _fmu, _layersActive, _layers, _layersSettings) => {
+    if (!_fmus.length) {
+      return {};
+    }
+
+    const analysisLayers = ['loss', 'glad'];
+
+    let FMU;
+
+    if (!_fmu && !!_fmus.length) {
+      FMU = _fmus[0];
+    } else {
+      FMU = _fmus.find(f => f.id === _fmu)
+    }
+
+
+    return {
+      ...FMU,
+      ...analysisLayers.reduce((acc, key) => {
+        const layer = _layers.find(l => l.id === key);
+        const { decodeConfig, timelineConfig } = layer;
+        const settings = _layersSettings[key] || {};
+
+        return {
+          ...acc,
+          [key]: {
+            ...getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams }),
+          }
+        };
+      }, {})
+    };
   }
 );

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import classnames from 'classnames';
+
 import debounce from 'lodash/debounce';
 
 import {
@@ -15,9 +17,11 @@ import {
 } from 'vizzuality-components';
 
 import TEMPLATES from './templates';
+import ANALYSIS from './analysis';
 
 class LegendComponent extends PureComponent {
   static propTypes = {
+    className: PropTypes.string,
     layerGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
     sortable: PropTypes.bool,
     collapsable: PropTypes.bool,
@@ -28,6 +32,7 @@ class LegendComponent extends PureComponent {
   }
 
   static defaultProps = {
+    className: '',
     sortable: true,
     collapsable: true,
     expanded: true
@@ -84,11 +89,14 @@ class LegendComponent extends PureComponent {
 
 
   render() {
-    const { sortable, collapsable, expanded, layerGroups, setLayerSettings } = this.props;
+    const { className, sortable, collapsable, expanded, layerGroups, setLayerSettings } = this.props;
 
     return (
       <div
-        className="c-legend"
+        className={classnames({
+          'c-legend': true,
+          [className]: !!className
+        })}
       >
         <Legend
           sortable={sortable}
@@ -142,6 +150,12 @@ class LegendComponent extends PureComponent {
                 }}
                 handleChange={this.onChangeLayerDate}
               />
+
+              {!!layerGroup.analysis && ANALYSIS[layerGroup.id] &&
+                React.createElement(ANALYSIS[layerGroup.id], {
+                  analysis: layerGroup.analysis
+                })
+              }
             </LegendListItem>
             ))}
         </Legend>
