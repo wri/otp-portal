@@ -4,12 +4,17 @@ import PropTypes from 'prop-types';
 
 import isEqual from 'lodash/isEqual';
 
+import getBBox from '@turf/bbox';
+
 // Redux
 import { connect } from 'react-redux';
 import {
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailFmu,
-  setOperatorsDetailAnalysis
+  setOperatorsDetailFmuBounds,
+  setOperatorsDetailAnalysis,
+  setOperatorsDetailMapInteractions,
+  setOperatorsDetailMapHoverInteractions
 } from 'modules/operators-detail-fmus';
 import {
   getActiveLayers,
@@ -29,8 +34,6 @@ import LayerManager from 'components/map-new/layer-manager';
 
 import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
-import SelectInput from 'components/form/SelectInput';
-// import FMUCard from 'components/ui/fmu-card';
 
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
@@ -38,6 +41,7 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (fmus.length) {
       this.props.setOperatorsDetailFmu(fmus[0].id);
+      this.getBBOX();
     }
 
     if (fmu) {
@@ -47,16 +51,24 @@ class OperatorsDetailFMUs extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { fmus: prevFmus, fmu: prevFmu } = prevProps;
-    const { fmus, fmu } = this.props;
+    const { fmus: prevFmus, fmu: prevFmu, interactions: prevInteractions } = prevProps;
+    const { fmus, fmu, interactions } = this.props;
 
     if (!isEqual(fmus, prevFmus)) {
       this.props.setOperatorsDetailFmu(fmus[0].id);
+      this.getBBOX();
     }
 
     if (fmu.id !== prevFmu.id) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
       this.props.setOperatorsDetailAnalysis(fmu, 'glad');
+    }
+
+    if (!isEqual(interactions, prevInteractions)) {
+      const { fmus: interactionsFmus } = interactions;
+      if (interactionsFmus) {
+        this.props.setOperatorsDetailFmu(interactionsFmus.data.id);
+      }
     }
 
     if (
@@ -78,8 +90,49 @@ class OperatorsDetailFMUs extends React.Component {
     }
   }
 
+  onClick = (e) => {
+    if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
+      const { features, lngLat } = e;
+      this.props.setOperatorsDetailMapInteractions({ features, lngLat });
+    } else {
+      this.props.setOperatorsDetailMapInteractions({});
+    }
+  }
+
+  onHover = (e) => {
+    if (e.features && e.features.length) {
+      const { features, lngLat } = e;
+      this.props.setOperatorsDetailMapHoverInteractions({ features, lngLat });
+    } else {
+      this.props.setOperatorsDetailMapHoverInteractions({});
+    }
+  }
+
+  getBBOX = () => {
+    const { fmus } = this.props;
+
+    const bbox = getBBox({
+      type: 'FeatureCollection',
+      features: fmus.map(f => f.geojson)
+    });
+
+    this.props.setOperatorsDetailFmuBounds({
+      bbox,
+      options: {
+        padding: {
+          top: 50,
+          bottom: 50,
+          left: 50,
+          right: 50
+        }
+      }
+    });
+
+  }
+
   render() {
     const {
+      fmu,
       fmus,
       operatorsDetailFmus,
       activeLayers,
@@ -92,21 +145,18 @@ class OperatorsDetailFMUs extends React.Component {
         <Sidebar className="-fluid">
           {fmus && !!fmus.length && (
             <div>
-              <SelectInput
-                properties={{
-                  default: fmus[0].id,
-                  clearable: false
-                }}
-                options={fmus.map(f => ({
-                  label: f.name,
-                  value: f.id
-                }))}
-                onChange={(value) => {
+              <select
+                value={fmu.id}
+                onChange={(e) => {
                   this.props.setOperatorsDetailFmu(
-                    fmus.find(f => f.id === value).id
+                    fmus.find(f => Number(f.id) === Number(e.currentTarget.value)).id
                   );
                 }}
-              />
+              >
+                {fmus.map(f => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
+                ))}
+              </select>
             </div>
           )}
 
@@ -124,6 +174,7 @@ class OperatorsDetailFMUs extends React.Component {
           {/* Map */}
           <Map
             mapStyle="mapbox://styles/mapbox/light-v9"
+            bounds={fmu.bounds}
             // viewport
             viewport={operatorsDetailFmus.map}
             onViewportChange={this.setMapocation}
@@ -154,38 +205,6 @@ class OperatorsDetailFMUs extends React.Component {
               </Fragment>
             )}
           </Map>
-          {/* <Map
-            mapOptions={operatorsDetailFmus.map}
-            mapFilters={{
-              OPERATOR_ID: url.query.id,
-              FMU_ID: operatorsDetailFmus.fmu.id
-            }}
-            mapListeners={{
-              moveend: (map) => {
-                this.props.setMapLocation({
-                  zoom: map.getZoom(),
-                  center: map.getCenter()
-                });
-              }
-            }}
-            layers={layers}
-            onLayerEvent={(eventName, layerId, e) => {
-              switch (`${eventName}-${layerId}`) {
-                case 'click-forest_concession_layer': {
-                  const fmu = fmus.find(f => parseInt(f.id, 10) === e.features[0].properties.id);
-
-                  this.props.setFmuSelected(fmu);
-
-                  if (!operatorsDetailFmus.analysis.data[fmu.id]) {
-                    this.props.setOperatorsDetailAnalysis(fmu);
-                  }
-                  break;
-                }
-                default:
-
-              }
-            }}
-          /> */}
 
           {/* MapControls */}
           {/* <MapControls>
@@ -207,9 +226,10 @@ class OperatorsDetailFMUs extends React.Component {
 
 OperatorsDetailFMUs.propTypes = {
   intl: intlShape.isRequired,
-  operatorsDetail: PropTypes.object.isRequired,
+  interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,
+  fmuBounds: PropTypes.shape({}).isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
@@ -217,13 +237,17 @@ OperatorsDetailFMUs.propTypes = {
 
   setOperatorsDetailMapLayersSettings: PropTypes.func,
   setOperatorsDetailFmu: PropTypes.func,
-  setOperatorsDetailAnalysis: PropTypes.func
+  setOperatorsDetailFmuBounds: PropTypes.func,
+  setOperatorsDetailAnalysis: PropTypes.func,
+  setOperatorsDetailMapInteractions: PropTypes.func,
+  setOperatorsDetailMapHoverInteractions: PropTypes.func
 };
 
 export default injectIntl(
   connect(
     (state, props) => ({
       operatorsDetailFmus: state.operatorsDetailFmus,
+      interactions: state.operatorsDetailFmus.interactions,
       fmus: getFMUs(state, props),
       fmu: getFMU(state, props),
       activeLayers: getActiveLayers(state, props),
@@ -234,7 +258,10 @@ export default injectIntl(
     {
       setOperatorsDetailMapLayersSettings,
       setOperatorsDetailFmu,
-      setOperatorsDetailAnalysis
+      setOperatorsDetailFmuBounds,
+      setOperatorsDetailAnalysis,
+      setOperatorsDetailMapInteractions,
+      setOperatorsDetailMapHoverInteractions
     }
   )(OperatorsDetailFMUs)
 );

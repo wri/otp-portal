@@ -5,11 +5,14 @@ import Spinner from 'components/ui/spinner';
 
 class LegendAnalysisGLAD extends PureComponent {
   static propTypes = {
+    activeLayer: PropTypes.shape({}).isRequired,
     analysis: PropTypes.shape({}).isRequired
   }
 
   render() {
-    const { analysis } = this.props;
+    const { activeLayer, analysis } = this.props;
+    const { decodeParams } = activeLayer;
+    const { startDate, trimEndDate } = decodeParams;
     const { data, loading } = analysis;
 
     return (
@@ -17,7 +20,7 @@ class LegendAnalysisGLAD extends PureComponent {
         {loading && <Spinner className="-transparent -tiny -relative" isLoading={loading} />}
 
         {!loading && data &&
-          `There were ${data.areaHa.toLocaleString()} ha GLAD alerts`
+          `There were ${data.value.toLocaleString()} GLAD alerts from ${startDate} to ${trimEndDate}`
         }
       </div>
     );

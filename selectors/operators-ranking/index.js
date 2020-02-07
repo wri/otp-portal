@@ -15,16 +15,18 @@ const layersActive = state => state.operatorsRanking.layersActive;
 const layers = state => state.operatorsRanking.layers;
 const layersSettings = state => state.operatorsRanking.layersSettings;
 
+const interactions = state => state.operatorsRanking.interactions;
+const hoverInteractions = state => state.operatorsRanking.hoverInteractions;
+const latlng = state => state.operatorsRanking.latlng;
+
 const countryOptions = state => state.operatorsRanking.filters.options.country;
 const countryActive = state => state.operatorsRanking.filters.data.country;
 
-const interactions = state => state.operatorsRanking.interactions;
-const latlng = state => state.operatorsRanking.latlng;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 export const getActiveLayers = createSelector(
-  layersActive, layers, layersSettings, countryOptions, countryActive,
-  (_layersActive, _layers, _layersSettings, _countryOptions, _countryActive) => {
+  layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
+  (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
     // Country layers
     const cLayers = _countryOptions.map((c) => {
       let opacity = 1;
@@ -32,6 +34,7 @@ export const getActiveLayers = createSelector(
       if (_countryActive && _countryActive.length) {
         opacity = Number(_countryActive.includes(c.value));
       }
+
 
       return {
         id: c.iso,
@@ -59,6 +62,7 @@ export const getActiveLayers = createSelector(
     const aLayers = _layers.map((l) => {
       const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
       const settings = _layersSettings[id] || {};
+      const hoverInteractionParams = _hoverInteractions[id] ? { hoverId: _hoverInteractions[id].data.cartodb_id || _hoverInteractions[id].data.id } : {};
 
       if (_layersActive.includes(id)) {
         return {
@@ -67,7 +71,7 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, settings.params)
+            params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams })
           },
 
           ...(!!decodeConfig) && {

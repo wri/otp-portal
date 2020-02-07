@@ -5,6 +5,7 @@ const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
 const GET_FMU_ANALYSIS_ERROR = 'GET_FMU_ANALYSIS_ERROR';
 
 const SET_OPERATORS_DETAIL_FMU_SELECTED = 'SET_OPERATORS_DETAIL_FMU_SELECTED';
+const SET_OPERATORS_DETAIL_FMU_BOUNDS = 'SET_OPERATORS_DETAIL_FMU_BOUNDS';
 
 const SET_OPERATORS_DETAIL_MAP_LOCATION = 'SET_OPERATORS_DETAIL_MAP_LOCATION';
 const SET_OPERATORS_DETAIL_MAP_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_INTERACTIONS';
@@ -36,6 +37,7 @@ const initialState = {
   layersSettings: {},
 
   fmu: undefined,
+  fmusBounds: undefined,
   analysis: {
     data: {},
     loading: false,
@@ -95,6 +97,10 @@ export default function (state = initialState, action) {
 
     case SET_OPERATORS_DETAIL_FMU_SELECTED: {
       return Object.assign({}, state, { fmu: action.payload });
+    }
+
+    case SET_OPERATORS_DETAIL_FMU_BOUNDS: {
+      return Object.assign({}, state, { fmuBounds: action.payload });
     }
 
     case SET_OPERATORS_DETAIL_MAP_INTERACTIONS: {
@@ -178,6 +184,14 @@ export function setOperatorsDetailFmu(fmu) {
     payload: fmu
   };
 }
+
+export function setOperatorsDetailFmuBounds(payload) {
+  return {
+    type: SET_OPERATORS_DETAIL_FMU_BOUNDS,
+    payload
+  };
+}
+
 
 function fetchAnalysis(dispatch, getState, data, fmu, type) {
   dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
@@ -274,4 +288,17 @@ export function setOperatorsDetailMapLayersSettings(payload) {
   };
 }
 
+export function setOperatorsDetailMapInteractions(payload) {
+  return {
+    type: SET_OPERATORS_DETAIL_MAP_INTERACTIONS,
+    payload
+  };
+}
+
+export function setOperatorsDetailMapHoverInteractions(payload) {
+  return {
+    type: SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS,
+    payload
+  };
+}
 

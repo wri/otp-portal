@@ -18,29 +18,34 @@ const layers = state => state.operatorsDetailFmus.layers;
 const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 
 const interactions = state => state.operatorsDetailFmus.interactions;
+const hoverInteractions = state => state.operatorsDetailFmus.hoverInteractions;
 const latlng = state => state.operatorsDetailFmus.latlng;
 
 const fmu = state => state.operatorsDetailFmus.fmu;
+const fmuBounds = state => state.operatorsDetailFmus.fmuBounds;
 const analysis = state => state.operatorsDetailFmus.analysis;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 export const getActiveLayers = createSelector(
-  layersActive, layers, layersSettings, operatorsDetail,
-  (_layersActive, _layers, _layersSettings, _operatorsDetail) => {
+  layersActive, layers, layersSettings, interactions, hoverInteractions, fmu, operatorsDetail,
+  (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _fmu, _operatorsDetail) => {
     const { id: operator_id } = _operatorsDetail;
     // Layers
     const aLayers = _layers.map((l) => {
       const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
       const settings = _layersSettings[id] || {};
 
-      if (_layersActive.includes(id)) {
+      if (_layersActive.includes(id) && _fmu) {
+        const interactionParams = { clickId: Number(_fmu) };
+        const hoverInteractionParams = _hoverInteractions[id] ? { hoverId: _hoverInteractions[id].data.cartodb_id || _hoverInteractions[id].data.id } : { hoverId: null };
+
         return {
           id,
           ...l.config,
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, { ...settings.params, operator_id })
+            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id })
           },
 
           ...(!!decodeConfig) && {
@@ -239,8 +244,8 @@ export const getFMUs = createSelector(
 );
 
 export const getFMU = createSelector(
-  getFMUs, fmu, layersActive, layers, layersSettings,
-  (_fmus, _fmu, _layersActive, _layers, _layersSettings) => {
+  getFMUs, fmu, fmuBounds, layersActive, layers, layersSettings,
+  (_fmus, _fmu, _fmuBounds, _layersActive, _layers, _layersSettings) => {
     if (!_fmus.length) {
       return {};
     }
@@ -252,12 +257,13 @@ export const getFMU = createSelector(
     if (!_fmu && !!_fmus.length) {
       FMU = _fmus[0];
     } else {
-      FMU = _fmus.find(f => f.id === _fmu)
+      FMU = _fmus.find(f => Number(f.id) === Number(_fmu));
     }
 
 
     return {
       ...FMU,
+      bounds: _fmuBounds,
       ...analysisLayers.reduce((acc, key) => {
         const layer = _layers.find(l => l.id === key);
         const { decodeConfig, timelineConfig } = layer;

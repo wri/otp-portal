@@ -228,6 +228,30 @@ export const LAYERS = [
               'line-color': '#000000',
               'line-opacity': 0.1
             }
+          },
+          {
+            type: 'line',
+            filter: [
+              'all',
+              ['==', 'id', '{clickId}']
+            ],
+            paint: {
+              'line-opacity': 1,
+              'line-width': 2
+            }
+          },
+          {
+            type: 'line',
+            filter: [
+              'all',
+              ['==', 'id', '{hoverId}'],
+              ['!=', 'id', '{clickId}']
+            ],
+            paint: {
+              'line-dasharray': [3, 1],
+              'line-opacity': 1,
+              'line-width': 2
+            }
           }
         ]
       }
@@ -305,7 +329,7 @@ export const LAYERS = [
                   cartocss_version: '2.3.0',
                   sql: 'SELECT * FROM wdpa_protected_areas'
                 },
-                type: 'cartodb'
+                type: 'mapnik'
               }
             ]
           }
@@ -332,11 +356,15 @@ export const LAYERS = [
         ]
       }
     },
+    paramsConfig: [],
     legendConfig: {
       type: 'basic',
       items: [
         { name: 'Protected areas', color: '#5ca2d1' }
       ]
+    },
+    interactionConfig: {
+      enable: true
     }
   }
 ];

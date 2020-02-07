@@ -28,7 +28,7 @@ class LegendComponent extends PureComponent {
     expanded: PropTypes.bool,
 
     setLayerSettings: PropTypes.func.isRequired,
-    setLayerOrder: PropTypes.func.isRequired
+    setLayerOrder: PropTypes.func
   }
 
   static defaultProps = {
