@@ -3,12 +3,14 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import isEqual from 'lodash/isEqual';
+import debounce from 'lodash/debounce';
 
 import getBBox from '@turf/bbox';
 
 // Redux
 import { connect } from 'react-redux';
 import {
+  setOperatorsDetailMapLocation,
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
@@ -31,6 +33,9 @@ import { injectIntl, intlShape } from 'react-intl';
 // Components
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
+import MapControls from 'components/map/map-controls';
+import ZoomControl from 'components/map/controls/zoom-control';
+
 
 import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
@@ -130,6 +135,10 @@ class OperatorsDetailFMUs extends React.Component {
 
   }
 
+  setMapocation = debounce((mapLocation) => {
+    this.props.setOperatorsDetailMapLocation(mapLocation);
+  }, 500);
+
   render() {
     const {
       fmu,
@@ -219,17 +228,18 @@ class OperatorsDetailFMUs extends React.Component {
           </Map>
 
           {/* MapControls */}
-          {/* <MapControls>
+          <MapControls>
             <ZoomControl
               zoom={operatorsDetailFmus.map.zoom}
               onZoomChange={(zoom) => {
-                this.props.setMapLocation({
+                this.props.setOperatorsDetailMapLocation({
                   ...operatorsDetailFmus.map,
-                  ...{ zoom }
+                  zoom,
+                  transitionDuration: 500
                 });
               }}
             />
-          </MapControls> */}
+          </MapControls>
         </div>
       </div>
     );
@@ -247,6 +257,7 @@ OperatorsDetailFMUs.propTypes = {
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
 
+  setOperatorsDetailMapLocation: PropTypes.func,
   setOperatorsDetailMapLayersSettings: PropTypes.func,
   setOperatorsDetailFmu: PropTypes.func,
   setOperatorsDetailFmuBounds: PropTypes.func,
@@ -268,6 +279,7 @@ export default injectIntl(
       legendLayers: getLegendLayers(state, props)
     }),
     {
+      setOperatorsDetailMapLocation,
       setOperatorsDetailMapLayersSettings,
       setOperatorsDetailFmu,
       setOperatorsDetailFmuBounds,

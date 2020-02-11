@@ -31,25 +31,26 @@ $legend_component: 'vizzuality';
       .#{$legend_component}__toggle-legend {
         background: $color-white;
         border-radius: 0;
-        left: 100%;
-        right: auto;
+        right: 0;
         transform: none;
-        top: -1px;
-        border: 1px solid $border-color-2;
-        border-left: none;
-        visibility: hidden;
+        top: 1px;
+
+        svg {
+          fill: $color-black;
+          transform: rotate(180deg);
+        }
       }
 
-      svg {
-        fill: $color-black;
-        transform: rotate(180deg);
-      }
 
       .#{$legend_component}__open-legend {
         &.#{$legend_component}__-active {
           .#{$legend_component}__toggle-legend {
             height: 40px;
-            visibility: visible;
+            left: 100%;
+            right: auto;
+            border: 1px solid $border-color-2;
+            border-left: none;
+            top: -1px;
           }
         }
       }

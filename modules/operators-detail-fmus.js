@@ -171,7 +171,7 @@ export default function (state = initialState, action) {
 // - setMapLocation
 // - setFmuSelected
 // - setAnalysis
-export function setMapLocation(mapLocation) {
+export function setOperatorsDetailMapLocation(mapLocation) {
   return {
     type: SET_OPERATORS_DETAIL_MAP_LOCATION,
     payload: mapLocation
