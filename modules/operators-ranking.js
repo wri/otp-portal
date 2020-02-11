@@ -5,12 +5,18 @@ import compact from 'lodash/compact';
 
 import * as Cookies from 'js-cookie';
 
+import { LAYERS } from 'constants/layers';
+
 /* Constants */
 const GET_OPERATORS_RANKING_SUCCESS = 'GET_OPERATORS_RANKING_SUCCESS';
 const GET_OPERATORS_RANKING_ERROR = 'GET_OPERATORS_RANKING_ERROR';
 const GET_OPERATORS_RANKING_LOADING = 'GET_OPERATORS_RANKING_LOADING';
 
 const SET_OPERATORS_RANKING_MAP_LOCATION = 'SET_OPERATORS_RANKING_MAP_LOCATION';
+const SET_OPERATORS_MAP_INTERACTIONS = 'SET_OPERATORS_MAP_INTERACTIONS';
+const SET_OPERATORS_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_MAP_HOVER_INTERACTIONS';
+const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
+const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
 
 const JSONA = new Jsona();
@@ -20,16 +26,35 @@ const initialState = {
   data: [],
   loading: false,
   error: false,
+
   map: {
     zoom: 5,
-    center: {
-      lat: 0,
-      lng: 18
-    }
+    latitude: 0,
+    longitude: 20
   },
+
+  latlng: {},
+
+  interactions: {},
+
+  hoverInteractions: {},
+
+  // LAYERS
+  layers: LAYERS,
+  layersActive: [
+    'gain',
+    'loss',
+    'glad',
+    'fmus',
+    'protected-areas'
+  ],
+  layersSettings: {},
+
+  // FILTERS
   filters: {
     data: {
-      fa: true
+      fa: true,
+      country: []
     },
     // TODO: get them from API
     options: {
@@ -65,6 +90,66 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, { loading: true, error: false });
     case SET_OPERATORS_RANKING_MAP_LOCATION:
       return Object.assign({}, state, { map: action.payload });
+    case SET_OPERATORS_MAP_INTERACTIONS: {
+      const { features = [], lngLat = [] } = action.payload;
+
+      const interactions = features.reduce(
+        (obj, next) => ({
+          ...obj,
+          [next.layer.source]: {
+            id: next.id,
+            data: next.properties,
+            geometry: next.geometry
+          }
+        }),
+        {}
+      );
+
+      return {
+        ...state,
+        latlng: {
+          lat: lngLat[1],
+          lng: lngLat[0]
+        },
+        interactions
+      };
+    }
+    case SET_OPERATORS_MAP_HOVER_INTERACTIONS: {
+      const { features = [] } = action.payload;
+      const hoverInteractions = features.reduce(
+        (obj, next) => ({
+          ...obj,
+          [next.layer.source]: {
+            id: next.id,
+            data: next.properties,
+            geometry: next.geometry
+          }
+        }),
+        {}
+      );
+
+      return {
+        ...state,
+        hoverInteractions
+      };
+    }
+    case SET_OPERATORS_MAP_LAYERS_SETTINGS: {
+      const { id, settings } = action.payload;
+
+      const layersSettings = {
+        ...state.layersSettings,
+        [id]: {
+          ...state.layersSettings[id],
+          ...settings
+        }
+      };
+
+      return {
+        ...state,
+        layersSettings
+      };
+    }
+
     case SET_FILTERS_RANKING: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
@@ -149,16 +234,14 @@ export function getOperatorsRanking() {
   };
 }
 
-export function setOperatorsUrl() {
-  return (dispatch, getState) => {
-    const { operatorsRanking } = getState();
-
+export function setOperatorsUrl(mapLocation) {
+  return () => {
     const location = {
       pathname: '/operators',
       query: {
-        lat: operatorsRanking.map.center.lat.toFixed(2),
-        lng: operatorsRanking.map.center.lng.toFixed(2),
-        zoom: operatorsRanking.map.zoom.toFixed(2)
+        latitude: mapLocation.latitude.toFixed(2),
+        longitude: mapLocation.longitude.toFixed(2),
+        zoom: mapLocation.zoom.toFixed(2)
       }
     };
 
@@ -167,23 +250,49 @@ export function setOperatorsUrl() {
 }
 
 export function getOperatorsUrl(url) {
-  const { zoom, lat, lng } = url.query;
+  const { zoom, lat, lng, latitude, longitude } = url.query;
 
   return {
     zoom: +zoom || initialState.map.zoom,
-    center: {
-      lat: +lat || initialState.map.center.lat,
-      lng: +lng || initialState.map.center.lng
-    }
+    latitude: +latitude || +lat || initialState.map.latitude,
+    longitude: +longitude || +lng || initialState.map.longitude
   };
 }
 
 
 // SETTERS
-export function setOperatorsMapLocation(mapLocation) {
+export function setOperatorsMapLocation(payload) {
   return {
     type: SET_OPERATORS_RANKING_MAP_LOCATION,
-    payload: mapLocation
+    payload
+  };
+}
+
+export function setOperatorsMapInteractions(payload) {
+  return {
+    type: SET_OPERATORS_MAP_INTERACTIONS,
+    payload
+  };
+}
+
+export function setOperatorsMapHoverInteractions(payload) {
+  return {
+    type: SET_OPERATORS_MAP_HOVER_INTERACTIONS,
+    payload
+  };
+}
+
+export function setOperatorsMapLayersActive(payload) {
+  return {
+    type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
+    payload
+  };
+}
+
+export function setOperatorsMapLayersSettings(payload) {
+  return {
+    type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+    payload
   };
 }
 

@@ -22,8 +22,7 @@ import { getParsedObservations } from 'selectors/operators-detail/observations';
 import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 import withTracker from 'components/layout/with-tracker';
@@ -205,8 +204,8 @@ OperatorsDetail.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
     operators: state.operators,

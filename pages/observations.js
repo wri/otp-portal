@@ -6,8 +6,7 @@ import difference from 'lodash/difference';
 import capitalize from 'lodash/capitalize';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 
@@ -22,15 +21,15 @@ import { getParsedTableObservations } from 'selectors/observations/parsed-table-
 // Components
 import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
-import StaticHeader from 'components/ui/static-header';
 import Overview from 'components/observations/overview';
+import CheckboxGroup from 'components/form/CheckboxGroup';
+import StaticHeader from 'components/ui/static-header';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/filters';
 import Spinner from 'components/ui/spinner';
-import MapSubComponent from 'components/ui/map-sub-component';
-import { ReadMore } from 'react-read-more';
+import ReadMore from 'components/ui/read-more';
 import Icon from 'components/ui/icon';
-import CheckboxGroup from 'components/form/CheckboxGroup';
+import MapSubComponent from 'components/ui/map-sub-component';
 
 // Utils
 import {
@@ -243,7 +242,7 @@ class ObservationsPage extends Page {
         className: 'description',
         minWidth: 250,
         Cell: attr => (
-          <ReadMore lines={1} text="more">
+          <ReadMore lines={2}>
             {attr.value}
           </ReadMore>
         )
@@ -389,8 +388,7 @@ ObservationsPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
   state => ({
     observations: state.observations,
     parsedChartObservations: getParsedChartObservations(state),

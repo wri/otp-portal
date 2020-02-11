@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
@@ -142,8 +141,8 @@ HelpPage.propTypes = {
   url: PropTypes.object.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     operators: state.operators,
     howtos: state.help.howtos,

@@ -16,7 +16,7 @@ class CountryCard extends React.Component {
     const { id, name } = this.props;
 
     return (
-      <Link prefetch href={`/countries/${id}`}>
+      <Link href={`/countries/${id}`}>
         <a className="c-country-card">
           <h2 className="c-title -extrabig -uppercase -proximanova"> {name} </h2>
         </a>

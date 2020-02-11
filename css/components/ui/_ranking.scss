@@ -26,7 +26,7 @@
   }
 
   th {
-    padding: $space-1 * 2 $space-1 * 2 $space-1;
+    padding: $space-1 * 2 $space-1 $space-1;
     color: $color-primary;
     font-weight: 400;
     white-space: nowrap;
@@ -70,7 +70,7 @@
   }
 
   td {
-    padding: $space-1 / 2 $space-1 * 2;
+    padding: $space-1 / 2 $space-1;
     font-family: $font-family-georgia;
     vertical-align: baseline;
 

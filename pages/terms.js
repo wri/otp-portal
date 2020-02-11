@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux';
 import { store } from 'store';
 import withTracker from 'components/layout/with-tracker';
 
@@ -251,6 +251,6 @@ TermsPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
+export default withTracker(withIntl(connect(
   store
 )(TermsPage)));

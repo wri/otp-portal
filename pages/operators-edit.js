@@ -5,8 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import Router from 'next/router';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import { getUserOperator } from 'modules/user';
 import withTracker from 'components/layout/with-tracker';
@@ -95,8 +94,8 @@ OperatorsEdit.propTypes = {
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
     operators: state.operators,

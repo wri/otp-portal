@@ -1,27 +1,5 @@
 {
-  "plugins": [
-    "transform-decorators-legacy",
-    [
-      "module-resolver", {
-        "root": ["."],
-        "alias": {
-          "components": "./components",
-          "constants": "./constants",
-          "css": "./css",
-          "lang": "./lang",
-          "modules": "./modules",
-          "selectors": "./selectors",
-          "services": "./services",
-          "utils": "./utils"
-        },
-    }],
-    [
-      "wrap-in-js",
-      {
-        "extensions": ["css$", "scss$"]
-      }
-    ]
-  ],
+  "plugins": [],
   "presets": [
     "next/babel"
   ],

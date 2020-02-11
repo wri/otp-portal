@@ -24,7 +24,7 @@ module.exports = {
         use: ['babel-loader', 'raw-loader', 'postcss-loader',
           { loader: 'sass-loader',
             options: {
-              includePaths: ['css', 'node_modules']
+              includePaths: ['css', 'node_modules', 'components']
                 .map(d => path.join(__dirname, d))
                 .map(g => glob.sync(g))
                 .reduce((a, c) => a.concat(c), [])
@@ -34,7 +34,16 @@ module.exports = {
       }
     );
 
-    config.module.noParse = /(mapbox-gl)\.js$/;
+    config.resolve.alias.components = path.join(__dirname, 'components');
+    config.resolve.alias.constants = path.join(__dirname, 'constants');
+    config.resolve.alias.css = path.join(__dirname, 'css');
+    config.resolve.alias.hoc = path.join(__dirname, 'hoc');
+    config.resolve.alias.lang = path.join(__dirname, 'lang');
+    config.resolve.alias.modules = path.join(__dirname, 'modules');
+    config.resolve.alias.selectors = path.join(__dirname, 'selectors');
+    config.resolve.alias.services = path.join(__dirname, 'services');
+    config.resolve.alias.store = path.join(__dirname, 'store');
+    config.resolve.alias.utils = path.join(__dirname, 'utils');
 
     config.plugins = config.plugins.filter(
       plugin => (plugin.constructor.name !== 'UglifyJsPlugin')

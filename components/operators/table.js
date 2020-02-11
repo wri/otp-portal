@@ -107,7 +107,7 @@ class OperatorsTable extends React.Component {
                 </th>
 
                 {/* Other styles */}
-                <th className="-ta-center -break-ponit -contextual">
+                <th className="-ta-center -contextual">
                   {this.props.intl.formatMessage({
                     id: "operators.table.obs_visit"
                   })}

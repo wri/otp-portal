@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
+import { connect } from 'react-redux';
 import { getOperators } from 'modules/operators';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
@@ -173,8 +172,8 @@ AboutPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     operators: state.operators,
     partners: state.partners,

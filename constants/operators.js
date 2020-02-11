@@ -242,8 +242,6 @@ const MAP_LAYERS_OPERATORS = [
 
           const props = e.features[0].properties;
 
-          console.log(props);
-
           // TODO: to translate popup we need to refactor all the map
           const fmuTypes = {
             en: {
