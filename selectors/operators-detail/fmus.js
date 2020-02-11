@@ -4,6 +4,7 @@ import compact from 'lodash/compact';
 import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
+import sortBy from 'lodash/sortBy';
 
 import { replace } from 'layer-manager';
 
@@ -145,7 +146,7 @@ export const getLegendLayers = createSelector(
 
     _layersActive.forEach((lid) => {
       const layer = legendLayers.find(r => r.id === lid);
-      if (!layer) return false;
+      if (!layer || lid === 'fmus') return false;
 
       const { id, name, description, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
 
@@ -160,6 +161,7 @@ export const getLegendLayers = createSelector(
       const i = id === 'gain' ? 'loss' : id;
       const analysisParams = {
         loading: _analysis.loading[i],
+        error: _analysis.error[i],
         ..._analysis.data[f] && { data: _analysis.data[f][id] }
       };
 
@@ -239,7 +241,7 @@ export const getFMUs = createSelector(
   operatorsDetail,
   (_operatorsDetail) => {
     const { fmus } = _operatorsDetail;
-    return fmus || [];
+    return sortBy(fmus, 'name') || [];
   }
 );
 

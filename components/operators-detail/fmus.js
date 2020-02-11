@@ -122,7 +122,7 @@ class OperatorsDetailFMUs extends React.Component {
         padding: {
           top: 50,
           bottom: 50,
-          left: 50,
+          left: 350,
           right: 50
         }
       }
@@ -144,19 +144,27 @@ class OperatorsDetailFMUs extends React.Component {
       <div className="c-section -map">
         <Sidebar className="-fluid">
           {fmus && !!fmus.length && (
-            <div>
-              <select
-                value={fmu.id}
-                onChange={(e) => {
-                  this.props.setOperatorsDetailFmu(
-                    fmus.find(f => Number(f.id) === Number(e.currentTarget.value)).id
-                  );
-                }}
-              >
-                {fmus.map(f => (
-                  <option key={f.id} value={f.id}>{f.name}</option>
-                ))}
-              </select>
+            <div className="c-fmu-card">
+              <h3 className="c-title -extrabig -uppercase -proximanova">Analysis</h3>
+              <p>Select a fmu by using the following select or by clicking on the map shapes.</p>
+
+              <div className="fmu-select">
+                <select
+                  value={fmu.id}
+                  onChange={(e) => {
+                    this.props.setOperatorsDetailFmu(
+                      fmus.find(f => Number(f.id) === Number(e.currentTarget.value)).id
+                    );
+                  }}
+                >
+                  {fmus.map(f => (
+                    <option key={f.id} value={f.id}>{f.name}</option>
+                  ))}
+                </select>
+
+                <div className="fmu-select-value">{fmu.name}</div>
+              </div>
+
             </div>
           )}
 
@@ -175,6 +183,10 @@ class OperatorsDetailFMUs extends React.Component {
           <Map
             mapStyle="mapbox://styles/mapbox/light-v9"
             bounds={fmu.bounds}
+
+            // options
+            scrollZoom={false}
+
             // viewport
             viewport={operatorsDetailFmus.map}
             onViewportChange={this.setMapocation}

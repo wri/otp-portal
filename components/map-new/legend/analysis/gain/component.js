@@ -10,11 +10,15 @@ class LegendAnalysisGain extends PureComponent {
 
   render() {
     const { analysis } = this.props;
-    const { data, loading } = analysis;
+    const { data, loading, error } = analysis;
 
     return (
       <div className="c-legend-analysis">
         {loading && <Spinner className="-transparent -tiny -relative" isLoading={loading} />}
+
+        {!loading && error &&
+          'Oops!! There was an error during the analysis.'
+        }
 
         {!loading && data &&
           `There were ${data.gain.toLocaleString()} ha of tree cover gain`

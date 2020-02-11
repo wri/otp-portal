@@ -8,6 +8,9 @@ $sidebar-width: 600px;
   box-shadow: 0 0 5px rgba($color-black, .25);
 
   &.-fluid {
-    flex: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
   }
 }

@@ -242,7 +242,7 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
         }
       });
     })
-    .catch((error) => { throw new Error(error); });
+    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
 }
 
 // GEOSTORE
@@ -277,7 +277,7 @@ export function setOperatorsDetailAnalysis(fmu, type) {
     .then(({ data }) => {
       return fetchAnalysis(dispatch, getState, data, fmu, type);
     })
-    .catch(error => console.error(error.message));
+    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
   };
 }
 

@@ -362,9 +362,6 @@ export const LAYERS = [
       items: [
         { name: 'Protected areas', color: '#5ca2d1' }
       ]
-    },
-    interactionConfig: {
-      enable: true
     }
   }
 ];
