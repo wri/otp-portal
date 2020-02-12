@@ -14,6 +14,7 @@ import { intlShape } from 'react-intl';
 import { connect } from 'react-redux';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
+import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 
 import {
@@ -51,13 +52,17 @@ class OperatorsPage extends React.Component {
     const url = { asPath, pathname, query };
     const { operators, operatorsRanking } = store.getState();
     let user = null;
+    let lang = 'en';
 
     if (isServer) {
+      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
+      lang = store.getState().language;
       user = store.getState().user;
     }
 
+    store.dispatch(setLanguage(lang));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
@@ -68,8 +73,6 @@ class OperatorsPage extends React.Component {
     if (!operatorsRanking.data.length) {
       await store.dispatch(getOperatorsRanking());
     }
-
-    console.log(url);
 
     return { isServer, url };
   }

@@ -16,6 +16,17 @@ import zh from 'react-intl/locale-data/zh';
 const LANGUAGES = { en, fr, zh };
 const MESSAGES = { en: langEn, fr: langFr, zh: langZhCN };
 
+const LANG2LOCALE = {
+  en: 'en-GB',
+  fr: 'fr-FR',
+  zh: 'zh-CN'
+};
+const LOCALE2LANG = {
+  'en-GB': 'en',
+  'fr-FR': 'fr',
+  'zh-CN': 'zh'
+};
+
 
 // Register React Intl's locale data for the user's locale in the browser
 if (typeof window !== 'undefined') {
@@ -35,9 +46,6 @@ export default function withIntl(Page) {
 
     static async getInitialProps(context) {
       let props;
-      if (typeof Page.getInitialProps === 'function') {
-        props = await Page.getInitialProps(context);
-      }
 
       // Get the `locale` from the request object on the server.
       // In the browser, use the same values that the server serialized.
@@ -46,13 +54,9 @@ export default function withIntl(Page) {
       let language;
 
       if (req) {
-        language =
-          req.query.language ||
-          req.cookies.language ||
-          req.locale.language ||
-          'en';
+        language = req.locale.language || 'en';
       } else {
-        language = Cookies.get('language') || 'en';
+        language = LOCALE2LANG[Cookies.get('language')] || 'en';
       }
 
       language = (Object.keys(LANGUAGES).includes(language)) ? language : 'en';
@@ -60,12 +64,17 @@ export default function withIntl(Page) {
       // Always update the current time on page load/transition because the
       // <IntlProvider> will be a new instance even with pushState routing.
       const now = Date.now();
+
+      if (typeof Page.getInitialProps === 'function') {
+        props = await Page.getInitialProps(context);
+      }
+
       return { language, now, ...props };
     }
 
     componentDidMount() {
       // Set language cookie
-      Cookies.set('language', this.props.language, { expires: 90 });
+      Cookies.set('language', LANG2LOCALE[this.props.language], { expires: 90 });
     }
 
     render() {

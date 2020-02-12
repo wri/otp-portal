@@ -35,8 +35,13 @@ const handle = app.getRequestHandler();
 const server = express();
 
 // configure Express
-server.use(localeMiddleware());
 server.use(cookieParser());
+server.use(localeMiddleware({
+  priority: ['query', 'cookie', 'default'],
+  default: 'en-GB',
+  cookie: { name: 'language' },
+  query: { name: 'language' }
+}));
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 server.use(cookieSession({

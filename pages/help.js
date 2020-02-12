@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
+import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
@@ -27,16 +28,20 @@ import HelpTutorials from 'components/help/tutorials';
 
 class HelpPage extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const url = { asPath, pathname, query };
     const { operators } = store.getState();
+    const url = { asPath, pathname, query };
     let user = null;
+    let lang = 'en';
 
     if (isServer) {
+      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
+      lang = store.getState().language;
       user = store.getState().user;
     }
 
+    store.dispatch(setLanguage(lang));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 

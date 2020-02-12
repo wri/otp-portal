@@ -1,6 +1,5 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_HOWTOS_SUCCESS = 'GET_HOWTOS_SUCCESS';
@@ -126,13 +125,14 @@ export default function (state = initialState, action) {
 }
 
 export function getHowtos() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_HOWTOS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/how-tos?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/how-tos?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -163,13 +163,14 @@ export function getHowtos() {
 }
 
 export function getTools() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_TOOLS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/tools?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/tools?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -201,13 +202,14 @@ export function getTools() {
 
 
 export function getFAQs() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FAQS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/faqs?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/faqs?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -239,13 +241,14 @@ export function getFAQs() {
 
 
 export function getTutorials() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_TUTORIALS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/tutorials?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/tutorials?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',

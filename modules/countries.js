@@ -1,6 +1,5 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_COUNTRIES_SUCCESS = 'GET_COUNTRIES_SUCCESS';
@@ -35,13 +34,14 @@ export default function (state = initialState, action) {
 
 
 export function getCountries() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRIES_LOADING });
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
-
-    return fetch(`${process.env.OTP_API}/countries?locale=${language}&page[size]=2000&sort=name`, {
+    return fetch(`${process.env.OTP_API}/countries?locale=${lang}&page[size]=2000&sort=name`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -54,8 +54,6 @@ export function getCountries() {
       })
       .then((countries) => {
         const dataParsed = JSONA.deserialize(countries);
-
-        console.log(dataParsed);
 
         dispatch({
           type: GET_COUNTRIES_SUCCESS,

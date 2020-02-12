@@ -4,6 +4,7 @@ import React from 'react';
 import withTracker from 'components/layout/with-tracker';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
+import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 
 
@@ -21,13 +22,17 @@ class OperatorsNew extends React.Component {
     const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
+    let lang = 'en';
 
     if (isServer) {
+      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
+      lang = store.getState().language;
       user = store.getState().user;
     }
 
+    store.dispatch(setLanguage(lang));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 

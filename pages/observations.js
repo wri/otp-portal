@@ -9,6 +9,7 @@ import capitalize from 'lodash/capitalize';
 import { connect } from 'react-redux';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
+import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 
 import withTracker from 'components/layout/with-tracker';
@@ -64,14 +65,19 @@ class ObservationsPage extends React.Component {
     const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
+    let lang = 'en';
 
     if (isServer) {
+      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
+      lang = store.getState().language;
       user = store.getState().user;
     }
 
+    store.dispatch(setLanguage(lang));
     store.dispatch(setUser(user));
+
     store.dispatch(setRouter(url));
 
     if (!operators.data.length) {

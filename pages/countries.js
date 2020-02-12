@@ -9,6 +9,7 @@ import { intlShape } from 'react-intl';
 import { connect } from 'react-redux';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
+import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
@@ -22,16 +23,20 @@ import CountriesList from 'components/countries/list';
 
 class CountriesDetail extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
-    const { operators } = store.getState();
+    let lang = 'en';
 
     if (isServer) {
+      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
+      lang = store.getState().language;
       user = store.getState().user;
     }
 
+    store.dispatch(setLanguage(lang));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 

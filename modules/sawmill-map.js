@@ -85,7 +85,7 @@ export function getSawMillLocationById(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILL_LOCATION_LOADING });
 
-    fetch(`${process.env.OTP_API}/sawmills/${id}?format=geojson`, {
+    return fetch(`${process.env.OTP_API}/sawmills/${id}?format=geojson`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -1,7 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
-import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_COUNTRY_SUCCESS = 'GET_COUNTRY_SUCCESS';
@@ -62,7 +61,8 @@ export default function (state = initialState, action) {
 /* Action creators */
 export function getCountry(id) {
   return (dispatch, getState) => {
-    const { user } = getState();
+    const { user, language } = getState();
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRY_LOADING });
 
@@ -74,11 +74,11 @@ export function getCountry(id) {
       'required-gov-documents.gov-documents.gov-files'
     ];
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
     const queryParams = queryString.stringify({
       ...!!includeFields.length && { include: includeFields.join(',') },
-      locale: language
+      locale: lang
     });
 
 

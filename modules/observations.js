@@ -4,8 +4,6 @@ import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 import compact from 'lodash/compact';
 
-import * as Cookies from 'js-cookie';
-
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
@@ -91,6 +89,7 @@ export default function (state = initialState, action) {
 /* Action creators */
 export function getObservations() {
   return (dispatch, getState) => {
+    const { language } = getState();
     const filters = getState().observations.filters.data;
     const filtersQuery = compact(Object.keys(filters).map((key) => {
       if (!isEmpty(filters[key])) {
@@ -104,9 +103,9 @@ export function getObservations() {
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    const url = `${process.env.OTP_API}/observations?locale=${language}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
+    const url = `${process.env.OTP_API}/observations?locale=${lang}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
@@ -140,13 +139,15 @@ export function getObservations() {
 }
 
 export function getFilters() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    fetch(`${process.env.OTP_API}/observation_filters?locale=${language}`, {
+    fetch(`${process.env.OTP_API}/observation_filters?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

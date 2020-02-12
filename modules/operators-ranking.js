@@ -3,8 +3,6 @@ import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import compact from 'lodash/compact';
 
-import * as Cookies from 'js-cookie';
-
 import { LAYERS } from 'constants/layers';
 
 /* Constants */
@@ -179,6 +177,7 @@ const getSQLFilters = (filters) => {
 /* Action creators */
 export function getOperatorsRanking() {
   return (dispatch, getState) => {
+    const { language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_RANKING_LOADING });
 
@@ -202,9 +201,9 @@ export function getOperatorsRanking() {
     // Filters
     const filters = getSQLFilters(getState().operatorsRanking.filters.data);
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    fetch(`${process.env.OTP_API}/operators?locale=${language}&page[size]=2000&${fields}&include=${includes}${filters}`, {
+    fetch(`${process.env.OTP_API}/operators?locale=${lang}&page[size]=2000&${fields}&include=${includes}${filters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

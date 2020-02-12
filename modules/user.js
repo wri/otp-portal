@@ -2,7 +2,6 @@ import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
 
-
 import * as Cookies from 'js-cookie';
 import { get, post } from 'utils/request';
 

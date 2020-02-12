@@ -1,6 +1,7 @@
 export { default as countries } from './countries';
 export { default as countriesDetail } from './countries-detail';
 export { default as home } from './home';
+export { default as language } from './language';
 export { default as modal } from './modal';
 export { default as observations } from './observations';
 export { default as operators } from './operators';

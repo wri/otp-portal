@@ -1,6 +1,5 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_DONORS_SUCCESS = 'GET_DONORS_SUCCESS';
@@ -38,13 +37,15 @@ export default function (state = initialState, action) {
 }
 
 export function getDonors() {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { language } = getState();
+
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DONORS_LOADING });
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/donors?locale=${language}&page[size]=2000`, {
+    return fetch(`${process.env.OTP_API}/donors?locale=${lang}&page[size]=2000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
