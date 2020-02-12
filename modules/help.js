@@ -132,7 +132,7 @@ export function getHowtos() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/how-tos?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/how-tos?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -169,7 +169,7 @@ export function getTools() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/tools?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/tools?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -207,7 +207,7 @@ export function getFAQs() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/faqs?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/faqs?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -245,7 +245,7 @@ export function getTutorials() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/tutorials?locale=${language}`, {
+    return fetch(`${process.env.OTP_API}/tutorials?locale=${language}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/vnd.api+json',

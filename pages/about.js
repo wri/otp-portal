@@ -4,8 +4,12 @@ import sortBy from 'lodash/sortBy';
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -13,27 +17,28 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import PartnerCard from 'components/ui/partner-card';
 
-class AboutPage extends Page {
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { partners, donors } = this.props;
+class AboutPage extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
 
-    if (!partners.data.length) {
-      // Get partners
-      this.props.getPartners();
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
     }
 
-    if (!donors.data.length) {
-      // Get partners
-      this.props.getDonors();
-    }
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getPartners());
+    await store.dispatch(getDonors());
+
+    return { isServer, url };
   }
 
   render() {
@@ -161,12 +166,13 @@ class AboutPage extends Page {
 }
 
 AboutPage.propTypes = {
-  session: PropTypes.object.isRequired,
+  url: PropTypes.shape({}).isRequired,
+  partners: PropTypes.shape({}).isRequired,
+  donors: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
 export default withTracker(withIntl(connect(
-
   state => ({
     partners: state.partners,
     donors: state.donors

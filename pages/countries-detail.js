@@ -15,26 +15,42 @@ import { getParsedDocumentation } from 'selectors/countries-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 import { getCountry } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Spinner from 'components/ui/spinner';
 
 import CountriesDetailDocumentation from 'components/countries-detail/documentation';
 
-class CountriesDetail extends Page {
+class CountriesDetail extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getCountry(url.query.id));
+
+    return { isServer, url };
+  }
+
   /**
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url } = this.props;
-
-    this.props.getCountry(url.query.id);
-
     // Set discalimer
     if (!Cookies.get('country-detail.disclaimer')) {
       toastr.info(

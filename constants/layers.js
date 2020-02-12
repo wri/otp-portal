@@ -6,7 +6,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+          'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
         ],
         minzoom: 3,
         maxzoom: 12

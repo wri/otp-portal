@@ -23,13 +23,15 @@ import { getParsedDocumentation } from 'selectors/operators-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
@@ -41,8 +43,24 @@ import OperatorsDetailDocumentation from 'components/operators-detail/documentat
 import OperatorsDetailObservations from 'components/operators-detail/observations';
 import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
-class OperatorsDetail extends Page {
+class OperatorsDetail extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
 
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getOperators());
+
+    return { isServer, url };
+  }
   /**
    * HELPERS
    * - getTabOptions
@@ -76,10 +94,6 @@ class OperatorsDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url } = this.props;
-
-    this.props.getOperator(url.query.id);
-
     // Set discalimer
     if (!Cookies.get('operator-detail.disclaimer')) {
       toastr.info(

@@ -41,7 +41,7 @@ export function getPartners() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_PARTNERS_LOADING });
 
-    fetch(`${process.env.OTP_API}/partners?page[size]=2000`, {
+    return fetch(`${process.env.OTP_API}/partners?page[size]=2000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

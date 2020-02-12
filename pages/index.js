@@ -1,20 +1,22 @@
 import React from 'react';
 
 // Redux
-import { connect } from 'react-redux';
-import withTracker from 'components/layout/with-tracker';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 
 import * as Cookies from 'js-cookie';
 
 // Toastr
 import { toastr } from 'react-redux-toastr';
 
+import withTracker from 'components/layout/with-tracker';
+
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
@@ -22,7 +24,23 @@ import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
 import Search from 'components/ui/search';
 
-class HomePage extends Page {
+class HomePage extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+
+    return { isServer, url };
+  }
   /**
    * COMPONENT LIFECYCLE
   */

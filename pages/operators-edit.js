@@ -6,7 +6,10 @@ import Router from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
-import { getUserOperator } from 'modules/user';
+import { setUser, getUserOperator } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -14,13 +17,29 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
-class OperatorsEdit extends Page {
+class OperatorsEdit extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+
+    return { isServer, url };
+  }
+
   /**
    * COMPONENT LIFECYCLE
   */

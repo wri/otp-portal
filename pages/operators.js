@@ -12,6 +12,9 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 
 import {
   getOperatorsRanking,
@@ -28,7 +31,6 @@ import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayers
 import withTracker from 'components/layout/with-tracker';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
 import Map from 'components/map-new';
@@ -44,15 +46,28 @@ import OperatorsFilters from 'components/operators/filters';
 import OperatorsTable from 'components/operators/table';
 
 
-class OperatorsPage extends Page {
+class OperatorsPage extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getOperatorsRanking());
+
+    return { isServer, url };
+  }
+
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operatorsRanking } = this.props;
-
-    if (!operatorsRanking.data.length) {
-      // Get operators
-      this.props.getOperatorsRanking();
-    }
+    const { url } = this.props;
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));

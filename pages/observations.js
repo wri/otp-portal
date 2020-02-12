@@ -7,6 +7,10 @@ import capitalize from 'lodash/capitalize';
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -18,7 +22,6 @@ import { getParsedChartObservations } from 'selectors/observations/parsed-chart-
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import Overview from 'components/observations/overview';
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -45,7 +48,7 @@ import { logEvent } from 'utils/analytics';
 import { FILTERS_REFS } from 'constants/observations';
 
 
-class ObservationsPage extends Page {
+class ObservationsPage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -55,6 +58,23 @@ class ObservationsPage extends Page {
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
+  }
+
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+
+    return { isServer, url };
   }
 
   componentDidMount() {

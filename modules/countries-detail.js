@@ -82,7 +82,7 @@ export function getCountry(id) {
     });
 
 
-    fetch(`${process.env.OTP_API}/countries/${id}?${queryParams}`, {
+    return fetch(`${process.env.OTP_API}/countries/${id}?${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

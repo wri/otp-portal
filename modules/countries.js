@@ -41,7 +41,7 @@ export function getCountries() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/countries?locale=${language}&page[size]=2000&sort=name`, {
+    return fetch(`${process.env.OTP_API}/countries?locale=${language}&page[size]=2000&sort=name`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -54,6 +54,8 @@ export function getCountries() {
       })
       .then((countries) => {
         const dataParsed = JSONA.deserialize(countries);
+
+        console.log(dataParsed);
 
         dispatch({
           type: GET_COUNTRIES_SUCCESS,

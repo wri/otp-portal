@@ -8,15 +8,7 @@ const request = require('request-promise');
 const localeMiddleware = require('express-locale');
 const bodyParser = require('body-parser');
 const next = require('next');
-const fs = require('fs');
-const mkdirp = require('mkdirp');
 const { parse } = require('url');
-
-// LossLayer
-const LossLayer = require('./utils/lossLayer');
-
-// GLAD Alerts
-const GladAlerts = require('./utils/gladAlerts');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -59,58 +51,6 @@ server.use(session({
 
 app.prepare()
   .then(() => {
-    // Loss layer
-    server.get('/loss-layer/:z/:x/:y', (req, res) => {
-      const { z, x, y } = req.params;
-      const tileDirPath = `${__dirname}/static/tiles/loss`;
-      const tilePath = `${tileDirPath}/${z}/${x}/${y}.png`;
-
-      // If image was created before it would be send
-      if (fs.existsSync(tilePath)) {
-        const imageTile = fs.readFileSync(tilePath);
-        res.contentType('png');
-        return res.end(imageTile, 'binary');
-      }
-
-      // Creating new tile
-      const layer = new LossLayer(z, x, y);
-      return layer.getImageTile('png', (tile) => {
-        // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, () => {
-          fs.writeFile(tilePath, tile);
-        });
-
-        res.contentType('png');
-        res.end(tile);
-      });
-    });
-
-    // GLAD alerts layer
-    server.get('/glad-layer/:z/:x/:y', (req, res) => {
-      const { z, x, y } = req.params;
-      const tileDirPath = `${__dirname}/static/tiles/glad`;
-      const tilePath = `${tileDirPath}/${z}/${x}/${y}.png`;
-
-      // If image was created before it would be send
-      if (fs.existsSync(tilePath)) {
-        const imageTile = fs.readFileSync(tilePath);
-        res.contentType('png');
-        return res.end(imageTile, 'binary');
-      }
-
-      // Creating new tile
-      const layer = new GladAlerts(z, x, y);
-      return layer.getImageTile('png', (tile) => {
-        // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, () => {
-          fs.writeFile(tilePath, tile);
-        });
-
-        res.contentType('png');
-        res.end(tile);
-      });
-    });
-
     // COUNTRIES
     server.get('/countries', (req, res) => {
       const { query } = parse(req.url, true);

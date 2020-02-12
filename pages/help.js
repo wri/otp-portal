@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import withTracker from 'components/layout/with-tracker';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
+
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
@@ -22,29 +25,26 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-class HelpPage extends Page {
+class HelpPage extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
 
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { howtos, tools, faqs, tutorials } = this.props;
-
-    if (!howtos.data.length) {
-      this.props.getHowtos();
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
     }
 
-    if (!tools.data.length) {
-      this.props.getTools();
-    }
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getHowtos());
+    await store.dispatch(getTools());
+    await store.dispatch(getFAQs());
+    await store.dispatch(getTutorials());
 
-    if (!faqs.data.length) {
-      this.props.getFAQs();
-    }
-
-    if (!tutorials.data.length) {
-      this.props.getTutorials();
-    }
+    return { isServer, url };
   }
 
   render() {

@@ -7,23 +7,36 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
+import { setUser } from 'modules/user';
+import { setRouter } from 'modules/router';
+import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Spinner from 'components/ui/spinner';
 
 import CountriesList from 'components/countries/list';
 
-class CountriesDetail extends Page {
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    this.props.getCountries();
+class CountriesDetail extends React.Component {
+  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const url = { asPath, pathname, query };
+    let user = null;
+
+    if (isServer) {
+      user = req.session ? req.session.user : {};
+    } else {
+      user = store.getState().user;
+    }
+
+    store.dispatch(setUser(user));
+    store.dispatch(setRouter(url));
+    await store.dispatch(getOperators());
+    await store.dispatch(getCountries());
+
+    return { isServer, url };
   }
 
   render() {
@@ -60,7 +73,8 @@ class CountriesDetail extends Page {
 }
 
 CountriesDetail.propTypes = {
-  url: PropTypes.object.isRequired,
+  url: PropTypes.shape({}).isRequired,
+  countries: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 

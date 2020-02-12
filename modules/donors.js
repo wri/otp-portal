@@ -44,7 +44,7 @@ export function getDonors() {
 
     const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
 
-    fetch(`${process.env.OTP_API}/donors?locale=${language}&page[size]=2000`, {
+    return fetch(`${process.env.OTP_API}/donors?locale=${language}&page[size]=2000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
