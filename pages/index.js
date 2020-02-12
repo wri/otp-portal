@@ -26,6 +26,7 @@ import Search from 'components/ui/search';
 
 class HomePage extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
 
@@ -37,7 +38,12 @@ class HomePage extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
+    console.log(url);
 
     return { isServer, url };
   }
@@ -149,7 +155,7 @@ class HomePage extends React.Component {
                           type: "raster",
                           source: {
                             tiles: [
-                              "http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png"
+                              "https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png"
                             ]
                           }
                         },

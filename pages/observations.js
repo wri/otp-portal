@@ -61,6 +61,7 @@ class ObservationsPage extends React.Component {
   }
 
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
 
@@ -72,7 +73,10 @@ class ObservationsPage extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
 
     return { isServer, url };
   }

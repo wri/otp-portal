@@ -28,6 +28,7 @@ import HelpTutorials from 'components/help/tutorials';
 class HelpPage extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
     const url = { asPath, pathname, query };
+    const { operators } = store.getState();
     let user = null;
 
     if (isServer) {
@@ -38,7 +39,11 @@ class HelpPage extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
     await store.dispatch(getHowtos());
     await store.dispatch(getTools());
     await store.dispatch(getFAQs());

@@ -45,6 +45,7 @@ import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
+    const { operators } = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
 
@@ -56,8 +57,12 @@ class OperatorsDetail extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
+    await store.dispatch(getOperator(url.query.id));
 
     return { isServer, url };
   }

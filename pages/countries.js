@@ -24,6 +24,7 @@ class CountriesDetail extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
     const url = { asPath, pathname, query };
     let user = null;
+    const { operators } = store.getState();
 
     if (isServer) {
       user = req.session ? req.session.user : {};
@@ -33,7 +34,11 @@ class CountriesDetail extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
     await store.dispatch(getCountries());
 
     return { isServer, url };

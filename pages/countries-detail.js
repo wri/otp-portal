@@ -31,6 +31,7 @@ import CountriesDetailDocumentation from 'components/countries-detail/documentat
 class CountriesDetail extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
     const url = { asPath, pathname, query };
+    const { operators } = store.getState();
     let user = null;
 
     if (isServer) {
@@ -41,7 +42,11 @@ class CountriesDetail extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
     await store.dispatch(getCountry(url.query.id));
 
     return { isServer, url };

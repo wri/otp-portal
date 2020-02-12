@@ -49,6 +49,7 @@ import OperatorsTable from 'components/operators/table';
 class OperatorsPage extends React.Component {
   static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
     const url = { asPath, pathname, query };
+    const { operators, operatorsRanking } = store.getState();
     let user = null;
 
     if (isServer) {
@@ -59,8 +60,16 @@ class OperatorsPage extends React.Component {
 
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
-    await store.dispatch(getOperators());
-    await store.dispatch(getOperatorsRanking());
+
+    if (!operators.data.length) {
+      await store.dispatch(getOperators());
+    }
+
+    if (!operatorsRanking.data.length) {
+      await store.dispatch(getOperatorsRanking());
+    }
+
+    console.log(url);
 
     return { isServer, url };
   }

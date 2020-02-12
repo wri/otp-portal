@@ -37,7 +37,7 @@ const MAP_LAYERS_HOME = [
     source: {
       type: 'raster',
       tiles: [
-        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+        'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
       ],
       tileSize: 256
     },
