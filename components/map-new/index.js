@@ -10,9 +10,6 @@ import { fitBounds } from 'viewport-mercator-project';
 
 import { easeCubic } from 'd3-ease';
 
-import 'mapbox-gl/dist/mapbox-gl.css';
-import './styles.scss';
-
 const DEFAULT_VIEWPORT = {
   zoom: 2,
   latitude: 0,
