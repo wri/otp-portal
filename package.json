@@ -116,6 +116,7 @@
     "dev": "NODE_ENV=development node index.js",
     "build": "next build",
     "start": "node index.js",
+    "prod": "yarn build && NODE_ENV=production node index.js",
     "transifex:push": "node transifex/transifex-push.js",
     "transifex:pull": "node transifex/transifex-pull.js"
   },

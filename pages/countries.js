@@ -7,7 +7,6 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
@@ -24,13 +23,6 @@ class CountriesDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-
     this.props.getCountries();
   }
 
@@ -42,7 +34,6 @@ class CountriesDetail extends Page {
         title="Countries"
         description="Countries description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <Spinner isLoading={countries.loading} className="-fixed" />
 
@@ -77,8 +68,7 @@ export default withTracker(withIntl(connect(
 
   state => ({
     user: state.user,
-    operators: state.operators,
     countries: state.countries
   }),
-  { getOperators, getCountries }
+  { getCountries }
 )(CountriesDetail)));

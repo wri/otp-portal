@@ -2,7 +2,6 @@ import React from 'react';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
@@ -21,16 +20,11 @@ class SignUp extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { countries, operators } = this.props;
+    const { countries } = this.props;
 
     if (!countries.data.length) {
       // Get countries
       this.props.getCountries();
-    }
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
     }
   }
 
@@ -42,7 +36,6 @@ class SignUp extends Page {
         title={this.props.intl.formatMessage({ id: 'signup' })}
         description={this.props.intl.formatMessage({ id: 'signup' })}
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'signup' })}
@@ -62,10 +55,8 @@ SignUp.propTypes = {
 
 
 export default withTracker(withIntl(connect(
-
   state => ({
-    operators: state.operators,
     countries: state.countries
   }),
-  { getOperators, getCountries }
+  { getCountries }
 )(SignUp)));

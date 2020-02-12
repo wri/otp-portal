@@ -2,7 +2,6 @@ import React from 'react';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 
 import * as Cookies from 'js-cookie';
@@ -13,9 +12,6 @@ import { toastr } from 'react-redux-toastr';
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
-
-// Constants
-import { MAP_OPTIONS_HOME, MAP_LAYERS_HOME } from 'constants/home';
 
 // Components
 import Page from 'components/layout/page';
@@ -31,13 +27,6 @@ class HomePage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-
     if (!Cookies.get('home.disclaimer')) {
       toastr.info(
         'Info',
@@ -67,7 +56,6 @@ class HomePage extends Page {
         title="Home"
         description="Home description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         {/* INTRO */}
         <StaticSection
@@ -327,9 +315,4 @@ HomePage.propTypes = {
 };
 
 
-export default withTracker(withIntl(connect(
-  state => ({
-    operators: state.operators
-  }),
-  { getOperators }
-)(HomePage)));
+export default withTracker(withIntl(HomePage));

@@ -13,14 +13,6 @@ import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
 import Toastr from 'react-redux-toastr';
 
-if (process.env.NODE_ENV !== 'production') {
-  // TODO
-  // If you want to debug the permonace
-  // we should check avoidables re-renders
-  // const { whyDidYouUpdate } = require('why-did-you-update');
-  // whyDidYouUpdate(React);
-}
-
 export default class Layout extends React.Component {
   componentDidMount() {
     // Google Analytics
@@ -49,7 +41,6 @@ export default class Layout extends React.Component {
 
         <Header
           url={url}
-          searchList={this.props.searchList}
         />
 
         <div className={`l-main ${classNames}`}>
@@ -77,6 +68,5 @@ Layout.propTypes = {
   children: PropTypes.any.isRequired,
   url: PropTypes.object.isRequired,
   className: PropTypes.string,
-  searchList: PropTypes.array,
   footer: PropTypes.bool
 };

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
@@ -29,11 +28,7 @@ class HelpPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, howtos, tools, faqs, tutorials } = this.props;
-
-    if (!operators.data.length) {
-      this.props.getOperators();
-    }
+    const { howtos, tools, faqs, tutorials } = this.props;
 
     if (!howtos.data.length) {
       this.props.getHowtos();
@@ -61,7 +56,6 @@ class HelpPage extends Page {
         title={this.props.intl.formatMessage({ id: 'help.title' })}
         description="Help description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'help.title' })}
@@ -144,11 +138,10 @@ HelpPage.propTypes = {
 export default withTracker(withIntl(connect(
 
   state => ({
-    operators: state.operators,
     howtos: state.help.howtos,
     tools: state.help.tools,
     faqs: state.help.faqs,
     tutorials: state.help.tutorials
   }),
-  { getOperators, getHowtos, getTools, getFAQs, getTutorials }
+  { getHowtos, getTools, getFAQs, getTutorials }
 )(HelpPage)));

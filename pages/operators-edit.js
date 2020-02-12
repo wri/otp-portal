@@ -6,7 +6,6 @@ import Router from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getUserOperator } from 'modules/user';
 import withTracker from 'components/layout/with-tracker';
 
@@ -26,12 +25,7 @@ class OperatorsEdit extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, user } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    const { user } = this.props;
 
     // // Get user operator
     if (user.operator) {
@@ -68,7 +62,6 @@ class OperatorsEdit extends Page {
         title={this.props.intl.formatMessage({ id: 'edit.operators' })}
         description={this.props.intl.formatMessage({ id: 'edit.operators.description' })}
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
@@ -98,8 +91,7 @@ export default withTracker(withIntl(connect(
 
   state => ({
     user: state.user,
-    operators: state.operators,
     userOperator: state.user.userOperator
   }),
-  { getOperators, getUserOperator }
+  { getUserOperator }
 )(OperatorsEdit)));

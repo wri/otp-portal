@@ -23,7 +23,6 @@ import { getParsedDocumentation } from 'selectors/operators-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getOperator } from 'modules/operators-detail';
 import withTracker from 'components/layout/with-tracker';
 
@@ -77,12 +76,7 @@ class OperatorsDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url, operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    const { url } = this.props;
 
     this.props.getOperator(url.query.id);
 
@@ -129,7 +123,6 @@ class OperatorsDetail extends Page {
         title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
 
@@ -208,10 +201,9 @@ export default withTracker(withIntl(connect(
 
   state => ({
     user: state.user,
-    operators: state.operators,
     operatorsDetail: state.operatorsDetail,
     operatorObservations: getParsedObservations(state),
     operatorDocumentation: getParsedDocumentation(state)
   }),
-  { getOperators, getOperator }
+  { getOperator }
 )(OperatorsDetail)));

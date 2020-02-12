@@ -4,7 +4,6 @@ import sortBy from 'lodash/sortBy';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
 import withTracker from 'components/layout/with-tracker';
@@ -24,12 +23,7 @@ class AboutPage extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, partners, donors } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    const { partners, donors } = this.props;
 
     if (!partners.data.length) {
       // Get partners
@@ -51,7 +45,6 @@ class AboutPage extends Page {
         title="About"
         description="About description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'about.title' })}
@@ -175,9 +168,8 @@ AboutPage.propTypes = {
 export default withTracker(withIntl(connect(
 
   state => ({
-    operators: state.operators,
     partners: state.partners,
     donors: state.donors
   }),
-  { getOperators, getPartners, getDonors }
+  { getPartners, getDonors }
 )(AboutPage)));

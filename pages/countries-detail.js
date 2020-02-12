@@ -15,7 +15,6 @@ import { getParsedDocumentation } from 'selectors/countries-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import { getCountry } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';
 
@@ -32,12 +31,7 @@ class CountriesDetail extends Page {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { url, operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    const { url } = this.props;
 
     this.props.getCountry(url.query.id);
 
@@ -76,7 +70,6 @@ class CountriesDetail extends Page {
         title={countriesDetail.data.name || '-'}
         description="Country description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <Spinner isLoading={countriesDetail.loading} className="-fixed" />
 
@@ -110,9 +103,8 @@ export default withTracker(withIntl(connect(
 
   state => ({
     user: state.user,
-    operators: state.operators,
     countriesDetail: state.countriesDetail,
     countryDocumentation: getParsedDocumentation(state)
   }),
-  { getOperators, getCountry }
+  { getCountry }
 )(CountriesDetail)));

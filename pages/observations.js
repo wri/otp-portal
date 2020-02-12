@@ -7,7 +7,6 @@ import capitalize from 'lodash/capitalize';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -59,7 +58,7 @@ class ObservationsPage extends Page {
   }
 
   componentDidMount() {
-    const { observations, operators, url } = this.props;
+    const { observations, url } = this.props;
 
     this.props.getObservationsUrl(url);
 
@@ -69,11 +68,6 @@ class ObservationsPage extends Page {
 
     if (isEmpty(observations.filters.options)) {
       this.props.getFilters();
-    }
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
     }
   }
 
@@ -302,7 +296,6 @@ class ObservationsPage extends Page {
         title="Observations"
         description="Observations description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'observations' })}
@@ -392,13 +385,9 @@ export default withTracker(withIntl(connect(
   state => ({
     observations: state.observations,
     parsedChartObservations: getParsedChartObservations(state),
-    parsedTableObservations: getParsedTableObservations(state),
-    operators: state.operators
+    parsedTableObservations: getParsedTableObservations(state)
   }),
   dispatch => ({
-    getOperators() {
-      dispatch(getOperators());
-    },
     getObservations() {
       dispatch(getObservations());
     },

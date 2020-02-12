@@ -12,7 +12,7 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperators } from 'modules/operators';
+
 import {
   getOperatorsRanking,
   setOperatorsMapLocation,
@@ -47,13 +47,7 @@ import OperatorsTable from 'components/operators/table';
 class OperatorsPage extends Page {
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operators, operatorsRanking } = this.props;
-
-    // Get search operators data
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    const { url, operatorsRanking } = this.props;
 
     if (!operatorsRanking.data.length) {
       // Get operators
@@ -102,15 +96,6 @@ class OperatorsPage extends Page {
     }
   }
 
-  // toggleLayers = (id, checked) => {
-  //   const { layersActive } = this.props.operators.map;
-
-  //   const toggledLayers = checked ?
-  //     [...layersActive, id] : layersActive.filter(layerId => layerId !== id);
-
-  //   this.props.setActiveMapLayers(toggledLayers);
-  // }
-
   setMapocation = debounce((mapLocation) => {
     this.props.setOperatorsMapLocation(mapLocation);
   }, 500);
@@ -119,7 +104,6 @@ class OperatorsPage extends Page {
   render() {
     const {
       url,
-      operators,
       operatorsRanking,
       activeLayers,
       activeInteractiveLayers,
@@ -135,7 +119,6 @@ class OperatorsPage extends Page {
         url={url}
         className="-fullscreen"
         footer={false}
-        searchList={operators.data}
       >
         <div className="c-section -map">
           <Sidebar>
@@ -221,7 +204,6 @@ OperatorsPage.propTypes = {
 export default withTracker(withIntl(connect(
 
   (state, props) => ({
-    operators: state.operators,
     operatorsRanking: state.operatorsRanking,
     activeLayers: getActiveLayers(state, props),
     activeInteractiveLayers: getActiveInteractiveLayers(state, props),
@@ -230,9 +212,6 @@ export default withTracker(withIntl(connect(
     popup: getPopup(state, props)
   }),
   dispatch => ({
-    getOperators() {
-      dispatch(getOperators());
-    },
     getOperatorsRanking() {
       dispatch(getOperatorsRanking());
     },
