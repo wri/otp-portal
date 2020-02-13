@@ -92,35 +92,42 @@ class Map extends Component {
       ...this.props.viewport // eslint-disable-line
     },
     flying: false,
-    loaded: false
+    loaded: false,
+    size: {
+      width: 0,
+      height: 0
+    }
   };
 
   componentDidMount() {
-    const { bounds, onReady } = this.props;
-
-    if (!isEmpty(bounds) && !!bounds.bbox && bounds.bbox.every(b => !!b)) {
-      this.fitBounds(0);
-    }
-
-    onReady({
-      map: this.map,
-      mapContainer: this.mapContainer
-    });
+    this.onReady();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { viewport: prevViewport, bounds: prevBounds } = prevProps;
     const { viewport, bounds } = this.props;
-    const { viewport: stateViewport } = this.state;
+
+    const { size: prevSize } = prevState;
+    const { size, viewport: stateViewport } = this.state;
 
     if (
       !isEmpty(bounds) &&
       !isEqual(bounds, prevBounds) &&
       !!bounds.bbox &&
-      bounds.bbox.every(b => !!b)
+      bounds.bbox.every(b => !!b) &&
+      size.width !== 0 &&
+      size.height !== 0
     ) {
       this.fitBounds();
     }
+
+    if (
+      !isEmpty(bounds) &&
+      !isEqual(size, prevSize)
+    ) {
+      this.fitBounds();
+    }
+
 
     if (!isEqual(viewport, prevViewport)) {
       this.setState({
@@ -133,9 +140,32 @@ class Map extends Component {
     }
   }
 
+  onReady = () => {
+    const { onReady } = this.props;
+
+    this.setState({
+      size: {
+        width: this.mapContainer && this.mapContainer.offsetWidth,
+        height: this.mapContainer && this.mapContainer.offsetHeight
+      }
+    });
+
+    onReady({
+      map: this.map,
+      mapContainer: this.mapContainer
+    });
+  }
+
   onLoad = () => {
     const { onLoad } = this.props;
-    this.setState({ loaded: true });
+
+    this.setState({
+      loaded: true,
+      size: {
+        width: this.mapContainer && this.mapContainer.offsetWidth,
+        height: this.mapContainer && this.mapContainer.offsetHeight
+      }
+    });
 
     onLoad({
       map: this.map,

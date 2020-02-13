@@ -109,7 +109,7 @@ export function getObservations() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OBSERVATIONS_LOADING });
 
-    fetch(url, {
+    return fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export function getFilters() {
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
-    fetch(`${process.env.OTP_API}/observation_filters?locale=${lang}`, {
+    return fetch(`${process.env.OTP_API}/observation_filters?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -203,7 +203,7 @@ export function getOperatorsRanking() {
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
-    fetch(`${process.env.OTP_API}/operators?locale=${lang}&page[size]=2000&${fields}&include=${includes}${filters}`, {
+    return fetch(`${process.env.OTP_API}/operators?locale=${lang}&page[size]=2000&${fields}&include=${includes}${filters}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

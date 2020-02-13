@@ -7,10 +7,6 @@ import capitalize from 'lodash/capitalize';
 
 // Redux
 import { connect } from 'react-redux';
-import { setUser } from 'modules/user';
-import { setRouter } from 'modules/router';
-import { setLanguage } from 'modules/language';
-import { getOperators } from 'modules/operators';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -50,6 +46,20 @@ import { FILTERS_REFS } from 'constants/observations';
 
 
 class ObservationsPage extends React.Component {
+  static async getInitialProps({ url, store }) {
+    const { observations } = store.getState();
+
+    if (isEmpty(observations.data)) {
+      await store.dispatch(getObservations());
+    }
+
+    if (isEmpty(observations.filters.options)) {
+      await store.dispatch(getFilters());
+    }
+
+    return { url };
+  }
+
   constructor(props) {
     super(props);
 
@@ -61,54 +71,22 @@ class ObservationsPage extends React.Component {
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
   }
 
-  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const { operators } = store.getState();
-    const url = { asPath, pathname, query };
-    let user = null;
-    let lang = 'en';
-
-    if (isServer) {
-      lang = req.locale.language;
-      user = req.session ? req.session.user : {};
-    } else {
-      lang = store.getState().language;
-      user = store.getState().user;
-    }
-
-    store.dispatch(setLanguage(lang));
-    store.dispatch(setUser(user));
-
-    store.dispatch(setRouter(url));
-
-    if (!operators.data.length) {
-      await store.dispatch(getOperators());
-    }
-
-    return { isServer, url };
-  }
-
   componentDidMount() {
-    const { observations, url } = this.props;
+    const { url } = this.props;
 
     this.props.getObservationsUrl(url);
-
-    if (isEmpty(observations.data)) {
-      this.props.getObservations();
-    }
-
-    if (isEmpty(observations.filters.options)) {
-      this.props.getFilters();
-    }
-  }
-
-  triggerChangeTab(tab) {
-    this.setState({ tab });
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.observations.filters.data, nextProps.observations.filters.data)) {
       this.props.getObservations();
     }
+  }
+
+  onPageChange(page) {
+    this.setState({ page: page + 1 }, () => {
+      this.props.getObservations(page + 1);
+    });
   }
 
   getPageSize() {
@@ -122,16 +100,6 @@ class ObservationsPage extends React.Component {
     return 1;
   }
 
-  onPageChange(page) {
-    this.setState({ page: page + 1 }, () => {
-      this.props.getObservations(page + 1);
-    });
-  }
-
-  logFilter = (action, label) => {
-    logEvent('Observations', action, label);
-  }
-
   setActiveColumns(value) {
     const { observations } = this.props;
     const addColumn = difference(value, observations.columns);
@@ -141,6 +109,15 @@ class ObservationsPage extends React.Component {
     if (removeColumn.length) logEvent('Observations', 'Remove Column', removeColumn[0]);
 
     this.props.setActiveColumns(value);
+  }
+
+  triggerChangeTab(tab) {
+    this.setState({ tab });
+  }
+
+  // eslint-disable-next-line no-undef
+  logFilter = (action, label) => {
+    logEvent('Observations', action, label);
   }
 
   render() {
@@ -372,7 +349,8 @@ class ObservationsPage extends React.Component {
               sortable
               data={parsedTableObservations}
               options={{
-                columns: columnHeaders.filter(header => observations.columns.includes(header.accessor)),
+                columns: columnHeaders.filter(header =>
+                  observations.columns.includes(header.accessor)),
                 pageSize: this.getPageSize(),
                 pagination: true,
                 previousText: '<',
@@ -405,10 +383,17 @@ class ObservationsPage extends React.Component {
 }
 
 ObservationsPage.propTypes = {
+  url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
   filters: PropTypes.object,
-  isExpanded: PropTypes.bool,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  parsedChartObservations: PropTypes.array,
+  parsedTableObservations: PropTypes.array,
+
+  getObservations: PropTypes.func.isRequired,
+  getObservationsUrl: PropTypes.func.isRequired,
+  setActiveColumns: PropTypes.func.isRequired,
+  setFilters: PropTypes.func.isRequired
 };
 
 export default withTracker(withIntl(connect(

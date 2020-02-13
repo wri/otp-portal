@@ -15,10 +15,6 @@ import { getParsedDocumentation } from 'selectors/countries-detail/documentation
 
 // Redux
 import { connect } from 'react-redux';
-import { setUser } from 'modules/user';
-import { setRouter } from 'modules/router';
-import { setLanguage } from 'modules/language';
-import { getOperators } from 'modules/operators';
 import { getCountry } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';
 
@@ -30,31 +26,10 @@ import Spinner from 'components/ui/spinner';
 import CountriesDetailDocumentation from 'components/countries-detail/documentation';
 
 class CountriesDetail extends React.Component {
-  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const url = { asPath, pathname, query };
-    const { operators } = store.getState();
-    let user = null;
-    let lang = 'en';
-
-    if (isServer) {
-      lang = req.locale.language;
-      user = req.session ? req.session.user : {};
-    } else {
-      lang = store.getState().language;
-      user = store.getState().user;
-    }
-
-    store.dispatch(setLanguage(lang));
-    store.dispatch(setUser(user));
-    store.dispatch(setRouter(url));
-
-    if (!operators.data.length) {
-      await store.dispatch(getOperators());
-    }
-
+  static async getInitialProps({ url, store }) {
     await store.dispatch(getCountry(url.query.id));
 
-    return { isServer, url };
+    return { url };
   }
 
   /**
@@ -122,7 +97,11 @@ class CountriesDetail extends React.Component {
 
 CountriesDetail.propTypes = {
   url: PropTypes.object.isRequired,
-  intl: intlShape.isRequired
+  countriesDetail: PropTypes.shape({}).isRequired,
+  countryDocumentation: PropTypes.shape({}).isRequired,
+  intl: intlShape.isRequired,
+
+  getCountry: PropTypes.func.isRequired
 };
 
 export default withTracker(withIntl(connect(

@@ -12,10 +12,6 @@ import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { setUser } from 'modules/user';
-import { setRouter } from 'modules/router';
-import { setLanguage } from 'modules/language';
-import { getOperators } from 'modules/operators';
 
 import {
   getOperatorsRanking,
@@ -48,33 +44,14 @@ import OperatorsTable from 'components/operators/table';
 
 
 class OperatorsPage extends React.Component {
-  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const url = { asPath, pathname, query };
-    const { operators, operatorsRanking } = store.getState();
-    let user = null;
-    let lang = 'en';
-
-    if (isServer) {
-      lang = req.locale.language;
-      user = req.session ? req.session.user : {};
-    } else {
-      lang = store.getState().language;
-      user = store.getState().user;
-    }
-
-    store.dispatch(setLanguage(lang));
-    store.dispatch(setUser(user));
-    store.dispatch(setRouter(url));
-
-    if (!operators.data.length) {
-      await store.dispatch(getOperators());
-    }
+  static async getInitialProps({ url, store }) {
+    const { operatorsRanking } = store.getState();
 
     if (!operatorsRanking.data.length) {
       await store.dispatch(getOperatorsRanking());
     }
 
-    return { isServer, url };
+    return { url };
   }
 
   /* Component Lifecycle */

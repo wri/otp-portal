@@ -6,10 +6,7 @@ import Router from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
-import { setUser, getUserOperator } from 'modules/user';
-import { setRouter } from 'modules/router';
-import { setLanguage } from 'modules/language';
-import { getOperators } from 'modules/operators';
+import { getUserOperator } from 'modules/user';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -24,29 +21,8 @@ import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
 class OperatorsEdit extends React.Component {
-  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const { operators } = store.getState();
-    const url = { asPath, pathname, query };
-    let user = null;
-    let lang = 'en';
-
-    if (isServer) {
-      lang = req.locale.language;
-      user = req.session ? req.session.user : {};
-    } else {
-      lang = store.getState().language;
-      user = store.getState().user;
-    }
-
-    store.dispatch(setLanguage(lang));
-    store.dispatch(setUser(user));
-    store.dispatch(setRouter(url));
-
-    if (!operators.data.length) {
-      await store.dispatch(getOperators());
-    }
-
-    return { isServer, url };
+  static async getInitialProps({ url }) {
+    return { url };
   }
 
   /**

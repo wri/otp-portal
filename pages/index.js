@@ -1,10 +1,5 @@
-import React from 'react';
-
-// Redux
-import { setUser } from 'modules/user';
-import { setLanguage } from 'modules/language';
-import { setRouter } from 'modules/router';
-import { getOperators } from 'modules/operators';
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 
 import * as Cookies from 'js-cookie';
 
@@ -26,29 +21,8 @@ import LayerManager from 'components/map-new/layer-manager';
 import Search from 'components/ui/search';
 
 class HomePage extends React.Component {
-  static async getInitialProps({ req, asPath, pathname, query, store, isServer }) {
-    const { operators } = store.getState();
-    const url = { asPath, pathname, query };
-    let user = null;
-    let lang = 'en';
-
-    if (isServer) {
-      lang = req.locale.language;
-      user = req.session ? req.session.user : {};
-    } else {
-      lang = store.getState().language;
-      user = store.getState().user;
-    }
-
-    store.dispatch(setLanguage(lang));
-    store.dispatch(setUser(user));
-    store.dispatch(setRouter(url));
-
-    if (!operators.data.length) {
-      await store.dispatch(getOperators());
-    }
-
-    return { isServer, url };
+  static async getInitialProps({ url }) {
+    return { url };
   }
   /**
    * COMPONENT LIFECYCLE
@@ -93,7 +67,7 @@ class HomePage extends React.Component {
           <div className="c-intro">
             <h2
               dangerouslySetInnerHTML={{
-                __html: this.props.intl.formatHTMLMessage({ id: "home.intro" })
+                __html: this.props.intl.formatHTMLMessage({ id: 'home.intro' })
               }}
             />
           </div>
@@ -108,15 +82,15 @@ class HomePage extends React.Component {
           <Card
             theme="-secondary -theme-home"
             letter="A"
-            title={this.props.intl.formatMessage({ id: "home.card.a.title" })}
+            title={this.props.intl.formatMessage({ id: 'home.card.a.title' })}
             description={this.props.intl.formatMessage({
-              id: "home.card.a.description"
+              id: 'home.card.a.description'
             })}
             link={{
               label: this.props.intl.formatMessage({
-                id: "home.card.a.link.label"
+                id: 'home.card.a.link.label'
               }),
-              href: "/operators"
+              href: '/operators'
             }}
           />
         </StaticSection>
@@ -134,47 +108,48 @@ class HomePage extends React.Component {
               scrollZoom={false}
               dragPan={false}
               dragRotate={false}
-              transformRequest={(url, resourceType)=> {
-                if(resourceType == 'Source' && url.startsWith(process.env.OTP_API)) {
+              transformRequest={(uri, resourceType) => {
+                if (resourceType === 'Source' && uri.startsWith(process.env.OTP_API)) {
                   return {
-                    url,
+                    url: uri,
                     headers: {
                       'Content-Type': 'application/json',
                       'OTP-API-KEY': process.env.OTP_API_KEY
                     }
-                  }
+                  };
                 }
+
+                return null;
               }}
             >
-              {map => {
-                return (
-                  <>
-                    {/* LAYER MANAGER */}
-                    <LayerManager
-                      map={map}
-                      layers={[
-                        {
-                          id: "gain",
-                          type: "raster",
-                          source: {
-                            tiles: [
-                              "https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png"
-                            ]
-                          }
+              {map => (
+                <Fragment>
+                  {/* LAYER MANAGER */}
+                  <LayerManager
+                    map={map}
+                    layers={[
+                      {
+                        id: 'gain',
+                        type: 'raster',
+                        source: {
+                          tiles: [
+                            'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+                          ]
+                        }
+                      },
+                      {
+                        id: 'loss',
+                        type: 'raster',
+                        source: {
+                          tiles: [
+                            'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png'
+                          ]
                         },
-                        {
-                          id: "loss",
-                          type: "raster",
-                          source: {
-                            tiles: [
-                              `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png`
-                            ]
-                          },
-                          decodeParams: {
-                            startYear: 2001,
-                            endYear: 2018
-                          },
-                          decodeFunction: `
+                        decodeParams: {
+                          startYear: 2001,
+                          endYear: 2018
+                        },
+                        decodeFunction: `
                             // values for creating power scale, domain (input), and range (output)
                             float domainMin = 0.;
                             float domainMax = 255.;
@@ -204,96 +179,95 @@ class HomePage extends React.Component {
                               alpha = 0.;
                             }
                           `
+                      },
+                      {
+                        id: 'forest_concession',
+                        type: 'geojson',
+                        source: {
+                          type: 'geojson',
+                          data: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&format=geojson`
                         },
-                        {
-                          id: "forest_concession",
-                          type: "geojson",
-                          source: {
-                            type: "geojson",
-                            data: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&format=geojson`
-                          },
-                          render: {
-                            layers: [
-                              {
-                                type: "fill",
-                                source: "forest_concession",
-                                paint: {
-                                  "fill-color": {
-                                    property: "fmu_type_label",
-                                    type: "categorical",
-                                    stops: [
-                                      ["ventes_de_coupe", "#e92000"],
-                                      ["ufa", "#e95800"],
-                                      ["communal", "#e9A600"],
-                                      ["PEA", "#e9D400"],
-                                      ["CPAET", "#e9E200"],
-                                      ["CFAD", "#e9FF00"]
-                                    ],
-                                    default: "#e98300"
-                                  },
-                                  "fill-opacity": 0.9
-                                }
-                              },
-                              {
-                                type: "line",
-                                source: "forest_concession",
-                                paint: {
-                                  "line-color": "#000000",
-                                  "line-opacity": 0.1
-                                }
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          id: "protected-areas",
-                          type: "vector",
-                          source: {
-                            type: "vector",
-                            provider: {
-                              type: 'carto',
-                              options: {
-                                account: "wri-01",
-                                // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
-                                layers: [
-                                  {
-                                    options: {
-                                      cartocss: "#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }",
-                                      cartocss_version: "2.3.0",
-                                      sql: "SELECT * FROM wdpa_protected_areas"
-                                    },
-                                    type: "cartodb"
-                                  }
-                                ]
+                        render: {
+                          layers: [
+                            {
+                              type: 'fill',
+                              source: 'forest_concession',
+                              paint: {
+                                'fill-color': {
+                                  property: 'fmu_type_label',
+                                  type: 'categorical',
+                                  stops: [
+                                      ['ventes_de_coupe', '#e92000'],
+                                      ['ufa', '#e95800'],
+                                      ['communal', '#e9A600'],
+                                      ['PEA', '#e9D400'],
+                                      ['CPAET', '#e9E200'],
+                                      ['CFAD', '#e9FF00']
+                                  ],
+                                  default: '#e98300'
+                                },
+                                'fill-opacity': 0.9
                               }
                             },
-                          },
-                          render: {
-                            layers: [
-                              {
-                                type: "fill",
-                                "source-layer": "layer0",
-                                paint: {
-                                  'fill-color': '#5ca2d1',
-                                  'fill-opacity': 1
-                                }
-                              },
-                              {
-                                type: "line",
-                                "source-layer": "layer0",
-                                paint: {
-                                  "line-color": "#000000",
-                                  "line-opacity": 0.1
-                                }
+                            {
+                              type: 'line',
+                              source: 'forest_concession',
+                              paint: {
+                                'line-color': '#000000',
+                                'line-opacity': 0.1
                               }
-                            ]
-                          }
+                            }
+                          ]
                         }
-                      ]}
-                    />
-                  </>
-                );
-              }}
+                      },
+                      {
+                        id: 'protected-areas',
+                        type: 'vector',
+                        source: {
+                          type: 'vector',
+                          provider: {
+                            type: 'carto',
+                            options: {
+                              account: 'wri-01',
+                                // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
+                              layers: [
+                                {
+                                  options: {
+                                    cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+                                    cartocss_version: '2.3.0',
+                                    sql: 'SELECT * FROM wdpa_protected_areas'
+                                  },
+                                  type: 'cartodb'
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        render: {
+                          layers: [
+                            {
+                              type: 'fill',
+                              'source-layer': 'layer0',
+                              paint: {
+                                'fill-color': '#5ca2d1',
+                                'fill-opacity': 1
+                              }
+                            },
+                            {
+                              type: 'line',
+                              'source-layer': 'layer0',
+                              paint: {
+                                'line-color': '#000000',
+                                'line-opacity': 0.1
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]}
+                  />
+                </Fragment>
+                )}
             </Map>
           }
           position={{ top: true, right: true }}
@@ -302,9 +276,9 @@ class HomePage extends React.Component {
           <Card
             theme="-tertiary -theme-home"
             letter="B"
-            title={this.props.intl.formatMessage({ id: "home.card.b.title" })}
+            title={this.props.intl.formatMessage({ id: 'home.card.b.title' })}
             description={this.props.intl.formatMessage({
-              id: "home.card.b.description"
+              id: 'home.card.b.description'
             })}
             link={false}
             Component={<Search theme="-theme-static" />}
@@ -320,15 +294,15 @@ class HomePage extends React.Component {
           <Card
             theme="-secondary -theme-home"
             letter="C"
-            title={this.props.intl.formatMessage({ id: "home.card.c.title" })}
+            title={this.props.intl.formatMessage({ id: 'home.card.c.title' })}
             description={this.props.intl.formatMessage({
-              id: "home.card.c.description"
+              id: 'home.card.c.description'
             })}
             link={{
               label: this.props.intl.formatMessage({
-                id: "home.card.c.link.label"
+                id: 'home.card.c.link.label'
               }),
-              href: "/observations"
+              href: '/observations'
             }}
           />
         </StaticSection>
@@ -338,6 +312,7 @@ class HomePage extends React.Component {
 }
 
 HomePage.propTypes = {
+  url: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 

@@ -132,7 +132,6 @@ class OperatorsDetailFMUs extends React.Component {
         }
       }
     });
-
   }
 
   setMapocation = debounce((mapLocation) => {
@@ -206,7 +205,7 @@ class OperatorsDetailFMUs extends React.Component {
             // Options
             transformRequest={(url, resourceType) => {
               if (
-                resourceType == 'Source' &&
+                resourceType === 'Source' &&
                 url.startsWith(process.env.OTP_API)
               ) {
                 return {
@@ -217,6 +216,8 @@ class OperatorsDetailFMUs extends React.Component {
                   }
                 };
               }
+
+              return null;
             }}
           >
             {map => (
@@ -251,7 +252,6 @@ OperatorsDetailFMUs.propTypes = {
   interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,
-  fmuBounds: PropTypes.shape({}).isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
