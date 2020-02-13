@@ -195,8 +195,8 @@ class OperatorsDetail extends React.Component {
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.shape({}),
-  operatorObservations: PropTypes.shape({}),
-  operatorDocumentation: PropTypes.shape({}),
+  operatorObservations: PropTypes.array,
+  operatorDocumentation: PropTypes.array,
   user: PropTypes.shape({}),
   intl: intlShape.isRequired
 };

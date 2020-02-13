@@ -21,7 +21,12 @@ import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
 class OperatorsEdit extends React.Component {
-  static async getInitialProps({ url }) {
+  static async getInitialProps({ store, url }) {
+    const { user } = store.getState();
+
+    if (user.operator) {
+      await store.dispatch(getUserOperator(user.operator));
+    }
     return { url };
   }
 
@@ -30,11 +35,6 @@ class OperatorsEdit extends React.Component {
   */
   componentDidMount() {
     const { user } = this.props;
-
-    // // Get user operator
-    if (user.operator) {
-      this.props.getUserOperator(user.operator);
-    }
 
     if (!user.operator) {
       const location = {
