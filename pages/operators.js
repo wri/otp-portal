@@ -100,7 +100,7 @@ class OperatorsPage extends React.Component {
     }
   }
 
-  setMapocation = debounce((mapLocation) => {
+  setMapLocation = debounce((mapLocation) => {
     this.props.setOperatorsMapLocation(mapLocation);
   }, 500);
 
@@ -137,7 +137,7 @@ class OperatorsPage extends React.Component {
 
               // viewport
               viewport={operatorsRanking.map}
-              onViewportChange={this.setMapocation}
+              onViewportChange={this.setMapLocation}
 
               // Interaction
               interactiveLayerIds={activeInteractiveLayersIds}
