@@ -20,6 +20,7 @@ import {
   setOperatorsMapHoverInteractions,
   setOperatorsMapLayersActive,
   setOperatorsMapLayersSettings,
+  setOperatorsSidebar,
   setOperatorsUrl,
   getOperatorsUrl
 } from 'modules/operators-ranking';
@@ -113,8 +114,11 @@ class OperatorsPage extends React.Component {
       activeInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers,
-      popup
+      popup,
+      setOperatorsSidebar
     } = this.props;
+
+    const { open } = operatorsRanking.sidebar;
 
     return (
       <Layout
@@ -125,12 +129,18 @@ class OperatorsPage extends React.Component {
         footer={false}
       >
         <div className="c-section -map">
-          <Sidebar>
+          <Sidebar
+            open={open}
+            name={this.props.intl.formatMessage({ id: 'transparency_ranking' })}
+            onToggle={(o) => {
+              setOperatorsSidebar({ open: o });
+            }}
+          >
             <OperatorsFilters />
             <OperatorsTable operators={operatorsRanking.data} />
           </Sidebar>
 
-          <div className="c-map-container -absolute" style={{ width: 'calc(100% - 600px)', left: 600 }}>
+          <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 600 : 32}px)`, left: open ? 600 : 32 }}>
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"
@@ -234,6 +244,9 @@ export default withTracker(withIntl(connect(
     },
     setOperatorsMapLayersSettings(obj) {
       dispatch(setOperatorsMapLayersSettings(obj));
+    },
+    setOperatorsSidebar(obj) {
+      dispatch(setOperatorsSidebar(obj));
     }
   })
 )(OperatorsPage)));

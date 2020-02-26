@@ -15,6 +15,7 @@ const SET_OPERATORS_MAP_INTERACTIONS = 'SET_OPERATORS_MAP_INTERACTIONS';
 const SET_OPERATORS_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_MAP_HOVER_INTERACTIONS';
 const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
 const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
+const SET_OPERATORS_SIDEBAR = 'SET_OPERATORS_SIDEBAR';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
 
 const JSONA = new Jsona();
@@ -47,6 +48,12 @@ const initialState = {
     'protected-areas'
   ],
   layersSettings: {},
+
+  // SIDEBAR
+  sidebar: {
+    open: true,
+    width: 600
+  },
 
   // FILTERS
   filters: {
@@ -148,6 +155,18 @@ export default function (state = initialState, action) {
       };
     }
 
+    case SET_OPERATORS_SIDEBAR: {
+      const { open, width } = action.payload;
+
+      const sidebar = {
+        open, width
+      };
+
+      return {
+        ...state,
+        sidebar
+      };
+    }
     case SET_FILTERS_RANKING: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
@@ -291,6 +310,13 @@ export function setOperatorsMapLayersActive(payload) {
 export function setOperatorsMapLayersSettings(payload) {
   return {
     type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+    payload
+  };
+}
+
+export function setOperatorsSidebar(payload) {
+  return {
+    type: SET_OPERATORS_SIDEBAR,
     payload
   };
 }
