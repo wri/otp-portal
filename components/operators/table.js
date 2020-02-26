@@ -33,9 +33,10 @@ class OperatorsTable extends React.Component {
       this.setState({
         sortColumn: this.state.sortColumn || 'documentation',
         sortDirection: this.state.sortDirection || -1,
-        table: operators.map(o => ({
+        table: operators.map((o, i) => ({
           id: o.id,
           name: o.name,
+          ranking: i,
           certification: <OperatorsCertificationsTd fmus={o.fmus} />,
           score: o.score || 0,
           obs_per_visit: o['obs-per-visit'] || 0,
@@ -84,14 +85,15 @@ class OperatorsTable extends React.Component {
             <thead>
               <tr>
                 <th />
+                <th />
                 <th
                   className="td-documentation -ta-center -sort"
                   onClick={() => {
-                    this.sortBy("documentation");
+                    this.sortBy('documentation');
                   }}
                 >
                   {this.props.intl.formatMessage({
-                    id: "operators.table.upload_docs"
+                    id: 'operators.table.upload_docs'
                   })}
                   {sortDirection === -1 && (
                     <Icon name="icon-arrow-down" className="-tiny" />
@@ -100,26 +102,27 @@ class OperatorsTable extends React.Component {
                     <Icon name="icon-arrow-up" className="-tiny" />
                   )}
                 </th>
+
                 <th className="-ta-left">
                   {this.props.intl.formatMessage({
-                    id: "operators.table.name"
+                    id: 'operators.table.name'
                   })}
                 </th>
 
                 {/* Other styles */}
                 <th className="-ta-center -contextual">
                   {this.props.intl.formatMessage({
-                    id: "operators.table.obs_visit"
+                    id: 'operators.table.obs_visit'
                   })}
                 </th>
                 <th className="-contextual">
                   {this.props.intl.formatMessage({
-                    id: "operators.table.fmus"
+                    id: 'operators.table.fmus'
                   })}
                 </th>
                 <th className="-contextual">
                   {this.props.intl.formatMessage({
-                    id: "operators.table.certification"
+                    id: 'operators.table.certification'
                   })}
                 </th>
               </tr>
@@ -141,6 +144,12 @@ class OperatorsTable extends React.Component {
                     </td>
                   )}
                   <td
+                    id={`td-ranking-${r.id}`}
+                    className="td-ranking -ta-left"
+                  >
+                    {i + 1}.
+                  </td>
+                  <td
                     id={`td-documentation-${r.id}`}
                     className="td-documentation -ta-left"
                   >
@@ -149,7 +158,7 @@ class OperatorsTable extends React.Component {
                   <td className="-ta-left">
                     <Link
                       href={{
-                        pathname: "/operators-detail",
+                        pathname: '/operators-detail',
                         query: { id: r.id }
                       }}
                       as={`/operators/${r.id}`}
