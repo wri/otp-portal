@@ -33,15 +33,15 @@ class OperatorsTable extends React.Component {
       this.setState({
         sortColumn: this.state.sortColumn || 'documentation',
         sortDirection: this.state.sortDirection || -1,
-        table: operators.map((o, i) => ({
+        table: operators.map(o => ({
           id: o.id,
           name: o.name,
-          ranking: i,
           certification: <OperatorsCertificationsTd fmus={o.fmus} />,
           score: o.score || 0,
           obs_per_visit: o['obs-per-visit'] || 0,
           documentation: HELPERS_DOC.getPercentage(o),
-          fmus: o.fmus ? o.fmus.length : 0
+          fmus: o.fmus ? o.fmus.length : 0,
+          country: o.country.name
         })),
         max: Math.max(...operators.map(o => o.observations.length))
       });
@@ -60,7 +60,8 @@ class OperatorsTable extends React.Component {
           score: o.score || 0,
           obs_per_visit: o['obs-per-visit'] || 0,
           documentation: HELPERS_DOC.getPercentage(o),
-          fmus: o.fmus ? o.fmus.length : 0
+          fmus: o.fmus ? o.fmus.length : 0,
+          country: o.country.name
         })),
         max: Math.max(...nextProps.operators.map(o => o.observations.length))
       });
@@ -109,6 +110,13 @@ class OperatorsTable extends React.Component {
                   })}
                 </th>
 
+                <th className="-ta-left -contextual">
+                  {this.props.intl.formatMessage({
+                    id: 'country'
+                  })}
+                </th>
+
+
                 {/* Other styles */}
                 <th className="-ta-center -contextual">
                   {this.props.intl.formatMessage({
@@ -149,12 +157,14 @@ class OperatorsTable extends React.Component {
                   >
                     {i + 1}.
                   </td>
+
                   <td
                     id={`td-documentation-${r.id}`}
                     className="td-documentation -ta-left"
                   >
                     {r.documentation}%
                   </td>
+
                   <td className="-ta-left">
                     <Link
                       href={{
@@ -166,6 +176,11 @@ class OperatorsTable extends React.Component {
                       <a>{r.name}</a>
                     </Link>
                   </td>
+
+                  <td className="-ta-left">
+                    {r.country}
+                  </td>
+
                   <td className="-ta-center">
                     {!!r.obs_per_visit && r.obs_per_visit}
                     {!r.obs_per_visit && (

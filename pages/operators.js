@@ -140,7 +140,7 @@ class OperatorsPage extends React.Component {
             <OperatorsTable operators={operatorsRanking.data} />
           </Sidebar>
 
-          <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 600 : 32}px)`, left: open ? 600 : 32 }}>
+          <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 700 : 50}px)`, left: open ? 700 : 50 }}>
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"

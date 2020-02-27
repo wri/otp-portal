@@ -1,10 +1,10 @@
-$sidebar-width: 600px;
+$sidebar-width: 700px;
 
 .c-sidebar {
   width: 0;
   z-index: 2;
   flex-shrink: 0;
-  background: rgba($color-black, .04);
+  background: #f7f6ed;
   box-shadow: 0 0 5px rgba($color-black, .25);
   transform: translate(-95%, 0);
 
@@ -15,7 +15,7 @@ $sidebar-width: 600px;
     top: 0;
     left: 100%;
     z-index: 10;
-    width: 32px;
+    width: 50px;
     height: 100%;
     padding: 0;
     color: $color-white;

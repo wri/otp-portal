@@ -203,7 +203,8 @@ export function getOperatorsRanking() {
     // Filters
     const includes = [
       'observations',
-      'fmus'
+      'fmus',
+      'country'
     ].join(',');
 
     // Fields
