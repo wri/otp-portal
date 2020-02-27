@@ -42,8 +42,10 @@ export const getActiveLayers = createSelector(
         opacity,
         source: {
           type: 'geojson',
-          data: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`,
-          parse: data => data.data.attributes.geojson
+          provider: {
+            type: 'countries',
+            url: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`
+          }
         },
         render: {
           layers: [{

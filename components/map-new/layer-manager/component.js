@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { LayerManager, Layer } from 'layer-manager/dist/components';
-import { PluginMapboxGl } from 'layer-manager';
+import { PluginMapboxGl, fetch } from 'layer-manager';
+
+import omit from 'lodash/omit';
 
 class LayerManagerComponent extends PureComponent {
   static propTypes = {
@@ -17,7 +19,26 @@ class LayerManagerComponent extends PureComponent {
       <LayerManager
         map={map}
         plugin={PluginMapboxGl}
-        // onLayerLoading={loading => setMapLoading(loading)}
+        providers={{
+          countries: (layerModel, layer, resolve, reject) => {
+            const { source } = layerModel;
+            const { provider } = source;
+
+            fetch('get', provider.url, provider.options, layerModel)
+              .then(({ data }) => {
+                return resolve({
+                  ...layer,
+                  source: {
+                    ...omit(layer.source, 'provider'),
+                    data: data.attributes.geojson
+                  }
+                });
+              })
+              .catch(e => {
+                reject(e);
+              });
+          }
+        }}
       >
         {!!layers && layers.map((l, i) => {
           return (
