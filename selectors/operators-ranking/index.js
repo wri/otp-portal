@@ -27,6 +27,17 @@ const countryActive = state => state.operatorsRanking.filters.data.country;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
+    const cIsoCodes = compact(_countryOptions.map((c) => {
+      if (!_countryActive || !_countryActive.length) {
+        return c.iso;
+      }
+
+      if (_countryActive.includes(c.value)) {
+        return c.iso;
+      }
+      return null;
+    }));
+
     // Country layers
     const cLayers = _countryOptions.map((c) => {
       let opacity = 1;
@@ -73,7 +84,7 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams })
+            params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams, country_iso_codes: cIsoCodes })
           },
 
           ...(!!decodeConfig) && {

@@ -204,6 +204,13 @@ export const LAYERS = [
           {
             type: 'fill',
             source: 'fmus',
+            filter: [
+              'match',
+              ['get', 'iso3_fmu'],
+              '{country_iso_codes}',
+              true,
+              false
+            ],
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
@@ -224,6 +231,13 @@ export const LAYERS = [
           {
             type: 'line',
             source: 'fmus',
+            filter: [
+              'match',
+              ['get', 'iso3_fmu'],
+              '{country_iso_codes}',
+              true,
+              false
+            ],
             paint: {
               'line-color': '#000000',
               'line-opacity': 0.1
@@ -257,7 +271,8 @@ export const LAYERS = [
       }
     },
     paramsConfig: [
-      { key: 'operator_id', default: '', required: false }
+      { key: 'operator_id', default: '', required: false },
+      { key: 'country_iso_codes', default: ['COG', 'CMR', 'COD', 'CAF', 'GAB'], required: true }
     ],
     legendConfig: {
       type: 'basic',
