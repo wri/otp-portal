@@ -32,7 +32,7 @@ const initialState = {
     'gain',
     'loss',
     'glad',
-    'fmus'
+    'fmusdetail'
   ],
   layersSettings: {},
 

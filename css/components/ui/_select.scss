@@ -3,12 +3,8 @@
   .Select {
 
     &.-filled {
-      .Select-control {
-        border-bottom: 2px solid rgba($color-tertiary, .2);
-      }
-
       &.Select--multi .Select-input {
-        margin-left: $space-1 * 2;
+        margin-left: $space-1;
       }
 
     }
@@ -72,6 +68,7 @@
         margin-left: 0;
         margin-right: 3px;
         margin-bottom: 5px;
+        margin-top: 0;
 
         &.last-child {
           margin-right: 0;
@@ -81,7 +78,7 @@
           font-family: $font-family-proximanova;
           text-transform: uppercase;
           letter-spacing: 1px;
-          line-height: 19px;
+          line-height: 20px;
           font-weight: 700;
           font-size: $font-size-extrasmall;
           margin-right: 20px;
@@ -90,10 +87,10 @@
         .Select-value-icon {
           position: absolute;
           right: 3px;
-          top: 1px;
+          top: 0px;
           border: 0;
           font-size: 16px;
-          line-height: 19px;
+          line-height: 20px;
           color: $color-white;
 
           &:hover {

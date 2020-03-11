@@ -194,22 +194,19 @@ export const LAYERS = [
     id: 'fmus',
     name: 'Forest managment units',
     config: {
-      type: 'geojson',
+      type: 'vector',
       source: {
-        type: 'geojson',
-        data: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&operator_ids={operator_id}&format=geojson`
+        type: 'vector',
+        tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`]
       },
       render: {
         layers: [
           {
             type: 'fill',
-            source: 'fmus',
+            'source-layer': 'layer0',
             filter: [
-              'match',
-              ['get', 'iso3_fmu'],
-              '{country_iso_codes}',
-              true,
-              false
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
             ],
             paint: {
               'fill-color': {
@@ -230,13 +227,10 @@ export const LAYERS = [
           },
           {
             type: 'line',
-            source: 'fmus',
+            'source-layer': 'layer0',
             filter: [
-              'match',
-              ['get', 'iso3_fmu'],
-              '{country_iso_codes}',
-              true,
-              false
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
             ],
             paint: {
               'line-color': '#000000',
@@ -245,21 +239,10 @@ export const LAYERS = [
           },
           {
             type: 'line',
+            'source-layer': 'layer0',
             filter: [
               'all',
-              ['==', 'id', '{clickId}']
-            ],
-            paint: {
-              'line-opacity': 1,
-              'line-width': 2
-            }
-          },
-          {
-            type: 'line',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}'],
-              ['!=', 'id', '{clickId}']
+              ['==', 'id', '{hoverId}']
             ],
             paint: {
               'line-dasharray': [3, 1],
@@ -271,7 +254,6 @@ export const LAYERS = [
       }
     },
     paramsConfig: [
-      { key: 'operator_id', default: '', required: false },
       { key: 'country_iso_codes', default: ['COG', 'CMR', 'COD', 'CAF', 'GAB'], required: true }
     ],
     legendConfig: {
@@ -327,6 +309,92 @@ export const LAYERS = [
     }
   },
   {
+    id: 'fmusdetail',
+    name: 'Forest managment units',
+    config: {
+      type: 'vector',
+      source: {
+        type: 'vector',
+        tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`]
+      },
+      render: {
+        layers: [
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'operator_id', '{operator_id}'],
+              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+            ],
+            paint: {
+              'fill-color': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['ventes_de_coupe', '#e92000'],
+                  ['ufa', '#e95800'],
+                  ['communal', '#e9A600'],
+                  ['PEA', '#e9D400'],
+                  ['CPAET', '#e9E200'],
+                  ['CFAD', '#e9FF00']
+                ],
+                default: '#e98300'
+              },
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'line',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'operator_id', '{operator_id}'],
+              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+            ],
+            paint: {
+              'line-color': '#000000',
+              'line-opacity': 0.1
+            }
+          },
+          {
+            type: 'line',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{clickId}']
+            ],
+            paint: {
+              'line-opacity': 1,
+              'line-width': 2
+            }
+          },
+          {
+            type: 'line',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{hoverId}'],
+              ['!=', 'id', '{clickId}']
+            ],
+            paint: {
+              'line-dasharray': [3, 1],
+              'line-opacity': 1,
+              'line-width': 2
+            }
+          }
+        ]
+      }
+    },
+    paramsConfig: [
+      { key: 'operator_id', default: null, required: true }
+    ],
+    legendConfig: {},
+    interactionConfig: {
+      enable: true
+    }
+  },
+  {
     id: 'protected-areas',
     name: 'Protected areas',
     config: {
@@ -355,6 +423,10 @@ export const LAYERS = [
           {
             type: 'fill',
             'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
+            ],
             paint: {
               'fill-color': '#5ca2d1',
               'fill-opacity': 1
@@ -363,6 +435,10 @@ export const LAYERS = [
           {
             type: 'line',
             'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
+            ],
             paint: {
               'line-color': '#000000',
               'line-opacity': 0.1

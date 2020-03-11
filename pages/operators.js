@@ -156,7 +156,7 @@ class OperatorsPage extends React.Component {
 
               // Options
               transformRequest={(url, resourceType) => {
-                if (resourceType == 'Source' && url.startsWith(process.env.OTP_API)) {
+                if (url.startsWith(process.env.OTP_API)) {
                   return {
                     url,
                     headers: {

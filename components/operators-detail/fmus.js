@@ -70,7 +70,7 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (!isEqual(interactions, prevInteractions)) {
-      const { fmus: interactionsFmus } = interactions;
+      const { fmusdetail: interactionsFmus } = interactions;
       if (interactionsFmus) {
         this.props.setOperatorsDetailFmu(interactionsFmus.data.id);
       }
@@ -205,7 +205,6 @@ class OperatorsDetailFMUs extends React.Component {
             // Options
             transformRequest={(url, resourceType) => {
               if (
-                resourceType === 'Source' &&
                 url.startsWith(process.env.OTP_API)
               ) {
                 return {
