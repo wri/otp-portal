@@ -28,6 +28,9 @@ import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayers
 
 import withTracker from 'components/layout/with-tracker';
 
+// Services
+import modal from 'services/modal';
+
 // Components
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
@@ -35,6 +38,7 @@ import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
 import Popup from 'components/map-new/popup';
 import Legend from 'components/map-new/legend';
+import FAAttributions from 'components/map-new/fa-attributions';
 
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
@@ -81,6 +85,9 @@ class OperatorsPage extends React.Component {
 
   componentWillUnMount() {
     toastr.remove('operators.disclaimer');
+
+    // Attribution listener
+    document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
   }
 
   onClick = (e) => {
@@ -105,6 +112,12 @@ class OperatorsPage extends React.Component {
     this.props.setOperatorsMapLocation(mapLocation);
   }, 500);
 
+  onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  }
 
   render() {
     const {
@@ -153,6 +166,15 @@ class OperatorsPage extends React.Component {
               interactiveLayerIds={activeInteractiveLayersIds}
               onClick={this.onClick}
               onHover={this.onHover}
+
+              onLoad={() => {
+                // Attribution listener
+                document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
+              }}
+
+              mapOptions={{
+                customAttribution: '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
+              }}
 
               // Options
               transformRequest={(url, resourceType) => {
