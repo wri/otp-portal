@@ -403,19 +403,17 @@ export const LAYERS = [
         type: 'vector',
         provider: {
           type: 'carto',
-          options: {
-            account: 'wri-01',
-            layers: [
-              {
-                options: {
-                  cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
-                  cartocss_version: '2.3.0',
-                  sql: 'SELECT * FROM wdpa_protected_areas'
-                },
-                type: 'mapnik'
-              }
-            ]
-          }
+          account: 'wri-01',
+          layers: [
+            {
+              options: {
+                cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+                cartocss_version: '2.3.0',
+                sql: 'SELECT * FROM wdpa_protected_areas'
+              },
+              type: 'mapnik'
+            }
+          ]
         }
       },
       render: {

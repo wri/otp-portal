@@ -275,18 +275,16 @@ class HomePage extends React.Component {
                           type: 'vector',
                           provider: {
                             type: 'carto',
-                            options: {
-                              account: 'wri-01',
-                                // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
-                              layers: [
-                                {
-                                  options: {
-                                    sql: 'SELECT * FROM wdpa_protected_areas'
-                                  },
-                                  type: 'cartodb'
-                                }
-                              ]
-                            }
+                            account: 'wri-01',
+                              // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
+                            layers: [
+                              {
+                                options: {
+                                  sql: 'SELECT * FROM wdpa_protected_areas'
+                                },
+                                type: 'cartodb'
+                              }
+                            ]
                           }
                         },
                         render: {
