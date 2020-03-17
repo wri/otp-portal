@@ -24,7 +24,7 @@ import {
   setOperatorsUrl,
   getOperatorsUrl
 } from 'modules/operators-ranking';
-import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup } from 'selectors/operators-ranking';
+import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -123,6 +123,7 @@ class OperatorsPage extends React.Component {
     const {
       url,
       operatorsRanking,
+      operatorsTable,
       activeLayers,
       activeInteractiveLayers,
       activeInteractiveLayersIds,
@@ -150,7 +151,7 @@ class OperatorsPage extends React.Component {
             }}
           >
             <OperatorsFilters />
-            <OperatorsTable operators={operatorsRanking.data} />
+            <OperatorsTable operators={operatorsRanking.data} operatorsTable={operatorsTable} />
           </Sidebar>
 
           <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 700 : 50}px)`, left: open ? 700 : 50 }}>
@@ -245,7 +246,8 @@ export default withTracker(withIntl(connect(
     activeInteractiveLayers: getActiveInteractiveLayers(state, props),
     activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
     legendLayers: getLegendLayers(state, props),
-    popup: getPopup(state, props)
+    popup: getPopup(state, props),
+    operatorsTable: getTable(state, props)
   }),
   dispatch => ({
     getOperatorsRanking() {

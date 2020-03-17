@@ -8,64 +8,17 @@ import Link from 'next/link';
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
-// Utils
-import { HELPERS_DOC } from 'utils/documentation';
-
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
 // Chart
 import OperatorsRanking from 'components/operators/ranking';
-import OperatorsCertificationsTd from 'components/operators/certificationsTd';
 
 class OperatorsTable extends React.Component {
   state = {
     sortColumn: 'documentation',
     sortDirection: -1,
-    table: [],
-    max: null
-  }
-
-  componentDidMount() {
-    const { operators } = this.props;
-
-    if (operators.length) {
-      this.setState({
-        sortColumn: this.state.sortColumn || 'documentation',
-        sortDirection: this.state.sortDirection || -1,
-        table: operators.map(o => ({
-          id: o.id,
-          name: o.name,
-          certification: <OperatorsCertificationsTd fmus={o.fmus} />,
-          score: o.score || 0,
-          obs_per_visit: o['obs-per-visit'] || 0,
-          documentation: HELPERS_DOC.getPercentage(o),
-          fmus: o.fmus ? o.fmus.length : 0,
-          country: o.country.name
-        })),
-        max: Math.max(...operators.map(o => o.observations.length))
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.operators.length !== this.props.operators.length) {
-      this.setState({
-        sortColumn: this.state.sortColumn || 'documentation',
-        sortDirection: this.state.sortDirection || -1,
-        table: nextProps.operators.map(o => ({
-          id: o.id,
-          name: o.name,
-          certification: <OperatorsCertificationsTd fmus={o.fmus} />,
-          score: o.score || 0,
-          obs_per_visit: o['obs-per-visit'] || 0,
-          documentation: HELPERS_DOC.getPercentage(o),
-          fmus: o.fmus ? o.fmus.length : 0,
-          country: o.country.name
-        })),
-        max: Math.max(...nextProps.operators.map(o => o.observations.length))
-      });
-    }
+    table: []
   }
 
   sortBy = (column) => {
@@ -76,7 +29,7 @@ class OperatorsTable extends React.Component {
   };
 
   render() {
-    const { operators } = this.props;
+    const { operators, operatorsTable } = this.props;
     const { sortColumn, sortDirection, table } = this.state;
 
     if (!operators.loading) {
@@ -137,7 +90,7 @@ class OperatorsTable extends React.Component {
             </thead>
 
             <tbody>
-              {sortBy(table, o => sortDirection * o[sortColumn]).map((r, i) => (
+              {sortBy(operatorsTable, o => sortDirection * o[sortColumn]).map((r, i) => (
                 <tr key={`${r.id}-ranking`}>
                   {i === 0 && (
                     <td className="-ta-center" rowSpan={table.length}>
@@ -202,6 +155,7 @@ class OperatorsTable extends React.Component {
 
 OperatorsTable.propTypes = {
   operators: PropTypes.array.isRequired,
+  operatorsTable: PropTypes.array.isRequired,
   intl: intlShape.isRequired
 };
 

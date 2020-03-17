@@ -27,7 +27,7 @@ const initialState = {
   error: false,
 
   map: {
-    zoom: 5,
+    zoom: 4,
     latitude: 0,
     longitude: 20
   },
@@ -59,8 +59,11 @@ const initialState = {
   filters: {
     data: {
       fa: true,
-      country: []
+      country: [],
+      certification: [],
+      operator: ''
     },
+
     // TODO: get them from API
     options: {
       country: [
@@ -219,7 +222,7 @@ export function getOperatorsRanking() {
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
     // Filters
-    const filters = getSQLFilters(getState().operatorsRanking.filters.data);
+    const filters = '&filter[fa]=true';
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
@@ -332,7 +335,5 @@ export function setFilters(filter) {
       type: SET_FILTERS_RANKING,
       payload: newFilters
     });
-
-    dispatch(getOperatorsRanking());
   };
 }

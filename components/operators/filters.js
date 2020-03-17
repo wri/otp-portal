@@ -23,12 +23,20 @@ const FILTERS_REFS = [
   {
     key: 'country',
     name: 'Country',
+    type: 'select',
     placeholder: 'All Countries'
   },
   {
     key: 'certification',
     name: 'Certifications',
+    type: 'select',
     placeholder: 'All certifications'
+  },
+  {
+    key: 'operator',
+    name: 'Producer',
+    type: 'input',
+    placeholder: 'Search producer'
   }
 ];
 
@@ -45,13 +53,20 @@ class OperatorsFilters extends React.Component {
     setFilters: PropTypes.func
   };
 
-  setFilter(opts, key) {
+  setSelect(opts, key) {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
 
     if (opts.length) {
       logEvent('Producers', `Filter ranking ${key}`, opts.map(opt => opt.label).join(', '));
     }
+
+    this.props.setFilters(filter);
+  }
+
+  setSearch(value, key) {
+    const filter = {};
+    filter[key] = value;
 
     this.props.setFilters(filter);
   }
@@ -67,22 +82,34 @@ class OperatorsFilters extends React.Component {
         [];
 
       return (
-        <div key={f.key} className="columns medium-6 small-12">
+        <div key={f.key} className="columns medium-4 small-12">
           <div className="field">
             <div className="c-select">
               <h3 className="title">
                 {this.props.intl.formatMessage({ id: `filter.${f.key}` })}
               </h3>
-              <Select
-                multi
-                instanceId={f.key}
-                name={f.key}
-                options={options[f.key]}
-                className={value.length ? '-filled' : ''}
-                value={value}
-                placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
-                onChange={opts => this.setFilter(opts, f.key)}
-              />
+
+              {f.type === 'select' &&
+                <Select
+                  multi
+                  instanceId={f.key}
+                  name={f.key}
+                  options={options[f.key]}
+                  className={value.length ? '-filled' : ''}
+                  value={value}
+                  placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
+                  onChange={opts => this.setSelect(opts, f.key)}
+                />
+              }
+
+              {f.type === 'input' &&
+                <input
+                  type="search"
+                  placeholder={f.placeholder}
+                  className="search-input"
+                  onChange={e => this.setSearch(e.currentTarget.value, f.key)}
+                />
+              }
             </div>
           </div>
         </div>
