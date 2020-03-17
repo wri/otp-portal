@@ -108,7 +108,7 @@ class OperatorsTable extends React.Component {
                     id={`td-ranking-${r.id}`}
                     className="td-ranking -ta-left"
                   >
-                    {i + 1}.
+                    {r.ranking + 1}.
                   </td>
 
                   <td

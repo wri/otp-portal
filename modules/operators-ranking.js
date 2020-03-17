@@ -1,7 +1,10 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
+
 import compact from 'lodash/compact';
+import groupBy from 'lodash/groupBy';
+import flatten from 'lodash/flatten';
 
 import { LAYERS } from 'constants/layers';
 
@@ -240,9 +243,23 @@ export function getOperatorsRanking() {
       .then((operatorsRanking) => {
         const dataParsed = JSONA.deserialize(operatorsRanking);
 
+        const groupByDocPercentage = groupBy(dataParsed, (o) => {
+          if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
+
+          return o['percentage-valid-documents-all'];
+        });
+        const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
+        const rankedData = flatten(groupByDocPercentageKeys.map((k, i) => {
+          return groupByDocPercentage[k].map(o => ({
+            ...o,
+            ranking: i
+          }));
+        }));
+
+
         dispatch({
           type: GET_OPERATORS_RANKING_SUCCESS,
-          payload: dataParsed
+          payload: rankedData
         });
       })
       .catch((err) => {

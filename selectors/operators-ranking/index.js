@@ -314,6 +314,7 @@ export const getTable = createSelector(
       id: o.id,
       name: o.name,
       certification: <OperatorsCertificationsTd fmus={o.fmus} />,
+      ranking: o.ranking,
       score: o.score || 0,
       obs_per_visit: o['obs-per-visit'] || 0,
       documentation: HELPERS_DOC.getPercentage(o),
