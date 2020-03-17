@@ -30,12 +30,15 @@ import {
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
+// Services
+import modal from 'services/modal';
+
 // Components
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
-
+import FAAttributions from 'components/map-new/fa-attributions';
 
 import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
@@ -70,7 +73,7 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (!isEqual(interactions, prevInteractions)) {
-      const { fmus: interactionsFmus } = interactions;
+      const { fmusdetail: interactionsFmus } = interactions;
       if (interactionsFmus) {
         this.props.setOperatorsDetailFmu(interactionsFmus.data.id);
       }
@@ -93,6 +96,11 @@ class OperatorsDetailFMUs extends React.Component {
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'glad');
     }
+  }
+
+  componentWillUnmount() {
+    // Attribution listener
+    document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
   }
 
   onClick = (e) => {
@@ -137,6 +145,14 @@ class OperatorsDetailFMUs extends React.Component {
   setMapocation = debounce((mapLocation) => {
     this.props.setOperatorsDetailMapLocation(mapLocation);
   }, 500);
+
+  onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  }
+
 
   render() {
     const {
@@ -202,10 +218,15 @@ class OperatorsDetailFMUs extends React.Component {
             interactiveLayerIds={activeInteractiveLayersIds}
             onClick={this.onClick}
             onHover={this.onHover}
+
+            onLoad={() => {
+              // Attribution listener
+              document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
+            }}
+
             // Options
             transformRequest={(url, resourceType) => {
               if (
-                resourceType === 'Source' &&
                 url.startsWith(process.env.OTP_API)
               ) {
                 return {
@@ -218,6 +239,9 @@ class OperatorsDetailFMUs extends React.Component {
               }
 
               return null;
+            }}
+            mapOptions={{
+              customAttribution: '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
             }}
           >
             {map => (

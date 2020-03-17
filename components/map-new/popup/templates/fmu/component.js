@@ -52,7 +52,7 @@ class FMUTemplatePopup extends PureComponent {
     const { output } = interactionConfig;
     const { data: fmuData } = data;
 
-    const { id, operator_id: operatorId, company_na: operatorName, fmu_type_label: fmuType } = fmuData;
+    const { id, operator_id: operatorId, company_na: operatorName, fmu_type_label: fmuType, observations: fmuObservations } = fmuData;
 
     return (
       <div className="c-layer-popup">
@@ -85,7 +85,7 @@ class FMUTemplatePopup extends PureComponent {
         {id &&
           <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [id] }) } }}>
             <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              Observations
+              Observations ({fmuObservations})
             </a>
           </Link>
         }

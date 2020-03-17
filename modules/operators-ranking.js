@@ -15,6 +15,7 @@ const SET_OPERATORS_MAP_INTERACTIONS = 'SET_OPERATORS_MAP_INTERACTIONS';
 const SET_OPERATORS_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_MAP_HOVER_INTERACTIONS';
 const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
 const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
+const SET_OPERATORS_SIDEBAR = 'SET_OPERATORS_SIDEBAR';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
 
 const JSONA = new Jsona();
@@ -26,7 +27,7 @@ const initialState = {
   error: false,
 
   map: {
-    zoom: 5,
+    zoom: 4,
     latitude: 0,
     longitude: 20
   },
@@ -48,12 +49,21 @@ const initialState = {
   ],
   layersSettings: {},
 
+  // SIDEBAR
+  sidebar: {
+    open: true,
+    width: 600
+  },
+
   // FILTERS
   filters: {
     data: {
       fa: true,
-      country: []
+      country: [],
+      certification: [],
+      operator: ''
     },
+
     // TODO: get them from API
     options: {
       country: [
@@ -148,6 +158,18 @@ export default function (state = initialState, action) {
       };
     }
 
+    case SET_OPERATORS_SIDEBAR: {
+      const { open, width } = action.payload;
+
+      const sidebar = {
+        open, width
+      };
+
+      return {
+        ...state,
+        sidebar
+      };
+    }
     case SET_FILTERS_RANKING: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
@@ -184,7 +206,8 @@ export function getOperatorsRanking() {
     // Filters
     const includes = [
       'observations',
-      'fmus'
+      'fmus',
+      'country'
     ].join(',');
 
     // Fields
@@ -199,7 +222,7 @@ export function getOperatorsRanking() {
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
     // Filters
-    const filters = getSQLFilters(getState().operatorsRanking.filters.data);
+    const filters = '&filter[fa]=true';
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
@@ -295,6 +318,13 @@ export function setOperatorsMapLayersSettings(payload) {
   };
 }
 
+export function setOperatorsSidebar(payload) {
+  return {
+    type: SET_OPERATORS_SIDEBAR,
+    payload
+  };
+}
+
 export function setFilters(filter) {
   return (dispatch, state) => {
     const newFilters = Object.assign({}, state().operatorsRanking.filters.data);
@@ -305,7 +335,5 @@ export function setFilters(filter) {
       type: SET_FILTERS_RANKING,
       payload: newFilters
     });
-
-    dispatch(getOperatorsRanking());
   };
 }

@@ -414,7 +414,6 @@ export default withTracker(withIntl(connect(
     },
     setFilters(filter) {
       dispatch(setFilters(filter));
-      dispatch(setObservationsUrl());
     },
     setActiveColumns(activeColumns) {
       dispatch(setActiveColumns(activeColumns));

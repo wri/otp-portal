@@ -46,11 +46,11 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id })
+            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id: Number(operator_id) })
           },
 
           ...(!!decodeConfig) && {
-            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id }),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id: Number(operator_id) }),
             decodeFunction
           }
         };

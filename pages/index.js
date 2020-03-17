@@ -12,12 +12,16 @@ import withTracker from 'components/layout/with-tracker';
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
+// Services
+import modal from 'services/modal';
+
 // Components
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
+import FAAttributions from 'components/map-new/fa-attributions';
 import Search from 'components/ui/search';
 
 class HomePage extends React.Component {
@@ -47,7 +51,18 @@ class HomePage extends React.Component {
 
   componentWillUnMount() {
     toastr.remove('home.disclaimer');
+
+    // Attribution listener
+    document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
   }
+
+  onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  }
+
 
   render() {
     const { url } = this.props;
@@ -108,8 +123,8 @@ class HomePage extends React.Component {
               scrollZoom={false}
               dragPan={false}
               dragRotate={false}
-              transformRequest={(uri, resourceType) => {
-                if (resourceType === 'Source' && uri.startsWith(process.env.OTP_API)) {
+              transformRequest={(uri) => {
+                if (uri.startsWith(process.env.OTP_API)) {
                   return {
                     url: uri,
                     headers: {
@@ -120,6 +135,15 @@ class HomePage extends React.Component {
                 }
 
                 return null;
+              }}
+
+              onLoad={() => {
+                // Attribution listener
+                document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
+              }}
+
+              mapOptions={{
+                customAttribution: '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
               }}
             >
               {map => (
@@ -181,28 +205,32 @@ class HomePage extends React.Component {
                           `
                       },
                       {
-                        id: 'forest_concession',
-                        type: 'geojson',
+                        id: 'fmus',
+                        type: 'vector',
                         source: {
-                          type: 'geojson',
-                          data: `${process.env.OTP_API}/fmus?country_ids=7,47,45,188,53&format=geojson`
+                          type: 'vector',
+                          tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`]
                         },
                         render: {
                           layers: [
                             {
                               type: 'fill',
-                              source: 'forest_concession',
+                              'source-layer': 'layer0',
+                              filter: [
+                                'all',
+                                ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+                              ],
                               paint: {
                                 'fill-color': {
                                   property: 'fmu_type_label',
                                   type: 'categorical',
                                   stops: [
-                                      ['ventes_de_coupe', '#e92000'],
-                                      ['ufa', '#e95800'],
-                                      ['communal', '#e9A600'],
-                                      ['PEA', '#e9D400'],
-                                      ['CPAET', '#e9E200'],
-                                      ['CFAD', '#e9FF00']
+                                    ['ventes_de_coupe', '#e92000'],
+                                    ['ufa', '#e95800'],
+                                    ['communal', '#e9A600'],
+                                    ['PEA', '#e9D400'],
+                                    ['CPAET', '#e9E200'],
+                                    ['CFAD', '#e9FF00']
                                   ],
                                   default: '#e98300'
                                 },
@@ -211,13 +239,33 @@ class HomePage extends React.Component {
                             },
                             {
                               type: 'line',
-                              source: 'forest_concession',
+                              'source-layer': 'layer0',
+                              filter: [
+                                'all',
+                                ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+                              ],
                               paint: {
                                 'line-color': '#000000',
                                 'line-opacity': 0.1
                               }
+                            },
+                            {
+                              type: 'line',
+                              'source-layer': 'layer0',
+                              filter: [
+                                'all',
+                                ['==', 'id', '{hoverId}']
+                              ],
+                              paint: {
+                                'line-dasharray': [3, 1],
+                                'line-opacity': 1,
+                                'line-width': 2
+                              }
                             }
                           ]
+                        },
+                        params: {
+                          country_iso_codes: ['COG', 'CMR', 'COD', 'CAF', 'GAB']
                         }
                       },
                       {
@@ -227,20 +275,16 @@ class HomePage extends React.Component {
                           type: 'vector',
                           provider: {
                             type: 'carto',
-                            options: {
-                              account: 'wri-01',
-                                // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
-                              layers: [
-                                {
-                                  options: {
-                                    cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
-                                    cartocss_version: '2.3.0',
-                                    sql: 'SELECT * FROM wdpa_protected_areas'
-                                  },
-                                  type: 'cartodb'
-                                }
-                              ]
-                            }
+                            account: 'wri-01',
+                              // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
+                            layers: [
+                              {
+                                options: {
+                                  sql: 'SELECT * FROM wdpa_protected_areas'
+                                },
+                                type: 'cartodb'
+                              }
+                            ]
                           }
                         },
                         render: {
@@ -251,7 +295,11 @@ class HomePage extends React.Component {
                               paint: {
                                 'fill-color': '#5ca2d1',
                                 'fill-opacity': 1
-                              }
+                              },
+                              filter: [
+                                'all',
+                                ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
+                              ]
                             },
                             {
                               type: 'line',
@@ -259,9 +307,16 @@ class HomePage extends React.Component {
                               paint: {
                                 'line-color': '#000000',
                                 'line-opacity': 0.1
-                              }
+                              },
+                              filter: [
+                                'all',
+                                ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
+                              ]
                             }
                           ]
+                        },
+                        params: {
+                          country_iso_codes: ['COG', 'CMR', 'COD', 'CAF', 'GAB']
                         }
                       }
                     ]}

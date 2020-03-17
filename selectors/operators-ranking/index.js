@@ -1,3 +1,4 @@
+import React from 'react';
 import { createSelector } from 'reselect';
 
 import compact from 'lodash/compact';
@@ -7,9 +8,20 @@ import uniqBy from 'lodash/uniqBy';
 
 import { replace } from 'layer-manager';
 
+import Fuse from 'fuse.js';
+
+// Utils
 import { getParams } from '../utils';
+import { HELPERS_DOC } from 'utils/documentation';
+import { SEARCH_OPTIONS } from 'constants/general';
+
+import OperatorsCertificationsTd from 'components/operators/certificationsTd';
+
 
 const intl = (state, props) => props.intl;
+
+const data = state => state.operatorsRanking.data;
+const filters = state => state.operatorsRanking.filters;
 
 const layersActive = state => state.operatorsRanking.layersActive;
 const layers = state => state.operatorsRanking.layers;
@@ -27,6 +39,17 @@ const countryActive = state => state.operatorsRanking.filters.data.country;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
+    const cIsoCodes = compact(_countryOptions.map((c) => {
+      if (!_countryActive || !_countryActive.length) {
+        return c.iso;
+      }
+
+      if (_countryActive.includes(c.value)) {
+        return c.iso;
+      }
+      return null;
+    }));
+
     // Country layers
     const cLayers = _countryOptions.map((c) => {
       let opacity = 1;
@@ -42,8 +65,10 @@ export const getActiveLayers = createSelector(
         opacity,
         source: {
           type: 'geojson',
-          data: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`,
-          parse: data => data.data.attributes.geojson
+          provider: {
+            type: 'countries',
+            url: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`
+          }
         },
         render: {
           layers: [{
@@ -71,7 +96,7 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams })
+            params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams, country_iso_codes: cIsoCodes })
           },
 
           ...(!!decodeConfig) && {
@@ -250,5 +275,58 @@ export const getPopup = createSelector(
     };
 
     return popup;
+  }
+);
+
+export const getTable = createSelector(
+  [data, filters],
+  (_data, _filters) => {
+    const activeCountries = _filters.data.country.length ? _filters.data.country : null;
+    const activeCertifications = _filters.data.certification.length ? _filters.data.certification : null;
+    const activeSearch = _filters.data.operator.length ? _filters.data.operator : null;
+
+    let operatorsTable = null;
+
+    // Filter by country
+    if (activeCountries) {
+      operatorsTable = (operatorsTable || _data).filter(o => {
+        return activeCountries.indexOf(Number(o.country.id)) !== -1;
+      });
+    }
+
+    // Filter by certification
+    if (activeCertifications) {
+      operatorsTable = (operatorsTable || _data).filter(o => {
+        return o.fmus.some(f => {
+          return activeCertifications.some(ac => {
+            return f[`certification-${ac}`];
+          });
+        });
+      });
+    }
+
+    if (activeSearch) {
+      const fuse = new Fuse(operatorsTable || _data, SEARCH_OPTIONS);
+      operatorsTable = fuse.search(activeSearch);
+    }
+
+    operatorsTable = (operatorsTable || _data).map(o => ({
+      id: o.id,
+      name: o.name,
+      certification: <OperatorsCertificationsTd fmus={o.fmus} />,
+      score: o.score || 0,
+      obs_per_visit: o['obs-per-visit'] || 0,
+      documentation: HELPERS_DOC.getPercentage(o),
+      fmus: o.fmus ? o.fmus.length : 0,
+      country: o.country.name
+    }));
+
+
+
+    // Filter by producer name
+
+
+
+    return operatorsTable;
   }
 );
