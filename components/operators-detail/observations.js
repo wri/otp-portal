@@ -10,6 +10,7 @@ import { injectIntl, intlShape } from 'react-intl';
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
+import TotalObservationsByOperatorByFMU from 'components/operators-detail/observations/by-fmu';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 
@@ -55,6 +56,19 @@ class OperatorsDetailObservations extends React.Component {
             </header>
             <div className="content">
               <TotalObservationsByOperator data={this.props.operatorObservations} />
+            </div>
+          </div>
+        </article>
+
+        <article className="c-article">
+          <div className="l-container">
+            <header>
+              <h2 className="c-title">
+                {this.props.intl.formatMessage({ id: 'observations_by_fmu' })}
+              </h2>
+            </header>
+            <div className="content">
+              <TotalObservationsByOperatorByFMU data={this.props.operatorObservations} />
             </div>
           </div>
         </article>
