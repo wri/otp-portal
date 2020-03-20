@@ -38,8 +38,6 @@ class OperatorsTable extends React.Component {
           <table>
             <thead>
               <tr>
-                <th />
-                <th />
                 <th
                   className="td-documentation -ta-center -sort"
                   onClick={() => {
@@ -92,25 +90,6 @@ class OperatorsTable extends React.Component {
             <tbody>
               {sortBy(operatorsTable, o => sortDirection * o[sortColumn]).map((r, i) => (
                 <tr key={`${r.id}-ranking`}>
-                  {i === 0 && (
-                    <td className="-ta-center" rowSpan={table.length}>
-                      <OperatorsRanking
-                        key={`update-${r.id}`}
-                        data={table.map(o => ({
-                          id: o.id,
-                          value: parseInt(o.documentation, 10)
-                        }))}
-                        sortDirection={sortDirection}
-                      />
-                    </td>
-                  )}
-                  <td
-                    id={`td-ranking-${r.id}`}
-                    className="td-ranking -ta-left"
-                  >
-                    {r.ranking + 1}.
-                  </td>
-
                   <td
                     id={`td-documentation-${r.id}`}
                     className="td-documentation -ta-left"
@@ -134,13 +113,8 @@ class OperatorsTable extends React.Component {
                     {r.country}
                   </td>
 
-                  <td className="-ta-center">
-                    {!!r.obs_per_visit && r.obs_per_visit}
-                    {!r.obs_per_visit && (
-                      <div className="stoplight-dot -state-0}" />
-                    )}
-                  </td>
-                  <td className="-ta-right"> {r.fmus} </td>
+                  <td className="-ta-center">{r.observations}</td>
+                  <td className="-ta-right"> {r.fmusLenght} </td>
                   <td className="-ta-right">{r.certification}</td>
                 </tr>
               ))}

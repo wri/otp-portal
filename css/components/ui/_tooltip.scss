@@ -35,10 +35,15 @@
       border: none;
       color: $color-white;
       background-color: $color-primary;
+      min-height: 0;
     }
 
     .rc-tooltip-arrow {
       border-bottom-color: $color-primary;
+    }
+
+    &.rc-tooltip-placement-top .rc-tooltip-arrow {
+      border-top-color: $color-primary;
     }
   }
 }

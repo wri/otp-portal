@@ -16,6 +16,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
 
 import OperatorsCertificationsTd from 'components/operators/certificationsTd';
+import OperatorsObservationsTd from 'components/operators/observationsTd';
 
 
 const intl = (state, props) => props.intl;
@@ -316,9 +317,10 @@ export const getTable = createSelector(
       certification: <OperatorsCertificationsTd fmus={o.fmus} />,
       ranking: o.ranking,
       score: o.score || 0,
-      obs_per_visit: o['obs-per-visit'] || 0,
+      observations: <OperatorsObservationsTd name={o.name} fmus={o.fmus} obs_per_visit={o['obs-per-visit']} observations={o.observations} />,
       documentation: HELPERS_DOC.getPercentage(o),
-      fmus: o.fmus ? o.fmus.length : 0,
+      fmus: o.fmus,
+      fmusLenght: o.fmus ? o.fmus.length : 0,
       country: o.country.name
     }));
 

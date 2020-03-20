@@ -80,9 +80,10 @@ const initialState = {
         { label: 'FSC', value: 'fsc' },
         { label: 'PEFC', value: 'pefc' },
         { label: 'OLB', value: 'olb' },
-        { label: 'VLC', value: 'vlc' },
-        { label: 'VLO', value: 'vlo' },
-        { label: 'TLTV', value: 'tltv' }
+        { label: 'FSC-CW', value: 'fsc-cw' },
+        { label: 'PAFC', value: 'pafc' },
+        { label: 'TLV', value: 'tlv' },
+        { label: 'LS', value: 'ls' }
       ]
     },
     loading: false,
@@ -182,23 +183,6 @@ export default function (state = initialState, action) {
   }
 }
 
-/* Helpers */
-const getSQLFilters = (filters) => {
-  const sql = compact(Object.keys(filters).map((f) => {
-    if ((Array.isArray(filters[f]) && filters[f].length)) {
-      return `filter[${f}]=${filters[f]}`;
-    }
-
-    if (!(Array.isArray(filters[f]) && !!filters[f])) {
-      return `filter[${f}]=${filters[f]}`;
-    }
-
-    return null;
-  })).join('&');
-
-  return (sql) ? `&${sql}` : '';
-};
-
 /* Action creators */
 export function getOperatorsRanking() {
   return (dispatch, getState) => {
@@ -215,12 +199,14 @@ export function getOperatorsRanking() {
 
     // Fields
     const currentFields = { fmus: [
+      'name',
       'certification-fsc',
       'certification-olb',
       'certification-pefc',
-      'certification-vlc',
-      'certification-vlo',
-      'certification-tltv'
+      'certification-pafc',
+      'certification-fsc-cw',
+      'certification-tlv',
+      'certification-ls'
     ] };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
