@@ -36,14 +36,14 @@ class CertificationsTd extends React.Component {
                     const fmu = fmus.find(f => +f.id === +k);
                     if (!fmu) {
                       return (
-                        <li>
+                        <li key={name}>
                           {name}: {observationsPerFMU[k].length}
                         </li>
                       );
                     }
 
                     return (
-                      <li>
+                      <li key={fmu.name}>
                         {fmu.name}: {observationsPerFMU[k].length}
                       </li>
                     );
