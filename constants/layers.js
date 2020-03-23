@@ -197,7 +197,8 @@ export const LAYERS = [
       type: 'vector',
       source: {
         type: 'vector',
-        tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`]
+        tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`],
+        promoteId: 'id'
       },
       render: {
         layers: [
@@ -234,20 +235,19 @@ export const LAYERS = [
             ],
             paint: {
               'line-color': '#000000',
-              'line-opacity': 0.1
-            }
-          },
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}']
-            ],
-            paint: {
-              'line-dasharray': [3, 1],
-              'line-opacity': 1,
-              'line-width': 2
+              'line-opacity': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                1,
+                0.1
+              ],
+              'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                2,
+                1
+              ],
+              'line-dasharray': [3, 1]
             }
           }
         ]

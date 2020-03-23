@@ -17,7 +17,8 @@ const DEFAULT_VIEWPORT = {
 };
 
 class Map extends Component {
-  events = {};
+  HOVER = {};
+  CLICK = {};
 
   static propTypes = {
     /** A function that returns the map instance */
@@ -63,6 +64,12 @@ class Map extends Component {
 
     /** A function that exposes the viewport */
     onViewportChange: PropTypes.func,
+
+    /** A function that exposes hovering features. */
+    onHover: PropTypes.func,
+
+    /** A function that exposes mouseleave from features. */
+    onMouseLeave: PropTypes.func,
 
     /** A function that exposes the viewport */
     getCursor: PropTypes.func
@@ -217,6 +224,56 @@ class Map extends Component {
     }
   };
 
+  onHover = e => {
+    const { onHover } = this.props;
+    const { features } = e;
+    if (features && features.length) {
+      const { id, source, sourceLayer } = features[0];
+
+      if (this.HOVER.id) {
+        this.map.setFeatureState(
+          {
+            ...this.HOVER
+          },
+          { hover: false }
+        );
+      }
+
+      if (id && source) {
+        this.HOVER = {
+          id,
+          source,
+          ...(sourceLayer && { sourceLayer })
+        };
+
+        this.map.setFeatureState(
+          {
+            ...this.HOVER
+          },
+          { hover: true }
+        );
+      }
+    }
+
+    !!onHover && onHover(e);
+  };
+
+  onMouseLeave = e => {
+    const { onMouseLeave } = this.props;
+    if (this.HOVER.id) {
+      this.map.setFeatureState(
+        {
+          ...this.HOVER
+        },
+        { hover: false }
+      );
+    }
+
+    this.HOVER = {};
+
+    !!onMouseLeave && onMouseLeave(e);
+  };
+
   fitBounds = (transitionDuration = 2500) => {
     const { bounds, onViewportChange } = this.props;
     const { bbox, options } = bounds;
@@ -298,6 +355,8 @@ class Map extends Component {
           onViewportChange={this.onViewportChange}
           onResize={this.onResize}
           onLoad={this.onLoad}
+          onHover={this.onHover}
+          onMouseLeave={this.onMouseLeave}
           // getCursor={getCursor}
 
           transitionInterpolator={new FlyToInterpolator()}
