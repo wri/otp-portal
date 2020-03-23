@@ -2,6 +2,9 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from 'rc-tooltip/dist/rc-tooltip';
 
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
+
 import groupBy from 'lodash/groupBy';
 
 class CertificationsTd extends React.Component {
@@ -13,6 +16,7 @@ class CertificationsTd extends React.Component {
   };
 
   static propTypes = {
+    intl: intlShape.isRequired,
     name: PropTypes.string,
     fmus: PropTypes.array,
     observations: PropTypes.array,
@@ -20,7 +24,7 @@ class CertificationsTd extends React.Component {
   };
 
   render() {
-    const { name, fmus, observations, obs_per_visit: obsPerVisit } = this.props;
+    const { intl, name, fmus, observations, obs_per_visit: obsPerVisit } = this.props;
 
     const observationsPerFMU = groupBy(observations, 'fmu-id');
 
@@ -51,13 +55,18 @@ class CertificationsTd extends React.Component {
                 </ul>
               </div>
             }
-            overlayClassName="c-tooltip"
+            overlayClassName="c-tooltip no-pointer-events"
           >
             <span>{obsPerVisit}</span>
           </Tooltip>
         }
         {!obsPerVisit && (
-          <div className="stoplight-dot -state-0}" />
+          <span>{
+            this.props.intl.formatMessage({
+              id: 'no-observations'
+            })
+          }</span>
+          // <div className="stoplight-dot -state-0}" />
         )}
       </Fragment>
     );
@@ -65,4 +74,4 @@ class CertificationsTd extends React.Component {
 }
 
 
-export default CertificationsTd;
+export default injectIntl(CertificationsTd);

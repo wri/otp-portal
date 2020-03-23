@@ -11,9 +11,6 @@ import { injectIntl, intlShape } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
-// Chart
-import OperatorsRanking from 'components/operators/ranking';
-
 class OperatorsTable extends React.Component {
   state = {
     sortColumn: 'documentation',
