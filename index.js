@@ -106,6 +106,9 @@ app.prepare()
     // SIGNUP
     server.get('/signup', (req, res) => app.render(req, res, '/signup', Object.assign(req.params, req.query)));
 
+    // NEWSLETTER
+    server.get('/newsletter', (req, res) => app.render(req, res, '/newsletter', Object.assign(req.params, req.query)));
+
     // LOGIN
     server.post('/login', (req, res) => {
       request({
