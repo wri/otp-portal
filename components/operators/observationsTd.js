@@ -61,12 +61,7 @@ class CertificationsTd extends React.Component {
           </Tooltip>
         }
         {!obsPerVisit && (
-          <span>{
-            this.props.intl.formatMessage({
-              id: 'no-observations'
-            })
-          }</span>
-          // <div className="stoplight-dot -state-0}" />
+          <div className="stoplight-dot -state-0}" />
         )}
       </Fragment>
     );
