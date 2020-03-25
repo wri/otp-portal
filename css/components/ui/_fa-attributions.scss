@@ -1,3 +1,11 @@
 .c-fa-attributions {
   padding: $space-1 * 4;
+
+  h4 {
+    margin-bottom: $space-1;
+  }
+
+  .attributions--copyright {
+    font-size: $font-size-small;
+  }
 }
