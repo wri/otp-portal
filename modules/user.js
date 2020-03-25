@@ -249,3 +249,26 @@ export function updateFmu({ id, body, authorization }) {
     });
   });
 }
+
+export function saveNewsLetter({ body }) {
+  return () => new Promise((resolve, reject) => {
+    post({
+      url: `${process.env.OTP_API}/contacts`,
+      type: 'POST',
+      body,
+      headers: [{
+        key: 'Content-Type',
+        value: 'application/json'
+      }, {
+        key: 'OTP-API-KEY',
+        value: process.env.OTP_API_KEY
+      }],
+      onSuccess: (response) => {
+        resolve(response);
+      },
+      onError: (error) => {
+        reject(error);
+      }
+    });
+  });
+}
