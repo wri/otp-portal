@@ -4,7 +4,7 @@ export default [
     licenses: [
       {
         name: 'Forest conncession agreement',
-        data: 'http://cod-data.forest-atlas.org/datasets/forest-conncession-agreement/data',
+        data: 'http://cod-data.forest-atlas.org/datasets/forest-conncession-agreement',
         copyright: '© 2017 MECNDD, World Resources Institute'
       }
     ]
@@ -14,17 +14,17 @@ export default [
     licenses: [
       {
         name: 'Concessions forestieres',
-        data: 'http://cmr-data.forest-atlas.org/datasets/concessions-forestieres/data',
+        data: 'http://cmr-data.forest-atlas.org/datasets/concessions-forestieres',
         copyright: '© 2017 MINFOF, World Resources Institute'
       },
       {
         name: 'Sociétes forestieres',
-        data: 'http://cmr-data.forest-atlas.org/datasets/soci%C3%A9tes-forestieres/data',
+        data: 'http://cmr-data.forest-atlas.org/datasets/soci%C3%A9tes-forestieres',
         copyright: '© 2017 MINFOF, World Resources Institute'
       },
       {
         name: 'Ventes de coupe',
-        data: 'http://cmr-data.forest-atlas.org/datasets/ventes-de-coupe/data',
+        data: 'http://cmr-data.forest-atlas.org/datasets/ventes-de-coupe',
         copyright: '© 2017 MINFOF, World Resources Institute'
       }
     ]
@@ -34,7 +34,7 @@ export default [
     licenses: [
       {
         name: 'Concessions Forestières',
-        data: 'http://cog-data.forest-atlas.org/datasets/concessions-foresti%C3%A8res-/data',
+        data: 'http://cog-data.forest-atlas.org/datasets/concessions-foresti%C3%A8res-',
         copyright: '© 2017 MEFDD, World Resources Institute'
       }
     ]
@@ -44,7 +44,7 @@ export default [
     licenses: [
       {
         name: 'Concessions forestières',
-        data: 'http://gab-data.forest-atlas.org/datasets/concessions-foresti%C3%A8res/data',
+        data: 'http://gab-data.forest-atlas.org/datasets/concessions-foresti%C3%A8res',
         copyright: '© 2017 Your Organization'
       }
     ]
@@ -54,7 +54,7 @@ export default [
     licenses: [
       {
         name: "Permis d'Exploitation et d'Aménagement",
-        data: 'http://data-mefcp.opendata.arcgis.com/datasets/permis-dexploitation-et-dam%C3%A9nagement/data',
+        data: 'http://data-mefcp.opendata.arcgis.com/datasets/permis-dexploitation-et-dam%C3%A9nagement',
         copyright: '© 2017 Your Organization'
       }
     ]
