@@ -125,6 +125,7 @@ class ObservationsPage extends React.Component {
     // Hard coded values
     const inputs = [
       'category',
+      'complete',
       'country',
       'date',
       'evidence',
@@ -164,6 +165,14 @@ class ObservationsPage extends React.Component {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
         accessor: 'date',
         minWidth: 75
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'complete' })}</span>,
+        accessor: 'complete',
+        minWidth: 120,
+        Cell: attr => (
+          (!!attr.value).toString()
+        )
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,

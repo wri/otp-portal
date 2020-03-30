@@ -41,7 +41,7 @@ const initialState = {
     loading: false,
     error: false
   },
-  columns: ['date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
+  columns: ['complete', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
 };
 
 const JSONA = new Jsona();

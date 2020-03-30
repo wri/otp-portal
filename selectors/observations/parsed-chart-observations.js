@@ -14,6 +14,7 @@ const getParsedChartObservations = createSelector(
         severity: obs.severity.level,
         category: obs.subcategory.category.name,
         illegality: obs.subcategory.name,
+        complete: obs.complete,
         date: new Date(obs['publication-date'])
       }));
     }
