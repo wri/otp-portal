@@ -1,6 +1,10 @@
 .c-fa-attributions {
   padding: $space-1 * 4;
 
+  a {
+    display: block;
+  }
+
   h4 {
     margin-bottom: $space-1;
   }
