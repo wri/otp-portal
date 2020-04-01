@@ -191,6 +191,156 @@ export const LAYERS = [
 
   },
   {
+    id: 'aac-cog',
+    name: 'aac',
+    iso: 'COG',
+    config: {
+      type: 'geojson',
+      source: {
+        type: 'geojson',
+        provider: {
+          type: 'aac-cog',
+          url: 'https://opendata.arcgis.com/datasets/0c31460808d84dfe806127a25fd0de62_29.geojson'
+        }
+      },
+      render: {
+        layers: [
+          {
+            type: 'fill',
+            paint: {
+              'fill-color': '#CCCCCC',
+              'fill-opacity': 0.5
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'num_con'], ['literal', '{fmuNames}']]
+            ]
+          },
+          {
+            type: 'line',
+            paint: {
+              'line-color': '#CCCCCC',
+              'line-opacity': 0.5
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'num_con'], ['literal', '{fmuNames}']]
+            ]
+          }
+        ]
+      }
+    },
+    paramsConfig: [
+      { key: 'fmuNames', default: [], required: true }
+    ],
+    legendConfig: {
+      type: 'basic',
+      items: [
+        { name: 'aac', color: '#CCCCCC' }
+      ]
+    }
+  },
+  {
+    id: 'aac-cod',
+    name: 'aac',
+    iso: 'COD',
+    config: {
+      type: 'geojson',
+      source: {
+        type: 'geojson',
+        provider: {
+          type: 'aac-cod',
+          url: 'https://opendata.arcgis.com/datasets/c60d5bf9e01c45c5ad79208803819db1_30.geojson'
+        }
+      },
+      render: {
+        layers: [
+          {
+            type: 'fill',
+            paint: {
+              'fill-color': '#CCCCCC',
+              'fill-opacity': 0.5
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'num_ccf'], ['literal', '{fmuNames}']]
+            ]
+          },
+          {
+            type: 'line',
+            paint: {
+              'line-color': '#CCCCCC',
+              'line-opacity': 0.5
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'num_ccf'], ['literal', '{fmuNames}']]
+            ]
+          }
+        ]
+      }
+    },
+    paramsConfig: [
+      { key: 'fmuNames', default: [], required: true }
+    ],
+    legendConfig: {
+      type: 'basic',
+      items: [
+        { name: 'aac', color: '#CCCCCC' }
+      ]
+    }
+  },
+  {
+    id: 'aac-cmr',
+    name: 'aac',
+    iso: 'CMR',
+    config: {
+      type: 'geojson',
+      source: {
+        type: 'geojson',
+        provider: {
+          type: 'aac-cmr',
+          url: 'https://opendata.arcgis.com/datasets/951c6b559cc945afb96013361519305b_128.geojson'
+        }
+      },
+      render: {
+        layers: [
+          {
+            type: 'fill',
+            paint: {
+              'fill-color': '#CCCCCC',
+              'fill-opacity': 0.5
+            },
+            // filter: [
+            //   'all',
+            //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
+            // ]
+          },
+          {
+            type: 'line',
+            paint: {
+              'line-color': '#CCCCCC',
+              'line-opacity': 0.5
+            },
+            // filter: [
+            //   'all',
+            //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
+            // ]
+          }
+        ]
+      }
+    },
+    paramsConfig: [
+      { key: 'fmuNames', default: [], required: true }
+    ],
+    legendConfig: {
+      type: 'basic',
+      items: [
+        { name: 'aac', color: '#CCCCCC' }
+      ]
+    }
+  },
+  {
     id: 'fmus',
     name: 'Forest managment units',
     config: {

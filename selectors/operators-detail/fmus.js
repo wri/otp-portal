@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
+import slugify from 'slugify';
 
 import { replace } from 'layer-manager';
 
@@ -30,13 +31,15 @@ const analysis = state => state.operatorsDetailFmus.analysis;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, fmu, operatorsDetail,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _fmu, _operatorsDetail) => {
-    const { id: operator_id } = _operatorsDetail;
+    const { id: operator_id, fmus, country } = _operatorsDetail;
+    const fmuNames = fmus.map(f => slugify(f.name, { lower: true }));
+
     // Layers
     const aLayers = _layers.map((l) => {
       const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
       const settings = _layersSettings[id] || {};
 
-      if (_layersActive.includes(id) && _fmu) {
+      if (_layersActive.includes(id) && _fmu && (!l.iso || l.iso === country.iso)) {
         const interactionParams = { clickId: Number(_fmu) };
         const hoverInteractionParams = _hoverInteractions[id] ? { hoverId: _hoverInteractions[id].data.cartodb_id || _hoverInteractions[id].data.id } : { hoverId: null };
 
@@ -46,11 +49,11 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig) && {
-            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id: Number(operator_id) })
+            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id: Number(operator_id), fmuNames })
           },
 
           ...(!!decodeConfig) && {
-            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id: Number(operator_id) }),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id: Number(operator_id), fmuNames }),
             decodeFunction
           }
         };
@@ -138,15 +141,16 @@ export const getActiveInteractiveLayers = createSelector(
 );
 
 export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive, analysis, fmu, intl], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl) => {
+  [layers, layersSettings, layersActive, analysis, fmu, intl, operatorsDetail], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl, _operatorsDetail) => {
     if (!_layers) return [];
     const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
+    const { country } = _operatorsDetail;
 
     const layerGroups = [];
 
     _layersActive.forEach((lid) => {
       const layer = legendLayers.find(r => r.id === lid);
-      if (!layer || lid === 'fmus') return false;
+      if (!layer || lid === 'fmus' || (layer.iso && layer.iso !== country.iso)) return false;
 
       const { id, name, description, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
 
@@ -173,6 +177,7 @@ export const getLegendLayers = createSelector(
         analysis: analysisParams,
         layers: [{
           ...layer,
+          name: _intl.formatMessage({ id: name || '-' }),
           opacity: 1,
           active: true,
           legendConfig: {
@@ -274,7 +279,7 @@ export const getFMU = createSelector(
         return {
           ...acc,
           [key]: {
-            ...getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams }),
+            ...getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams })
           }
         };
       }, {})
