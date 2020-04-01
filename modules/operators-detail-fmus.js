@@ -32,6 +32,9 @@ const initialState = {
     'gain',
     'loss',
     'glad',
+    'aac-cog',
+    'aac-cod',
+    'aac-cmr',
     'fmusdetail'
   ],
   layersSettings: {},
