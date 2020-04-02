@@ -558,33 +558,115 @@ export const LAYERS = [
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['==', 'operator_id', '{operator_id}'],
-              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['==', 'iso3_fmu', 'COD'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#5ca2d1',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'COG'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#7B287D',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'CMR'],
+              ['==', 'operator_id', '{operator_id}']
             ],
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
                 type: 'categorical',
                 stops: [
-                  ['ventes_de_coupe', '#e92000'],
-                  ['ufa', '#e95800'],
-                  ['communal', '#e9A600'],
-                  ['PEA', '#e9D400'],
-                  ['CPAET', '#e9E200'],
-                  ['CFAD', '#e9FF00']
+                  ['ventes_de_coupe', '#8BC2B5'],
+                  ['ufa', '#007A5E'],
+                  ['communal', '#00382B']
                 ],
-                default: '#e98300'
+                default: '#007A5E'
               },
               'fill-opacity': 0.9
             }
           },
           {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'GAB'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['CPAET', '#e95800'],
+                  ['CFAD', '#e9A600']
+                ],
+                default: '#e95800'
+              },
+
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'CAF'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#e9D400',
+              'fill-opacity': 0.9
+            }
+          },
+          // {
+          //   type: 'fill',
+          //   'source-layer': 'layer0',
+          //   filter: [
+          //     'all',
+          //     ['==', 'operator_id', '{operator_id}'],
+          //     // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+          //   ],
+          //   paint: {
+          //     'fill-color': {
+          //       property: 'fmu_type_label',
+          //       type: 'categorical',
+          //       stops: [
+          //         ['ventes_de_coupe', '#e92000'],
+          //         ['ufa', '#e95800'],
+          //         ['communal', '#e9A600'],
+          //         ['PEA', '#e9D400'],
+          //         ['CPAET', '#e9E200'],
+          //         ['CFAD', '#e9FF00']
+          //       ],
+          //       default: '#e98300'
+          //     },
+          //     'fill-opacity': 0.9
+          //   }
+          // },
+          {
             type: 'line',
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['==', 'operator_id', '{operator_id}'],
-              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['==', 'operator_id', '{operator_id}']
             ],
             paint: {
               'line-color': '#000000',
