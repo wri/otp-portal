@@ -124,8 +124,7 @@ export const LAYERS = [
       {
         default: '2020-01-30',
         key: 'endDate',
-        required: true,
-        url: 'https://production-api.globalforestwatch.org/v1/glad-alerts/latest'
+        required: true
       },
       {
         default: 1,
@@ -152,7 +151,7 @@ export const LAYERS = [
         if (intensity > 255.) {
           intensity = 255.;
         }
-        if (day >= numberOfDays - 7. && day <= numberOfDays) {
+        if (day >= numberOfDays - 31. && day <= numberOfDays) {
           color.r = 255. / 255.;
           color.g = 255. / 255.;
           color.b = 0.;
@@ -172,8 +171,8 @@ export const LAYERS = [
       speed: 100,
       interval: 'days',
       dateFormat: 'YYYY-MM-DD',
-      trimEndDate: '2020-01-30',
-      maxDate: '2020-01-30',
+      trimEndDate: '{maxDate}',
+      maxDate: '{maxDate}',
       minDate: '2015-01-01',
       canPlay: true,
       railStyle: {

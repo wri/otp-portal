@@ -53,7 +53,7 @@ export const getActiveLayers = createSelector(
           },
 
           ...(!!decodeConfig) && {
-            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, operator_id: Number(operator_id), fmuNames }),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams, operator_id: Number(operator_id), fmuNames }),
             decodeFunction
           }
         };
@@ -211,9 +211,10 @@ export const getLegendLayers = createSelector(
 
           ...!!timelineConfig && {
             timelineParams: {
-              ...JSON.parse(replace(JSON.stringify(timelineConfig), params)),
+              ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
               ...getParams(paramsConfig, lSettings.params),
-              ...getParams(decodeConfig, lSettings.decodeParams)
+              ...getParams(decodeConfig, lSettings.decodeParams),
+              ...lSettings.timelineParams
             }
           }
         }],
