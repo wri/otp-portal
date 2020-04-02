@@ -352,27 +352,110 @@ export const LAYERS = [
       },
       render: {
         layers: [
+          // {
+          //   type: 'fill',
+          //   'source-layer': 'layer0',
+          //   filter: [
+          //     'all',
+          //     ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+          //   ],
+          //   paint: {
+          //     'fill-color': {
+          //       property: 'fmu_type_label',
+          //       type: 'categorical',
+          //       stops: [
+          //         ['ventes_de_coupe', '#e92000'],
+          //         ['ufa', '#e95800'],
+          //         ['communal', '#e9A600'],
+          //         ['PEA', '#e9D400'],
+          //         ['CPAET', '#e9E200'],
+          //         ['CFAD', '#e9FF00']
+          //       ],
+          //       default: '#e98300'
+          //     },
+          //     'fill-opacity': 0.9
+          //   }
+          // },
           {
             type: 'fill',
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'COD']
+            ],
+            paint: {
+              'fill-color': '#5ca2d1',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'COG']
+            ],
+            paint: {
+              'fill-color': '#7B287D',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'CMR']
             ],
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
                 type: 'categorical',
                 stops: [
-                  ['ventes_de_coupe', '#e92000'],
-                  ['ufa', '#e95800'],
-                  ['communal', '#e9A600'],
-                  ['PEA', '#e9D400'],
-                  ['CPAET', '#e9E200'],
-                  ['CFAD', '#e9FF00']
+                  ['ventes_de_coupe', '#8BC2B5'],
+                  ['ufa', '#007A5E'],
+                  ['communal', '#00382B']
                 ],
-                default: '#e98300'
+                default: '#007A5E'
               },
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'GAB']
+            ],
+            paint: {
+              'fill-color': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['CPAET', '#e95800'],
+                  ['CFAD', '#e9A600']
+                ],
+                default: '#e95800'
+              },
+
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'CAF']
+            ],
+            paint: {
+              'fill-color': '#e9D400',
               'fill-opacity': 0.9
             }
           },
@@ -411,31 +494,32 @@ export const LAYERS = [
       color: '#e98300',
       items: [
         {
-          name: 'FMUs',
-          color: '#e98300'
-        },
-        {
           name: 'Cameroon',
-          hideIcon: true,
+          color: '#007A5E',
           items: [
-            { name: 'ventes_de_coupe', color: '#e92000' },
-            { name: 'ufa', color: '#e95800' },
-            { name: 'communal', color: '#e9A700' }
+            { name: 'ventes_de_coupe', color: '#8BC2B5' },
+            { name: 'ufa', color: '#007A5E' },
+            { name: 'communal', color: '#00382B' }
           ]
         },
         {
           name: 'Central African Republic',
-          hideIcon: true,
-          items: [
-            { name: 'PEA', color: '#e9D400' }
-          ]
+          color: '#e9D400'
+        },
+        {
+          name: 'Congo',
+          color: '#7B287D'
+        },
+        {
+          name: 'Democratic Republic of the Congo',
+          color: '#5ca2d1'
         },
         {
           name: 'Gabon',
-          hideIcon: true,
+          color: '#e95800',
           items: [
-            { name: 'CPAET', color: '#e9F200' },
-            { name: 'CFAD', color: '#e9FF00' }
+            { name: 'CPAET', color: '#e95800' },
+            { name: 'CFAD', color: '#e9A600' }
           ]
         }
       ]
@@ -474,33 +558,115 @@ export const LAYERS = [
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['==', 'operator_id', '{operator_id}'],
-              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['==', 'iso3_fmu', 'COD'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#5ca2d1',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'COG'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#7B287D',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'CMR'],
+              ['==', 'operator_id', '{operator_id}']
             ],
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
                 type: 'categorical',
                 stops: [
-                  ['ventes_de_coupe', '#e92000'],
-                  ['ufa', '#e95800'],
-                  ['communal', '#e9A600'],
-                  ['PEA', '#e9D400'],
-                  ['CPAET', '#e9E200'],
-                  ['CFAD', '#e9FF00']
+                  ['ventes_de_coupe', '#8BC2B5'],
+                  ['ufa', '#007A5E'],
+                  ['communal', '#00382B']
                 ],
-                default: '#e98300'
+                default: '#007A5E'
               },
               'fill-opacity': 0.9
             }
           },
           {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'GAB'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['CPAET', '#e95800'],
+                  ['CFAD', '#e9A600']
+                ],
+                default: '#e95800'
+              },
+
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'iso3_fmu', 'CAF'],
+              ['==', 'operator_id', '{operator_id}']
+            ],
+            paint: {
+              'fill-color': '#e9D400',
+              'fill-opacity': 0.9
+            }
+          },
+          // {
+          //   type: 'fill',
+          //   'source-layer': 'layer0',
+          //   filter: [
+          //     'all',
+          //     ['==', 'operator_id', '{operator_id}'],
+          //     // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+          //   ],
+          //   paint: {
+          //     'fill-color': {
+          //       property: 'fmu_type_label',
+          //       type: 'categorical',
+          //       stops: [
+          //         ['ventes_de_coupe', '#e92000'],
+          //         ['ufa', '#e95800'],
+          //         ['communal', '#e9A600'],
+          //         ['PEA', '#e9D400'],
+          //         ['CPAET', '#e9E200'],
+          //         ['CFAD', '#e9FF00']
+          //       ],
+          //       default: '#e98300'
+          //     },
+          //     'fill-opacity': 0.9
+          //   }
+          // },
+          {
             type: 'line',
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['==', 'operator_id', '{operator_id}'],
-              // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['==', 'operator_id', '{operator_id}']
             ],
             paint: {
               'line-color': '#000000',
@@ -576,7 +742,7 @@ export const LAYERS = [
               ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
             ],
             paint: {
-              'fill-color': '#5ca2d1',
+              'fill-color': '#CCCCCC',
               'fill-opacity': 1
             }
           },
@@ -589,7 +755,8 @@ export const LAYERS = [
             ],
             paint: {
               'line-color': '#000000',
-              'line-opacity': 0.1
+              'line-opacity': 0.5,
+              'line-dasharray': [3, 1]
             }
           }
         ]
@@ -599,7 +766,7 @@ export const LAYERS = [
     legendConfig: {
       type: 'basic',
       items: [
-        { name: 'Protected areas', color: '#5ca2d1' }
+        { name: 'Protected areas', color: '#CCCCCC' }
       ]
     }
   }
