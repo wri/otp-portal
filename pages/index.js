@@ -383,19 +383,6 @@ class HomePage extends React.Component {
                                 'fill-color': '#CCCCCC',
                                 'fill-opacity': 1
                               }
-                            },
-                            {
-                              type: 'line',
-                              'source-layer': 'layer0',
-                              filter: [
-                                'all',
-                                ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
-                              ],
-                              paint: {
-                                'line-color': '#000000',
-                                'line-opacity': 0.5,
-                                'line-dasharray': [3, 1]
-                              }
                             }
                           ]
                         },
