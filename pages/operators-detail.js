@@ -24,6 +24,7 @@ import { getParsedDocumentation } from 'selectors/operators-detail/documentation
 // Redux
 import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
+import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
@@ -42,7 +43,11 @@ import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
-    const { operatorsDetail } = store.getState();
+    const { operatorsDetail, operatorsDetailFmus } = store.getState();
+
+    if (!operatorsDetailFmus.layersSettings.glad) {
+      await store.dispatch(getGladMaxDate());
+    }
 
     if (operatorsDetail.data.id !== url.query.id) {
       await store.dispatch(getOperator(url.query.id));

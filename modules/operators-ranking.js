@@ -2,7 +2,6 @@ import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 
-import compact from 'lodash/compact';
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 
@@ -174,10 +173,12 @@ export default function (state = initialState, action) {
         sidebar
       };
     }
+
     case SET_FILTERS_RANKING: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
     }
+
     default:
       return state;
   }
@@ -338,5 +339,57 @@ export function setFilters(filter) {
       type: SET_FILTERS_RANKING,
       payload: newFilters
     });
+  };
+}
+
+export function getGladMaxDate() {
+  return (dispatch) => {
+    return fetch('https://production-api.globalforestwatch.org/v1/glad-alerts/latest', {
+      method: 'GET'
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'glad',
+            settings: {
+              decodeParams: {
+                endDate: data[0].attributes.date,
+                trimEndDate: data[0].attributes.date,
+                maxDate: data[0].attributes.date
+              },
+              timelineParams: {
+                maxDate: data[0].attributes.date
+              }
+            }
+          }
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        const date = new Date();
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'glad',
+            settings: {
+              decodeParams: {
+                endDate: date.toISOString(),
+                trimEndDate: date.toISOString(),
+                maxDate: date.toISOString()
+              },
+              timelineParams: {
+                maxDate: date.toISOString()
+              }
+            }
+          }
+        });
+      });
   };
 }

@@ -83,7 +83,7 @@ class OperatorsDetailFMUs extends React.Component {
       fmu.loss &&
       prevFmu.loss &&
       (fmu.loss.startDate !== prevFmu.loss.startDate ||
-       fmu.loss.trimeEndDate !== prevFmu.loss.trimeEndDate)
+       fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
     }
@@ -92,7 +92,7 @@ class OperatorsDetailFMUs extends React.Component {
       fmu.glad &&
       prevFmu.glad &&
       (fmu.glad.startDate !== prevFmu.glad.startDate ||
-        fmu.glad.trimeEndDate !== prevFmu.glad.trimeEndDate)
+        fmu.glad.trimEndDate !== prevFmu.glad.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'glad');
     }
