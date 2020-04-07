@@ -70,9 +70,12 @@ export const getActiveLayers = createSelector(
 );
 
 export const getActiveInteractiveLayersIds = createSelector(
-  [layers, layersSettings, layersActive],
-  (_layers, _layersSettings, _layersActive) => {
+  [layers, layersSettings, layersActive, operatorsDetail],
+  (_layers, _layersSettings, _layersActive, _operatorsDetail) => {
     if (!_layers) return [];
+
+    const { country } = _operatorsDetail;
+
 
     const getIds = (layer) => {
       const { id, config, interactionConfig } = layer;
@@ -95,7 +98,7 @@ export const getActiveInteractiveLayersIds = createSelector(
     return flatten(compact(_layersActive.map((kActive) => {
       const layer = _layers.find(l => l.id === kActive);
 
-      if (!layer) {
+      if (!layer || (layer.iso && layer.iso !== country.iso)) {
         return null;
       }
 
@@ -140,6 +143,30 @@ export const getActiveInteractiveLayers = createSelector(
     return interactiveLayers.map(l => ({ ...l, data: _interactions[l.id] }));
   }
 );
+
+export const getActiveHoverInteractiveLayers = createSelector(
+  [layers, hoverInteractions],
+  (_layers, _hoverInteractions) => {
+    if (!_layers || isEmpty(_hoverInteractions)) return {};
+
+    const allLayers = uniqBy(flatten(_layers.map((l) => {
+      const { config, name } = l;
+      const { type } = config;
+
+      if (type === 'group') {
+        return config.layers.map(lc => ({ ...lc, name: `${name} - ${lc.name}` }));
+      }
+
+      return l;
+    })), 'id');
+
+    const interactiveLayerKeys = Object.keys(_hoverInteractions);
+    const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
+
+    return interactiveLayers.map(l => ({ ...l, data: _hoverInteractions[l.id] }));
+  }
+);
+
 
 export const getLegendLayers = createSelector(
   [layers, layersSettings, layersActive, analysis, fmu, intl, operatorsDetail], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl, _operatorsDetail) => {

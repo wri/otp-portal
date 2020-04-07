@@ -20,7 +20,7 @@ import {
 } from 'modules/operators-detail-fmus';
 import {
   getActiveLayers,
-  getActiveInteractiveLayers,
+  getActiveHoverInteractiveLayers,
   getActiveInteractiveLayersIds,
   getLegendLayers,
   getFMUs,
@@ -164,7 +164,7 @@ class OperatorsDetailFMUs extends React.Component {
       fmus,
       operatorsDetailFmus,
       activeLayers,
-      activeInteractiveLayers,
+      hoverActiveInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers
     } = this.props;
@@ -257,7 +257,7 @@ class OperatorsDetailFMUs extends React.Component {
                 <Popup
                   popup={hoverPopup}
                   template="fmus-detail"
-                  layers={activeInteractiveLayers}
+                  layers={hoverActiveInteractiveLayers}
                 />
               </Fragment>
             )}
@@ -290,7 +290,7 @@ OperatorsDetailFMUs.propTypes = {
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
   hoverPopup: PropTypes.shape({}).isRequired,
-  activeInteractiveLayers: PropTypes.array,
+  hoverActiveInteractiveLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
 
@@ -308,12 +308,13 @@ export default injectIntl(
     (state, props) => ({
       operatorsDetailFmus: state.operatorsDetailFmus,
       interactions: state.operatorsDetailFmus.interactions,
+      hoverInteractions: state.operatorsDetailFmus.hoverInteractions,
       fmus: getFMUs(state, props),
       fmu: getFMU(state, props),
       popup: getPopup(state, props),
       hoverPopup: getHoverPopup(state, props),
       activeLayers: getActiveLayers(state, props),
-      activeInteractiveLayers: getActiveInteractiveLayers(state, props),
+      hoverActiveInteractiveLayers: getActiveHoverInteractiveLayers(state, props),
       activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
       legendLayers: getLegendLayers(state, props)
     }),

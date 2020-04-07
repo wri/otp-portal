@@ -38,7 +38,8 @@ class PopupComponent extends PureComponent {
   onClose = (e) => {
     e && e.stopPropagation();
     const { onClose } = this.props;
-    onClose();
+
+    !!onClose && onClose();
   }
 
   onClickOutside = (e) => {
@@ -51,7 +52,7 @@ class PopupComponent extends PureComponent {
   }
 
   render() {
-    const { popup, template } = this.props;
+    const { popup, template, onClose } = this.props;
 
     if (isEmpty(popup)) return null;
 
@@ -63,9 +64,11 @@ class PopupComponent extends PureComponent {
         closeOnClick={false}
       >
         <div className="c-map-popup">
-          <button key="close-button" className="map-popup--close mapbox-prevent-click" type="button" onClick={this.onClose}>
-            <Icon name="icon-cross" className="-small mapbox-prevent-click" style={{ pointerEvents: 'none' }} />
-          </button>
+          {!!onClose &&
+            <button key="close-button" className="map-popup--close mapbox-prevent-click" type="button" onClick={this.onClose}>
+              <Icon name="icon-cross" className="-small mapbox-prevent-click" style={{ pointerEvents: 'none' }} />
+            </button>
+          }
 
           {!!TEMPLATES[template] &&
             React.createElement(TEMPLATES[template], {

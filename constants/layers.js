@@ -237,6 +237,9 @@ export const LAYERS = [
       items: [
         { name: 'aac', color: '#CCCCCC' }
       ]
+    },
+    interactionConfig: {
+      enabled: true
     }
   },
   {
@@ -287,6 +290,9 @@ export const LAYERS = [
       items: [
         { name: 'aac', color: '#CCCCCC' }
       ]
+    },
+    interactionConfig: {
+      enabled: true
     }
   },
   {
@@ -337,6 +343,9 @@ export const LAYERS = [
       items: [
         { name: 'aac', color: '#CCCCCC' }
       ]
+    },
+    interactionConfig: {
+      enabled: true
     }
   },
   {
