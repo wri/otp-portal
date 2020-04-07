@@ -103,12 +103,26 @@ class OperatorsFilters extends React.Component {
               }
 
               {f.type === 'input' &&
-                <input
-                  type="search"
-                  placeholder={f.placeholder}
-                  className="search-input"
-                  onChange={e => this.setSearch(e.currentTarget.value, f.key)}
-                />
+                <div className="search">
+                  <input
+                    type="search"
+                    placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
+                    className="search-input"
+                    value={filters[f.key]}
+                    onChange={e => this.setSearch(e.currentTarget.value, f.key)}
+                  />
+
+                  {!!filters[f.key] &&
+                    <button
+                      className="search-remove"
+                      onClick={() => {
+                        this.setSearch('', f.key);
+                      }}
+                    >
+                      <Icon name="icon-cross" className="-smaller" />
+                    </button>
+                  }
+                </div>
               }
             </div>
           </div>

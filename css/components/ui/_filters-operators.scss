@@ -42,6 +42,25 @@
       font-weight: normal;
     }
 
+    .search {
+      width: 100%;
+      position: relative;
+    }
+
+    .search-remove {
+      appearance: none;
+      background: none;
+      box-shadow: none;
+      border: none;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translate(0, -50%);
+      cursor: pointer;
+      fill: $color-white;
+      outline: none;
+    }
+
     .search-input {
       appearance: none;
       background: none;
