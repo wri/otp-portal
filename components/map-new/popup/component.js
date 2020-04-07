@@ -9,17 +9,19 @@ import Icon from 'components/ui/icon';
 
 // import LayerTemplate from './templates/layer';
 import FmuTemplate from './templates/fmu';
+import FmuTemplateAAC from './templates/fmu-aac';
+
+const TEMPLATES = {
+  fmus: FmuTemplate,
+  'fmus-detail': FmuTemplateAAC
+};
 
 class PopupComponent extends PureComponent {
   static propTypes = {
     popup: PropTypes.shape({}).isRequired,
-    layers: PropTypes.array,
+    template: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired
   };
-
-  static defaultProps = {
-    layers: []
-  }
 
   componentDidUpdate(prevProps) {
     const { popup } = this.props;
@@ -49,7 +51,7 @@ class PopupComponent extends PureComponent {
   }
 
   render() {
-    const { popup, layers } = this.props;
+    const { popup, template } = this.props;
 
     if (isEmpty(popup)) return null;
 
@@ -65,10 +67,11 @@ class PopupComponent extends PureComponent {
             <Icon name="icon-cross" className="-small mapbox-prevent-click" style={{ pointerEvents: 'none' }} />
           </button>
 
-          <FmuTemplate
-            activeInteractiveLayer={layers[0]}
-            activeInteractiveLayers={layers}
-          />
+          {!!TEMPLATES[template] &&
+            React.createElement(TEMPLATES[template], {
+              ...this.props
+            })
+          }
         </div>
       </Popup>
     );

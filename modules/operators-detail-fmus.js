@@ -22,6 +22,7 @@ const initialState = {
   },
 
   latlng: {},
+  hoverLatLng: {},
 
   interactions: {},
 
@@ -131,7 +132,7 @@ export default function (state = initialState, action) {
       };
     }
     case SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS: {
-      const { features = [] } = action.payload;
+      const { features = [], lngLat = [] } = action.payload;
       const hoverInteractions = features.reduce(
         (obj, next) => ({
           ...obj,
@@ -146,6 +147,10 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
+        hoverLatLng: {
+          lat: lngLat[1],
+          lng: lngLat[0]
+        },
         hoverInteractions
       };
     }

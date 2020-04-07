@@ -22,6 +22,7 @@ const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 const interactions = state => state.operatorsDetailFmus.interactions;
 const hoverInteractions = state => state.operatorsDetailFmus.hoverInteractions;
 const latlng = state => state.operatorsDetailFmus.latlng;
+const hoverLatLng = state => state.operatorsDetailFmus.hoverLatLng;
 
 const fmu = state => state.operatorsDetailFmus.fmu;
 const fmuBounds = state => state.operatorsDetailFmus.fmuBounds;
@@ -242,6 +243,23 @@ export const getPopup = createSelector(
     return popup;
   }
 );
+
+export const getHoverPopup = createSelector(
+  [hoverLatLng],
+  (_hoverLatLng) => {
+    if (isEmpty(_hoverLatLng) || !_hoverLatLng.lat || !_hoverLatLng.lng) {
+      return {};
+    }
+
+    const popup = {
+      latitude: _hoverLatLng.lat,
+      longitude: _hoverLatLng.lng
+    };
+
+    return popup;
+  }
+);
+
 
 export const getFMUs = createSelector(
   operatorsDetail,

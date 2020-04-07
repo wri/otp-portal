@@ -96,7 +96,6 @@ class OperatorsPage extends React.Component {
   }
 
   onClick = (e) => {
-    console.log(e);
     if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
       const { features, lngLat } = e;
       this.props.setOperatorsMapInteractions({ features, lngLat });
@@ -200,6 +199,7 @@ class OperatorsPage extends React.Component {
                 <Fragment>
                   <Popup
                     popup={popup}
+                    template="fmus"
                     layers={activeInteractiveLayers}
                     onClose={() => this.props.setOperatorsMapInteractions({})}
                   />

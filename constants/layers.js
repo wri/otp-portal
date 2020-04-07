@@ -685,6 +685,18 @@ export const LAYERS = [
             }
           },
           {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{clickId}']
+            ],
+            paint: {
+              'fill-color': '#000'
+            }
+          },
+
+          {
             type: 'line',
             'source-layer': 'layer0',
             filter: [
@@ -697,7 +709,20 @@ export const LAYERS = [
               'line-opacity': 1,
               'line-width': 2
             }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{hoverId}'],
+              ['!=', 'id', '{clickId}']
+            ],
+            paint: {
+              'fill-color': '#000'
+            }
           }
+
         ]
       }
     },
