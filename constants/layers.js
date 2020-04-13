@@ -113,7 +113,18 @@ export const LAYERS = [
       }
     },
     legendConfig: {
-      enabled: true
+      enabled: true,
+      type: 'basic',
+      items: [
+        {
+          name: 'Alerts',
+          color: '#F00'
+        },
+        {
+          name: 'Recent alerts (last 31 days)',
+          color: '#E4C600'
+        }
+      ]
     },
     decodeConfig: [
       {
@@ -127,7 +138,7 @@ export const LAYERS = [
         required: true
       },
       {
-        default: 1,
+        default: 0,
         key: 'confirmedOnly',
         required: true
       }
@@ -152,8 +163,8 @@ export const LAYERS = [
           intensity = 255.;
         }
         if (day >= numberOfDays - 31. && day <= numberOfDays) {
-          color.r = 255. / 255.;
-          color.g = 255. / 255.;
+          color.r = 228. / 255.;
+          color.g = 198. / 255.;
           color.b = 0.;
           alpha = intensity / 255.;
         } else {
