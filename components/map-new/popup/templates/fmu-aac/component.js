@@ -16,16 +16,15 @@ class FMUAACTemplatePopup extends PureComponent {
 
     const fmu = layers.find(l => l.id === 'fmusdetail');
     const aac = layers.find(l => l.id === 'aac-cog' || l.id === 'aac-cod' || l.id === 'aac-cmr');
-    if (!fmu) return null;
-
-    console.log(aac);
 
     return (
       <div className="c-layer-popup">
-        <h3>{fmu.data.data.fmu_name}</h3>
-        {!!aac && !!trim(aac.data.data.period_val) &&
+        {!!fmu && <h3>{fmu.data.data.fmu_name}</h3>}
+
+        {!!aac && (!!trim(aac.data.data.period_val) || aac.data.data.nom_aac) &&
           <ul>
-            <li>Period: {aac.data.data.period_val}</li>
+            {!!trim(aac.data.data.nom_aac) && <li>Name: {aac.data.data.nom_aac}</li>}
+            {!!trim(aac.data.data.period_val) && <li>Period: {aac.data.data.period_val}</li>}
           </ul>
         }
       </div>
