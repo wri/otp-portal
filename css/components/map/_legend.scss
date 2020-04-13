@@ -27,6 +27,7 @@ $legend_component: 'vizzuality';
   .#{$legend_component}__c {
     &-legend-map {
       border: 1px solid $border-color-2;
+      border-radius: 0;
 
       .#{$legend_component}__toggle-legend {
         background: $color-white;
@@ -39,6 +40,12 @@ $legend_component: 'vizzuality';
           fill: $color-black;
           transform: rotate(180deg);
         }
+      }
+
+      .#{$legend_component}__close-legend {
+        background: #FFF;
+        appearance: none;
+        border-radius: 0;
       }
 
 
