@@ -27,6 +27,11 @@ export default [
         name: 'Forest conncession agreement',
         data: 'http://cod-data.forest-atlas.org/datasets/forest-conncession-agreement',
         copyright: '© 2017 MECNDD, World Resources Institute'
+      },
+      {
+        name: 'Assiettes Annuelles de Coupe',
+        data: 'http://cod-data.forest-atlas.org/datasets/assiette-annuelle-de-coupe',
+        copyright: '© 2017 MECNDD, World Resources Institute'
       }
     ]
   },
@@ -61,6 +66,11 @@ export default [
       {
         name: 'Concessions Forestières',
         data: 'http://cog-data.forest-atlas.org/datasets/concessions-foresti%C3%A8res-',
+        copyright: '© 2017 MEFDD, World Resources Institute'
+      },
+      {
+        name: 'Assiettes Annuelles de Coupe',
+        data: 'http://cog-data.forest-atlas.org/datasets/assiettes-annuelles-de-coupe',
         copyright: '© 2017 MEFDD, World Resources Institute'
       }
     ]
