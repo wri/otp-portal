@@ -122,7 +122,7 @@ export const LAYERS = [
         },
         {
           name: 'Recent alerts (last 31 days)',
-          color: '#E4C600'
+          color: '#840000'
         }
       ]
     },
@@ -163,8 +163,8 @@ export const LAYERS = [
           intensity = 255.;
         }
         if (day >= numberOfDays - 31. && day <= numberOfDays) {
-          color.r = 228. / 255.;
-          color.g = 198. / 255.;
+          color.r = 132. / 255.;
+          color.g = 0. / 255.;
           color.b = 0.;
           alpha = intensity / 255.;
         } else {

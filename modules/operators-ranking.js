@@ -43,9 +43,9 @@ const initialState = {
   // LAYERS
   layers: LAYERS,
   layersActive: [
+    'glad',
     'gain',
     'loss',
-    'glad',
     'fmus',
     'protected-areas'
   ],

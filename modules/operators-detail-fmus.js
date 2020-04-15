@@ -29,9 +29,9 @@ const initialState = {
 
   layers: LAYERS,
   layersActive: [
+    'glad',
     'gain',
     'loss',
-    'glad',
     'aac-cog',
     'aac-cod',
     'aac-cmr',
