@@ -3,6 +3,12 @@
 
   a {
     display: block;
+    color: $color-green-1;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   h4 {
