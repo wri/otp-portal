@@ -35,7 +35,7 @@ const initialState = {
     'glad',
     'aac-cog',
     'aac-cod',
-    'aac-cmr',
+    // 'aac-cmr',
     'fmusdetail'
   ],
   layersSettings: {},

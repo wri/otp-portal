@@ -22,7 +22,7 @@ class FMUAACTemplatePopup extends PureComponent {
         {!!fmu && <h3>{fmu.data.data.fmu_name}</h3>}
 
         {!!aac && (!!trim(aac.data.data.period_val) || aac.data.data.nom_aac) &&
-          <ul>
+          <ul className="layer-popup--list">
             {!!trim(aac.data.data.nom_aac) && <li>Name: {aac.data.data.nom_aac}</li>}
             {!!trim(aac.data.data.period_val) && <li>Period: {aac.data.data.period_val}</li>}
           </ul>
