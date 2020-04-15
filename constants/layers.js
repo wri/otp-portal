@@ -712,7 +712,7 @@ export const LAYERS = [
               ['==', 'id', '{clickId}']
             ],
             paint: {
-              'fill-color': '#000'
+              'fill-color': '#333'
             }
           },
 
@@ -739,7 +739,7 @@ export const LAYERS = [
               ['!=', 'id', '{clickId}']
             ],
             paint: {
-              'fill-color': '#000'
+              'fill-color': '#333'
             }
           }
 
