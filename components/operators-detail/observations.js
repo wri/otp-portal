@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // Utils
+import isEmpty from 'lodash/isEmpty';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
@@ -43,6 +44,8 @@ class OperatorsDetailObservations extends React.Component {
   }
 
   render() {
+    const groupedByFMU = HELPERS_OBS.getGroupedByFMU(this.props.operatorObservations);
+
     return (
       <div
         className="c-section"
@@ -62,18 +65,20 @@ class OperatorsDetailObservations extends React.Component {
               </div>
             </article>
 
-            <article className="c-article">
-              <div className="l-container">
-                <header>
-                  <h2 className="c-title">
-                    {this.props.intl.formatMessage({ id: 'observations_by_fmu' })}
-                  </h2>
-                </header>
-                <div className="content">
-                  <TotalObservationsByOperatorByFMU data={this.props.operatorObservations} />
+            {!isEmpty(groupedByFMU) &&
+              <article className="c-article">
+                <div className="l-container">
+                  <header>
+                    <h2 className="c-title">
+                      {this.props.intl.formatMessage({ id: 'observations_by_fmu' })}
+                    </h2>
+                  </header>
+                  <div className="content">
+                    <TotalObservationsByOperatorByFMU data={groupedByFMU} />
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            }
 
             <article className="c-article">
               <div className="l-container">
