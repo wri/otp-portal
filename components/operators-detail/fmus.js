@@ -20,11 +20,13 @@ import {
 } from 'modules/operators-detail-fmus';
 import {
   getActiveLayers,
-  getActiveInteractiveLayers,
+  getActiveHoverInteractiveLayers,
   getActiveInteractiveLayersIds,
   getLegendLayers,
   getFMUs,
-  getFMU
+  getFMU,
+  getPopup,
+  getHoverPopup
 } from 'selectors/operators-detail/fmus';
 
 // Intl
@@ -42,6 +44,7 @@ import FAAttributions from 'components/map-new/fa-attributions';
 
 import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
+import Popup from 'components/map-new/popup';
 
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
@@ -156,10 +159,12 @@ class OperatorsDetailFMUs extends React.Component {
 
   render() {
     const {
+      hoverPopup,
       fmu,
       fmus,
       operatorsDetailFmus,
       activeLayers,
+      hoverActiveInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers
     } = this.props;
@@ -248,6 +253,12 @@ class OperatorsDetailFMUs extends React.Component {
               <Fragment>
                 {/* LAYER MANAGER */}
                 <LayerManager map={map} layers={activeLayers} />
+
+                <Popup
+                  popup={hoverPopup}
+                  template="fmus-detail"
+                  layers={hoverActiveInteractiveLayers}
+                />
               </Fragment>
             )}
           </Map>
@@ -278,6 +289,8 @@ OperatorsDetailFMUs.propTypes = {
   fmu: PropTypes.shape({}).isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
+  hoverPopup: PropTypes.shape({}).isRequired,
+  hoverActiveInteractiveLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
 
@@ -295,10 +308,13 @@ export default injectIntl(
     (state, props) => ({
       operatorsDetailFmus: state.operatorsDetailFmus,
       interactions: state.operatorsDetailFmus.interactions,
+      hoverInteractions: state.operatorsDetailFmus.hoverInteractions,
       fmus: getFMUs(state, props),
       fmu: getFMU(state, props),
+      popup: getPopup(state, props),
+      hoverPopup: getHoverPopup(state, props),
       activeLayers: getActiveLayers(state, props),
-      activeInteractiveLayers: getActiveInteractiveLayers(state, props),
+      hoverActiveInteractiveLayers: getActiveHoverInteractiveLayers(state, props),
       activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
       legendLayers: getLegendLayers(state, props)
     }),

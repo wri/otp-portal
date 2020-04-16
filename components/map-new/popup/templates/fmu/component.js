@@ -13,7 +13,7 @@ import { encode } from 'utils/general';
 
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
-    activeInteractiveLayer: PropTypes.shape({}).isRequired,
+    layers: PropTypes.array.isRequired,
     intl: intlShape.isRequired
   };
 
@@ -47,7 +47,8 @@ class FMUTemplatePopup extends PureComponent {
   }
 
   render() {
-    const { activeInteractiveLayer } = this.props;
+    const { layers } = this.props;
+    const activeInteractiveLayer = layers.find(l => l.id === 'fmus');
     const { interactionConfig, data } = activeInteractiveLayer;
     const { output } = interactionConfig;
     const { data: fmuData } = data;

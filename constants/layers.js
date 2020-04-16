@@ -247,6 +247,9 @@ export const LAYERS = [
       items: [
         { name: 'aac', color: '#CCCCCC' }
       ]
+    },
+    interactionConfig: {
+      enabled: true
     }
   },
   {
@@ -297,58 +300,64 @@ export const LAYERS = [
       items: [
         { name: 'aac', color: '#CCCCCC' }
       ]
-    }
-  },
-  {
-    id: 'aac-cmr',
-    name: 'aac',
-    iso: 'CMR',
-    config: {
-      type: 'geojson',
-      source: {
-        type: 'geojson',
-        provider: {
-          type: 'aac-cmr',
-          url: 'https://opendata.arcgis.com/datasets/951c6b559cc945afb96013361519305b_128.geojson'
-        }
-      },
-      render: {
-        layers: [
-          {
-            type: 'fill',
-            paint: {
-              'fill-color': '#CCCCCC',
-              'fill-opacity': 0.5
-            },
-            // filter: [
-            //   'all',
-            //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
-            // ]
-          },
-          {
-            type: 'line',
-            paint: {
-              'line-color': '#CCCCCC',
-              'line-opacity': 0.5
-            },
-            // filter: [
-            //   'all',
-            //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
-            // ]
-          }
-        ]
-      }
     },
-    paramsConfig: [
-      { key: 'fmuNames', default: [], required: true }
-    ],
-    legendConfig: {
-      type: 'basic',
-      items: [
-        { name: 'aac', color: '#CCCCCC' }
-      ]
+    interactionConfig: {
+      enabled: true
     }
   },
+  // {
+  //   id: 'aac-cmr',
+  //   name: 'aac',
+  //   iso: 'CMR',
+  //   config: {
+  //     type: 'geojson',
+  //     source: {
+  //       type: 'geojson',
+  //       provider: {
+  //         type: 'aac-cmr',
+  //         url: 'https://opendata.arcgis.com/datasets/951c6b559cc945afb96013361519305b_128.geojson'
+  //       }
+  //     },
+  //     render: {
+  //       layers: [
+  //         {
+  //           type: 'fill',
+  //           paint: {
+  //             'fill-color': '#CCCCCC',
+  //             'fill-opacity': 0.5
+  //           },
+  //           // filter: [
+  //           //   'all',
+  //           //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
+  //           // ]
+  //         },
+  //         {
+  //           type: 'line',
+  //           paint: {
+  //             'line-color': '#CCCCCC',
+  //             'line-opacity': 0.5
+  //           },
+  //           // filter: [
+  //           //   'all',
+  //           //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
+  //           // ]
+  //         }
+  //       ]
+  //     }
+  //   },
+  //   paramsConfig: [
+  //     { key: 'fmuNames', default: [], required: true }
+  //   ],
+  //   legendConfig: {
+  //     type: 'basic',
+  //     items: [
+  //       { name: 'aac', color: '#CCCCCC' }
+  //     ]
+  //   },
+  //   interactionConfig: {
+  //     enabled: true
+  //   }
+  // },
   {
     id: 'fmus',
     name: 'Forest managment units',
@@ -695,6 +704,18 @@ export const LAYERS = [
             }
           },
           {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{clickId}']
+            ],
+            paint: {
+              'fill-color': '#333'
+            }
+          },
+
+          {
             type: 'line',
             'source-layer': 'layer0',
             filter: [
@@ -707,7 +728,20 @@ export const LAYERS = [
               'line-opacity': 1,
               'line-width': 2
             }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            filter: [
+              'all',
+              ['==', 'id', '{hoverId}'],
+              ['!=', 'id', '{clickId}']
+            ],
+            paint: {
+              'fill-color': '#333'
+            }
           }
+
         ]
       }
     },

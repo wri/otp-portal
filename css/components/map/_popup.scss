@@ -64,4 +64,9 @@
       vertical-align: baseline;
     }
   }
+
+  .layer-popup--list {
+    margin: 0;
+    padding-left: $space-1 * 2;
+  }
 }
