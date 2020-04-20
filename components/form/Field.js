@@ -72,7 +72,7 @@ class Field extends React.Component {
           onValid={this.onValid}
         />
 
-        {error &&
+        {error && typeof error === 'function' &&
           error.map((err, i) => {
             if (err) {
               return (

@@ -94,20 +94,44 @@ class DocModal extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
-        this.documentationService.saveDocument({
-          url: type,
-          type: 'POST',
-          body: this.getBody()
-        })
-          .then(() => {
-            this.setState({ submitting: false, errors: [] });
-            this.props.onChange && this.props.onChange();
-            modal.toggleModal(false);
+        if (this.state.form.file) {
+          this.documentationService.saveDocument({
+            url: type,
+            type: 'POST',
+            body: this.getBody()
           })
-          .catch((err) => {
-            console.error(err);
-            this.setState({ submitting: false, errors: err });
-          });
+            .then(() => {
+              this.setState({ submitting: false, errors: [] });
+              this.props.onChange && this.props.onChange();
+              modal.toggleModal(false);
+            })
+            .catch((err) => {
+              console.error(err);
+              this.setState({ submitting: false, errors: err });
+            });
+        }
+
+        if (!this.state.form.file) {
+          this.documentationService.saveDocument({
+            url: type,
+            type: 'PATCH',
+            body: {
+              data: {
+                'start-date': this.state.form.startDate,
+                'expire-date': this.state.form.expireDate
+              }
+            }
+          })
+            .then(() => {
+              this.setState({ submitting: false, errors: [] });
+              this.props.onChange && this.props.onChange();
+              modal.toggleModal(false);
+            })
+            .catch((err) => {
+              console.error(err);
+              this.setState({ submitting: false, errors: err });
+            });
+        }
       } else {
         // toastr.error('Error', 'Fill all the required fields');
       }
