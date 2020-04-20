@@ -505,7 +505,7 @@ export const LAYERS = [
       }
     },
     paramsConfig: [
-      { key: 'country_iso_codes', default: ['COG', 'CMR', 'COD', 'CAF', 'GAB'], required: true }
+      { key: 'country_iso_codes', default: process.env.OTP_COUNTRIES, required: true }
     ],
     legendConfig: {
       type: 'basic',
