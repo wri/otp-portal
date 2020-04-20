@@ -348,7 +348,7 @@ class HomePage extends React.Component {
                           ]
                         },
                         params: {
-                          country_iso_codes: ['COG', 'CMR', 'COD', 'CAF', 'GAB']
+                          country_iso_codes: process.env.OTP_COUNTRIES
                         }
                       },
                       {
@@ -387,7 +387,7 @@ class HomePage extends React.Component {
                           ]
                         },
                         params: {
-                          country_iso_codes: ['COG', 'CMR', 'COD', 'CAF', 'GAB']
+                          country_iso_codes: process.env.OTP_COUNTRIES
                         }
                       }
                     ]}
