@@ -151,19 +151,11 @@ class DocCard extends React.Component {
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
-              {(publicState || (!publicState && isActiveUser)) &&
-                <a rel="noopener noreferrer" target="_blank" href={url}>
-                  <h3 className="doc-card-title c-title -big">
-                    {title}
-                  </h3>
-                </a>
-              }
-
-              {!publicState && !isActiveUser &&
+              <a rel="noopener noreferrer" target="_blank" href={url}>
                 <h3 className="doc-card-title c-title -big">
                   {title}
                 </h3>
-              }
+              </a>
             </div>
             <div className="doc-card-footer">
               {layout.annexes &&
