@@ -22,6 +22,14 @@ const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
 
 const JSONA = new Jsona();
 
+const COUNTRIES = [
+  { label: 'Congo', value: 47, iso: 'COG' },
+  { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' },
+  { label: 'Cameroon', value: 45, iso: 'CMR' },
+  { label: 'Central African Republic', value: 188, iso: 'CAF' },
+  { label: 'Gabon', value: 53, iso: 'GAB' }
+];
+
 /* Initial state */
 const initialState = {
   data: [],
@@ -68,13 +76,9 @@ const initialState = {
 
     // TODO: get them from API
     options: {
-      country: [
-        { label: 'Congo', value: 47, iso: 'COG' },
-        { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' },
-        { label: 'Cameroon', value: 45, iso: 'CMR' },
-        { label: 'Central African Republic', value: 188, iso: 'CAF' },
-        { label: 'Gabon', value: 53, iso: 'GAB' }
-      ],
+      country: process.env.OTP_COUNTRIES.map(iso =>
+        COUNTRIES.find(c => c.iso === iso)
+      ),
       certification: [
         { label: 'FSC', value: 'fsc' },
         { label: 'PEFC', value: 'pefc' },

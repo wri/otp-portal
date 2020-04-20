@@ -30,7 +30,7 @@ const initialState = {
   filters: {
     data: {
       observation_type: [],
-      country_id: process.env.OTP_COUNTRIES_IDS.split(','),
+      country_id: process.env.OTP_COUNTRIES_IDS,
       fmu_id: [],
       years: [],
       observer_id: [],

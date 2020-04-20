@@ -1,3 +1,40 @@
+const FMU_LEGEND = [
+  {
+    name: 'Cameroon',
+    iso: 'CMR',
+    color: '#007A5E',
+    items: [
+      { name: 'ventes_de_coupe', color: '#8BC2B5' },
+      { name: 'ufa', color: '#007A5E' },
+      { name: 'communal', color: '#00382B' }
+    ]
+  },
+  {
+    name: 'Central African Republic',
+    iso: 'CAF',
+    color: '#e9D400'
+  },
+  {
+    name: 'Congo',
+    iso: 'COG',
+    color: '#7B287D'
+  },
+  {
+    name: 'Democratic Republic of the Congo',
+    iso: 'COD',
+    color: '#5ca2d1'
+  },
+  {
+    name: 'Gabon',
+    iso: 'GAB',
+    color: '#e95800',
+    items: [
+      { name: 'CPAET', color: '#e95800' },
+      { name: 'CFAD', color: '#e9A600' }
+    ]
+  }
+];
+
 export const LAYERS = [
   {
     id: 'glad',
@@ -510,37 +547,7 @@ export const LAYERS = [
     legendConfig: {
       type: 'basic',
       color: '#e98300',
-      items: [
-        {
-          name: 'Cameroon',
-          color: '#007A5E',
-          items: [
-            { name: 'ventes_de_coupe', color: '#8BC2B5' },
-            { name: 'ufa', color: '#007A5E' },
-            { name: 'communal', color: '#00382B' }
-          ]
-        },
-        {
-          name: 'Central African Republic',
-          color: '#e9D400'
-        },
-        {
-          name: 'Congo',
-          color: '#7B287D'
-        },
-        {
-          name: 'Democratic Republic of the Congo',
-          color: '#5ca2d1'
-        },
-        {
-          name: 'Gabon',
-          color: '#e95800',
-          items: [
-            { name: 'CPAET', color: '#e95800' },
-            { name: 'CFAD', color: '#e9A600' }
-          ]
-        }
-      ]
+      items: process.env.OTP_COUNTRIES.map(iso => FMU_LEGEND.find(i => i.iso === iso))
     },
     interactionConfig: {
       enable: true,

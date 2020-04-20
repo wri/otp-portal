@@ -5,6 +5,7 @@ import compact from 'lodash/compact';
 import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
+import sortBy from 'lodash/sortBy';
 
 import { replace } from 'layer-manager';
 
@@ -220,7 +221,7 @@ export const getLegendLayers = createSelector(
           legendConfig: {
             ...legendConfig,
             ...legendConfig.items && {
-              items: legendConfig.items.map(i => ({
+              items: sortBy(legendConfig.items.map(i => ({
                 ...i,
                 ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
                 ...i.items && {
@@ -230,7 +231,7 @@ export const getLegendLayers = createSelector(
                   }))
                 }
 
-              }))
+              })), 'name')
             }
           },
           ...lSettings,
