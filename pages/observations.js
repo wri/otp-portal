@@ -79,7 +79,7 @@ class ObservationsPage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.observations.filters.data, nextProps.observations.filters.data)) {
+    if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
       this.props.getObservations();
     }
   }
@@ -395,8 +395,8 @@ class ObservationsPage extends React.Component {
 ObservationsPage.propTypes = {
   url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
-  filters: PropTypes.object,
   intl: intlShape.isRequired,
+  parsedFilters: PropTypes.object,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 
