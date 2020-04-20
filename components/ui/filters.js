@@ -34,7 +34,7 @@ class Filters extends React.Component {
     });
 
     this.props.setFilters(filter);
-    this.props.logFilter(key, filter[key]);
+    // this.props.logFilter(key, filter[key]);
   }
 
 

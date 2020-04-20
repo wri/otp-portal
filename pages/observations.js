@@ -118,7 +118,7 @@ class ObservationsPage extends React.Component {
 
   // eslint-disable-next-line no-undef
   logFilter = (action, label) => {
-    logEvent('Observations', action, label);
+    // logEvent('Observations', action, label);
   }
 
   render() {
@@ -327,7 +327,7 @@ class ObservationsPage extends React.Component {
                   filters={parsedFilters.data}
                   setFilters={this.props.setFilters}
                   filtersRefs={FILTERS_REFS}
-                  logFilter={this.logFilter}
+                  // logFilter={this.logFilter}
                 />
               </div>
 
