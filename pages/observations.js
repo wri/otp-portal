@@ -17,6 +17,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
+import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -121,7 +122,7 @@ class ObservationsPage extends React.Component {
   }
 
   render() {
-    const { url, observations, parsedChartObservations, parsedTableObservations } = this.props;
+    const { url, observations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
     // Hard coded values
     const inputs = [
       'category',
@@ -322,8 +323,8 @@ class ObservationsPage extends React.Component {
             <div className="row l-row">
               <div className="columns small-12 medium-4">
                 <Filters
-                  options={observations.filters.options}
-                  filters={observations.filters.data}
+                  options={parsedFilters.options}
+                  filters={parsedFilters.data}
                   setFilters={this.props.setFilters}
                   filtersRefs={FILTERS_REFS}
                   logFilter={this.logFilter}
@@ -408,6 +409,7 @@ ObservationsPage.propTypes = {
 export default withTracker(withIntl(connect(
   state => ({
     observations: state.observations,
+    parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
     parsedTableObservations: getParsedTableObservations(state)
   }),

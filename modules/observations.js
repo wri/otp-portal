@@ -35,6 +35,7 @@ const initialState = {
       years: [],
       observer_id: [],
       category_id: [],
+      subcategory_id: [],
       severity_level: []
     },
     options: {},
@@ -147,7 +148,7 @@ export function getFilters() {
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
-    return fetch(`${process.env.OTP_API}/observation_filters?locale=${lang}`, {
+    return fetch(`${process.env.OTP_API}/observation_filters_tree?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -189,6 +190,11 @@ export function setFilters(filter) {
     const newFilters = Object.assign({}, state().observations.filters.data);
     const key = Object.keys(filter)[0];
     newFilters[key] = filter[key];
+
+    // default countries
+    if (key === 'country_id' && !filter[key].length) {
+      newFilters[key] = process.env.OTP_COUNTRIES_IDS;
+    }
 
     dispatch({
       type: SET_FILTERS,
