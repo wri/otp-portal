@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
@@ -10,6 +10,9 @@ import { connect } from 'react-redux';
 
 import withTracker from 'components/layout/with-tracker';
 
+// Services
+import modal from 'services/modal';
+
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -17,6 +20,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
+import { getParsedMapObservations } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
@@ -30,6 +34,14 @@ import Spinner from 'components/ui/spinner';
 import ReadMore from 'components/ui/read-more';
 import Icon from 'components/ui/icon';
 import MapSubComponent from 'components/ui/map-sub-component';
+import StaticTabs from 'components/ui/static-tabs';
+
+
+import Map from 'components/map-new';
+import LayerManager from 'components/map-new/layer-manager';
+import MapControls from 'components/map/map-controls';
+import ZoomControl from 'components/map/controls/zoom-control';
+import FAAttributions from 'components/map-new/fa-attributions';
 
 // Utils
 import {
@@ -65,7 +77,7 @@ class ObservationsPage extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'observations-list',
+      tab: this.props.url.query.subtab || 'observations-list',
       page: 1
     };
 
@@ -101,6 +113,13 @@ class ObservationsPage extends React.Component {
     return 1;
   }
 
+  onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  }
+
   setActiveColumns(value) {
     const { observations } = this.props;
     const addColumn = difference(value, observations.columns);
@@ -116,13 +135,17 @@ class ObservationsPage extends React.Component {
     this.setState({ tab });
   }
 
+
   // eslint-disable-next-line no-undef
   logFilter = (action, label) => {
     // logEvent('Observations', action, label);
   }
 
   render() {
-    const { url, observations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+    const { url, observations, parsedMapObservations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+
+    console.log(observations);
+
     // Hard coded values
     const inputs = [
       'category',
@@ -333,60 +356,227 @@ class ObservationsPage extends React.Component {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview
-                  parsedObservations={parsedChartObservations}
-                />
+                <Overview parsedObservations={parsedChartObservations} />
               </div>
             </div>
           </div>
         </div>
 
-        <section className="c-section -relative">
-          <div className="l-container">
-            <h2 className="c-title">{this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }) }</h2>
-            <Spinner isLoading={observations.loading} />
-            <div className="c-field -fluid -valid">
-              <CheckboxGroup
-                className="-inline -small -single-row"
-                name="observations-columns"
-                onChange={value => this.setActiveColumns(value)}
-                properties={{ default: observations.columns, name: 'observations-columns' }}
-                options={tableOptions}
+        <StaticTabs
+          options={[
+            {
+              label: this.props.intl.formatMessage({
+                id: 'observations.tab.observations-list'
+              }),
+              value: 'observations-list'
+            },
+            {
+              label: this.props.intl.formatMessage({ id: 'map-view' }),
+              value: 'map-view'
+            }
+          ]}
+          defaultSelected={this.state.tab}
+          onChange={this.triggerChangeTab}
+        />
+
+        {this.state.tab === 'observations-list' && (
+          <section className="c-section -relative">
+            <div className="l-container">
+              <h2 className="c-title">
+                {this.props.intl.formatMessage({
+                  id: 'observations.tab.observations-list'
+                })}
+              </h2>
+              <Spinner isLoading={observations.loading} />
+              <div className="c-field -fluid -valid">
+                <CheckboxGroup
+                  className="-inline -small -single-row"
+                  name="observations-columns"
+                  onChange={value => this.setActiveColumns(value)}
+                  properties={{
+                    default: observations.columns,
+                    name: 'observations-columns'
+                  }}
+                  options={tableOptions}
+                />
+              </div>
+
+              <Table
+                sortable
+                data={parsedTableObservations}
+                options={{
+                  columns: columnHeaders.filter(header =>
+                    observations.columns.includes(header.accessor)
+                  ),
+                  pageSize: this.getPageSize(),
+                  pagination: true,
+                  previousText: '<',
+                  nextText: '>',
+                  noDataText: 'No rows found',
+                  showPageSizeOptions: false,
+                  // Api pagination & sort
+                  // pages: observations.totalSize,
+                  // page: this.state.page - 1,
+                  // manual: true
+                  onPageChange: page => this.onPageChange(page),
+                  defaultSorted: [
+                    {
+                      id: 'date',
+                      desc: false
+                    }
+                  ],
+                  showSubComponent: observations.columns.includes('location'),
+                  subComponent: row =>
+                    observations.columns.includes('location') && (
+                      <MapSubComponent
+                        id={row.original.id}
+                        location={row.original.location}
+                        level={row.original.level}
+                      />
+                    )
+                }}
               />
             </div>
+          </section>
+        )}
 
-            <Table
-              sortable
-              data={parsedTableObservations}
-              options={{
-                columns: columnHeaders.filter(header =>
-                  observations.columns.includes(header.accessor)),
-                pageSize: this.getPageSize(),
-                pagination: true,
-                previousText: '<',
-                nextText: '>',
-                noDataText: 'No rows found',
-                showPageSizeOptions: false,
-                    // Api pagination & sort
-                    // pages: observations.totalSize,
-                    // page: this.state.page - 1,
-                    // manual: true
-                onPageChange: page => this.onPageChange(page),
-                defaultSorted: [{
-                  id: 'date',
-                  desc: false
-                }],
-                showSubComponent: observations.columns.includes('location'),
-                subComponent: row => observations.columns.includes('location') &&
-                  <MapSubComponent
-                    id={row.original.id}
-                    location={row.original.location}
-                    level={row.original.level}
-                  />
+        {this.state.tab === 'map-view' && (
+          <div className="c-map-container -static">
+            {/* Map */}
+            <Map
+              mapStyle="mapbox://styles/mapbox/light-v9"
+              // options
+              scrollZoom={false}
+              // // viewport
+              // viewport={operatorsDetailFmus.map}
+              // onViewportChange={this.setMapocation}
+              // // Interaction
+              // interactiveLayerIds={activeInteractiveLayersIds}
+              // onClick={this.onClick}
+              // onHover={this.onHover}
+
+              onLoad={() => {
+                // Attribution listener
+                document
+                  .getElementById('forest-atlas-attribution')
+                  .addEventListener('click', this.onCustomAttribute);
               }}
-            />
+              // Options
+              transformRequest={(url, resourceType) => {
+                if (url.startsWith(process.env.OTP_API)) {
+                  return {
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'OTP-API-KEY': process.env.OTP_API_KEY
+                    }
+                  };
+                }
+
+                return null;
+              }}
+              mapOptions={{
+                customAttribution:
+                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
+              }}
+            >
+              {map => (
+                <Fragment>
+                  {/* LAYER MANAGER */}
+                  <LayerManager
+                    map={map}
+                    layers={[
+                      {
+                        id: 'observations',
+                        type: 'geojson',
+                        source: {
+                          type: 'geojson',
+                          data: parsedMapObservations,
+                          cluster: true,
+                          clusterMaxZoom: 6,
+                          clusterRadius: 45
+                        },
+                        render: {
+                          layers: [
+                            {
+                              metadata: {
+                                position: 'top'
+                              },
+                              type: 'circle',
+                              filter: ['has', 'point_count'],
+                              paint: {
+                                'circle-color': '#FFF',
+                                'circle-stroke-width': 2,
+                                'circle-stroke-color': [
+                                  'case',
+                                  [
+                                    'boolean',
+                                    ['feature-state', 'hover'],
+                                    false
+                                  ],
+                                  '#000',
+                                  '#5ca2d1'
+                                ],
+                                'circle-radius': 12
+                              }
+                            },
+                            {
+                              metadata: {
+                                position: 'top'
+                              },
+                              type: 'symbol',
+                              filter: ['has', 'point_count'],
+                              layout: {
+                                'text-allow-overlap': true,
+                                'text-ignore-placement': true,
+                                'text-field': '{point_count_abbreviated}',
+                                'text-size': 12
+                              }
+                            },
+                            {
+                              type: 'circle',
+                              paint: {
+                                'circle-radius': 6,
+                                'circle-color': [
+                                  'match',
+                                  ['get', 'level'],
+                                  0,
+                                  '#9B9B9B',
+                                  1,
+                                  '#005b23',
+                                  2,
+                                  '#333333',
+                                  3,
+                                  '#e98300',
+                                  /* other */
+                                  '#ccc'
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]}
+                  />
+                </Fragment>
+              )}
+            </Map>
+
+            {/* MapControls */}
+            {/* <MapControls>
+              <ZoomControl
+                zoom={operatorsDetailFmus.map.zoom}
+                onZoomChange={(zoom) => {
+                  this.props.setOperatorsDetailMapLocation({
+                    ...operatorsDetailFmus.map,
+                    zoom,
+                    transitionDuration: 500
+                  });
+                }}
+              />
+            </MapControls> */}
           </div>
-        </section>
+        )}
       </Layout>
     );
   }
@@ -411,7 +601,8 @@ export default withTracker(withIntl(connect(
     observations: state.observations,
     parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
-    parsedTableObservations: getParsedTableObservations(state)
+    parsedTableObservations: getParsedTableObservations(state),
+    parsedMapObservations: getParsedMapObservations(state)
   }),
   dispatch => ({
     getObservations() {
