@@ -45,11 +45,12 @@ const FORM_ELEMENTS = {
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
+    const { startDate, endDate } = props;
 
     this.state = {
       form: {
-        startDate: '',
-        expireDate: '',
+        startDate: startDate && startDate !== '1970/01/01' && startDate.replace(/\//g, '-'),
+        expireDate: endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: '',
         reason: ''
       },
@@ -79,6 +80,8 @@ class DocModal extends React.Component {
 
   onSubmit(e) {
     e && e.preventDefault();
+
+    const { id } = this.props;
 
     // Validate the form
     FORM_ELEMENTS.validate();
@@ -113,12 +116,17 @@ class DocModal extends React.Component {
 
         if (!this.state.form.file) {
           this.documentationService.saveDocument({
-            url: type,
+            url: `${type}/${id}`,
             type: 'PATCH',
             body: {
               data: {
-                'start-date': this.state.form.startDate,
-                'expire-date': this.state.form.expireDate
+                id,
+                type,
+                attributes: {
+                  current: true,
+                  'start-date': this.state.form.startDate,
+                  'expire-date': this.state.form.expireDate
+                }
               }
             }
           })
@@ -173,7 +181,7 @@ class DocModal extends React.Component {
 
   render() {
     const { submitting, errors } = this.state;
-    const { title, notRequired } = this.props;
+    const { title, url, notRequired } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -214,7 +222,7 @@ class DocModal extends React.Component {
                 {/* DATE */}
                 <Field
                   ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
-                  onChange={value => this.onChange({ expireDate: value })}
+                  onChange={value => console.log(value) || this.onChange({ expireDate: value })}
                   className="-fluid"
                   properties={{
                     name: 'expireDate',
@@ -237,12 +245,12 @@ class DocModal extends React.Component {
                   <Field
                     ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
                     onChange={value => this.onChange({ file: value })}
-                    validations={['required']}
+                    validations={!url ? ['required'] : []}
                     className="-fluid"
                     properties={{
                       name: 'file',
                       label: this.props.intl.formatMessage({ id: 'file' }),
-                      required: true,
+                      required: !url,
                       default: this.state.form.file
                     }}
                   >
@@ -311,6 +319,9 @@ class DocModal extends React.Component {
 }
 
 DocModal.propTypes = {
+  id: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
   title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
