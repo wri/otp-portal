@@ -144,8 +144,6 @@ class ObservationsPage extends React.Component {
   render() {
     const { url, observations, parsedMapObservations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
 
-    console.log(observations);
-
     // Hard coded values
     const inputs = [
       'category',
@@ -492,8 +490,9 @@ class ObservationsPage extends React.Component {
                         source: {
                           type: 'geojson',
                           data: parsedMapObservations,
+                          maxzoom: 24,
                           cluster: true,
-                          clusterMaxZoom: 6,
+                          clusterMaxZoom: 23,
                           clusterRadius: 45
                         },
                         render: {
@@ -535,6 +534,7 @@ class ObservationsPage extends React.Component {
                             },
                             {
                               type: 'circle',
+                              filter: ['!has', 'point_count'],
                               paint: {
                                 'circle-radius': 6,
                                 'circle-color': [
@@ -587,6 +587,7 @@ ObservationsPage.propTypes = {
   observations: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
+  parsedMapObservations: PropTypes.array,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 

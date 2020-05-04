@@ -11,15 +11,20 @@ const getLocation = (obs = {}) => {
     ];
   }
 
-  if (obs.country && obs.country['country-centroid']) {
-    const centroid = obs.country['country-centroid'];
 
-    return [
-      centroid.coordinates[0],
-      centroid.coordinates[1]
-    ];
-  }
-  return {};
+  // if (obs.fmu) {
+  //   console.log(obs);
+  // }
+
+  // if (obs.country && obs.country['country-centroid']) {
+  //   const centroid = obs.country['country-centroid'];
+
+  //   return [
+  //     centroid.coordinates[0],
+  //     centroid.coordinates[1]
+  //   ];
+  // }
+  return null;
 };
 
 // Create a function to compare the current active datatasets and the current datasetsIds
@@ -27,9 +32,13 @@ const getParsedMapObservations = createSelector(
   observations,
   (_observations) => {
     if (_observations.data && _observations.data.length) {
+      const features = _observations.data.filter(o => {
+        return getLocation(o);
+      });
+
       return {
         type: 'FeatureCollection',
-        features: _observations.data.map(obs => ({
+        features: features.map(obs => ({
           type: 'Feature',
           properties: {
             id: obs.id,
