@@ -45,15 +45,17 @@ const FORM_ELEMENTS = {
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
-    const { startDate, endDate } = props;
+    const { startDate, endDate, url, reason } = props;
 
     this.state = {
       form: {
         startDate: startDate && startDate !== '1970/01/01' && startDate.replace(/\//g, '-'),
         expireDate: endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: '',
-        reason: ''
+        url,
+        reason
       },
+      showFile: false,
       submitting: false,
       errors: []
     };
@@ -81,7 +83,7 @@ class DocModal extends React.Component {
   onSubmit(e) {
     e && e.preventDefault();
 
-    const { id } = this.props;
+    const { id, type, status } = this.props;
 
     // Validate the form
     FORM_ELEMENTS.validate();
@@ -92,16 +94,14 @@ class DocModal extends React.Component {
       const valid = FORM_ELEMENTS.isValid(this.state.form);
 
       if (valid) {
-        const { type } = this.props;
-
         // Start the submitting
         this.setState({ submitting: true });
 
-        if (this.state.form.file) {
+        if (status === 'doc_not_provided' || this.state.form.file || this.state.form.reason) {
           this.documentationService.saveDocument({
             url: type,
             type: 'POST',
-            body: this.getBody()
+            body: this.getBody('post')
           })
             .then(() => {
               this.setState({ submitting: false, errors: [] });
@@ -112,23 +112,15 @@ class DocModal extends React.Component {
               console.error(err);
               this.setState({ submitting: false, errors: err });
             });
+        } else {
+
         }
 
-        if (!this.state.form.file) {
+        if (status !== 'doc_not_provided' && !this.state.form.file && !this.state.form.reason) {
           this.documentationService.saveDocument({
             url: `${type}/${id}`,
             type: 'PATCH',
-            body: {
-              data: {
-                id,
-                type,
-                attributes: {
-                  current: true,
-                  'start-date': this.state.form.startDate,
-                  'expire-date': this.state.form.expireDate
-                }
-              }
-            }
+            body: this.getBody('patch')
           })
             .then(() => {
               this.setState({ submitting: false, errors: [] });
@@ -151,26 +143,31 @@ class DocModal extends React.Component {
    * HELPERS
    * - getBody
   */
-  getBody() {
-    const { requiredDocId, type, properties, fmu } = this.props;
-    const { id, type: typeDoc } = properties;
+  getBody(request) {
+    const { id, requiredDocId, type, properties, fmu } = this.props;
+    const { id: propertyId, type: typeDoc } = properties;
 
     return {
       data: {
+        id,
         type,
         attributes: {
           current: true,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
-          attachment: this.state.form.file,
-          reason: this.state.form.reason,
-          ...fmu && { 'fmu-id': fmu.id },
-          ...typeDoc === 'operator' && {
-            'operator-id': id,
+          ...this.state.form.file && {
+            attachment: this.state.form.file
+          },
+          ...this.state.form.reason && {
+            reason: this.state.form.reason
+          },
+          ...fmu && request === 'post' && { 'fmu-id': fmu.id },
+          ...typeDoc === 'operator' && request === 'post' && {
+            'operator-id': propertyId,
             'required-operator-document-id': requiredDocId
           },
-          ...typeDoc === 'government' && {
-            'country-id': id,
+          ...typeDoc === 'government' && request === 'post' && {
+            'country-id': propertyId,
             'required-gov-document-id': requiredDocId
           }
         }
@@ -182,6 +179,7 @@ class DocModal extends React.Component {
   render() {
     const { submitting, errors } = this.state;
     const { title, url, notRequired } = this.props;
+
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -222,7 +220,7 @@ class DocModal extends React.Component {
                 {/* DATE */}
                 <Field
                   ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
-                  onChange={value => console.log(value) || this.onChange({ expireDate: value })}
+                  onChange={value => this.onChange({ expireDate: value })}
                   className="-fluid"
                   properties={{
                     name: 'expireDate',
@@ -239,7 +237,7 @@ class DocModal extends React.Component {
             </div>
 
             {/* DOCUMENT */}
-            {!notRequired &&
+            {(!notRequired || (this.state.form.file && !this.state.form.reason)) &&
               <div className="l-row row">
                 <div className="columns small-12">
                   <Field
@@ -251,7 +249,7 @@ class DocModal extends React.Component {
                       name: 'file',
                       label: this.props.intl.formatMessage({ id: 'file' }),
                       required: !url,
-                      default: this.state.form.file
+                      defaultFile: url
                     }}
                   >
                     {File}
@@ -261,7 +259,7 @@ class DocModal extends React.Component {
             }
 
             {/* REASON */}
-            {notRequired &&
+            {(notRequired || (this.state.form.reason && !this.state.form.file)) &&
               <div className="l-row row">
                 <div className="columns small-12">
                   <Field
@@ -307,7 +305,7 @@ class DocModal extends React.Component {
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
                 {this.props.intl.formatMessage({
-                  id: (notRequired) ? 'submit' : 'upload-file'
+                  id: 'submit'
                 })}
               </button>
             </li>
@@ -322,6 +320,9 @@ DocModal.propTypes = {
   id: PropTypes.string,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
+  status: PropTypes.string,
+  url: PropTypes.string,
+  reason: PropTypes.string,
   title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,
