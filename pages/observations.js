@@ -36,10 +36,12 @@ import {
   getObservations,
   getFilters,
   setFilters,
+  getDownload,
   setObservationsUrl,
   getObservationsUrl,
   setActiveColumns
 } from 'modules/observations';
+
 import { logEvent } from 'utils/analytics';
 
 // Constants
@@ -343,7 +345,18 @@ class ObservationsPage extends React.Component {
 
         <section className="c-section -relative">
           <div className="l-container">
-            <h2 className="c-title">{this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }) }</h2>
+            <header className="section-header">
+              <h2 className="c-title">{this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }) }</h2>
+
+              <button
+                className="c-button -primary"
+                onClick={this.props.getDownload}
+              >
+                Download
+              </button>
+
+            </header>
+
             <Spinner isLoading={observations.loading} />
             <div className="c-field -fluid -valid">
               <CheckboxGroup
@@ -402,6 +415,7 @@ ObservationsPage.propTypes = {
 
   getObservations: PropTypes.func.isRequired,
   getObservationsUrl: PropTypes.func.isRequired,
+  getDownload: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired
 };
@@ -413,21 +427,12 @@ export default withTracker(withIntl(connect(
     parsedChartObservations: getParsedChartObservations(state),
     parsedTableObservations: getParsedTableObservations(state)
   }),
-  dispatch => ({
-    getObservations() {
-      dispatch(getObservations());
-    },
-    getFilters() {
-      dispatch(getFilters());
-    },
-    getObservationsUrl(url) {
-      dispatch(getObservationsUrl(url));
-    },
-    setFilters(filter) {
-      dispatch(setFilters(filter));
-    },
-    setActiveColumns(activeColumns) {
-      dispatch(setActiveColumns(activeColumns));
-    }
-  })
+  {
+    getObservations,
+    getDownload,
+    getFilters,
+    getObservationsUrl,
+    setFilters,
+    setActiveColumns
+  }
 )(ObservationsPage)));

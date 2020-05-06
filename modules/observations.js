@@ -4,6 +4,8 @@ import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 import compact from 'lodash/compact';
 
+import { toastr } from 'react-redux-toastr';
+
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
@@ -172,6 +174,49 @@ export function getFilters() {
           type: GET_FILTERS_ERROR,
           payload: err.message
         });
+      });
+  };
+}
+
+export function getDownload() {
+  return (dispatch, getState) => {
+    const { language } = getState();
+    const filters = getState().observations.filters.data;
+    const filtersQuery = compact(Object.keys(filters).map((key) => {
+      if (!isEmpty(filters[key])) {
+        return `filter[${key}]=${filters[key].join(',')}`;
+      }
+      return null;
+    }));
+
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers'];
+
+    // Fields
+    const currentFields = { fmus: ['name'], operator: ['name'] };
+    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
+    const lang = language === 'zh' ? 'zh-CN' : language;
+
+    const url = `${process.env.OTP_API}/observations-csv?locale=${lang}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'text/csv',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.text();
+        toastr.error('Error', 'Oops! There was an error, try again');
+      })
+      .then((csv) => {
+        if (csv) {
+          const a = document.createElement('a');
+          a.href = `data:text/csv;charset=utf-8,${encodeURI(csv)}`;
+          a.target = '_blank';
+          a.download = 'Observations.csv';
+          a.click();
+        }
       });
   };
 }
