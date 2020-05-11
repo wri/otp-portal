@@ -38,13 +38,14 @@ const initialState = {
       observer_id: [],
       category_id: [],
       subcategory_id: [],
-      severity_level: []
+      severity_level: [],
+      validation_status: []
     },
     options: {},
     loading: false,
     error: false
   },
-  columns: ['complete', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
+  columns: ['status', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
 };
 
 const JSONA = new Jsona();

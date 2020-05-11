@@ -127,21 +127,21 @@ class ObservationsPage extends React.Component {
     const { url, observations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
     // Hard coded values
     const inputs = [
-      'category',
-      'complete',
-      'country',
       'date',
-      'evidence',
+      'status',
+      'country',
+      'operator',
       'fmu',
+      'category',
+      'observation',
       'level',
+      'report',
+      'evidence',
       'litigation-status',
       'location',
-      'observation',
       'observer-organizations',
       'observer-types',
       'operator-type',
-      'operator',
-      'report',
       'subcategory'
     ];
 
@@ -170,12 +170,9 @@ class ObservationsPage extends React.Component {
         minWidth: 75
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'complete' })}</span>,
-        accessor: 'complete',
-        minWidth: 120,
-        Cell: attr => (
-          (!!attr.value).toString()
-        )
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,
+        accessor: 'status',
+        minWidth: 250
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
