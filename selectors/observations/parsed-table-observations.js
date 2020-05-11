@@ -43,6 +43,7 @@ const getParsedTableObservations = createSelector(
         'operator-type': obs.operator && obs.operator.type,
         subcategory: obs.subcategory.name,
         evidence: obs.evidence,
+        status: obs['validation-status'],
         'litigation-status': obs['litigation-status'],
         'observer-types': obs.observers.map(observer => observer['observer-type']),
         'observer-organizations': obs.observers.map(observer => observer.organization)

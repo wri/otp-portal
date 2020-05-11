@@ -48,10 +48,12 @@ import {
   getObservations,
   getFilters,
   setFilters,
+  getDownload,
   setObservationsUrl,
   getObservationsUrl,
   setActiveColumns
 } from 'modules/observations';
+
 import { logEvent } from 'utils/analytics';
 
 // Constants
@@ -146,21 +148,21 @@ class ObservationsPage extends React.Component {
 
     // Hard coded values
     const inputs = [
-      'category',
-      'complete',
-      'country',
       'date',
-      'evidence',
+      'status',
+      'country',
+      'operator',
       'fmu',
+      'category',
+      'observation',
       'level',
+      'report',
+      'evidence',
       'litigation-status',
       'location',
-      'observation',
       'observer-organizations',
       'observer-types',
       'operator-type',
-      'operator',
-      'report',
       'subcategory'
     ];
 
@@ -189,12 +191,9 @@ class ObservationsPage extends React.Component {
         minWidth: 75
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'complete' })}</span>,
-        accessor: 'complete',
-        minWidth: 120,
-        Cell: attr => (
-          (!!attr.value).toString()
-        )
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,
+        accessor: 'status',
+        minWidth: 250
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
@@ -363,13 +362,11 @@ class ObservationsPage extends React.Component {
         <StaticTabs
           options={[
             {
-              label: this.props.intl.formatMessage({
-                id: 'observations.tab.observations-list'
-              }),
+              label: this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }),
               value: 'observations-list'
             },
             {
-              label: this.props.intl.formatMessage({ id: 'map-view' }),
+              label: this.props.intl.formatMessage({ id: 'observations.tab.map' }),
               value: 'map-view'
             }
           ]}
@@ -593,6 +590,7 @@ ObservationsPage.propTypes = {
 
   getObservations: PropTypes.func.isRequired,
   getObservationsUrl: PropTypes.func.isRequired,
+  getDownload: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired
 };
@@ -605,21 +603,12 @@ export default withTracker(withIntl(connect(
     parsedTableObservations: getParsedTableObservations(state),
     parsedMapObservations: getParsedMapObservations(state)
   }),
-  dispatch => ({
-    getObservations() {
-      dispatch(getObservations());
-    },
-    getFilters() {
-      dispatch(getFilters());
-    },
-    getObservationsUrl(url) {
-      dispatch(getObservationsUrl(url));
-    },
-    setFilters(filter) {
-      dispatch(setFilters(filter));
-    },
-    setActiveColumns(activeColumns) {
-      dispatch(setActiveColumns(activeColumns));
-    }
-  })
+  {
+    getObservations,
+    getDownload,
+    getFilters,
+    getObservationsUrl,
+    setFilters,
+    setActiveColumns
+  }
 )(ObservationsPage)));
