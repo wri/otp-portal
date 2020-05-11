@@ -168,6 +168,7 @@ class ObservationsPage extends React.Component {
       'evidence',
       'litigation-status',
       'location',
+      'location-accuracy',
       'observer-organizations',
       'observer-types',
       'operator-type',
@@ -175,20 +176,14 @@ class ObservationsPage extends React.Component {
     ];
 
     const changeOfLabelLookup = {
-      'litigation-status': 'Litigation Status',
-      'observer-organizations': 'Observer Organizations',
-      'observer-types': 'Observer Types',
-      'operator-type': 'Operator Type',
-      fmu: 'FMU',
-      level: 'Severity',
-      observation: 'Detail',
-      operator: 'Producer'
+      level: 'severity',
+      observation: 'detail'
     };
 
     const tableOptions = inputs
       .map(column => ({
-        label: Object.keys(changeOfLabelLookup).includes(column) ? changeOfLabelLookup[column] :
-          capitalize(column),
+        label: Object.keys(changeOfLabelLookup).includes(column) ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] }) :
+          this.props.intl.formatMessage({ id: column }),
         value: column
       }));
 
@@ -316,6 +311,13 @@ class ObservationsPage extends React.Component {
           )
       },
       {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'location-accuracy' })}</span>,
+        accessor: 'location-accuracy',
+        headerClassName: '-a-left',
+        className: 'location-accuracy',
+        minWidth: 250
+      },
+      {
         Header: '',
         accessor: 'location',
         headerClassName: '',
@@ -334,6 +336,7 @@ class ObservationsPage extends React.Component {
             }
           </div>
       }
+
     ];
 
     return (
