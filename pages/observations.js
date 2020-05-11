@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import difference from 'lodash/difference';
 import capitalize from 'lodash/capitalize';
+import debounce from 'lodash/debounce';
 
 // Redux
 import { connect } from 'react-redux';
@@ -20,7 +21,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
-import { getParsedMapObservations } from 'selectors/observations/parsed-map-observations';
+import { getObservationsLayer } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
@@ -39,6 +40,7 @@ import StaticTabs from 'components/ui/static-tabs';
 
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
+import Legend from 'components/map-new/legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map-new/fa-attributions';
@@ -51,13 +53,15 @@ import {
   getDownload,
   setObservationsUrl,
   getObservationsUrl,
-  setActiveColumns
+  setActiveColumns,
+  setObservationsMapLocation
 } from 'modules/observations';
 
 import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
+import { LEGEND_SEVERITY } from 'constants/rechart';
 
 
 class ObservationsPage extends React.Component {
@@ -137,6 +141,10 @@ class ObservationsPage extends React.Component {
     this.setState({ tab });
   }
 
+  setMapLocation = debounce((mapLocation) => {
+    this.props.setObservationsMapLocation(mapLocation);
+  }, 500);
+
 
   // eslint-disable-next-line no-undef
   logFilter = (action, label) => {
@@ -144,7 +152,7 @@ class ObservationsPage extends React.Component {
   }
 
   render() {
-    const { url, observations, parsedMapObservations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+    const { url, observations, observationsLayer, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
 
     // Hard coded values
     const inputs = [
@@ -442,13 +450,13 @@ class ObservationsPage extends React.Component {
               mapStyle="mapbox://styles/mapbox/light-v9"
               // options
               scrollZoom={false}
-              // // viewport
-              // viewport={operatorsDetailFmus.map}
-              // onViewportChange={this.setMapocation}
-              // // Interaction
-              // interactiveLayerIds={activeInteractiveLayersIds}
-              // onClick={this.onClick}
-              // onHover={this.onHover}
+              // viewport
+              viewport={observations.map}
+              onViewportChange={this.setMapLocation}
+              // Interaction
+              interactiveLayerIds={['observations-circle-0', 'observations-symbol-1', 'observations-circle-2']}
+              onClick={this.onClick}
+              onHover={this.onHover}
 
               onLoad={() => {
                 // Attribution listener
@@ -480,98 +488,53 @@ class ObservationsPage extends React.Component {
                   {/* LAYER MANAGER */}
                   <LayerManager
                     map={map}
-                    layers={[
-                      {
-                        id: 'observations',
-                        type: 'geojson',
-                        source: {
-                          type: 'geojson',
-                          data: parsedMapObservations,
-                          maxzoom: 24,
-                          cluster: true,
-                          clusterMaxZoom: 23,
-                          clusterRadius: 45
-                        },
-                        render: {
-                          layers: [
-                            {
-                              metadata: {
-                                position: 'top'
-                              },
-                              type: 'circle',
-                              filter: ['has', 'point_count'],
-                              paint: {
-                                'circle-color': '#FFF',
-                                'circle-stroke-width': 2,
-                                'circle-stroke-color': [
-                                  'case',
-                                  [
-                                    'boolean',
-                                    ['feature-state', 'hover'],
-                                    false
-                                  ],
-                                  '#000',
-                                  '#5ca2d1'
-                                ],
-                                'circle-radius': 12
-                              }
-                            },
-                            {
-                              metadata: {
-                                position: 'top'
-                              },
-                              type: 'symbol',
-                              filter: ['has', 'point_count'],
-                              layout: {
-                                'text-allow-overlap': true,
-                                'text-ignore-placement': true,
-                                'text-field': '{point_count_abbreviated}',
-                                'text-size': 12
-                              }
-                            },
-                            {
-                              type: 'circle',
-                              filter: ['!has', 'point_count'],
-                              paint: {
-                                'circle-radius': 6,
-                                'circle-color': [
-                                  'match',
-                                  ['get', 'level'],
-                                  0,
-                                  '#9B9B9B',
-                                  1,
-                                  '#005b23',
-                                  2,
-                                  '#333333',
-                                  3,
-                                  '#e98300',
-                                  /* other */
-                                  '#ccc'
-                                ]
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ]}
+                    layers={[observationsLayer]}
                   />
                 </Fragment>
               )}
             </Map>
 
+            {/* LEGEND */}
+            <Legend
+              layerGroups={[
+                {
+                  id: 'severity',
+                  dataset: 'severity',
+                  name: this.props.intl.formatMessage({ id: 'severity' }),
+                  layers: [
+                    {
+                      opacity: 1,
+                      active: true,
+                      name: this.props.intl.formatMessage({ id: 'severity' }),
+                      legendConfig: {
+                        type: 'basic',
+                        items: LEGEND_SEVERITY.list.map(l => (
+                          { name: this.props.intl.formatMessage({ id: l.label }), color: l.fill }
+                        ))
+                      }
+                    }
+                  ]
+                }
+              ]}
+              collapsable={false}
+              sortable={false}
+              setLayerSettings={() => {}}
+            />
+
+
             {/* MapControls */}
-            {/* <MapControls>
+            <MapControls>
               <ZoomControl
-                zoom={operatorsDetailFmus.map.zoom}
+                zoom={observations.map.zoom}
                 onZoomChange={(zoom) => {
-                  this.props.setOperatorsDetailMapLocation({
-                    ...operatorsDetailFmus.map,
+                  this.props.setObservationsMapLocation({
+                    ...observations.map,
                     zoom,
                     transitionDuration: 500
                   });
                 }}
               />
-            </MapControls> */}
+            </MapControls>
           </div>
         )}
       </Layout>
@@ -584,7 +547,7 @@ ObservationsPage.propTypes = {
   observations: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
-  parsedMapObservations: PropTypes.array,
+  observationsLayer: PropTypes.array,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 
@@ -601,13 +564,14 @@ export default withTracker(withIntl(connect(
     parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
     parsedTableObservations: getParsedTableObservations(state),
-    parsedMapObservations: getParsedMapObservations(state)
+    observationsLayer: getObservationsLayer(state)
   }),
   {
     getObservations,
     getDownload,
     getFilters,
     getObservationsUrl,
+    setObservationsMapLocation,
     setFilters,
     setActiveColumns
   }
