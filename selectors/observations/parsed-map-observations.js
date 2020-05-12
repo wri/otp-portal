@@ -77,6 +77,7 @@ const getObservationsLayer = createSelector(
           layers: [
             {
               metadata: {
+                cluster: true,
                 position: 'top'
               },
               type: 'circle',
@@ -99,6 +100,7 @@ const getObservationsLayer = createSelector(
             },
             {
               metadata: {
+                cluster: true,
                 position: 'top'
               },
               type: 'symbol',
@@ -111,6 +113,9 @@ const getObservationsLayer = createSelector(
               }
             },
             {
+              metadata: {
+                position: 'top'
+              },
               type: 'circle',
               filter: ['!has', 'point_count'],
               paint: {

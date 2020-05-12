@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import difference from 'lodash/difference';
-import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
 
 // Redux
@@ -46,6 +45,9 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map-new/fa-attributions';
 
 // Utils
+import { spiderifyCluster, clearSpiderifyCluster } from 'components/map-new/layer-manager/utils';
+
+// Modules
 import {
   getObservations,
   getFilters,
@@ -62,7 +64,6 @@ import { logEvent } from 'utils/analytics';
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
 import { LEGEND_SEVERITY } from 'constants/rechart';
-
 
 class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {
@@ -145,10 +146,41 @@ class ObservationsPage extends React.Component {
     this.props.setObservationsMapLocation(mapLocation);
   }, 500);
 
+  onViewportChange = (mapLocation) => {
+    clearSpiderifyCluster({ map: this.map });
+    this.setMapLocation(mapLocation);
+  }
 
-  // eslint-disable-next-line no-undef
-  logFilter = (action, label) => {
-    // logEvent('Observations', action, label);
+  onClick = (e) => {
+    const { features } = e;
+    if (features && features.length) {
+      const { source, geometry, properties } = features[0];
+      const { cluster, cluster_id } = properties;
+
+      if (cluster) {
+        const layer = this.map.getStyle().layers.find(l => l.source === source && !l.metadata.cluster);
+
+        const spiderifyClusterOptions = {
+          map: this.map,
+          source,
+          cluster: {
+            id: cluster_id,
+            coordinates: geometry.coordinates
+          },
+          options: {
+            legsPaint: {
+              'line-width': 1,
+              'line-color': 'rgba(128, 128, 128, 0.5)'
+            },
+            leavesPaint: layer.paint
+          }
+        };
+
+        spiderifyCluster(spiderifyClusterOptions);
+      }
+    } else {
+      clearSpiderifyCluster({ map: this.map });
+    }
   }
 
   render() {
@@ -455,13 +487,15 @@ class ObservationsPage extends React.Component {
               scrollZoom={false}
               // viewport
               viewport={observations.map}
-              onViewportChange={this.setMapLocation}
+              onViewportChange={this.onViewportChange}
               // Interaction
               interactiveLayerIds={['observations-circle-0', 'observations-symbol-1', 'observations-circle-2']}
               onClick={this.onClick}
               onHover={this.onHover}
 
-              onLoad={() => {
+              onLoad={({ map }) => {
+                this.map = map;
+
                 // Attribution listener
                 document
                   .getElementById('forest-atlas-attribution')
