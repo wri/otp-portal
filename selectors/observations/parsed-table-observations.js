@@ -40,6 +40,7 @@ const getParsedTableObservations = createSelector(
         fmu: !!obs.fmu && obs.fmu.name,
         report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
         location: getLocation(obs),
+        'location-accuracy': obs['location-accuracy'],
         'operator-type': obs.operator && obs.operator.type,
         subcategory: obs.subcategory.name,
         evidence: obs.evidence,

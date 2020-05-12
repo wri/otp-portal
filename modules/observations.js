@@ -20,6 +20,7 @@ const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
 const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 const SET_ACTIVE_COLUMNS = 'SET_ACTIVE_COLUMNS';
+const SET_OBSERVATIONS_MAP_LOCATION = 'SET_OBSERVATIONS_MAP_LOCATION';
 
 const OBS_MAX_SIZE = 3000;
 
@@ -29,6 +30,11 @@ const initialState = {
   totalSize: 0,
   loading: false,
   error: false,
+  map: {
+    zoom: 4,
+    latitude: 0,
+    longitude: 20
+  },
   filters: {
     data: {
       observation_type: [],
@@ -85,6 +91,9 @@ export default function (state = initialState, action) {
     case SET_ACTIVE_COLUMNS: {
       return Object.assign({}, state, { columns: action.payload });
     }
+    case SET_OBSERVATIONS_MAP_LOCATION:
+      return Object.assign({}, state, { map: action.payload });
+
     default:
       return state;
   }
@@ -284,3 +293,12 @@ export function getObservationsUrl(url) {
     }
   };
 }
+
+// SETTERS
+export function setObservationsMapLocation(payload) {
+  return {
+    type: SET_OBSERVATIONS_MAP_LOCATION,
+    payload
+  };
+}
+

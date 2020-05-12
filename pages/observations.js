@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import difference from 'lodash/difference';
 import capitalize from 'lodash/capitalize';
+import debounce from 'lodash/debounce';
 
 // Redux
 import { connect } from 'react-redux';
 
 import withTracker from 'components/layout/with-tracker';
+
+// Services
+import modal from 'services/modal';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -17,6 +21,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
+import { getObservationsLayer } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
@@ -30,6 +35,15 @@ import Spinner from 'components/ui/spinner';
 import ReadMore from 'components/ui/read-more';
 import Icon from 'components/ui/icon';
 import MapSubComponent from 'components/ui/map-sub-component';
+import StaticTabs from 'components/ui/static-tabs';
+
+
+import Map from 'components/map-new';
+import LayerManager from 'components/map-new/layer-manager';
+import Legend from 'components/map-new/legend';
+import MapControls from 'components/map/map-controls';
+import ZoomControl from 'components/map/controls/zoom-control';
+import FAAttributions from 'components/map-new/fa-attributions';
 
 // Utils
 import {
@@ -39,13 +53,15 @@ import {
   getDownload,
   setObservationsUrl,
   getObservationsUrl,
-  setActiveColumns
+  setActiveColumns,
+  setObservationsMapLocation
 } from 'modules/observations';
 
 import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
+import { LEGEND_SEVERITY } from 'constants/rechart';
 
 
 class ObservationsPage extends React.Component {
@@ -67,7 +83,7 @@ class ObservationsPage extends React.Component {
     super(props);
 
     this.state = {
-      tab: 'observations-list',
+      tab: this.props.url.query.subtab || 'observations-list',
       page: 1
     };
 
@@ -103,6 +119,13 @@ class ObservationsPage extends React.Component {
     return 1;
   }
 
+  onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  }
+
   setActiveColumns(value) {
     const { observations } = this.props;
     const addColumn = difference(value, observations.columns);
@@ -118,13 +141,19 @@ class ObservationsPage extends React.Component {
     this.setState({ tab });
   }
 
+  setMapLocation = debounce((mapLocation) => {
+    this.props.setObservationsMapLocation(mapLocation);
+  }, 500);
+
+
   // eslint-disable-next-line no-undef
   logFilter = (action, label) => {
     // logEvent('Observations', action, label);
   }
 
   render() {
-    const { url, observations, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+    const { url, observations, observationsLayer, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+
     // Hard coded values
     const inputs = [
       'date',
@@ -139,6 +168,7 @@ class ObservationsPage extends React.Component {
       'evidence',
       'litigation-status',
       'location',
+      'location-accuracy',
       'observer-organizations',
       'observer-types',
       'operator-type',
@@ -146,20 +176,14 @@ class ObservationsPage extends React.Component {
     ];
 
     const changeOfLabelLookup = {
-      'litigation-status': 'Litigation Status',
-      'observer-organizations': 'Observer Organizations',
-      'observer-types': 'Observer Types',
-      'operator-type': 'Operator Type',
-      fmu: 'FMU',
-      level: 'Severity',
-      observation: 'Detail',
-      operator: 'Producer'
+      level: 'severity',
+      observation: 'detail'
     };
 
     const tableOptions = inputs
       .map(column => ({
-        label: Object.keys(changeOfLabelLookup).includes(column) ? changeOfLabelLookup[column] :
-          capitalize(column),
+        label: Object.keys(changeOfLabelLookup).includes(column) ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] }) :
+          this.props.intl.formatMessage({ id: column }),
         value: column
       }));
 
@@ -287,6 +311,13 @@ class ObservationsPage extends React.Component {
           )
       },
       {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'location-accuracy' })}</span>,
+        accessor: 'location-accuracy',
+        headerClassName: '-a-left',
+        className: 'location-accuracy',
+        minWidth: 250
+      },
+      {
         Header: '',
         accessor: 'location',
         headerClassName: '',
@@ -305,6 +336,7 @@ class ObservationsPage extends React.Component {
             }
           </div>
       }
+
     ];
 
     return (
@@ -332,71 +364,182 @@ class ObservationsPage extends React.Component {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview
-                  parsedObservations={parsedChartObservations}
-                />
+                <Overview parsedObservations={parsedChartObservations} />
               </div>
             </div>
           </div>
         </div>
 
-        <section className="c-section -relative">
-          <div className="l-container">
-            <header className="section-header">
-              <h2 className="c-title">{this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }) }</h2>
+        <StaticTabs
+          options={[
+            {
+              label: this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }),
+              value: 'observations-list'
+            },
+            {
+              label: this.props.intl.formatMessage({ id: 'observations.tab.map' }),
+              value: 'map-view'
+            }
+          ]}
+          defaultSelected={this.state.tab}
+          onChange={this.triggerChangeTab}
+        />
 
-              <button
-                className="c-button -primary"
-                onClick={this.props.getDownload}
-              >
-                Download
-              </button>
+        {this.state.tab === 'observations-list' && (
+          <section className="c-section -relative">
+            <div className="l-container">
+              <h2 className="c-title">
+                {this.props.intl.formatMessage({
+                  id: 'observations.tab.observations-list'
+                })}
+              </h2>
+              <Spinner isLoading={observations.loading} />
+              <div className="c-field -fluid -valid">
+                <CheckboxGroup
+                  className="-inline -small -single-row"
+                  name="observations-columns"
+                  onChange={value => this.setActiveColumns(value)}
+                  properties={{
+                    default: observations.columns,
+                    name: 'observations-columns'
+                  }}
+                  options={tableOptions}
+                />
+              </div>
 
-            </header>
-
-            <Spinner isLoading={observations.loading} />
-            <div className="c-field -fluid -valid">
-              <CheckboxGroup
-                className="-inline -small -single-row"
-                name="observations-columns"
-                onChange={value => this.setActiveColumns(value)}
-                properties={{ default: observations.columns, name: 'observations-columns' }}
-                options={tableOptions}
+              <Table
+                sortable
+                data={parsedTableObservations}
+                options={{
+                  columns: columnHeaders.filter(header =>
+                    observations.columns.includes(header.accessor)
+                  ),
+                  pageSize: this.getPageSize(),
+                  pagination: true,
+                  previousText: '<',
+                  nextText: '>',
+                  noDataText: 'No rows found',
+                  showPageSizeOptions: false,
+                  // Api pagination & sort
+                  // pages: observations.totalSize,
+                  // page: this.state.page - 1,
+                  // manual: true
+                  onPageChange: page => this.onPageChange(page),
+                  defaultSorted: [
+                    {
+                      id: 'date',
+                      desc: false
+                    }
+                  ],
+                  showSubComponent: observations.columns.includes('location'),
+                  subComponent: row =>
+                    observations.columns.includes('location') && (
+                      <MapSubComponent
+                        id={row.original.id}
+                        location={row.original.location}
+                        level={row.original.level}
+                      />
+                    )
+                }}
               />
             </div>
+          </section>
+        )}
 
-            <Table
-              sortable
-              data={parsedTableObservations}
-              options={{
-                columns: columnHeaders.filter(header =>
-                  observations.columns.includes(header.accessor)),
-                pageSize: this.getPageSize(),
-                pagination: true,
-                previousText: '<',
-                nextText: '>',
-                noDataText: 'No rows found',
-                showPageSizeOptions: false,
-                    // Api pagination & sort
-                    // pages: observations.totalSize,
-                    // page: this.state.page - 1,
-                    // manual: true
-                onPageChange: page => this.onPageChange(page),
-                defaultSorted: [{
-                  id: 'date',
-                  desc: false
-                }],
-                showSubComponent: observations.columns.includes('location'),
-                subComponent: row => observations.columns.includes('location') &&
-                  <MapSubComponent
-                    id={row.original.id}
-                    location={row.original.location}
-                    level={row.original.level}
-                  />
+        {this.state.tab === 'map-view' && (
+          <div className="c-map-container -static">
+            {/* Map */}
+            <Map
+              mapStyle="mapbox://styles/mapbox/light-v9"
+              // options
+              scrollZoom={false}
+              // viewport
+              viewport={observations.map}
+              onViewportChange={this.setMapLocation}
+              // Interaction
+              interactiveLayerIds={['observations-circle-0', 'observations-symbol-1', 'observations-circle-2']}
+              onClick={this.onClick}
+              onHover={this.onHover}
+
+              onLoad={() => {
+                // Attribution listener
+                document
+                  .getElementById('forest-atlas-attribution')
+                  .addEventListener('click', this.onCustomAttribute);
               }}
+              // Options
+              transformRequest={(url, resourceType) => {
+                if (url.startsWith(process.env.OTP_API)) {
+                  return {
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'OTP-API-KEY': process.env.OTP_API_KEY
+                    }
+                  };
+                }
+
+                return null;
+              }}
+              mapOptions={{
+                customAttribution:
+                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
+              }}
+            >
+              {map => (
+                <Fragment>
+                  {/* LAYER MANAGER */}
+                  <LayerManager
+                    map={map}
+                    layers={[observationsLayer]}
+                  />
+                </Fragment>
+              )}
+            </Map>
+
+            {/* LEGEND */}
+            <Legend
+              layerGroups={[
+                {
+                  id: 'severity',
+                  dataset: 'severity',
+                  name: this.props.intl.formatMessage({ id: 'severity' }),
+                  layers: [
+                    {
+                      opacity: 1,
+                      active: true,
+                      name: this.props.intl.formatMessage({ id: 'severity' }),
+                      legendConfig: {
+                        type: 'basic',
+                        items: LEGEND_SEVERITY.list.map(l => (
+                          { name: this.props.intl.formatMessage({ id: l.label }), color: l.fill }
+                        ))
+                      }
+                    }
+                  ]
+                }
+              ]}
+              collapsable={false}
+              sortable={false}
+              setLayerSettings={() => {}}
             />
+
+
+            {/* MapControls */}
+            <MapControls>
+              <ZoomControl
+                zoom={observations.map.zoom}
+                onZoomChange={(zoom) => {
+                  this.props.setObservationsMapLocation({
+                    ...observations.map,
+                    zoom,
+                    transitionDuration: 500
+                  });
+                }}
+              />
+            </MapControls>
           </div>
-        </section>
+        )}
       </Layout>
     );
   }
@@ -407,6 +550,7 @@ ObservationsPage.propTypes = {
   observations: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
+  observationsLayer: PropTypes.array,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 
@@ -422,13 +566,15 @@ export default withTracker(withIntl(connect(
     observations: state.observations,
     parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
-    parsedTableObservations: getParsedTableObservations(state)
+    parsedTableObservations: getParsedTableObservations(state),
+    observationsLayer: getObservationsLayer(state)
   }),
   {
     getObservations,
     getDownload,
     getFilters,
     getObservationsUrl,
+    setObservationsMapLocation,
     setFilters,
     setActiveColumns
   }
