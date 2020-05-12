@@ -68,6 +68,10 @@ app.prepare()
       return app.render(req, res, '/countries-detail', Object.assign(req.params, query));
     });
 
+    server.get('/countries/:id/:tab', (req, res) => {
+      const { query } = parse(req.url, true);
+      return app.render(req, res, '/countries-detail', Object.assign(req.params, query));
+    });
 
     // OPERATORS
     server.get('/operators', (req, res) => {
