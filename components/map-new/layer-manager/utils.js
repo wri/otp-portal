@@ -90,12 +90,24 @@ function generateLeavesCoordinates({ nbOfLeaves }) {
 }
 
 export function clearSpiderifyCluster({ map }) {
-  // Remove source and layer
-  if (map && SPIDER_LAYERS.legs && map.getLayer(SPIDER_LAYERS.legs) != null) map.removeLayer(SPIDER_LAYERS.legs);
-  if (map && SPIDER_LAYERS.legs && map.getSource(SPIDER_LAYERS.legs) != null) map.removeSource(SPIDER_LAYERS.legs);
+  // Remove LEGS source and layer
+  if (map && SPIDER_LAYERS.legs && map.getLayer(SPIDER_LAYERS.legs) != null) {
+    map.removeLayer(SPIDER_LAYERS.legs);
+  }
+  if (map && SPIDER_LAYERS.legs && map.getSource(SPIDER_LAYERS.legs) != null) {
+    map.removeSource(SPIDER_LAYERS.legs);
+  }
 
-  if (map && SPIDER_LAYERS.leaves && map.getLayer(SPIDER_LAYERS.leaves) != null) map.removeLayer(SPIDER_LAYERS.leaves);
-  if (map && SPIDER_LAYERS.leaves && map.getSource(SPIDER_LAYERS.leaves) != null) map.removeSource(SPIDER_LAYERS.leaves);
+  // Remove LEAVES source and layer
+  if (map && SPIDER_LAYERS.leaves && map.getLayer(SPIDER_LAYERS.leaves) != null) {
+    map.removeLayer(SPIDER_LAYERS.leaves);
+  }
+  if (map && SPIDER_LAYERS.leaves && map.getSource(SPIDER_LAYERS.leaves) != null) {
+    map.removeSource(SPIDER_LAYERS.leaves);
+  }
+
+  SPIDER_LAYERS.legs = null;
+  SPIDER_LAYERS.leaves = null;
 }
 
 export function spiderifyCluster({ map, source, cluster, options }) {

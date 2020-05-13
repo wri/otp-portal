@@ -501,6 +501,7 @@ class ObservationsPage extends React.Component {
                   .getElementById('forest-atlas-attribution')
                   .addEventListener('click', this.onCustomAttribute);
               }}
+              onUnmount={() => this.map = null}
               // Options
               transformRequest={(url, resourceType) => {
                 if (url.startsWith(process.env.OTP_API)) {

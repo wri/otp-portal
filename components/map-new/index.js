@@ -62,6 +62,9 @@ class Map extends Component {
     /** A function that exposes when the map is loaded. It returns and object with the `this.map` and `this.mapContainer` reference. */
     onLoad: PropTypes.func,
 
+    /** A function that exposes when the map is unmounted. It's a good oportunity to set the `this.map` and `this.mapContainer` reference as null */
+    onUnmount: PropTypes.func,
+
     /** A function that exposes the viewport */
     onViewportChange: PropTypes.func,
 
@@ -145,6 +148,11 @@ class Map extends Component {
         }
       });
     }
+  }
+
+  componentWillUnmount() {
+    const { onUnmount } = this.props;
+    if (onUnmount) onUnmount();
   }
 
   onReady = () => {
