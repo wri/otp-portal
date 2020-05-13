@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import sortBy from 'lodash/sortBy';
 
@@ -13,7 +14,7 @@ const getParsedFilters = createSelector(
   (_filters, _filterOptions) => {
     let newFilterOptions = _filterOptions;
 
-    if (_filters.country_id && !!_filters.country_id.length) {
+    if (_filters.country_id && !!_filters.country_id.length && !isEmpty(_filterOptions)) {
       const activeCountries = _filterOptions.country_id
         .filter(c => _filters.country_id.map(i => +i).includes(c.id));
 
