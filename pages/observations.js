@@ -20,7 +20,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
-import { getObservationsLayer } from 'selectors/observations/parsed-map-observations';
+import { getObservationsLayers } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
@@ -45,18 +45,18 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map-new/fa-attributions';
 
 // Utils
-import { spiderifyCluster, clearSpiderifyCluster } from 'components/map-new/layer-manager/utils';
+import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
 
 // Modules
 import {
   getObservations,
   getFilters,
   setFilters,
-  getDownload,
   setObservationsUrl,
   getObservationsUrl,
   setActiveColumns,
-  setObservationsMapLocation
+  setObservationsMapLocation,
+  setObservationsMapCluster
 } from 'modules/observations';
 
 import { logEvent } from 'utils/analytics';
@@ -147,44 +147,51 @@ class ObservationsPage extends React.Component {
   }, 500);
 
   onViewportChange = (mapLocation) => {
-    clearSpiderifyCluster({ map: this.map });
+    this.props.setObservationsMapCluster({});
     this.setMapLocation(mapLocation);
   }
 
   onClick = (e) => {
+    const { cluster: clusterProp } = this.props.observations;
+    console.log(clusterProp);
+
     const { features } = e;
     if (features && features.length) {
       const { source, geometry, properties } = features[0];
-      const { cluster, cluster_id } = properties;
+      const { cluster, cluster_id: clusterId, point_count } = properties;
 
-      if (cluster) {
-        const layer = this.map.getStyle().layers.find(l => l.source === source && !l.metadata.cluster);
+      if (cluster && clusterId !== clusterProp.id) {
+        const layers = this.map.getStyle().layers.filter(l => l.source === source);
 
-        const spiderifyClusterOptions = {
-          map: this.map,
-          source,
-          cluster: {
-            id: cluster_id,
-            coordinates: geometry.coordinates
-          },
-          options: {
-            legsPaint: {
-              'line-width': 1,
-              'line-color': 'rgba(128, 128, 128, 0.5)'
-            },
-            leavesPaint: layer.paint
-          }
-        };
+        this.map
+          .getSource(source)
+          .getClusterLeaves(
+            clusterId,
+            point_count,
+            0,
+            (error, fts) => {
+              if (error) {
+                this.props.setObservationsMapCluster({});
+                return true;
+              }
 
-        spiderifyCluster(spiderifyClusterOptions);
+              this.props.setObservationsMapCluster({
+                id: clusterId,
+                coordinates: geometry.coordinates,
+                features: fts,
+                layers
+              });
+              return fts;
+            }
+          );
       }
     } else {
-      clearSpiderifyCluster({ map: this.map });
+      this.props.setObservationsMapCluster({});
     }
   }
 
   render() {
-    const { url, observations, observationsLayer, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+    const { url, observations, getObservationsLayers, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
 
     // Hard coded values
     const inputs = [
@@ -526,7 +533,7 @@ class ObservationsPage extends React.Component {
                   {/* LAYER MANAGER */}
                   <LayerManager
                     map={map}
-                    layers={[observationsLayer]}
+                    layers={getObservationsLayers}
                   />
                 </Fragment>
               )}
@@ -585,15 +592,16 @@ ObservationsPage.propTypes = {
   observations: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
-  observationsLayer: PropTypes.array,
+  getObservationsLayers: PropTypes.array,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 
   getObservations: PropTypes.func.isRequired,
   getObservationsUrl: PropTypes.func.isRequired,
-  getDownload: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired
+  setFilters: PropTypes.func.isRequired,
+  setObservationsMapLocation: PropTypes.func.isRequired,
+  setObservationsMapCluster: PropTypes.func.isRequired
 };
 
 export default withTracker(withIntl(connect(
@@ -602,14 +610,14 @@ export default withTracker(withIntl(connect(
     parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
     parsedTableObservations: getParsedTableObservations(state),
-    observationsLayer: getObservationsLayer(state)
+    getObservationsLayers: getObservationsLayers(state)
   }),
   {
     getObservations,
-    getDownload,
     getFilters,
     getObservationsUrl,
     setObservationsMapLocation,
+    setObservationsMapCluster,
     setFilters,
     setActiveColumns
   }

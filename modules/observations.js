@@ -21,6 +21,7 @@ const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
 const SET_FILTERS = 'SET_FILTERS';
 const SET_ACTIVE_COLUMNS = 'SET_ACTIVE_COLUMNS';
 const SET_OBSERVATIONS_MAP_LOCATION = 'SET_OBSERVATIONS_MAP_LOCATION';
+const SET_OBSERVATIONS_MAP_CLUSTER = 'SET_OBSERVATIONS_MAP_CLUSTER';
 
 const OBS_MAX_SIZE = 3000;
 
@@ -35,6 +36,7 @@ const initialState = {
     latitude: 0,
     longitude: 20
   },
+  cluster: {},
   filters: {
     data: {
       observation_type: [],
@@ -91,8 +93,12 @@ export default function (state = initialState, action) {
     case SET_ACTIVE_COLUMNS: {
       return Object.assign({}, state, { columns: action.payload });
     }
-    case SET_OBSERVATIONS_MAP_LOCATION:
+    case SET_OBSERVATIONS_MAP_LOCATION: {
       return Object.assign({}, state, { map: action.payload });
+    }
+    case SET_OBSERVATIONS_MAP_CLUSTER: {
+      return Object.assign({}, state, { cluster: action.payload });
+    }
 
     default:
       return state;
@@ -302,3 +308,10 @@ export function setObservationsMapLocation(payload) {
   };
 }
 
+// SETTERS
+export function setObservationsMapCluster(payload) {
+  return {
+    type: SET_OBSERVATIONS_MAP_CLUSTER,
+    payload
+  };
+}
