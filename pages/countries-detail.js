@@ -39,25 +39,25 @@ class CountriesDetail extends React.Component {
     return { url };
   }
 
-  /**
-   * COMPONENT LIFECYCLE
-  */
+  // /**
+  //  * COMPONENT LIFECYCLE
+  // */
   componentDidMount() {
     // Set discalimer
-    if (!Cookies.get('country-detail.disclaimer')) {
-      toastr.info(
-        'Info',
-        this.props.intl.formatMessage({ id: 'country-detail.disclaimer' }),
-        {
-          className: '-disclaimer',
-          position: 'bottom-right',
-          timeOut: 15000,
-          onCloseButtonClick: () => {
-            Cookies.set('country-detail.disclaimer', true);
-          }
-        }
-      );
-    }
+    // if (!Cookies.get('country-detail.disclaimer')) {
+    //   toastr.info(
+    //     'Info',
+    //     this.props.intl.formatMessage({ id: 'country-detail.disclaimer' }),
+    //     {
+    //       className: '-disclaimer',
+    //       position: 'bottom-right',
+    //       timeOut: 15000,
+    //       onCloseButtonClick: () => {
+    //         Cookies.set('country-detail.disclaimer', true);
+    //       }
+    //     }
+    //   );
+    // }
   }
 
   componentWillReceiveProps(nextProps) {

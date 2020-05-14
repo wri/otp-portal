@@ -71,21 +71,21 @@ class OperatorsPage extends React.Component {
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
 
-    // Set discalimer
-    if (!Cookies.get('operators.disclaimer')) {
-      toastr.info(
-        'Info',
-        this.props.intl.formatMessage({ id: 'operators.disclaimer' }),
-        {
-          className: '-disclaimer',
-          position: 'bottom-right',
-          timeOut: 15000,
-          onCloseButtonClick: () => {
-            Cookies.set('operators.disclaimer', true);
-          }
-        }
-      );
-    }
+    // // Set discalimer
+    // if (!Cookies.get('operators.disclaimer')) {
+    //   toastr.info(
+    //     'Info',
+    //     this.props.intl.formatMessage({ id: 'operators.disclaimer' }),
+    //     {
+    //       className: '-disclaimer',
+    //       position: 'bottom-right',
+    //       timeOut: 15000,
+    //       onCloseButtonClick: () => {
+    //         Cookies.set('operators.disclaimer', true);
+    //       }
+    //     }
+    //   );
+    // }
   }
 
   componentWillUnMount() {

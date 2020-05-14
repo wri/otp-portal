@@ -32,25 +32,25 @@ class HomePage extends React.Component {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    if (!Cookies.get('home.disclaimer')) {
-      toastr.info(
-        'Info',
-        this.props.intl.formatMessage({ id: 'home.disclaimer' }),
-        {
-          id: 'home.disclaimer',
-          className: '-disclaimer',
-          position: 'bottom-right',
-          timeOut: 0,
-          onCloseButtonClick: () => {
-            Cookies.set('home.disclaimer', true);
-          }
-        }
-      );
-    }
+    // if (!Cookies.get('home.disclaimer')) {
+    //   toastr.info(
+    //     'Info',
+    //     this.props.intl.formatMessage({ id: 'home.disclaimer' }),
+    //     {
+    //       id: 'home.disclaimer',
+    //       className: '-disclaimer',
+    //       position: 'bottom-right',
+    //       timeOut: 0,
+    //       onCloseButtonClick: () => {
+    //         Cookies.set('home.disclaimer', true);
+    //       }
+    //     }
+    //   );
+    // }
   }
 
   componentWillUnMount() {
-    toastr.remove('home.disclaimer');
+    // toastr.remove('home.disclaimer');
 
     // Attribution listener
     document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);

@@ -62,20 +62,20 @@ class OperatorsDetail extends React.Component {
   */
   componentDidMount() {
     // Set discalimer
-    if (!Cookies.get('operator-detail.disclaimer')) {
-      toastr.info(
-        'Info',
-        this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
-        {
-          className: '-disclaimer',
-          position: 'bottom-right',
-          timeOut: 15000,
-          onCloseButtonClick: () => {
-            Cookies.set('operator-detail.disclaimer', true);
-          }
-        }
-      );
-    }
+    // if (!Cookies.get('operator-detail.disclaimer')) {
+    //   toastr.info(
+    //     'Info',
+    //     this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
+    //     {
+    //       className: '-disclaimer',
+    //       position: 'bottom-right',
+    //       timeOut: 15000,
+    //       onCloseButtonClick: () => {
+    //         Cookies.set('operator-detail.disclaimer', true);
+    //       }
+    //     }
+    //   );
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
