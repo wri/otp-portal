@@ -153,14 +153,13 @@ class ObservationsPage extends React.Component {
 
   onClick = (e) => {
     const { cluster: clusterProp } = this.props.observations;
-    console.log(clusterProp);
 
     const { features } = e;
     if (features && features.length) {
       const { source, geometry, properties } = features[0];
       const { cluster, cluster_id: clusterId, point_count } = properties;
 
-      if (cluster && clusterId !== clusterProp.id) {
+      if (cluster && +clusterId !== +clusterProp.id) {
         const layers = this.map.getStyle().layers.filter(l => l.source === source);
 
         this.map
@@ -184,6 +183,8 @@ class ObservationsPage extends React.Component {
               return fts;
             }
           );
+      } else {
+        this.props.setObservationsMapCluster({});
       }
     } else {
       this.props.setObservationsMapCluster({});
