@@ -131,7 +131,6 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                 <Icon name="icon-cross" className="-big" />
                               </button>
                               <h2 className="c-title obi-illegality-info-title">{illegality}</h2>
-
                               {groupedByIllegality[illegality].length > 0 &&
                                 <Table
                                   sortable
@@ -163,12 +162,20 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
                                       },
                                       {
+                                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,
+                                        accessor: 'status',
+                                        headerClassName: '-a-left',
+                                        className: '-a-left status description',
+                                        minWidth: 150,
+                                        Cell: attr => <span>{attr.value}</span>
+                                      },
+                                      {
                                         Header: <span>{this.props.intl.formatMessage({ id: 'description' })}</span>,
                                         accessor: 'details',
                                         headerClassName: '-a-left',
                                         className: 'description',
                                         sortable: false,
-                                        minWidth: 420,
+                                        minWidth: 320,
                                         Cell: attr => <p>{attr.value}</p>
                                       },
                                       {
