@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import * as Cookies from 'js-cookie';
-
 import Link from 'next/link';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
@@ -15,10 +13,6 @@ class NavigationList extends React.Component {
     return classnames({
       '-active': (pathname.includes(url.pathname))
     });
-  }
-
-  changeLanguage(language) {
-    Cookies.set('language', language);
   }
 
   render() {
@@ -44,13 +38,13 @@ class NavigationList extends React.Component {
               <DropdownContent>
                 <ul className="language-dropdown-list">
                   <li className="language-dropdown-list-item">
-                    <a onClick={() => this.changeLanguage('en')} href="?language=en">English</a>
+                    <a href="?language=en-GB">English</a>
                   </li>
                   <li className="language-dropdown-list-item">
-                    <a onClick={() => this.changeLanguage('fr')} href="?language=fr">Français</a>
+                    <a href="?language=fr-FR">Français</a>
                   </li>
                   <li className="language-dropdown-list-item">
-                    <a onClick={() => this.changeLanguage('zh')} href="?language=zh">中文</a>
+                    <a href="?language=zh-CN">中文</a>
                   </li>
                 </ul>
               </DropdownContent>
@@ -58,40 +52,57 @@ class NavigationList extends React.Component {
           </li>
         }
         <li>
-          <Link prefetch href="/operators">
+          <Link href="/countries">
+            <a className={!hideActive ? this.setActive(['/countries', '/countries-detail']) : ''}>
+              {this.props.intl.formatMessage({ id: 'countries' })}
+            </a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/operators">
             <a className={!hideActive ? this.setActive(['/operators', '/operators-detail']) : ''}>
               {this.props.intl.formatMessage({ id: 'operators' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/observations">
+          <Link href="/observations">
             <a className={!hideActive ? this.setActive(['/observations']) : ''}>
               {this.props.intl.formatMessage({ id: 'observations' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/help">
+          <Link href="/help">
             <a className={!hideActive ? this.setActive(['/help']) : ''}>
               {this.props.intl.formatMessage({ id: 'help' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/about">
+          <Link href="/about">
             <a className={!hideActive ? this.setActive(['/about']) : ''}>
               {this.props.intl.formatMessage({ id: 'about' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link prefetch href="/terms">
+          <Link href="/terms">
             <a className={!hideActive ? this.setActive(['/terms']) : ''}>
               {this.props.intl.formatMessage({ id: 'terms' })}
             </a>
           </Link>
         </li>
+        {hideActive &&
+          <li>
+            <Link href="/newsletter">
+              <a className={!hideActive ? this.setActive(['/newsletter']) : ''}>
+                {this.props.intl.formatMessage({ id: 'newsletter' })}
+              </a>
+            </Link>
+          </li>
+        }
+
       </ul>
     );
   }

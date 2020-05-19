@@ -22,35 +22,37 @@ function DocumentsByOperator(props) {
   return (
     <ul className="c-doc-gallery">
       {Object.keys(groupedByCategory).map(category => (
-        <li
-          key={category}
-          className="doc-gallery-item"
-        >
+        <li key={category} className="doc-gallery-item">
           <header>
-            <h3 className="c-title -proximanova -extrabig -uppercase">{category}</h3>
+            <h3 className="c-title -proximanova -extrabig -uppercase">
+              {category}
+            </h3>
           </header>
 
           <div className="row l-row -equal-heigth">
             {sortBy(groupedByCategory[category], doc => doc.title).map(card => (
-              <div
-                key={card.id}
-                className="columns small-12 medium-4"
-              >
+              <div key={card.id} className="columns small-12 medium-4">
                 <DocCard
                   {...card}
-                  operatorId={id}
+                  properties={{
+                    type: 'operator',
+                    id
+                  }}
                   onChange={() => props.getOperator(id)}
                 />
 
                 {((user && user.role === 'admin') ||
-                 (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
-                   <DocCardUpload
-                     {...card}
-                     operatorId={id}
-                     user={user}
-                     onChange={() => props.getOperator(id)}
-                   />
-                }
+                  (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
+                    <DocCardUpload
+                      {...card}
+                      properties={{
+                        type: 'operator',
+                        id
+                      }}
+                      user={user}
+                      onChange={() => props.getOperator(id)}
+                    />
+                )}
               </div>
             ))}
           </div>

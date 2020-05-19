@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import Map from 'components/map/map';
+import Map from 'components/map-new';
+import LayerManager from 'components/map-new/layer-manager';
+
 import Spinner from 'components/ui/spinner';
 
 // Constants
@@ -20,44 +22,8 @@ class MapSubComponent extends React.Component {
     loading: true
   }
 
-  getObservationLayer = () => {
-    const { location, level } = this.props;
-
-    return [
-      {
-        id: 'observation',
-        provider: 'geojson',
-        source: {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [location.lng, location.lat]
-                }
-              }
-            ]
-          }
-        },
-        layers: [{
-          id: 'observation',
-          source: 'observation',
-          name: 'Observation',
-          type: 'circle',
-          paint: {
-            'circle-color': `${PALETTE_COLOR_1[level].fill}`,
-            'circle-radius': 10
-          }
-        }]
-      }
-    ];
-  }
-
   render() {
-    const { id } = this.props;
+    const { id, location, level } = this.props;
 
     return (
       <div className="c-map-sub-component" key={`subcomponent-${id}`}>
@@ -68,18 +34,76 @@ class MapSubComponent extends React.Component {
           >
             <Spinner isLoading={this.state.loading} className="-light" />
 
+            {/* Map */}
             <Map
-              ref={(map) => { this.map = map; }}
-              mapOptions={{
-                zoom: 8,
-                center: {
-                  lat: this.props.location.lat,
-                  lng: this.props.location.lng
-                },
-                scrollZoom: false
+              mapStyle="mapbox://styles/mapbox/light-v9"
+
+              // options
+              scrollZoom={false}
+
+              // viewport
+              viewport={{
+                zoom: 3,
+                longitude: location.lng,
+                latitude: location.lat
               }}
-              layers={this.getObservationLayer()}
-            />
+              onViewportChange={this.setMapocation}
+
+              // Options
+              transformRequest={(url, resourceType) => {
+                if (
+                  resourceType === 'Source' &&
+                  url.startsWith(process.env.OTP_API)
+                ) {
+                  return {
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'OTP-API-KEY': process.env.OTP_API_KEY
+                    }
+                  };
+                }
+              }}
+            >
+              {map => (
+                <Fragment>
+                  {/* LAYER MANAGER */}
+                  <LayerManager
+                    map={map}
+                    layers={[
+                      {
+                        id: 'observation',
+                        type: 'geojson',
+                        source: {
+                          type: 'geojson',
+                          data: {
+                            type: 'FeatureCollection',
+                            features: [
+                              {
+                                type: 'Feature',
+                                geometry: {
+                                  type: 'Point',
+                                  coordinates: [location.lng, location.lat]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        render: {
+                          layers: [{
+                            type: 'circle',
+                            paint: {
+                              'circle-color': `${PALETTE_COLOR_1[level].fill}`,
+                              'circle-radius': 10
+                            }
+                          }]
+                        }
+                      }
+                    ]}
+                  />
+                </Fragment>
+              )}
+            </Map>
           </div>
         }
         { !location &&

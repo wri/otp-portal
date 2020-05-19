@@ -54,7 +54,7 @@ class DocumentsByFMU extends React.Component {
 
 
                 <ul className="c-doc-gallery accordion-content">
-                  {sortBy(Object.keys(groupedByCategory)).map(category => (
+                  {Object.keys(groupedByCategory).map(category => (
                     <li
                       key={category}
                       className="doc-gallery-item"
@@ -71,7 +71,10 @@ class DocumentsByFMU extends React.Component {
                           >
                             <DocCard
                               {...card}
-                              operatorId={id}
+                              properties={{
+                                type: 'operator',
+                                id
+                              }}
                               onChange={() => this.props.getOperator(id)}
                             />
 
@@ -79,7 +82,10 @@ class DocumentsByFMU extends React.Component {
                             (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) &&
                               <DocCardUpload
                                 {...card}
-                                operatorId={id}
+                                properties={{
+                                  type: 'operator',
+                                  id
+                                }}
                                 user={user}
                                 onChange={() => this.props.getOperator(id)}
                               />

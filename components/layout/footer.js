@@ -10,7 +10,7 @@ export default() => (
         <div className="footer-container">
           <div className="footer-item">
             <h1 className="logo">
-              <Link prefetch href="/">
+              <Link href="/">
                 <a>Open Timber Portal</a>
               </Link>
             </h1>

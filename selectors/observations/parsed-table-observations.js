@@ -3,6 +3,27 @@ import { createSelector } from 'reselect';
 // Get the datasets and filters from state
 const observations = state => state.observations;
 
+const getLocation = (obs = {}) => {
+  if (obs.lat && obs.lng) {
+    return {
+      lat: Number(obs.lat),
+      lng: Number(obs.lng)
+    };
+  }
+
+  if (obs.country && obs.country['country-centroid']) {
+    const centroid = obs.country['country-centroid'];
+
+    return {
+      lat: centroid.coordinates[0],
+      lng: centroid.coordinates[1]
+    };
+  }
+
+
+  return {};
+}
+
 // Create a function to compare the current active datatasets and the current datasetsIds
 const getParsedTableObservations = createSelector(
   observations,
@@ -18,10 +39,12 @@ const getParsedTableObservations = createSelector(
         level: obs.severity.level,
         fmu: !!obs.fmu && obs.fmu.name,
         report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
-        location: (!!obs.lat && !!obs.lng) ? { lat: Number(obs.lat), lng: Number(obs.lng) } : {},
+        location: getLocation(obs),
+        'location-accuracy': obs['location-accuracy'],
         'operator-type': obs.operator && obs.operator.type,
         subcategory: obs.subcategory.name,
         evidence: obs.evidence,
+        status: obs['validation-status-id'],
         'litigation-status': obs['litigation-status'],
         'observer-types': obs.observers.map(observer => observer['observer-type']),
         'observer-organizations': obs.observers.map(observer => observer.organization)

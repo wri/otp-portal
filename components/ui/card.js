@@ -6,7 +6,7 @@ import renderHTML from 'react-render-html';
 
 // Next components
 import Link from 'next/link';
-import { Truncate } from 'react-read-more';
+import Truncate from 'react-truncate';
 
 export default function Card({ theme, letter, title, description, link, Component }) {
   const classNames = classnames({

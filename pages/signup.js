@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { connect } from 'react-redux';
+
+import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -11,22 +12,15 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import UserNewForm from 'components/users/new';
 
-class SignUp extends Page {
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { operators } = this.props;
+class SignUp extends React.Component {
+  static async getInitialProps({ url, store }) {
+    await store.dispatch(getCountries());
 
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+    return { url };
   }
 
   render() {
@@ -37,7 +31,6 @@ class SignUp extends Page {
         title={this.props.intl.formatMessage({ id: 'signup' })}
         description={this.props.intl.formatMessage({ id: 'signup' })}
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'signup' })}
@@ -52,14 +45,14 @@ class SignUp extends Page {
 }
 
 SignUp.propTypes = {
+  url: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
   state => ({
-    operators: state.operators
+    countries: state.countries
   }),
-  { getOperators }
+  { getCountries }
 )(SignUp)));

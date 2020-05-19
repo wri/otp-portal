@@ -1,9 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -11,22 +9,13 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import NewOperator from 'components/operators/new';
 
-class OperatorsNew extends Page {
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
+class OperatorsNew extends React.Component {
+  static async getInitialProps({ url }) {
+    return { url };
   }
 
   render() {
@@ -37,7 +26,6 @@ class OperatorsNew extends Page {
         title={this.props.intl.formatMessage({ id: 'new.operators' })}
         description={this.props.intl.formatMessage({ id: 'new.operators.description' })}
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'new.operators' })}
@@ -52,14 +40,9 @@ class OperatorsNew extends Page {
 }
 
 OperatorsNew.propTypes = {
+  url: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
-  state => ({
-    operators: state.operators
-  }),
-  { getOperators }
-)(OperatorsNew)));
+export default withTracker(withIntl(OperatorsNew));

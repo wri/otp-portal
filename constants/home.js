@@ -37,7 +37,7 @@ const MAP_LAYERS_HOME = [
     source: {
       type: 'raster',
       tiles: [
-        'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+        'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
       ],
       tileSize: 256
     },
@@ -62,7 +62,7 @@ const MAP_LAYERS_HOME = [
     source: {
       type: 'geojson',
       data: {
-        url: `${process.env.OTP_API}/fmus?country_ids=7,47,45&format=geojson`,
+        url: `${process.env.OTP_API}/fmus?country_ids=${process.env.OTP_COUNTRIES_IDS.join(',')}&format=geojson`,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -78,17 +78,17 @@ const MAP_LAYERS_HOME = [
       before: ['loss_layer', 'gain_layer'],
       paint: {
         'fill-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A700']],
+          stops: [['ventes_de_coupe', '#e92000'], ['ufa', '#e95800'], ['communal', '#e9A600'], ['PEA', '#e9D400'], ['CPAET', '#e9F200'], ['CFAD', '#e9FF00']],
           default: '#e98300'
         },
         'fill-opacity': 0.4,
 
         'fill-outline-color': {
-          property: 'fmu_type',
+          property: 'fmu_type_label',
           type: 'categorical',
-          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500']],
+          stops: [['ventes_de_coupe', '#d07500'], ['ufa', '#d07500'], ['communal', '#d07500'], ['PEA', '#d07500'], ['CPAET', '#d07500'], ['CFAD', '#d07500']],
           default: '#d07500'
         }
       },
