@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
 import debounce from 'lodash/debounce';
 
-import * as Cookies from 'js-cookie';
-
 // Toastr
 import { toastr } from 'react-redux-toastr';
 
