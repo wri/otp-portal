@@ -24,6 +24,7 @@ import { getObservationsLayers } from 'selectors/observations/parsed-map-observa
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
+import Tooltip from 'rc-tooltip/dist/rc-tooltip';
 import Layout from 'components/layout/layout';
 import Overview from 'components/observations/overview';
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -43,9 +44,6 @@ import Legend from 'components/map-new/legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map-new/fa-attributions';
-
-// Utils
-import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
 
 // Modules
 import {
@@ -236,7 +234,31 @@ class ObservationsPage extends React.Component {
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,
         accessor: 'status',
-        minWidth: 250
+        minWidth: 150,
+        className: 'status',
+        Cell: attr => (
+          <span>
+            {this.props.intl.formatMessage({ id: `observations.status-${attr.value}` })}
+
+            {[7, 8, 9].includes(attr.value) &&
+              <Tooltip
+                placement="bottom"
+                overlay={(
+                  <div style={{ maxWidth: 200 }}>
+                    {this.props.intl.formatMessage({ id: `observations.status-${attr.value}.info` })}
+                  </div>
+                )}
+                overlayClassName="c-tooltip no-pointer-events"
+              >
+                <button
+                  className="c-button -icon -primary"
+                >
+                  <Icon name="icon-info" className="-smaller" />
+                </button>
+              </Tooltip>
+            }
+          </span>
+        )
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
@@ -314,7 +336,7 @@ class ObservationsPage extends React.Component {
         accessor: 'observation',
         headerClassName: '-a-left',
         className: 'description',
-        minWidth: 250,
+        minWidth: 200,
         Cell: attr => (
           <ReadMore lines={2}>
             {attr.value}

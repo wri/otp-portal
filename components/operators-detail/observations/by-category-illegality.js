@@ -11,6 +11,8 @@ import { HELPERS_OBS } from 'utils/observations';
 // components
 import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
+import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+
 
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
@@ -167,8 +169,30 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         headerClassName: '-a-left',
                                         className: '-a-left status description',
                                         minWidth: 150,
-                                        Cell: attr => <span>{attr.value}</span>
-                                      },
+                                        Cell: attr => (
+                                          <span>
+                                            {this.props.intl.formatMessage({ id: `observations.status-${attr.value}` })}
+
+                                            {[7, 8, 9].includes(attr.value) &&
+                                              <Tooltip
+                                                placement="bottom"
+                                                overlay={(
+                                                  <div style={{ maxWidth: 200 }}>
+                                                    {this.props.intl.formatMessage({ id: `observations.status-${attr.value}.info` })}
+                                                  </div>
+                                                )}
+                                                overlayClassName="c-tooltip no-pointer-events"
+                                              >
+                                                <button
+                                                  className="c-button -icon -tertiary"
+                                                >
+                                                  <Icon name="icon-info" className="-smaller" />
+                                                </button>
+                                              </Tooltip>
+                                            }
+                                          </span>
+                                        )
+                                                                      },
                                       {
                                         Header: <span>{this.props.intl.formatMessage({ id: 'description' })}</span>,
                                         accessor: 'details',

@@ -16,7 +16,7 @@ const getParsedObservations = createSelector(
         illegality: obs.subcategory.name,
         date: new Date(obs['publication-date']),
         report: obs['observation-report'],
-        status: obs['validation-status'],
+        status: obs['validation-status-id'],
         documents: obs['observation-documents'] || [],
         ...obs['fmu-id'] && {
           fmu: _operatorsDetail.data.fmus.find(f => +f.id === +obs['fmu-id'])
