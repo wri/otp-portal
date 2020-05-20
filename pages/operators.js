@@ -71,6 +71,7 @@ class OperatorsPage extends React.Component {
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
 
+
     // // Set discalimer
     // if (!Cookies.get('operators.disclaimer')) {
     //   toastr.info(
