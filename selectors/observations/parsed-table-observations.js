@@ -22,7 +22,7 @@ const getLocation = (obs = {}) => {
 
 
   return {};
-}
+};
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 const getParsedTableObservations = createSelector(
@@ -47,7 +47,7 @@ const getParsedTableObservations = createSelector(
         status: obs['validation-status-id'],
         'litigation-status': obs['litigation-status'],
         'observer-types': obs.observers.map(observer => observer['observer-type']),
-        'observer-organizations': obs.observers.map(observer => observer.organization)
+        'observer-organizations': obs.observers.map(observer => observer.name || observer.organization)
       }));
     }
 
