@@ -314,7 +314,7 @@ class ObservationsPage extends React.Component {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'subcategory' })}</span>,
         accessor: 'subcategory',
         headerClassName: '-a-left',
-        className: 'subcategory',
+        className: 'subcategory description',
         minWidth: 250
       },
       {
