@@ -159,6 +159,14 @@
         }
       }
 
+      &.status {
+        white-space: normal;
+
+        button {
+          margin-left: 5px;
+        }
+      }
+
       .evidence-link {
         position: relative;
         display: inline-block;

@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { connect } from 'react-redux';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -15,32 +14,16 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import PartnerCard from 'components/ui/partner-card';
 
-class AboutPage extends Page {
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { operators, partners, donors } = this.props;
+class AboutPage extends React.Component {
+  static async getInitialProps({ url, store }) {
+    await store.dispatch(getPartners());
+    await store.dispatch(getDonors());
 
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-
-    if (!partners.data.length) {
-      // Get partners
-      this.props.getPartners();
-    }
-
-    if (!donors.data.length) {
-      // Get partners
-      this.props.getDonors();
-    }
+    return { url };
   }
 
   render() {
@@ -52,7 +35,6 @@ class AboutPage extends Page {
         title="About"
         description="About description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'about.title' })}
@@ -169,16 +151,16 @@ class AboutPage extends Page {
 }
 
 AboutPage.propTypes = {
-  session: PropTypes.object.isRequired,
+  url: PropTypes.shape({}).isRequired,
+  partners: PropTypes.shape({}).isRequired,
+  donors: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
   state => ({
-    operators: state.operators,
     partners: state.partners,
     donors: state.donors
   }),
-  { getOperators, getPartners, getDonors }
+  { getPartners, getDonors }
 )(AboutPage)));

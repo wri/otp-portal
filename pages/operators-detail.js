@@ -22,16 +22,14 @@ import { getParsedObservations } from 'selectors/operators-detail/observations';
 import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
+import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
@@ -43,7 +41,52 @@ import OperatorsDetailDocumentation from 'components/operators-detail/documentat
 import OperatorsDetailObservations from 'components/operators-detail/observations';
 import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
-class OperatorsDetail extends Page {
+class OperatorsDetail extends React.Component {
+  static async getInitialProps({ url, store }) {
+    const { operatorsDetail, operatorsDetailFmus } = store.getState();
+
+    if (!operatorsDetailFmus.layersSettings.glad) {
+      await store.dispatch(getGladMaxDate());
+    }
+
+    if (operatorsDetail.data.id !== url.query.id) {
+      await store.dispatch(getOperator(url.query.id));
+    }
+
+    return { url };
+  }
+
+
+  /**
+   * COMPONENT LIFECYCLE
+  */
+  componentDidMount() {
+    // Set discalimer
+    // if (!Cookies.get('operator-detail.disclaimer')) {
+    //   toastr.info(
+    //     'Info',
+    //     this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
+    //     {
+    //       className: '-disclaimer',
+    //       position: 'bottom-right',
+    //       timeOut: 15000,
+    //       onCloseButtonClick: () => {
+    //         Cookies.set('operator-detail.disclaimer', true);
+    //       }
+    //     }
+    //   );
+    // }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { url } = this.props;
+    const { url: nextUrl } = nextProps;
+
+    if (url.query.tab !== nextUrl.query.tab) {
+      const { tab } = nextUrl.query || 'overview';
+      logEvent('Producers', 'Change tab', tab);
+    }
+  }
 
   /**
    * HELPERS
@@ -74,51 +117,6 @@ class OperatorsDetail extends Page {
     });
   }
 
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { url, operators } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-
-    this.props.getOperator(url.query.id);
-
-    // Set discalimer
-    if (!Cookies.get('operator-detail.disclaimer')) {
-      toastr.info(
-        'Info',
-        this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
-        {
-          className: '-disclaimer',
-          position: 'bottom-right',
-          timeOut: 15000,
-          onCloseButtonClick: () => {
-            Cookies.set('operator-detail.disclaimer', true);
-          }
-        }
-      );
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { url } = this.props;
-    const { url: nextUrl } = nextProps;
-
-    if (url.query.id !== nextUrl.query.id) {
-      this.props.getOperator(nextUrl.query.id);
-    }
-
-    if (url.query.tab !== nextUrl.query.tab) {
-      const { tab } = nextUrl.query || 'overview';
-      logEvent('Producers', 'Change tab', tab);
-    }
-  }
-
-
   render() {
     const { url, user, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
     const id = url.query.id;
@@ -130,7 +128,6 @@ class OperatorsDetail extends Page {
         title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
 
@@ -202,17 +199,20 @@ class OperatorsDetail extends Page {
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
+  operatorsDetail: PropTypes.shape({}),
+  operatorObservations: PropTypes.array,
+  operatorDocumentation: PropTypes.array,
+  user: PropTypes.shape({}),
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
-    operators: state.operators,
     operatorsDetail: state.operatorsDetail,
     operatorObservations: getParsedObservations(state),
     operatorDocumentation: getParsedDocumentation(state)
   }),
-  { getOperators, getOperator }
+  { getOperator }
 )(OperatorsDetail)));

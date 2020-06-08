@@ -8,15 +8,7 @@ const request = require('request-promise');
 const localeMiddleware = require('express-locale');
 const bodyParser = require('body-parser');
 const next = require('next');
-const fs = require('fs');
-const mkdirp = require('mkdirp');
 const { parse } = require('url');
-
-// LossLayer
-const LossLayer = require('./utils/lossLayer');
-
-// GLAD Alerts
-const GladAlerts = require('./utils/gladAlerts');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -43,8 +35,13 @@ const handle = app.getRequestHandler();
 const server = express();
 
 // configure Express
-server.use(localeMiddleware());
 server.use(cookieParser());
+server.use(localeMiddleware({
+  priority: ['query', 'cookie', 'default'],
+  default: 'en-GB',
+  cookie: { name: 'language' },
+  query: { name: 'language' }
+}));
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 server.use(cookieSession({
@@ -59,56 +56,24 @@ server.use(session({
 
 app.prepare()
   .then(() => {
-    // Loss layer
-    server.get('/loss-layer/:z/:x/:y', (req, res) => {
-      const { z, x, y } = req.params;
-      const tileDirPath = `${__dirname}/static/tiles/loss`;
-      const tilePath = `${tileDirPath}/${z}/${x}/${y}.png`;
-
-      // If image was created before it would be send
-      if (fs.existsSync(tilePath)) {
-        const imageTile = fs.readFileSync(tilePath);
-        res.contentType('png');
-        return res.end(imageTile, 'binary');
-      }
-
-      // Creating new tile
-      const layer = new LossLayer(z, x, y);
-      return layer.getImageTile('png', (tile) => {
-        // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, () => {
-          fs.writeFile(tilePath, tile);
-        });
-
-        res.contentType('png');
-        res.end(tile);
-      });
+    // COUNTRIES
+    server.get('/countries', (req, res) => {
+      res.redirect('/');
+      // const { query } = parse(req.url, true);
+      // return app.render(req, res, '/countries', Object.assign(req.params, query));
     });
 
-    // GLAD alerts layer
-    server.get('/glad-layer/:z/:x/:y', (req, res) => {
-      const { z, x, y } = req.params;
-      const tileDirPath = `${__dirname}/static/tiles/glad`;
-      const tilePath = `${tileDirPath}/${z}/${x}/${y}.png`;
 
-      // If image was created before it would be send
-      if (fs.existsSync(tilePath)) {
-        const imageTile = fs.readFileSync(tilePath);
-        res.contentType('png');
-        return res.end(imageTile, 'binary');
-      }
+    server.get('/countries/:id', (req, res) => {
+      res.redirect('/');
+      // const { query } = parse(req.url, true);
+      // return app.render(req, res, '/countries-detail', Object.assign(req.params, query));
+    });
 
-      // Creating new tile
-      const layer = new GladAlerts(z, x, y);
-      return layer.getImageTile('png', (tile) => {
-        // Saving image for next request
-        mkdirp(`${tileDirPath}/${z}/${x}/${y}`, () => {
-          fs.writeFile(tilePath, tile);
-        });
-
-        res.contentType('png');
-        res.end(tile);
-      });
+    server.get('/countries/:id/:tab', (req, res) => {
+      res.redirect('/');
+      // const { query } = parse(req.url, true);
+      // return app.render(req, res, '/countries-detail', Object.assign(req.params, query));
     });
 
     // OPERATORS
@@ -148,6 +113,9 @@ app.prepare()
     // SIGNUP
     server.get('/signup', (req, res) => app.render(req, res, '/signup', Object.assign(req.params, req.query)));
 
+    // NEWSLETTER
+    server.get('/newsletter', (req, res) => app.render(req, res, '/newsletter', Object.assign(req.params, req.query)));
+
     // LOGIN
     server.post('/login', (req, res) => {
       request({
@@ -173,6 +141,21 @@ app.prepare()
       req.session = null;
       res.json({});
     });
+
+    server.use('/static', express.static(`${__dirname}/static`, {
+      maxAge: '365d'
+    }));
+
+    server.get(
+      /^\/_next\/static\/(fonts|images)\//,
+      (_, res, nextHandler) => {
+        res.setHeader(
+          'Cache-Control',
+          'public, max-age=31536000, immutable',
+        );
+        nextHandler();
+      },
+    );
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));

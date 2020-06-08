@@ -40,13 +40,13 @@ class RadioGroup extends FormElement {
             <input
               {...properties}
               type="radio"
-              name={name}
-              id={`radio-${name}-${item.value}`}
+              name={properties.name}
+              id={`radio-${properties.name}-${item.value}`}
               value={item.value}
               checked={item.value === value}
               onChange={this.triggerChange}
             />
-            <label htmlFor={`radio-${name}-${item.value}`}>
+            <label htmlFor={`radio-${properties.name}-${item.value}`}>
               <span />
               {item.label}
             </label>

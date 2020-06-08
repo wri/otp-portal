@@ -5,10 +5,9 @@ import isEmpty from 'lodash/isEmpty';
 import Router from 'next/router';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
+import { connect } from 'react-redux';
 import { getUserOperator } from 'modules/user';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -16,28 +15,26 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
-class OperatorsEdit extends Page {
+class OperatorsEdit extends React.Component {
+  static async getInitialProps({ store, url }) {
+    const { user } = store.getState();
+
+    if (user.operator) {
+      await store.dispatch(getUserOperator(user.operator));
+    }
+    return { url };
+  }
+
   /**
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    const { operators, user } = this.props;
-
-    if (!operators.data.length) {
-      // Get operators
-      this.props.getOperators();
-    }
-
-    // // Get user operator
-    if (user.operator) {
-      this.props.getUserOperator(user.operator);
-    }
+    const { user } = this.props;
 
     if (!user.operator) {
       const location = {
@@ -69,7 +66,6 @@ class OperatorsEdit extends Page {
         title={this.props.intl.formatMessage({ id: 'edit.operators' })}
         description={this.props.intl.formatMessage({ id: 'edit.operators.description' })}
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
@@ -95,12 +91,11 @@ OperatorsEdit.propTypes = {
 };
 
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
     user: state.user,
-    operators: state.operators,
     userOperator: state.user.userOperator
   }),
-  { getOperators, getUserOperator }
+  { getUserOperator }
 )(OperatorsEdit)));

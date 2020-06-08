@@ -1,7 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux';
+
 import { store } from 'store';
 import withTracker from 'components/layout/with-tracker';
 
@@ -10,11 +12,13 @@ import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
-class TermsPage extends Page {
+class TermsPage extends React.Component {
+  static async getInitialProps({ url }) {
+    return { url };
+  }
 
   render() {
     const { url } = this.props;
@@ -248,9 +252,10 @@ class TermsPage extends Page {
 }
 
 TermsPage.propTypes = {
+  url: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
+export default withTracker(withIntl(connect(
   store
 )(TermsPage)));

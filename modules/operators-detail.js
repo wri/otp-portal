@@ -1,7 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
-import * as Cookies from 'js-cookie';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -119,7 +118,7 @@ export default function (state = initialState, action) {
 /* Action creators */
 export function getOperator(id) {
   return (dispatch, getState) => {
-    const { user } = getState();
+    const { user, language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
@@ -132,6 +131,7 @@ export function getOperator(id) {
       'observations.observation-report',
       'observations.observation-documents',
       'fmus',
+      // 'operator-documents.required-operator-document.required-operator-document-group',
       'operator-document-countries.required-operator-document-country.required-operator-document-group',
       'operator-document-countries.operator-document-annexes',
       'operator-document-fmus.required-operator-document-fmu.required-operator-document-group',
@@ -139,15 +139,15 @@ export function getOperator(id) {
       'operator-document-fmus.fmu'
     ];
 
-    const language = Cookies.get('language') === 'zh' ? 'zh-CN' : Cookies.get('language');
+    const lang = language === 'zh' ? 'zh-CN' : language;
 
     const queryParams = queryString.stringify({
       include: includeFields.join(','),
-      locale: language
+      locale: lang
     });
 
 
-    fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}`, {
+    return fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export function getDocuments(id) {
       `filter[${key}]=${filters[key]}`
     ).join('&');
 
-    fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}&${filterParams}&page[size]=3000`, {
+    return fetch(`${process.env.OTP_API}/operator-documents/?${queryParams}&${filterParams}&page[size]=3000`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ export function getSawMillsByOperatorId(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILLS_LOADING });
 
-    fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}`, {
+    return fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -271,7 +271,7 @@ export function getSawMillsLocationByOperatorId(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILLS_LOCATIONS_LOADING });
 
-    fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}&format=geojson`, {
+    return fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}&format=geojson`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

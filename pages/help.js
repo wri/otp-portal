@@ -2,17 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Redux
-import withRedux from 'next-redux-wrapper';
-import { store } from 'store';
-import { getOperators } from 'modules/operators';
-import withTracker from 'components/layout/with-tracker';
+import { connect } from 'react-redux';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
+
+import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
+import { intlShape } from 'react-intl';
 
 // Components
-import Page from 'components/layout/page';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
@@ -24,33 +23,16 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-class HelpPage extends Page {
+class HelpPage extends React.Component {
+  static async getInitialProps({ url, store }) {
+    const { howtos, tools, faqs, tutorials } = store.getState().help;
 
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { operators, howtos, tools, faqs, tutorials } = this.props;
+    if (!howtos.data.length) await store.dispatch(getHowtos());
+    if (!tools.data.length) await store.dispatch(getTools());
+    if (!faqs.data.length) await store.dispatch(getFAQs());
+    if (!tutorials.data.length) await store.dispatch(getTutorials());
 
-    if (!operators.data.length) {
-      this.props.getOperators();
-    }
-
-    if (!howtos.data.length) {
-      this.props.getHowtos();
-    }
-
-    if (!tools.data.length) {
-      this.props.getTools();
-    }
-
-    if (!faqs.data.length) {
-      this.props.getFAQs();
-    }
-
-    if (!tutorials.data.length) {
-      this.props.getTutorials();
-    }
+    return { url };
   }
 
   render() {
@@ -62,7 +44,6 @@ class HelpPage extends Page {
         title={this.props.intl.formatMessage({ id: 'help.title' })}
         description="Help description..."
         url={url}
-        searchList={this.props.operators.data}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'help.title' })}
@@ -139,17 +120,21 @@ class HelpPage extends Page {
 }
 
 HelpPage.propTypes = {
-  url: PropTypes.object.isRequired
+  url: PropTypes.object.isRequired,
+  howtos: PropTypes.shape({}),
+  tools: PropTypes.shape({}),
+  faqs: PropTypes.shape({}),
+  tutorials: PropTypes.shape({}),
+  intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(withRedux(
-  store,
+export default withTracker(withIntl(connect(
+
   state => ({
-    operators: state.operators,
     howtos: state.help.howtos,
     tools: state.help.tools,
     faqs: state.help.faqs,
     tutorials: state.help.tutorials
   }),
-  { getOperators, getHowtos, getTools, getFAQs, getTutorials }
+  { getHowtos, getTools, getFAQs, getTutorials }
 )(HelpPage)));
