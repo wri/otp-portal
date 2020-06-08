@@ -19,7 +19,7 @@ import { TABS_COUNTRIES_DETAIL } from 'constants/countries-detail';
 
 // Redux
 import { connect } from 'react-redux';
-import { getCountry, getCountryObservations } from 'modules/countries-detail';
+import { getCountry, getCountryObservations, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';
 
 // Components
@@ -28,6 +28,7 @@ import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
 import Spinner from 'components/ui/spinner';
 
+import CountriesDetailOverview from 'components/countries-detail/overview';
 import CountriesDetailDocumentation from 'components/countries-detail/documentation';
 import CountriesDetailObservations from 'components/countries-detail/observations';
 
@@ -35,6 +36,8 @@ class CountriesDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     await store.dispatch(getCountry(url.query.id));
     await store.dispatch(getCountryObservations(url.query.id));
+    await store.dispatch(getCountryLinks(url.query.id));
+    await store.dispatch(getCountryVPAs(url.query.id));
 
     return { url };
   }
@@ -85,7 +88,7 @@ class CountriesDetail extends React.Component {
   render() {
     const { url, countriesDetail, countryDocumentation, countryObservations } = this.props;
     const id = url.query.id;
-    const tab = url.query.tab || 'documentation';
+    const tab = url.query.tab || 'overview';
 
     return (
       <Layout
@@ -115,6 +118,16 @@ class CountriesDetail extends React.Component {
           defaultSelected={tab}
           selected={tab}
         />
+
+        {tab === 'overview' &&
+          <CountriesDetailOverview
+            countriesDetail={countriesDetail}
+            countryDocumentation={countryDocumentation}
+            countryObservations={countryObservations}
+            url={url}
+          />
+        }
+
 
         {tab === 'documentation' &&
           <CountriesDetailDocumentation

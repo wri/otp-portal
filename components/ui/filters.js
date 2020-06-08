@@ -48,6 +48,16 @@ class Filters extends React.Component {
           false) :
         [];
 
+      let opts = options[f.key];
+
+      if (f.key === 'validation_status') {
+        opts = opts.map(o => ({
+          ...o,
+          label: this.props.intl.formatMessage({ id: `observations.status-${o.id}` }),
+          name: this.props.intl.formatMessage({ id: `observations.status-${o.id}` })
+        }));
+      }
+
       return (
         <div key={f.key} className="field">
           <div className="c-select">
@@ -57,7 +67,7 @@ class Filters extends React.Component {
             <Select
               instanceId={f.key}
               name={f.key}
-              options={options[f.key]}
+              options={opts}
               multi
               className={value.length ? '-filled' : ''}
               value={value}
