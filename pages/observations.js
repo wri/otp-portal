@@ -321,8 +321,30 @@ class ObservationsPage extends React.Component {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
         accessor: 'evidence',
         headerClassName: '-a-left',
-        className: 'evidence',
-        minWidth: 250
+        className: 'evidence description',
+        minWidth: 250,
+        Cell: attr => (
+          <div className="evidence-item-wrapper">
+            {Array.isArray(attr.value) &&
+              attr.value.map(v => (
+                <a
+                  href={v.attachment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="evidence-item"
+                >
+                  <Icon className="" name="icon-file-empty" />
+                </a>
+              ))
+            }
+
+            {!Array.isArray(attr.value) &&
+              <span className="evidence-item-text">{attr.value}</span>
+            }
+
+          </div>
+        )
+
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'litigation-status' })}</span>,
@@ -370,7 +392,7 @@ class ObservationsPage extends React.Component {
               <span className="report-item-text">-</span>
               }
           </div>
-          )
+        )
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'location-accuracy' })}</span>,
