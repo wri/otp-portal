@@ -37,11 +37,12 @@ const HELPERS_REGISTER = {
   getFMUCertifications() {
     return [
       { label: 'FSC', value: 'fsc' },
+      { label: 'FSC-CW', value: 'fsc-cw' },
+      { label: 'LS', value: 'ls' },
+      { label: 'PAFC', value: 'pafc' },
       { label: 'PEFC', value: 'pefc' },
       { label: 'OLB', value: 'olb' },
-      { label: 'VLC', value: 'vlc' },
-      { label: 'VLO', value: 'vlo' },
-      { label: 'TLTV', value: 'tltv' }
+      { label: 'TLV', value: 'tlv' }
     ];
   },
 
