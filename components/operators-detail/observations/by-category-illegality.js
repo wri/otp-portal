@@ -227,33 +227,32 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         }
                                       },
                                       {
-                                        Header: <span>{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
-                                        accessor: 'documents',
-                                        sortable: false,
+                                        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
+                                        accessor: 'evidence',
                                         headerClassName: '-a-left',
-                                        minWidth: 150,
-                                        Cell: (attr) => {
-                                          const documents = attr.value;
-
-                                          if (!documents.length) return null;
-
-                                          return documents.map((d) => {
-                                            if (d.attachment && d.attachment.url) {
-                                              return (
+                                        className: 'evidence description',
+                                        minWidth: 250,
+                                        Cell: attr => (
+                                          <div className="evidence-item-wrapper">
+                                            {Array.isArray(attr.value) &&
+                                              attr.value.map(v => (
                                                 <a
-                                                  className="document-link"
-                                                  href={d.attachment.url || '#'}
+                                                  href={v.attachment.url}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
-                                                  title={d.name}
+                                                  className="evidence-item"
                                                 >
-                                                  {this.props.intl.formatMessage({ id: 'evidence' }).charAt(0)}
+                                                  <Icon className="" name="icon-file-empty" />
                                                 </a>
-                                              );
+                                              ))
                                             }
-                                            return null;
-                                          });
-                                        }
+
+                                            {!Array.isArray(attr.value) &&
+                                              <span className="evidence-item-text">{attr.value}</span>
+                                            }
+
+                                          </div>
+                                        )
                                       }
                                     ],
                                     nextPageSize: pageSize,
