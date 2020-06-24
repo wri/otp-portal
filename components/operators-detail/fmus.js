@@ -46,6 +46,16 @@ import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
 import Popup from 'components/map-new/popup';
 
+const CERTIFICATIONS = [
+  { label: 'FSC', value: 'fsc' },
+  { label: 'PEFC', value: 'pefc' },
+  { label: 'OLB', value: 'olb' },
+  { label: 'FSC-CW', value: 'fsc-cw' },
+  { label: 'PAFC', value: 'pafc' },
+  { label: 'TLV', value: 'tlv' },
+  { label: 'LS', value: 'ls' }
+];
+
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
     const { fmus, fmu } = this.props;
@@ -169,6 +179,10 @@ class OperatorsDetailFMUs extends React.Component {
       legendLayers
     } = this.props;
 
+    const certifications = CERTIFICATIONS
+      .filter(({ value }) => fmu[`certification-${value}`])
+      .map(ct => ct.label);
+
     return (
       <div className="c-section -map">
         <Sidebar className="-fluid">
@@ -193,6 +207,16 @@ class OperatorsDetailFMUs extends React.Component {
 
                 <div className="fmu-select-value">{fmu.name}</div>
               </div>
+
+              {!!certifications.length &&
+                <div className="fmu-certifications">
+                  <div className="fmu-certifications-title">{this.props.intl.formatMessage({ id: 'certifications' })}:</div>
+                  <div className="fmu-certifications-list">
+                    {certifications.join(', ')}
+                  </div>
+                </div>
+              }
+
 
             </div>
           )}
