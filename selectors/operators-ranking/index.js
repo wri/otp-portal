@@ -216,6 +216,7 @@ export const getLegendLayers = createSelector(
         description,
         layers: [{
           ...layer,
+          name: _intl.formatMessage({ id: name || '-' }),
           opacity: 1,
           active: true,
           legendConfig: {

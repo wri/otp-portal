@@ -47,7 +47,7 @@ class FMUTemplatePopup extends PureComponent {
   }
 
   render() {
-    const { layers } = this.props;
+    const { layers, intl } = this.props;
     const activeInteractiveLayer = layers.find(l => l.id === 'fmus');
     const { interactionConfig, data } = activeInteractiveLayer;
     const { output } = interactionConfig;
@@ -68,7 +68,7 @@ class FMUTemplatePopup extends PureComponent {
                 key={o.column}
                 className="layer-popup--table-item"
               >
-                <td className="layer-popup--list-dt">{o.label || o.column}:</td>
+                <td className="layer-popup--list-dt">{intl.formatMessage({ id: o.label || o.column })}:</td>
                 <td className="layer-popup--list-dd">{this.formatValue(o, fmuData)}</td>
               </tr>
               ))}
@@ -78,7 +78,7 @@ class FMUTemplatePopup extends PureComponent {
         {operatorId && operatorName &&
           <Link href={{ pathname: '/operators-detail', query: { id: operatorId, subtab: fmuType || 'fmu', tab: 'documentation', fmuId: id } }} as={`/operators/${operatorId}/documentation?fmuId=${id}&subtab=${fmuType || 'fmu'}`}>
             <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              Documentation
+              {intl.formatMessage({ id: 'documentation' })}
             </a>
           </Link>
         }
@@ -86,7 +86,7 @@ class FMUTemplatePopup extends PureComponent {
         {id &&
           <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [id] }) } }}>
             <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              Observations ({fmuObservations})
+              {intl.formatMessage({ id: 'observations' })} ({fmuObservations})
             </a>
           </Link>
         }
