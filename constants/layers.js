@@ -554,15 +554,15 @@ export const LAYERS = [
       output: [
         {
           column: 'fmu_name',
-          label: 'Name'
+          label: 'name'
         },
         {
           column: 'fmu_type_label',
-          label: 'Type'
+          label: 'type'
         },
         {
           column: 'company_na',
-          label: 'Producer'
+          label: 'operator'
         }
       ]
     }

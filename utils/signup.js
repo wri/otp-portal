@@ -6,8 +6,8 @@ import compact from 'lodash/compact';
 const JSONA = new Jsona();
 
 const HELPERS_REGISTER = {
-  getCountries() {
-    return fetch(`${process.env.OTP_API}/countries`, {
+  getCountries(lang) {
+    return fetch(`${process.env.OTP_API}/countries?locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

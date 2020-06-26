@@ -360,7 +360,11 @@ class ObservationsPage extends React.Component {
         className: 'description',
         minWidth: 200,
         Cell: attr => (
-          <ReadMore lines={2}>
+          <ReadMore
+            lines={2}
+            more={this.props.intl.formatMessage({ id: 'Read more' })}
+            less={this.props.intl.formatMessage({ id: 'Show less' })}
+          >
             {attr.value}
           </ReadMore>
         )

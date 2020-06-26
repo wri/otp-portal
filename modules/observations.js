@@ -223,7 +223,7 @@ export function getDownload() {
     })
       .then((response) => {
         if (response.ok) return response.text();
-        toastr.error('Error', 'Oops! There was an error, try again');
+        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
       })
       .then((csv) => {
         if (csv) {
