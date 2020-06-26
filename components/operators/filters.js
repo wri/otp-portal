@@ -94,7 +94,10 @@ class OperatorsFilters extends React.Component {
                   multi
                   instanceId={f.key}
                   name={f.key}
-                  options={options[f.key]}
+                  options={options[f.key].map(o => ({
+                    ...o,
+                    label: this.props.intl.formatMessage({ id: o.label })
+                  }))}
                   className={value.length ? '-filled' : ''}
                   value={value}
                   placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}

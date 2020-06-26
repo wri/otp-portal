@@ -107,14 +107,14 @@ class UserNewForm extends React.Component {
 
             try {
               errors.forEach(er =>
-                toastr.error('Error', `${er.title} - ${er.detail}`)
+                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
               );
             } catch (e) {
-              toastr.error('Error', 'Oops! There was an error, try again');
+              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
             }
           });
       } else {
-        toastr.error('Error', 'Fill all the required fields');
+        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
       }
     }, 0);
   }
@@ -188,7 +188,8 @@ class UserNewForm extends React.Component {
                     label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),
                     required: true,
                     instanceId: 'select.operator_id',
-                    default: this.state.form.operator_id
+                    default: this.state.form.operator_id,
+                    placeholder: ''
                   }}
                 >
                   {Select}
@@ -291,7 +292,7 @@ class UserNewForm extends React.Component {
                 properties={{
                   required: true,
                   name: 'agree',
-                  label: 'by creating your account, you agree to the terms of service', // this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
+                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.agree' }), // this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
                   checked: this.state.form.agree
                 }}
               >
