@@ -94,7 +94,7 @@
     "turf-extent": "^1.0.4",
     "uuid": "^3.0.1",
     "viewport-mercator-project": "6.1.1",
-    "vizzuality-components": "^3.0.1",
+    "vizzuality-components": "^3.0.3",
     "webpack": "^4.41.5"
   },
   "devDependencies": {

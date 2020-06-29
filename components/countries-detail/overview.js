@@ -23,13 +23,13 @@ function OperatorsDetailOverview(props) {
         <article className="c-article">
           <header>
             <h2 className="c-title">
-              {props.intl.formatMessage({ id: 'country-detail.links.title' })}
+              {props.intl.formatMessage({ id: 'country-detail.vpas.title' })}
             </h2>
           </header>
 
           <div className="content">
             <ul>
-              {sortBy(countriesDetail.links.data, 'position').map(link => (
+              {sortBy(countriesDetail.vpas.data, 'position').map(link => (
                 <li
                   key={link.id}
                 >
@@ -45,13 +45,13 @@ function OperatorsDetailOverview(props) {
         <article className="c-article">
           <header>
             <h2 className="c-title">
-              {props.intl.formatMessage({ id: 'country-detail.vpas.title' })}
+              {props.intl.formatMessage({ id: 'country-detail.links.title' })}
             </h2>
           </header>
 
           <div className="content">
             <ul>
-              {sortBy(countriesDetail.vpas.data, 'position').map(link => (
+              {sortBy(countriesDetail.links.data, 'position').map(link => (
                 <li
                   key={link.id}
                 >
