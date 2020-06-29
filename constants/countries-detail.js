@@ -4,7 +4,7 @@ const TABS_COUNTRIES_DETAIL = [
     value: 'overview'
   },
   {
-    label: 'documentation',
+    label: 'vpas-documentation',
     value: 'documentation'
   },
   {
