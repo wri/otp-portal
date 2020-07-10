@@ -29,7 +29,6 @@ const getParsedTableObservations = createSelector(
   observations,
   (_observations) => {
     if (_observations.data && _observations.data.length) {
-
       return _observations.data.map((obs) => {
         const evidence = (obs['evidence-type'] !== 'Evidence presented in the report') ? obs['observation-documents'] : obs['evidence-on-report'];
 
@@ -51,7 +50,8 @@ const getParsedTableObservations = createSelector(
           status: obs['validation-status-id'],
           'litigation-status': obs['litigation-status'],
           'observer-types': obs.observers.map(observer => observer['observer-type']),
-          'observer-organizations': obs.observers.map(observer => observer.name || observer.organization)
+          'observer-organizations': obs.observers.map(observer => observer.name || observer.organization),
+          'relevant-operators': obs['relevant-operators'].map(o => o.name)
         };
       });
     }

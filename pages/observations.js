@@ -210,7 +210,8 @@ class ObservationsPage extends React.Component {
       'observer-organizations',
       'observer-types',
       'operator-type',
-      'subcategory'
+      'subcategory',
+      'relevant-operators'
     ];
 
     const changeOfLabelLookup = {
@@ -423,6 +424,14 @@ class ObservationsPage extends React.Component {
               </button>
             }
           </div>
+      },
+      {
+        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'relevant-operators' })}</span>,
+        accessor: 'relevant-operators',
+        headerClassName: '-a-left',
+        className: 'relevant-operators',
+        minWidth: 250,
+        Cell: attr => <ul className="cell-list">{attr.value.map(operator => (<li>{operator}</li>))}</ul>
       }
 
     ];
