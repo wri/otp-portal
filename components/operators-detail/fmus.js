@@ -188,8 +188,8 @@ class OperatorsDetailFMUs extends React.Component {
         <Sidebar className="-fluid">
           {fmus && !!fmus.length && (
             <div className="c-fmu-card">
-              <h3 className="c-title -extrabig -uppercase -proximanova">Analysis</h3>
-              <p>Select a fmu by using the following select or by clicking on the map shapes.</p>
+              <h3 className="c-title -extrabig -uppercase -proximanova">{this.props.intl.formatMessage({ id: 'analysis' })}</h3>
+              <p>{this.props.intl.formatMessage({ id: 'analysis.description' })}</p>
 
               <div className="fmu-select">
                 <select
