@@ -117,7 +117,7 @@ export function getObservations() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers', 'observation-documents'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers', 'observation-documents', 'relevant-operators'];
 
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
@@ -205,7 +205,7 @@ export function getDownload() {
       return null;
     }));
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers'];
+    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers', 'relevant-operators'];
 
     // Fields
     const currentFields = { fmus: ['name'], operator: ['name'] };
