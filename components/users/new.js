@@ -139,8 +139,9 @@ class UserNewForm extends React.Component {
                 validations={['required']}
                 className="-fluid"
                 options={[
-                  { label: 'Producer', value: 'operator' },
-                  { label: 'Government', value: 'government' }
+
+                  { label: this.props.intl.formatMessage({ id: 'operator' }), value: 'operator' },
+                  { label: this.props.intl.formatMessage({ id: 'government' }), value: 'government' }
                 ]}
                 hint={this.props.intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
                 properties={{
@@ -167,7 +168,8 @@ class UserNewForm extends React.Component {
                     label: this.props.intl.formatMessage({ id: 'signup.user.form.field.country' }),
                     required: true,
                     instanceId: 'select.country_id',
-                    default: this.state.form.country_id
+                    default: this.state.form.country_id,
+                    placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
                   }}
                 >
                   {Select}
@@ -189,7 +191,7 @@ class UserNewForm extends React.Component {
                     required: true,
                     instanceId: 'select.operator_id',
                     default: this.state.form.operator_id,
-                    placeholder: ''
+                    placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
                   }}
                 >
                   {Select}
