@@ -40,7 +40,7 @@ const initialState = {
   filters: {
     data: {
       observation_type: [],
-      country_id: process.env.OTP_COUNTRIES_IDS,
+      country_id: [],
       fmu_id: [],
       years: [],
       observer_id: [],
@@ -251,11 +251,6 @@ export function setFilters(filter) {
     const newFilters = Object.assign({}, state().observations.filters.data);
     const key = Object.keys(filter)[0];
     newFilters[key] = filter[key];
-
-    // default countries
-    if (key === 'country_id' && !filter[key].length) {
-      newFilters[key] = process.env.OTP_COUNTRIES_IDS;
-    }
 
     dispatch({
       type: SET_FILTERS,
