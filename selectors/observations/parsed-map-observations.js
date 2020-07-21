@@ -116,7 +116,7 @@ const getObservationsLayers = createSelector(
                   operator: !!obs.operator && obs.operator.name,
                   category: obs.subcategory.category.name,
                   observation: obs.details,
-                  level: obs.severity.level,
+                  level: obs.severity && obs.severity.level,
                   fmu: !!obs.fmu && obs.fmu.name,
                   report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
                   'operator-type': obs.operator && obs.operator.type,
