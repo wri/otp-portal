@@ -84,11 +84,7 @@ class OperatorsDetailDocumentation extends React.Component {
             },
             ...Object.keys(groupedByForestType).map(t => (
               { label: `${this.props.intl.formatMessage({ id: `${(t || 'fmus')}-documents` })}`, value: t }
-            )),
-            {
-              label: this.props.intl.formatMessage({ id: 'chronological-view' }),
-              value: 'chronological-view'
-            }
+            ))
           ]}
           defaultSelected={this.state.tab}
           onChange={this.triggerChangeTab}
@@ -115,11 +111,6 @@ class OperatorsDetailDocumentation extends React.Component {
 
               return null;
             })}
-
-            {this.state.tab === 'chronological-view' && groupedByType['operator-document-countries'] &&
-              <DocumentsStackedTimeline data={groupedByType['operator-document-countries']} id={url.query.id} />
-            }
-
           </div>
         </div>
       </div>
