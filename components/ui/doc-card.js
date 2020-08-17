@@ -146,7 +146,18 @@ class DocCard extends React.Component {
           <div className="doc-card-content-container">
             <header className="doc-card-header">
               {startDate !== endDate &&
-                <div className="doc-card-date">{endDate}</div>
+                <div className="doc-card-date">
+                  <span>
+                    Expiration:
+                  </span>
+                  <span className="-date">
+                    {this.props.intl.formatDate(endDate, {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
               }
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
@@ -229,7 +240,18 @@ class DocCard extends React.Component {
           <div>
             <header className="doc-card-header">
               {startDate !== endDate &&
-                <div className="doc-card-date">{endDate}</div>
+                <div className="doc-card-date">
+                  <span>
+                    Expiration:
+                  </span>
+                  <span className="-date">
+                    {this.props.intl.formatDate(endDate, {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
               }
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
