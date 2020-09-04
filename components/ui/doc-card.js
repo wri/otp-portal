@@ -148,7 +148,7 @@ class DocCard extends React.Component {
               {startDate !== endDate &&
                 <div className="doc-card-date">
                   <span>
-                    Expiration:
+                    {this.props.intl.formatMessage({ id: 'expiration' })}:
                   </span>
                   <span className="-date">
                     {this.props.intl.formatDate(endDate, {
@@ -242,7 +242,7 @@ class DocCard extends React.Component {
               {startDate !== endDate &&
                 <div className="doc-card-date">
                   <span>
-                    Expiration:
+                    {this.props.intl.formatMessage({ id: 'expiration' })}:
                   </span>
                   <span className="-date">
                     {this.props.intl.formatDate(endDate, {
