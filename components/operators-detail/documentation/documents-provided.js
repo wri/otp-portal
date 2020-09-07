@@ -23,6 +23,7 @@ function DocumentsProvided(props) {
 
   const max = HELPERS_DOC.getMaxLength(groupedByCategory);
   const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
+
   groupedByStatusChart.forEach((item) => {
     legend[item.id].value = item.value;
   });
@@ -55,7 +56,7 @@ function DocumentsProvided(props) {
             {/* Legend */}
             <ChartLegend
               list={Object.keys(legend)
-                .map(k => ({ id: k, ...legend[k] }))
+                .map(k => ({ id: k, value: 0, ...legend[k] }))
                 .filter((k) => {
                   if ((user.token && user.role === 'admin') || (user.token && user.role === 'operator' && user.operator.toString() === router.query.id)) {
                     return true;
