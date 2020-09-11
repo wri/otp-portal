@@ -50,7 +50,6 @@ import {
   getObservations,
   getFilters,
   setFilters,
-  setObservationsUrl,
   getObservationsUrl,
   setActiveColumns,
   setObservationsMapLocation,
@@ -294,7 +293,7 @@ class ObservationsPage extends React.Component {
         headerClassName: '-a-left',
         className: 'observer-types',
         minWidth: 250,
-        Cell: attr => <ul className="cell-list">{attr.value.map(type => (<li>{type}</li>))}</ul>
+        Cell: attr => <ul className="cell-list">{attr.value.map((type, i) => (<li key={`${type}-${i}`}>{this.props.intl.formatMessage({ id: `${type}` })}</li>))}</ul>
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'observer-organizations' })}</span>,
@@ -309,7 +308,10 @@ class ObservationsPage extends React.Component {
         accessor: 'operator-type',
         headerClassName: '-a-left',
         className: 'operator-type',
-        minWidth: 250
+        minWidth: 250,
+        Cell: (attr) => attr.value && (
+          <span>{this.props.intl.formatMessage({ id: `${attr.value}` })}</span>
+        )
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'subcategory' })}</span>,

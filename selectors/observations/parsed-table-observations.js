@@ -44,7 +44,7 @@ const getParsedTableObservations = createSelector(
           report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
           location: getLocation(obs),
           'location-accuracy': obs['location-accuracy'],
-          'operator-type': obs.operator && obs.operator.type,
+          'operator-type': obs.operator && obs.operator['operator-type'],
           subcategory: obs.subcategory.name,
           evidence,
           status: obs['validation-status-id'],
