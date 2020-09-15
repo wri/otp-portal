@@ -152,12 +152,26 @@
   }
 
   .doc-card-date {
+    text-transform: uppercase;
     color: rgba($color-text-1, 0.5);
+    font-size: $font-size-small;
     font-family: $font-family-proximanova;
+    letter-spacing: 0.75px;
+
+    span {
+      display: block;
+
+      &.-date {
+        color: $color-text-1;
+      }
+    }
   }
 
   .doc-card-status {
     font-family: $font-family-proximanova;
+    font-size: $font-size-small;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
   }
 
   .doc-card-title {
