@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as Cookies from 'js-cookie';
-
-// Toastr
-import { toastr } from 'react-redux-toastr';
-
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 import { logEvent } from 'utils/analytics';
