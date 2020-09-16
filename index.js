@@ -79,22 +79,22 @@ app.prepare()
       return app.render(req, res, '/operators', Object.assign(req.params, query));
     });
 
-    server.get('/operators/new', (req, res) => app.render(req, res, '/operators-new', Object.assign(req.params, req.query)));
+    server.get('/operators/new', (req, res) => app.render(req, res, '/operators/new', Object.assign(req.params, req.query)));
     server.get('/operators/edit', (req, res) => {
       if (req.session.user) {
-        return app.render(req, res, '/operators-edit', Object.assign(req.params, req.query));
+        return app.render(req, res, '/operators/edit', Object.assign(req.params, req.query));
       }
       return res.redirect('/');
     });
 
     server.get('/operators/:id', (req, res) => {
       const { query } = parse(req.url, true);
-      return app.render(req, res, '/operators-detail', Object.assign(req.params, query));
+      return app.render(req, res, '/operators/detail', Object.assign(req.params, query));
     });
 
     server.get('/operators/:id/:tab', (req, res) => {
       const { query } = parse(req.url, true);
-      return app.render(req, res, '/operators-detail', Object.assign(req.params, query));
+      return app.render(req, res, '/operators/detail', Object.assign(req.params, query));
     });
 
     // OBSERVATIONS
