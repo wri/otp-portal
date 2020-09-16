@@ -46,7 +46,7 @@ class Gallery1 extends React.Component {
               )}
               link={{
                 label: this.props.intl.formatMessage({ id: 'operator-detail.overview.card1.link.label' }),
-                href: `/operators-detail?tab=documentation&id=${url.query.id}`,
+                href: `/operators/detail?tab=documentation&id=${url.query.id}`,
                 as: `/operators/${url.query.id}/documentation`
               }}
             />
@@ -68,7 +68,7 @@ class Gallery1 extends React.Component {
               )}
               link={{
                 label: this.props.intl.formatMessage({ id: 'operator-detail.overview.card2.link.label' }),
-                href: `/operators-detail?tab=observations&id=${url.query.id}`,
+                href: `/operators/detail?tab=observations&id=${url.query.id}`,
                 as: `/operators/${url.query.id}/observations`
               }}
             />
@@ -90,7 +90,7 @@ class Gallery1 extends React.Component {
               )}
               link={{
                 label: this.props.intl.formatMessage({ id: 'operator-detail.overview.card3.link.label' }),
-                href: `/operators-detail?tab=fmus&id=${url.query.id}`,
+                href: `/operators/detail?tab=fmus&id=${url.query.id}`,
                 as: `/operators/${url.query.id}/fmus`
               }}
             />
