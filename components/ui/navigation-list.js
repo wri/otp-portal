@@ -69,7 +69,7 @@ class NavigationList extends React.Component {
         </li>
         <li>
           <Link href="/operators">
-            <a className={!hideActive ? this.setActive(['/operators', '/operators-detail']) : ''}>
+            <a className={!hideActive ? this.setActive(['/operators', '/operators/detail']) : ''}>
               {this.props.intl.formatMessage({ id: 'operators' })}
             </a>
           </Link>

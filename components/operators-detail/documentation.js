@@ -33,7 +33,7 @@ class OperatorsDetailDocumentation extends React.Component {
     const { id } = this.props.url.query;
 
     const location = {
-      pathname: '/operators-detail',
+      pathname: '/operators/detail',
       query: {
         id,
         tab: 'documentation',
@@ -83,7 +83,7 @@ class OperatorsDetailDocumentation extends React.Component {
               value: 'operator-documents'
             },
             ...Object.keys(groupedByForestType).map(t => (
-              { label: `${this.props.intl.formatMessage({ id: `${(t || 'fmus')}-documents` })}`, value: t }
+              { label: `${this.props.intl.formatMessage({ id: `${(t || 'fmus')}-documents` })}`, value: t || 'fmu' }
             ))
           ]}
           defaultSelected={this.state.tab}
@@ -97,7 +97,9 @@ class OperatorsDetailDocumentation extends React.Component {
             }
 
             {Object.keys(groupedByForestType).map((k) => {
-              if (this.state.tab === k) {
+              const subtab = k || 'fmu';
+
+              if (this.state.tab === subtab) {
                 return (
                   <DocumentsByFMU
                     key={k}

@@ -26,6 +26,7 @@ class DocCard extends React.Component {
     status: PropTypes.string,
     public: PropTypes.bool,
     title: PropTypes.string,
+    source: PropTypes.string,
     explanation: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
@@ -99,7 +100,7 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, public: publicState, startDate, endDate, status, title, explanation, url, annexes, layout, properties } = this.props;
+    const { user, public: publicState, startDate, endDate, status, source, title, explanation, url, annexes, layout, properties } = this.props;
     const { id } = properties;
     const { deleteLoading } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
@@ -169,9 +170,10 @@ class DocCard extends React.Component {
               </a>
             </div>
             <div className="doc-card-footer">
-              {layout.annexes &&
+              {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
                 <div>
                   <h3 className="c-title -default doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</h3>
+
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
@@ -228,14 +230,12 @@ class DocCard extends React.Component {
                       </li>
                     }
                   </ul>
-                  {!approvedAnnexes.length &&
-                    <p className="doc-card-annex-text">No annexes</p>
-                  }
                 </div>
               }
             </div>
           </div>
         }
+
         {!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
           <div>
             <header className="doc-card-header">
