@@ -27,6 +27,7 @@ class DocCard extends React.Component {
     public: PropTypes.bool,
     title: PropTypes.string,
     source: PropTypes.string,
+    sourceInfo: PropTypes.string,
     explanation: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
@@ -100,7 +101,7 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, public: publicState, startDate, endDate, status, source, title, explanation, url, annexes, layout, properties } = this.props;
+    const { user, public: publicState, startDate, endDate, status, source, sourceInfo, title, explanation, url, annexes, layout, properties } = this.props;
     const { id } = properties;
     const { deleteLoading } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
@@ -170,9 +171,17 @@ class DocCard extends React.Component {
               </a>
             </div>
             <div className="doc-card-footer">
+              {source && (
+                <div className="doc-card-source">
+                  <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
+                  {' '}
+                  <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>
+                </div>
+              )}
+
               {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
-                <div>
-                  <h3 className="c-title -default doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</h3>
+                <div className="doc-card-annexes">
+                  <div className="doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</div>
 
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
@@ -260,6 +269,15 @@ class DocCard extends React.Component {
                 {title}
               </h3>
             </div>
+            <div className="doc-card-footer">
+              {source && (
+                <div className="doc-card-source">
+                  <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
+                  {' '}
+                  <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>
+                </div>
+              )}
+            </div>
           </div>
         }
 
@@ -280,10 +298,10 @@ class DocCard extends React.Component {
           <div>
             <header className="doc-card-header">
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
-              <div className="doc-card-why">
-                <button onClick={this.triggerWhy} className="c-button -small -clean">
+              <div className="doc-card-status -why">
+                <div onClick={this.triggerWhy}>
                   {this.props.intl.formatMessage({ id: 'why' })}
-                </button>
+                </div>
               </div>
             </header>
             <div className="doc-card-content">
