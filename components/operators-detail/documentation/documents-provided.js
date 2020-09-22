@@ -31,7 +31,7 @@ function DocumentsProvided(props) {
   return (
     <div className="c-doc-provided">
       <div className="row l-row">
-        <div className="columns small-6">
+        <div className="columns small-12">
           <div className="c-chart">
             <ResponsiveContainer height={360}>
               <PieChart>
@@ -70,43 +70,45 @@ function DocumentsProvided(props) {
           </div>
         </div>
 
-        <div className="columns small-6">
-          <div className="c-doc-by-category">
-            <ul className="doc-by-category-list">
-              {Object.keys(groupedByCategory).map((category) => {
-                const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
-                const width = `${(groupedByCategory[category].length / max) * 100}%`;
+        {/* <div className="row l-row">
+          <div className="columns small-12">
+            <div className="c-doc-by-category">
+              <ul className="doc-by-category-list">
+                {Object.keys(groupedByCategory).map((category) => {
+                  const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
+                  const width = `${(groupedByCategory[category].length / max) * 100}%`;
 
-                return (
-                  <li
-                    key={category}
-                    className="doc-by-category-list-item"
-                  >
-                    <div className="doc-by-category-chart">
-                      <div
-                        className="doc-by-category-bar"
-                        style={{ width }}
-                      >
-                        {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                          const segmentWidth = `${(groupedByStatus[status].length / groupedByCategory[category].length) * 100}%`;
+                  return (
+                    <li
+                      key={category}
+                      className="doc-by-category-list-item"
+                    >
+                      <div className="doc-by-category-chart">
+                        <div
+                          className="doc-by-category-bar"
+                          style={{ width }}
+                        >
+                          {sortBy(Object.keys(groupedByStatus)).map((status) => {
+                            const segmentWidth = `${(groupedByStatus[status].length / groupedByCategory[category].length) * 100}%`;
 
-                          return (
-                            <div
-                              key={status}
-                              className={`doc-by-category-bar-segment -${status}`}
-                              style={{ width: segmentWidth }}
-                            />
-                          );
-                        })}
+                            return (
+                              <div
+                                key={status}
+                                className={`doc-by-category-bar-segment -${status}`}
+                                style={{ width: segmentWidth }}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                    <h3 className="c-title -default doc-by-category-title">{category}</h3>
-                  </li>
-                );
-              })}
-            </ul>
+                      <h3 className="c-title -default doc-by-category-title">{category}</h3>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
