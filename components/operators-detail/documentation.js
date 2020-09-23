@@ -8,8 +8,8 @@ import { injectIntl, intlShape } from "react-intl";
 import { HELPERS_DOC } from "utils/documentation";
 
 // Components
-import DocumentsProvided from "components/operators-detail/documentation/documents-provided";
 import DocumentsCertification from "components/operators-detail/documentation/documents-certification";
+import DocumentsProvided from "components/operators-detail/documentation/documents-provided";
 import DocumentsByOperator from "components/operators-detail/documentation/documents-by-operator";
 
 function OperatorsDetailDocumentation({
@@ -22,10 +22,14 @@ function OperatorsDetailDocumentation({
     <div>
       <div className="c-section">
         <div className="l-container">
-          <DocumentsCertification id={url.query.id} />
+          <DocumentsCertification
+            // Publication authorization
+            id={url.query.id}
+          />
 
           <article className="c-article">
             <header>
+              {/* X % valid documents available */}
               <h2 className="c-title">
                 {intl.formatMessage(
                   {
@@ -39,6 +43,7 @@ function OperatorsDetailDocumentation({
             </header>
 
             <div className="content">
+              {/* Pie chart */}
               <DocumentsProvided data={operatorDocumentation} />
             </div>
           </article>
@@ -47,6 +52,7 @@ function OperatorsDetailDocumentation({
 
       <div className="c-section">
         <div className="l-container">
+          {/* Document sections with cards */}
           <DocumentsByOperator data={operatorDocumentation} id={url.query.id} />
         </div>
       </div>
