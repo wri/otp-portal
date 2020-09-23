@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 
 // Redux
@@ -15,13 +14,8 @@ import ChartLegend from 'components/ui/chart-legend';
 
 function DocumentsProvided(props) {
   const { data, user, router } = props;
-
   const filteredData = data.filter(d => d.status !== 'doc_not_required');
-
-  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(filteredData);
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(filteredData);
-
-  const max = HELPERS_DOC.getMaxLength(groupedByCategory);
   const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
 
   groupedByStatusChart.forEach((item) => {
@@ -69,46 +63,6 @@ function DocumentsProvided(props) {
             />
           </div>
         </div>
-
-        {/* <div className="row l-row">
-          <div className="columns small-12">
-            <div className="c-doc-by-category">
-              <ul className="doc-by-category-list">
-                {Object.keys(groupedByCategory).map((category) => {
-                  const groupedByStatus = HELPERS_DOC.getGroupedByStatus(groupedByCategory[category]);
-                  const width = `${(groupedByCategory[category].length / max) * 100}%`;
-
-                  return (
-                    <li
-                      key={category}
-                      className="doc-by-category-list-item"
-                    >
-                      <div className="doc-by-category-chart">
-                        <div
-                          className="doc-by-category-bar"
-                          style={{ width }}
-                        >
-                          {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                            const segmentWidth = `${(groupedByStatus[status].length / groupedByCategory[category].length) * 100}%`;
-
-                            return (
-                              <div
-                                key={status}
-                                className={`doc-by-category-bar-segment -${status}`}
-                                style={{ width: segmentWidth }}
-                              />
-                            );
-                          })}
-                        </div>
-                      </div>
-                      <h3 className="c-title -default doc-by-category-title">{category}</h3>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import DocumentsCertification from 'components/operators-detail/documentation/do
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 
 function OperatorsDetailDocumentation({ operatorsDetail, operatorDocumentation, url, intl }) {
-
   return (
     <div>
       <div className="c-section">
