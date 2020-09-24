@@ -17,7 +17,6 @@ import DocCardUpload from "components/ui/doc-card-upload";
 
 function DocumentsByOperator({ data, user, id, ...props }) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
-  const max = HELPERS_DOC.getMaxLength(groupedByCategory);
 
   return (
     <ul className="c-doc-gallery">
@@ -25,7 +24,6 @@ function DocumentsByOperator({ data, user, id, ...props }) {
         const groupedByStatus = HELPERS_DOC.getGroupedByStatus(
           groupedByCategory[category]
         );
-        const width = `${(groupedByCategory[category].length / max) * 100}%`;
         const producerDocs = groupedByCategory[category].filter(
           (doc) => doc.type === "operator-document-countries"
         );
@@ -40,7 +38,16 @@ function DocumentsByOperator({ data, user, id, ...props }) {
               <summary>
                 <header>
                   <div className="doc-by-category-chart">
-                    <div className="doc-by-category-bar" style={{ width }}>
+                    {`${
+                      groupedByStatus.doc_valid
+                        ? (
+                            (groupedByStatus.doc_valid.length /
+                              groupedByCategory[category].length) *
+                            100
+                          ).toFixed(0)
+                        : 0
+                    }%`}
+                    <div className="doc-by-category-bar">
                       {sortBy(Object.keys(groupedByStatus)).map((status) => {
                         const segmentWidth = `${
                           (groupedByStatus[status].length /
@@ -105,6 +112,32 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                   {Object.values(FMUDocsByFMU).map((docs) => (
                     <details>
                       <summary>
+                        <div className="doc-by-category-chart">
+                          {`${(
+                            (docs.filter((d) => d.status === "doc_valid")
+                              .length /
+                              docs.length) *
+                            100
+                          ).toFixed(0)}%`}
+                          <div className="doc-by-category-bar">
+                            {sortBy(Object.keys(groupedByStatus)).map(
+                              (status) => {
+                                const segmentWidth = `${
+                                  (groupedByStatus[status].length /
+                                    groupedByCategory[category].length) *
+                                  100
+                                }%`;
+                                return (
+                                  <div
+                                    key={status}
+                                    className={`doc-by-category-bar-segment -${status}`}
+                                    style={{ width: segmentWidth }}
+                                  />
+                                );
+                              }
+                            )}
+                          </div>
+                        </div>
                         <h4>{docs[0].fmu.name}</h4>
                       </summary>
                       <div className="row l-row -equal-heigth">

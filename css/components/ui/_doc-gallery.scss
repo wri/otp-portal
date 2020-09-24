@@ -13,10 +13,31 @@
   .doc-gallery-item {
     margin: $space-1 * 6 0 0;
     &:first-child { margin-top: 0; }
+
+    &>details {
+      border-top: 1px solid $border-color-1;
+      padding-top: 25px;
+    }
   }
 
-  .columns {
-    // If you want all the cards with the same height uncomment this
-    // display: flex;
+  summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  // CHART
+  .doc-by-category-chart {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 0 0 50%;
+    margin: 0 $space-1 0 0;
+    width: 215px;
+  }
+
+  .doc-by-category-bar {
+    display: flex;
+    height: 7px;
+    margin-left: 10px;
   }
 }
