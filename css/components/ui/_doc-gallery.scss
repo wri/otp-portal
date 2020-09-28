@@ -12,17 +12,70 @@
 
   .doc-gallery-item {
     margin: $space-1 * 6 0 0;
+    border-top: 1px solid $border-color-1;
+    padding-top: 25px;
+
     &:first-child { margin-top: 0; }
 
-    &>details {
-      border-top: 1px solid $border-color-1;
-      padding-top: 25px;
-    }
-  }
+    .doc-gallery-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-  summary {
-    cursor: pointer;
-    list-style: none;
+      .doc-by-category-btn {
+        height: 30px;
+        min-width: 100px;
+        border: 1px solid rgba(0,0,0,0.3);
+        border-radius: 3px;
+        background-color: transparent;
+        color: rgba(0,0,0,0.8);
+        font-size: 16px;
+        letter-spacing: 2px;
+        line-height: 26px;
+        text-align: center;
+        text-transform: uppercase;
+        cursor: pointer;
+        
+        &.open {
+          color: #F7F6ED;
+          background-color: rgba(0,0,0,0.8);
+        }
+      }
+    }
+
+    .doc-gallery-producer-docs,
+    .c-doc-gallery-fmu-docs {
+      margin-top: 15px;
+
+      &>h3 {
+        color: rgba(0,0,0,0.8);
+        font-size: 16px;
+        font-weight: 400;
+        font-family: $font-family-proximanova;
+        letter-spacing: 0.3px;
+        line-height: 19px;
+      }
+    }
+
+    .c-doc-gallery-fmu-docs {
+      margin-top: 45px;
+    }
+
+    .fmu-item {
+      padding: 15px 0;
+      border-top: 1px dashed #C4C4C4;
+
+      .doc-by-category-desc h4 {
+        height: 20px;
+        color: rgba(0,0,0,0.8);
+        font-family: Georgia;
+        font-weight: 400;
+        font-size: 14px;
+        letter-spacing: 0;
+        line-height: 20px;
+        margin-top: 5px;
+      }
+    }
   }
 
   // CHART

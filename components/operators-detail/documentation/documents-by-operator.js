@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
+import cx from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
@@ -14,9 +15,12 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
+import DocumentsByFMU from './documents-by-fmu';
 
 function DocumentsByOperator({ data, user, id, ...props }) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
+  const [categoriesOpen, setCategoriesOpen] =
+    useState(Object.keys(groupedByCategory).reduce((acc, cat) => ({ ...acc, [cat]: false }), {}));
 
   return (
     <ul className="c-doc-gallery">
@@ -26,133 +30,93 @@ function DocumentsByOperator({ data, user, id, ...props }) {
         const producerDocs = groupedByCategory[category].filter(doc => doc.type === 'operator-document-countries');
         const FMUDocs = groupedByCategory[category].filter(doc => doc.type === 'operator-document-fmus');
         const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
+        const isCategoryOpen = categoriesOpen[category];
 
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
-            <details>
-              <summary>
-                <header>
-                  <div className="doc-by-category-chart">
-                    {`${
-                      groupedByStatus.doc_valid
-                        ? ((groupedByStatus.doc_valid.length /
-                            groupedByCategory[category].length) *
-                          100).toFixed(0)
-                        : 0
-                    }%`}
-                    <div className="doc-by-category-bar">
-                      {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                        const segmentWidth = `${(groupedByStatus[status].length /
-                          groupedByCategory[category].length) * 100}%`;
-                        return (
-                          <div
-                            key={status}
-                            className={`doc-by-category-bar-segment -${status}`}
-                            style={{ width: segmentWidth }}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <h3 className="c-title -proximanova -extrabig -uppercase">
-                    {category}
-                  </h3>
-                </header>
-              </summary>
-
-              {producerDocs.length > 0 &&
-                (<div>
-                  <h3>Producer Documents:</h3>
-                  <div className="row l-row -equal-heigth">
-                    {sortBy(producerDocs, doc => doc.title).map(card => (
-                      <div key={card.id} className="columns small-12 medium-4">
-                        <DocCard
-                          {...card}
-                          properties={{
-                            type: 'operator',
-                            id
-                          }}
-                          onChange={() => props.getOperator(id)}
+            <header className="doc-gallery-item-header">
+              <div className="doc-by-category-desc">
+                <div className="doc-by-category-chart">
+                  {`${
+                    groupedByStatus.doc_valid
+                      ? ((groupedByStatus.doc_valid.length /
+                          groupedByCategory[category].length) *
+                        100).toFixed(0)
+                      : 0
+                  }%`}
+                  <div className="doc-by-category-bar">
+                    {sortBy(Object.keys(groupedByStatus)).map((status) => {
+                      const segmentWidth = `${(groupedByStatus[status].length /
+                        groupedByCategory[category].length) * 100}%`;
+                      return (
+                        <div
+                          key={status}
+                          className={`doc-by-category-bar-segment -${status}`}
+                          style={{ width: segmentWidth }}
                         />
-
-                        {((user && user.role === 'admin') ||
-                          (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
-                            <DocCardUpload
-                              {...card}
-                              properties={{
-                                type: 'operator',
-                                id
-                              }}
-                              user={user}
-                              onChange={() => props.getOperator(id)}
-                            />
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-                </div>)
-              }
+                </div>
+                <h3 className="c-title -proximanova -extrabig -uppercase">
+                  {category}
+                </h3>
+              </div>
+              <button
+                className={cx('doc-by-category-btn -proximanova', { open: isCategoryOpen })}
+                onClick={() =>
+                  setCategoriesOpen({ ...categoriesOpen, [category]: !isCategoryOpen })}
+              >
+                {isCategoryOpen ? 'Collapse' : 'Expand'}
+              </button>
+            </header>
 
-              {FMUDocs.length > 0 &&
-                (<div>
-                  <h3>FMU Documents:</h3>
-                  {Object.values(FMUDocsByFMU).map(docs => (
-                    <details>
-                      <summary>
-                        <div className="doc-by-category-chart">
-                          {`${
-                            ((docs.filter(d => d.status === 'doc_valid').length / docs.length) * 100).toFixed(0)
-                          }%`}
-                          <div className="doc-by-category-bar">
-                            {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                              const segmentWidth = `${(groupedByStatus[status].length /
-                                groupedByCategory[category].length) * 100}%`;
-                              return (
-                                <div
-                                  key={status}
-                                  className={`doc-by-category-bar-segment -${status}`}
-                                  style={{ width: segmentWidth }}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                        <h4>{docs[0].fmu.name}</h4>
-                      </summary>
-                      <div className="row l-row -equal-heigth">
-                        {sortBy(docs, doc => doc.title).map(card => (
-                          <div key={card.id} className="columns small-12 medium-4">
-                            <DocCard
-                              {...card}
-                              properties={{
-                                type: 'operator',
-                                id
-                              }}
-                              onChange={() => props.getOperator(id)}
-                            />
+            {producerDocs.length > 0 &&
+            isCategoryOpen &&
+              (<div className="doc-gallery-producer-docs">
+                <h3>Producer Documents:</h3>
+                <div className="row l-row -equal-heigth">
+                  {sortBy(producerDocs, doc => doc.title).map(card => (
+                    <div key={card.id} className="columns small-12 medium-4">
+                      <DocCard
+                        {...card}
+                        properties={{
+                          type: 'operator',
+                          id
+                        }}
+                        onChange={() => props.getOperator(id)}
+                      />
 
-                            {((user && user.role === 'admin') ||
-                              (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
-                                <DocCardUpload
-                                  {...card}
-                                  properties={{
-                                    type: 'operator',
-                                    id
-                                  }}
-                                  user={user}
-                                  onChange={() => props.getOperator(id)}
-                                />
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-                    )
-                  )}
-                </div>)
-              }
+                      {((user && user.role === 'admin') ||
+                        (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
+                          <DocCardUpload
+                            {...card}
+                            properties={{
+                              type: 'operator',
+                              id
+                            }}
+                            user={user}
+                            onChange={() => props.getOperator(id)}
+                          />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>)
+            }
 
-            </details>
+            {FMUDocs.length > 0 &&
+            isCategoryOpen &&
+            (<DocumentsByFMU
+              documents={FMUDocsByFMU}
+              // TODO: connect via selectors
+              groupedByStatus={groupedByStatus}
+              groupedByCategory={groupedByCategory}
+              category={category}
+              user={user}
+              id={id}
+              getOperator={_id => props.getOperator(_id)}
+            />)}
           </li>
         );
       })}
