@@ -11,8 +11,15 @@ import { HELPERS_DOC } from 'utils/documentation';
 import DocumentsCertification from 'components/operators-detail/documentation/documents-certification';
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
+import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 
-function OperatorsDetailDocumentation({ operatorsDetail, operatorDocumentation, url, intl }) {
+function OperatorsDetailDocumentation({
+  operatorsDetail,
+  operatorDocumentation,
+  operatorTimeline,
+  url,
+  intl
+}) {
   return (
     <div>
       <div className="c-section">
@@ -39,6 +46,9 @@ function OperatorsDetailDocumentation({ operatorsDetail, operatorDocumentation, 
               <DocumentsProvided data={operatorDocumentation} />
             </div>
           </article>
+
+          {/* Timeline chart */}
+          <DocumentsTimeline timelineData={operatorTimeline} />
         </div>
       </div>
 
@@ -55,6 +65,7 @@ function OperatorsDetailDocumentation({ operatorsDetail, operatorDocumentation, 
 OperatorsDetailDocumentation.propTypes = {
   operatorsDetail: PropTypes.object,
   operatorDocumentation: PropTypes.array,
+  operatorTimeline: PropTypes.array,
   url: PropTypes.object,
   intl: intlShape.isRequired
 };
