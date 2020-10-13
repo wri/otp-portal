@@ -15,10 +15,11 @@ import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Selectors
 import { getParsedObservations } from 'selectors/operators-detail/observations';
 import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
+import { getParsedTimeline } from 'selectors/operators-detail/timeline';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperator } from 'modules/operators-detail';
+import { getOperator, getOperatorTimeline } from 'modules/operators-detail';
 import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
@@ -46,6 +47,7 @@ class OperatorsDetail extends React.Component {
 
     if (operatorsDetail.data.id !== url.query.id) {
       await store.dispatch(getOperator(url.query.id));
+      await store.dispatch(getOperatorTimeline(url.query.id));
     }
 
     return { url };
@@ -56,21 +58,6 @@ class OperatorsDetail extends React.Component {
    * COMPONENT LIFECYCLE
   */
   componentDidMount() {
-    // Set discalimer
-    // if (!Cookies.get('operator-detail.disclaimer')) {
-    //   toastr.info(
-    //     'Info',
-    //     this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
-    //     {
-    //       className: '-disclaimer',
-    //       position: 'bottom-right',
-    //       timeOut: 15000,
-    //       onCloseButtonClick: () => {
-    //         Cookies.set('operator-detail.disclaimer', true);
-    //       }
-    //     }
-    //   );
-    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -113,7 +100,14 @@ class OperatorsDetail extends React.Component {
   }
 
   render() {
-    const { url, user, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
+    const {
+      url,
+      user,
+      operatorsDetail,
+      operatorObservations,
+      operatorDocumentation,
+      operatorTimeline
+    } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
     const logoPath = operatorsDetail.data.logo ? operatorsDetail.data.logo.url : '';
@@ -167,6 +161,7 @@ class OperatorsDetail extends React.Component {
           <OperatorsDetailDocumentation
             operatorsDetail={operatorsDetail}
             operatorDocumentation={operatorDocumentation}
+            operatorTimeline={operatorTimeline}
             url={url}
           />
         }
@@ -194,9 +189,10 @@ class OperatorsDetail extends React.Component {
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.shape({}),
+  operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   operatorDocumentation: PropTypes.array,
+  operatorTimeline: PropTypes.array,
   user: PropTypes.shape({}),
   intl: intlShape.isRequired
 };
@@ -207,7 +203,8 @@ export default withTracker(withIntl(connect(
     user: state.user,
     operatorsDetail: state.operatorsDetail,
     operatorObservations: getParsedObservations(state),
-    operatorDocumentation: getParsedDocumentation(state)
+    operatorDocumentation: getParsedDocumentation(state),
+    operatorTimeline: getParsedTimeline(state)
   }),
   { getOperator }
 )(OperatorsDetail)));

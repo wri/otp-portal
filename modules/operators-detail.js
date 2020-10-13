@@ -7,6 +7,8 @@ const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
 const GET_OPERATOR_ERROR = 'GET_OPERATOR_ERROR';
 const GET_OPERATOR_LOADING = 'GET_OPERATOR_LOADING';
 
+const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
+
 /* Constants */
 const GET_OPERATOR_DOCUMENTS_SUCCESS = 'GET_OPERATOR_DOCUMENTS_SUCCESS';
 const GET_OPERATOR_DOCUMENTS_ERROR = 'GET_OPERATOR_DOCUMENTS_ERROR';
@@ -56,6 +58,9 @@ export default function (state = initialState, action) {
     }
     case GET_OPERATOR_LOADING: {
       return Object.assign({}, state, { loading: true, error: false });
+    }
+    case GET_OPERATOR_TIMELINE_SUCCESS: {
+      return Object.assign({}, state, { timeline: action.payload, loading: false, error: false });
     }
     case GET_OPERATOR_DOCUMENTS_SUCCESS: {
       const documentation = Object.assign({}, state.documentation, {
@@ -165,6 +170,48 @@ export function getOperator(id) {
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,
+          payload: dataParsed
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_OPERATOR_ERROR,
+          payload: err.message
+        });
+      });
+  };
+}
+
+export function getOperatorTimeline(id) {
+  return (dispatch, getState) => {
+    const { user, language } = getState();
+    // dispatch({ type: GET_OPERATOR_LOADING });
+
+    const lang = language === 'zh' ? 'zh-CN' : language;
+    const queryParams = queryString.stringify({
+      'filter[operator]': id,
+      locale: lang
+    });
+
+    return fetch(`${process.env.OTP_API}/score-operator-documents?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY,
+        Authorization: user.token ? `Bearer ${user.token}` : undefined
+      }
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((operator) => {
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        const dataParsed = JSONA.deserialize(operator);
+
+        dispatch({
+          type: GET_OPERATOR_TIMELINE_SUCCESS,
           payload: dataParsed
         });
       })

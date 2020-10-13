@@ -19,7 +19,7 @@ function DocumentsByFMU({
   const [FMUsOpen, setFMUsOpen] =
     useState(Object.values(documents)
       .map(d => d[0].fmu.name)
-      .reduce((acc, name) => ({ ...acc, [name]: false }), {}));
+      .reduce((acc, name) => ({ ...acc, [name]: true }), {}));
   return (
     <div className="c-doc-gallery-fmu-docs">
       <h3>FMU Documents:</h3>
