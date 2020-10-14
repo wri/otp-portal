@@ -14,9 +14,6 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 // Components
 import ChartLegend from 'components/ui/chart-legend';
 
-const PALETTE = PALETTE_COLOR_1;
-PALETTE.reverse();
-
 class TotalObservationsByOperator extends React.Component {
   render() {
     const { data } = this.props;
@@ -58,13 +55,13 @@ class TotalObservationsByOperator extends React.Component {
                   className={`obo-observations-list ${observationListClassNames}`}
                   style={{ width: `${(length / max) * 100}%` }}
                 >
-                  {Object.keys(groupedBySeverity).sort((a, b) => b - a).map((severity) => {
+                  {Object.keys(groupedBySeverity).map((severity) => {
                     const lengthSeverity = groupedBySeverity[severity].length;
 
                     return (
                       <li
                         key={severity}
-                        style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE[severity].fill }}
+                        style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE_COLOR_1[severity].fill }}
                         className={`obo-observations-list-item -severity-${severity}`}
                       >
                         {i === 0 && lengthSeverity}

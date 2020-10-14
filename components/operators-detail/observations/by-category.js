@@ -12,10 +12,6 @@ import { HELPERS_OBS } from 'utils/observations';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 
-const PALETTE = PALETTE_COLOR_1;
-PALETTE.reverse();
-
-
 export default class TotalObservationsByOperatorByCategory extends React.Component {
   getXAxis = (max) => {
     if (this.props.horizontal) {

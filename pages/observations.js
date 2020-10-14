@@ -62,7 +62,6 @@ import { logEvent } from 'utils/analytics';
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
-const PALETTE = PALETTE_COLOR_1.reverse();
 
 class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {
@@ -383,7 +382,7 @@ class ObservationsPage extends React.Component {
         className: 'severity',
         Cell: (attr) => {
           return (
-            <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE[+attr.value].fill }}>{attr.value}</span>
+            <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE_COLOR_1[+attr.value].fill }}>{attr.value}</span>
           );
         }
       },
