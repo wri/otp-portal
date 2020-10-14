@@ -10,8 +10,8 @@ const zoom = state => state.observations.map.zoom;
 const getLocation = (obs = {}) => {
   if (obs.lat && obs.lng) {
     return [
+      Number(obs.lng),
       Number(obs.lat),
-      Number(obs.lng)
     ];
   }
 
@@ -114,13 +114,13 @@ const getObservationsLayers = createSelector(
                   date: new Date(obs['publication-date']).getFullYear(),
                   country: obs.country.iso,
                   operator: !!obs.operator && obs.operator.name,
-                  category: obs.subcategory.category.name,
+                  category: obs?.subcategory?.category?.name,
                   observation: obs.details,
                   level: obs.severity && obs.severity.level,
                   fmu: !!obs.fmu && obs.fmu.name,
                   report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
                   'operator-type': obs.operator && obs.operator.type,
-                  subcategory: obs.subcategory.name,
+                  subcategory: obs?.subcategory?.name,
                   evidence: obs.evidence,
                   'litigation-status': obs['litigation-status'],
                   'observer-types': obs.observers.map(observer => observer['observer-type']),
