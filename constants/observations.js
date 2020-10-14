@@ -1,8 +1,8 @@
 const PALETTE_COLOR_1 = [
-  { fill: '#9B9B9B' },
-  { fill: '#005b23' },
-  { fill: '#333333' },
-  { fill: '#e98300' }
+  { fill: '#D2CFCF' },
+  { fill: '#94CDB0' },
+  { fill: '#F7F6ED' },
+  { fill: '#055E25' }
 ];
 
 const FILTERS_REFS = [

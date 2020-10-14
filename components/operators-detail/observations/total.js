@@ -9,10 +9,13 @@ import { HELPERS_OBS } from 'utils/observations';
 import { injectIntl, intlShape } from 'react-intl';
 
 // Constants
-import { LEGEND_SEVERITY } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 
 // Components
 import ChartLegend from 'components/ui/chart-legend';
+
+const PALETTE = PALETTE_COLOR_1;
+PALETTE.reverse();
 
 class TotalObservationsByOperator extends React.Component {
   render() {
@@ -61,7 +64,7 @@ class TotalObservationsByOperator extends React.Component {
                     return (
                       <li
                         key={severity}
-                        style={{ width: `${(lengthSeverity / length) * 100}%` }}
+                        style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE[severity].fill }}
                         className={`obo-observations-list-item -severity-${severity}`}
                       >
                         {i === 0 && lengthSeverity}

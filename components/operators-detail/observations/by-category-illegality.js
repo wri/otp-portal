@@ -7,11 +7,15 @@ import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
+import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 // components
 import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
 import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+
+const PALETTE = PALETTE_COLOR_1;
+PALETTE.reverse();
 
 
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
@@ -103,7 +107,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                             {/* Severity list */}
                             <ul className="obi-severity-list">
                               {groupedByIllegality[illegality].map(({ severity, id }) =>
-                                <li key={id} className={`obi-severity-list-item -severity-${severity}`} />
+                                <li key={id} className={`obi-severity-list-item -severity-${severity}`} style={{ background: PALETTE[severity].fill }} />
                               )}
                             </ul>
 
@@ -161,7 +165,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         headerClassName: '-a-center',
                                         className: '-a-left severity',
                                         minWidth: 150,
-                                        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+                                        Cell: attr => <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE[attr.value].fill }}>{attr.value}</span>
                                       },
                                       {
                                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,

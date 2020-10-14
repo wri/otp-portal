@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
+import orderBy from 'lodash/orderBy';
 import difference from 'lodash/difference';
 import debounce from 'lodash/debounce';
 
@@ -60,7 +61,8 @@ import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
-import { LEGEND_SEVERITY } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+const PALETTE = PALETTE_COLOR_1.reverse();
 
 class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {
@@ -153,6 +155,7 @@ class ObservationsPage extends React.Component {
 
     const { features } = e;
     if (features && features.length) {
+      console.log(features);
       const { source, geometry, properties } = features[0];
       const { cluster, cluster_id: clusterId, point_count } = properties;
 
@@ -174,9 +177,10 @@ class ObservationsPage extends React.Component {
               this.props.setObservationsMapCluster({
                 id: clusterId,
                 coordinates: geometry.coordinates,
-                features: fts,
+                features: orderBy(fts, 'properties.level'),
                 layers
               });
+
               return fts;
             }
           );
@@ -377,7 +381,11 @@ class ObservationsPage extends React.Component {
         accessor: 'level',
         headerClassName: 'severity-th',
         className: 'severity',
-        Cell: attr => <span className={`severity-item -sev-${attr.value}`}>{attr.value}</span>
+        Cell: (attr) => {
+          return (
+            <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE[+attr.value].fill }}>{attr.value}</span>
+          );
+        }
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'report' })}</span>,
