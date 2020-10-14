@@ -82,7 +82,7 @@ class TotalObservationsByOperatorByFMU extends React.Component {
                     className={`obo-observations-list ${observationListClassNames}`}
                     style={{ width: `${(length / max) * 100}%` }}
                   >
-                    {Object.keys(groupedBySeverity).map((severity) => {
+                    {Object.keys(groupedBySeverity).sort((a, b) => b - a).map((severity) => {
                       const lengthSeverity = groupedBySeverity[severity].length;
 
                       return (
