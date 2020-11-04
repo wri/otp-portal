@@ -20,6 +20,7 @@ import { getParsedTimeline } from 'selectors/operators-detail/timeline';
 // Redux
 import { connect } from 'react-redux';
 import { getOperator, getOperatorTimeline } from 'modules/operators-detail';
+
 import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
@@ -51,13 +52,6 @@ class OperatorsDetail extends React.Component {
     }
 
     return { url };
-  }
-
-
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
   }
 
   componentWillReceiveProps(nextProps) {
@@ -108,6 +102,7 @@ class OperatorsDetail extends React.Component {
       operatorDocumentation,
       operatorTimeline
     } = this.props;
+
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
     const logoPath = operatorsDetail.data.logo ? operatorsDetail.data.logo.url : '';

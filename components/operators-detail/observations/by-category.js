@@ -12,7 +12,6 @@ import { HELPERS_OBS } from 'utils/observations';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 
-
 export default class TotalObservationsByOperatorByCategory extends React.Component {
   getXAxis = (max) => {
     if (this.props.horizontal) {
@@ -95,7 +94,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
 
                         <Bar
                           dataKey="hight"
-                          fill={PALETTE_COLOR_1[0].fill}
+                          fill={PALETTE_COLOR_1[3].fill}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: v => v || null
@@ -103,14 +102,6 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         />
                         <Bar
                           dataKey="medium"
-                          fill={PALETTE_COLOR_1[1].fill}
-                          label={{
-                            position: horizontal ? 'right' : 'top',
-                            formatter: v => v || null
-                          }}
-                        />
-                        <Bar
-                          dataKey="low"
                           fill={PALETTE_COLOR_1[2].fill}
                           label={{
                             position: horizontal ? 'right' : 'top',
@@ -118,8 +109,16 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                           }}
                         />
                         <Bar
+                          dataKey="low"
+                          fill={PALETTE_COLOR_1[1].fill}
+                          label={{
+                            position: horizontal ? 'right' : 'top',
+                            formatter: v => v || null
+                          }}
+                        />
+                        <Bar
                           dataKey="unknown"
-                          fill={PALETTE_COLOR_1[3].fill}
+                          fill={PALETTE_COLOR_1[0].fill}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: v => v || null

@@ -1,3 +1,5 @@
+// Constants
+import { PALETTE_COLOR_1 } from 'constants/rechart';
 import isEmpty from 'lodash/isEmpty';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
@@ -61,17 +63,19 @@ const getObservationsLayers = createSelector(
                     type: 'circle',
                     paint: {
                       'circle-radius': 6,
+                      'circle-stroke-width': 1,
+                      'circle-stroke-color': '#333',
                       'circle-color': [
                         'match',
                         ['get', 'level'],
                         0,
-                        '#9B9B9B',
+                        PALETTE_COLOR_1[0].fill,
                         1,
-                        '#005b23',
+                        PALETTE_COLOR_1[1].fill,
                         2,
-                        '#333333',
+                        PALETTE_COLOR_1[2].fill,
                         3,
-                        '#e98300',
+                        PALETTE_COLOR_1[3].fill,
                         /* other */
                         '#ccc'
                       ]
@@ -184,17 +188,19 @@ const getObservationsLayers = createSelector(
                 filter: ['!has', 'point_count'],
                 paint: {
                   'circle-radius': 6,
+                  'circle-stroke-width': 1,
+                  'circle-stroke-color': '#333',
                   'circle-color': [
                     'match',
                     ['get', 'level'],
                     0,
-                    '#9B9B9B',
+                    PALETTE_COLOR_1[0].fill,
                     1,
-                    '#005b23',
+                    PALETTE_COLOR_1[1].fill,
                     2,
-                    '#333333',
+                    PALETTE_COLOR_1[2].fill,
                     3,
-                    '#e98300',
+                    PALETTE_COLOR_1[3].fill,
                     /* other */
                     '#ccc'
                   ]

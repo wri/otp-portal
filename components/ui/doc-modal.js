@@ -17,6 +17,7 @@ import DocumentationService from 'services/documentationService';
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Select from 'components/form/SelectInput';
 import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
@@ -45,7 +46,7 @@ const FORM_ELEMENTS = {
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
-    const { startDate, endDate, url, reason } = props;
+    const { startDate, endDate, url, reason, source, sourceInfo } = props;
 
     this.state = {
       form: {
@@ -53,7 +54,9 @@ class DocModal extends React.Component {
         expireDate: endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: '',
         url,
-        reason
+        reason,
+        source: source || 'company',
+        sourceInfo
       },
       showFile: false,
       submitting: false,
@@ -155,6 +158,8 @@ class DocModal extends React.Component {
           current: true,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
+          'source-type': this.state.form.source,
+          'source-info': this.state.form.source === 'other_source' ? this.state.form.sourceInfo : null,
           ...this.state.form.file && {
             attachment: this.state.form.file
           },
@@ -194,7 +199,6 @@ class DocModal extends React.Component {
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
-
             <div className="l-row row">
               <div className="columns medium-6 small-12">
                 {/* DATE */}
@@ -235,6 +239,50 @@ class DocModal extends React.Component {
                 </Field>
               </div>
             </div>
+
+            {(!notRequired &&
+              <div className="l-row row">
+                <div className="columns small-12">
+                  <Field
+                    ref={(c) => { if (c) FORM_ELEMENTS.elements.source = c; }}
+                    onChange={value => this.onChange({ source: value })}
+                    validations={['required']}
+                    className="-fluid"
+                    options={[
+                      { label: this.props.intl.formatMessage({ id: 'company' }), value: 'company' },
+                      { label: this.props.intl.formatMessage({ id: 'forest_atlas' }), value: 'forest_atlas' },
+                      { label: this.props.intl.formatMessage({ id: 'other_source' }), value: 'other_source' }
+                    ]}
+                    properties={{
+                      name: 'source',
+                      label: this.props.intl.formatMessage({ id: 'source' }),
+                      required: true,
+                      default: this.state.form.source
+                    }}
+                  >
+                    {Select}
+                  </Field>
+                </div>
+                {this.state.form.source === 'other_source' && (
+                  <div className="columns small-12">
+                    <Field
+                      ref={(c) => { if (c) FORM_ELEMENTS.elements.sourceInfo = c; }}
+                      onChange={value => this.onChange({ sourceInfo: value })}
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'source-info',
+                        label: this.props.intl.formatMessage({ id: 'source-info' }),
+                        required: true,
+                        default: this.state.form.sourceInfo
+                      }}
+                    >
+                      {Input}
+                    </Field>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* DOCUMENT */}
             {(!notRequired || (this.state.form.file && !this.state.form.reason)) &&
@@ -323,6 +371,8 @@ DocModal.propTypes = {
   status: PropTypes.string,
   url: PropTypes.string,
   reason: PropTypes.string,
+  source: PropTypes.string,
+  sourceInfo: PropTypes.string,
   title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,

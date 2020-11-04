@@ -20,6 +20,7 @@ const getParsedDocumentation = createSelector(
           if (doc['required-operator-document-country']['contract-signature']) {
             return null;
           }
+          
           try {
             return {
               id: doc.id,
@@ -27,6 +28,7 @@ const getParsedDocumentation = createSelector(
               url: doc.attachment?.url,
               type: doc.type,
               source: doc.source,
+              sourceInfo: doc['source-info'],
               title: doc['required-operator-document-country'].name,
               public: doc.public,
               explanation:
@@ -71,6 +73,7 @@ const getParsedDocumentation = createSelector(
               url: doc.attachment?.url,
               type: doc.type,
               source: doc.source,
+              sourceInfo: doc['source-info'],
               title: doc['required-operator-document-fmu'].name,
               public: doc.public,
               explanation: doc['required-operator-document-fmu'].explanation,
@@ -127,6 +130,7 @@ const getAllParsedDocumentation = createSelector(
                   requiredDocId: doc['required-operator-document'].id,
                   type: doc.type,
                   source: doc.source,
+                  sourceInfo: doc['source-info'],
                   title: doc['required-operator-document'].name,
                   category:
                     doc['required-operator-document'][
