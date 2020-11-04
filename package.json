@@ -121,6 +121,9 @@
     "transifex:push": "node transifex/transifex-push.js",
     "transifex:pull": "node transifex/transifex-pull.js"
   },
+  "prettier": {
+    "singleQuote": true
+  },
   "engines": {
     "node": "10.x.x"
   }
