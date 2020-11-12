@@ -19,6 +19,13 @@
     "sourceType": "module"
   },
   "plugins": ["react", "prettier", "react-hooks"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["components", "utils"]
+      }
+    }
+  },
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",

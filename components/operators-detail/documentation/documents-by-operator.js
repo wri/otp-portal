@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import sortBy from "lodash/sortBy";
-import groupBy from "lodash/groupBy";
-import cx from "classnames";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
+import cx from 'classnames';
 
 // Redux
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import { getOperator } from "modules/operators-detail";
+import { getOperator } from 'modules/operators-detail';
 
 // Utils
-import { HELPERS_DOC } from "utils/documentation";
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
-import DocCard from "components/ui/doc-card";
-import DocCardUpload from "components/ui/doc-card-upload";
-import DocumentsByFMU from "./documents-by-fmu";
+import DocCard from 'components/ui/doc-card';
+import DocCardUpload from 'components/ui/doc-card-upload';
+import DocumentsByFMU from './documents-by-fmu';
 
 function DocumentsByOperator({ data, user, id, ...props }) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
@@ -33,12 +33,12 @@ function DocumentsByOperator({ data, user, id, ...props }) {
           groupedByCategory[category]
         );
         const producerDocs = groupedByCategory[category].filter(
-          (doc) => doc.type === "operator-document-countries"
+          (doc) => doc.type === 'operator-document-countries'
         );
         const FMUDocs = groupedByCategory[category].filter(
-          (doc) => doc.type === "operator-document-fmus"
+          (doc) => doc.type === 'operator-document-fmus'
         );
-        const FMUDocsByFMU = groupBy(FMUDocs, "fmu.id");
+        const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
         const isCategoryOpen = categoriesOpen[category];
 
         return (
@@ -77,7 +77,7 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                 </h3>
               </div>
               <button
-                className={cx("doc-by-category-btn -proximanova", {
+                className={cx('doc-by-category-btn -proximanova', {
                   open: isCategoryOpen,
                 })}
                 onClick={() =>
@@ -87,7 +87,7 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                   })
                 }
               >
-                {isCategoryOpen ? "Collapse" : "Expand"}
+                {isCategoryOpen ? 'Collapse' : 'Expand'}
               </button>
             </header>
 
@@ -100,21 +100,21 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                       <DocCard
                         {...card}
                         properties={{
-                          type: "operator",
+                          type: 'operator',
                           id,
                         }}
                         onChange={() => props.getOperator(id)}
                       />
 
-                      {((user && user.role === "admin") ||
+                      {((user && user.role === 'admin') ||
                         (user &&
-                          user.role === "operator" &&
+                          user.role === 'operator' &&
                           user.operator &&
                           user.operator.toString() === id)) && (
                         <DocCardUpload
                           {...card}
                           properties={{
-                            type: "operator",
+                            type: 'operator',
                             id,
                           }}
                           user={user}

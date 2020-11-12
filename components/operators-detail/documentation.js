@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl, intlShape } from "react-intl";
+import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
-import { HELPERS_DOC } from "utils/documentation";
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
-import DocumentsCertification from "components/operators-detail/documentation/documents-certification";
-import DocumentsProvided from "components/operators-detail/documentation/documents-provided";
-import DocumentsByOperator from "components/operators-detail/documentation/documents-by-operator";
-import DocumentsTimeline from "components/operators-detail/documentation/documents-timeline";
+import DocumentsCertification from 'components/operators-detail/documentation/documents-certification';
+import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
+import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
+import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 
 function OperatorsDetailDocumentation({
   operatorsDetail,
@@ -35,7 +35,7 @@ function OperatorsDetailDocumentation({
               <h2 className="c-title">
                 {intl.formatMessage(
                   {
-                    id: "operator-detail.documents.title",
+                    id: 'operator-detail.documents.title',
                   },
                   {
                     percentage: HELPERS_DOC.getPercentage(operatorsDetail.data),
