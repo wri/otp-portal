@@ -15,7 +15,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
-import DocumentsByFMU from './documents-by-fmu';
+import DocumentsByFMU from './documents-by-fmu.js';
 
 function DocumentsByOperator({ data, user, id, ...props }) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
@@ -111,15 +111,15 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                           user.role === 'operator' &&
                           user.operator &&
                           user.operator.toString() === id)) && (
-                        <DocCardUpload
-                          {...card}
-                          properties={{
-                            type: 'operator',
-                            id,
-                          }}
-                          user={user}
-                          onChange={() => props.getOperator(id)}
-                        />
+                          <DocCardUpload
+                            {...card}
+                            properties={{
+                              type: 'operator',
+                              id,
+                            }}
+                            user={user}
+                            onChange={() => props.getOperator(id)}
+                          />
                       )}
                     </div>
                   ))}
