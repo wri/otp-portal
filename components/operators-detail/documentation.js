@@ -12,6 +12,7 @@ import DocumentsCertification from 'components/operators-detail/documentation/do
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
+import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 
 function OperatorsDetailDocumentation({
   operatorsDetail,
@@ -24,6 +25,8 @@ function OperatorsDetailDocumentation({
     <div>
       <div className="c-section">
         <div className="l-container">
+          <DocumentsFilter />
+
           <DocumentsCertification
             // Publication authorization
             id={url.query.id}

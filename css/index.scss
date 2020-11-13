@@ -59,6 +59,7 @@
 @import 'components/ui/doc-by-category';
 @import 'components/ui/doc-card';
 @import 'components/ui/doc-card-upload';
+@import 'components/ui/doc-filters';
 @import 'components/ui/doc-gallery';
 @import 'components/ui/doc-license-agreement';
 @import 'components/ui/doc-provided';
@@ -98,17 +99,17 @@
 @import 'components/ui/stacked-timeline';
 
 // form
-@import "components/form/form";
-@import "components/form/field";
-@import "components/form/field-container";
-@import "components/form/field-buttons";
-@import "components/form/file";
-@import "components/form/file-image";
-@import "components/form/checkbox";
-@import "components/form/radio";
-@import "components/form/select";
-@import "components/form/token";
-@import "components/form/toggle-switch";
+@import 'components/form/form';
+@import 'components/form/field';
+@import 'components/form/field-container';
+@import 'components/form/field-buttons';
+@import 'components/form/file';
+@import 'components/form/file-image';
+@import 'components/form/checkbox';
+@import 'components/form/radio';
+@import 'components/form/select';
+@import 'components/form/token';
+@import 'components/form/toggle-switch';
 
 // html
-@import "components/html/html";
+@import 'components/html/html';
