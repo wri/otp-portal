@@ -25,7 +25,21 @@
       position: relative;
 
       .dropdown-placeholder {
+        position: relative;
         cursor: pointer;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: -10px;
+          width: 0;
+          height: 0;
+          margin: -3px 0 0;
+          border-style: solid;
+          border-width: 4px 3px 0px 3px;
+          border-color: #005b23 transparent transparent transparent;
+        }
       }
 
       .dropdown-content {
@@ -36,6 +50,11 @@
         box-shadow: 0 15px 29px 0 rgba(0, 0, 0, 0.14);
         margin: 2px;
         width: 100%;
+
+        option {
+          cursor: pointer;
+          margin: 4px 0;
+        }
       }
     }
 

@@ -4,6 +4,7 @@ import Datepicker from 'components/ui/datepicker';
 
 function DocumentsFilter() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [FMU, setFMU] = useState(null);
   const [date, setDate] = useState(moment('2020-11-13'));
 
   return (
@@ -18,15 +19,23 @@ function DocumentsFilter() {
             className="dropdown-placeholder"
             onClick={() => setDropdownOpen(!isDropdownOpen)}
           >
-            Select FMUs
+            {FMU || 'Select FMUs'}
           </button>
 
           {isDropdownOpen && (
-            <ul className="dropdown-content">
+            <div className="dropdown-content">
               {[1, 2, 3, 4, 5].map((n) => (
-                <li key={`option-${n}`}>Option {n}</li>
+                <option
+                  key={`option-${n}`}
+                  onClick={() => {
+                    setFMU(`Option ${n}`);
+                    setDropdownOpen(false);
+                  }}
+                >
+                  Option {n}
+                </option>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </span>
