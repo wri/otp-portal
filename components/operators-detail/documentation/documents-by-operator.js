@@ -15,7 +15,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
-import DocumentsByFMU from './documents-by-fmu.js';
+import DocumentsByFMU from './documents-by-fmu';
 
 function DocumentsByOperator({ data, user, id, ...props }) {
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
