@@ -4,6 +4,8 @@ import Datepicker from 'components/ui/datepicker';
 
 function DocumentsFilter() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [date, setDate] = useState(moment('2020-11-13'));
+
   return (
     <div className="c-doc-filters c-section">
       <h3>Filter by:</h3>
@@ -22,7 +24,7 @@ function DocumentsFilter() {
           {isDropdownOpen && (
             <ul className="dropdown-content">
               {[1, 2, 3, 4, 5].map((n) => (
-                <li>Option {n}</li>
+                <li key={`option-${n}`}>Option {n}</li>
               ))}
             </ul>
           )}
@@ -33,7 +35,7 @@ function DocumentsFilter() {
 
         <Datepicker
           className="filters-date -inline"
-          date={moment('2020-11-13')}
+          date={date}
           dateFormat="dd MMM yyyy"
           settings={{
             numberOfMonths: 1,
@@ -45,7 +47,7 @@ function DocumentsFilter() {
             noBorder: true,
             readOnly: false,
           }}
-          // onDateChange={(date) => this.onDateChange(date, 'startDate')}
+          onDateChange={(d) => setDate(moment(d))}
         />
       </span>
     </div>
