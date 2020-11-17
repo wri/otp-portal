@@ -6,10 +6,7 @@
     "mocha": true
   },
   "extends": ["plugin:react/recommended", "airbnb", "prettier"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
+  "globals": {},
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
@@ -38,6 +35,7 @@
     "react/state-in-constructor": "off",
     "react/jsx-fragments": "off",
     "jsx-a11y/anchor-is-valid": "off",
+    "no-console": ["error", { "allow": ["warn", "error", "info"] }],
     // to be removed once ready
     "react/require-default-props": "off",
     "react/button-has-type": "off",
@@ -47,6 +45,7 @@
     "react/no-array-index-key": "off",
     "no-restricted-globals": "off",
     "react/sort-comp": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "import/extensions": "off"
   }
 }

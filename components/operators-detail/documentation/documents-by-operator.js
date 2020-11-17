@@ -111,15 +111,15 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                           user.role === 'operator' &&
                           user.operator &&
                           user.operator.toString() === id)) && (
-                        <DocCardUpload
-                          {...card}
-                          properties={{
-                            type: 'operator',
-                            id,
-                          }}
-                          user={user}
-                          onChange={() => props.getOperator(id)}
-                        />
+                          <DocCardUpload
+                            {...card}
+                            properties={{
+                              type: 'operator',
+                              id,
+                            }}
+                            user={user}
+                            onChange={() => props.getOperator(id)}
+                          />
                       )}
                     </div>
                   ))}
