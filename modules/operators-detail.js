@@ -15,6 +15,8 @@ const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
 const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
 const GET_OPERATOR_TIMELINE_LOADING = 'GET_OPERATOR_TIMELINE_LOADING';
 
+const SET_OPERATOR_DOCUMENTATION_DATE = 'SET_OPERATOR_DOCUMENTATION_DATE';
+
 /* Constants sawmills */
 const GET_SAWMILLS_SUCCESS = 'GET_SAWMILLS_SUCCESS';
 const GET_SAWMILLS_ERROR = 'GET_SAWMILLS_ERROR';
@@ -34,6 +36,7 @@ const initialState = {
     loading: false,
     error: false,
   },
+  date: new Date(),
   sawmills: {
     data: [],
     loading: false,
@@ -63,6 +66,12 @@ export default function (state = initialState, action) {
     }
     case GET_OPERATOR_LOADING: {
       return Object.assign({}, state, { loading: true, error: false });
+    }
+    case SET_OPERATOR_DOCUMENTATION_DATE: {
+      const newDate = Object.assign({}, state, {
+        date: action.payload,
+      });
+      return Object.assign({}, state, newDate);
     }
     case GET_OPERATOR_TIMELINE_SUCCESS: {
       return Object.assign({}, state, {
@@ -209,7 +218,8 @@ export function getOperator(id) {
 
 export function getOperatorDocumentation(id) {
   return (dispatch, getState) => {
-    const { user, language } = getState();
+    const { user, language, operatorsDetail } = getState();
+    const date = operatorsDetail.date;
     dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING });
 
     const includeFields = [
@@ -222,7 +232,7 @@ export function getOperatorDocumentation(id) {
     const queryParams = queryString.stringify({
       include: includeFields.join(','),
       'filter[operator-id]': id,
-      'filter[date]': '2020-11-17',
+      'filter[date]': date,
       locale: lang,
     });
 
@@ -373,5 +383,14 @@ export function getSawMillsLocationByOperatorId(id) {
           payload: err.message,
         });
       });
+  };
+}
+
+export function setOperatorDocumentationDate(date) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_OPERATOR_DOCUMENTATION_DATE,
+      payload: date,
+    });
   };
 }

@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
+import { connect } from 'react-redux';
+
 import Datepicker from 'components/ui/datepicker';
 
-function DocumentsFilter() {
+import { setOperatorDocumentationDate } from 'modules/operators-detail';
+import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
+
+function DocumentsFilter({ date, setDate }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [FMU, setFMU] = useState(null);
-  const [date, setDate] = useState(moment('2020-11-13'));
 
   return (
     <div className="c-doc-filters c-section">
@@ -44,23 +49,32 @@ function DocumentsFilter() {
 
         <Datepicker
           className="filters-date -inline"
-          date={date}
+          date={moment(date)}
           dateFormat="dd MMM yyyy"
           settings={{
             numberOfMonths: 1,
+            // TODO: specify minDate
             minDate: new Date('2019-11-09'),
             maxDate: new Date(),
-            // isOutsideRange: (d) =>
-            //   d.isAfter(moment(trim)) || d.isBefore(moment(min)),
             hideKeyboardShortcutsPanel: true,
             noBorder: true,
             readOnly: false,
           }}
-          onDateChange={(d) => setDate(moment(d))}
+          onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
         />
       </span>
     </div>
   );
 }
 
-export default DocumentsFilter;
+DocumentsFilter.propTypes = {
+  date: PropTypes.string,
+  setDate: PropTypes.func,
+};
+
+export default connect(
+  (state) => ({
+    date: getOperatorDocumentationDate(state),
+  }),
+  { setDate: setOperatorDocumentationDate }
+)(DocumentsFilter);

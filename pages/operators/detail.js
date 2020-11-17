@@ -66,6 +66,16 @@ class OperatorsDetail extends React.Component {
     this.props.getOperatorDocumentation(url?.query?.id);
   }
 
+  componentDidUpdate(prevProps) {
+    const prevDate = prevProps?.operatorsDetail?.date;
+    const newDate = this.props?.operatorsDetail?.date;
+
+    if (prevDate !== newDate) {
+      const { url } = this.props;
+      this.props.getOperatorDocumentation(url?.query?.id);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const { url } = this.props;
     const { url: nextUrl } = nextProps;

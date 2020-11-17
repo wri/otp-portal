@@ -6,6 +6,8 @@ import compact from 'lodash/compact';
 const operatorsDetail = (state) => state.operatorsDetail;
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
 export const getFMUs = (state) => state.operatorsDetail.data.fmus;
+export const getOperatorDocumentationDate = (state) =>
+  state.operatorsDetail.date;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 const getParsedDocumentation = createSelector(
