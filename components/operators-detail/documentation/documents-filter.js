@@ -48,7 +48,7 @@ function DocumentsFilter() {
           dateFormat="dd MMM yyyy"
           settings={{
             numberOfMonths: 1,
-            minDate: new Date('2020-11-09'),
+            minDate: new Date('2019-11-09'),
             maxDate: new Date(),
             // isOutsideRange: (d) =>
             //   d.isAfter(moment(trim)) || d.isBefore(moment(min)),

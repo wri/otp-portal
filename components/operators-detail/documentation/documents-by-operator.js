@@ -33,10 +33,10 @@ function DocumentsByOperator({ data, user, id, ...props }) {
           groupedByCategory[category]
         );
         const producerDocs = groupedByCategory[category].filter(
-          (doc) => doc.type === 'operator-document-countries'
+          (doc) => doc.type === 'operator-document-country-histories'
         );
         const FMUDocs = groupedByCategory[category].filter(
-          (doc) => doc.type === 'operator-document-fmus'
+          (doc) => doc.type === 'operator-document-fmu-histories'
         );
         const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
         const isCategoryOpen = categoriesOpen[category];
@@ -111,15 +111,15 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                           user.role === 'operator' &&
                           user.operator &&
                           user.operator.toString() === id)) && (
-                          <DocCardUpload
-                            {...card}
-                            properties={{
-                              type: 'operator',
-                              id,
-                            }}
-                            user={user}
-                            onChange={() => props.getOperator(id)}
-                          />
+                        <DocCardUpload
+                          {...card}
+                          properties={{
+                            type: 'operator',
+                            id,
+                          }}
+                          user={user}
+                          onChange={() => props.getOperator(id)}
+                        />
                       )}
                     </div>
                   ))}
