@@ -6,9 +6,13 @@ import { connect } from 'react-redux';
 import Datepicker from 'components/ui/datepicker';
 
 import { setOperatorDocumentationDate } from 'modules/operators-detail';
-import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
+import {
+  getOperatorDocumentationDate,
+  getDocumentationMinDate,
+  getFMUs,
+} from 'selectors/operators-detail/documentation';
 
-function DocumentsFilter({ date, setDate }) {
+function DocumentsFilter({ date, minDate, setDate, fmus }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [FMU, setFMU] = useState(null);
 
@@ -24,20 +28,20 @@ function DocumentsFilter({ date, setDate }) {
             className="dropdown-placeholder"
             onClick={() => setDropdownOpen(!isDropdownOpen)}
           >
-            {FMU || 'Select FMUs'}
+            {FMU ? FMU.name : 'Select FMUs'}
           </button>
 
           {isDropdownOpen && (
             <div className="dropdown-content">
-              {[1, 2, 3, 4, 5].map((n) => (
+              {fmus.map((_fmu) => (
                 <option
-                  key={`option-${n}`}
+                  key={_fmu.id}
                   onClick={() => {
-                    setFMU(`Option ${n}`);
+                    setFMU(_fmu);
                     setDropdownOpen(false);
                   }}
                 >
-                  Option {n}
+                  {_fmu.name}
                 </option>
               ))}
             </div>
@@ -53,9 +57,8 @@ function DocumentsFilter({ date, setDate }) {
           dateFormat="dd MMM yyyy"
           settings={{
             numberOfMonths: 1,
-            // TODO: specify minDate
-            minDate: new Date('2019-11-09'),
-            maxDate: new Date(),
+            minDate: moment(minDate).add(1, 'days'),
+            maxDate: moment(new Date()),
             hideKeyboardShortcutsPanel: true,
             noBorder: true,
             readOnly: false,
@@ -69,12 +72,16 @@ function DocumentsFilter({ date, setDate }) {
 
 DocumentsFilter.propTypes = {
   date: PropTypes.string,
+  minDate: PropTypes.string,
   setDate: PropTypes.func,
+  fmus: PropTypes.array,
 };
 
 export default connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
+    minDate: getDocumentationMinDate(state),
+    fmus: getFMUs(state),
   }),
   { setDate: setOperatorDocumentationDate }
 )(DocumentsFilter);
