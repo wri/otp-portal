@@ -16,6 +16,7 @@ const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
 const GET_OPERATOR_TIMELINE_LOADING = 'GET_OPERATOR_TIMELINE_LOADING';
 
 const SET_OPERATOR_DOCUMENTATION_DATE = 'SET_OPERATOR_DOCUMENTATION_DATE';
+const SET_OPERATOR_DOCUMENTATION_FMU = 'SET_OPERATOR_DOCUMENTATION_FMU';
 
 /* Constants sawmills */
 const GET_SAWMILLS_SUCCESS = 'GET_SAWMILLS_SUCCESS';
@@ -37,6 +38,7 @@ const initialState = {
     error: false,
   },
   date: new Date(),
+  FMU: null,
   sawmills: {
     data: [],
     loading: false,
@@ -68,10 +70,16 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, { loading: true, error: false });
     }
     case SET_OPERATOR_DOCUMENTATION_DATE: {
-      const newDate = Object.assign({}, state, {
+      const documentation = Object.assign({}, state, {
         date: action.payload,
       });
-      return Object.assign({}, state, newDate);
+      return Object.assign({}, state, documentation);
+    }
+    case SET_OPERATOR_DOCUMENTATION_FMU: {
+      const documentation = Object.assign({}, state, {
+        fmu: action.payload,
+      });
+      return Object.assign({}, state, documentation);
     }
     case GET_OPERATOR_TIMELINE_SUCCESS: {
       return Object.assign({}, state, {
@@ -390,6 +398,15 @@ export function setOperatorDocumentationDate(date) {
   return (dispatch) => {
     dispatch({
       type: SET_OPERATOR_DOCUMENTATION_DATE,
+      payload: date,
+    });
+  };
+}
+
+export function setOperatorDocumentationFMU(date) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_OPERATOR_DOCUMENTATION_FMU,
       payload: date,
     });
   };

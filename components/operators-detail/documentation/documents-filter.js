@@ -5,49 +5,53 @@ import { connect } from 'react-redux';
 
 import Datepicker from 'components/ui/datepicker';
 
-import { setOperatorDocumentationDate } from 'modules/operators-detail';
+import {
+  setOperatorDocumentationDate,
+  setOperatorDocumentationFMU,
+} from 'modules/operators-detail';
 import {
   getOperatorDocumentationDate,
+  getOperatorDocumentationFMU,
   getFMUs,
 } from 'selectors/operators-detail/documentation';
 
-function DocumentsFilter({ date, setDate, fmus }) {
+function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [FMU, setFMU] = useState(null);
+  // const [FMU, setFMU] = useState(null);
   const minDate = process.env.DOCUMENTS_MINDATE;
 
   return (
     <div className="c-doc-filters c-section">
       <h3>Filter by:</h3>
-      <span className="filter-option">
-        <label htmlFor="business">FMU</label>
+      {fmus.length > 0 && (
+        <span className="filter-option">
+          <label htmlFor="business">FMU</label>
+          <div className="filters-dropdown">
+            <button
+              className="dropdown-placeholder"
+              onClick={() => setDropdownOpen(!isDropdownOpen)}
+            >
+              {FMU ? FMU.name : 'Select FMUs'}
+            </button>
 
-        {/* TODO: use react-simple-dropdown? */}
-        <div className="filters-dropdown">
-          <button
-            className="dropdown-placeholder"
-            onClick={() => setDropdownOpen(!isDropdownOpen)}
-          >
-            {FMU ? FMU.name : 'Select FMUs'}
-          </button>
-
-          {isDropdownOpen && (
-            <div className="dropdown-content">
-              {fmus.map((_fmu) => (
-                <option
-                  key={_fmu.id}
-                  onClick={() => {
-                    setFMU(_fmu);
-                    setDropdownOpen(false);
-                  }}
-                >
-                  {_fmu.name}
-                </option>
-              ))}
-            </div>
-          )}
-        </div>
-      </span>
+            {isDropdownOpen && (
+              <div className="dropdown-content">
+                {[null, ...fmus].map((_fmu) => (
+                  <option
+                    key={_fmu ? _fmu.id : 'no-fmu'}
+                    onClick={() => {
+                      setFMU(_fmu);
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    {_fmu ? _fmu.name : 'Select FMUs'}
+                  </option>
+                ))}
+              </div>
+            )}
+          </div>
+        </span>
+      )}
       <span className="filter-option">
         <label htmlFor="business">Date</label>
 
@@ -73,13 +77,19 @@ function DocumentsFilter({ date, setDate, fmus }) {
 DocumentsFilter.propTypes = {
   date: PropTypes.string,
   setDate: PropTypes.func,
+  FMU: PropTypes.object,
+  setFMU: PropTypes.func,
   fmus: PropTypes.array,
 };
 
 export default connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
+    FMU: getOperatorDocumentationFMU(state),
     fmus: getFMUs(state),
   }),
-  { setDate: setOperatorDocumentationDate }
+  {
+    setDate: setOperatorDocumentationDate,
+    setFMU: setOperatorDocumentationFMU,
+  }
 )(DocumentsFilter);
