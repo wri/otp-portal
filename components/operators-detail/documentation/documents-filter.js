@@ -8,13 +8,13 @@ import Datepicker from 'components/ui/datepicker';
 import { setOperatorDocumentationDate } from 'modules/operators-detail';
 import {
   getOperatorDocumentationDate,
-  getDocumentationMinDate,
   getFMUs,
 } from 'selectors/operators-detail/documentation';
 
-function DocumentsFilter({ date, minDate, setDate, fmus }) {
+function DocumentsFilter({ date, setDate, fmus }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [FMU, setFMU] = useState(null);
+  const minDate = process.env.DOCUMENTS_MINDATE;
 
   return (
     <div className="c-doc-filters c-section">
@@ -72,7 +72,6 @@ function DocumentsFilter({ date, minDate, setDate, fmus }) {
 
 DocumentsFilter.propTypes = {
   date: PropTypes.string,
-  minDate: PropTypes.string,
   setDate: PropTypes.func,
   fmus: PropTypes.array,
 };
@@ -80,7 +79,6 @@ DocumentsFilter.propTypes = {
 export default connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
-    minDate: getDocumentationMinDate(state),
     fmus: getFMUs(state),
   }),
   { setDate: setOperatorDocumentationDate }

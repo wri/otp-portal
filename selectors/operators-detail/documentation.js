@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import minBy from 'lodash/minBy';
 
 // Get the datasets and filters from state
 const operatorsDetail = (state) => state.operatorsDetail;
@@ -58,15 +57,6 @@ const getParsedDocumentation = createSelector(
           }
         })
     );
-  }
-);
-
-export const getDocumentationMinDate = createSelector(
-  operatorDocumentation,
-  (documentation) => {
-    if (!documentation) return null;
-    const sortKey = 'created-at';
-    return minBy(documentation.data, (doc) => doc[sortKey])[sortKey];
   }
 );
 
