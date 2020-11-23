@@ -14,6 +14,7 @@ const getParsedDocumentation = createSelector(
 
     if (_operatorsDetail.data['operator-document-countries']) {
       countryDocumentation = _operatorsDetail.data['operator-document-countries'].map((doc) => {
+        console.log(doc);
         if (doc['required-operator-document-country']) {
           if (doc['required-operator-document-country']['contract-signature']) {
             return null;
@@ -22,7 +23,7 @@ const getParsedDocumentation = createSelector(
           return {
             id: doc.id,
             requiredDocId: doc['required-operator-document-country'].id,
-            url: doc.attachment.url,
+            url: doc.attachment && doc.attachment.url,
             type: doc.type,
             source: doc['source-type'],
             sourceInfo: doc['source-info'],
@@ -48,7 +49,7 @@ const getParsedDocumentation = createSelector(
           return {
             id: doc.id,
             requiredDocId: doc['required-operator-document-fmu'].id,
-            url: doc.attachment.url,
+            url: doc.attachment && doc.attachment.url,
             type: doc.type,
             source: doc['source-type'],
             sourceInfo: doc['source-info'],
@@ -127,7 +128,7 @@ const getContractSignatureDocumentation = createSelector(
         contractSignature = {
           id: doc.id,
           requiredDocId: doc['required-operator-document-country'].id,
-          url: doc.attachment.url,
+          url: doc.attachment && doc.attachment.url,
           type: doc.type,
           public: doc.public,
           title: doc['required-operator-document-country'].name,
