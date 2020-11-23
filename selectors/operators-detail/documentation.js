@@ -14,7 +14,6 @@ const getParsedDocumentation = createSelector(
 
     if (_operatorsDetail.data['operator-document-countries']) {
       countryDocumentation = _operatorsDetail.data['operator-document-countries'].map((doc) => {
-        console.log(doc);
         if (doc['required-operator-document-country']) {
           if (doc['required-operator-document-country']['contract-signature']) {
             return null;
