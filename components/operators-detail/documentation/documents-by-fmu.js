@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
 import cx from 'classnames';
 
 // Components
@@ -14,30 +15,35 @@ function DocumentsByFMU({
   category,
   user,
   id,
-  getOperator
+  getOperator,
 }) {
-  const [FMUsOpen, setFMUsOpen] =
-    useState(Object.values(documents)
-      .map(d => d[0].fmu.name)
-      .reduce((acc, name) => ({ ...acc, [name]: true }), {}));
+  const [FMUsOpen, setFMUsOpen] = useState(
+    Object.values(documents)
+      .map((d) => d[0].fmu.name)
+      .reduce((acc, name) => ({ ...acc, [name]: true }), {})
+  );
   return (
     <div className="c-doc-gallery-fmu-docs">
       <h3>FMU Documents:</h3>
       {Object.values(documents).map((docs) => {
         const FMUname = docs[0].fmu.name;
         const isFMUOpen = FMUsOpen[FMUname];
+        const FMUByStatus = groupBy(docs, 'status');
+        const validDocs =
+          (docs.filter((d) => d.status === 'doc_valid').length +
+            docs.filter((d) => d.status === 'doc_not_required').length) /
+          docs.length;
         return (
           <div className="fmu-item" key={docs[0].fmu.name}>
             <div className="doc-gallery-item-header">
               <div className="doc-by-category-desc">
                 <div className="doc-by-category-chart">
-                  {`${
-                    ((docs.filter(d => d.status === 'doc_valid').length / docs.length) * 100).toFixed(0)
-                  }%`}
+                  {`${(validDocs * 100).toFixed(0)}%`}
                   <div className="doc-by-category-bar">
-                    {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                      const segmentWidth = `${(groupedByStatus[status].length /
-                        groupedByCategory[category].length) * 100}%`;
+                    {sortBy(Object.keys(FMUByStatus)).map((status) => {
+                      const segmentWidth = `${
+                        (FMUByStatus[status].length / docs.length) * 100
+                      }%`;
                       return (
                         <div
                           key={status}
@@ -60,28 +66,31 @@ function DocumentsByFMU({
             </div>
             {isFMUOpen && (
               <div className="row l-row -equal-heigth">
-                {sortBy(docs, doc => doc.title).map(card => (
+                {sortBy(docs, (doc) => doc.title).map((card) => (
                   <div key={card.id} className="columns small-12 medium-4">
                     <DocCard
                       {...card}
                       properties={{
                         type: 'operator',
-                        id
+                        id,
                       }}
                       onChange={() => getOperator(id)}
                     />
 
                     {((user && user.role === 'admin') ||
-                      (user && user.role === 'operator' && user.operator && user.operator.toString() === id)) && (
-                        <DocCardUpload
-                          {...card}
-                          properties={{
-                            type: 'operator',
-                            id
-                          }}
-                          user={user}
-                          onChange={() => getOperator(id)}
-                        />
+                      (user &&
+                        user.role === 'operator' &&
+                        user.operator &&
+                        user.operator.toString() === id)) && (
+                      <DocCardUpload
+                        {...card}
+                        properties={{
+                          type: 'operator',
+                          id,
+                        }}
+                        user={user}
+                        onChange={() => getOperator(id)}
+                      />
                     )}
                   </div>
                 ))}
@@ -101,7 +110,7 @@ DocumentsByFMU.propTypes = {
   category: PropTypes.string,
   user: PropTypes.object,
   id: PropTypes.string,
-  getOperator: PropTypes.func
+  getOperator: PropTypes.func,
 };
 
 // export default connect(

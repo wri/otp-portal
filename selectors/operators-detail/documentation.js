@@ -23,7 +23,7 @@ const getParsedDocumentation = createSelector(
             requiredDocId: doc['required-operator-document'].id,
             url: doc.attachment?.url,
             type: doc.type,
-            source: doc.source,
+            source: doc['source-type'],
             sourceInfo: doc['source-info'],
             title: doc['required-operator-document'].name,
             public: doc.public,
