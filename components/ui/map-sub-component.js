@@ -25,6 +25,8 @@ class MapSubComponent extends React.Component {
   render() {
     const { id, location, level } = this.props;
 
+    const color = PALETTE_COLOR_1[level] ? `${PALETTE_COLOR_1[level].fill}` : '#000';
+
     return (
       <div className="c-map-sub-component" key={`subcomponent-${id}`}>
         { !!location &&
@@ -93,7 +95,7 @@ class MapSubComponent extends React.Component {
                           layers: [{
                             type: 'circle',
                             paint: {
-                              'circle-color': `${PALETTE_COLOR_1[level].fill}`,
+                              'circle-color': color,
                               'circle-radius': 10
                             }
                           }]
