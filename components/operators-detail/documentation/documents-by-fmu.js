@@ -8,15 +8,7 @@ import cx from 'classnames';
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
-function DocumentsByFMU({
-  documents,
-  groupedByStatus,
-  groupedByCategory,
-  category,
-  user,
-  id,
-  getOperator,
-}) {
+function DocumentsByFMU({ documents, user, id, getOperator }) {
   const [FMUsOpen, setFMUsOpen] = useState(
     Object.values(documents)
       .map((d) => d[0].fmu.name)

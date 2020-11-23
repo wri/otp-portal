@@ -130,10 +130,6 @@ function DocumentsByOperator({ data, user, id, ...props }) {
             {FMUDocs.length > 0 && isCategoryOpen && (
               <DocumentsByFMU
                 documents={FMUDocsByFMU}
-                // TODO: connect via selectors
-                groupedByStatus={groupedByStatus}
-                groupedByCategory={groupedByCategory}
-                category={category}
                 user={user}
                 id={id}
                 getOperator={(_id) => props.getOperator(_id)}
