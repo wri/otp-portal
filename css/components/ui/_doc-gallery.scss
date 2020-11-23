@@ -6,18 +6,13 @@
   &:first-child {
     padding-top: 0;
   }
+
   &:last-child {
     padding-bottom: 0;
   }
 
-  h3 {
-    margin: 0 0 $space-1 * 3;
-  }
-
   .doc-gallery-item {
-    margin: $space-1 * 6 0 0;
     border-top: 1px solid $border-color-1;
-    padding-top: 25px;
 
     &:first-child {
       margin-top: 0;
@@ -47,11 +42,15 @@
           background-color: rgba(0, 0, 0, 0.8);
         }
       }
+
+      h3 {
+        margin: 0;
+      }
     }
 
     .doc-gallery-producer-docs,
     .c-doc-gallery-fmu-docs {
-      margin-top: 15px;
+      margin-top: $space-1 * 4;
 
       & > h3 {
         color: rgba(0, 0, 0, 0.8);
@@ -61,10 +60,6 @@
         letter-spacing: 0.3px;
         line-height: 19px;
       }
-    }
-
-    .c-doc-gallery-fmu-docs {
-      margin-top: 45px;
     }
 
     .fmu-item {

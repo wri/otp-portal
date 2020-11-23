@@ -21,7 +21,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
   const minDate = process.env.DOCUMENTS_MINDATE;
 
   return (
-    <div className="c-doc-filters c-section">
+    <div className="c-doc-filters">
       <h3>Filter by:</h3>
       {fmus.length > 0 && (
         <span className="filter-option">

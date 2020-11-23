@@ -50,13 +50,13 @@ function DocumentsByFMU({
                 </div>
                 <h4>{FMUname}</h4>
               </div>
-              <button
+              {/* <button
                 className={cx('doc-by-category-btn -proximanova', { open: isFMUOpen })}
                 onClick={() =>
                   setFMUsOpen({ ...FMUsOpen, [FMUname]: !isFMUOpen })}
               >
                 {isFMUOpen ? 'Collapse' : 'Expand'}
-              </button>
+              </button> */}
             </div>
             {isFMUOpen && (
               <div className="row l-row -equal-heigth">
