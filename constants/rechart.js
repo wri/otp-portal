@@ -1,8 +1,8 @@
 const PALETTE_COLOR_1 = [
   { fill: '#D2CFCF' },
-  { fill: '#94CDB0' },
   { fill: '#2D9A56' },
-  { fill: '#055E25' }
+  { fill: '#31312E' },
+  { fill: '#E98300' }
 ];
 const PALETTE_COLOR_2 = [
   { fill: '#e98300', stroke: '#e98300' },
