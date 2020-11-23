@@ -103,8 +103,13 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                           <div className={`obi-illegality-list-item ${listItemClassNames}`}>
                             {/* Severity list */}
                             <ul className="obi-severity-list">
-                              {groupedByIllegality[illegality].map(({ severity, id }) =>
-                                <li key={id} className={`obi-severity-list-item -severity-${severity}`} style={{ background: PALETTE_COLOR_1[severity].fill }} />
+                              {groupedByIllegality[illegality].map(({ severity, id }) => {
+                                if (severity === 'null' || severity === null) return null;
+
+                                return (
+                                  <li key={id} className={`obi-severity-list-item -severity-${severity}`} style={{ background: PALETTE_COLOR_1[severity].fill }} />
+                                );
+                              }
                               )}
                             </ul>
 
@@ -152,8 +157,8 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         Cell: (attr) => {
                                           const date = new Date(attr.value);
                                           const monthName = date ? date.toLocaleString('en-us', { month: 'short' }) : '-';
-                                          const year = date ? date.getFullYear() : '-';
-                                          return <span>{`${monthName} ${year}`}</span>;
+                                          const y = date ? date.getFullYear() : '-';
+                                          return <span>{`${monthName} ${y}`}</span>;
                                         }
                                       },
                                       {
@@ -162,7 +167,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         headerClassName: '-a-center',
                                         className: '-a-left severity',
                                         minWidth: 150,
-                                        Cell: attr => <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE_COLOR_1[attr.value].fill }}>{attr.value}</span>
+                                        Cell: attr => attr.value !== null && <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE_COLOR_1[attr.value].fill }}>{attr.value}</span>
                                       },
                                       {
                                         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,

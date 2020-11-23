@@ -35,6 +35,7 @@ class TotalObservationsByOperator extends React.Component {
         <ul className="obo-year-list">
           {Object.keys(groupedByYear).sort((a, b) => b - a).map((year, i) => {
             const groupedBySeverity = HELPERS_OBS.getGroupedBySeverity(groupedByYear[year], true);
+
             const length = groupedByYear[year].length;
             const observationListClassNames = classnames({
               '-big': i === 0
@@ -56,12 +57,14 @@ class TotalObservationsByOperator extends React.Component {
                   style={{ width: `${(length / max) * 100}%` }}
                 >
                   {Object.keys(groupedBySeverity).sort((a, b) => b - a).map((severity) => {
+                    if (severity === 'null') return null;
+
                     const lengthSeverity = groupedBySeverity[severity].length;
 
                     return (
                       <li
                         key={severity}
-                        style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE_COLOR_1[severity].fill }}
+                        style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE_COLOR_1[severity || 0].fill }}
                         className={`obo-observations-list-item -severity-${severity}`}
                       >
                         {i === 0 && lengthSeverity}
