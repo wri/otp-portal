@@ -40,6 +40,9 @@ function DocumentsByOperator({ data, user, id, ...props }) {
         );
         const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
         const isCategoryOpen = categoriesOpen[category];
+        const validDocs =
+          (groupedByStatus.doc_valid?.length || 0) +
+          (groupedByStatus.doc_not_required?.length || 0);
 
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
@@ -49,8 +52,7 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                   {`${
                     groupedByStatus.doc_valid
                       ? (
-                          (groupedByStatus.doc_valid.length /
-                            groupedByCategory[category].length) *
+                          (validDocs / groupedByCategory[category].length) *
                           100
                         ).toFixed(0)
                       : 0

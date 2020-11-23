@@ -75,7 +75,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
 }
 
 DocumentsFilter.propTypes = {
-  date: PropTypes.string,
+  date: PropTypes.date,
   setDate: PropTypes.func,
   FMU: PropTypes.object,
   setFMU: PropTypes.func,
