@@ -304,7 +304,11 @@ class ObservationsPage extends React.Component {
         headerClassName: '-a-left',
         className: 'observer-organizations',
         minWidth: 250,
-        Cell: attr => <ul className="cell-list">{attr.value.map(type => (<li>{type}</li>))}</ul>
+        Cell: attr => <ul className="cell-list">{attr.value.map(observer => {
+          return (
+            <li>{observer.name || observer.organization}</li>
+          );
+        })}</ul>
       },
       {
         Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator-type' })}</span>,

@@ -8,7 +8,7 @@ import LayerManager from 'components/map-new/layer-manager';
 import Spinner from 'components/ui/spinner';
 
 // Constants
-import { PALETTE_COLOR_1 } from 'constants/observations';
+import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 
 class MapSubComponent extends React.Component {
