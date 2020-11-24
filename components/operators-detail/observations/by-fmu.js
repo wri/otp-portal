@@ -83,6 +83,7 @@ class TotalObservationsByOperatorByFMU extends React.Component {
                     style={{ width: `${(length / max) * 100}%` }}
                   >
                     {Object.keys(groupedBySeverity).sort((a, b) => b - a).map((severity) => {
+                      if (severity === 'null') return null;
                       const lengthSeverity = groupedBySeverity[severity].length;
 
                       return (

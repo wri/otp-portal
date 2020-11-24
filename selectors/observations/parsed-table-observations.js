@@ -50,7 +50,7 @@ const getParsedTableObservations = createSelector(
           status: obs['validation-status-id'],
           'litigation-status': obs['litigation-status'],
           'observer-types': obs.observers.map(observer => observer['observer-type']),
-          'observer-organizations': obs.observers.map(observer => observer.name || observer.organization),
+          'observer-organizations': obs.observers,
           'relevant-operators': obs['relevant-operators'].map(o => o.name)
         };
       });
