@@ -31,7 +31,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
               className="dropdown-placeholder"
               onClick={() => setDropdownOpen(!isDropdownOpen)}
             >
-              {FMU ? FMU.name : 'Select FMUs'}
+              {FMU ? FMU.name : 'All FMUs'}
             </button>
 
             {isDropdownOpen && (
@@ -44,7 +44,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
                       setDropdownOpen(false);
                     }}
                   >
-                    {_fmu ? _fmu.name : 'Select FMUs'}
+                    {_fmu ? _fmu.name : 'All FMUs'}
                   </option>
                 ))}
               </div>

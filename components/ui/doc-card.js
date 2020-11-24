@@ -184,6 +184,7 @@ class DocCard extends React.Component {
                   <div className="doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</div>
 
                   <ul className="doc-card-list">
+                    {console.log(approvedAnnexes)}
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
                         <Tooltip
