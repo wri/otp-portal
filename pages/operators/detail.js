@@ -154,8 +154,8 @@ class OperatorsDetail extends React.Component {
           Component={
             user &&
             user.role === 'operator' &&
-            user.operator &&
-            user.operator.toString() === id && (
+            user.operator_ids &&
+            user.operator_ids.includes(+id) && (
               <Link href="/operators/edit">
                 <a className="c-button -secondary -small">
                   {this.props.intl.formatMessage({ id: 'update.profile' })}

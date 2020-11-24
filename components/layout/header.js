@@ -99,14 +99,15 @@ class Header extends React.Component {
                               </Link>
                             </li>
                           }
-                          {user.role === 'operator' &&
+                          {user.role === 'operator' && user.operator_ids.map(id => (
                             <li className="account-dropdown-list-item">
                               <Link
-                                href={`/operators/${user.operator}/documentation`}
+                                href={`/operators/${id}/documentation`}
                               >
                                 <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.documents' })}</a>
                               </Link>
                             </li>
+                          ))
                           }
                           {user.role === 'admin' &&
                             <li className="account-dropdown-list-item">

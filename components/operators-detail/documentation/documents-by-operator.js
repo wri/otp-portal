@@ -111,8 +111,8 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                       {((user && user.role === 'admin') ||
                         (user &&
                           user.role === 'operator' &&
-                          user.operator &&
-                          user.operator.toString() === id)) && (
+                          user.operator_ids &&
+                          user.operator_ids.includes(+id))) && (
                         <DocCardUpload
                           {...card}
                           properties={{

@@ -62,7 +62,7 @@ function DocumentsProvided(props) {
                     (user.token && user.role === "admin") ||
                     (user.token &&
                       user.role === "operator" &&
-                      user.operator.toString() === router.query.id)
+                      user.operator_ids.includes(+router.query.id))
                   ) {
                     return true;
                   }

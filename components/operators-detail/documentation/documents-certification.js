@@ -22,8 +22,8 @@ function DocumentsCertification(props) {
     (user && user.role === 'admin') ||
     (user &&
       user.role === 'operator' &&
-      user.operator &&
-      user.operator.toString() === id);
+      user.operator_ids &&
+      user.operator_ids.includes(+id));
 
   if (!isLogged || isEmpty(doc)) {
     return null;
@@ -63,8 +63,8 @@ function DocumentsCertification(props) {
               {((user && user.role === 'admin') ||
                 (user &&
                   user.role === 'operator' &&
-                  user.operator &&
-                  user.operator.toString() === id)) && (
+                  user.operator_ids &&
+                  user.operator_ids.includes(+id))) && (
                   <DocCardUpload
                     {...doc}
                     properties={{
