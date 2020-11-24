@@ -15,10 +15,15 @@ import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
 // Selectors
 import { getParsedObservations } from 'selectors/operators-detail/observations';
 import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
+import { getParsedTimeline } from 'selectors/operators-detail/timeline';
 
 // Redux
 import { connect } from 'react-redux';
-import { getOperator } from 'modules/operators-detail';
+import {
+  getOperator,
+  getOperatorDocumentation,
+  getOperatorTimeline,
+} from 'modules/operators-detail';
 import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
@@ -46,31 +51,29 @@ class OperatorsDetail extends React.Component {
 
     if (operatorsDetail.data.id !== url.query.id) {
       await store.dispatch(getOperator(url.query.id));
+      await store.dispatch(getOperatorDocumentation(url.query.id));
+      await store.dispatch(getOperatorTimeline(url.query.id));
     }
 
     return { url };
   }
 
-
   /**
    * COMPONENT LIFECYCLE
-  */
+   */
   componentDidMount() {
-    // Set discalimer
-    // if (!Cookies.get('operator-detail.disclaimer')) {
-    //   toastr.info(
-    //     'Info',
-    //     this.props.intl.formatMessage({ id: 'operator-detail.disclaimer' }),
-    //     {
-    //       className: '-disclaimer',
-    //       position: 'bottom-right',
-    //       timeOut: 15000,
-    //       onCloseButtonClick: () => {
-    //         Cookies.set('operator-detail.disclaimer', true);
-    //       }
-    //     }
-    //   );
-    // }
+    const { url } = this.props;
+    this.props.getOperatorDocumentation(url?.query?.id);
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevDate = prevProps?.operatorsDetail?.date;
+    const newDate = this.props?.operatorsDetail?.date;
+
+    if (prevDate !== newDate) {
+      const { url } = this.props;
+      this.props.getOperatorDocumentation(url?.query?.id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -86,7 +89,7 @@ class OperatorsDetail extends React.Component {
   /**
    * HELPERS
    * - getTabOptions
-  */
+   */
   getTabOptions() {
     const operatorsDetail = this.props.operatorsDetail.data;
 
@@ -100,23 +103,32 @@ class OperatorsDetail extends React.Component {
 
         default: {
           const tabData = operatorsDetail[tab.value];
-          number = (tabData) ? tabData.length : null;
+          number = tabData ? tabData.length : null;
         }
       }
 
       return {
         ...tab,
         label: this.props.intl.formatMessage({ id: tab.label }),
-        number
+        number,
       };
     });
   }
 
   render() {
-    const { url, user, operatorsDetail, operatorObservations, operatorDocumentation } = this.props;
+    const {
+      url,
+      user,
+      operatorsDetail,
+      operatorObservations,
+      operatorDocumentation,
+      operatorTimeline,
+    } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
-    const logoPath = operatorsDetail.data.logo ? operatorsDetail.data.logo.url : '';
+    const logoPath = operatorsDetail.data.logo
+      ? operatorsDetail.data.logo.url
+      : '';
 
     return (
       <Layout
@@ -128,16 +140,28 @@ class OperatorsDetail extends React.Component {
 
         <StaticHeader
           title={operatorsDetail.data.name || '-'}
-          subtitle={this.props.intl.formatMessage({ id: 'operator-detail.subtitle' }, {
-            rank: operatorsDetail.data['country-doc-rank'],
-            rankCount: operatorsDetail.data['country-operators'],
-            country: !!operatorsDetail.data.country && operatorsDetail.data.country.name
-          })}
+          subtitle={this.props.intl.formatMessage(
+            { id: 'operator-detail.subtitle' },
+            {
+              rank: operatorsDetail.data['country-doc-rank'],
+              rankCount: operatorsDetail.data['country-operators'],
+              country:
+                !!operatorsDetail.data.country &&
+                operatorsDetail.data.country.name,
+            }
+          )}
           background="/static/images/static-header/bg-operator-detail.jpg"
-          Component={(user && user.role === 'operator' && user.operator && user.operator.toString() === id) &&
-            <Link href="/operators/edit" >
-              <a className="c-button -secondary -small">{this.props.intl.formatMessage({ id: 'update.profile' })}</a>
-            </Link>
+          Component={
+            user &&
+            user.role === 'operator' &&
+            user.operator &&
+            user.operator.toString() === id && (
+              <Link href="/operators/edit">
+                <a className="c-button -secondary -small">
+                  {this.props.intl.formatMessage({ id: 'update.profile' })}
+                </a>
+              </Link>
+            )
           }
           tabs
           logo={logoPath !== '/api/placeholder.png' ? logoPath : ''}
@@ -147,67 +171,68 @@ class OperatorsDetail extends React.Component {
           href={{
             pathname: url.pathname,
             query: { id },
-            as: `/operators/${id}`
+            as: `/operators/${id}`,
           }}
           options={this.getTabOptions()}
           defaultSelected={tab}
           selected={tab}
         />
 
-        {tab === 'overview' &&
+        {tab === 'overview' && (
           <OperatorsDetailOverview
             operatorsDetail={operatorsDetail}
             operatorDocumentation={operatorDocumentation}
             operatorObservations={operatorObservations}
             url={url}
           />
-        }
+        )}
 
-        {tab === 'documentation' &&
+        {tab === 'documentation' && (
           <OperatorsDetailDocumentation
             operatorsDetail={operatorsDetail}
             operatorDocumentation={operatorDocumentation}
+            operatorTimeline={operatorTimeline}
             url={url}
           />
-        }
+        )}
 
-        {tab === 'observations' &&
+        {tab === 'observations' && (
           <OperatorsDetailObservations
             operatorsDetail={operatorsDetail}
             operatorObservations={operatorObservations}
             url={url}
           />
-        }
+        )}
 
-        {tab === 'fmus' &&
-          <OperatorsDetailFMUs
-            operatorsDetail={operatorsDetail}
-            url={url}
-          />
-        }
-
+        {tab === 'fmus' && (
+          <OperatorsDetailFMUs operatorsDetail={operatorsDetail} url={url} />
+        )}
       </Layout>
     );
   }
-
 }
 
 OperatorsDetail.propTypes = {
   url: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.shape({}),
+  operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   operatorDocumentation: PropTypes.array,
+  operatorTimeline: PropTypes.array,
   user: PropTypes.shape({}),
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
-export default withTracker(withIntl(connect(
-
-  state => ({
-    user: state.user,
-    operatorsDetail: state.operatorsDetail,
-    operatorObservations: getParsedObservations(state),
-    operatorDocumentation: getParsedDocumentation(state)
-  }),
-  { getOperator }
-)(OperatorsDetail)));
+export default withTracker(
+  withIntl(
+    connect(
+      (state) => ({
+        user: state.user,
+        operatorsDetail: state.operatorsDetail,
+        operatorObservations: getParsedObservations(state),
+        operatorDocumentation: getParsedDocumentation(state),
+        operatorTimeline: getParsedTimeline(state),
+      }),
+      { getOperator, getOperatorDocumentation, getOperatorTimeline }
+    )(OperatorsDetail)
+  )
+);

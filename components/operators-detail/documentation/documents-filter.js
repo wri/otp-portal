@@ -7,12 +7,12 @@ import Datepicker from 'components/ui/datepicker';
 
 import {
   setOperatorDocumentationDate,
-  setOperatorDocumentationFMU
+  setOperatorDocumentationFMU,
 } from 'modules/operators-detail';
 import {
   getOperatorDocumentationDate,
   getOperatorDocumentationFMU,
-  getFMUs
+  getFMUs,
 } from 'selectors/operators-detail/documentation';
 
 function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
@@ -36,7 +36,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
 
             {isDropdownOpen && (
               <div className="dropdown-content">
-                {[null, ...fmus].map(_fmu => (
+                {[null, ...fmus].map((_fmu) => (
                   <option
                     key={_fmu ? _fmu.id : 'no-fmu'}
                     onClick={() => {
@@ -65,7 +65,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
             maxDate: moment(new Date()),
             hideKeyboardShortcutsPanel: true,
             noBorder: true,
-            readOnly: false
+            readOnly: false,
           }}
           onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
         />
@@ -75,11 +75,11 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
 }
 
 DocumentsFilter.propTypes = {
-  date: PropTypes.string,
+  date: PropTypes.date,
   setDate: PropTypes.func,
   FMU: PropTypes.object,
   setFMU: PropTypes.func,
-  fmus: PropTypes.array
+  fmus: PropTypes.array,
 };
 
 export default connect(
