@@ -50,7 +50,7 @@ function DocumentsByOperator({ data, user, id, ...props }) {
               <div className="doc-by-category-desc">
                 <div className="doc-by-category-chart">
                   {`${
-                    groupedByStatus.doc_valid
+                    groupedByStatus.doc_valid || groupedByStatus.doc_not_required
                       ? (
                           (validDocs / groupedByCategory[category].length) *
                           100
