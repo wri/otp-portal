@@ -194,7 +194,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                             <span>{`${monthName} ${_year}`}</span>
                                           );
                                         },
-=                                     },
+                                      },
                                       {
                                         Header: (
                                           <span className="sortable">

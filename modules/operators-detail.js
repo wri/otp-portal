@@ -33,7 +33,7 @@ const initialState = {
   loading: false,
   error: false,
   documentation: {
-    data: {},
+    data: [],
     loading: false,
     error: false,
   },
