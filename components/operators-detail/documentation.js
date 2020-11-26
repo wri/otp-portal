@@ -12,6 +12,7 @@ import DocumentsCertification from 'components/operators-detail/documentation/do
 import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
+import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 
 function OperatorsDetailDocumentation({
@@ -21,6 +22,10 @@ function OperatorsDetailDocumentation({
   url,
   intl,
 }) {
+  const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
+    operatorDocumentation
+  );
+
   return (
     <div>
       <div className="c-section">
@@ -50,6 +55,13 @@ function OperatorsDetailDocumentation({
             <div className="content">
               {/* Pie chart */}
               <DocumentsProvided data={operatorDocumentation} />
+              {Object.entries(docsGroupedByCategory).map(([category, docs]) => (
+                <DocumentStatusBar
+                  category={category}
+                  docs={docs}
+                  className="pie-categories"
+                />
+              ))}
             </div>
           </article>
 
@@ -61,7 +73,10 @@ function OperatorsDetailDocumentation({
       <div className="c-section">
         <div className="l-container">
           {/* Document sections with cards */}
-          <DocumentsByOperator data={operatorDocumentation} id={url.query.id} />
+          <DocumentsByOperator
+            groupedByCategory={docsGroupedByCategory}
+            id={url.query.id}
+          />
         </div>
       </div>
     </div>
