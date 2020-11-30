@@ -3,14 +3,17 @@
   justify-content: space-between;
 
   .c-doc-provided {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
+    flex-grow: 7;
   }
 
   .pie-categories {
     width: 286px;
     margin-bottom: 14px;
+    flex-grow: 3;
+
+    .c-doc-by-category {
+      padding: 12px 0;
+    }
 
     .doc-by-category-desc {
       display: flex;

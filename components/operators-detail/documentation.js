@@ -25,6 +25,15 @@ function OperatorsDetailDocumentation({
   const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
     operatorDocumentation
   );
+  const filteredData = operatorDocumentation.filter(
+    (d) => d.status !== 'doc_not_required'
+  );
+  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
+    filteredData
+  );
+  const validDocs = groupedByStatusChart.find(
+    (status) => status.id === 'doc_valid'
+  );
 
   return (
     <div>
@@ -46,7 +55,9 @@ function OperatorsDetailDocumentation({
                     id: 'operator-detail.documents.title',
                   },
                   {
-                    percentage: HELPERS_DOC.getPercentage(operatorsDetail.data),
+                    percentage: validDocs
+                      ? validDocs.value
+                      : HELPERS_DOC.getPercentage(operatorsDetail.data),
                   }
                 )}
               </h2>
@@ -54,7 +65,12 @@ function OperatorsDetailDocumentation({
 
             <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
-              <DocumentsProvided data={operatorDocumentation} />
+              <DocumentsProvided
+                data={operatorDocumentation.filter(
+                  (d) => d.status !== 'doc_not_required'
+                )}
+                groupedByStatusChart={groupedByStatusChart}
+              />
               <div className="pie-categories">
                 {Object.entries(docsGroupedByCategory).map(
                   ([category, docs]) => (
