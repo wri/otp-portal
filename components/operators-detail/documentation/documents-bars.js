@@ -24,11 +24,11 @@ export default function DocumentStatusBar({ category, className, docs }) {
               );
             })}
           </div>
-          {`${
+          <span>{`${
             groupedByStatus.doc_valid || groupedByStatus.doc_not_required
               ? ((validDocs / docs.length) * 100).toFixed(0)
               : 0
-          }% valid`}
+          }% valid`}</span>
         </div>
         <h3 className="c-title -proximanova -extrabig -uppercase">
           {category}

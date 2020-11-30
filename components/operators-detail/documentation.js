@@ -52,16 +52,16 @@ function OperatorsDetailDocumentation({
               </h2>
             </header>
 
-            <div className="content">
+            <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
               <DocumentsProvided data={operatorDocumentation} />
-              {Object.entries(docsGroupedByCategory).map(([category, docs]) => (
-                <DocumentStatusBar
-                  category={category}
-                  docs={docs}
-                  className="pie-categories"
-                />
-              ))}
+              <div className="pie-categories">
+                {Object.entries(docsGroupedByCategory).map(
+                  ([category, docs]) => (
+                    <DocumentStatusBar category={category} docs={docs} />
+                  )
+                )}
+              </div>
             </div>
           </article>
 

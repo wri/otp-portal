@@ -113,7 +113,7 @@ DocumentsByOperator.defaultProps = {
 };
 
 DocumentsByOperator.propTypes = {
-  groupedByCategory: PropTypes.array,
+  groupedByCategory: PropTypes.object,
   id: PropTypes.string,
   user: PropTypes.object,
 };
