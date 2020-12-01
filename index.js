@@ -114,6 +114,16 @@ app
         Object.assign(req.params, req.query)
       )
     );
+
+    server.get('/operators/database', (req, res) =>
+      app.render(
+        req,
+        res,
+        '/operators/database',
+        Object.assign(req.params, req.query)
+      )
+    );
+
     server.get('/operators/edit', (req, res) => {
       if (req.session.user) {
         return app.render(
