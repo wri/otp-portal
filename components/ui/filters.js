@@ -6,20 +6,18 @@ import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
 
-
 class Filters extends React.Component {
-
   componentDidUpdate(prevProps) {
     const { options, filters } = this.props;
     const { options: prevOptions } = prevProps;
 
     if (!isEqual(options, prevOptions)) {
       this.props.filtersRefs.map((f) => {
-        const value = options[f.key] ?
-          options[f.key].filter(opt => filters[f.key] ?
-            filters[f.key].includes(opt.value) :
-            false) :
-          [];
+        const value = options[f.key]
+          ? options[f.key].filter((opt) =>
+              filters[f.key] ? filters[f.key].includes(opt.value) : false
+            )
+          : [];
 
         this.setFilter(value, f.key);
       });
@@ -29,32 +27,35 @@ class Filters extends React.Component {
   setFilter(selected, key) {
     const filter = {};
     filter[key] = selected.map((opt) => {
-      const isVal = (opt.value !== null && typeof opt.value !== 'undefined');
-      return (isVal) ? opt.value : opt;
+      const isVal = opt.value !== null && typeof opt.value !== 'undefined';
+      return isVal ? opt.value : opt;
     });
 
     this.props.setFilters(filter);
     // this.props.logFilter(key, filter[key]);
   }
 
-
   renderFiltersSelects() {
     const { options, filters } = this.props;
 
     return this.props.filtersRefs.map((f) => {
-      const value = options[f.key] ?
-        options[f.key].filter(opt => filters[f.key] ?
-          filters[f.key].includes(opt.value) :
-          false) :
-        [];
+      const value = options[f.key]
+        ? options[f.key].filter((opt) =>
+            filters[f.key] ? filters[f.key].includes(opt.value) : false
+          )
+        : [];
 
       let opts = options[f.key];
 
       if (f.key === 'validation_status') {
-        opts = opts.map(o => ({
+        opts = opts.map((o) => ({
           ...o,
-          label: this.props.intl.formatMessage({ id: `observations.status-${o.id}` }),
-          name: this.props.intl.formatMessage({ id: `observations.status-${o.id}` })
+          label: this.props.intl.formatMessage({
+            id: `observations.status-${o.id}`,
+          }),
+          name: this.props.intl.formatMessage({
+            id: `observations.status-${o.id}`,
+          }),
         }));
       }
 
@@ -71,8 +72,10 @@ class Filters extends React.Component {
               multi
               className={value.length ? '-filled' : ''}
               value={value}
-              placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
-              onChange={selected => {
+              placeholder={this.props.intl.formatMessage({
+                id: `filter.${f.key}.placeholder`,
+              })}
+              onChange={(selected) => {
                 this.setFilter(selected, f.key);
               }}
             />
@@ -86,16 +89,30 @@ class Filters extends React.Component {
     const { className } = this.props;
 
     const classNames = classnames({
-      [className]: !!className
+      [className]: !!className,
     });
 
     return (
       <aside className={`c-filters ${classNames}`}>
         <div className="filters-content">
-          <h2 className="c-title -light">
-            {this.props.intl.formatMessage({ id: 'filter.title' })}
-          </h2>
-          {this.renderFiltersSelects()}
+          <div className="l-container">
+            <div className="row l-row">
+              <div className="columns small-12">
+                <h2 className="c-title">
+                  {this.props.intl.formatMessage({ id: 'filter.title' })}
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div className="filters-wrapper">
+            <div className="l-container">
+              <div className="row l-row">
+                <div className="columns small-12 flex-wrapper">
+                  {this.renderFiltersSelects()}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
     );
@@ -110,11 +127,11 @@ Filters.propTypes = {
   className: PropTypes.string,
   // Actions
   setFilters: PropTypes.func,
-  logFilter: PropTypes.func
+  logFilter: PropTypes.func,
 };
 
 Filters.defaultProps = {
-  options: {}
+  options: {},
 };
 
 export default injectIntl(Filters);
