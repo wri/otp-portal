@@ -6,6 +6,32 @@
     font-size: 36px;
     letter-spacing: 0;
     line-height: 41px;
+    display: flex;
+    align-items: center;
+
+    .filters-toggle-btn {
+      background: none;
+      border: 1px solid $color-primary;
+      cursor: pointer;
+      outline: none;
+      height: 32px;
+      width: 32px;
+      padding: 0;
+      margin-left: 20px;
+
+      svg {
+        margin-bottom: 10px;
+        fill: $color-primary;
+      }
+
+      &.-green {
+        background-color: $color-primary;
+
+        svg {
+          fill: white;
+        }
+      }
+    }
   }
 
   .filters-wrapper {
@@ -17,6 +43,8 @@
       flex-flow: row wrap;
 
       .field {
+        margin-right: 50px;
+
         .title {
           font-family: $font-family-georgia;
           color: $color-white;
@@ -25,6 +53,14 @@
           font-size: $font-size-big;
           line-height: 26px;
           font-weight: normal;
+        }
+
+        .Select {
+          cursor: pointer;
+
+          input {
+            color: rgba(255, 255, 255, 0.5);
+          }
         }
       }
     }

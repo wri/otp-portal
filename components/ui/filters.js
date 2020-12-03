@@ -5,8 +5,14 @@ import isEqual from 'lodash/isEqual';
 
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
+import Icon from 'components/ui/icon';
 
 class Filters extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { open: false };
+  }
+
   componentDidUpdate(prevProps) {
     const { options, filters } = this.props;
     const { options: prevOptions } = prevProps;
@@ -100,19 +106,33 @@ class Filters extends React.Component {
               <div className="columns small-12">
                 <h2 className="c-title">
                   {this.props.intl.formatMessage({ id: 'filter.title' })}
+                  <button
+                    className={`filters-toggle-btn${
+                      this.state.open ? ' -green' : ''
+                    }`}
+                    onClick={() => this.setState({ open: !this.state.open })}
+                  >
+                    {this.state.open ? (
+                      <Icon name="icon-arrow-up" />
+                    ) : (
+                      <Icon name="icon-arrow-down" />
+                    )}
+                  </button>
                 </h2>
               </div>
             </div>
           </div>
-          <div className="filters-wrapper">
-            <div className="l-container">
-              <div className="row l-row">
-                <div className="columns small-12 flex-wrapper">
-                  {this.renderFiltersSelects()}
+          {this.state.open && (
+            <div className="filters-wrapper">
+              <div className="l-container">
+                <div className="row l-row">
+                  <div className="columns small-12 flex-wrapper">
+                    {this.renderFiltersSelects()}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </aside>
     );

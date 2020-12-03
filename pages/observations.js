@@ -38,7 +38,6 @@ import Icon from 'components/ui/icon';
 import MapSubComponent from 'components/ui/map-sub-component';
 import StaticTabs from 'components/ui/static-tabs';
 
-
 import Map from 'components/map-new';
 import LayerManager from 'components/map-new/layer-manager';
 import Legend from 'components/map-new/legend';
@@ -54,7 +53,7 @@ import {
   getObservationsUrl,
   setActiveColumns,
   setObservationsMapLocation,
-  setObservationsMapCluster
+  setObservationsMapCluster,
 } from 'modules/observations';
 
 import { logEvent } from 'utils/analytics';
@@ -83,7 +82,7 @@ class ObservationsPage extends React.Component {
 
     this.state = {
       tab: this.props.url.query.subtab || 'observations-list',
-      page: 1
+      page: 1,
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -121,9 +120,9 @@ class ObservationsPage extends React.Component {
   onCustomAttribute = (e) => {
     e.preventDefault();
     modal.toggleModal(true, {
-      children: FAAttributions
+      children: FAAttributions,
     });
-  }
+  };
 
   setActiveColumns(value) {
     const { observations } = this.props;
@@ -131,7 +130,8 @@ class ObservationsPage extends React.Component {
     const removeColumn = difference(observations.columns, value);
 
     if (addColumn.length) logEvent('Observations', 'Add Column', addColumn[0]);
-    if (removeColumn.length) logEvent('Observations', 'Remove Column', removeColumn[0]);
+    if (removeColumn.length)
+      logEvent('Observations', 'Remove Column', removeColumn[0]);
 
     this.props.setActiveColumns(value);
   }
@@ -147,7 +147,7 @@ class ObservationsPage extends React.Component {
   onViewportChange = (mapLocation) => {
     this.props.setObservationsMapCluster({});
     this.setMapLocation(mapLocation);
-  }
+  };
 
   onClick = (e) => {
     const { cluster: clusterProp } = this.props.observations;
@@ -159,40 +159,44 @@ class ObservationsPage extends React.Component {
       const { cluster, cluster_id: clusterId, point_count } = properties;
 
       if (cluster && +clusterId !== +clusterProp.id) {
-        const layers = this.map.getStyle().layers.filter(l => l.source === source);
+        const layers = this.map
+          .getStyle()
+          .layers.filter((l) => l.source === source);
 
         this.map
           .getSource(source)
-          .getClusterLeaves(
-            clusterId,
-            point_count,
-            0,
-            (error, fts) => {
-              if (error) {
-                this.props.setObservationsMapCluster({});
-                return true;
-              }
-
-              this.props.setObservationsMapCluster({
-                id: clusterId,
-                coordinates: geometry.coordinates,
-                features: orderBy(fts, 'properties.level'),
-                layers
-              });
-
-              return fts;
+          .getClusterLeaves(clusterId, point_count, 0, (error, fts) => {
+            if (error) {
+              this.props.setObservationsMapCluster({});
+              return true;
             }
-          );
+
+            this.props.setObservationsMapCluster({
+              id: clusterId,
+              coordinates: geometry.coordinates,
+              features: orderBy(fts, 'properties.level'),
+              layers,
+            });
+
+            return fts;
+          });
       } else {
         this.props.setObservationsMapCluster({});
       }
     } else {
       this.props.setObservationsMapCluster({});
     }
-  }
+  };
 
   render() {
-    const { url, observations, getObservationsLayers, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
+    const {
+      url,
+      observations,
+      getObservationsLayers,
+      parsedFilters,
+      parsedChartObservations,
+      parsedTableObservations,
+    } = this.props;
 
     // Hard coded values
     const inputs = [
@@ -213,130 +217,188 @@ class ObservationsPage extends React.Component {
       'observer-types',
       'operator-type',
       'subcategory',
-      'relevant-operators'
+      'relevant-operators',
     ];
 
     const changeOfLabelLookup = {
       level: 'severity',
-      observation: 'detail'
+      observation: 'detail',
     };
 
-    const tableOptions = inputs
-      .map(column => ({
-        label: Object.keys(changeOfLabelLookup).includes(column) ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] }) :
-          this.props.intl.formatMessage({ id: column }),
-        value: column
-      }));
+    const tableOptions = inputs.map((column) => ({
+      label: Object.keys(changeOfLabelLookup).includes(column)
+        ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] })
+        : this.props.intl.formatMessage({ id: column }),
+      value: column,
+    }));
 
     const columnHeaders = [
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'date' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'date' })}
+          </span>
+        ),
         accessor: 'date',
-        minWidth: 75
+        minWidth: 75,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'status' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'status' })}
+          </span>
+        ),
         accessor: 'status',
         minWidth: 150,
         className: 'status',
-        Cell: attr => (
+        Cell: (attr) => (
           <span>
-            {this.props.intl.formatMessage({ id: `observations.status-${attr.value}` })}
+            {this.props.intl.formatMessage({
+              id: `observations.status-${attr.value}`,
+            })}
 
-            {[7, 8, 9].includes(attr.value) &&
+            {[7, 8, 9].includes(attr.value) && (
               <Tooltip
                 placement="bottom"
-                overlay={(
+                overlay={
                   <div style={{ maxWidth: 200 }}>
-                    {this.props.intl.formatMessage({ id: `observations.status-${attr.value}.info` })}
+                    {this.props.intl.formatMessage({
+                      id: `observations.status-${attr.value}.info`,
+                    })}
                   </div>
-                )}
+                }
                 overlayClassName="c-tooltip no-pointer-events"
               >
-                <button
-                  className="c-button -icon -primary"
-                >
+                <button className="c-button -icon -primary">
                   <Icon name="icon-info" className="-smaller" />
                 </button>
               </Tooltip>
-            }
+            )}
           </span>
-        )
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'country' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'country' })}
+          </span>
+        ),
         accessor: 'country',
         className: '-uppercase',
-        minWidth: 100
+        minWidth: 100,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'operator' })}
+          </span>
+        ),
         accessor: 'operator',
         className: '-uppercase description',
-        minWidth: 120
+        minWidth: 120,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'fmu' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'fmu' })}
+          </span>
+        ),
         accessor: 'fmu',
         className: 'description',
-        minWidth: 120
+        minWidth: 120,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'category' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'category' })}
+          </span>
+        ),
         accessor: 'category',
         headerClassName: '-a-left',
         className: 'description',
-        minWidth: 120
+        minWidth: 120,
       },
 
-
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'observer-types' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'observer-types' })}
+          </span>
+        ),
         accessor: 'observer-types',
         headerClassName: '-a-left',
         className: 'observer-types',
         minWidth: 250,
-        Cell: attr => <ul className="cell-list">{attr.value.map((type, i) => (<li key={`${type}-${i}`}>{this.props.intl.formatMessage({ id: `${type}` })}</li>))}</ul>
+        Cell: (attr) => (
+          <ul className="cell-list">
+            {attr.value.map((type, i) => (
+              <li key={`${type}-${i}`}>
+                {this.props.intl.formatMessage({ id: `${type}` })}
+              </li>
+            ))}
+          </ul>
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'observer-organizations' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'observer-organizations' })}
+          </span>
+        ),
         accessor: 'observer-organizations',
         headerClassName: '-a-left',
         className: 'observer-organizations',
         minWidth: 250,
-        Cell: attr => <ul className="cell-list">{attr.value.map(observer => {
-          return (
-            <li>{observer.name || observer.organization}</li>
-          );
-        })}</ul>
+        Cell: (attr) => (
+          <ul className="cell-list">
+            {attr.value.map((observer) => {
+              return <li>{observer.name || observer.organization}</li>;
+            })}
+          </ul>
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'operator-type' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'operator-type' })}
+          </span>
+        ),
         accessor: 'operator-type',
         headerClassName: '-a-left',
         className: 'operator-type',
         minWidth: 250,
-        Cell: (attr) => attr.value && (
-          <span>{this.props.intl.formatMessage({ id: `${attr.value}` })}</span>
-        )
+        Cell: (attr) =>
+          attr.value && (
+            <span>
+              {this.props.intl.formatMessage({ id: `${attr.value}` })}
+            </span>
+          ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'subcategory' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'subcategory' })}
+          </span>
+        ),
         accessor: 'subcategory',
         headerClassName: '-a-left',
         className: 'subcategory description',
-        minWidth: 250
+        minWidth: 250,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'evidence' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'evidence' })}
+          </span>
+        ),
         accessor: 'evidence',
         headerClassName: '-a-left',
         className: 'evidence description',
         minWidth: 250,
-        Cell: attr => (
+        Cell: (attr) => (
           <div className="evidence-item-wrapper">
             {Array.isArray(attr.value) &&
-              attr.value.map(v => (
+              attr.value.map((v) => (
                 <a
                   href={v.attachment.url}
                   target="_blank"
@@ -345,31 +407,36 @@ class ObservationsPage extends React.Component {
                 >
                   <Icon className="" name="icon-file-empty" />
                 </a>
-              ))
-            }
+              ))}
 
-            {!Array.isArray(attr.value) &&
+            {!Array.isArray(attr.value) && (
               <span className="evidence-item-text">{attr.value}</span>
-            }
-
+            )}
           </div>
-        )
-
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'litigation-status' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'litigation-status' })}
+          </span>
+        ),
         accessor: 'litigation-status',
         headerClassName: '-a-left',
         className: 'litigation-status',
-        minWidth: 250
+        minWidth: 250,
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'detail' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'detail' })}
+          </span>
+        ),
         accessor: 'observation',
         headerClassName: '-a-left',
         className: 'description',
         minWidth: 200,
-        Cell: attr => (
+        Cell: (attr) => (
           <ReadMore
             lines={2}
             more={this.props.intl.formatMessage({ id: 'Read more' })}
@@ -377,27 +444,40 @@ class ObservationsPage extends React.Component {
           >
             {attr.value}
           </ReadMore>
-        )
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'severity' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'severity' })}
+          </span>
+        ),
         accessor: 'level',
         headerClassName: 'severity-th',
         className: 'severity',
         Cell: (attr) => {
           return (
-            <span className={`severity-item -sev-${attr.value}`} style={{ color: PALETTE_COLOR_1[+attr.value].fill }}>{attr.value}</span>
+            <span
+              className={`severity-item -sev-${attr.value}`}
+              style={{ color: PALETTE_COLOR_1[+attr.value].fill }}
+            >
+              {attr.value}
+            </span>
           );
-        }
+        },
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'report' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'report' })}
+          </span>
+        ),
         accessor: 'report',
         headerClassName: '',
         className: 'report',
-        Cell: attr => (
+        Cell: (attr) => (
           <div className="report-item-wrapper">
-            { attr.value ?
+            {attr.value ? (
               <a
                 href={attr.value}
                 target="_blank"
@@ -406,18 +486,22 @@ class ObservationsPage extends React.Component {
               >
                 <Icon className="" name="icon-file-empty" />
               </a>
-              :
+            ) : (
               <span className="report-item-text">-</span>
-              }
+            )}
           </div>
-        )
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'location-accuracy' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'location-accuracy' })}
+          </span>
+        ),
         accessor: 'location-accuracy',
         headerClassName: '-a-left',
         className: 'location-accuracy',
-        minWidth: 250
+        minWidth: 250,
       },
       {
         Header: '',
@@ -425,28 +509,38 @@ class ObservationsPage extends React.Component {
         headerClassName: '',
         className: 'location',
         expander: true,
-        Expander: ({ isExpanded }) =>
+        Expander: ({ isExpanded }) => (
           <div className="location-item-wrapper">
-            { isExpanded ?
+            {isExpanded ? (
               <button className="c-button -small -secondary">
                 <Icon name="icon-cross" />
               </button>
-              :
+            ) : (
               <button className="c-button -small -primary">
                 <Icon name="icon-location" />
               </button>
-            }
+            )}
           </div>
+        ),
       },
       {
-        Header: <span className="sortable">{this.props.intl.formatMessage({ id: 'relevant-operators' })}</span>,
+        Header: (
+          <span className="sortable">
+            {this.props.intl.formatMessage({ id: 'relevant-operators' })}
+          </span>
+        ),
         accessor: 'relevant-operators',
         headerClassName: '-a-left',
         className: 'relevant-operators',
         minWidth: 250,
-        Cell: attr => <ul className="cell-list">{attr.value.map(operator => (<li>{operator}</li>))}</ul>
-      }
-
+        Cell: (attr) => (
+          <ul className="cell-list">
+            {attr.value.map((operator) => (
+              <li>{operator}</li>
+            ))}
+          </ul>
+        ),
+      },
     ];
 
     return (
@@ -459,37 +553,29 @@ class ObservationsPage extends React.Component {
           title={this.props.intl.formatMessage({ id: 'observations' })}
           background="/static/images/static-header/bg-observations.jpg"
         />
-        <div className="c-section">
-          <div className="l-container">
-            <div className="row l-row">
-              <div className="columns small-12 medium-4">
-                <Filters
-                  options={parsedFilters.options}
-                  filters={parsedFilters.data}
-                  setFilters={this.props.setFilters}
-                  filtersRefs={FILTERS_REFS}
-                  // logFilter={this.logFilter}
-                />
-              </div>
 
-              <div className="columns small-12 medium-6 medium-offset-1">
-                {/* Overview by category graphs */}
-                <Overview parsedObservations={parsedChartObservations} />
-              </div>
-            </div>
-          </div>
-        </div>
+        <Filters
+          options={parsedFilters.options}
+          filters={parsedFilters.data}
+          setFilters={this.props.setFilters}
+          filtersRefs={FILTERS_REFS}
+          // logFilter={this.logFilter}
+        />
 
         <StaticTabs
           options={[
             {
-              label: this.props.intl.formatMessage({ id: 'observations.tab.observations-list' }),
-              value: 'observations-list'
+              label: this.props.intl.formatMessage({
+                id: 'observations.tab.observations-list',
+              }),
+              value: 'observations-list',
             },
             {
-              label: this.props.intl.formatMessage({ id: 'observations.tab.map' }),
-              value: 'map-view'
-            }
+              label: this.props.intl.formatMessage({
+                id: 'observations.tab.map',
+              }),
+              value: 'map-view',
+            },
           ]}
           defaultSelected={this.state.tab}
           onChange={this.triggerChangeTab}
@@ -500,7 +586,7 @@ class ObservationsPage extends React.Component {
             <div className="l-container">
               <h2 className="c-title">
                 {this.props.intl.formatMessage({
-                  id: 'observations.tab.observations-list'
+                  id: 'observations.tab.observations-list',
                 })}
               </h2>
               <Spinner isLoading={observations.loading} />
@@ -508,10 +594,10 @@ class ObservationsPage extends React.Component {
                 <CheckboxGroup
                   className="-inline -small -single-row"
                   name="observations-columns"
-                  onChange={value => this.setActiveColumns(value)}
+                  onChange={(value) => this.setActiveColumns(value)}
                   properties={{
                     default: observations.columns,
-                    name: 'observations-columns'
+                    name: 'observations-columns',
                   }}
                   options={tableOptions}
                 />
@@ -521,7 +607,7 @@ class ObservationsPage extends React.Component {
                 sortable
                 data={parsedTableObservations}
                 options={{
-                  columns: columnHeaders.filter(header =>
+                  columns: columnHeaders.filter((header) =>
                     observations.columns.includes(header.accessor)
                   ),
                   pageSize: this.getPageSize(),
@@ -534,22 +620,22 @@ class ObservationsPage extends React.Component {
                   // pages: observations.totalSize,
                   // page: this.state.page - 1,
                   // manual: true
-                  onPageChange: page => this.onPageChange(page),
+                  onPageChange: (page) => this.onPageChange(page),
                   defaultSorted: [
                     {
                       id: 'date',
-                      desc: false
-                    }
+                      desc: false,
+                    },
                   ],
                   showSubComponent: observations.columns.includes('location'),
-                  subComponent: row =>
+                  subComponent: (row) =>
                     observations.columns.includes('location') && (
                       <MapSubComponent
                         id={row.original.id}
                         location={row.original.location}
                         level={row.original.level}
                       />
-                    )
+                    ),
                 }}
               />
             </div>
@@ -567,10 +653,13 @@ class ObservationsPage extends React.Component {
               viewport={observations.map}
               onViewportChange={this.onViewportChange}
               // Interaction
-              interactiveLayerIds={['observations-circle-0', 'observations-symbol-1', 'observations-circle-2']}
+              interactiveLayerIds={[
+                'observations-circle-0',
+                'observations-symbol-1',
+                'observations-circle-2',
+              ]}
               onClick={this.onClick}
               onHover={this.onHover}
-
               onLoad={({ map }) => {
                 this.map = map;
 
@@ -579,7 +668,7 @@ class ObservationsPage extends React.Component {
                   .getElementById('forest-atlas-attribution')
                   .addEventListener('click', this.onCustomAttribute);
               }}
-              onUnmount={() => this.map = null}
+              onUnmount={() => (this.map = null)}
               // Options
               transformRequest={(url, resourceType) => {
                 if (url.startsWith(process.env.OTP_API)) {
@@ -587,8 +676,8 @@ class ObservationsPage extends React.Component {
                     url,
                     headers: {
                       'Content-Type': 'application/json',
-                      'OTP-API-KEY': process.env.OTP_API_KEY
-                    }
+                      'OTP-API-KEY': process.env.OTP_API_KEY,
+                    },
                   };
                 }
 
@@ -596,16 +685,13 @@ class ObservationsPage extends React.Component {
               }}
               mapOptions={{
                 customAttribution:
-                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
+                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
               }}
             >
-              {map => (
+              {(map) => (
                 <Fragment>
                   {/* LAYER MANAGER */}
-                  <LayerManager
-                    map={map}
-                    layers={getObservationsLayers}
-                  />
+                  <LayerManager map={map} layers={getObservationsLayers} />
                 </Fragment>
               )}
             </Map>
@@ -624,19 +710,19 @@ class ObservationsPage extends React.Component {
                       name: this.props.intl.formatMessage({ id: 'severity' }),
                       legendConfig: {
                         type: 'basic',
-                        items: LEGEND_SEVERITY.list.map(l => (
-                          { name: this.props.intl.formatMessage({ id: l.label }), color: l.fill }
-                        ))
-                      }
-                    }
-                  ]
-                }
+                        items: LEGEND_SEVERITY.list.map((l) => ({
+                          name: this.props.intl.formatMessage({ id: l.label }),
+                          color: l.fill,
+                        })),
+                      },
+                    },
+                  ],
+                },
               ]}
               collapsable={false}
               sortable={false}
               setLayerSettings={() => {}}
             />
-
 
             {/* MapControls */}
             <MapControls>
@@ -646,7 +732,7 @@ class ObservationsPage extends React.Component {
                   this.props.setObservationsMapLocation({
                     ...observations.map,
                     zoom,
-                    transitionDuration: 500
+                    transitionDuration: 500,
                   });
                 }}
               />
@@ -672,24 +758,28 @@ ObservationsPage.propTypes = {
   setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   setObservationsMapLocation: PropTypes.func.isRequired,
-  setObservationsMapCluster: PropTypes.func.isRequired
+  setObservationsMapCluster: PropTypes.func.isRequired,
 };
 
-export default withTracker(withIntl(connect(
-  state => ({
-    observations: state.observations,
-    parsedFilters: getParsedFilters(state),
-    parsedChartObservations: getParsedChartObservations(state),
-    parsedTableObservations: getParsedTableObservations(state),
-    getObservationsLayers: getObservationsLayers(state)
-  }),
-  {
-    getObservations,
-    getFilters,
-    getObservationsUrl,
-    setObservationsMapLocation,
-    setObservationsMapCluster,
-    setFilters,
-    setActiveColumns
-  }
-)(ObservationsPage)));
+export default withTracker(
+  withIntl(
+    connect(
+      (state) => ({
+        observations: state.observations,
+        parsedFilters: getParsedFilters(state),
+        parsedChartObservations: getParsedChartObservations(state),
+        parsedTableObservations: getParsedTableObservations(state),
+        getObservationsLayers: getObservationsLayers(state),
+      }),
+      {
+        getObservations,
+        getFilters,
+        getObservationsUrl,
+        setObservationsMapLocation,
+        setObservationsMapCluster,
+        setFilters,
+        setActiveColumns,
+      }
+    )(ObservationsPage)
+  )
+);
