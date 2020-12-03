@@ -7,7 +7,7 @@ import cx from 'classnames';
 // Redux
 import { connect } from 'react-redux';
 
-import { getOperator } from 'modules/operators-detail';
+import { getOperator, getOperatorDocumentation, getOperatorTimeline } from 'modules/operators-detail';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -105,7 +105,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                           type: 'operator',
                           id,
                         }}
-                        onChange={() => props.getOperator(id)}
+                        onChange={() => {
+                          props.getOperator(id)
+                          props.getOperatorDocumentation(id)
+                          props.getOperatorTimeline(id)
+                        }}
                       />
 
                       {((user && user.role === 'admin') ||
@@ -120,7 +124,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                             id,
                           }}
                           user={user}
-                          onChange={() => props.getOperator(id)}
+                          onChange={() => {
+                            props.getOperator(id)
+                            props.getOperatorDocumentation(id)
+                            props.getOperatorTimeline(id)
+                          }}
                         />
                       )}
                     </div>
@@ -134,7 +142,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                 documents={FMUDocsByFMU}
                 user={user}
                 id={id}
-                getOperator={(_id) => props.getOperator(_id)}
+                getOperator={(_id) => {
+                  props.getOperator(_id)
+                  props.getOperatorDocumentation(id)
+                  props.getOperatorTimeline(id)
+                }}
               />
             )}
           </li>
@@ -158,5 +170,5 @@ export default connect(
   (state) => ({
     user: state.user,
   }),
-  { getOperator }
+  { getOperator, getOperatorDocumentation, getOperatorTimeline }
 )(DocumentsByOperator);
