@@ -98,6 +98,10 @@
 @import 'components/ui/select';
 @import 'components/ui/stacked-timeline';
 
+// Documents' database
+// TODO: reorganize?
+@import 'components/database/table';
+
 // form
 @import 'components/form/form';
 @import 'components/form/field';

@@ -378,26 +378,25 @@ function DatabaseTable({
   }
 
   return (
-    <section className="c-section -relative">
+    <section className="c-section -relative c-db-table">
       <div className="l-container">
         <h2 className="c-title">
-          {intl.formatMessage({
-            id: 'observations.tab.observations-list',
-          })}
+          {/* {intl.formatMessage({
+            id: 'select-table-content',
+          })} */}
+          Select Table Content
         </h2>
         <Spinner isLoading={observations.loading} />
-        <div className="c-field -fluid -valid">
-          <CheckboxGroup
-            className="-inline -small -single-row"
-            name="observations-columns"
-            onChange={(value) => _setActiveColumns(value)}
-            properties={{
-              default: observations.columns,
-              name: 'observations-columns',
-            }}
-            options={tableOptions}
-          />
-        </div>
+        <CheckboxGroup
+          className="-inline -single-row"
+          name="observations-columns"
+          onChange={(value) => _setActiveColumns(value)}
+          properties={{
+            default: observations.columns,
+            name: 'observations-columns',
+          }}
+          options={tableOptions}
+        />
 
         <Table
           sortable
