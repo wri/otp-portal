@@ -85,13 +85,15 @@
     justify-content: flex-start;
     align-items: center;
     flex: 0 0 50%;
-    margin: 0 $space-1 0 0;
-    width: 215px;
+    margin: 0;
+    margin-bottom: $space-1;
+    font-size: 14px;
   }
 
   .doc-by-category-bar {
     display: flex;
     height: 7px;
-    margin-left: 10px;
+    width: 215px;
+    margin-right: $space-1;
   }
 }
