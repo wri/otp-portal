@@ -43,6 +43,11 @@ const FORM_ELEMENTS = {
   }
 };
 
+const TYPES = {
+  'operator-document-country-histories': 'operator-document-countries',
+  'operator-document-fmu-histories': 'operator-document-fmus',
+}
+
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
@@ -86,7 +91,7 @@ class DocModal extends React.Component {
   onSubmit(e) {
     e && e.preventDefault();
 
-    const { id, type, status } = this.props;
+    const { type, docId } = this.props;
 
     // Validate the form
     FORM_ELEMENTS.validate();
@@ -100,43 +105,20 @@ class DocModal extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
-        if (status === 'doc_not_provided' || this.state.form.file || this.state.form.reason) {
-          this.documentationService.saveDocument({
-            url: type,
-            type: 'POST',
-            body: this.getBody('post')
+        this.documentationService.saveDocument({
+          url: `${TYPES[type]}/${docId}`,
+          type: 'PATCH',
+          body: this.getBody('patch')
+        })
+          .then(() => {
+            this.setState({ submitting: false, errors: [] });
+            this.props.onChange && this.props.onChange();
+            modal.toggleModal(false);
           })
-            .then(() => {
-              this.setState({ submitting: false, errors: [] });
-              this.props.onChange && this.props.onChange();
-              modal.toggleModal(false);
-            })
-            .catch((err) => {
-              console.error(err);
-              this.setState({ submitting: false, errors: err });
-            });
-        } else {
-
-        }
-
-        if (status !== 'doc_not_provided' && !this.state.form.file && !this.state.form.reason) {
-          this.documentationService.saveDocument({
-            url: `${type}/${id}`,
-            type: 'PATCH',
-            body: this.getBody('patch')
-          })
-            .then(() => {
-              this.setState({ submitting: false, errors: [] });
-              this.props.onChange && this.props.onChange();
-              modal.toggleModal(false);
-            })
-            .catch((err) => {
-              console.error(err);
-              this.setState({ submitting: false, errors: err });
-            });
-        }
-      } else {
-        // toastr.error('Error', 'Fill all the required fields');
+          .catch((err) => {
+            console.error(err);
+            this.setState({ submitting: false, errors: err });
+          });
       }
     }, 0);
   }
@@ -147,15 +129,19 @@ class DocModal extends React.Component {
    * - getBody
   */
   getBody(request) {
-    const { id, requiredDocId, type, properties, fmu } = this.props;
+    const { type, docId, requiredDocId, properties, fmu } = this.props;
     const { id: propertyId, type: typeDoc } = properties;
+
+    const TYPES = {
+      'operator-document-country-histories': 'operator-document-countries',
+      'operator-document-fmu-histories': 'operator-document-fmus',
+    }
 
     return {
       data: {
-        id,
-        type,
+        id: docId,
+        type: TYPES[type],
         attributes: {
-          current: true,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
           'source-type': this.state.form.source,
@@ -167,11 +153,11 @@ class DocModal extends React.Component {
             reason: this.state.form.reason
           },
           ...fmu && request === 'post' && { 'fmu-id': fmu.id },
-          ...typeDoc === 'operator' && request === 'post' && {
+          ...typeDoc === 'operator' && {
             'operator-id': propertyId,
             'required-operator-document-id': requiredDocId
           },
-          ...typeDoc === 'government' && request === 'post' && {
+          ...typeDoc === 'government' && {
             'country-id': propertyId,
             'required-gov-document-id': requiredDocId
           }
@@ -182,6 +168,7 @@ class DocModal extends React.Component {
 
 
   render() {
+    console.log(this.props);
     const { submitting, errors } = this.state;
     const { title, url, notRequired } = this.props;
 
@@ -330,8 +317,10 @@ class DocModal extends React.Component {
             }
           </fieldset>
 
-          {!!errors.length &&
-            errors.map(e => e.title)
+          {!!errors.length && Array.isArray(errors) &&
+            <div>
+              Error
+            </div>
           }
 
           <ul className="c-field-buttons">
@@ -366,6 +355,7 @@ class DocModal extends React.Component {
 
 DocModal.propTypes = {
   id: PropTypes.string,
+  docId: PropTypes.number,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
   status: PropTypes.string,

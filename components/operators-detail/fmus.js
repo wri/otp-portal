@@ -130,7 +130,7 @@ class OperatorsDetailFMUs extends React.Component {
     });
   }
 
-  onClick(e) {
+  onClick = (e) => {
     if (
       e.features &&
       e.features.length &&
@@ -144,7 +144,7 @@ class OperatorsDetailFMUs extends React.Component {
     }
   }
 
-  onHover(e) {
+  onHover = (e) => {
     if (e.features && e.features.length) {
       const { features, lngLat } = e;
       this.props.setOperatorsDetailMapHoverInteractions({ features, lngLat });
@@ -185,10 +185,6 @@ class OperatorsDetailFMUs extends React.Component {
       activeInteractiveLayersIds,
       legendLayers,
     } = this.props;
-
-    const setMapLocation = debounce((mapLocation) => {
-      this.props.setOperatorsDetailMapLocation(mapLocation);
-    }, 500);
 
     const certifications = CERTIFICATIONS.filter(
       ({ value }) => fmu[`certification-${value}`]
@@ -259,7 +255,6 @@ class OperatorsDetailFMUs extends React.Component {
             scrollZoom={false}
             // viewport
             viewport={operatorsDetailFmus.map}
-            onViewportChange={setMapLocation}
             // Interaction
             interactiveLayerIds={activeInteractiveLayersIds}
             onClick={this.onClick}

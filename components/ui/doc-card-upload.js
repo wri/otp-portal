@@ -88,11 +88,11 @@ class DocCardUpload extends React.Component {
 
   triggerDeleteFile(e) {
     e && e.preventDefault();
-    const { id } = this.props;
+    const { docId } = this.props;
 
     this.setState({ deleteLoading: true });
 
-    this.documentationService.deleteDocument(id)
+    this.documentationService.deleteDocument(docId)
       .then(() => {
         this.setState({ deleteLoading: false });
         this.props.onChange && this.props.onChange();
@@ -172,7 +172,7 @@ class DocCardUpload extends React.Component {
 DocCardUpload.propTypes = {
   status: PropTypes.string,
   user: PropTypes.object,
-  id: PropTypes.string,
+  docId: PropTypes.string,
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
   intl: intlShape.isRequired

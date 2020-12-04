@@ -19,6 +19,7 @@ const getParsedDocumentation = createSelector(
         try {
           return {
             id: doc.id,
+            docId: doc['operator-document-id'],
             fmu: doc.fmu,
             requiredDocId: doc['required-operator-document'].id,
             url: doc.attachment?.url,
@@ -70,6 +71,7 @@ const getContractSignatureDocumentation = createSelector(
       if (doc) {
         contractSignature = {
           id: doc.id,
+          docId: doc['operator-document-id'],
           requiredDocId: doc['required-operator-document'].id,
           url: doc.attachment?.url,
           type: doc.type,

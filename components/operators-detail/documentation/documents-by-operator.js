@@ -7,18 +7,15 @@ import cx from 'classnames';
 // Redux
 import { connect } from 'react-redux';
 
-import { getOperator } from 'modules/operators-detail';
-
-// Utils
-import { HELPERS_DOC } from 'utils/documentation';
+import { getOperator, getOperatorDocumentation, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
+import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
 
-function DocumentsByOperator({ data, user, id, ...props }) {
-  const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
+function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
   const [categoriesOpen, setCategoriesOpen] = useState(
     Object.keys(groupedByCategory).reduce(
       (acc, cat) => ({ ...acc, [cat]: false }),
@@ -29,9 +26,6 @@ function DocumentsByOperator({ data, user, id, ...props }) {
   return (
     <ul className="c-doc-gallery">
       {Object.keys(groupedByCategory).map((category) => {
-        const groupedByStatus = HELPERS_DOC.getGroupedByStatus(
-          groupedByCategory[category]
-        );
         const producerDocs = groupedByCategory[category].filter(
           (doc) => doc.type === 'operator-document-country-histories'
         );
@@ -40,44 +34,14 @@ function DocumentsByOperator({ data, user, id, ...props }) {
         );
         const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
         const isCategoryOpen = categoriesOpen[category];
-        const validDocs =
-          (groupedByStatus.doc_valid?.length || 0) +
-          (groupedByStatus.doc_not_required?.length || 0);
 
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
             <header className="doc-gallery-item-header">
-              <div className="doc-by-category-desc">
-                <div className="doc-by-category-chart">
-                  {`${
-                    groupedByStatus.doc_valid || groupedByStatus.doc_not_required
-                      ? (
-                          (validDocs / groupedByCategory[category].length) *
-                          100
-                        ).toFixed(0)
-                      : 0
-                  }%`}
-                  <div className="doc-by-category-bar">
-                    {sortBy(Object.keys(groupedByStatus)).map((status) => {
-                      const segmentWidth = `${
-                        (groupedByStatus[status].length /
-                          groupedByCategory[category].length) *
-                        100
-                      }%`;
-                      return (
-                        <div
-                          key={status}
-                          className={`doc-by-category-bar-segment -${status}`}
-                          style={{ width: segmentWidth }}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <h3 className="c-title -proximanova -extrabig -uppercase">
-                  {category}
-                </h3>
-              </div>
+              <DocumentStatusBar
+                category={category}
+                docs={groupedByCategory[category]}
+              />
               <button
                 className={cx('doc-by-category-btn -proximanova', {
                   open: isCategoryOpen,
@@ -105,7 +69,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                           type: 'operator',
                           id,
                         }}
-                        onChange={() => props.getOperator(id)}
+                        onChange={() => {
+                          props.getOperator(id)
+                          props.getOperatorDocumentation(id)
+                          props.getOperatorTimeline(id)
+                        }}
                       />
 
                       {((user && user.role === 'admin') ||
@@ -120,7 +88,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                             id,
                           }}
                           user={user}
-                          onChange={() => props.getOperator(id)}
+                          onChange={() => {
+                            props.getOperator(id)
+                            props.getOperatorDocumentation(id)
+                            props.getOperatorTimeline(id)
+                          }}
                         />
                       )}
                     </div>
@@ -134,7 +106,11 @@ function DocumentsByOperator({ data, user, id, ...props }) {
                 documents={FMUDocsByFMU}
                 user={user}
                 id={id}
-                getOperator={(_id) => props.getOperator(_id)}
+                getOperator={(_id) => {
+                  props.getOperator(_id)
+                  props.getOperatorDocumentation(id)
+                  props.getOperatorTimeline(id)
+                }}
               />
             )}
           </li>
@@ -149,7 +125,7 @@ DocumentsByOperator.defaultProps = {
 };
 
 DocumentsByOperator.propTypes = {
-  data: PropTypes.array,
+  groupedByCategory: PropTypes.object,
   id: PropTypes.string,
   user: PropTypes.object,
 };
@@ -158,5 +134,5 @@ export default connect(
   (state) => ({
     user: state.user,
   }),
-  { getOperator }
+  { getOperator, getOperatorDocumentation, getOperatorTimeline }
 )(DocumentsByOperator);

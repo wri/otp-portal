@@ -1,0 +1,50 @@
+.c-documentation-pie-chart {
+  display: flex;
+  justify-content: space-between;
+
+  .c-doc-provided {
+    flex-grow: 7;
+  }
+
+  .pie-categories {
+    width: 286px;
+    margin-bottom: 14px;
+    flex-grow: 3;
+
+    .c-doc-by-category {
+      padding: 12px 0;
+    }
+
+    .doc-by-category-desc {
+      display: flex;
+      flex-direction: column-reverse;
+
+      .c-title {
+        font-size: 16px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        text-align: right;
+        margin: 3px 0;
+      }
+
+      .doc-by-category-chart {
+        display: flex;
+        flex-direction: row-reverse;
+        margin: 0;
+
+        font-size: 14px;
+        letter-spacing: 0;
+        line-height: 16px;
+        text-align: right;
+
+        .doc-by-category-bar {
+          margin-left: 8px;
+        }
+
+        span {
+          min-width: 70px;
+        }
+      }
+    }
+  }
+}
