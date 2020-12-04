@@ -1,8 +1,45 @@
 // Constants
-import { PALETTE_COLOR_1 } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import isEmpty from 'lodash/isEmpty';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
+
+const FMU_LEGEND = [
+  {
+    name: 'Cameroon',
+    iso: 'CMR',
+    color: '#007A5E',
+    items: [
+      { name: 'ventes_de_coupe', color: '#8BC2B5' },
+      { name: 'ufa', color: '#007A5E' },
+      { name: 'communal', color: '#00382B' }
+    ]
+  },
+  {
+    name: 'Central African Republic',
+    iso: 'CAF',
+    color: '#e9D400'
+  },
+  {
+    name: 'Congo',
+    iso: 'COG',
+    color: '#7B287D'
+  },
+  {
+    name: 'Democratic Republic of the Congo',
+    iso: 'COD',
+    color: '#5ca2d1'
+  },
+  {
+    name: 'Gabon',
+    iso: 'GAB',
+    color: '#e95800',
+    items: [
+      { name: 'CPAET', color: '#e95800' },
+      { name: 'CFAD', color: '#e9A600' }
+    ]
+  }
+];
 
 // Get the datasets and filters from state
 const observations = state => state.observations.data;
@@ -104,6 +141,126 @@ const getObservationsLayers = createSelector(
 
       return [
         ...clusterLayers,
+        {
+          id: 'fmus',
+          type: 'vector',
+          source: {
+            type: 'vector',
+            tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`],
+            promoteId: 'id'
+          },
+          render: {
+            layers: [
+              {
+                type: 'fill',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
+                  ['==', ['get', 'iso3_fmu'], 'COD']
+                ],
+                paint: {
+                  'fill-color': '#5ca2d1',
+                  'fill-opacity': 0.9
+                }
+              },
+              {
+                type: 'fill',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
+                  ['==', ['get', 'iso3_fmu'], 'COG']
+                ],
+                paint: {
+                  'fill-color': '#7B287D',
+                  'fill-opacity': 0.9
+                }
+              },
+              {
+                type: 'fill',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
+                  ['==', ['get', 'iso3_fmu'], 'CMR']
+                ],
+                paint: {
+                  'fill-color': {
+                    property: 'fmu_type_label',
+                    type: 'categorical',
+                    stops: [
+                      ['ventes_de_coupe', '#8BC2B5'],
+                      ['ufa', '#007A5E'],
+                      ['communal', '#00382B']
+                    ],
+                    default: '#007A5E'
+                  },
+                  'fill-opacity': 0.9
+                }
+              },
+              {
+                type: 'fill',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
+                  ['==', ['get', 'iso3_fmu'], 'GAB']
+                ],
+                paint: {
+                  'fill-color': {
+                    property: 'fmu_type_label',
+                    type: 'categorical',
+                    stops: [
+                      ['CPAET', '#e95800'],
+                      ['CFAD', '#e9A600']
+                    ],
+                    default: '#e95800'
+                  },
+
+                  'fill-opacity': 0.9
+                }
+              },
+              {
+                type: 'fill',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
+                  ['==', ['get', 'iso3_fmu'], 'CAF']
+                ],
+                paint: {
+                  'fill-color': '#e9D400',
+                  'fill-opacity': 0.9
+                }
+              },
+              {
+                type: 'line',
+                'source-layer': 'layer0',
+                filter: [
+                  'all',
+                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]]
+                ],
+                paint: {
+                  'line-color': '#000000',
+                  'line-opacity': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    1,
+                    0.1
+                  ],
+                  'line-width': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    2,
+                    1
+                  ],
+                  'line-dasharray': [3, 1]
+                }
+              }
+            ]
+          }
+        },
         {
           id: 'observations',
           type: 'geojson',
@@ -217,5 +374,50 @@ const getObservationsLayers = createSelector(
 );
 
 
+const getObservationsLegend = createSelector(
+  observations,
+  (_observations) => {
+    return [
+      {
+        id: 'fmus',
+        dataset: 'fmus',
+        name: 'fmus',
+        layers: [
+          {
+            opacity: 1,
+            active: true,
+            name: 'fmus',
+            legendConfig: {
+              type: 'basic',
+              color: '#e98300',
+              items: process.env.OTP_COUNTRIES.map(iso => FMU_LEGEND.find(i => i.iso === iso))
+            }
+          }
+        ]
+      },
+      {
+        id: 'severity',
+        dataset: 'severity',
+        name: 'severity',
+        layers: [
+          {
+            opacity: 1,
+            active: true,
+            name: 'severity',
+            legendConfig: {
+              type: 'basic',
+              items: LEGEND_SEVERITY.list.map(l => (
+                { name: l.label, color: l.fill }
+              ))
+            }
+          }
+        ]
+      }
+    ]
+  }
+);
 
-export { getObservationsLayers };
+
+
+
+export { getObservationsLayers, getObservationsLegend };
