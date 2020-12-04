@@ -381,10 +381,9 @@ function DatabaseTable({
     <section className="c-section -relative c-db-table">
       <div className="l-container">
         <h2 className="c-title">
-          {/* {intl.formatMessage({
+          {intl.formatMessage({
             id: 'select-table-content',
-          })} */}
-          Select Table Content
+          })}
         </h2>
         <Spinner isLoading={observations.loading} />
         <CheckboxGroup

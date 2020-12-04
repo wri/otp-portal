@@ -590,18 +590,16 @@ class ObservationsPage extends React.Component {
                 })}
               </h2>
               <Spinner isLoading={observations.loading} />
-              <div className="c-field -fluid -valid">
-                <CheckboxGroup
-                  className="-inline -small -single-row"
-                  name="observations-columns"
-                  onChange={(value) => this.setActiveColumns(value)}
-                  properties={{
-                    default: observations.columns,
-                    name: 'observations-columns',
-                  }}
-                  options={tableOptions}
-                />
-              </div>
+              <CheckboxGroup
+                className="-inline -single-row"
+                name="observations-columns"
+                onChange={(value) => this.setActiveColumns(value)}
+                properties={{
+                  default: observations.columns,
+                  name: 'observations-columns',
+                }}
+                options={tableOptions}
+              />
 
               <Table
                 sortable
