@@ -1,12 +1,59 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { injectIntl } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
 import { PALETTE } from 'utils/documentation';
 
-function DocumentsTimeline({ timelineData }) {
+function CustomTooltip({ active, payload, label, intl }) {
+  if (active) {
+    const validDocs = payload.find((p) => p.dataKey === 'doc_valid');
+    return (
+      <div className="c-custom-tooltip">
+        <p className="date-label">{label}</p>
+        <p className="valid-count">
+          {intl.formatMessage(
+            {
+              id: 'operator-detail.documents.title',
+            },
+            {
+              percentage: validDocs.value[2].toFixed(2),
+            }
+          )}
+        </p>
+        <div className="tooltip-categories">
+          {payload.map((category) => {
+            const pctValue = category && category.value && category.value[2];
+            if (pctValue) {
+              return (
+                <p className="tooltip-category">
+                  <svg height="10" width="10">
+                    <circle cx="5" cy="5" r="5" fill={category.fill} />
+                  </svg>
+                  {category.value[2].toFixed(2)}%{' '}
+                  {intl.formatMessage({ id: category.name })}
+                </p>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.object,
+  label: PropTypes.string,
+  intl: intlShape.isRequired,
+};
+
+function DocumentsTimeline({ timelineData, intl }) {
   const chartData = timelineData
     .map((docsByDate) => {
       let buffer = 0;
@@ -47,7 +94,9 @@ function DocumentsTimeline({ timelineData }) {
                   fillOpacity="1"
                 />
               ))}
-          <Tooltip formatter={(values) => `${values[2].toFixed(2)}%`} />
+          <Tooltip
+            content={(props) => <CustomTooltip intl={intl} {...props} />}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -56,6 +105,7 @@ function DocumentsTimeline({ timelineData }) {
 
 DocumentsTimeline.propTypes = {
   timelineData: PropTypes.array,
+  intl: intlShape.isRequired,
 };
 
 export default injectIntl(DocumentsTimeline);

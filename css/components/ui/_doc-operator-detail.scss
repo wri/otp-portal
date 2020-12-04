@@ -29,7 +29,6 @@
 
       .doc-by-category-chart {
         display: flex;
-        flex-direction: row-reverse;
         margin: 0;
 
         font-size: 14px;
@@ -44,6 +43,43 @@
         span {
           min-width: 70px;
         }
+      }
+    }
+  }
+}
+
+.c-timeline-chart .c-custom-tooltip {
+  background-color: $color-tertiary;
+  width: 400px;
+  padding: 12px 20px;
+  color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 15px 29px 0 rgba(0, 0, 0, 0.14);
+
+  .date-label {
+    font-family: $font-family-proximanova;
+    font-size: 12px;
+    letter-spacing: 0.75px;
+    line-height: 14px;
+  }
+
+  .valid-count {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: 26px;
+  }
+
+  .tooltip-categories {
+    margin: 8px 0 0;
+
+    .tooltip-category {
+      font-family: $font-family-proximanova;
+      font-size: 12px;
+      letter-spacing: 0.75px;
+      line-height: 14px;
+
+      svg {
+        margin-right: 6px;
       }
     }
   }
