@@ -41,7 +41,7 @@ import {
 
 import { logEvent } from 'utils/analytics';
 
-class ObservationsPage extends React.Component {
+class DocumentsDatabasePage extends React.Component {
   static async getInitialProps({ url, store }) {
     const { observations } = store.getState();
 
@@ -113,7 +113,7 @@ class ObservationsPage extends React.Component {
         <Filters
           options={parsedFilters.options}
           filters={parsedFilters.data}
-          setFilters={setFilters}
+          setFilters={this.props.setFilters}
           filtersRefs={FILTERS_REFS}
         />
 
@@ -136,8 +136,8 @@ class ObservationsPage extends React.Component {
   }
 }
 
-ObservationsPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
+DocumentsDatabasePage.propTypes = {
+  url: PropTypes.object.isRequired,
   observations: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
@@ -167,6 +167,6 @@ export default withTracker(
         setFilters,
         setActiveColumns,
       }
-    )(ObservationsPage)
+    )(DocumentsDatabasePage)
   )
 );
