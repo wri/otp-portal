@@ -154,7 +154,6 @@ class ObservationsPage extends React.Component {
 
     const { features } = e;
     if (features && features.length) {
-      console.log(features);
       const { source, geometry, properties } = features[0];
       const { cluster, cluster_id: clusterId, point_count } = properties;
 

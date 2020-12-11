@@ -4,8 +4,6 @@ import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 import compact from 'lodash/compact';
 
-import { toastr } from 'react-redux-toastr';
-
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
@@ -29,12 +27,6 @@ const initialState = {
   totalSize: 0,
   loading: false,
   error: false,
-  map: {
-    zoom: 4,
-    latitude: 0,
-    longitude: 20,
-  },
-  cluster: {},
   filters: {
     data: {},
     options: {},
@@ -56,7 +48,7 @@ const initialState = {
 const JSONA = new Jsona();
 
 /* Reducer */
-export default function (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_DOCUMENTS_DB_SUCCESS:
       return Object.assign({}, state, {
@@ -192,7 +184,6 @@ export function getFilters() {
       }
     )
       .then((response) => {
-        console.log('getting filters AAAAAAAAAAAAAA', response);
         if (response.ok) return response.json();
         throw new Error(response.statusText);
       })
@@ -208,72 +199,6 @@ export function getFilters() {
           type: GET_FILTERS_ERROR,
           payload: err.message,
         });
-      });
-  };
-}
-
-export function getDownload() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-    const filters = getState().observations.filters.data;
-    const filtersQuery = compact(
-      Object.keys(filters).map((key) => {
-        if (!isEmpty(filters[key])) {
-          return `filter[${key}]=${filters[key].join(',')}`;
-        }
-        return null;
-      })
-    );
-
-    const includes = [
-      'country',
-      'subcategory',
-      'subcategory.category',
-      'operator',
-      'severity',
-      'fmu',
-      'observation-report',
-      'observers',
-      'relevant-operators',
-    ];
-
-    // Fields
-    const currentFields = { fmus: ['name'], operator: ['name'] };
-    const fields = Object.keys(currentFields)
-      .map((f) => `fields[${f}]=${currentFields[f]}`)
-      .join('&');
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const url = `${
-      process.env.OTP_API
-    }/observations-csv?locale=${lang}&${fields}&include=${includes.join(
-      ','
-    )}&${filtersQuery.join('&')}`;
-
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'text/csv',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-      },
-    })
-      .then((response) => {
-        if (response.ok) return response.text();
-        return toastr.error(
-          this.props.intl.formatMessage({ id: 'Error' }),
-          this.props.intl.formatMessage({
-            id: 'Oops! There was an error, try again',
-          })
-        );
-      })
-      .then((csv) => {
-        if (csv) {
-          const a = document.createElement('a');
-          a.href = `data:text/csv;charset=utf-8,${encodeURI(csv)}`;
-          a.target = '_blank';
-          a.download = 'DocumentsDatabase.csv';
-          a.click();
-        }
       });
   };
 }
