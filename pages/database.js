@@ -30,26 +30,24 @@ import StaticTabs from 'components/ui/static-tabs';
 
 // Modules
 import {
-  getObservations,
+  getDocumentsDatabase,
   getFilters,
   setFilters,
-  getObservationsUrl,
+  getDocumentsDatabaseUrl,
   setActiveColumns,
-  setObservationsMapLocation,
-  setObservationsMapCluster,
-} from 'modules/observations';
+} from 'modules/documents-database';
 
 import { logEvent } from 'utils/analytics';
 
 class DocumentsDatabasePage extends React.Component {
   static async getInitialProps({ url, store }) {
-    const { observations } = store.getState();
+    const { database } = store.getState();
 
-    if (isEmpty(observations.data)) {
-      await store.dispatch(getObservations());
+    if (isEmpty(database.data)) {
+      await store.dispatch(getDocumentsDatabase());
     }
 
-    if (isEmpty(observations.filters.options)) {
+    if (isEmpty(database.filters.options)) {
       await store.dispatch(getFilters());
     }
 
@@ -70,12 +68,12 @@ class DocumentsDatabasePage extends React.Component {
   componentDidMount() {
     const { url } = this.props;
 
-    this.props.getObservationsUrl(url);
+    this.props.getDocumentsDatabaseUrl(url);
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
-      this.props.getObservations();
+      this.props.getDocumentsDatabase();
     }
   }
 
@@ -84,9 +82,10 @@ class DocumentsDatabasePage extends React.Component {
     const addColumn = difference(value, observations.columns);
     const removeColumn = difference(observations.columns, value);
 
-    if (addColumn.length) logEvent('Observations', 'Add Column', addColumn[0]);
+    if (addColumn.length)
+      logEvent('DocumentsDatabase', 'Add Column', addColumn[0]);
     if (removeColumn.length)
-      logEvent('Observations', 'Remove Column', removeColumn[0]);
+      logEvent('DocumentsDatabase', 'Remove Column', removeColumn[0]);
 
     this.props.setActiveColumns(value);
   }
@@ -101,7 +100,7 @@ class DocumentsDatabasePage extends React.Component {
     return (
       <Layout
         title="Producers’ documents database"
-        description="Observations description..."
+        description="DocumentsDatabase description..."
         url={url}
       >
         <StaticHeader
@@ -142,8 +141,8 @@ DocumentsDatabasePage.propTypes = {
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
 
-  getObservations: PropTypes.func.isRequired,
-  getObservationsUrl: PropTypes.func.isRequired,
+  getDocumentsDatabase: PropTypes.func.isRequired,
+  getDocumentsDatabaseUrl: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
 };
@@ -153,17 +152,16 @@ export default withTracker(
     connect(
       (state) => ({
         observations: state.observations,
+        documentsDb: state.database,
         parsedFilters: getParsedFilters(state),
         parsedChartObservations: getParsedChartObservations(state),
         parsedTableObservations: getParsedTableObservations(state),
         getObservationsLayers: getObservationsLayers(state),
       }),
       {
-        getObservations,
+        getDocumentsDatabase,
         getFilters,
-        getObservationsUrl,
-        setObservationsMapLocation,
-        setObservationsMapCluster,
+        getDocumentsDatabaseUrl,
         setFilters,
         setActiveColumns,
       }
