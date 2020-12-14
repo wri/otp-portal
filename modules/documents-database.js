@@ -28,7 +28,15 @@ const initialState = {
   loading: false,
   error: false,
   filters: {
-    data: {},
+    data: {
+      type: [],
+      status: [],
+      country_ids: [],
+      operator_id: [],
+      fmu_id: [],
+      required_operator_document_id: [],
+      source: [],
+    },
     options: {},
     loading: false,
     error: false,
@@ -115,7 +123,7 @@ export function getDocumentsDatabase() {
 
     const includes = [
       'operator',
-      'country',
+      'operator.country',
       'fmu',
       'operator-document-annexes',
     ];
@@ -131,7 +139,7 @@ export function getDocumentsDatabase() {
       process.env.OTP_API
     }/operator-documents?locale=${lang}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(
       ','
-    )}&${filtersQuery.join('&')}`;
+    )}${filtersQuery.length ? `&${filtersQuery.join('&')}` : ''}`;
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DOCUMENTS_DB_LOADING });
 
@@ -174,7 +182,7 @@ export function getFilters() {
     const lang = language === 'zh' ? 'zh-CN' : language;
 
     return fetch(
-      `${process.env.OTP_API}/operator-document-filters-tree?locale=${lang}`,
+      `${process.env.OTP_API}/operator_document_filters_tree?locale=${lang}`,
       {
         method: 'GET',
         headers: {

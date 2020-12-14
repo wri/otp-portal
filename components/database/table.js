@@ -15,14 +15,14 @@ import { connect } from 'react-redux';
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
-import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
+import { getParsedTableDocuments } from 'selectors/database/database';
 import { getObservations, setActiveColumns } from 'modules/observations';
 
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 function DatabaseTable({
   observations,
-  parsedTableObservations,
+  parsedTableDocuments,
   getObservations: _getObservations,
   setActiveColumns: _setActiveColumns,
   intl,
@@ -30,24 +30,17 @@ function DatabaseTable({
   const [page, setPage] = useState(1);
   // Hard coded values
   const inputs = [
-    'date',
     'status',
     'country',
     'operator',
+    // 'forest-type',
     'fmu',
-    'category',
-    'observation',
-    'level',
-    'report',
-    'evidence',
-    'litigation-status',
-    'location',
-    'location-accuracy',
-    'observer-organizations',
-    'observer-types',
-    'operator-type',
-    'subcategory',
-    'relevant-operators',
+    // 'category',
+    'start-date',
+    'expire-date',
+    'source',
+    'document',
+    // 'reason',
   ];
 
   const changeOfLabelLookup = {
@@ -305,7 +298,8 @@ function DatabaseTable({
         return (
           <span
             className={`severity-item -sev-${attr.value}`}
-            style={{ color: PALETTE_COLOR_1[+attr.value].fill }}
+            // TODO: fix this
+            // style={{ color: PALETTE_COLOR_1[+attr.value].fill }}
           >
             {attr.value}
           </span>
@@ -399,7 +393,7 @@ function DatabaseTable({
 
         <Table
           sortable
-          data={parsedTableObservations}
+          data={parsedTableDocuments}
           options={{
             columns: columnHeaders.filter((header) =>
               observations.columns.includes(header.accessor)
@@ -436,7 +430,7 @@ function DatabaseTable({
 DatabaseTable.propTypes = {
   observations: PropTypes.object,
   intl: intlShape.isRequired,
-  parsedTableObservations: PropTypes.array,
+  parsedTableDocuments: PropTypes.array,
   getObservations: PropTypes.func,
   setActiveColumns: PropTypes.func,
 };
@@ -445,7 +439,7 @@ export default withIntl(
   connect(
     (state) => ({
       observations: state.observations,
-      parsedTableObservations: getParsedTableObservations(state),
+      parsedTableDocuments: getParsedTableDocuments(state),
     }),
     { getObservations, setActiveColumns }
   )(DatabaseTable)

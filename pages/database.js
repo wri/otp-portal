@@ -22,10 +22,6 @@ import DatabaseTable from 'components/database/table';
 import StaticTabs from 'components/ui/static-tabs';
 
 // Selectors
-import {
-  getParsedChartDocuments,
-  getParsedTableDocuments,
-} from 'selectors/database/database';
 import { getParsedFilters } from 'selectors/database/filters';
 
 // Modules
@@ -153,8 +149,6 @@ export default withTracker(
       (state) => ({
         database: state.database,
         parsedFilters: getParsedFilters(state),
-        parsedChartDocuments: getParsedChartDocuments(state),
-        parsedTableDocuments: getParsedTableDocuments(state),
       }),
       {
         getDocumentsDatabase,
