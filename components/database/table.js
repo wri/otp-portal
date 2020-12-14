@@ -89,20 +89,13 @@ function DatabaseTable({
       accessor: 'status',
       minWidth: 150,
       className: 'status',
-      Cell: (attr) =>
-        console.log(
-          attr.value,
-          intl,
-          intl.formatMessage({
+      Cell: (attr) => (
+        <span>
+          {intl.formatMessage({
             id: attr.value,
-          })
-        ) || (
-          <span>
-            {intl.formatMessage({
-              id: attr.value,
-            })}
-          </span>
-        ),
+          })}
+        </span>
+      ),
     },
     {
       Header: (
