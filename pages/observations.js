@@ -656,13 +656,13 @@ ObservationsPage.propTypes = {
 };
 
 export default withTracker(withIntl(connect(
-  state => ({
+  (state, props) => ({
     observations: state.observations,
     parsedFilters: getParsedFilters(state),
     parsedChartObservations: getParsedChartObservations(state),
     parsedTableObservations: getParsedTableObservations(state),
     getObservationsLayers: getObservationsLayers(state),
-    getObservationsLegend: getObservationsLegend(state),
+    getObservationsLegend: getObservationsLegend(state, props),
   }),
   {
     getObservations,

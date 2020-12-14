@@ -1,6 +1,8 @@
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+import { LAYERS } from 'constants/layers';
 import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
 
@@ -40,6 +42,8 @@ const FMU_LEGEND = [
     ]
   }
 ];
+
+const intl = (state, props) => props?.intl;
 
 // Get the datasets and filters from state
 const observations = state => state.observations.data;
@@ -139,126 +143,15 @@ const getObservationsLayers = createSelector(
         });
       }
 
+      const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'))
+
       return [
         ...clusterLayers,
         {
-          id: 'fmus',
-          type: 'vector',
-          source: {
-            type: 'vector',
-            tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}`],
-            promoteId: 'id'
-          },
-          render: {
-            layers: [
-              {
-                type: 'fill',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
-                  ['==', ['get', 'iso3_fmu'], 'COD']
-                ],
-                paint: {
-                  'fill-color': '#5ca2d1',
-                  'fill-opacity': 0.9
-                }
-              },
-              {
-                type: 'fill',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
-                  ['==', ['get', 'iso3_fmu'], 'COG']
-                ],
-                paint: {
-                  'fill-color': '#7B287D',
-                  'fill-opacity': 0.9
-                }
-              },
-              {
-                type: 'fill',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
-                  ['==', ['get', 'iso3_fmu'], 'CMR']
-                ],
-                paint: {
-                  'fill-color': {
-                    property: 'fmu_type_label',
-                    type: 'categorical',
-                    stops: [
-                      ['ventes_de_coupe', '#8BC2B5'],
-                      ['ufa', '#007A5E'],
-                      ['communal', '#00382B']
-                    ],
-                    default: '#007A5E'
-                  },
-                  'fill-opacity': 0.9
-                }
-              },
-              {
-                type: 'fill',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
-                  ['==', ['get', 'iso3_fmu'], 'GAB']
-                ],
-                paint: {
-                  'fill-color': {
-                    property: 'fmu_type_label',
-                    type: 'categorical',
-                    stops: [
-                      ['CPAET', '#e95800'],
-                      ['CFAD', '#e9A600']
-                    ],
-                    default: '#e95800'
-                  },
-
-                  'fill-opacity': 0.9
-                }
-              },
-              {
-                type: 'fill',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]],
-                  ['==', ['get', 'iso3_fmu'], 'CAF']
-                ],
-                paint: {
-                  'fill-color': '#e9D400',
-                  'fill-opacity': 0.9
-                }
-              },
-              {
-                type: 'line',
-                'source-layer': 'layer0',
-                filter: [
-                  'all',
-                  ['in', ['get', 'iso3_fmu'], ['literal', process.env.OTP_COUNTRIES]]
-                ],
-                paint: {
-                  'line-color': '#000000',
-                  'line-opacity': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    1,
-                    0.1
-                  ],
-                  'line-width': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    2,
-                    1
-                  ],
-                  'line-dasharray': [3, 1]
-                }
-              }
-            ]
+          ...FMUS_LAYER,
+          ...FMUS_LAYER.config,
+          params: {
+            country_iso_codes: process.env.OTP_COUNTRIES
           }
         },
         {
@@ -375,22 +268,36 @@ const getObservationsLayers = createSelector(
 
 
 const getObservationsLegend = createSelector(
-  observations,
-  (_observations) => {
+  observations, intl,
+  (_observations, _intl) => {
+    const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'));
+    const { legendConfig } = FMUS_LAYER;
+
     return [
       {
         id: 'fmus',
         dataset: 'fmus',
-        name: 'fmus',
+        name: _intl.formatMessage({ id: 'fmus' }),
         layers: [
           {
             opacity: 1,
             active: true,
-            name: 'fmus',
+            name: _intl.formatMessage({ id: 'fmus' }),
             legendConfig: {
-              type: 'basic',
-              color: '#e98300',
-              items: process.env.OTP_COUNTRIES.map(iso => FMU_LEGEND.find(i => i.iso === iso))
+              ...legendConfig,
+              ...legendConfig.items && {
+                items: sortBy(legendConfig.items.map(i => ({
+                  ...i,
+                  ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
+                  ...i.items && {
+                    items: i.items.map(ii => ({
+                      ...ii,
+                      ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    }))
+                  }
+
+                })), 'name')
+              }
             }
           }
         ]
@@ -398,17 +305,18 @@ const getObservationsLegend = createSelector(
       {
         id: 'severity',
         dataset: 'severity',
-        name: 'severity',
+        name: _intl.formatMessage({ id: 'severity' }),
         layers: [
           {
             opacity: 1,
             active: true,
-            name: 'severity',
+            name: _intl.formatMessage({ id: 'severity' }),
             legendConfig: {
               type: 'basic',
-              items: LEGEND_SEVERITY.list.map(l => (
-                { name: l.label, color: l.fill }
-              ))
+              items: LEGEND_SEVERITY.list.map(l => ({
+                name: _intl.formatMessage({ id: l.label }),
+                color: l.fill
+              }))
             }
           }
         ]
