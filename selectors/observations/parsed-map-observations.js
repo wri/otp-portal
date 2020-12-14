@@ -43,7 +43,7 @@ const FMU_LEGEND = [
   }
 ];
 
-const intl = (state, props) => props?.intl;
+const intl = (state, props) => props && props.intl;
 
 // Get the datasets and filters from state
 const observations = state => state.observations.data;
@@ -270,6 +270,9 @@ const getObservationsLayers = createSelector(
 const getObservationsLegend = createSelector(
   observations, intl,
   (_observations, _intl) => {
+
+    if (!_intl) return [];
+
     const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'));
     const { legendConfig } = FMUS_LAYER;
 

@@ -734,7 +734,7 @@ ObservationsPage.propTypes = {
 export default withTracker(
   withIntl(
     connect(
-      (state) => ({
+      (state, props) => ({
         observations: state.observations,
         parsedFilters: getParsedFilters(state),
         parsedChartObservations: getParsedChartObservations(state),
