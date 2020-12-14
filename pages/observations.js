@@ -21,7 +21,7 @@ import { intlShape } from 'react-intl';
 // Selectors
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
-import { getObservationsLayers } from 'selectors/observations/parsed-map-observations';
+import { getObservationsLayers, getObservationsLegend } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
@@ -60,7 +60,7 @@ import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
-import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {
@@ -154,7 +154,6 @@ class ObservationsPage extends React.Component {
 
     const { features } = e;
     if (features && features.length) {
-      console.log(features);
       const { source, geometry, properties } = features[0];
       const { cluster, cluster_id: clusterId, point_count } = properties;
 
@@ -189,14 +188,7 @@ class ObservationsPage extends React.Component {
   };
 
   render() {
-    const {
-      url,
-      observations,
-      getObservationsLayers,
-      parsedFilters,
-      parsedChartObservations,
-      parsedTableObservations,
-    } = this.props;
+    const { url, observations, getObservationsLayers, getObservationsLegend, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
 
     // Hard coded values
     const inputs = [
@@ -696,27 +688,7 @@ class ObservationsPage extends React.Component {
 
             {/* LEGEND */}
             <Legend
-              layerGroups={[
-                {
-                  id: 'severity',
-                  dataset: 'severity',
-                  name: this.props.intl.formatMessage({ id: 'severity' }),
-                  layers: [
-                    {
-                      opacity: 1,
-                      active: true,
-                      name: this.props.intl.formatMessage({ id: 'severity' }),
-                      legendConfig: {
-                        type: 'basic',
-                        items: LEGEND_SEVERITY.list.map((l) => ({
-                          name: this.props.intl.formatMessage({ id: l.label }),
-                          color: l.fill,
-                        })),
-                      },
-                    },
-                  ],
-                },
-              ]}
+              layerGroups={getObservationsLegend}
               collapsable={false}
               sortable={false}
               setLayerSettings={() => {}}
@@ -768,6 +740,7 @@ export default withTracker(
         parsedChartObservations: getParsedChartObservations(state),
         parsedTableObservations: getParsedTableObservations(state),
         getObservationsLayers: getObservationsLayers(state),
+        getObservationsLegend: getObservationsLegend(state, props),
       }),
       {
         getObservations,

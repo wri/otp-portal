@@ -1,8 +1,49 @@
 // Constants
-import { PALETTE_COLOR_1 } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+import { LAYERS } from 'constants/layers';
 import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
+
+const FMU_LEGEND = [
+  {
+    name: 'Cameroon',
+    iso: 'CMR',
+    color: '#007A5E',
+    items: [
+      { name: 'ventes_de_coupe', color: '#8BC2B5' },
+      { name: 'ufa', color: '#007A5E' },
+      { name: 'communal', color: '#00382B' }
+    ]
+  },
+  {
+    name: 'Central African Republic',
+    iso: 'CAF',
+    color: '#e9D400'
+  },
+  {
+    name: 'Congo',
+    iso: 'COG',
+    color: '#7B287D'
+  },
+  {
+    name: 'Democratic Republic of the Congo',
+    iso: 'COD',
+    color: '#5ca2d1'
+  },
+  {
+    name: 'Gabon',
+    iso: 'GAB',
+    color: '#e95800',
+    items: [
+      { name: 'CPAET', color: '#e95800' },
+      { name: 'CFAD', color: '#e9A600' }
+    ]
+  }
+];
+
+const intl = (state, props) => props?.intl;
 
 // Get the datasets and filters from state
 const observations = state => state.observations.data;
@@ -102,8 +143,17 @@ const getObservationsLayers = createSelector(
         });
       }
 
+      const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'))
+
       return [
         ...clusterLayers,
+        {
+          ...FMUS_LAYER,
+          ...FMUS_LAYER.config,
+          params: {
+            country_iso_codes: process.env.OTP_COUNTRIES
+          }
+        },
         {
           id: 'observations',
           type: 'geojson',
@@ -217,5 +267,65 @@ const getObservationsLayers = createSelector(
 );
 
 
+const getObservationsLegend = createSelector(
+  observations, intl,
+  (_observations, _intl) => {
+    const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'));
+    const { legendConfig } = FMUS_LAYER;
 
-export { getObservationsLayers };
+    return [
+      {
+        id: 'fmus',
+        dataset: 'fmus',
+        name: _intl.formatMessage({ id: 'fmus' }),
+        layers: [
+          {
+            opacity: 1,
+            active: true,
+            name: _intl.formatMessage({ id: 'fmus' }),
+            legendConfig: {
+              ...legendConfig,
+              ...legendConfig.items && {
+                items: sortBy(legendConfig.items.map(i => ({
+                  ...i,
+                  ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
+                  ...i.items && {
+                    items: i.items.map(ii => ({
+                      ...ii,
+                      ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    }))
+                  }
+
+                })), 'name')
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'severity',
+        dataset: 'severity',
+        name: _intl.formatMessage({ id: 'severity' }),
+        layers: [
+          {
+            opacity: 1,
+            active: true,
+            name: _intl.formatMessage({ id: 'severity' }),
+            legendConfig: {
+              type: 'basic',
+              items: LEGEND_SEVERITY.list.map(l => ({
+                name: _intl.formatMessage({ id: l.label }),
+                color: l.fill
+              }))
+            }
+          }
+        ]
+      }
+    ]
+  }
+);
+
+
+
+
+export { getObservationsLayers, getObservationsLegend };
