@@ -187,6 +187,13 @@ class ObservationsPage extends React.Component {
     }
   };
 
+  onHover = (e) => {
+    const { features } = e;
+    if (features) {
+      console.log(features);
+    }
+  }
+
   render() {
     const { url, observations, getObservationsLayers, getObservationsLegend, parsedFilters, parsedChartObservations, parsedTableObservations } = this.props;
 
@@ -691,6 +698,7 @@ class ObservationsPage extends React.Component {
               layerGroups={getObservationsLegend}
               collapsable={false}
               sortable={false}
+              toolbar={<></>}
               setLayerSettings={() => {}}
             />
 

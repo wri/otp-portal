@@ -237,9 +237,9 @@ const getObservationsLayers = createSelector(
                 type: 'circle',
                 filter: ['!has', 'point_count'],
                 paint: {
-                  'circle-radius': 6,
-                  'circle-stroke-width': 1,
-                  'circle-stroke-color': '#333',
+                  'circle-radius': 8,
+                  'circle-stroke-width': 2,
+                  'circle-stroke-color': '#FFF',
                   'circle-color': [
                     'match',
                     ['get', 'level'],
