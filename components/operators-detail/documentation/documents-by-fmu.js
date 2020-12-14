@@ -73,15 +73,15 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
                         user.role === 'operator' &&
                         user.operator_ids &&
                         user.operator_ids.includes(+id))) && (
-                      <DocCardUpload
-                        {...card}
-                        properties={{
+                        <DocCardUpload
+                          {...card}
+                          properties={{
                           type: 'operator',
                           id,
                         }}
-                        user={user}
-                        onChange={() => getOperator(id)}
-                      />
+                          user={user}
+                          onChange={() => getOperator(id)}
+                        />
                     )}
                   </div>
                 ))}

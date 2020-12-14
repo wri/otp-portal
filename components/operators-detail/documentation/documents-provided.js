@@ -1,24 +1,24 @@
-import React from "react";
-import PropTypes from "prop-types";
-import omit from "lodash/omit";
+import React from 'react';
+import PropTypes from 'prop-types';
+import omit from 'lodash/omit';
 
 // Redux
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 // Utils
-import { HELPERS_DOC } from "utils/documentation";
+import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
-import { PieChart, Pie, ResponsiveContainer, Cell } from "recharts";
-import ChartLegend from "components/ui/chart-legend";
+import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
+import ChartLegend from 'components/ui/chart-legend';
 
 function DocumentsProvided(props) {
   const { data, user, router } = props;
-  const filteredData = data.filter((d) => d.status !== "doc_not_required");
+  const filteredData = data.filter((d) => d.status !== 'doc_not_required');
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
   );
-  const legend = omit(HELPERS_DOC.getMetadata(), "doc_not_required");
+  const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
 
   groupedByStatusChart.forEach((item) => {
     legend[item.id].value = item.value;
@@ -29,13 +29,13 @@ function DocumentsProvided(props) {
       <div className="row l-row">
         <div className="columns small-12">
           <div className="c-chart">
-            <ResponsiveContainer height={360}>
+            <ResponsiveContainer height={600}>
               <PieChart>
                 <Pie
                   data={groupedByStatusChart}
                   dataKey="value"
-                  outerRadius={150}
-                  innerRadius={142}
+                  outerRadius={200}
+                  innerRadius={190}
                   startAngle={90}
                   endAngle={-270}
                   isAnimationActive={false}
@@ -59,9 +59,9 @@ function DocumentsProvided(props) {
                 .map((k) => ({ id: k, value: 0, ...legend[k] }))
                 .filter((k) => {
                   if (
-                    (user.token && user.role === "admin") ||
+                    (user.token && user.role === 'admin') ||
                     (user.token &&
-                      user.role === "operator" &&
+                      user.role === 'operator' &&
                       user.operator_ids.includes(+router.query.id))
                   ) {
                     return true;
