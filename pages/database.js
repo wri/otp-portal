@@ -54,7 +54,7 @@ class DocumentsDatabasePage extends React.Component {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'observations-list',
+      tab: this.props.url.query.subtab || 'documentation-list',
       page: 1,
     };
 
@@ -116,9 +116,9 @@ class DocumentsDatabasePage extends React.Component {
           options={[
             {
               label: this.props.intl.formatMessage({
-                id: 'observations.tab.observations-list',
+                id: 'documentation.tab.documentation-list',
               }),
-              value: 'observations-list',
+              value: 'documentation-list',
             },
           ]}
           defaultSelected={this.state.tab}

@@ -65,8 +65,6 @@ class Filters extends React.Component {
         }));
       }
 
-      console.log(`filter.${f.key}.placeholder`);
-
       return (
         <div key={f.key} className="field">
           <div className="c-select">
