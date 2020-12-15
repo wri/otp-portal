@@ -42,9 +42,9 @@ class Filters extends React.Component {
   }
 
   renderFiltersSelects() {
-    const { options, filters } = this.props;
+    const { options, filters, filtersRefs } = this.props;
 
-    return this.props.filtersRefs.map((f) => {
+    return filtersRefs.map((f) => {
       const value = options[f.key]
         ? options[f.key].filter((opt) =>
             filters[f.key] ? filters[f.key].includes(opt.value) : false
@@ -53,7 +53,7 @@ class Filters extends React.Component {
 
       let opts = options[f.key];
 
-      if (f.key === 'validation_status') {
+      if (f.key === 'validation_status' && opts && opts.length) {
         opts = opts.map((o) => ({
           ...o,
           label: this.props.intl.formatMessage({
@@ -64,6 +64,8 @@ class Filters extends React.Component {
           }),
         }));
       }
+
+      console.log(`filter.${f.key}.placeholder`);
 
       return (
         <div key={f.key} className="field">

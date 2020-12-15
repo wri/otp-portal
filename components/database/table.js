@@ -5,14 +5,12 @@ import PropTypes from 'prop-types';
 import CheckboxGroup from 'components/form/CheckboxGroup';
 import Table from 'components/ui/table';
 import Spinner from 'components/ui/spinner';
-import MapSubComponent from 'components/ui/map-sub-component';
-import ReadMore from 'components/ui/read-more';
 import Icon from 'components/ui/icon';
 
 // Redux and HOC
 import { connect } from 'react-redux';
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+// Intl
+import { injectIntl, intlShape } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
 import { setActiveColumns } from 'modules/documents-database';
@@ -84,6 +82,20 @@ function DatabaseTable({
     },
     {
       Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'source' })}</span>
+      ),
+      accessor: 'source',
+      minWidth: 200,
+      Cell: (attr) => (
+        <span className="-source">
+          {attr.value !== 'other_source'
+            ? intl.formatMessage({ id: attr.value })
+            : 'sourceInfo'}
+        </span>
+      ),
+    },
+    {
+      Header: (
         <span className="sortable">{intl.formatMessage({ id: 'status' })}</span>
       ),
       accessor: 'status',
@@ -125,106 +137,6 @@ function DatabaseTable({
       className: 'description',
       minWidth: 120,
     },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'observer-types' })}
-        </span>
-      ),
-      accessor: 'observer-types',
-      headerClassName: '-a-left',
-      className: 'observer-types',
-      minWidth: 250,
-      Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((type, i) => (
-            <li key={`${type}-${i}`}>
-              {intl.formatMessage({ id: `${type}` })}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'observer-organizations' })}
-        </span>
-      ),
-      accessor: 'observer-organizations',
-      headerClassName: '-a-left',
-      className: 'observer-organizations',
-      minWidth: 250,
-      Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((observer) => {
-            return <li>{observer.name || observer.organization}</li>;
-          })}
-        </ul>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'operator-type' })}
-        </span>
-      ),
-      accessor: 'operator-type',
-      headerClassName: '-a-left',
-      className: 'operator-type',
-      minWidth: 250,
-      Cell: (attr) =>
-        attr.value && (
-          <span>{intl.formatMessage({ id: `${attr.value}` })}</span>
-        ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'subcategory' })}
-        </span>
-      ),
-      accessor: 'subcategory',
-      headerClassName: '-a-left',
-      className: 'subcategory description',
-      minWidth: 250,
-    },
-    {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'detail' })}</span>
-      ),
-      accessor: 'observation',
-      headerClassName: '-a-left',
-      className: 'description',
-      minWidth: 200,
-      Cell: (attr) => (
-        <ReadMore
-          lines={2}
-          more={intl.formatMessage({ id: 'Read more' })}
-          less={intl.formatMessage({ id: 'Show less' })}
-        >
-          {attr.value}
-        </ReadMore>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'relevant-operators' })}
-        </span>
-      ),
-      accessor: 'relevant-operators',
-      headerClassName: '-a-left',
-      className: 'relevant-operators',
-      minWidth: 250,
-      Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((operator) => (
-            <li>{operator}</li>
-          ))}
-        </ul>
-      ),
-    },
   ];
 
   const tableOptions = inputs.map((column) => ({
@@ -265,28 +177,19 @@ function DatabaseTable({
               database.columns.includes(header.accessor)
             ),
             // page,
+            // onPageChange: (p) => setPage(p + 1),
             pageSize,
             pagination: true,
             previousText: '<',
             nextText: '>',
             noDataText: 'No rows found',
             showPageSizeOptions: false,
-            // onPageChange: (p) => setPage(p + 1),
             defaultSorted: [
               {
-                id: 'date',
+                id: 'operator_id', // include doc name
                 desc: false,
               },
             ],
-            showSubComponent: database.columns.includes('location'),
-            subComponent: (row) =>
-              database.columns.includes('location') && (
-                <MapSubComponent
-                  id={row.original.id}
-                  location={row.original.location}
-                  level={row.original.level}
-                />
-              ),
           }}
         />
       </div>
@@ -301,7 +204,7 @@ DatabaseTable.propTypes = {
   setActiveColumns: PropTypes.func,
 };
 
-export default withIntl(
+export default injectIntl(
   connect(
     (state) => ({
       database: state.database,
