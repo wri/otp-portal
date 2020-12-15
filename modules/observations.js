@@ -32,9 +32,9 @@ const initialState = {
   loading: false,
   error: false,
   map: {
-    zoom: 4,
-    latitude: 0,
-    longitude: 20
+    zoom: 5,
+    latitude: -1.45,
+    longitude: 15
   },
   cluster: {},
   filters: {
@@ -224,6 +224,7 @@ export function getDownload() {
       .then((response) => {
         if (response.ok) return response.text();
         toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+        return null;
       })
       .then((csv) => {
         if (csv) {

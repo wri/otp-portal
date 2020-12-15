@@ -141,6 +141,7 @@ class ObservationsPage extends React.Component {
   }
 
   setMapLocation = debounce((mapLocation) => {
+    console.log(mapLocation);
     this.props.setObservationsMapLocation(mapLocation);
   }, 500);
 
