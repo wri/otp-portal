@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Link from 'next/link';
-import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
+import Dropdown, {
+  DropdownTrigger,
+  DropdownContent,
+} from 'react-simple-dropdown';
 
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -11,7 +14,7 @@ class NavigationList extends React.Component {
   setActive(pathname) {
     const { url } = this.props;
     return classnames({
-      '-active': (pathname.includes(url.pathname))
+      '-active': pathname.includes(url.pathname),
     });
   }
 
@@ -19,19 +22,19 @@ class NavigationList extends React.Component {
     const { hideActive, className } = this.props;
     const classNames = classnames({
       'c-navigation-list': true,
-      [className]: !!className
+      [className]: !!className,
     });
 
     return (
       <ul className={classNames}>
-        {hideActive &&
+        {hideActive && (
           <li>
-            <Dropdown
-              className="c-language-dropdown"
-            >
+            <Dropdown className="c-language-dropdown">
               <DropdownTrigger>
                 <div className="header-nav-list-item">
-                  <span>{this.props.intl.formatMessage({ id: 'select_language' })}</span>
+                  <span>
+                    {this.props.intl.formatMessage({ id: 'select_language' })}
+                  </span>
                 </div>
               </DropdownTrigger>
 
@@ -59,20 +62,63 @@ class NavigationList extends React.Component {
               </DropdownContent>
             </Dropdown>
           </li>
-        }
+        )}
         <li>
           <Link href="/countries">
-            <a className={!hideActive ? this.setActive(['/countries', '/countries-detail']) : ''}>
+            <a
+              className={
+                !hideActive
+                  ? this.setActive(['/countries', '/countries-detail'])
+                  : ''
+              }
+            >
               {this.props.intl.formatMessage({ id: 'countries' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link href="/operators">
-            <a className={!hideActive ? this.setActive(['/operators', '/operators/detail']) : ''}>
-              {this.props.intl.formatMessage({ id: 'operators' })}
-            </a>
-          </Link>
+          <Dropdown
+            className="c-account-dropdown"
+            ref={(d) => {
+              this.dropdown = d;
+            }}
+          >
+            <DropdownTrigger>
+              <div
+                className={classnames(
+                  'header-nav-list-item',
+                  !hideActive ? this.setActive(['/operators', '/database']) : ''
+                )}
+              >
+                <span>
+                  {this.props.intl.formatMessage({ id: 'operators' })}
+                </span>
+              </div>
+            </DropdownTrigger>
+
+            <DropdownContent>
+              <ul className="header-dropdown-list">
+                <li className="header-dropdown-list-item">
+                  <Link href="/operators">
+                    <a>
+                      {this.props.intl.formatMessage({
+                        id: 'transparency_ranking',
+                      })}
+                    </a>
+                  </Link>
+                </li>
+                <li className="header-dropdown-list-item">
+                  <Link href="/database">
+                    <a>
+                      {this.props.intl.formatMessage({
+                        id: 'Producers’ documents database',
+                      })}
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </DropdownContent>
+          </Dropdown>
         </li>
         <li>
           <Link href="/observations">
@@ -102,7 +148,7 @@ class NavigationList extends React.Component {
             </a>
           </Link>
         </li>
-        {hideActive &&
+        {hideActive && (
           <li>
             <Link href="/newsletter">
               <a className={!hideActive ? this.setActive(['/newsletter']) : ''}>
@@ -110,8 +156,7 @@ class NavigationList extends React.Component {
               </a>
             </Link>
           </li>
-        }
-
+        )}
       </ul>
     );
   }
@@ -121,7 +166,7 @@ NavigationList.propTypes = {
   url: PropTypes.object,
   hideActive: PropTypes.bool,
   className: PropTypes.string,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 export default injectIntl(NavigationList);

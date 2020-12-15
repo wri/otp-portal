@@ -46,6 +46,19 @@ const LOCALE2LANG = {
   'vi-VN': 'vi',
 };
 
+if (process.env.ENV === 'development') {
+  // eslint-disable-next-line
+  const consoleError = console.error.bind(console);
+  // eslint-disable-next-line
+  console.error = (message, ...args) => {
+    // get rid of [React Intl] messages
+    if (typeof message === 'string' && message.startsWith('[React Intl]')) {
+      return;
+    }
+    consoleError(message, ...args);
+  };
+}
+
 // Register React Intl's locale data for the user's locale in the browser
 if (typeof window !== 'undefined') {
   Object.keys(LANGUAGES).forEach((lang) => {

@@ -13,43 +13,37 @@ import withTracker from 'components/layout/with-tracker';
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
-// Selectors
-import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
-import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
-import { getObservationsLayers } from 'selectors/observations/parsed-map-observations';
-import { getParsedFilters } from 'selectors/observations/parsed-filters';
-
 // Components
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import { FILTERS_REFS } from 'constants/observations';
+import { FILTERS_REFS } from 'constants/documents-database';
 import Filters from 'components/ui/filters';
 import DatabaseTable from 'components/database/table';
-
 import StaticTabs from 'components/ui/static-tabs';
+
+// Selectors
+import { getParsedFilters } from 'selectors/database/filters';
 
 // Modules
 import {
-  getObservations,
+  getDocumentsDatabase,
   getFilters,
   setFilters,
-  getObservationsUrl,
+  getDocumentsDatabaseUrl,
   setActiveColumns,
-  setObservationsMapLocation,
-  setObservationsMapCluster,
-} from 'modules/observations';
+} from 'modules/documents-database';
 
 import { logEvent } from 'utils/analytics';
 
-class ObservationsPage extends React.Component {
+class DocumentsDatabasePage extends React.Component {
   static async getInitialProps({ url, store }) {
-    const { observations } = store.getState();
+    const { database } = store.getState();
 
-    if (isEmpty(observations.data)) {
-      await store.dispatch(getObservations());
+    if (isEmpty(database.data)) {
+      await store.dispatch(getDocumentsDatabase());
     }
 
-    if (isEmpty(observations.filters.options)) {
+    if (isEmpty(database.filters.options)) {
       await store.dispatch(getFilters());
     }
 
@@ -60,7 +54,7 @@ class ObservationsPage extends React.Component {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'observations-list',
+      tab: this.props.url.query.subtab || 'documentation-list',
       page: 1,
     };
 
@@ -70,23 +64,24 @@ class ObservationsPage extends React.Component {
   componentDidMount() {
     const { url } = this.props;
 
-    this.props.getObservationsUrl(url);
+    this.props.getDocumentsDatabaseUrl(url);
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
-      this.props.getObservations();
+      this.props.getDocumentsDatabase();
     }
   }
 
   setActiveColumns(value) {
-    const { observations } = this.props;
-    const addColumn = difference(value, observations.columns);
-    const removeColumn = difference(observations.columns, value);
+    const { database } = this.props;
+    const addColumn = difference(value, database.columns);
+    const removeColumn = difference(database.columns, value);
 
-    if (addColumn.length) logEvent('Observations', 'Add Column', addColumn[0]);
+    if (addColumn.length)
+      logEvent('DocumentsDatabase', 'Add Column', addColumn[0]);
     if (removeColumn.length)
-      logEvent('Observations', 'Remove Column', removeColumn[0]);
+      logEvent('DocumentsDatabase', 'Remove Column', removeColumn[0]);
 
     this.props.setActiveColumns(value);
   }
@@ -101,7 +96,7 @@ class ObservationsPage extends React.Component {
     return (
       <Layout
         title="Producers’ documents database"
-        description="Observations description..."
+        description="DocumentsDatabase description..."
         url={url}
       >
         <StaticHeader
@@ -113,7 +108,7 @@ class ObservationsPage extends React.Component {
         <Filters
           options={parsedFilters.options}
           filters={parsedFilters.data}
-          setFilters={setFilters}
+          setFilters={this.props.setFilters}
           filtersRefs={FILTERS_REFS}
         />
 
@@ -121,9 +116,9 @@ class ObservationsPage extends React.Component {
           options={[
             {
               label: this.props.intl.formatMessage({
-                id: 'observations.tab.observations-list',
+                id: 'documentation.tab.documentation-list',
               }),
-              value: 'observations-list',
+              value: 'documentation-list',
             },
           ]}
           defaultSelected={this.state.tab}
@@ -136,14 +131,14 @@ class ObservationsPage extends React.Component {
   }
 }
 
-ObservationsPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
-  observations: PropTypes.object,
+DocumentsDatabasePage.propTypes = {
+  url: PropTypes.object.isRequired,
+  database: PropTypes.object,
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
 
-  getObservations: PropTypes.func.isRequired,
-  getObservationsUrl: PropTypes.func.isRequired,
+  getDocumentsDatabase: PropTypes.func.isRequired,
+  getDocumentsDatabaseUrl: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
 };
@@ -152,21 +147,16 @@ export default withTracker(
   withIntl(
     connect(
       (state) => ({
-        observations: state.observations,
+        database: state.database,
         parsedFilters: getParsedFilters(state),
-        parsedChartObservations: getParsedChartObservations(state),
-        parsedTableObservations: getParsedTableObservations(state),
-        getObservationsLayers: getObservationsLayers(state),
       }),
       {
-        getObservations,
+        getDocumentsDatabase,
         getFilters,
-        getObservationsUrl,
-        setObservationsMapLocation,
-        setObservationsMapCluster,
+        getDocumentsDatabaseUrl,
         setFilters,
         setActiveColumns,
       }
-    )(ObservationsPage)
+    )(DocumentsDatabasePage)
   )
 );
