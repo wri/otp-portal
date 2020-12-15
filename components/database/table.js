@@ -27,12 +27,11 @@ function DatabaseTable({
     'operator',
     // 'forest-type',
     'fmu',
-    // 'category',
     'start-date',
     'expire-date',
     'source',
     'document',
-    // 'reason',
+    'reason',
   ];
 
   const columnHeaders = [
@@ -90,7 +89,7 @@ function DatabaseTable({
         <span className="-source">
           {attr.value !== 'other_source'
             ? intl.formatMessage({ id: attr.value })
-            : 'sourceInfo'}
+            : attr.original.sourceInfo}
         </span>
       ),
     },
@@ -121,6 +120,14 @@ function DatabaseTable({
     },
     {
       Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'reason' })}</span>
+      ),
+      accessor: 'reason',
+      className: 'description',
+      minWidth: 120,
+    },
+    {
+      Header: (
         <span className="sortable">
           {intl.formatMessage({ id: 'operator' })}
         </span>
@@ -136,6 +143,15 @@ function DatabaseTable({
       accessor: 'fmu',
       className: 'description',
       minWidth: 120,
+      Cell: (attr) => (
+        <span>
+          {attr.value
+            ? intl.formatMessage({
+                id: attr.value.name,
+              })
+            : ''}
+        </span>
+      ),
     },
   ];
 

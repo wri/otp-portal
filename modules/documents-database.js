@@ -126,6 +126,7 @@ export function getDocumentsDatabase() {
       'operator.country',
       'fmu',
       'operator-document-annexes',
+      'required-operator-document',
     ];
 
     // Fields
