@@ -20,6 +20,11 @@ export const getParsedTableDocuments = createSelector(
         sourceInfo: doc['source-info'],
         document: doc.attachment,
         reason: doc.reason || '',
+        annexes: doc['operator-document-annexes'],
+        'document-name':
+          (doc['required-operator-document'] &&
+            doc['required-operator-document'].name) ||
+          '',
       }));
     }
 

@@ -32,6 +32,8 @@ function DatabaseTable({
     'source',
     'document',
     'reason',
+    'annexes',
+    'document-name',
   ];
 
   const columnHeaders = [
@@ -57,6 +59,36 @@ function DatabaseTable({
             </a>
           ) : (
             <span className="report-item-text">-</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'annexes' })}
+        </span>
+      ),
+      accessor: 'annexes',
+      headerClassName: '-a-left',
+      className: 'evidence description',
+      minWidth: 250,
+      Cell: (attr) => (
+        <div className="evidence-item-wrapper">
+          {Array.isArray(attr.value) &&
+            attr.value.map((v) => (
+              <a
+                href={v.attachment ? v.attachment.url : ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="evidence-item"
+              >
+                <Icon className="" name="icon-file-empty" />
+              </a>
+            ))}
+
+          {!Array.isArray(attr.value) && (
+            <span className="evidence-item-text">{attr.value}</span>
           )}
         </div>
       ),
@@ -92,6 +124,16 @@ function DatabaseTable({
             : attr.original.sourceInfo}
         </span>
       ),
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'document-name' })}
+        </span>
+      ),
+      accessor: 'document-name',
+      className: 'description',
+      minWidth: 200,
     },
     {
       Header: (
