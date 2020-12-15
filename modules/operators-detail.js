@@ -39,6 +39,7 @@ const initialState = {
   },
   date: new Date(),
   FMU: null,
+  timeline: [],
   sawmills: {
     data: [],
     loading: false,

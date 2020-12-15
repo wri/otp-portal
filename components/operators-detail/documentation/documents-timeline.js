@@ -53,7 +53,7 @@ CustomTooltip.propTypes = {
   intl: intlShape.isRequired,
 };
 
-function DocumentsTimeline({ timelineData, intl }) {
+function DocumentsTimeline({ timelineData = [], intl }) {
   const chartData = timelineData
     .map((docsByDate) => {
       let buffer = 0;
