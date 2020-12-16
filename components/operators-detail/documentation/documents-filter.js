@@ -15,7 +15,15 @@ import {
   getFMUs,
 } from 'selectors/operators-detail/documentation';
 
-function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
+function DocumentsFilter({
+  date,
+  setDate,
+  showDate,
+  fmus,
+  FMU,
+  setFMU,
+  showFMU,
+}) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   // const [FMU, setFMU] = useState(null);
   const minDate = process.env.DOCUMENTS_MINDATE;
@@ -23,7 +31,7 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
   return (
     <div className="c-doc-filters">
       <h3>Filter by:</h3>
-      {fmus.length > 0 && (
+      {fmus.length > 0 && showFMU && (
         <span className="filter-option">
           <label htmlFor="business">FMU</label>
           <div className="filters-dropdown">
@@ -52,24 +60,26 @@ function DocumentsFilter({ date, setDate, fmus, FMU, setFMU }) {
           </div>
         </span>
       )}
-      <span className="filter-option">
-        <label htmlFor="business">Date</label>
+      {showDate && (
+        <span className="filter-option">
+          <label htmlFor="business">Date</label>
 
-        <Datepicker
-          className="filters-date -inline"
-          date={moment(date)}
-          dateFormat="dd MMM yyyy"
-          settings={{
-            numberOfMonths: 1,
-            minDate: moment(minDate).add(1, 'days'),
-            maxDate: moment(new Date()),
-            hideKeyboardShortcutsPanel: true,
-            noBorder: true,
-            readOnly: false,
-          }}
-          onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
-        />
-      </span>
+          <Datepicker
+            className="filters-date -inline"
+            date={moment(date)}
+            dateFormat="dd MMM yyyy"
+            settings={{
+              numberOfMonths: 1,
+              minDate: moment(minDate).add(1, 'days'),
+              maxDate: moment(new Date()),
+              hideKeyboardShortcutsPanel: true,
+              noBorder: true,
+              readOnly: false,
+            }}
+            onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
+          />
+        </span>
+      )}
     </div>
   );
 }
@@ -80,6 +90,8 @@ DocumentsFilter.propTypes = {
   FMU: PropTypes.object,
   setFMU: PropTypes.func,
   fmus: PropTypes.array,
+  showDate: PropTypes.bool,
+  showFMU: PropTypes.bool,
 };
 
 export default connect(
