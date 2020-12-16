@@ -22,30 +22,31 @@ function DatabaseTable({
   intl,
 }) {
   const inputs = [
+    'document',
+    'document-name',
+    'annexes',
+    'start-date',
+    'expire-date',
     'status',
     'country',
     'operator',
-    'forest-type',
     'fmu',
-    'start-date',
-    'expire-date',
+    'forest-type',
     'source',
-    'document',
     'reason',
-    'annexes',
-    'document-name',
   ];
 
   const columnHeaders = [
     {
       Header: (
         <span className="sortable">
-          {intl.formatMessage({ id: 'documents' })}
+          {intl.formatMessage({ id: 'document' })}
         </span>
       ),
       accessor: 'document',
       headerClassName: '',
       className: 'report',
+      minWidth: 120,
       Cell: (attr) => (
         <div className="report-item-wrapper">
           {attr.value ? (
@@ -72,7 +73,7 @@ function DatabaseTable({
       accessor: 'annexes',
       headerClassName: '-a-left',
       className: 'evidence description',
-      minWidth: 250,
+      minWidth: 200,
       Cell: (attr) => (
         <div className="evidence-item-wrapper">
           {Array.isArray(attr.value) &&
@@ -238,6 +239,7 @@ function DatabaseTable({
         />
 
         <Table
+          className="database-table"
           sortable
           data={parsedTableDocuments}
           options={{
