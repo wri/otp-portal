@@ -25,7 +25,7 @@ function DatabaseTable({
     'status',
     'country',
     'operator',
-    // 'forest-type',
+    'forest-type',
     'fmu',
     'start-date',
     'expire-date',
@@ -110,6 +110,16 @@ function DatabaseTable({
       ),
       accessor: 'expire-date',
       minWidth: 150,
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'forest-type' })}
+        </span>
+      ),
+      accessor: 'forest-type',
+      className: '-uppercase',
+      minWidth: 100,
     },
     {
       Header: (

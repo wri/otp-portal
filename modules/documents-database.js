@@ -130,7 +130,7 @@ export function getDocumentsDatabase() {
     ];
 
     // Fields
-    const currentFields = { fmus: ['name'], operator: ['name'] };
+    const currentFields = { fmus: ['name,forest-type'], operator: ['name'] };
     const fields = Object.keys(currentFields)
       .map((f) => `fields[${f}]=${currentFields[f]}`)
       .join('&');
