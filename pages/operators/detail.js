@@ -23,6 +23,7 @@ import {
   getOperator,
   getOperatorDocumentation,
   getOperatorTimeline,
+  setOperatorDocumentationDate,
 } from 'modules/operators-detail';
 import { getGladMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
@@ -47,6 +48,10 @@ class OperatorsDetail extends React.Component {
 
     if (!operatorsDetailFmus.layersSettings.glad) {
       await store.dispatch(getGladMaxDate());
+    }
+
+    if (url.query.tab === 'documentation') {
+      await store.dispatch(setOperatorDocumentationDate(new Date()));
     }
 
     if (operatorsDetail.data.id !== url.query.id) {
