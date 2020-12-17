@@ -104,9 +104,7 @@ class OperatorsDetailObservations extends React.Component {
 
               <div className="content">
                 <StaticTabs
-                  options={HELPERS_OBS.getYears(
-                    this.props.operatorObservations
-                  )}
+                  options={HELPERS_OBS.getYears(observationData)}
                   defaultSelected={this.state.year.toString()}
                   onChange={this.onChangeYear}
                 />
@@ -127,14 +125,14 @@ class OperatorsDetailObservations extends React.Component {
 
             <article className="c-article">
               <TotalObservationsByOperatorByCategorybyIllegality
-                data={this.props.operatorObservations}
+                data={observationData}
                 year={parseInt(this.state.year, 10)}
               />
             </article>
           </Fragment>
         )}
 
-        {!this.props.operatorObservations.length && (
+        {!observationData.length && (
           <div className="l-container">
             <div className="c-no-data">
               {this.props.intl.formatMessage({ id: 'no-observations' })}
