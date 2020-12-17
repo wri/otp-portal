@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -12,7 +12,12 @@ import { PALETTE_COLOR_1 } from 'constants/rechart';
 // components
 import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
-import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+import CheckboxGroup from 'components/form/CheckboxGroup';
+
+import {
+  tableCheckboxes,
+  getColumnHeaders,
+} from 'constants/observations-column-headers';
 
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
@@ -67,6 +72,21 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
     const { data, year } = this.props;
     const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
 
+    // const changeOfLabelLookup = {
+    //   level: 'severity',
+    //   observation: 'detail',
+    // };
+
+    // const columnHeaders = getColumnHeaders(this.props.intl);
+    // const inputs = tableCheckboxes;
+
+    // const tableOptions = inputs.map((column) => ({
+    //   label: Object.keys(changeOfLabelLookup).includes(column)
+    //     ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] })
+    //     : this.props.intl.formatMessage({ id: column }),
+    //   value: column,
+    // }));
+
     return (
       <div className="c-observations-by-illegality">
         {/* Charts */}
@@ -104,6 +124,17 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                       '-selected': isSelected,
                     });
 
+                    // console.log(
+                    //   // data,
+                    //   // year,
+                    //   // groupedByCategory,
+                    //   // category,
+                    //   // groupedByIllegality,
+                    //   // groupedByIllegality[illegality][0],
+                    //   // observations,
+                    //   // parsedTableObservations[0]
+                    // );
+
                     return (
                       <li key={category + illegality}>
                         <div className="l-container">
@@ -112,13 +143,21 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                           >
                             {/* Severity list */}
                             <ul className="obi-severity-list">
-                              {groupedByIllegality[illegality].map(({ severity, id }) => {
-                                if (severity === 'null' || severity === null) return null;
+                              {groupedByIllegality[illegality].map(
+                                ({ level, id }) => {
+                                  if (level === 'null' || level === null)
+                                    return null;
 
-                                return (
-                                  <li key={id} className={`obi-severity-list-item -severity-${severity}`} style={{ background: PALETTE_COLOR_1[severity].fill }} />
-                                );
-                              }
+                                  return (
+                                    <li
+                                      key={id}
+                                      className={`obi-severity-list-item -severity-${level}`}
+                                      style={{
+                                        background: PALETTE_COLOR_1[level].fill,
+                                      }}
+                                    />
+                                  );
+                                }
                               )}
                             </ul>
 
@@ -159,213 +198,43 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                 {illegality}
                               </h2>
                               {groupedByIllegality[illegality].length > 0 && (
-                                <Table
-                                  sortable
-                                  className="-light"
-                                  data={groupedByIllegality[illegality]}
-                                  options={{
-                                    pagination:
-                                      legalities > MAX_ROWS_TABLE_ILLEGALITIES,
-                                    showPageSizeOptions: false,
-                                    columns: [
-                                      {
-                                        Header: (
-                                          <span className="sortable">
-                                            {this.props.intl.formatMessage({
-                                              id: 'date',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'date',
-                                        headerClassName: '-a-left',
-                                        className: '-a-left',
-                                        minWidth: 100,
-                                        Cell: (attr) => {
-                                          const date = new Date(attr.value);
-                                          const monthName = date
-                                            ? date.toLocaleString('en-us', {
-                                                month: 'short',
-                                              })
-                                            : '-';
-                                          const _year = date
-                                            ? date.getFullYear()
-                                            : '-';
-                                          return (
-                                            <span>{`${monthName} ${_year}`}</span>
-                                          );
-                                        },
+                                <Fragment>
+                                  {/* <CheckboxGroup
+                                    className="-inline -single-row -light"
+                                    name="observations-columns"
+                                    onChange={(value) => setColumns(value)}
+                                    properties={{
+                                      default: observations.columns, // change this to observations?
+                                      name: 'observations-columns',
+                                    }}
+                                    options={tableOptions}
+                                  /> */}
+                                  {/* <Table
+                                    sortable
+                                    className="-light"
+                                    // change this to parsedTableObservations
+                                    data={groupedByIllegality[illegality]}
+                                    options={{
+                                      pagination:
+                                        legalities >
+                                        MAX_ROWS_TABLE_ILLEGALITIES,
+                                      showPageSizeOptions: false,
+                                      // columns: columnHeaders.filter((header) =>
+                                      //   groupedByIllegality[
+                                      //     illegality // change this to observations?
+                                      //   ].columns.includes(header.accessor)
+                                      // ),
+                                      columns: [],
+                                      nextPageSize: pageSize,
+                                      pageSize,
+                                      onPageChange: (indexPage) => {
+                                        this.setState({
+                                          indexPagination: indexPage,
+                                        });
                                       },
-                                      {
-                                        Header: (
-                                          <span className="sortable">
-                                            {this.props.intl.formatMessage({
-                                              id: 'severity',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'severity',
-                                        headerClassName: '-a-center',
-                                        className: '-a-left severity',
-                                        minWidth: 150,
-                                        Cell: (attr) => attr.value !== null && (
-                                          <span
-                                            className={`severity-item -sev-${attr.value}`}
-                                            style={{
-                                              color:
-                                                PALETTE_COLOR_1[attr.value]
-                                                  .fill,
-                                            }}
-                                          >
-                                            {attr.value}
-                                          </span>
-                                        ),
-                                      },
-                                      {
-                                        Header: (
-                                          <span className="sortable">
-                                            {this.props.intl.formatMessage({
-                                              id: 'status',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'status',
-                                        headerClassName: '-a-left',
-                                        className: '-a-left status description',
-                                        minWidth: 150,
-                                        Cell: (attr) => (
-                                          <span>
-                                            {this.props.intl.formatMessage({
-                                              id: `observations.status-${attr.value}`,
-                                            })}
-
-                                            {[7, 8, 9].includes(attr.value) && (
-                                              <Tooltip
-                                                placement="bottom"
-                                                overlay={
-                                                  <div
-                                                    style={{ maxWidth: 200 }}
-                                                  >
-                                                    {this.props.intl.formatMessage(
-                                                      {
-                                                        id: `observations.status-${attr.value}.info`,
-                                                      }
-                                                    )}
-                                                  </div>
-                                                }
-                                                overlayClassName="c-tooltip no-pointer-events"
-                                              >
-                                                <button className="c-button -icon -tertiary">
-                                                  <Icon
-                                                    name="icon-info"
-                                                    className="-smaller"
-                                                  />
-                                                </button>
-                                              </Tooltip>
-                                            )}
-                                          </span>
-                                        ),
-                                      },
-                                      {
-                                        Header: (
-                                          <span>
-                                            {this.props.intl.formatMessage({
-                                              id: 'description',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'details',
-                                        headerClassName: '-a-left',
-                                        className: 'description',
-                                        sortable: false,
-                                        minWidth: 320,
-                                        Cell: (attr) => <p>{attr.value}</p>,
-                                      },
-                                      {
-                                        Header: (
-                                          <span>
-                                            {this.props.intl.formatMessage({
-                                              id: 'report',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'report',
-                                        sortable: false,
-                                        headerClassName: '-a-left',
-                                        minWidth: 150,
-                                        Cell: (attr) => {
-                                          if (
-                                            attr.value &&
-                                            attr.value.attachment &&
-                                            attr.value.attachment.url
-                                          ) {
-                                            return (
-                                              <a
-                                                className="evidence-link"
-                                                href={
-                                                  attr.value.attachment.url ||
-                                                  '#'
-                                                }
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                title={attr.value.title}
-                                              >
-                                                {this.props.intl.formatMessage({
-                                                  id: 'report',
-                                                })}
-                                              </a>
-                                            );
-                                          }
-
-                                          return null;
-                                        },
-                                      },
-                                      {
-                                        Header: (
-                                          <span className="sortable">
-                                            {this.props.intl.formatMessage({
-                                              id: 'evidence',
-                                            })}
-                                          </span>
-                                        ),
-                                        accessor: 'evidence',
-                                        headerClassName: '-a-left',
-                                        className: 'evidence description',
-                                        minWidth: 250,
-                                        Cell: (attr) => (
-                                          <div className="evidence-item-wrapper">
-                                            {Array.isArray(attr.value) &&
-                                              attr.value.map((v) => (
-                                                <a
-                                                  href={v.attachment.url}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="evidence-item"
-                                                >
-                                                  <Icon
-                                                    className=""
-                                                    name="icon-file-empty"
-                                                  />
-                                                </a>
-                                              ))}
-
-                                            {!Array.isArray(attr.value) && (
-                                              <span className="evidence-item-text">
-                                                {attr.value}
-                                              </span>
-                                            )}
-                                          </div>
-                                        ),
-                                      },
-                                    ],
-                                    nextPageSize: pageSize,
-                                    pageSize,
-                                    onPageChange: (indexPage) => {
-                                      this.setState({
-                                        indexPagination: indexPage,
-                                      });
-                                    },
-                                  }}
-                                />
+                                    }}
+                                  /> */}
+                                </Fragment>
                               )}
                             </div>
                           </div>

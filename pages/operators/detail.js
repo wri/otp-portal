@@ -232,7 +232,11 @@ export default withTracker(
         operatorDocumentation: getParsedDocumentation(state),
         operatorTimeline: getParsedTimeline(state),
       }),
-      { getOperator, getOperatorDocumentation, getOperatorTimeline }
+      {
+        getOperator,
+        getOperatorDocumentation,
+        getOperatorTimeline,
+      }
     )(OperatorsDetail)
   )
 );
