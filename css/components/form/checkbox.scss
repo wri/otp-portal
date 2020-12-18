@@ -131,4 +131,10 @@ $checkbox-size-small: 14px;
     margin-bottom: 16px;
     text-transform: capitalize;
   }
+
+  &.-light {
+    .item-title {
+      color: $color-tertiary;
+    }
+  }
 }

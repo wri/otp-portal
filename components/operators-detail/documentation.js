@@ -39,7 +39,7 @@ function OperatorsDetailDocumentation({
     <div>
       <div className="c-section">
         <div className="l-container">
-          <DocumentsFilter />
+          <DocumentsFilter showDate showFMU />
 
           <DocumentsCertification
             // Publication authorization

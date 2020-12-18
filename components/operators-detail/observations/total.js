@@ -62,6 +62,7 @@ function TotalObservationsByOperator({ data, intl }) {
                     .sort((a, b) => b - a)
                     .map((severity) => {
                       if (severity === 'null') return null;
+                      console.log(severity);
                       const lengthSeverity = groupedBySeverity[severity].length;
 
                       return (

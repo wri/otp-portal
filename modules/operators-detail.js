@@ -184,6 +184,10 @@ export function getOperator(id) {
       'observations.subcategory.category',
       'observations.observation-report',
       'observations.observation-documents',
+      'observations.country',
+      'observations.fmu',
+      'observations.observers',
+      'observations.relevant-operators',
       'fmus',
     ];
 
