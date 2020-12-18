@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-// import { parseObservations } from 'utils/observations';
+import { parseObservations } from 'utils/observations';
 
 // Get the datasets and filters from state
 const operatorsDetail = (state) => state.operatorsDetail;
@@ -9,7 +9,7 @@ const getParsedObservations = createSelector(
   operatorsDetail,
   (_operatorsDetail) => {
     if (_operatorsDetail.data.observations) {
-      // return parseObservations(_operatorsDetail.data.observations);
+      return parseObservations(_operatorsDetail.data.observations);
     }
 
     return [];

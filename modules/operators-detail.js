@@ -185,7 +185,6 @@ export function getOperator(id) {
       'observations.observation-report',
       'observations.observation-documents',
       'observations.country',
-      'observations.operator',
       'observations.fmu',
       'observations.observers',
       'observations.relevant-operators',

@@ -72,20 +72,20 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
     const { data, year } = this.props;
     const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
 
-    // const changeOfLabelLookup = {
-    //   level: 'severity',
-    //   observation: 'detail',
-    // };
+    const changeOfLabelLookup = {
+      level: 'severity',
+      observation: 'detail',
+    };
 
-    // const columnHeaders = getColumnHeaders(this.props.intl);
-    // const inputs = tableCheckboxes;
+    const columnHeaders = getColumnHeaders(this.props.intl);
+    const inputs = tableCheckboxes;
 
-    // const tableOptions = inputs.map((column) => ({
-    //   label: Object.keys(changeOfLabelLookup).includes(column)
-    //     ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] })
-    //     : this.props.intl.formatMessage({ id: column }),
-    //   value: column,
-    // }));
+    const tableOptions = inputs.map((column) => ({
+      label: Object.keys(changeOfLabelLookup).includes(column)
+        ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] })
+        : this.props.intl.formatMessage({ id: column }),
+      value: column,
+    }));
 
     return (
       <div className="c-observations-by-illegality">
@@ -209,7 +209,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                     }}
                                     options={tableOptions}
                                   /> */}
-                                  {/* <Table
+                                  <Table
                                     sortable
                                     className="-light"
                                     // change this to parsedTableObservations
@@ -220,9 +220,10 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         MAX_ROWS_TABLE_ILLEGALITIES,
                                       showPageSizeOptions: false,
                                       // columns: columnHeaders.filter((header) =>
-                                      //   groupedByIllegality[
-                                      //     illegality // change this to observations?
-                                      //   ].columns.includes(header.accessor)
+                                      //   return true
+                                      //   // groupedByIllegality[
+                                      //   //   illegality // change this to observations?
+                                      //   // ].columns.includes(header.accessor)
                                       // ),
                                       columns: [],
                                       nextPageSize: pageSize,
@@ -233,7 +234,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                                         });
                                       },
                                     }}
-                                  /> */}
+                                  />
                                 </Fragment>
                               )}
                             </div>
