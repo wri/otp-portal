@@ -28,6 +28,17 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
     this.state = {
       selected: {},
       indexPagination: 0,
+      columns: [
+        'status',
+        'date',
+        'country',
+        'operator',
+        'category',
+        'observation',
+        'level',
+        'fmu',
+        'report',
+      ],
     };
 
     // BINDINGS
@@ -124,17 +135,6 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                       '-selected': isSelected,
                     });
 
-                    // console.log(
-                    //   // data,
-                    //   // year,
-                    //   // groupedByCategory,
-                    //   // category,
-                    //   // groupedByIllegality,
-                    //   // groupedByIllegality[illegality][0],
-                    //   // observations,
-                    //   // parsedTableObservations[0]
-                    // );
-
                     return (
                       <li key={category + illegality}>
                         <div className="l-container">
@@ -199,33 +199,33 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                               </h2>
                               {groupedByIllegality[illegality].length > 0 && (
                                 <Fragment>
-                                  {/* <CheckboxGroup
+                                  <CheckboxGroup
                                     className="-inline -single-row -light"
                                     name="observations-columns"
-                                    onChange={(value) => setColumns(value)}
+                                    onChange={(value) =>
+                                      this.setState({ columns: value })
+                                    }
                                     properties={{
-                                      default: observations.columns, // change this to observations?
+                                      default: this.state.columns,
                                       name: 'observations-columns',
                                     }}
                                     options={tableOptions}
-                                  /> */}
+                                  />
+                                  <br />
                                   <Table
                                     sortable
                                     className="-light"
-                                    // change this to parsedTableObservations
                                     data={groupedByIllegality[illegality]}
                                     options={{
                                       pagination:
                                         legalities >
                                         MAX_ROWS_TABLE_ILLEGALITIES,
                                       showPageSizeOptions: false,
-                                      // columns: columnHeaders.filter((header) =>
-                                      //   return true
-                                      //   // groupedByIllegality[
-                                      //   //   illegality // change this to observations?
-                                      //   // ].columns.includes(header.accessor)
-                                      // ),
-                                      columns: [],
+                                      columns: columnHeaders.filter((header) =>
+                                        this.state.columns.includes(
+                                          header.accessor
+                                        )
+                                      ),
                                       nextPageSize: pageSize,
                                       pageSize,
                                       onPageChange: (indexPage) => {
