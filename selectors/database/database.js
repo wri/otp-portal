@@ -12,7 +12,7 @@ export const getParsedTableDocuments = createSelector(
         status: doc.status,
         country: doc.operator.country && doc.operator.country.iso,
         operator: doc.operator.name,
-        // 'forest-type': null,
+        'forest-type': doc.fmu && doc.fmu['forest-type'],
         fmu: doc.fmu || '',
         'start-date': doc['start-date'],
         'expire-date': doc['expire-date'],
