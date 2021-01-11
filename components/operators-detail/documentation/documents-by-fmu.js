@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
-import cx from 'classnames';
 
 // Components
 import DocCard from 'components/ui/doc-card';
