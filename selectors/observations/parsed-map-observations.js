@@ -149,10 +149,8 @@ const getObservationsLayers = createSelector(
         ...clusterLayers,
         {
           ...FMUS_LAYER,
-          ...{
-            ...FMUS_LAYER.config,
-          },
-          opacity: _zoom/10 > 1 ? 1 : _zoom/4/10,
+          ...FMUS_LAYER.config,
+          opacity: _zoom/8 > 1 ? 1 : _zoom/4/8,
           params: {
             country_iso_codes: process.env.OTP_COUNTRIES
           }
