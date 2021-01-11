@@ -36,7 +36,7 @@
     "json-api-normalizer": "^0.4.0",
     "jsona": "^1.0.9",
     "jsonapi-serializer": "^3.5.3",
-    "layer-manager": "^3.0.4",
+    "layer-manager": "3.0.9",
     "leaflet": "^1.0.3",
     "lodash": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
     "luma.gl": "7.3.2",

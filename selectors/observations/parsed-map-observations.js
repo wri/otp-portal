@@ -143,13 +143,16 @@ const getObservationsLayers = createSelector(
         });
       }
 
-      const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'))
+      const FMUS_LAYER = (LAYERS.find(l => l.id === 'fmus'));
 
       return [
         ...clusterLayers,
         {
           ...FMUS_LAYER,
-          ...FMUS_LAYER.config,
+          ...{
+            ...FMUS_LAYER.config,
+          },
+          opacity: _zoom/10 > 1 ? 1 : _zoom/4/10,
           params: {
             country_iso_codes: process.env.OTP_COUNTRIES
           }
@@ -239,7 +242,7 @@ const getObservationsLayers = createSelector(
                 paint: {
                   'circle-radius': 8,
                   'circle-stroke-width': 2,
-                  'circle-stroke-color': '#FFF',
+                  'circle-stroke-color': '#333',
                   'circle-color': [
                     'match',
                     ['get', 'level'],
