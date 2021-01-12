@@ -1,14 +1,18 @@
 import sortBy from 'lodash/sortBy';
-import omit from 'lodash/omit';
 import { HELPERS_DOC } from 'utils/documentation';
 
 export default function DocumentStatusBar({ category, className, docs }) {
-  const groupedByStatus = omit(
-    HELPERS_DOC.getGroupedByStatus(docs),
-    'doc_not_required'
-  );
+  const groupedByStatus = HELPERS_DOC.getGroupedByStatus(docs);
+
+  if (groupedByStatus.doc_not_required?.length) {
+    // move all doc_not_required to doc_valid
+    groupedByStatus.doc_valid = groupedByStatus.doc_valid?.length
+      ? [...groupedByStatus.doc_valid, ...groupedByStatus.doc_not_required]
+      : groupedByStatus.doc_not_required;
+    delete groupedByStatus.doc_not_required;
+  }
+
   const validDocs = groupedByStatus.doc_valid?.length || 0;
-  const totalDocs = docs.filter((doc) => doc.status !== 'doc_not_required');
 
   return (
     <div className={`c-doc-by-category${className ? ` ${className}` : ''}`}>
@@ -17,7 +21,7 @@ export default function DocumentStatusBar({ category, className, docs }) {
           <div className="doc-by-category-bar">
             {sortBy(Object.keys(groupedByStatus)).map((status) => {
               const segmentWidth = `${
-                (groupedByStatus[status].length / totalDocs.length) * 100
+                (groupedByStatus[status].length / docs.length) * 100
               }%`;
               return (
                 <div
@@ -30,7 +34,7 @@ export default function DocumentStatusBar({ category, className, docs }) {
           </div>
           <span>{`${
             groupedByStatus.doc_valid || groupedByStatus.doc_not_required
-              ? ((validDocs / totalDocs.length) * 100).toFixed(0)
+              ? ((validDocs / docs.length) * 100).toFixed(0)
               : 0
           }% valid`}</span>
         </div>
