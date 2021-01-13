@@ -118,6 +118,7 @@ export function getDocumentsDatabase() {
       'fmu',
       'operator-document-annexes',
       'required-operator-document',
+      'required-operator-document.required-operator-document-group',
     ];
 
     // Fields

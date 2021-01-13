@@ -22,18 +22,19 @@ function DatabaseTable({
   intl,
 }) {
   const inputs = [
-    'document',
-    'document-name',
-    'annexes',
-    'start-date',
-    'expire-date',
-    'status',
     'country',
     'operator',
-    'fmu',
     'forest-type',
+    'fmu',
+    'document-name',
+    'document',
+    'status',
+    'legal-category',
+    'start-date',
+    'expire-date',
     'source',
     'reason',
+    'annexes',
   ];
 
   const columnHeaders = [
@@ -63,6 +64,17 @@ function DatabaseTable({
           )}
         </div>
       ),
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'category' })}
+        </span>
+      ),
+      accessor: 'legal-category',
+      headerClassName: '-a-left',
+      className: 'description',
+      minWidth: 120,
     },
     {
       Header: (

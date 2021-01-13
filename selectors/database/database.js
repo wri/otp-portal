@@ -25,6 +25,15 @@ export const getParsedTableDocuments = createSelector(
           (doc['required-operator-document'] &&
             doc['required-operator-document'].name) ||
           '',
+        'legal-category':
+          (doc['required-operator-document'] &&
+            doc['required-operator-document'][
+              'required-operator-document-group'
+            ] &&
+            doc['required-operator-document'][
+              'required-operator-document-group'
+            ].name) ||
+          '',
       }));
     }
 
