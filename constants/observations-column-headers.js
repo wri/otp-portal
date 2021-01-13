@@ -166,8 +166,10 @@ export function getColumnHeaders(intl) {
       className: 'operator-type',
       minWidth: 250,
       Cell: (attr) =>
-        attr.value && (
+        attr.value ? (
           <span>{intl.formatMessage({ id: `${attr.value}` })}</span>
+        ) : (
+          'None'
         ),
     },
     {
