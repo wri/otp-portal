@@ -93,6 +93,17 @@ export function getColumnHeaders(intl) {
       accessor: 'fmu',
       className: 'description',
       minWidth: 120,
+      Cell: (attr) => {
+        if (attr.value) {
+          return (
+            <span>
+              {attr.value.name}
+            </span>
+          )
+        }
+
+        return null;
+      },
     },
     {
       Header: (

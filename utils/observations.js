@@ -128,7 +128,7 @@ function parseObservations(data) {
       // date: new Date(obs['publication-date']),
       details: obs.details,
       evidence,
-      fmu: !!obs.fmu && obs.fmu.name,
+      fmu: obs.fmu,
       id: obs.id,
       level: obs.severity && obs.severity.level,
       operator: !!obs.operator && obs.operator.name,

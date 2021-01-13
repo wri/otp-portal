@@ -37,6 +37,19 @@ class OperatorsDetailObservations extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { FMU } = this.props;
+    const { FMU: prevFMU } = prevProps;
+
+    if ((FMU && prevFMU && FMU.id !== prevFMU.id) || (!prevFMU && !!FMU)) {
+      this.setState({
+        year: HELPERS_OBS.getMaxYear(this.props.operatorObservations.filter(
+          (obs) => obs.fmu && obs.fmu.id === this.props.FMU.id
+        ))
+      })
+    }
+  }
+
   /**
    * UI EVENTS
    * - onChangeYear
