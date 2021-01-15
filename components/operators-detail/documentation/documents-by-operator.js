@@ -78,22 +78,22 @@ function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
 
                       {((user && user.role === 'admin') ||
                         (user &&
-                          user.role === 'operator' &&
+                          (user.role === 'operator' || user.role === 'holding') &&
                           user.operator_ids &&
                           user.operator_ids.includes(+id))) && (
-                        <DocCardUpload
-                          {...card}
-                          properties={{
+                          <DocCardUpload
+                            {...card}
+                            properties={{
                             type: 'operator',
                             id,
                           }}
-                          user={user}
-                          onChange={() => {
+                            user={user}
+                            onChange={() => {
                             props.getOperator(id)
                             props.getOperatorDocumentation(id)
                             props.getOperatorTimeline(id)
                           }}
-                        />
+                          />
                       )}
                     </div>
                   ))}

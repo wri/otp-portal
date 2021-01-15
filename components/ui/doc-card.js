@@ -105,7 +105,7 @@ class DocCard extends React.Component {
     const { id } = properties;
     const { deleteLoading } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
-      (user && user.role === 'operator' && user.operator_ids && user.operator_ids.includes(+id)) ||
+      (user && (user.role === 'operator' || user.role === 'holding') && user.operator_ids && user.operator_ids.includes(+id)) ||
       (user && user.role === 'government' && user.country && user.country.toString() === id);
 
     const approvedAnnexes = annexes.filter(a => a.name);

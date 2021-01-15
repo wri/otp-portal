@@ -69,7 +69,7 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
                     />
                     {((user && user.role === 'admin') ||
                       (user &&
-                        user.role === 'operator' &&
+                        (user.role === 'operator' || user.role === 'holding') &&
                         user.operator_ids &&
                         user.operator_ids.includes(+id))) && (
                         <DocCardUpload
