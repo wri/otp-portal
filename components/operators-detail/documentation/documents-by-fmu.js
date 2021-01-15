@@ -20,6 +20,15 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
         const FMUname = docs[0].fmu.name;
         const isFMUOpen = FMUsOpen[FMUname];
         const FMUByStatus = groupBy(docs, 'status');
+
+        if (FMUByStatus.doc_not_required?.length) {
+          // move all doc_not_required to doc_valid
+          FMUByStatus.doc_valid = FMUByStatus.doc_valid?.length
+            ? [...FMUByStatus.doc_valid, ...FMUByStatus.doc_not_required]
+            : FMUByStatus.doc_not_required;
+          delete FMUByStatus.doc_not_required;
+        }
+
         const validDocs =
           (docs.filter((d) => d.status === 'doc_valid').length +
             docs.filter((d) => d.status === 'doc_not_required').length) /
@@ -72,15 +81,15 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
                         (user.role === 'operator' || user.role === 'holding') &&
                         user.operator_ids &&
                         user.operator_ids.includes(+id))) && (
-                        <DocCardUpload
-                          {...card}
-                          properties={{
+                      <DocCardUpload
+                        {...card}
+                        properties={{
                           type: 'operator',
                           id,
                         }}
-                          user={user}
-                          onChange={() => getOperator(id)}
-                        />
+                        user={user}
+                        onChange={() => getOperator(id)}
+                      />
                     )}
                   </div>
                 ))}
