@@ -215,6 +215,7 @@ export function setActiveColumns(activeColumns) {
 
 export function setFilters(filter) {
   return (dispatch, state) => {
+    // state().observations ????
     const newFilters = Object.assign({}, state().observations.filters.data);
     const key = Object.keys(filter)[0];
     newFilters[key] = filter[key];
