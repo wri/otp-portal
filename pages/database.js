@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import difference from 'lodash/difference';
-import omit from 'lodash/omit';
 
 // Redux
 import { connect } from 'react-redux';
@@ -93,15 +92,6 @@ class DocumentsDatabasePage extends React.Component {
 
   render() {
     const { url, parsedFilters } = this.props;
-    // TODO: filter by page?
-    const options = omit(
-      parsedFilters.options,
-      'required_operator_document_id'
-    );
-    const filters = omit(parsedFilters.data, 'required_operator_document_id');
-    const filterKeys = FILTERS_REFS.filter(
-      (obj) => obj.key !== 'required_operator_document_id'
-    );
 
     return (
       <Layout
@@ -116,10 +106,10 @@ class DocumentsDatabasePage extends React.Component {
           background="/static/images/static-header/bg-observations.jpg"
         />
         <Filters
-          options={options}
-          filters={filters}
+          options={parsedFilters.options}
+          filters={parsedFilters.data}
           setFilters={this.props.setFilters}
-          filtersRefs={filterKeys}
+          filtersRefs={FILTERS_REFS}
         />
 
         <StaticTabs

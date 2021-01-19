@@ -16,8 +16,8 @@ export const FILTERS_REFS = [
   },
   {
     key: 'required_operator_document_id',
-    name: 'Report',
-    placeholder: 'All Reports',
+    name: 'Document name',
+    placeholder: 'All Documents',
   },
   {
     key: 'source',
