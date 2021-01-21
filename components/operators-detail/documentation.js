@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -25,6 +26,15 @@ function OperatorsDetailDocumentation({
   const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
     operatorDocumentation
   );
+  // Maximum amount of documents in a category, other bars will be proportional to it
+  const maxDocs = Object.values(docsGroupedByCategory)
+    .map(
+      (categoryDocs) =>
+        categoryDocs.filter((doc) => doc.status !== 'doc_not_required').length
+    )
+    .sort((a, b) => a - b)
+    .reverse()[0];
+
   const filteredData = operatorDocumentation.filter(
     (d) => d.status !== 'doc_not_required'
   );
@@ -74,7 +84,11 @@ function OperatorsDetailDocumentation({
               <div className="pie-categories">
                 {Object.entries(docsGroupedByCategory).map(
                   ([category, docs]) => (
-                    <DocumentStatusBar category={category} docs={docs} />
+                    <DocumentStatusBar
+                      category={category}
+                      docs={docs}
+                      maxDocs={maxDocs}
+                    />
                   )
                 )}
               </div>
