@@ -61,7 +61,7 @@ function DocumentsProvided(props) {
                   if (
                     (user.token && user.role === 'admin') ||
                     (user.token &&
-                      user.role === 'operator' &&
+                      (user.role === 'operator' || user.role === 'holding') &&
                       user.operator_ids.includes(+router.query.id))
                   ) {
                     return true;

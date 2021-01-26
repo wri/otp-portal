@@ -158,7 +158,7 @@ class OperatorsDetail extends React.Component {
           background="/static/images/static-header/bg-operator-detail.jpg"
           Component={
             user &&
-            user.role === 'operator' &&
+            (user.role === 'operator' || user.role === 'holding') &&
             user.operator_ids &&
             user.operator_ids.includes(+id) && (
               <Link href="/operators/edit">

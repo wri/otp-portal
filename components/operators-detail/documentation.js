@@ -96,7 +96,11 @@ function OperatorsDetailDocumentation({
           </article>
 
           {/* Timeline chart */}
-          <DocumentsTimeline timelineData={operatorTimeline} />
+          {operatorTimeline &&
+            operatorTimeline.length &&
+            operatorTimeline.length > 1 && (
+              <DocumentsTimeline timelineData={operatorTimeline} />
+            )}
         </div>
       </div>
 
