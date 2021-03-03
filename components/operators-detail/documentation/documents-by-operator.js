@@ -16,6 +16,12 @@ import DocumentStatusBar from 'components/operators-detail/documentation/documen
 import DocumentsByFMU from './documents-by-fmu';
 
 function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
+  // Maximum amount of documents in a category, other bars will be proportional to it
+  const maxDocs = Object.values(groupedByCategory)
+    .map((categoryDocs) => categoryDocs.length)
+    .sort((a, b) => a - b)
+    .reverse()[0];
+
   const [categoriesOpen, setCategoriesOpen] = useState(
     Object.keys(groupedByCategory).reduce(
       (acc, cat) => ({ ...acc, [cat]: false }),
@@ -41,6 +47,7 @@ function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
               <DocumentStatusBar
                 category={category}
                 docs={groupedByCategory[category]}
+                maxDocs={maxDocs}
               />
               <button
                 className={cx('doc-by-category-btn -proximanova', {
