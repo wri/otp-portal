@@ -28,10 +28,7 @@ function OperatorsDetailDocumentation({
   );
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(docsGroupedByCategory)
-    .map(
-      (categoryDocs) =>
-        categoryDocs.filter((doc) => doc.status !== 'doc_not_required').length
-    )
+    .map((categoryDocs) => categoryDocs.length)
     .sort((a, b) => a - b)
     .reverse()[0];
 

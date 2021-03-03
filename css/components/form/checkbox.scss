@@ -126,6 +126,39 @@ $checkbox-size-small: 14px;
     }
   }
 
+  &.-secondary {
+    display: flex;
+
+    > * {
+      margin: 0 16px 0 0;
+
+      &:last-child  {
+        margin: 0;
+      }
+    }
+
+    .c-checkbox {
+      input[type='checkbox']:checked + label {
+        .checkbox-icon {
+          background-color: transparent;
+        }
+      }
+
+      .checkbox-icon {
+        border: 1px solid $color-secondary;
+
+        &:after {
+          border-left: 2px solid $color-secondary;
+          border-bottom: 2px solid $color-secondary;
+        }
+      }
+
+      .item-title {
+        margin-left: 20px;
+      }
+    }
+  }
+
   .checkbox-box-title {
     display: inline-block;
     margin-bottom: 16px;

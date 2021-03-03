@@ -25,16 +25,12 @@ export default function DocumentStatusBar({
         <div className="doc-by-category-chart">
           <div className="doc-by-category-bar">
             {sortBy(Object.keys(groupedByStatus)).map((status) => {
-              const segmentWidth = `${
-                (groupedByStatus[status].length / totalDocs.length) *
-                (totalDocs.length / (maxDocs || totalDocs.length)) *
-                100
-              }%`;
+              const segmentWidth = (groupedByStatus[status].length / docs.length) * (docs.length / (maxDocs || docs.length)) * 100;
               return (
                 <div
                   key={status}
                   className={`doc-by-category-bar-segment -${status}`}
-                  style={{ width: segmentWidth }}
+                  style={{ width: 215 * (segmentWidth/100) }}
                 />
               );
             })}

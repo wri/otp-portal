@@ -20,6 +20,7 @@ import { intlShape } from 'react-intl';
 
 // Selectors
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
+import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import {
   getObservationsLayers,
   getObservationsLegend,
@@ -28,10 +29,11 @@ import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
 // Components
 import Layout from 'components/layout/layout';
+import Overview from 'components/observations/overview';
 import CheckboxGroup from 'components/form/CheckboxGroup';
 import StaticHeader from 'components/ui/static-header';
 import Table from 'components/ui/table';
-import Filters from 'components/ui/filters';
+import Filters from 'components/ui/observation-filters';
 import Spinner from 'components/ui/spinner';
 import MapSubComponent from 'components/ui/map-sub-component';
 import StaticTabs from 'components/ui/static-tabs';
@@ -203,6 +205,7 @@ class ObservationsPage extends React.Component {
       getObservationsLegend,
       parsedFilters,
       parsedTableObservations,
+      parsedChartObservations,
     } = this.props;
 
     const changeOfLabelLookup = {
@@ -229,15 +232,28 @@ class ObservationsPage extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'observations' })}
           background="/static/images/static-header/bg-observations.jpg"
+          className="-short"
         />
 
-        <Filters
-          options={parsedFilters.options}
-          filters={parsedFilters.data}
-          setFilters={this.props.setFilters}
-          filtersRefs={FILTERS_REFS}
-          // logFilter={this.logFilter}
-        />
+        <div className="c-section">
+          <div className="l-container">
+            <div className="row l-row">
+              <div className="columns small-12 medium-4">
+                <Filters
+                  options={parsedFilters.options}
+                  filters={parsedFilters.data}
+                  setFilters={this.props.setFilters}
+                  filtersRefs={FILTERS_REFS}
+                />
+              </div>
+
+              <div className="columns small-12 medium-6 medium-offset-1">
+                {/* Overview by category graphs */}
+                <Overview parsedObservations={parsedChartObservations} />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <StaticTabs
           options={[
@@ -267,16 +283,18 @@ class ObservationsPage extends React.Component {
                 })}
               </h2>
               <Spinner isLoading={observations.loading} />
-              <CheckboxGroup
-                className="-inline -single-row"
-                name="observations-columns"
-                onChange={(value) => this.setActiveColumns(value)}
-                properties={{
-                  default: observations.columns,
-                  name: 'observations-columns',
-                }}
-                options={tableOptions}
-              />
+              <div className="c-field -fluid -valid">
+                <CheckboxGroup
+                  className="-single-row -small -secondary"
+                  name="observations-columns"
+                  onChange={(value) => this.setActiveColumns(value)}
+                  properties={{
+                    default: observations.columns,
+                    name: 'observations-columns',
+                  }}
+                  options={tableOptions}
+                />
+              </div>
 
               <Table
                 sortable
@@ -406,6 +424,7 @@ ObservationsPage.propTypes = {
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
   getObservationsLayers: PropTypes.array,
+  parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
 
   getObservations: PropTypes.func.isRequired,
@@ -423,6 +442,7 @@ export default withTracker(
         observations: state.observations,
         parsedFilters: getParsedFilters(state),
         parsedTableObservations: getParsedTableObservations(state),
+        parsedChartObservations: getParsedChartObservations(state),
         getObservationsLayers: getObservationsLayers(state),
         getObservationsLegend: getObservationsLegend(state, props),
       }),
