@@ -118,6 +118,7 @@ export function getDocumentsDatabase() {
       'fmu',
       'operator-document-annexes',
       'required-operator-document',
+      'required-operator-document.required-operator-document-group',
     ];
 
     // Fields
@@ -214,7 +215,7 @@ export function setActiveColumns(activeColumns) {
 
 export function setFilters(filter) {
   return (dispatch, state) => {
-    const newFilters = Object.assign({}, state().observations.filters.data);
+    const newFilters = Object.assign({}, state().database.filters.data);
     const key = Object.keys(filter)[0];
     newFilters[key] = filter[key];
 
@@ -227,7 +228,7 @@ export function setFilters(filter) {
 
 export function setDocumentsDatabaseUrl() {
   return (dispatch, getState) => {
-    const filters = getState().observations.filters.data;
+    const filters = getState().database.filters.data;
     const query = {};
 
     Object.keys(filters).forEach((key) => {
@@ -235,7 +236,7 @@ export function setDocumentsDatabaseUrl() {
     });
 
     const location = {
-      pathname: '/observations',
+      pathname: '/database',
       query: {},
     };
 

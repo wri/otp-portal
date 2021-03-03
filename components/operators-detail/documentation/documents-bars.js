@@ -26,7 +26,6 @@ export default function DocumentStatusBar({
           <div className="doc-by-category-bar">
             {sortBy(Object.keys(groupedByStatus)).map((status) => {
               const segmentWidth = (groupedByStatus[status].length / docs.length) * (docs.length / (maxDocs || docs.length)) * 100;
-
               return (
                 <div
                   key={status}
