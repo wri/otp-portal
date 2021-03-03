@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -25,8 +25,13 @@ function DocumentsFilter({
   showFMU,
 }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  // const [FMU, setFMU] = useState(null);
   const minDate = process.env.DOCUMENTS_MINDATE;
+
+  useEffect(() => {
+    // on component load, reset FMU and date.
+    setFMU(null);
+    setDate(new Date());
+  }, []);
 
   return (
     <div className="c-doc-filters">
