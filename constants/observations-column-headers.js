@@ -2,6 +2,8 @@ import Tooltip from 'rc-tooltip/dist/rc-tooltip';
 import ReadMore from 'components/ui/read-more';
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 import Icon from 'components/ui/icon';
+import ObserverInfoModal from 'components/ui/observer-info-modal';
+import modal from 'services/modal';
 
 export const tableCheckboxes = [
   'date',
@@ -150,7 +152,37 @@ export function getColumnHeaders(intl) {
       Cell: (attr) => (
         <ul className="cell-list">
           {attr.value.map((observer) => {
-            return <li>{observer.name || observer.organization}</li>;
+            return (<li>
+              <span>
+                {observer.name || observer.organization}
+
+                {observer['public-info'] && (
+                  <Tooltip
+                    placement="top"
+                    overlay={
+                      <div style={{ maxWidth: 100 }}>
+                        {intl.formatMessage({ id: "contact_info" })}
+                      </div>
+                    }
+                    overlayClassName="c-tooltip no-pointer-events"
+                  >
+
+                    <button
+                      className="c-button -icon -primary"
+                      style={{ marginLeft: 5 }}
+                      onClick={() => {
+                        modal.toggleModal(true, {
+                          children: ObserverInfoModal,
+                          childrenProps: observer,
+                        });
+                      }}
+                    >
+                      <Icon name="icon-info" className="-smaller" />
+                    </button>
+                  </Tooltip>
+                )}
+              </span>
+            </li>);
           })}
         </ul>
       ),
