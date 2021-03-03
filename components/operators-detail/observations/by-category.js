@@ -80,7 +80,9 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
         <div className="row l-row">
           {Object.keys(groupedByCategory).map((category) => {
             const groupedBySeverity = HELPERS_OBS.getGroupedBySeverity(
-              groupedByCategory[category]
+              groupedByCategory[category],
+              false,
+              'severity'
             );
 
             return (

@@ -26,8 +26,9 @@ const HELPERS_OBS = {
     return groupedByFmu;
   },
 
-  getGroupedBySeverity(data, raw) {
-    const grouped = groupBy(data, 'level');
+  getGroupedBySeverity(data, raw, lookupKey) {
+    const key = lookupKey || 'level';
+    const grouped = groupBy(data, key);
     if (raw) {
       return grouped;
     }
