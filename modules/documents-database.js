@@ -13,13 +13,13 @@ const GET_DOCUMENTS_DB_TOTAL_SIZE = 'GET_DOCUMENTS_DB_TOTAL_SIZE';
 const GET_DOCUMENTS_DB_ERROR = 'GET_DOCUMENTS_DB_ERROR';
 const GET_DOCUMENTS_DB_LOADING = 'GET_DOCUMENTS_DB_LOADING';
 
-const GET_FILTERS_SUCCESS = 'GET_FILTERS_SUCCESS';
-const GET_FILTERS_ERROR = 'GET_FILTERS_ERROR';
-const GET_FILTERS_LOADING = 'GET_FILTERS_LOADING';
-const SET_FILTERS = 'SET_FILTERS';
-const SET_ACTIVE_COLUMNS = 'SET_ACTIVE_COLUMNS';
+const GET_FILTERS_DOCUMENTS_DB_SUCCESS = 'GET_FILTERS_DOCUMENTS_DB_SUCCESS';
+const GET_FILTERS_DOCUMENTS_DB_ERROR = 'GET_FILTERS_DOCUMENTS_DB_ERROR';
+const GET_FILTERS_DOCUMENTS_DB_LOADING = 'GET_FILTERS_DOCUMENTS_DB_LOADING';
+const SET_FILTERS_DOCUMENTS_DB = 'SET_FILTERS_DOCUMENTS_DB';
+const SET_ACTIVE_COLUMNS_DOCUMENTS_DB = 'SET_ACTIVE_COLUMNS_DOCUMENTS_DB';
 
-const OBS_MAX_SIZE = 3000;
+const DOCUMENTS_DB_MAX_SIZE = 3000;
 
 /* Initial state */
 const initialState = {
@@ -62,7 +62,7 @@ export default function reducer(state = initialState, action) {
     case GET_DOCUMENTS_DB_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
     // Filters
-    case GET_FILTERS_SUCCESS: {
+    case GET_FILTERS_DOCUMENTS_DB_SUCCESS: {
       const newFilters = Object.assign({}, state.filters, {
         options: action.payload,
         loading: false,
@@ -70,27 +70,27 @@ export default function reducer(state = initialState, action) {
       });
       return Object.assign({}, state, { filters: newFilters });
     }
-    case GET_FILTERS_ERROR: {
+    case GET_FILTERS_DOCUMENTS_DB_ERROR: {
       const newFilters = Object.assign({}, state.filters, {
         error: true,
         loading: false,
       });
       return Object.assign({}, state, { filters: newFilters });
     }
-    case GET_FILTERS_LOADING: {
+    case GET_FILTERS_DOCUMENTS_DB_LOADING: {
       const newFilters = Object.assign({}, state.filters, {
         loading: true,
         error: false,
       });
       return Object.assign({}, state, { filters: newFilters });
     }
-    case SET_FILTERS: {
+    case SET_FILTERS_DOCUMENTS_DB: {
       const newFilters = Object.assign({}, state.filters, {
         data: action.payload,
       });
       return Object.assign({}, state, { filters: newFilters });
     }
-    case SET_ACTIVE_COLUMNS: {
+    case SET_ACTIVE_COLUMNS_DOCUMENTS_DB: {
       return Object.assign({}, state, { columns: action.payload });
     }
     default:
@@ -130,7 +130,7 @@ export function getDocumentsDatabase() {
 
     const url = `${
       process.env.OTP_API
-    }/operator-documents?locale=${lang}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(
+    }/operator-documents?locale=${lang}&page[size]=${DOCUMENTS_DB_MAX_SIZE}&${fields}&include=${includes.join(
       ','
     )}${filtersQuery.length ? `&${filtersQuery.join('&')}` : ''}`;
     // Waiting for fetch from server -> Dispatch loading
@@ -170,7 +170,7 @@ export function getFilters() {
     const { language } = getState();
 
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_FILTERS_LOADING });
+    dispatch({ type: GET_FILTERS_DOCUMENTS_DB_LOADING });
 
     const lang = language === 'zh' ? 'zh-CN' : language;
 
@@ -190,14 +190,14 @@ export function getFilters() {
       })
       .then((filters) => {
         dispatch({
-          type: GET_FILTERS_SUCCESS,
+          type: GET_FILTERS_DOCUMENTS_DB_SUCCESS,
           payload: parseObjectSelectOptions(filters),
         });
       })
       .catch((err) => {
         // Fetch from server ko -> Dispatch error
         dispatch({
-          type: GET_FILTERS_ERROR,
+          type: GET_FILTERS_DOCUMENTS_DB_ERROR,
           payload: err.message,
         });
       });
@@ -207,7 +207,7 @@ export function getFilters() {
 export function setActiveColumns(activeColumns) {
   return (dispatch) => {
     dispatch({
-      type: SET_ACTIVE_COLUMNS,
+      type: SET_ACTIVE_COLUMNS_DOCUMENTS_DB,
       payload: activeColumns,
     });
   };
@@ -220,7 +220,7 @@ export function setFilters(filter) {
     newFilters[key] = filter[key];
 
     dispatch({
-      type: SET_FILTERS,
+      type: SET_FILTERS_DOCUMENTS_DB,
       payload: newFilters,
     });
   };
@@ -255,7 +255,7 @@ export function getDocumentsDatabaseUrl(url) {
       };
 
       dispatch({
-        type: SET_FILTERS,
+        type: SET_FILTERS_DOCUMENTS_DB,
         payload,
       });
     }
