@@ -26,12 +26,12 @@ class ObserverInfoModal extends React.Component {
             <h4>{intl.formatMessage({ id: "information" })}</h4>
             <dl>
               <div className="observer-info-modal--list-item">
-                <dt>{intl.formatMessage({ id: "email" })}:</dt>
-                <dd>{informationEmail || '-'}</dd>
-              </div>
-              <div className="observer-info-modal--list-item">
                 <dt>{intl.formatMessage({ id: "name" })}</dt>
                 <dd>{informationName || '-'}</dd>
+              </div>
+              <div className="observer-info-modal--list-item">
+                <dt>{intl.formatMessage({ id: "email" })}:</dt>
+                <dd>{informationEmail || '-'}</dd>
               </div>
               <div className="observer-info-modal--list-item">
                 <dt>{intl.formatMessage({ id: "phone" })}</dt>
@@ -44,12 +44,12 @@ class ObserverInfoModal extends React.Component {
             <h4>{intl.formatMessage({ id: "data" })}</h4>
             <dl>
               <div className="observer-info-modal--list-item">
-                <dt>{intl.formatMessage({ id: "email" })}:</dt>
-                <dd>{dataEmail || '-'}</dd>
-              </div>
-              <div className="observer-info-modal--list-item">
                 <dt>{intl.formatMessage({ id: "name" })}</dt>
                 <dd>{dataName || '-'}</dd>
+              </div>
+              <div className="observer-info-modal--list-item">
+                <dt>{intl.formatMessage({ id: "email" })}:</dt>
+                <dd>{dataEmail || '-'}</dd>
               </div>
               <div className="observer-info-modal--list-item">
                 <dt>{intl.formatMessage({ id: "phone" })}</dt>
