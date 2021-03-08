@@ -101,7 +101,7 @@ class DocumentsDatabasePage extends React.Component {
       >
         <StaticHeader
           title={this.props.intl.formatMessage({
-            id: 'Producers’ documents database',
+            id: 'producers_documents_database',
           })}
           background="/static/images/static-header/bg-observations.jpg"
         />

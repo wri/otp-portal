@@ -111,7 +111,7 @@ class NavigationList extends React.Component {
                   <Link href="/database">
                     <a>
                       {this.props.intl.formatMessage({
-                        id: 'Producers’ documents database',
+                        id: 'producers_documents_database',
                       })}
                     </a>
                   </Link>
