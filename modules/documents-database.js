@@ -29,6 +29,7 @@ const initialState = {
   error: false,
   filters: {
     data: {
+      forest_types: [],
       type: [],
       status: [],
       country_ids: [],
@@ -36,12 +37,13 @@ const initialState = {
       fmu_id: [],
       required_operator_document_id: [],
       source: [],
+      legal_categories: []
     },
     options: {},
     loading: false,
     error: false,
   },
-  columns: ['document', 'document-name', 'status', 'operator', 'fmu'],
+  columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
 };
 
 const JSONA = new Jsona();

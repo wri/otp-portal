@@ -41,6 +41,64 @@ function DatabaseTable({
     {
       Header: (
         <span className="sortable">
+          {intl.formatMessage({ id: 'country' })}
+        </span>
+      ),
+      accessor: 'country',
+      className: '-uppercase',
+      minWidth: 150,
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'operator' })}
+        </span>
+      ),
+      accessor: 'operator',
+      className: '-uppercase description',
+      minWidth: 120,
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'forest-type' })}
+        </span>
+      ),
+      accessor: 'forest-type',
+      className: '-uppercase',
+      minWidth: 150,
+    },
+    {
+      Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'fmu' })}</span>
+      ),
+      accessor: 'fmu',
+      className: 'description',
+      minWidth: 120,
+      Cell: (attr) => (
+        <span>
+          {attr.value
+            ? intl.formatMessage({
+                id: attr.value.name,
+              })
+            : ''}
+        </span>
+      ),
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'document-name' })}
+        </span>
+      ),
+      accessor: 'document-name',
+      className: 'description',
+      minWidth: 200,
+    },
+
+    {
+      Header: (
+        <span className="sortable">
           {intl.formatMessage({ id: 'document' })}
         </span>
       ),
@@ -65,6 +123,23 @@ function DatabaseTable({
         </div>
       ),
     },
+
+    {
+      Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'status' })}</span>
+      ),
+      accessor: 'status',
+      minWidth: 150,
+      className: 'status',
+      Cell: (attr) => (
+        <span>
+          {intl.formatMessage({
+            id: attr.value,
+          })}
+        </span>
+      ),
+    },
+
     {
       Header: (
         <span className="sortable">
@@ -75,6 +150,47 @@ function DatabaseTable({
       headerClassName: '-a-left',
       className: 'description',
       minWidth: 120,
+    },
+
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'doc.start_date' })}
+        </span>
+      ),
+      accessor: 'start-date',
+      minWidth: 150,
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'doc.expiry_date' })}
+        </span>
+      ),
+      accessor: 'expire-date',
+      minWidth: 150,
+    },
+    {
+      Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'source' })}</span>
+      ),
+      accessor: 'source',
+      minWidth: 200,
+      Cell: (attr) => (
+        <span className="-source">
+          {attr.value !== 'other_source'
+            ? intl.formatMessage({ id: attr.value })
+            : attr.original.sourceInfo}
+        </span>
+      ),
+    },
+    {
+      Header: (
+        <span className="sortable">{intl.formatMessage({ id: 'reason' })}</span>
+      ),
+      accessor: 'reason',
+      className: 'description',
+      minWidth: 200,
     },
     {
       Header: (
@@ -104,118 +220,6 @@ function DatabaseTable({
             <span className="evidence-item-text">{attr.value}</span>
           )}
         </div>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'doc.start_date' })}
-        </span>
-      ),
-      accessor: 'start-date',
-      minWidth: 150,
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'doc.expiry_date' })}
-        </span>
-      ),
-      accessor: 'expire-date',
-      minWidth: 150,
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'forest-type' })}
-        </span>
-      ),
-      accessor: 'forest-type',
-      className: '-uppercase',
-      minWidth: 100,
-    },
-    {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'source' })}</span>
-      ),
-      accessor: 'source',
-      minWidth: 200,
-      Cell: (attr) => (
-        <span className="-source">
-          {attr.value !== 'other_source'
-            ? intl.formatMessage({ id: attr.value })
-            : attr.original.sourceInfo}
-        </span>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'document-name' })}
-        </span>
-      ),
-      accessor: 'document-name',
-      className: 'description',
-      minWidth: 200,
-    },
-    {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'status' })}</span>
-      ),
-      accessor: 'status',
-      minWidth: 150,
-      className: 'status',
-      Cell: (attr) => (
-        <span>
-          {intl.formatMessage({
-            id: attr.value,
-          })}
-        </span>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'country' })}
-        </span>
-      ),
-      accessor: 'country',
-      className: '-uppercase',
-      minWidth: 100,
-    },
-    {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'reason' })}</span>
-      ),
-      accessor: 'reason',
-      className: 'description',
-      minWidth: 120,
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'operator' })}
-        </span>
-      ),
-      accessor: 'operator',
-      className: '-uppercase description',
-      minWidth: 120,
-    },
-    {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'fmu' })}</span>
-      ),
-      accessor: 'fmu',
-      className: 'description',
-      minWidth: 120,
-      Cell: (attr) => (
-        <span>
-          {attr.value
-            ? intl.formatMessage({
-                id: attr.value.name,
-              })
-            : ''}
-        </span>
       ),
     },
   ];
