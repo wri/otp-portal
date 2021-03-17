@@ -106,11 +106,11 @@ function DatabaseTable({
       headerClassName: '',
       className: 'report',
       minWidth: 120,
-      Cell: (attr) => (
+      Cell: (attr) => console.log(attr) || (
         <div className="report-item-wrapper">
-          {attr.value ? (
+          {(attr.value && attr.value.url) ? (
             <a
-              href={attr.value}
+              href={attr.value.url}
               target="_blank"
               rel="noopener noreferrer"
               className="report-item"
