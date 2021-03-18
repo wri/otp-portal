@@ -45,12 +45,6 @@ class Filters extends React.Component {
     const { options, filters, filtersRefs } = this.props;
 
     return filtersRefs.map((f) => {
-      const value = options[f.key]
-        ? options[f.key].filter((opt) =>
-            filters[f.key] ? filters[f.key].includes(opt.value) : false
-          )
-        : [];
-
       let opts = options[f.key];
 
       if (f.key === 'validation_status' && opts && opts.length) {
@@ -65,12 +59,58 @@ class Filters extends React.Component {
         }));
       }
 
+      if (f.key === 'status' && opts && opts.length) {
+        opts = opts.map((o) => ({
+          ...o,
+          label: this.props.intl.formatMessage({
+            id: `${o.id}`,
+          }),
+          name: this.props.intl.formatMessage({
+            id: `${o.id}`,
+          }),
+        }));
+      }
+
+      if (f.key === 'source' && opts && opts.length) {
+        const sourceSlugs = ['company', 'forest_atlas','other_source'];
+        opts = opts.map((o) => ({
+          ...o,
+          label: this.props.intl.formatMessage({
+            id: `${sourceSlugs[o.id - 1]}`,
+          }),
+          name: this.props.intl.formatMessage({
+            id: `${sourceSlugs[o.id - 1]}`,
+          }),
+        }));
+      }
+
+      if (f.key === 'forest_types' && opts && opts.length) {
+        opts = opts.map((o) => ({
+          ...o,
+          label: this.props.intl.formatMessage({
+            id: `${o.key}`,
+          }),
+          name: this.props.intl.formatMessage({
+            id: `${o.key}`,
+          }),
+        }));
+      }
+
+
+      const value = opts
+      ? opts.filter((opt) =>
+          filters[f.key] ? filters[f.key].includes(opt.value) : false
+        )
+      : [];
+
+
       return (
         <div key={f.key} className="field">
           <div className="c-select">
             <h3 className="title">
               {this.props.intl.formatMessage({ id: `filter.${f.key}` })}
             </h3>
+
             <Select
               instanceId={f.key}
               name={f.key}

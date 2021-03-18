@@ -106,7 +106,7 @@ function DatabaseTable({
       headerClassName: '',
       className: 'report',
       minWidth: 120,
-      Cell: (attr) => console.log(attr) || (
+      Cell: (attr) => (
         <div className="report-item-wrapper">
           {(attr.value && attr.value.url) ? (
             <a
