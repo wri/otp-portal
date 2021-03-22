@@ -50,6 +50,14 @@ export const getParsedFilters = createSelector(
           ),
           'name'
         ),
+        forest_types: sortBy(
+          flatten(
+            activeCountries.map((c) =>
+              options.forest_types.filter((f) => c.forest_types.map(f1 => f1.id).includes(f.id))
+            )
+          ),
+          'name'
+        ),
       };
     }
 
