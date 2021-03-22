@@ -16,28 +16,20 @@ export const getParsedFilters = createSelector(
     let newFilterOptions = options;
 
     if (
-      filters.country_id &&
-      !!filters.country_id.length &&
+      filters.country_ids &&
+      !!filters.country_ids.length &&
       !isEmpty(options)
     ) {
-      const activeCountries = options.country_id.filter((c) =>
-        filters.country_id.map((i) => +i).includes(c.id)
+      const activeCountries = options.country_ids.filter((c) =>
+        filters.country_ids.map((i) => +i).includes(c.id)
       );
 
       newFilterOptions = {
         ...newFilterOptions,
-        operator: sortBy(
+        operator_id: sortBy(
           flatten(
             activeCountries.map((c) =>
-              options.operator.filter((o) => c.operators.includes(o.id))
-            )
-          ),
-          'name'
-        ),
-        observer_id: sortBy(
-          flatten(
-            activeCountries.map((c) =>
-              options.observer_id.filter((o) => c.observers.includes(o.id))
+              options.operator_id.filter((o) => c.operators.includes(o.id))
             )
           ),
           'name'
@@ -50,12 +42,20 @@ export const getParsedFilters = createSelector(
           ),
           'name'
         ),
+        required_operator_document_id: sortBy(
+          flatten(
+            activeCountries.map((c) =>
+              options.required_operator_document_id.filter((f) => c.required_operator_document_ids.includes(f.id))
+            )
+          ),
+          'name'
+        ),
       };
     }
 
-    if (filters.operator && !!filters.operator.length) {
-      const activeOperators = options.operator.filter((c) =>
-        filters.operator.map((i) => +i).includes(c.id)
+    if (filters.operator_id && !!filters.operator_id.length) {
+      const activeOperators = options.operator_id.filter((c) =>
+        filters.operator_id.map((i) => +i).includes(c.id)
       );
 
       newFilterOptions = {
@@ -64,26 +64,6 @@ export const getParsedFilters = createSelector(
           flatten(
             activeOperators.map((o) =>
               options.fmu_id.filter((f) => o.fmus.includes(f.id))
-            )
-          ),
-          'name'
-        ),
-      };
-    }
-
-    if (filters.category_id && !!filters.category_id.length) {
-      const activeCategories = options.category_id.filter((c) =>
-        filters.category_id.map((i) => +i).includes(c.id)
-      );
-
-      newFilterOptions = {
-        ...newFilterOptions,
-        subcategory_id: sortBy(
-          flatten(
-            activeCategories.map((o) =>
-              options.subcategory_id.filter((f) =>
-                o.subcategories.includes(f.id)
-              )
             )
           ),
           'name'
