@@ -10,7 +10,7 @@ import Icon from 'components/ui/icon';
 class Filters extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { open: true };
   }
 
   componentDidUpdate(prevProps) {

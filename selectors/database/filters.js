@@ -29,7 +29,7 @@ export const getParsedFilters = createSelector(
         operator_id: sortBy(
           flatten(
             activeCountries.map((c) =>
-              options.operator_id.filter((o) => c.operators.includes(o.id))
+              newFilterOptions.operator_id.filter((o) => c.operators.includes(o.id))
             )
           ),
           'name'
@@ -37,7 +37,7 @@ export const getParsedFilters = createSelector(
         fmu_id: sortBy(
           flatten(
             activeCountries.map((c) =>
-              options.fmu_id.filter((f) => c.fmus.includes(f.id))
+              newFilterOptions.fmu_id.filter((f) => c.fmus.includes(f.id))
             )
           ),
           'name'
@@ -45,7 +45,7 @@ export const getParsedFilters = createSelector(
         required_operator_document_id: sortBy(
           flatten(
             activeCountries.map((c) =>
-              options.required_operator_document_id.filter((f) => c.required_operator_document_ids.includes(f.id))
+              newFilterOptions.required_operator_document_id.filter((f) => c.required_operator_document_ids.includes(f.id))
             )
           ),
           'name'
@@ -53,7 +53,7 @@ export const getParsedFilters = createSelector(
         forest_types: sortBy(
           flatten(
             activeCountries.map((c) =>
-              options.forest_types.filter((f) => c.forest_types.map(f1 => f1.id).includes(f.id))
+              newFilterOptions.forest_types.filter((f) => c.forest_types.map(f1 => f1.id).includes(f.id))
             )
           ),
           'name'
@@ -71,13 +71,32 @@ export const getParsedFilters = createSelector(
         fmu_id: sortBy(
           flatten(
             activeOperators.map((o) =>
-              options.fmu_id.filter((f) => o.fmus.includes(f.id))
+              newFilterOptions.fmu_id.filter((f) => o.fmus.includes(f.id))
             )
           ),
           'name'
         ),
       };
     }
+
+    if (filters.legal_categories && !!filters.legal_categories.length) {
+      const activeLegalCategories = options.legal_categories.filter((c) =>
+        filters.legal_categories.map((i) => +i).includes(c.id)
+      );
+
+      newFilterOptions = {
+        ...newFilterOptions,
+        required_operator_document_id: sortBy(
+          flatten(
+            activeLegalCategories.map((o) =>
+              newFilterOptions.required_operator_document_id.filter((f) => o.required_operator_document_ids.includes(f.id))
+            )
+          ),
+          'name'
+        ),
+      };
+    }
+
 
     return {
       data: filters,
