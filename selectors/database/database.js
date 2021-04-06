@@ -7,6 +7,7 @@ export const getParsedTableDocuments = createSelector(
   getDatabase,
   (documentsDatabase) => {
     if (documentsDatabase.data && documentsDatabase.data.length) {
+
       return documentsDatabase.data.map((doc) => ({
         id: doc.id,
         status: doc.status,

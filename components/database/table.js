@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
@@ -36,6 +36,8 @@ function DatabaseTable({
     'reason',
     'annexes',
   ];
+
+  const [page, setPage] = useState(0);
 
   const columnHeaders = [
     {
@@ -229,10 +231,9 @@ function DatabaseTable({
     value: column,
   }));
 
-  let pageSize = 1;
-  if (database.data.length) {
-    pageSize = database.data.length > 30 ? 30 : database.data.length;
-  }
+  useEffect(() => {
+    setPage(0);
+  }, [parsedTableDocuments]);
 
   return (
     <section className="c-section -relative c-db-table">
@@ -254,30 +255,33 @@ function DatabaseTable({
           options={tableOptions}
         />
 
-        <Table
-          className="database-table"
-          sortable
-          data={parsedTableDocuments}
-          options={{
-            columns: columnHeaders.filter((header) =>
-              database.columns.includes(header.accessor)
-            ),
-            // page,
-            // onPageChange: (p) => setPage(p + 1),
-            pageSize,
-            pagination: true,
-            previousText: '<',
-            nextText: '>',
-            noDataText: 'No rows found',
-            showPageSizeOptions: false,
-            defaultSorted: [
-              {
-                id: 'operator_id', // include doc name
-                desc: false,
-              },
-            ],
-          }}
-        />
+        {!database.loading && (
+          <Table
+            className="database-table"
+            sortable
+            data={parsedTableDocuments}
+            options={{
+              columns: columnHeaders.filter((header) =>
+                database.columns.includes(header.accessor)
+              ),
+              pagination: true,
+              page,
+              pageSize: 30,
+              onPageChange: (p) => setPage(p),
+              onPageSizeChange: () => setPage(0),
+              previousText: '<',
+              nextText: '>',
+              noDataText: 'No rows found',
+              showPageSizeOptions: false,
+              defaultSorted: [
+                {
+                  id: 'operator_id', // include doc name
+                  desc: false,
+                },
+              ],
+            }}
+          />
+        )}
       </div>
     </section>
   );
