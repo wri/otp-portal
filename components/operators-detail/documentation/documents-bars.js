@@ -8,14 +8,15 @@ export default function DocumentStatusBar({
   maxDocs,
 }) {
   const groupedByStatus = HELPERS_DOC.getGroupedByStatus(docs);
+  delete groupedByStatus.doc_not_required;
 
-  if (groupedByStatus.doc_not_required?.length) {
-    // move all doc_not_required to doc_valid
-    groupedByStatus.doc_valid = groupedByStatus.doc_valid?.length
-      ? [...groupedByStatus.doc_valid, ...groupedByStatus.doc_not_required]
-      : groupedByStatus.doc_not_required;
-    delete groupedByStatus.doc_not_required;
-  }
+  // if (groupedByStatus.doc_not_required?.length) {
+  //   // move all doc_not_required to doc_valid
+  //   groupedByStatus.doc_valid = groupedByStatus.doc_valid?.length
+  //     ? [...groupedByStatus.doc_valid, ...groupedByStatus.doc_not_required]
+  //     : groupedByStatus.doc_not_required;
+  //
+  // }
 
   const validDocs = groupedByStatus.doc_valid?.length || 0;
 
@@ -35,8 +36,9 @@ export default function DocumentStatusBar({
               );
             })}
           </div>
+
           <span>{`${
-            groupedByStatus.doc_valid || groupedByStatus.doc_not_required
+            groupedByStatus.doc_valid
               ? ((validDocs / docs.length) * 100).toFixed(0)
               : 0
           }% valid`}</span>
