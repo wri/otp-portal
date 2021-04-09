@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { injectIntl, intlShape } from 'react-intl';
+import moment from 'moment';
+import groupBy from 'lodash/groupBy';
 
 // Utils
 import { PALETTE } from 'utils/documentation';
@@ -9,9 +11,10 @@ import { PALETTE } from 'utils/documentation';
 function CustomTooltip({ active, payload, label, intl }) {
   if (active) {
     const validDocs = payload.find((p) => p.dataKey === 'doc_valid');
+
     return (
       <div className="c-custom-tooltip">
-        <p className="date-label">{label}</p>
+        <p className="date-label">{moment(label).format('YYYY-MM-DD')}</p>
         <p className="valid-count">
           {intl.formatMessage(
             {
@@ -58,6 +61,8 @@ function DocumentsTimeline({ timelineData = [], intl }) {
     .map((docsByDate) => {
       let buffer = 0;
       return {
+        time: new Date(docsByDate.date).getTime(),
+        year: new Date(docsByDate.date).getFullYear(),
         date: docsByDate.date,
         ...Object.keys(docsByDate.summary)
           .filter((k) => k !== 'doc_not_required')
@@ -77,15 +82,35 @@ function DocumentsTimeline({ timelineData = [], intl }) {
     })
     .reverse();
 
+  const ticks = useMemo(() => {
+    const yearsData = groupBy(chartData, 'year');
+    return Object.keys(yearsData).map(d => {
+      const startDate = yearsData[d][0];
+      const endDate = yearsData[d][yearsData[d].length - 1];
+      return (startDate.time + endDate.time)/2;
+    })
+  }, [chartData])
+
   return (
     <div className="c-timeline-chart">
       <ResponsiveContainer width="100%" height={90}>
         <AreaChart data={chartData}>
-          <XAxis dataKey="date" />
+
+          <XAxis
+            dataKey="time"
+            scale="time"
+            type="number"
+            domain={['dataMin', 'dataMax']}
+            ticks={ticks}
+            tick={{ fontWeight: 'bold', fontFamily: "Proxima Nova", fontSize: 12 }}
+            tickLine={false}
+            tickFormatter={(l) => moment(l).format('YYYY')}
+          />
+
           {chartData &&
             chartData[0] &&
             Object.keys(chartData[0])
-              .filter((k) => k !== 'date')
+              .filter((k) => k !== 'date' && k !== 'time' && k !== 'year')
               .map((k) => (
                 <Area
                   dataKey={k}
@@ -94,6 +119,7 @@ function DocumentsTimeline({ timelineData = [], intl }) {
                   fillOpacity="1"
                 />
               ))}
+
           <Tooltip
             content={(props) => <CustomTooltip intl={intl} {...props} />}
           />
