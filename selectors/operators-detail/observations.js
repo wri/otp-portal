@@ -8,7 +8,7 @@ const getParsedObservations = createSelector(
   operatorsDetail,
   (_operatorsDetail) => {
     if (_operatorsDetail.data.observations) {
-      const observations = _operatorsDetail.data.observations.map(obs => {
+      const observations = _operatorsDetail.data.observations.map((obs) => {
         const evidence = (obs['evidence-type'] !== 'Evidence presented in the report') ? obs['observation-documents'] : obs['evidence-on-report'];
 
         return {
@@ -17,7 +17,7 @@ const getParsedObservations = createSelector(
           severity: obs.severity && obs.severity.level,
           category: obs.subcategory.category.name,
           illegality: obs.subcategory.name,
-          date: new Date(obs['publication-date']),
+          date: new Date(obs['created-at']),
           report: obs['observation-report'],
           evidence,
           status: obs['validation-status-id'],

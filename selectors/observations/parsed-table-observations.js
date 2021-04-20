@@ -34,7 +34,7 @@ const getParsedTableObservations = createSelector(
 
         return {
           id: obs.id,
-          date: new Date(obs['publication-date']).getFullYear(),
+          date: new Date(obs['created-at']).getFullYear(),
           country: obs.country.iso,
           operator: !!obs.operator && obs.operator.name,
           category: obs?.subcategory?.category?.name || '',
