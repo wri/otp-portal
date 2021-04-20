@@ -1,11 +1,13 @@
+import { injectIntl } from 'react-intl';
 import sortBy from 'lodash/sortBy';
 import { HELPERS_DOC } from 'utils/documentation';
 
-export default function DocumentStatusBar({
+function DocumentStatusBar({
   category,
   className,
   docs,
   maxDocs,
+  intl
 }) {
   const groupedByStatus = HELPERS_DOC.getGroupedByStatus(docs);
   delete groupedByStatus.doc_not_required;
@@ -19,6 +21,7 @@ export default function DocumentStatusBar({
   // }
 
   const validDocs = groupedByStatus.doc_valid?.length || 0;
+  const docsLenght = docs.filter(d => d.status !== 'doc_not_required').length;
 
   return (
     <div className={`c-doc-by-category ${className || ''}`}>
@@ -26,7 +29,12 @@ export default function DocumentStatusBar({
         <div className="doc-by-category-chart">
           <div className="doc-by-category-bar">
             {sortBy(Object.keys(groupedByStatus)).map((status) => {
-              const segmentWidth = (groupedByStatus[status].length / docs.length) * (docs.length / (maxDocs || docs.length)) * 100;
+              let segmentWidth = (groupedByStatus[status].length / docsLenght) * (docsLenght / (maxDocs || docsLenght)) * 100;
+
+              if (!docsLenght) {
+                segmentWidth = 100;
+              }
+
               return (
                 <div
                   key={status}
@@ -39,9 +47,9 @@ export default function DocumentStatusBar({
 
           <span>{`${
             groupedByStatus.doc_valid
-              ? ((validDocs / docs.length) * 100).toFixed(0)
+              ? ((validDocs / docsLenght) * 100).toFixed(0)
               : 0
-          }% valid`}</span>
+          }% ${intl.formatMessage({ id: 'doc_valid' })}`}</span>
         </div>
         <h3 className="c-title -proximanova -extrabig -uppercase">
           {category}
@@ -50,3 +58,5 @@ export default function DocumentStatusBar({
     </div>
   );
 }
+
+export default injectIntl(DocumentStatusBar);

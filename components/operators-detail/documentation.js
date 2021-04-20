@@ -73,9 +73,7 @@ function OperatorsDetailDocumentation({
             <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
               <DocumentsProvided
-                data={operatorDocumentation.filter(
-                  (d) => d.status !== 'doc_not_required'
-                )}
+                data={filteredData}
                 groupedByStatusChart={groupedByStatusChart}
               />
               <div className="pie-categories">
