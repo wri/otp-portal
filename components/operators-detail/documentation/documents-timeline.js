@@ -65,12 +65,15 @@ CustomTooltip.propTypes = {
 };
 
 function DocumentsTimeline({ timelineData = [], intl }) {
+
   const chartData = timelineData
     .map((docsByDate) => {
       let buffer = 0;
+      const d = new Date(docsByDate.date);
+
       return {
-        time: new Date(docsByDate.date).getTime(),
-        year: new Date(docsByDate.date).getFullYear(),
+        time: d.getTime() + (d.getTimezoneOffset() * 60000),
+        year: d.getFullYear(),
         date: docsByDate.date,
         ...Object.keys(docsByDate.summary)
           .filter((k) => k !== 'doc_not_required')
