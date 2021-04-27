@@ -64,7 +64,7 @@ function OperatorsDetailDocumentation({
                   {
                     percentage: validDocs
                       ? validDocs.value
-                      : HELPERS_DOC.getPercentage(operatorsDetail.data),
+                      : 0,
                   }
                 )}
               </h2>

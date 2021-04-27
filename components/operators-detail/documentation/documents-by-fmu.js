@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
+import { injectIntl, intlShape } from 'react-intl';
+
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
-function DocumentsByFMU({ documents, user, id, getOperator }) {
+function DocumentsByFMU({ documents, user, id, getOperator, intl }) {
   return (
     <div className="c-doc-gallery-fmu-docs">
-      <h3>FMU Documents:</h3>
+      <h3>{intl.formatMessage({ id: 'fmus-documents' })}:</h3>
       {Object.values(documents).map((docs) => {
         const FMUname = docs[0].fmu.name;
 
@@ -62,6 +64,7 @@ DocumentsByFMU.propTypes = {
   user: PropTypes.object,
   id: PropTypes.string,
   getOperator: PropTypes.func,
+  intl: intlShape
 };
 
-export default DocumentsByFMU;
+export default injectIntl(DocumentsByFMU);

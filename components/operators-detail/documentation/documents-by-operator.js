@@ -4,6 +4,8 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import cx from 'classnames';
 
+import { injectIntl, intlShape } from 'react-intl';
+
 // Redux
 import { connect } from 'react-redux';
 
@@ -15,7 +17,7 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
 
-function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
+function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(groupedByCategory)
     .map((categoryDocs) => categoryDocs.length)
@@ -60,13 +62,14 @@ function DocumentsByOperator({ groupedByCategory, user, id, ...props }) {
                   })
                 }
               >
-                {isCategoryOpen ? 'Collapse' : 'Expand'}
+                {isCategoryOpen ? intl.formatMessage({ id: 'collapse' }) : intl.formatMessage({ id: 'expand' })}
               </button>
             </header>
 
             {producerDocs.length > 0 && isCategoryOpen && (
               <div className="doc-gallery-producer-docs">
-                <h3>Producer Documents:</h3>
+                <h3>{intl.formatMessage({ id: 'operator-documents' })}:</h3>
+
                 <div className="row l-row -equal-heigth">
                   {sortBy(producerDocs, (doc) => doc.title).map((card) => (
                     <div key={card.id} className="columns small-12 medium-4">
@@ -135,11 +138,12 @@ DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,
   id: PropTypes.string,
   user: PropTypes.object,
+  intl: intlShape
 };
 
-export default connect(
+export default injectIntl(connect(
   (state) => ({
     user: state.user,
   }),
   { getOperator, getOperatorDocumentation, getOperatorTimeline }
-)(DocumentsByOperator);
+)(DocumentsByOperator));
