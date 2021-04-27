@@ -14,7 +14,15 @@ function CustomTooltip({ active, payload, label, intl }) {
 
     return (
       <div className="c-custom-tooltip">
-        <p className="date-label">{moment(label).format('YYYY-MM-DD')}</p>
+        <p className="date-label">
+          {
+            intl.formatDate(label, {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            })
+          }
+        </p>
         <p className="valid-count">
           {intl.formatMessage(
             {
