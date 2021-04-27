@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+
 
 import Datepicker from 'components/ui/datepicker';
 
@@ -23,6 +25,7 @@ function DocumentsFilter({
   FMU,
   setFMU,
   showFMU,
+  intl
 }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
@@ -35,16 +38,16 @@ function DocumentsFilter({
 
   return (
     <div className="c-doc-filters">
-      <h3>Filter by:</h3>
+      <h3>{intl.formatMessage({ id: 'filter.title' })}</h3>
       {fmus.length > 0 && showFMU && (
         <span className="filter-option">
-          <label htmlFor="business">FMU</label>
+          <label htmlFor="business">{intl.formatMessage({ id: 'fmu' })}</label>
           <div className="filters-dropdown">
             <button
               className="dropdown-placeholder"
               onClick={() => setDropdownOpen(!isDropdownOpen)}
             >
-              {FMU ? FMU.name : 'All FMUs'}
+              {FMU ? FMU.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
             </button>
 
             {isDropdownOpen && (
@@ -57,7 +60,7 @@ function DocumentsFilter({
                       setDropdownOpen(false);
                     }}
                   >
-                    {_fmu ? _fmu.name : 'All FMUs'}
+                    {_fmu ? _fmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
                   </option>
                 ))}
               </div>
@@ -65,9 +68,10 @@ function DocumentsFilter({
           </div>
         </span>
       )}
+
       {showDate && (
         <span className="filter-option">
-          <label htmlFor="business">Date</label>
+          <label htmlFor="business">{intl.formatMessage({ id: 'date' })}</label>
 
           <Datepicker
             className="filters-date -inline"
@@ -99,7 +103,7 @@ DocumentsFilter.propTypes = {
   showFMU: PropTypes.bool,
 };
 
-export default connect(
+export default injectIntl(connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
     FMU: getOperatorDocumentationFMU(state),
@@ -109,4 +113,4 @@ export default connect(
     setDate: setOperatorDocumentationDate,
     setFMU: setOperatorDocumentationFMU,
   }
-)(DocumentsFilter);
+)(DocumentsFilter));
