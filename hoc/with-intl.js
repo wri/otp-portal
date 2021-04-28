@@ -18,9 +18,15 @@ import ja from 'react-intl/locale-data/ja';
 import ko from 'react-intl/locale-data/ko';
 import vi from 'react-intl/locale-data/vi';
 
-
 const LANGUAGES = { en, fr, zh, ja, ko, vi };
-const MESSAGES = { en: langEn, fr: langFr, zh: langZhCN, ja: langJa, ko: langKo, vi: langVi };
+const MESSAGES = {
+  en: langEn,
+  fr: langFr,
+  zh: langZhCN,
+  ja: langJa,
+  ko: langKo,
+  vi: langVi,
+};
 
 const LANG2LOCALE = {
   en: 'en-GB',
@@ -28,7 +34,7 @@ const LANG2LOCALE = {
   zh: 'zh-CN',
   ja: 'ja-JP',
   ko: 'ko-KR',
-  vi: 'vi-VN'
+  vi: 'vi-VN',
 };
 
 const LOCALE2LANG = {
@@ -37,9 +43,21 @@ const LOCALE2LANG = {
   'zh-CN': 'zh',
   'ja-JP': 'jp',
   'ko-KR': 'ko',
-  'vi-VN': 'vi'
+  'vi-VN': 'vi',
 };
 
+if (process.env.ENV === 'development') {
+  // eslint-disable-next-line
+  const consoleError = console.error.bind(console);
+  // eslint-disable-next-line
+  console.error = (message, ...args) => {
+    // get rid of [React Intl] messages
+    if (typeof message === 'string' && message.startsWith('[React Intl]')) {
+      return;
+    }
+    consoleError(message, ...args);
+  };
+}
 
 // Register React Intl's locale data for the user's locale in the browser
 if (typeof window !== 'undefined') {
@@ -54,8 +72,8 @@ export default function withIntl(Page) {
   return class PageWithIntl extends React.Component {
     static propTypes = {
       language: PropTypes.string,
-      now: PropTypes.number
-    }
+      now: PropTypes.number,
+    };
 
     static async getInitialProps(context) {
       let props;
@@ -72,7 +90,7 @@ export default function withIntl(Page) {
         language = LOCALE2LANG[Cookies.get('language')] || 'en';
       }
 
-      language = (Object.keys(LANGUAGES).includes(language)) ? language : 'en';
+      language = Object.keys(LANGUAGES).includes(language) ? language : 'en';
 
       // Always update the current time on page load/transition because the
       // <IntlProvider> will be a new instance even with pushState routing.
@@ -87,7 +105,9 @@ export default function withIntl(Page) {
 
     componentDidMount() {
       // Set language cookie
-      Cookies.set('language', LANG2LOCALE[this.props.language], { expires: 90 });
+      Cookies.set('language', LANG2LOCALE[this.props.language], {
+        expires: 90,
+      });
     }
 
     render() {
