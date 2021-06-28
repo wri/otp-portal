@@ -92,7 +92,7 @@ function OperatorsDetailDocumentation({
 
           {/* Timeline chart */}
           {operatorTimeline &&
-            operatorTimeline.length &&
+            !!operatorTimeline.length &&
             operatorTimeline.length > 1 && (
               <DocumentsTimeline timelineData={operatorTimeline} />
             )}
