@@ -3,6 +3,7 @@ import uniqBy from 'lodash/uniqBy';
 
 // Get the datasets and filters from state
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
+const operatorDocumentationCurrent = (state) => state.operatorsDetail.documentationCurrent;
 export const getFMUs = (state) => state.operatorsDetail.data.fmus;
 export const getOperatorDocumentationFMU = (state) => state.operatorsDetail.fmu;
 export const getOperatorDocumentationDate = (state) =>
@@ -59,7 +60,7 @@ const getParsedDocumentation = createSelector(
 );
 
 const getContractSignatureDocumentation = createSelector(
-  operatorDocumentation,
+  operatorDocumentationCurrent,
   (documentation) => {
     let contractSignature = {};
 
