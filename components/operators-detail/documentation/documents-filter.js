@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 
 import Datepicker from 'components/ui/datepicker';
@@ -14,7 +14,7 @@ import {
 import {
   getOperatorDocumentationDate,
   getOperatorDocumentationFMU,
-  getFMUs,
+  getHistoricFMUs,
 } from 'selectors/operators-detail/documentation';
 
 function DocumentsFilter({
@@ -35,6 +35,18 @@ function DocumentsFilter({
     setFMU(null);
     setDate(new Date());
   }, []);
+
+  useEffect(() => {
+    // on component load, reset FMU and date.
+    if (!!FMU && !!fmus) {
+      const isFMUPresent = fmus.find(f => f.id === FMU.id);
+
+      if (!isFMUPresent) {
+        setFMU(null);
+      }
+    }
+  }, [fmus, FMU]);
+
 
   return (
     <div className="c-doc-filters">
@@ -101,13 +113,14 @@ DocumentsFilter.propTypes = {
   fmus: PropTypes.array,
   showDate: PropTypes.bool,
   showFMU: PropTypes.bool,
+  intl: intlShape
 };
 
 export default injectIntl(connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
     FMU: getOperatorDocumentationFMU(state),
-    fmus: getFMUs(state),
+    fmus: getHistoricFMUs(state),
   }),
   {
     setDate: setOperatorDocumentationDate,

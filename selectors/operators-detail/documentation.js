@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect';
+import uniqBy from 'lodash/uniqBy';
 
 // Get the datasets and filters from state
-const operatorsDetail = (state) => state.operatorsDetail;
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
+const operatorDocumentationCurrent = (state) => state.operatorsDetail.documentationCurrent;
 export const getFMUs = (state) => state.operatorsDetail.data.fmus;
 export const getOperatorDocumentationFMU = (state) => state.operatorsDetail.fmu;
 export const getOperatorDocumentationDate = (state) =>
@@ -59,7 +60,7 @@ const getParsedDocumentation = createSelector(
 );
 
 const getContractSignatureDocumentation = createSelector(
-  operatorDocumentation,
+  operatorDocumentationCurrent,
   (documentation) => {
     let contractSignature = {};
 
@@ -107,4 +108,15 @@ const getContractSignatureDocumentation = createSelector(
   }
 );
 
-export { getParsedDocumentation, getContractSignatureDocumentation };
+const getHistoricFMUs = createSelector(
+  [operatorDocumentation],
+  (documentation) => {
+    const FMUS = uniqBy(documentation.data
+      .filter(d => d.fmu)
+      .map(d => d.fmu), 'id');
+
+    return FMUS
+  }
+);
+
+export { getParsedDocumentation, getContractSignatureDocumentation, getHistoricFMUs };

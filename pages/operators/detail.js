@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import {
   getOperator,
   getOperatorDocumentation,
+  getOperatorDocumentationCurrent,
   getOperatorTimeline,
   setOperatorDocumentationDate,
 } from 'modules/operators-detail';
@@ -57,6 +58,7 @@ class OperatorsDetail extends React.Component {
     if (operatorsDetail.data.id !== url.query.id) {
       await store.dispatch(getOperator(url.query.id));
       await store.dispatch(getOperatorDocumentation(url.query.id));
+      await store.dispatch(getOperatorDocumentationCurrent(url.query.id));
       await store.dispatch(getOperatorTimeline(url.query.id));
     }
 
@@ -69,6 +71,7 @@ class OperatorsDetail extends React.Component {
   componentDidMount() {
     const { url } = this.props;
     this.props.getOperatorDocumentation(url?.query?.id);
+    this.props.getOperatorDocumentationCurrent(url.query.id);
   }
 
   componentDidUpdate(prevProps) {
@@ -78,6 +81,7 @@ class OperatorsDetail extends React.Component {
     if (prevDate !== newDate) {
       const { url } = this.props;
       this.props.getOperatorDocumentation(url?.query?.id);
+      this.props.getOperatorDocumentationCurrent(url?.query?.id);
     }
   }
 
@@ -240,6 +244,7 @@ export default withTracker(
       {
         getOperator,
         getOperatorDocumentation,
+        getOperatorDocumentationCurrent,
         getOperatorTimeline,
       }
     )(OperatorsDetail)
