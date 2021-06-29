@@ -11,6 +11,10 @@ const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
 const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
 const GET_OPERATOR_DOCUMENTATION_LOADING = 'GET_OPERATOR_DOCUMENTATION_LOADING';
 
+const GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS';
+const GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR = 'GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR';
+const GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING = 'GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING';
+
 const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
 const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
 const GET_OPERATOR_TIMELINE_LOADING = 'GET_OPERATOR_TIMELINE_LOADING';
@@ -33,6 +37,11 @@ const initialState = {
   loading: false,
   error: false,
   documentation: {
+    data: [],
+    loading: false,
+    error: false,
+  },
+  documentationCurrent: {
     data: [],
     loading: false,
     error: false,
@@ -116,6 +125,29 @@ export default function (state = initialState, action) {
         error: false,
       });
       return Object.assign({}, state, { documentation });
+    }
+
+    case GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS: {
+      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
+        data: action.payload,
+        loading: false,
+        error: false,
+      });
+      return Object.assign({}, state, { documentationCurrent });
+    }
+    case GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR: {
+      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
+        error: true,
+        loading: false,
+      });
+      return Object.assign({}, state, { documentationCurrent });
+    }
+    case GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING: {
+      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
+        loading: true,
+        error: false,
+      });
+      return Object.assign({}, state, { documentationCurrent });
     }
     case GET_SAWMILLS_SUCCESS: {
       const sawmills = Object.assign({}, state.sawmills, {
@@ -276,6 +308,56 @@ export function getOperatorDocumentation(id) {
       .catch((err) => {
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_ERROR,
+          payload: err.message,
+        });
+      });
+  };
+}
+
+export function getOperatorDocumentationCurrent(id) {
+  return (dispatch, getState) => {
+    const { user, language } = getState();
+    dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING });
+
+    const includeFields = [
+      'required-operator-document',
+      'required-operator-document.required-operator-document-group',
+    ];
+
+    const lang = language === 'zh' ? 'zh-CN' : language;
+    const queryParams = queryString.stringify({
+      include: includeFields.join(','),
+      'filter[operator-id]': id,
+      locale: lang,
+    });
+
+    return fetch(
+      `${process.env.OTP_API}/operator-documents?${queryParams}`,
+      // /operator-document-histories?include=required-operator-document&filter[operator-id]=161&filter[date]=2017-10-10
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY,
+          Authorization: user.token ? `Bearer ${user.token}` : undefined,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((operator) => {
+        const dataParsed = JSONA.deserialize(operator);
+
+        dispatch({
+          type: GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS,
+          payload: dataParsed,
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR,
           payload: err.message,
         });
       });
