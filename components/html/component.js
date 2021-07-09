@@ -13,7 +13,7 @@ class HTML extends React.Component {
 
     return (
       <div className="c-html">
-        {renderHTML(html)}
+        {renderHTML(html || '')}
       </div>
     );
   }

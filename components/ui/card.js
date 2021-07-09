@@ -26,7 +26,7 @@ export default function Card({ theme, letter, title, description, link, Componen
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
         <p className="card-description">
           <Truncate lines={6}>
-            {renderHTML(description)}
+            {renderHTML(description || '')}
           </Truncate>
         </p>
 
