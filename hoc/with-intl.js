@@ -41,7 +41,7 @@ const LOCALE2LANG = {
   'en-GB': 'en',
   'fr-FR': 'fr',
   'zh-CN': 'zh',
-  'ja-JP': 'jp',
+  'ja-JP': 'ja',
   'ko-KR': 'ko',
   'vi-VN': 'vi',
 };
