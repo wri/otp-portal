@@ -70,8 +70,10 @@ class OperatorsDetail extends React.Component {
    */
   componentDidMount() {
     const { url } = this.props;
+    this.props.getOperator(url?.query?.id);
     this.props.getOperatorDocumentation(url?.query?.id);
     this.props.getOperatorDocumentationCurrent(url.query.id);
+    this.props.getOperatorTimeline(url.query.id);
   }
 
   componentDidUpdate(prevProps) {
