@@ -329,6 +329,7 @@ export function getOperatorDocumentationCurrent(id) {
       include: includeFields.join(','),
       'filter[operator-id]': id,
       locale: lang,
+      'page[size]': 9999
     });
 
     return fetch(
