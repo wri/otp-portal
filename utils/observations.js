@@ -81,12 +81,12 @@ const HELPERS_OBS = {
 
   // Monitors
   getMonitorVisits(data) {
-    const dates = groupBy(data.map((o) => o.date));
+    const dates = groupBy(data.map((o) => o.rawdate));
     return Object.keys(dates).length;
   },
 
   getAvgObservationByMonitors(data) {
-    const dates = groupBy(data.map((o) => o.date));
+    const dates = groupBy(data.map((o) => o.rawdate));
 
     const avg =
       Object.keys(dates).reduce((sum, k) => sum + dates[k].length, 0) /
@@ -125,8 +125,8 @@ function parseObservations(data) {
     return {
       category: obs?.subcategory?.category?.name || '',
       country: obs.country?.iso || '',
+      rawdate: new Date(obs['publication-date']),
       date: new Date(obs['publication-date']).getFullYear(),
-      // date: new Date(obs['publication-date']),
       details: obs.details,
       evidence,
       fmu: obs.fmu,
