@@ -153,6 +153,10 @@ class OperatorsDetailFMUs extends React.Component {
     }
   }
 
+  onViewportChange = debounce((v) => {
+    this.props.setOperatorsDetailMapLocation(v);
+  }, 250);
+
   getBBOX() {
     const { fmus } = this.props;
 
@@ -255,6 +259,7 @@ class OperatorsDetailFMUs extends React.Component {
             scrollZoom={false}
             // viewport
             viewport={operatorsDetailFmus.map}
+            onViewportChange={this.onViewportChange}
             // Interaction
             interactiveLayerIds={activeInteractiveLayersIds}
             onClick={this.onClick}
