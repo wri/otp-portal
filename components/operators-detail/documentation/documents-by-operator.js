@@ -9,7 +9,7 @@ import { injectIntl, intlShape } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 
-import { getOperator, getOperatorDocumentation, getOperatorTimeline } from 'modules/operators-detail';
+import { getOperator, getOperatorDocumentation, getOperatorDocumentationCurrent, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -120,6 +120,7 @@ function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
                   props.getOperator(_id)
                   props.getOperatorDocumentation(id)
                   props.getOperatorTimeline(id)
+                  props.getOperatorDocumentationCurrent(id);
                 }}
               />
             )}
@@ -145,5 +146,5 @@ export default injectIntl(connect(
   (state) => ({
     user: state.user,
   }),
-  { getOperator, getOperatorDocumentation, getOperatorTimeline }
+  { getOperator, getOperatorDocumentation, getOperatorDocumentationCurrent, getOperatorTimeline }
 )(DocumentsByOperator));
