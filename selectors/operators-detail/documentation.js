@@ -72,7 +72,7 @@ const getContractSignatureDocumentation = createSelector(
       if (doc) {
         contractSignature = {
           id: doc.id,
-          docId: doc['operator-document-id'],
+          docId: doc.id,
           requiredDocId: doc['required-operator-document'].id,
           url: doc.attachment?.url,
           type: doc.type,
