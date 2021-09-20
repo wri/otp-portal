@@ -111,7 +111,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         <Bar
                           dataKey="hight"
                           fill={PALETTE_COLOR_1[3].fill}
-                          isAnimationActive={false}
+                          isAnimationActive={!!horizontal}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: (v) => v || null,
@@ -120,7 +120,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         <Bar
                           dataKey="medium"
                           fill={PALETTE_COLOR_1[2].fill}
-                          isAnimationActive={false}
+                          isAnimationActive={!!horizontal}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: (v) => v || null,
@@ -129,7 +129,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         <Bar
                           dataKey="low"
                           fill={PALETTE_COLOR_1[1].fill}
-                          isAnimationActive={false}
+                          isAnimationActive={!!horizontal}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: (v) => v || null,
@@ -138,7 +138,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         <Bar
                           dataKey="unknown"
                           fill={PALETTE_COLOR_1[0].fill}
-                          isAnimationActive={false}
+                          isAnimationActive={!!horizontal}
                           label={{
                             position: horizontal ? 'right' : 'top',
                             formatter: (v) => v || null,
