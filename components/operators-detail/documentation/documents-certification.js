@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 
-import { getOperator } from 'modules/operators-detail';
+import { getOperator, getOperatorDocumentation, getOperatorDocumentationCurrent, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -78,7 +78,13 @@ function DocumentsCertification(props) {
                     not_required: false,
                   }}
                     user={user}
-                    onChange={() => props.getOperator(id)}
+                    onChange={() => {
+                      props.getOperator(id);
+                      props.getOperatorDocumentation(id);
+                      props.getOperatorTimeline(id);
+                      props.getOperatorDocumentationCurrent(id);
+                    }
+                    }
                   />
               )}
             </div>
@@ -97,6 +103,9 @@ DocumentsCertification.propTypes = {
   user: PropTypes.object,
   intl: intlShape.isRequired,
   getOperator: PropTypes.func,
+  getOperatorDocumentation: PropTypes.func,
+  getOperatorTimeline: PropTypes.func,
+  getOperatorDocumentationCurrent: PropTypes.func,
 };
 
 export default injectIntl(
@@ -105,6 +114,6 @@ export default injectIntl(
       user: state.user,
       doc: getContractSignatureDocumentation(state),
     }),
-    { getOperator }
+    { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorDocumentationCurrent }
   )(DocumentsCertification)
 );

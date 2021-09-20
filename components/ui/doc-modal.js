@@ -42,6 +42,7 @@ const FORM_ELEMENTS = {
 };
 
 const TYPES = {
+  'operator-document-countries': 'operator-document-countries',
   'operator-document-country-histories': 'operator-document-countries',
   'operator-document-fmu-histories': 'operator-document-fmus',
 };
@@ -133,11 +134,6 @@ class DocModal extends React.Component {
   getBody(request) {
     const { type, docId, requiredDocId, properties, fmu } = this.props;
     const { id: propertyId, type: typeDoc } = properties;
-
-    const TYPES = {
-      'operator-document-country-histories': 'operator-document-countries',
-      'operator-document-fmu-histories': 'operator-document-fmus',
-    };
 
     return {
       data: {
