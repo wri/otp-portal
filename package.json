@@ -127,8 +127,5 @@
   },
   "prettier": {
     "singleQuote": true
-  },
-  "engines": {
-    "node": "14.x.x"
   }
 }
