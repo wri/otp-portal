@@ -163,7 +163,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.8/tcd_30/{z}/{x}/{y}.png'
         ],
         minzoom: 3,
         maxzoom: 12
@@ -179,7 +179,7 @@ export const LAYERS = [
         required: true
       },
       {
-        default: '2018-12-31',
+        default: '2020-12-31',
         key: 'endDate',
         required: true
       }
@@ -189,8 +189,8 @@ export const LAYERS = [
       speed: 250,
       interval: 'years',
       dateFormat: 'YYYY',
-      trimEndDate: '2018-12-31',
-      maxDate: '2018-12-31',
+      trimEndDate: '2020-12-31',
+      maxDate: '2020-12-31',
       minDate: '2001-01-01',
       canPlay: true,
       railStyle: {
