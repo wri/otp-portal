@@ -2,7 +2,6 @@
 require('dotenv').load();
 
 const express = require('express');
-const session = require('express-session');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const request = require('request-promise');
@@ -24,8 +23,7 @@ process.on('unhandledRejection', (reason, p) => {
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 process.env.PORT = process.env.PORT || 80;
 
-// Secret used to encrypt session data stored on the server
-process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'change-me';
+if (!process.env.SECRET) throw new Error('Missing session SECRET')
 
 const app = next({
   dir: '.',
@@ -50,14 +48,7 @@ server.use(bodyParser.json());
 server.use(
   cookieSession({
     name: 'session',
-    keys: [process.env.SECRET || 'keyboard cat'],
-  })
-);
-server.use(
-  session({
-    secret: process.env.SECRET || 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
+    keys: [process.env.SECRET],
   })
 );
 
