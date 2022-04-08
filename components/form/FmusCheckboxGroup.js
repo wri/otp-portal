@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
+import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -11,7 +12,7 @@ import Checkbox from './Checkbox';
 import CheckboxGroup from './CheckboxGroup';
 import FormElement from './FormElement';
 
-export default class FmusCheckboxGroup extends FormElement {
+class FmusCheckboxGroup extends FormElement {
   constructor(props) {
     super(props);
 
@@ -64,7 +65,7 @@ export default class FmusCheckboxGroup extends FormElement {
               <h3 className="c-title -default">FMUs</h3>
             </th>
             <th className="td-certifications">
-              <h3 className="c-title -default">Certifications</h3>
+              <h3 className="c-title -default">{this.props.intl.formatMessage({ id: 'certifications' })}</h3>
             </th>
           </tr>
         </thead>
@@ -141,5 +142,8 @@ FmusCheckboxGroup.propTypes = {
   options: PropTypes.array,
   grid: PropTypes.object,
   certifications: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  intl: intlShape.isRequired,
 };
+
+export default injectIntl(FmusCheckboxGroup);

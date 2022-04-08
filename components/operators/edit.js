@@ -221,7 +221,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'name',
-                label: 'Operator\'s name',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.name' }),
                 required: true,
                 default: this.state.form.name
               }}
@@ -236,7 +236,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'details',
-                label: 'Operator\'s description',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.details' }),
                 default: this.state.form.details,
                 rows: '6'
               }}
@@ -253,7 +253,7 @@ class EditOperator extends React.Component {
               options={HELPERS_REGISTER.getOperatorTypes()}
               properties={{
                 name: 'operator_type',
-                label: 'Operator\'s type',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
                 required: true,
                 instanceId: 'select.operator_type',
                 default: this.state.form.operator_type
@@ -270,7 +270,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'website',
-                label: 'Website',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.website' }),
                 default: this.state.form.website
               }}
             >
@@ -284,7 +284,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'address',
-                label: 'Address',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.address' }),
                 default: this.state.form.address
               }}
             >
@@ -298,7 +298,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'logo',
-                label: 'Logo'
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
               }}
             >
               {FileImage}
@@ -320,7 +320,7 @@ class EditOperator extends React.Component {
                 loadOptions={HELPERS_REGISTER.getCountries}
                 properties={{
                   name: 'country',
-                  label: 'Country',
+                  label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.country' }),
                   required: true,
                   disabled: true,
                   instanceId: 'select.country',
@@ -331,7 +331,7 @@ class EditOperator extends React.Component {
               </Field>
 
               {/* FMUs */}
-              {!!this.state.fmusOptions.length &&
+              {!!this.state.fmusOptions.length && (
                 <Field
                   ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
                   name="fmus"
@@ -347,7 +347,7 @@ class EditOperator extends React.Component {
                 >
                   {FmusCheckboxGroup}
                 </Field>
-              }
+              )}
 
             </div>
           </fieldset>
