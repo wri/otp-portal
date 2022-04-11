@@ -196,7 +196,7 @@ class EditOperator extends React.Component {
 
   render() {
     const { submitting } = this.state;
-    const { sawmills } = this.props;
+    const { language, sawmills } = this.props;
 
     const submittingClassName = classnames({
       '-submitting': submitting
@@ -250,7 +250,10 @@ class EditOperator extends React.Component {
               onChange={value => this.onChange({ operator_type: value })}
               validations={['required']}
               className="-fluid"
-              options={HELPERS_REGISTER.getOperatorTypes()}
+              options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
+                ...t,
+                label: this.props.intl.formatMessage({ id: t.label })
+              }))}
               properties={{
                 name: 'operator_type',
                 label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
@@ -317,7 +320,7 @@ class EditOperator extends React.Component {
                 ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
-                loadOptions={HELPERS_REGISTER.getCountries}
+                loadOptions={() => HELPERS_REGISTER.getCountries(language)}
                 properties={{
                   name: 'country',
                   label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.country' }),
@@ -388,6 +391,7 @@ class EditOperator extends React.Component {
 }
 
 EditOperator.propTypes = {
+  language: PropTypes.string,
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
@@ -403,7 +407,8 @@ EditOperator.propTypes = {
 export default injectIntl(connect(
   state => ({
     user: state.user,
-    sawmills: state.operatorsDetail.sawmills
+    sawmills: state.operatorsDetail.sawmills,
+    language: state.language
   }),
   { updateOperator,
     updateFmu,
