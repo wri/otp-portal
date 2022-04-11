@@ -32,6 +32,7 @@ import SawmillModal from 'components/ui/sawmill-modal';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
+import { HELPERS_FMU } from 'utils/fmu';
 
 // Constants
 const FORM_ELEMENTS = {
@@ -72,8 +73,8 @@ class EditOperator extends React.Component {
         fmus: operator.fmus.map(f => f.id)
       },
       certifications: HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus),
-      fmusOptions: sortBy(operator.fmus.map(f => ({ label: f.name, value: f.id })), 'label'),
-      fmusLoading: false,
+      fmusOptions: [],
+      fmusLoading: true,
       submitting: false,
       submitted: false
     };
@@ -86,6 +87,7 @@ class EditOperator extends React.Component {
 
   componentDidMount() {
     this.fetchSawmills();
+    this.fetchFmus(); // fetching operator fmus to have them in chosen language
   }
 
   /**
@@ -180,6 +182,16 @@ class EditOperator extends React.Component {
     const { operator } = this.props;
     this.props.getSawMillsByOperatorId(operator.id);
     this.props.getSawMillsLocationByOperatorId(operator.id);
+  }
+
+  async fetchFmus() {
+    const { language, operator } = this.props;
+    this.setState({ fmusLoading: true });
+    const fmus = await HELPERS_FMU.getFmusByOperatorId(operator.id, language);
+    this.setState({
+      fmusOptions: fmus,
+      fmusLoading: false
+    });
   }
 
   handleAddSawmill = (e) => {

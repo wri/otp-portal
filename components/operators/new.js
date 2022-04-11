@@ -150,8 +150,9 @@ class NewOperator extends React.Component {
   }
 
   async getFmus(countryId) {
+    const { language } = this.props;
     this.setState({ fmusLoading: true });
-    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
+    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId, language);
     this.setState({
       fmusOptions: fmus,
       fmusLoading: false
