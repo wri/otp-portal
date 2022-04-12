@@ -8,6 +8,10 @@ import renderHTML from 'react-render-html';
 import Link from 'next/link';
 import Truncate from 'react-truncate';
 
+function isNullOrUndefined(val) {
+  return val === null || val === undefined;
+}
+
 export default function Card({ theme, letter, title, description, link, Component }) {
   const classNames = classnames({
     [theme]: !!theme,
@@ -15,13 +19,13 @@ export default function Card({ theme, letter, title, description, link, Componen
   });
 
   const letterClassName = classnames({
-    '-number': (letter && !isNaN(parseFloat(letter)))
+    '-number': (!isNullOrUndefined(letter) && !isNaN(parseFloat(letter)))
   });
 
   return (
     <div className={`c-card ${classNames}`}>
       <div className="card-content">
-        {letter && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
+        {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
         <p className="card-description">
@@ -30,18 +34,18 @@ export default function Card({ theme, letter, title, description, link, Componen
           </Truncate>
         </p>
 
-        {!!Component &&
+        {!!Component && (
           <div className="card-component">
             {Component}
           </div>
-        }
+        )}
       </div>
 
-      {!!link &&
+      {!!link && (
         <Link {...omit(link, 'label')} >
           <a className="card-link c-button -primary -fullwidth">{link.label}</a>
         </Link>
-      }
+      )}
     </div>
   );
 }
