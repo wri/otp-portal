@@ -1,5 +1,18 @@
 .c-fmus-checkbox {
   .fmus-checkbox-table {
+    border-collapse: collapse;
+
+    tbody {
+      tr:not(:last-of-type) {
+        border-bottom: 1px solid $border-color-2;
+      }
+
+      td {
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+    }
+
     th {
       text-align: left;
     }
@@ -7,6 +20,12 @@
     .td-certifications {
       padding-left: $space-1 * 4;
     }
-  }
 
+    .c-checkbox {
+      label {
+        padding-top: 2px;
+        padding-bottom: 2px;
+      }
+    }
+  }
 }
