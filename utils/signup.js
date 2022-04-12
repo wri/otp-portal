@@ -76,8 +76,8 @@ const HELPERS_REGISTER = {
     ];
   },
 
-  getOperatorFmus(countryId) {
-    return fetch(`${process.env.OTP_API}/fmus?filter[country]=${countryId}&filter[free]=true`, {
+  getOperatorFmus(countryId, lang) {
+    return fetch(`${process.env.OTP_API}/fmus?filter[country]=${countryId}&filter[free]=true&locale=${lang}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

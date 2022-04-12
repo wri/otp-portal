@@ -32,6 +32,7 @@ import SawmillModal from 'components/ui/sawmill-modal';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
+import { HELPERS_FMU } from 'utils/fmu';
 
 // Constants
 const FORM_ELEMENTS = {
@@ -72,8 +73,8 @@ class EditOperator extends React.Component {
         fmus: operator.fmus.map(f => f.id)
       },
       certifications: HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus),
-      fmusOptions: sortBy(operator.fmus.map(f => ({ label: f.name, value: f.id })), 'label'),
-      fmusLoading: false,
+      fmusOptions: [],
+      fmusLoading: true,
       submitting: false,
       submitted: false
     };
@@ -86,6 +87,7 @@ class EditOperator extends React.Component {
 
   componentDidMount() {
     this.fetchSawmills();
+    this.fetchFmus(); // fetching operator fmus to have them in chosen language
   }
 
   /**
@@ -182,6 +184,16 @@ class EditOperator extends React.Component {
     this.props.getSawMillsLocationByOperatorId(operator.id);
   }
 
+  async fetchFmus() {
+    const { language, operator } = this.props;
+    this.setState({ fmusLoading: true });
+    const fmus = await HELPERS_FMU.getFmusByOperatorId(operator.id, language);
+    this.setState({
+      fmusOptions: fmus,
+      fmusLoading: false
+    });
+  }
+
   handleAddSawmill = (e) => {
     e && e.preventDefault();
 
@@ -196,7 +208,7 @@ class EditOperator extends React.Component {
 
   render() {
     const { submitting } = this.state;
-    const { sawmills } = this.props;
+    const { language, sawmills } = this.props;
 
     const submittingClassName = classnames({
       '-submitting': submitting
@@ -221,7 +233,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'name',
-                label: 'Operator\'s name',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.name' }),
                 required: true,
                 default: this.state.form.name
               }}
@@ -236,7 +248,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'details',
-                label: 'Operator\'s description',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.details' }),
                 default: this.state.form.details,
                 rows: '6'
               }}
@@ -250,10 +262,13 @@ class EditOperator extends React.Component {
               onChange={value => this.onChange({ operator_type: value })}
               validations={['required']}
               className="-fluid"
-              options={HELPERS_REGISTER.getOperatorTypes()}
+              options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
+                ...t,
+                label: this.props.intl.formatMessage({ id: t.label })
+              }))}
               properties={{
                 name: 'operator_type',
-                label: 'Operator\'s type',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
                 required: true,
                 instanceId: 'select.operator_type',
                 default: this.state.form.operator_type
@@ -270,7 +285,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'website',
-                label: 'Website',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.website' }),
                 default: this.state.form.website
               }}
             >
@@ -284,7 +299,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'address',
-                label: 'Address',
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.address' }),
                 default: this.state.form.address
               }}
             >
@@ -298,7 +313,7 @@ class EditOperator extends React.Component {
               className="-fluid"
               properties={{
                 name: 'logo',
-                label: 'Logo'
+                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
               }}
             >
               {FileImage}
@@ -317,10 +332,10 @@ class EditOperator extends React.Component {
                 ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
-                loadOptions={HELPERS_REGISTER.getCountries}
+                loadOptions={() => HELPERS_REGISTER.getCountries(language)}
                 properties={{
                   name: 'country',
-                  label: 'Country',
+                  label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.country' }),
                   required: true,
                   disabled: true,
                   instanceId: 'select.country',
@@ -331,7 +346,7 @@ class EditOperator extends React.Component {
               </Field>
 
               {/* FMUs */}
-              {!!this.state.fmusOptions.length &&
+              {!!this.state.fmusOptions.length && (
                 <Field
                   ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
                   name="fmus"
@@ -347,7 +362,7 @@ class EditOperator extends React.Component {
                 >
                   {FmusCheckboxGroup}
                 </Field>
-              }
+              )}
 
             </div>
           </fieldset>
@@ -388,6 +403,7 @@ class EditOperator extends React.Component {
 }
 
 EditOperator.propTypes = {
+  language: PropTypes.string,
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
@@ -403,7 +419,8 @@ EditOperator.propTypes = {
 export default injectIntl(connect(
   state => ({
     user: state.user,
-    sawmills: state.operatorsDetail.sawmills
+    sawmills: state.operatorsDetail.sawmills,
+    language: state.language
   }),
   { updateOperator,
     updateFmu,

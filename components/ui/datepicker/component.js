@@ -1,10 +1,22 @@
 import React, { PureComponent } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
-import ReactDatePicker, { CalendarContainer } from 'react-datepicker';
+import ReactDatePicker, { CalendarContainer, registerLocale } from 'react-datepicker';
 import classnames from 'classnames';
 
+import frLocale from 'date-fns/locale/fr';
+import jaLocale from 'date-fns/locale/ja';
+import koLocale from 'date-fns/locale/ko';
+import viLocale from 'date-fns/locale/vi';
+import zhCNLocale from 'date-fns/locale/zh-CN';
+
 import Input from './input';
+
+registerLocale('fr', frLocale);
+registerLocale('ja', jaLocale);
+registerLocale('ko', koLocale);
+registerLocale('vi', viLocale);
+registerLocale('zh', zhCNLocale);
 
 class Datepicker extends PureComponent {
   // eslint-disable-next-line class-methods-use-this
@@ -29,6 +41,7 @@ class Datepicker extends PureComponent {
       theme,
       date,
       dateFormat,
+      language
     } = this.props;
     const { minDate, maxDate } = settings;
 
@@ -40,6 +53,7 @@ class Datepicker extends PureComponent {
         className={classnames('c-datepicker', theme, className)}
       >
         <ReactDatePicker
+          locale={language}
           className="datepicker-input"
           selected={date.toDate()}
           minDate={new Date(minDate)}
@@ -75,6 +89,7 @@ class Datepicker extends PureComponent {
 }
 
 Datepicker.propTypes = {
+  language: PropTypes.string,
   className: PropTypes.string,
   theme: PropTypes.string,
   date: PropTypes.object,
