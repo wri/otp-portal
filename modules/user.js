@@ -1,6 +1,8 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
+import omitBy from 'lodash/omitBy';
+import isEmpty from 'lodash/isEmpty';
 
 import { get, post } from 'utils/request';
 
@@ -8,6 +10,9 @@ import { get, post } from 'utils/request';
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
 
+const GET_USER_PROFILE_SUCCESS = 'GET_USER_PROFILE_SUCCESS';
+const GET_USER_PROFILE_ERROR = 'GET_USER_PROFILE_ERROR';
+const GET_USER_PROFILE_LOADING = 'GET_USER_PROFILE_LOADING';
 const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
 const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
 const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
@@ -21,27 +26,67 @@ export default function User(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return Object.assign({}, state, action.payload);
+    case GET_USER_PROFILE_SUCCESS: {
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          data: action.payload,
+          loading: false,
+          error: false,
+        }
+      }
+    }
+    case GET_USER_PROFILE_ERROR: {
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          error: true,
+          loading: false,
+        }
+      }
+    }
+    case GET_USER_PROFILE_LOADING: {
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          loading: true,
+          error: false,
+        }
+      }
+    }
     case GET_USER_OPERATOR_SUCCESS: {
-      const userOperator = Object.assign({}, state.userOperator, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { userOperator });
+      return {
+        ...state,
+        userOperator: {
+          ...state.userOperator,
+          data: action.payload,
+          loading: false,
+          error: false,
+        }
+      }
     }
     case GET_USER_OPERATOR_ERROR: {
-      const userOperator = Object.assign({}, state.userOperator, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { userOperator });
+      return {
+        ...state,
+        userOperator: {
+          ...state.userOperator,
+          error: true,
+          loading: false,
+        }
+      }
     }
     case GET_USER_OPERATOR_LOADING: {
-      const userOperator = Object.assign({}, state.userOperator, {
-        loading: true,
-        error: false,
-      });
-      return Object.assign({}, state, { userOperator });
+      return {
+        ...state,
+        userOperator: {
+          ...state.userOperator,
+          loading: true,
+          error: false,
+        }
+      }
     }
     case REMOVE_USER:
       return {};
@@ -169,6 +214,46 @@ export function logout() {
     });
 }
 
+export function getUserProfile() {
+  return (dispatch, getState) => {
+    const { user } = getState();
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_USER_PROFILE_LOADING });
+
+    return fetch(
+      `${process.env.OTP_API}/users/${user.user_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'OTP-API-KEY': process.env.OTP_API_KEY,
+          Authorization: `Bearer ${user.token}`
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then((operator) => {
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        const dataParsed = JSONA.deserialize(operator);
+
+        dispatch({
+          type: GET_USER_PROFILE_SUCCESS,
+          payload: dataParsed,
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_USER_PROFILE_ERROR,
+          payload: err.message,
+        });
+      });
+  };
+}
+
 export function saveUser({ body }) {
   return () =>
     new Promise((resolve, reject) => {
@@ -184,6 +269,43 @@ export function saveUser({ body }) {
           {
             key: 'OTP-API-KEY',
             value: process.env.OTP_API_KEY,
+          },
+        ],
+        onSuccess: (response) => {
+          resolve(response);
+        },
+        onError: (error) => {
+          reject(error);
+        },
+      });
+    });
+}
+
+export function updateUserProfile({ id, attributes, authorization }) {
+  return () =>
+    new Promise((resolve, reject) => {
+      post({
+        url: `${process.env.OTP_API}/users/${id}`,
+        type: 'PATCH',
+        body: {
+          data: {
+            id,
+            type: 'users',
+            attributes: omitBy(attributes, isEmpty)
+          }
+        },
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/vnd.api+json',
+          },
+          {
+            key: 'OTP-API-KEY',
+            value: process.env.OTP_API_KEY,
+          },
+          {
+            key: 'Authorization',
+            value: `Bearer ${authorization}`,
           },
         ],
         onSuccess: (response) => {

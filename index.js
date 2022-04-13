@@ -86,6 +86,17 @@ app
       );
     });
 
+    // PROFILE
+    server.get('/profile', (req, res) => {
+      const { query } = parse(req.url, true);
+      return app.render(
+        req,
+        res,
+        '/profile',
+        Object.assign(req.params, query)
+      );
+    });
+
     // OPERATORS
     server.get('/operators', (req, res) => {
       const { query } = parse(req.url, true);
