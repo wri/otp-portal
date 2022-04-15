@@ -6,6 +6,7 @@ import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 
 import { LAYERS } from 'constants/layers';
+import { CERTIFICATIONS } from 'constants/fmu';
 
 /* Constants */
 const GET_OPERATORS_RANKING_SUCCESS = 'GET_OPERATORS_RANKING_SUCCESS';
@@ -78,15 +79,7 @@ const initialState = {
       country: process.env.OTP_COUNTRIES.map(iso =>
         COUNTRIES.find(c => c.iso === iso)
       ),
-      certification: [
-        { label: 'FSC', value: 'fsc' },
-        { label: 'PEFC', value: 'pefc' },
-        { label: 'OLB', value: 'olb' },
-        { label: 'FSC-CW', value: 'fsc-cw' },
-        { label: 'PAFC', value: 'pafc' },
-        { label: 'TLV', value: 'tlv' },
-        { label: 'LS', value: 'ls' }
-      ]
+      certification: CERTIFICATIONS
     },
     loading: false,
     error: false

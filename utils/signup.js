@@ -34,18 +34,6 @@ const HELPERS_REGISTER = {
     })), 'label');
   },
 
-  getFMUCertifications() {
-    return [
-      { label: 'FSC', value: 'fsc' },
-      { label: 'FSC-CW', value: 'fsc-cw' },
-      { label: 'LS', value: 'ls' },
-      { label: 'PAFC', value: 'pafc' },
-      { label: 'PEFC', value: 'pefc' },
-      { label: 'OLB', value: 'olb' },
-      { label: 'TLV', value: 'tlv' }
-    ];
-  },
-
   getFMUCertificationsValues(fmus) {
     const fmusGroups = groupBy(fmus, 'id');
     Object.keys(fmusGroups).forEach((id) => {

@@ -7,7 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import groupBy from 'lodash/groupBy';
 
-class CertificationsTd extends React.Component {
+class ObservationsTd extends React.Component {
   static defaultProps = {
     name: '',
     fmus: [],
@@ -69,4 +69,4 @@ class CertificationsTd extends React.Component {
 }
 
 
-export default injectIntl(CertificationsTd);
+export default injectIntl(ObservationsTd);

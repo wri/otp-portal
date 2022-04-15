@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
-import { HELPERS_REGISTER } from 'utils/signup';
+import { CERTIFICATIONS } from 'constants/fmu';
 
 // Components
 import Checkbox from './Checkbox';
@@ -108,7 +108,7 @@ class FmusCheckboxGroup extends FormElement {
         onChange={value => this.props.onChangeCertifications({ [option.value]: value })}
         className="-single-row -small"
         name={`certification-${option.value}`}
-        options={HELPERS_REGISTER.getFMUCertifications()}
+        options={CERTIFICATIONS}
         disabled={!this.state.value.includes(option.value)}
         properties={{
           name: option.value,
