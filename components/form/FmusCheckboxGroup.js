@@ -146,4 +146,4 @@ FmusCheckboxGroup.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default injectIntl(FmusCheckboxGroup);
+export default injectIntl(FmusCheckboxGroup, {withRef: true});
