@@ -281,15 +281,17 @@ export function saveUser({ body }) {
     });
 }
 
-export function updateUserProfile({ id, attributes, authorization }) {
-  return () =>
-    new Promise((resolve, reject) => {
+export function updateUserProfile({ attributes }) {
+  return (dispatch, getState) => {
+    const { user } = getState();
+
+    return new Promise((resolve, reject) => {
       post({
-        url: `${process.env.OTP_API}/users/${id}`,
+        url: `${process.env.OTP_API}/users/${user.user_id}`,
         type: 'PATCH',
         body: {
           data: {
-            id,
+            id: user.user_id,
             type: 'users',
             attributes: omitBy(attributes, isEmpty)
           }
@@ -305,7 +307,7 @@ export function updateUserProfile({ id, attributes, authorization }) {
           },
           {
             key: 'Authorization',
-            value: `Bearer ${authorization}`,
+            value: `Bearer ${user.token}`,
           },
         ],
         onSuccess: (response) => {
@@ -316,6 +318,7 @@ export function updateUserProfile({ id, attributes, authorization }) {
         },
       });
     });
+  }
 }
 
 export function saveOperator({ body }) {

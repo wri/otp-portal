@@ -88,13 +88,15 @@ app
 
     // PROFILE
     server.get('/profile', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/profile',
-        Object.assign(req.params, query)
-      );
+      if (req.session.user) {
+        return app.render(
+          req,
+          res,
+          '/profile',
+          Object.assign(req.params, req.query)
+        );
+      }
+      return res.redirect('/');
     });
 
     // OPERATORS

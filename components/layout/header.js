@@ -27,7 +27,7 @@ class Header extends React.Component {
    * HELPERS
    * - setTheme
    * - setActive
-  */
+   */
   setTheme() {
     const { url } = this.props;
 
@@ -50,9 +50,9 @@ class Header extends React.Component {
                   Open Timber Portal
                 </a>
               </Link>
-              {process.env.ENV === 'staging' &&
-               <span className="header-logo-staging">Staging</span>
-              }
+              {process.env.ENV === 'staging' && (
+                <span className="header-logo-staging">Staging</span>
+              )}
             </h1>
             <nav className="header-nav">
               <NavigationList url={this.props.url} className="header-nav-list" />
@@ -65,83 +65,82 @@ class Header extends React.Component {
                 </li>
 
                 <li>
-                  {!user.token &&
-                   <a
-                     onClick={() => {
-                       modal.toggleModal(true, {
-                         children: Login
-                       });
-                     }}
-                   >
-                     <Icon name="icon-user" />
-                     <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
-                   </a>
-                  }
+                  {!user.token && (
+                    <a
+                      onClick={() => {
+                        modal.toggleModal(true, {
+                          children: Login
+                        });
+                      }}
+                    >
+                      <Icon name="icon-user" />
+                      <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
+                    </a>
+                  )}
 
-                  {user.token &&
-                   <Dropdown
-                     className={`c-account-dropdown ${this.setTheme()}`}
-                     ref={(d) => { this.dropdown = d; }}
-                   >
-                     <DropdownTrigger>
-                       <div className="header-nav-list-item">
-                         <Icon name="icon-user" />
-                         <span>{this.props.intl.formatMessage({ id: 'logged_in.trigger' })}</span>
-                       </div>
-                     </DropdownTrigger>
+                  {user.token && (
+                    <Dropdown
+                      className={`c-account-dropdown ${this.setTheme()}`}
+                      ref={(d) => { this.dropdown = d; }}
+                    >
+                      <DropdownTrigger>
+                        <div className="header-nav-list-item">
+                          <Icon name="icon-user" />
+                          <span>{this.props.intl.formatMessage({ id: 'logged_in.trigger' })}</span>
+                        </div>
+                      </DropdownTrigger>
 
-                     <DropdownContent>
-                       <ul className="account-dropdown-list">
-                         <li className="account-dropdown-list-item">
-                           <Link
-                             href="/profile"
-                           >
-                             <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.profile' })}</a>
-                           </Link>
-                         </li>
-                         {(user.role === 'operator' || user.role === 'holding') &&
+                      <DropdownContent>
+                        <ul className="account-dropdown-list">
                           <li className="account-dropdown-list-item">
                             <Link
-                              href="/operators/edit"
+                              href="/profile"
                             >
                               <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.profile' })}</a>
                             </Link>
                           </li>
-                         }
-                         {(user.role === 'operator' || user.role === 'holding') && uniq(user.operator_ids).map(id => {
-                           const operator = operators.find(o => +o.id === id);
+                          {(user.role === 'operator' || user.role === 'holding') && (
+                            <li className="account-dropdown-list-item">
+                              <Link
+                                href="/operators/edit"
+                              >
+                                <a>Producer profile</a>
+                              </Link>
+                            </li>
+                          )}
+                          {(user.role === 'operator' || user.role === 'holding') && uniq(user.operator_ids).map(id => {
+                            const operator = operators.find(o => +o.id === id);
 
-                           return (
-                             <li className="account-dropdown-list-item">
-                               <Link
-                                 href={`/operators/${id}/documentation`}
-                               >
-                                 <a>
-                                   {operator.name}
-                                 </a>
-                               </Link>
-                             </li>
-                           )
-                         })
-                         }
-                         {user.role === 'admin' &&
+                            return (
+                              <li className="account-dropdown-list-item">
+                                <Link
+                                  href={`/operators/${id}/documentation`}
+                                >
+                                  <a>
+                                    {operator.name}
+                                  </a>
+                                </Link>
+                              </li>
+                            )
+                          })}
+                          {user.role === 'admin' && (
+                            <li className="account-dropdown-list-item">
+                              <a href="/admin" >{this.props.intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
+                            </li>
+                          )}
                           <li className="account-dropdown-list-item">
-                            <a href="/admin" >{this.props.intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
+                            <a
+                              onClick={() => {
+                                this.props.logout();
+                              }}
+                            >
+                              <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
+                            </a>
                           </li>
-                         }
-                         <li className="account-dropdown-list-item">
-                           <a
-                             onClick={() => {
-                               this.props.logout();
-                             }}
-                           >
-                             <span>{this.props.intl.formatMessage({ id: 'signout' })}</span>
-                           </a>
-                         </li>
-                       </ul>
-                     </DropdownContent>
-                   </Dropdown>
-                  }
+                        </ul>
+                      </DropdownContent>
+                    </Dropdown>
+                  )}
                 </li>
               </ul>
             </nav>
