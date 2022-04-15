@@ -245,7 +245,7 @@ function DatabaseTable({
         </h2>
         <Spinner isLoading={database.loading} />
         <CheckboxGroup
-          className="-inline -single-row"
+          className="-inline"
           name="observations-columns"
           onChange={(value) => _setActiveColumns(value)}
           properties={{

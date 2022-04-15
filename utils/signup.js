@@ -51,11 +51,12 @@ const HELPERS_REGISTER = {
     Object.keys(fmusGroups).forEach((id) => {
       fmusGroups[id] = compact([
         !!fmusGroups[id][0]['certification-fsc'] && 'fsc',
+        !!fmusGroups[id][0]['certification-fsc-cw'] && 'fsc-cw',
+        !!fmusGroups[id][0]['certification-ls'] && 'ls',
+        !!fmusGroups[id][0]['certification-pafc'] && 'pafc',
         !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
         !!fmusGroups[id][0]['certification-olb'] && 'olb',
-        !!fmusGroups[id][0]['certification-vlc'] && 'vlc',
-        !!fmusGroups[id][0]['certification-vlo'] && 'vlo',
-        !!fmusGroups[id][0]['certification-tltv'] && 'tltv'
+        !!fmusGroups[id][0]['certification-tlv'] && 'tlv'
       ]);
     });
 
@@ -148,11 +149,12 @@ const HELPERS_REGISTER = {
         type: 'fmus',
         attributes: {
           'certification-fsc': certification.includes('fsc'),
+          'certification-fsc-cw': certification.includes('fsc-cw'),
+          'certification-ls': certification.includes('ls'),
+          'certification-pafc': certification.includes('pafc'),
           'certification-pefc': certification.includes('pefc'),
           'certification-olb': certification.includes('olb'),
-          'certification-vlc': certification.includes('vlc'),
-          'certification-vlo': certification.includes('vlo'),
-          'certification-tltv': certification.includes('tltv')
+          'certification-tlv': certification.includes('tlv')
         }
       }
     };

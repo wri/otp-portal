@@ -106,7 +106,7 @@ class FmusCheckboxGroup extends FormElement {
     return (
       <CheckboxGroup
         onChange={value => this.props.onChangeCertifications({ [option.value]: value })}
-        className="-single-row -small -secondary"
+        className="-single-row -small"
         name={`certification-${option.value}`}
         options={HELPERS_REGISTER.getFMUCertifications()}
         disabled={!this.state.value.includes(option.value)}
