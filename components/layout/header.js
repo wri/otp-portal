@@ -96,7 +96,7 @@ class Header extends React.Component {
                             <Link
                               href="/profile"
                             >
-                              <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.profile' })}</a>
+                              <a>{this.props.intl.formatMessage({ id: 'My profile' })}</a>
                             </Link>
                           </li>
                           {(user.role === 'operator' || user.role === 'holding') && (
@@ -104,7 +104,7 @@ class Header extends React.Component {
                               <Link
                                 href="/operators/edit"
                               >
-                                <a>Producer profile</a>
+                                <a>{this.props.intl.formatMessage({ id: 'Producer profile' })}</a>
                               </Link>
                             </li>
                           )}

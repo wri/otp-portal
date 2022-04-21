@@ -27,9 +27,9 @@ class UserEditForm extends React.Component {
     this.state = {
       form: {
         name: userProfile.name,
-        nickname: userProfile.nickname,
         password: '',
-        password_confirmation: '',
+        passwordConfirmation: '',
+        currentPassword: ''
       },
       submitting: false,
       submitted: false
@@ -65,9 +65,16 @@ class UserEditForm extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
+        const attributes = {
+          name: this.state.form.name,
+          password: this.state.form.password,
+          'password-confirmation': this.state.form.passwordConfirmation,
+          'current-password': this.state.form.currentPassword
+        }
+
         // Save data
         this.props
-            .updateUserProfile({ attributes: this.state.form })
+            .updateUserProfile({ attributes })
             .then(() => {
               toastr.success(
                 this.props.intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -79,7 +86,10 @@ class UserEditForm extends React.Component {
               });
               // total profanity and wrong way, but otherwise I would have to properly refactor the whole app
               this.formElements.elements.password.child.setValue('');
-              this.formElements.elements.password_confirmation.child.setValue('');
+              this.formElements.elements.passwordConfirmation.child.setValue('');
+              if (this.formElements.elements.currentPassword) {
+                this.formElements.elements.currentPassword.child.setValue('');
+              }
               if (this.props.onSubmit) this.props.onSubmit();
             })
             .catch((errors) => {
@@ -130,21 +140,6 @@ class UserEditForm extends React.Component {
             >
               {Input}
             </Field>
-
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.nickname = c; }}
-              onChange={value => this.onChange({ nickname: value })}
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'nickname',
-                label: this.props.intl.formatMessage({ id: 'signup.user.form.field.nickname' }),
-                required: true,
-                default: this.state.form.nickname
-              }}
-            >
-              {Input}
-            </Field>
           </fieldset>
 
           <fieldset className="c-field-container">
@@ -168,8 +163,8 @@ class UserEditForm extends React.Component {
             </Field>
 
             <Field
-              ref={(c) => { if (c) this.formElements.elements.password_confirmation = c; }}
-              onChange={value => this.onChange({ password_confirmation: value })}
+              ref={(c) => { if (c) this.formElements.elements.passwordConfirmation = c; }}
+              onChange={value => this.onChange({ passwordConfirmation: value })}
               validations={[
                 {
                   type: 'isEqual',
@@ -178,15 +173,32 @@ class UserEditForm extends React.Component {
               ]}
               className="-fluid"
               properties={{
-                name: 'password_confirmation',
+                name: 'passwordConfirmation',
                 label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
                 type: 'password',
                 required: false,
-                default: this.state.form.password_confirmation
+                default: this.state.form.passwordConfirmation
               }}
             >
               {Input}
             </Field>
+
+            {this.state.form.password && this.state.form.password.length && (
+              <Field
+                ref={(c) => { if (c) this.formElements.elements.currentPassword = c; }}
+                onChange={value => this.onChange({ currentPassword: value })}
+                className="-fluid"
+                properties={{
+                  name: 'currentPassword',
+                  label: this.props.intl.formatMessage({ id: 'Current Password' }),
+                  type: 'password',
+                  required: this.state.form.password && this.state.form.password.length,
+                  default: this.state.form.currentPassword
+                }}
+              >
+                {Input}
+              </Field>
+            )}
           </fieldset>
 
           <ul className="c-field-buttons">
