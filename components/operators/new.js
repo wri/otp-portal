@@ -302,7 +302,7 @@ class NewOperator extends React.Component {
                       label: 'FMUs',
                       instanceId: 'select.fmus',
                       multi: true,
-                      default: this.state.form.fmus,
+                      value: this.state.form.fmus,
                       placeholder: ''
                     }}
                   >
