@@ -5,10 +5,9 @@ import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 
 // Utils
-import { HELPERS_REGISTER } from 'utils/signup';
+import { CERTIFICATIONS } from 'constants/fmu';
 
 // Components
-import Checkbox from './Checkbox';
 import CheckboxGroup from './CheckboxGroup';
 import FormElement from './FormElement';
 
@@ -73,7 +72,7 @@ class FmusCheckboxGroup extends FormElement {
           {this.props.options.map(option => (
             <tr key={option.value}>
               <td>
-                {this.getCheckbox(option)}
+                {option.label}
               </td>
               <td className="td-certifications">
                 {this.getAllCertifications(option)}
@@ -85,36 +84,18 @@ class FmusCheckboxGroup extends FormElement {
     );
   }
 
-  getCheckbox(option) {
-    return (
-      <Checkbox
-        key={option.value}
-        properties={{
-          name: this.props.name,
-          title: option.label,
-          checked: this.state.value.includes(option.value),
-          disabled: true,
-          value: option.value,
-          default: option.value
-        }}
-        onChange={value => this.triggerChange(value)}
-      />
-    );
-  }
-
   getAllCertifications(option) {
     return (
       <CheckboxGroup
         onChange={value => this.props.onChangeCertifications({ [option.value]: value })}
-        className="-inline -small"
+        className="-single-row -small"
         name={`certification-${option.value}`}
-        options={HELPERS_REGISTER.getFMUCertifications()}
+        options={CERTIFICATIONS}
         disabled={!this.state.value.includes(option.value)}
         properties={{
           name: option.value,
           default: this.props.certifications[option.value] || []
         }}
-
       />
     );
   }
@@ -146,4 +127,4 @@ FmusCheckboxGroup.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default injectIntl(FmusCheckboxGroup);
+export default injectIntl(FmusCheckboxGroup, {withRef: true});

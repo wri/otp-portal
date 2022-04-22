@@ -200,7 +200,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
                               {groupedByIllegality[illegality].length > 0 && (
                                 <Fragment>
                                   <CheckboxGroup
-                                    className="-inline -single-row -light"
+                                    className="-inline -light"
                                     name="observations-columns"
                                     onChange={(value) =>
                                       this.setState({ columns: value })

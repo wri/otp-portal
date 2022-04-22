@@ -4,7 +4,7 @@ $checkbox-size-small: 14px;
 .c-checkbox {
   label {
     display: block;
-    padding: 2px 0 $space-1 * 2;
+    padding: 2px 0 $space-1;
     text-transform: none;
     position: relative;
     padding-left: $checkbox-size;
@@ -115,14 +115,12 @@ $checkbox-size-small: 14px;
   }
 
   &.-single-row {
+    display: flex;;
     flex-wrap: wrap;
+    gap: 15px;
 
-    label {
-      padding-bottom: 2px;
-    }
-
-    .c-checkbox {
-      margin-top: 5px;
+    > * {
+      margin-bottom: 0;
     }
   }
 
