@@ -27,10 +27,10 @@ const HELPERS_REGISTER = {
       });
   },
 
-  getOperators(operators = []) {
-    return sortBy(operators.map(o => ({
-      label: o.name,
-      value: o.id
+  mapToSelectOptions(collection = []) {
+    return sortBy(collection.map(record => ({
+      label: record.name,
+      value: record.id
     })), 'label');
   },
 
@@ -118,14 +118,6 @@ const HELPERS_REGISTER = {
             data: fmus.map(f => ({ type: 'fmus', id: f }))
           }
         }
-      }
-    };
-  },
-
-  getUserBody(form) {
-    return {
-      user: {
-        ...form
       }
     };
   },

@@ -54,7 +54,7 @@ class UserNewForm extends React.Component {
    * UI EVENTS
    * - onChange
    * - onSubmit
-  */
+   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
     this.setState({ form });
@@ -75,24 +75,33 @@ class UserNewForm extends React.Component {
         // Start the submitting
         this.setState({ submitting: true });
 
-        // Save data
-        this.props.saveUser({ body: HELPERS_REGISTER.getUserBody(this.state.form) })
-          .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            if (this.props.onSubmit) this.props.onSubmit();
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
+        const body = {
+          user: {
+            ...this.state.form
+          }
+        };
+        if (this.state.form.permissions_request === 'government') {
+          delete body.user.operator_id;
+        }
 
-            try {
-              errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-              );
-            } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
+        // Save data
+        this.props.saveUser({ body })
+            .then(() => {
+              this.setState({ submitting: false, submitted: true });
+              if (this.props.onSubmit) this.props.onSubmit();
+            })
+            .catch((errors) => {
+              this.setState({ submitting: false });
+              console.error(errors);
+
+              try {
+                errors.forEach(er =>
+                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+                );
+              } catch (e) {
+                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+              }
+            });
       } else {
         toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
       }
@@ -109,7 +118,7 @@ class UserNewForm extends React.Component {
       <div className="c-section">
         <Spinner isLoading={submitting} className="-light -fixed" />
 
-        {!submitted &&
+        {!submitted && (
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
               {/* Permission request */}
@@ -119,7 +128,6 @@ class UserNewForm extends React.Component {
                 validations={['required']}
                 className="-fluid"
                 options={[
-
                   { label: this.props.intl.formatMessage({ id: 'operator' }), value: 'operator' },
                   { label: this.props.intl.formatMessage({ id: 'government' }), value: 'government' }
                 ]}
@@ -134,43 +142,41 @@ class UserNewForm extends React.Component {
                 {RadioGroup}
               </Field>
 
-
               {/* Countries */}
-              {this.state.form.permissions_request === 'government' &&
-                <Field
-                  ref={(c) => { if (c) this.formElements.elements.country_id = c; }}
-                  onChange={value => this.onChange({ country_id: value })}
-                  validations={['required']}
-                  className="-fluid"
-                  options={HELPERS_REGISTER.getOperators(this.props.countries.data)}
-                  properties={{
-                    name: 'country_id',
-                    label: this.props.intl.formatMessage({ id: 'signup.user.form.field.country' }),
-                    required: true,
-                    instanceId: 'select.country_id',
-                    default: this.state.form.country_id,
-                    placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
-                  }}
-                >
-                  {Select}
-                </Field>
-              }
+              <Field
+                ref={(c) => { if (c) this.formElements.elements.country_id = c; }}
+                onChange={value => this.onChange({ country_id: value, operator_id: null })}
+                validations={['required']}
+                className="-fluid"
+                options={HELPERS_REGISTER.mapToSelectOptions(this.props.countries.data)}
+                properties={{
+                  name: 'country_id',
+                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.country' }),
+                  required: true,
+                  instanceId: 'select.country_id',
+                  default: this.state.form.country_id,
+                  placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
+                }}
+              >
+                {Select}
+              </Field>
 
               {/* Operators */}
-              {this.state.form.permissions_request === 'operator' && (
+              {this.state.form.permissions_request === 'operator' && this.state.form.country_id && (
                 <Field
                   ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
                   onChange={value => this.onChange({ operator_id: value })}
                   validations={['required']}
                   className="-fluid"
                   hint={`${this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">${this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a>`}
-                  options={HELPERS_REGISTER.getOperators(this.props.operators.data)}
+                  options={HELPERS_REGISTER.mapToSelectOptions(this.props.operators.data.filter(o => o.country && o.country.id === this.state.form.country_id ))}
                   properties={{
                     name: 'operator_id',
                     label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),
                     required: true,
                     instanceId: 'select.operator_id',
                     default: this.state.form.operator_id,
+                    value: this.state.form.operator_id,
                     placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
                   }}
                 >
@@ -279,7 +285,7 @@ class UserNewForm extends React.Component {
               </li>
             </ul>
           </form>
-        }
+        )}
 
         {submitted && (
           <div className="c-form">
