@@ -188,6 +188,7 @@ class UserEditForm extends React.Component {
                 ref={(c) => { if (c) this.formElements.elements.currentPassword = c; }}
                 onChange={value => this.onChange({ currentPassword: value })}
                 className="-fluid"
+                hint={this.props.intl.formatMessage({ id: 'We need your current password to confirm your changes' })}
                 properties={{
                   name: 'currentPassword',
                   label: this.props.intl.formatMessage({ id: 'Current Password' }),
