@@ -23,36 +23,16 @@ import RadioGroup from 'components/form/RadioGroup';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
-
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
+import { FormElements } from 'utils/form';
 
 class UserNewForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formElements = new FormElements();
     this.state = {
       form: {
         name: '',
-        nickname: '',
         email: '',
         operator_id: '',
         country_id: '',
@@ -84,12 +64,12 @@ class UserNewForm extends React.Component {
     e && e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
+    this.formElements.validate(this.state.form);
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -134,7 +114,7 @@ class UserNewForm extends React.Component {
             <fieldset className="c-field-container">
               {/* Permission request */}
               <Field
-                ref={(c) => { { if (c) FORM_ELEMENTS.elements.permissions_request = c; } }}
+                ref={(c) => { { if (c) this.formElements.elements.permissions_request = c; } }}
                 onChange={value => this.onChange({ permissions_request: value })}
                 validations={['required']}
                 className="-fluid"
@@ -158,7 +138,7 @@ class UserNewForm extends React.Component {
               {/* Countries */}
               {this.state.form.permissions_request === 'government' &&
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.country_id = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.country_id = c; }}
                   onChange={value => this.onChange({ country_id: value })}
                   validations={['required']}
                   className="-fluid"
@@ -177,9 +157,9 @@ class UserNewForm extends React.Component {
               }
 
               {/* Operators */}
-              {this.state.form.permissions_request === 'operator' &&
+              {this.state.form.permissions_request === 'operator' && (
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
                   onChange={value => this.onChange({ operator_id: value })}
                   validations={['required']}
                   className="-fluid"
@@ -196,11 +176,11 @@ class UserNewForm extends React.Component {
                 >
                   {Select}
                 </Field>
-              }
+              )}
 
               {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+                ref={(c) => { if (c) this.formElements.elements.name = c; }}
                 onChange={value => this.onChange({ name: value })}
                 validations={['required']}
                 className="-fluid"
@@ -216,23 +196,7 @@ class UserNewForm extends React.Component {
 
               {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.nickname = c; }}
-                onChange={value => this.onChange({ nickname: value })}
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'nickname',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.nickname' }),
-                  required: true,
-                  default: this.state.form.nickname
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.email = c; }}
+                ref={(c) => { if (c) this.formElements.elements.email = c; }}
                 onChange={value => this.onChange({ email: value })}
                 validations={['required', 'email']}
                 className="-fluid"
@@ -248,7 +212,7 @@ class UserNewForm extends React.Component {
 
               {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.password = c; }}
+                ref={(c) => { if (c) this.formElements.elements.password = c; }}
                 onChange={value => this.onChange({ password: value })}
                 validations={['required']}
                 className="-fluid"
@@ -265,7 +229,7 @@ class UserNewForm extends React.Component {
 
               {/* Name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.password_confirmation = c; }}
+                ref={(c) => { if (c) this.formElements.elements.password_confirmation = c; }}
                 onChange={value => this.onChange({ password_confirmation: value })}
                 validations={[
                   'required',
@@ -287,7 +251,7 @@ class UserNewForm extends React.Component {
               </Field>
 
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.agree = c; }}
+                ref={(c) => { if (c) this.formElements.elements.agree = c; }}
                 onChange={value => this.onChange({ agree: value.checked })}
                 className="-fluid"
                 validations={['required']}
@@ -317,7 +281,7 @@ class UserNewForm extends React.Component {
           </form>
         }
 
-        {submitted &&
+        {submitted && (
           <div className="c-form">
             <h2 className="c-title -huge">
               {this.props.intl.formatMessage({ id: 'thankyou' })}
@@ -344,7 +308,7 @@ class UserNewForm extends React.Component {
               </li>
             </ul>
           </div>
-        }
+        )}
       </div>
     );
   }
