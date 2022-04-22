@@ -53,23 +53,25 @@ class UserEditForm extends React.Component {
   onSubmit(e) {
     e && e.preventDefault();
 
+    const { form } = this.state;
+
     // Validate the form
-    this.formElements.validate(this.state.form);
+    this.formElements.validate(form);
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = this.formElements.isValid(this.state.form);
+      const valid = this.formElements.isValid(form);
 
       if (valid) {
         // Start the submitting
         this.setState({ submitting: true });
 
         const attributes = {
-          name: this.state.form.name,
-          password: this.state.form.password,
-          'password-confirmation': this.state.form.passwordConfirmation,
-          'current-password': this.state.form.currentPassword
+          name: form.name,
+          password: form.password,
+          'password-confirmation': form.passwordConfirmation,
+          'current-password': form.password && form.password.length && form.currentPassword
         }
 
         // Save data
