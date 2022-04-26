@@ -50,7 +50,7 @@ export function getOperators() {
     return fetch(
       `${
         process.env.OTP_API
-      }/operators?locale=${lang}&page[size]=2000&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(
+      }/operators?locale=${lang}&page[size]=2000&include=country&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(
         ','
       )}&filter[fa]=true`,
       {
