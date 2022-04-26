@@ -27,7 +27,7 @@ class Header extends React.Component {
    * HELPERS
    * - setTheme
    * - setActive
-  */
+   */
   setTheme() {
     const { url } = this.props;
 
@@ -50,9 +50,9 @@ class Header extends React.Component {
                   Open Timber Portal
                 </a>
               </Link>
-              {process.env.ENV === 'staging' &&
+              {process.env.ENV === 'staging' && (
                 <span className="header-logo-staging">Staging</span>
-              }
+              )}
             </h1>
             <nav className="header-nav">
               <NavigationList url={this.props.url} className="header-nav-list" />
@@ -65,7 +65,7 @@ class Header extends React.Component {
                 </li>
 
                 <li>
-                  {!user.token &&
+                  {!user.token && (
                     <a
                       onClick={() => {
                         modal.toggleModal(true, {
@@ -76,9 +76,9 @@ class Header extends React.Component {
                       <Icon name="icon-user" />
                       <span>{this.props.intl.formatMessage({ id: 'signin' })}</span>
                     </a>
-                  }
+                  )}
 
-                  {user.token &&
+                  {user.token && (
                     <Dropdown
                       className={`c-account-dropdown ${this.setTheme()}`}
                       ref={(d) => { this.dropdown = d; }}
@@ -92,15 +92,22 @@ class Header extends React.Component {
 
                       <DropdownContent>
                         <ul className="account-dropdown-list">
-                          {(user.role === 'operator' || user.role === 'holding') &&
+                          <li className="account-dropdown-list-item">
+                            <Link
+                              href="/profile"
+                            >
+                              <a>{this.props.intl.formatMessage({ id: 'My profile' })}</a>
+                            </Link>
+                          </li>
+                          {(user.role === 'operator' || user.role === 'holding') && (
                             <li className="account-dropdown-list-item">
                               <Link
                                 href="/operators/edit"
                               >
-                                <a>{this.props.intl.formatMessage({ id: 'logged_in.dropdown.profile' })}</a>
+                                <a>{this.props.intl.formatMessage({ id: 'Producer profile' })}</a>
                               </Link>
                             </li>
-                          }
+                          )}
                           {(user.role === 'operator' || user.role === 'holding') && uniq(user.operator_ids).map(id => {
                             const operator = operators.find(o => +o.id === id);
 
@@ -115,13 +122,12 @@ class Header extends React.Component {
                                 </Link>
                               </li>
                             )
-                          })
-                          }
-                          {user.role === 'admin' &&
+                          })}
+                          {user.role === 'admin' && (
                             <li className="account-dropdown-list-item">
                               <a href="/admin" >{this.props.intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
                             </li>
-                          }
+                          )}
                           <li className="account-dropdown-list-item">
                             <a
                               onClick={() => {
@@ -134,7 +140,7 @@ class Header extends React.Component {
                         </ul>
                       </DropdownContent>
                     </Dropdown>
-                  }
+                  )}
                 </li>
               </ul>
             </nav>

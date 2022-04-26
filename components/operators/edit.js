@@ -415,7 +415,6 @@ EditOperator.propTypes = {
   intl: intlShape.isRequired
 };
 
-
 export default injectIntl(connect(
   state => ({
     user: state.user,
