@@ -208,6 +208,7 @@ class UserNewForm extends React.Component {
                 className="-fluid"
                 properties={{
                   name: 'email',
+                  autoComplete: 'email',
                   label: this.props.intl.formatMessage({ id: 'signup.user.form.field.email' }),
                   required: true,
                   default: this.state.form.email
@@ -224,6 +225,7 @@ class UserNewForm extends React.Component {
                 className="-fluid"
                 properties={{
                   name: 'password',
+                  autoComplete: 'new-password',
                   label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password' }),
                   type: 'password',
                   required: true,
@@ -247,6 +249,7 @@ class UserNewForm extends React.Component {
                 className="-fluid"
                 properties={{
                   name: 'password_confirmation',
+                  autoComplete: 'new-password',
                   label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
                   type: 'password',
                   required: true,

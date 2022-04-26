@@ -155,6 +155,7 @@ class UserEditForm extends React.Component {
               className="-fluid"
               properties={{
                 name: 'password',
+                autoComplete: 'new-password',
                 label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password' }),
                 type: 'password',
                 required: false,
@@ -176,6 +177,7 @@ class UserEditForm extends React.Component {
               className="-fluid"
               properties={{
                 name: 'passwordConfirmation',
+                autoComplete: 'new-password',
                 label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
                 type: 'password',
                 required: false,
@@ -193,6 +195,7 @@ class UserEditForm extends React.Component {
                 hint={this.props.intl.formatMessage({ id: 'We need your current password to confirm your changes' })}
                 properties={{
                   name: 'currentPassword',
+                  autoComplete: 'current-password',
                   label: this.props.intl.formatMessage({ id: 'Current Password' }),
                   type: 'password',
                   required: this.state.form.password && this.state.form.password.length,
