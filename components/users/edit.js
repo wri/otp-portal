@@ -125,7 +125,7 @@ class UserEditForm extends React.Component {
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
             <h2 className="c-title -huge">
-              Personal Information
+              {this.props.intl.formatMessage({ id: 'Personal Information' })}
             </h2>
 
             <Field
@@ -146,7 +146,7 @@ class UserEditForm extends React.Component {
 
           <fieldset className="c-field-container">
             <h2 className="c-title -huge">
-              Update Password
+              {this.props.intl.formatMessage({ id: 'Update Password' })}
             </h2>
 
             <Field
@@ -215,7 +215,7 @@ class UserEditForm extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                Update
+                {this.props.intl.formatMessage({ id: 'Update' })}
               </button>
             </li>
           </ul>
