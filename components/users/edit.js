@@ -156,7 +156,7 @@ class UserEditForm extends React.Component {
               properties={{
                 name: 'password',
                 autoComplete: 'new-password',
-                label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password' }),
+                label: this.props.intl.formatMessage({ id: 'New Password' }),
                 type: 'password',
                 required: false,
                 default: this.state.form.password
@@ -178,7 +178,7 @@ class UserEditForm extends React.Component {
               properties={{
                 name: 'passwordConfirmation',
                 autoComplete: 'new-password',
-                label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
+                label: this.props.intl.formatMessage({ id: 'Confirm New Password' }),
                 type: 'password',
                 required: false,
                 default: this.state.form.passwordConfirmation
