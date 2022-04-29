@@ -90,9 +90,7 @@ OperatorsEdit.propTypes = {
   intl: intlShape.isRequired
 };
 
-
 export default withTracker(withIntl(connect(
-
   state => ({
     user: state.user,
     userOperator: state.user.userOperator

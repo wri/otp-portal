@@ -24,32 +24,13 @@ import Select from 'components/form/SelectInput';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
-
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
+import { FormElements } from 'utils/form';
 
 class NewOperator extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formElements = new FormElements();
     this.state = {
       form: {
         name: '',
@@ -82,7 +63,7 @@ class NewOperator extends React.Component {
    * UI EVENTS
    * - onChange
    * - onSubmit
-  */
+   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
     this.setState({ form });
@@ -97,12 +78,12 @@ class NewOperator extends React.Component {
     e && e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
+    this.formElements.validate(this.state.form);
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -110,22 +91,22 @@ class NewOperator extends React.Component {
 
         // Save data
         this.props.saveOperator({ body: HELPERS_REGISTER.getBody(this.state.form) })
-          .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            if (this.props.onSubmit) this.props.onSubmit();
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
+            .then(() => {
+              this.setState({ submitting: false, submitted: true });
+              if (this.props.onSubmit) this.props.onSubmit();
+            })
+            .catch((errors) => {
+              this.setState({ submitting: false });
+              console.error(errors);
 
-            try {
-              errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-              );
-            } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
+              try {
+                errors.forEach(er =>
+                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+                );
+              } catch (e) {
+                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+              }
+            });
       } else {
         toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
       }
@@ -137,7 +118,7 @@ class NewOperator extends React.Component {
    * - getCountries
    * - getFmus
    *
-  */
+   */
   async getCountries() {
     const { language } = this.props;
     this.setState({ countryLoading: true });
@@ -150,8 +131,9 @@ class NewOperator extends React.Component {
   }
 
   async getFmus(countryId) {
+    const { language } = this.props;
     this.setState({ fmusLoading: true });
-    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId);
+    const fmus = await HELPERS_REGISTER.getOperatorFmus(countryId, language);
     this.setState({
       fmusOptions: fmus,
       fmusLoading: false
@@ -168,7 +150,7 @@ class NewOperator extends React.Component {
       <div className="c-section">
         <Spinner isLoading={submitting} className="-light -fixed" />
 
-        {!submitted &&
+        {!submitted && (
           <form className="c-form" onSubmit={this.onSubmit} noValidate>
             <fieldset className="c-field-container">
               <h2 className="c-title -huge">
@@ -177,7 +159,7 @@ class NewOperator extends React.Component {
 
               {/* Operator name */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+                ref={(c) => { if (c) this.formElements.elements.name = c; }}
                 onChange={value => this.onChange({ name: value })}
                 validations={['required']}
                 className="-fluid"
@@ -193,7 +175,7 @@ class NewOperator extends React.Component {
 
               {/* Operator description */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
+                ref={(c) => { if (c) this.formElements.elements.details = c; }}
                 onChange={value => this.onChange({ details: value })}
                 className="-fluid"
                 properties={{
@@ -208,7 +190,7 @@ class NewOperator extends React.Component {
 
               {/* Operator type */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+                ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
                 onChange={value => this.onChange({ operator_type: value })}
                 validations={['required']}
                 className="-fluid"
@@ -230,7 +212,7 @@ class NewOperator extends React.Component {
 
               {/* Website */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.website = c; }}
+                ref={(c) => { if (c) this.formElements.elements.website = c; }}
                 onChange={value => this.onChange({ website: value })}
                 validations={['url']}
                 className="-fluid"
@@ -245,7 +227,7 @@ class NewOperator extends React.Component {
 
               {/* Address */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.address = c; }}
+                ref={(c) => { if (c) this.formElements.elements.address = c; }}
                 onChange={value => this.onChange({ address: value })}
                 className="-fluid"
                 properties={{
@@ -259,7 +241,7 @@ class NewOperator extends React.Component {
 
               {/* Logo */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.logo = c; }}
+                ref={(c) => { if (c) this.formElements.elements.logo = c; }}
                 onChange={value => this.onChange({ logo: value })}
                 className="-fluid"
                 properties={{
@@ -281,7 +263,7 @@ class NewOperator extends React.Component {
               <div className="c-field-row">
                 {/* Country */}
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.country = c; }}
                   onChange={(value) => {
                     this.onChange({
                       country: value,
@@ -304,31 +286,29 @@ class NewOperator extends React.Component {
                   {Select}
                 </Field>
 
-                {!!this.state.form.country &&
+                {!!this.state.form.country && (
                   <Spinner isLoading={this.state.fmusLoading} />
-                }
+                )}
 
                 {/* FMUs */}
-                {!!this.state.fmusOptions.length &&
+                {!!this.state.fmusOptions.length && (
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.fmus = c; }}
                     onChange={value => this.onChange({ fmus: value })}
                     className="-fluid"
-                    grid={{
-                      small: 12,
-                      medium: 4,
-                      large: 4
-                    }}
                     options={this.state.fmusOptions}
                     properties={{
                       name: 'fmus',
                       label: 'FMUs',
-                      default: this.state.form.fmus
+                      instanceId: 'select.fmus',
+                      multi: true,
+                      value: this.state.form.fmus,
+                      placeholder: ''
                     }}
                   >
-                    {CheckboxGroup}
+                    {Select}
                   </Field>
-                }
+                )}
               </div>
             </fieldset>
 
@@ -345,9 +325,9 @@ class NewOperator extends React.Component {
               </li>
             </ul>
           </form>
-        }
+        )}
 
-        {submitted &&
+        {submitted && (
           <div className="c-form">
             <h2 className="c-title -huge">
               {this.props.intl.formatMessage({ id: 'thankyou' })}
@@ -374,7 +354,7 @@ class NewOperator extends React.Component {
               </li>
             </ul>
           </div>
-        }
+        )}
       </div>
     );
   }

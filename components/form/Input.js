@@ -9,7 +9,10 @@ class Input extends FormElement {
    * - triggerChange
   */
   triggerChange(e) {
-    this.setState({ value: e.currentTarget.value }, () => {
+    this.setValue(e.currentTarget.value);
+  }
+  setValue(value) {
+    this.setState({ value }, () => {
       // Trigger validation
       this.triggerValidate();
       // Publish the new value to the form

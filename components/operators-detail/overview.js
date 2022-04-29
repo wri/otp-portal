@@ -39,14 +39,14 @@ function OperatorsDetailOverview(props) {
                     { address &&
                       <li key="address" className="">
                         <span>
-                          <strong>Adress:</strong>
+                          <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.address' })}:</strong>
                           <address>{address}</address>
                         </span>
                       </li>
                     }
                     { website &&
                       <li key="website" className="">
-                        <strong>Website:</strong>
+                        <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.website' })}:</strong>
                         <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
                       </li>
                     }

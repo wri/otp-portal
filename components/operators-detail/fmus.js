@@ -46,15 +46,7 @@ import Sidebar from 'components/ui/sidebar';
 import Legend from 'components/map-new/legend';
 import Popup from 'components/map-new/popup';
 
-const CERTIFICATIONS = [
-  { label: 'FSC', value: 'fsc' },
-  { label: 'PEFC', value: 'pefc' },
-  { label: 'OLB', value: 'olb' },
-  { label: 'FSC-CW', value: 'fsc-cw' },
-  { label: 'PAFC', value: 'pafc' },
-  { label: 'TLV', value: 'tlv' },
-  { label: 'LS', value: 'ls' },
-];
+import { CERTIFICATIONS } from 'constants/fmu';
 
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
