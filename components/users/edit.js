@@ -99,9 +99,16 @@ class UserEditForm extends React.Component {
               console.error(errors);
 
               try {
-                errors.forEach(er =>
-                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-                );
+                errors.forEach(er => {
+                  if (er.title === "is invalid" && er.source?.pointer === '/data/attributes/current-password') {
+                    toastr.error(
+                      this.props.intl.formatMessage({ id: 'Error' }),
+                      this.props.intl.formatMessage({ id: 'Current password is invalid' }),
+                    )
+                  } else {
+                    toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+                  }
+                });
               } catch (e) {
                 toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
               }
