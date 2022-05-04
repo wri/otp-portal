@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import pick from 'lodash/pick';
 
+// Intl
+import { intlShape } from 'react-intl';
+
 import Validator from './Validator';
 
 class FormElement extends React.Component {
@@ -16,7 +19,7 @@ class FormElement extends React.Component {
     };
 
     // VALIDATOR
-    this.validator = new Validator();
+    this.validator = new Validator(props.intl);
 
     // BINDINGS
     this.triggerChange = this.triggerChange.bind(this);
@@ -90,7 +93,8 @@ class FormElement extends React.Component {
 FormElement.propTypes = {
   properties: PropTypes.object.isRequired,
   validations: PropTypes.array,
-  onValid: PropTypes.func
+  onValid: PropTypes.func,
+  intl: intlShape.isRequired
 };
 
 export default FormElement;

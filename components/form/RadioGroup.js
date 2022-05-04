@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 // Components
 import FormElement from './FormElement';
@@ -65,4 +66,4 @@ RadioGroup.propTypes = {
   onChange: PropTypes.func
 };
 
-export default RadioGroup;
+export default injectIntl(RadioGroup, {withRef: true});

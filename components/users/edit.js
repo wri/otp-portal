@@ -86,12 +86,11 @@ class UserEditForm extends React.Component {
                 submitting: false,
                 submitted: true,
               });
-              // total profanity and wrong way, but otherwise I would have to properly refactor the whole app
-              this.formElements.elements.password.child.setValue('');
-              this.formElements.elements.passwordConfirmation.child.setValue('');
-              if (this.formElements.elements.currentPassword) {
-                this.formElements.elements.currentPassword.child.setValue('');
-              }
+              this.onChange({
+                password: '',
+                passwordConfirmation: '',
+                currentPassword: ''
+              });
               if (this.props.onSubmit) this.props.onSubmit();
             })
             .catch((errors) => {
@@ -166,7 +165,7 @@ class UserEditForm extends React.Component {
                 label: this.props.intl.formatMessage({ id: 'New Password' }),
                 type: 'password',
                 required: false,
-                default: this.state.form.password
+                value: this.state.form.password
               }}
             >
               {Input}
@@ -178,7 +177,8 @@ class UserEditForm extends React.Component {
               validations={[
                 {
                   type: 'isEqual',
-                  condition: this.state.form.password
+                  condition: this.state.form.password,
+                  message: this.props.intl.formatMessage({ id: 'The field should be equal to password' })
                 }
               ]}
               className="-fluid"
@@ -188,7 +188,7 @@ class UserEditForm extends React.Component {
                 label: this.props.intl.formatMessage({ id: 'Confirm New Password' }),
                 type: 'password',
                 required: false,
-                default: this.state.form.passwordConfirmation
+                value: this.state.form.passwordConfirmation
               }}
             >
               {Input}
@@ -199,14 +199,15 @@ class UserEditForm extends React.Component {
                 ref={(c) => { if (c) this.formElements.elements.currentPassword = c; }}
                 onChange={value => this.onChange({ currentPassword: value })}
                 className="-fluid"
+                validations={['required']}
                 hint={this.props.intl.formatMessage({ id: 'We need your current password to confirm your changes' })}
                 properties={{
                   name: 'currentPassword',
                   autoComplete: 'current-password',
                   label: this.props.intl.formatMessage({ id: 'Current Password' }),
                   type: 'password',
-                  required: this.state.form.password && this.state.form.password.length,
-                  default: this.state.form.currentPassword
+                  required: true,
+                  value: this.state.form.currentPassword
                 }}
               >
                 {Input}
