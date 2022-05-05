@@ -1,6 +1,6 @@
 import GLAD from './glad';
 
 export default {
-  glad: GLAD
+  glad: GLAD,
+  'integrated-alerts': GLAD
 };
-

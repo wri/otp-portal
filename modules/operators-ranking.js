@@ -55,6 +55,7 @@ const initialState = {
     'gain',
     'loss',
     'glad',
+    'integrated-alerts',
     'fmus',
     'protected-areas'
   ],
