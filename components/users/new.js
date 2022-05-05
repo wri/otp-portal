@@ -243,7 +243,8 @@ class UserNewForm extends React.Component {
                   'required',
                   {
                     type: 'isEqual',
-                    condition: this.state.form.password
+                    condition: this.state.form.password,
+                    message: this.props.intl.formatMessage({ id: 'The field should be equal to password' })
                   }
                 ]}
                 className="-fluid"

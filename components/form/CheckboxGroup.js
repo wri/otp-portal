@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
+import { injectIntl } from 'react-intl';
 
 import Checkbox from './Checkbox';
 import FormElement from './FormElement';
 
-export default class CheckboxGroup extends FormElement {
+class CheckboxGroup extends FormElement {
   constructor(props) {
     super(props);
 
@@ -120,3 +121,5 @@ CheckboxGroup.propTypes = {
   grid: PropTypes.object,
   onChange: PropTypes.func
 };
+
+export default injectIntl(CheckboxGroup, {withRef: true});

@@ -1,5 +1,5 @@
 class Validator {
-  constructor() {
+  constructor(intl) {
     // Validations
     this.validations = {
       required: {
@@ -13,9 +13,7 @@ class Validator {
 
           return regex.test(val);
         },
-        message() {
-          return 'The field is required';
-        }
+        message: intl.formatMessage({ id: 'The field is required' })
       },
 
       email: {
@@ -23,9 +21,7 @@ class Validator {
           const regex = /\S+@\S+\.\S+/;
           return regex.test(value || '');
         },
-        message() {
-          return 'The field should be an email';
-        }
+        message: intl.formatMessage({ id: 'The field should be a valid email address' })
       },
 
       url: {
@@ -33,35 +29,12 @@ class Validator {
           const regex = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
           return regex.test(value || '');
         },
-        message() {
-          return 'The field should be an url: http://example.com';
-        }
-      },
-
-      min: {
-        validate(value, condition) {
-          return parseFloat(value) >= parseFloat(condition);
-        },
-        message(condition) {
-          return `The field should be greater than ${condition}`;
-        }
-      },
-
-      max: {
-        validate(value, condition) {
-          return parseFloat(value) <= parseFloat(condition);
-        },
-        message(condition) {
-          return `The field should be lower than ${condition}`;
-        }
+        message: intl.formatMessage({ id: 'The field should be a valid url: http://example.com' })
       },
 
       isEqual: {
         validate(value, condition) {
           return value === condition;
-        },
-        message() {
-          return 'The field should be equal to password';
         }
       }
 
@@ -76,13 +49,13 @@ class Validator {
       if (typeof validation === 'string') {
         const validObj = this.validations[validation];
         valid = validObj.validate(value);
-        message = validObj.message();
+        message = validation.message || validObj.message || '';
       }
 
       if (typeof validation === 'object') {
         const validObj = this.validations[validation.type];
         valid = validObj.validate(value, validation.condition);
-        message = validObj.message(validation.condition);
+        message = validation.message || validObj.message || '';
       }
 
       return {

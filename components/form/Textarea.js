@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import FormElement from './FormElement';
 
@@ -37,4 +38,4 @@ Textarea.propTypes = {
   onChange: PropTypes.func
 };
 
-export default Textarea;
+export default injectIntl(Textarea, {withRef: true});

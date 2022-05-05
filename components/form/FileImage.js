@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Dropzone from 'react-dropzone';
@@ -194,4 +195,4 @@ FileImage.propTypes = {
   onChange: PropTypes.func
 };
 
-export default FileImage;
+export default injectIntl(FileImage, {withRef: true});

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import FormElement from './FormElement';
 
@@ -40,4 +41,4 @@ Input.propTypes = {
   onChange: PropTypes.func
 };
 
-export default Input;
+export default injectIntl(Input, { withRef: true });

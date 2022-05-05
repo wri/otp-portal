@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select, { Creatable } from 'react-select';
+import { injectIntl } from 'react-intl';
+
 import FormElement from './FormElement';
 
 class SelectInput extends FormElement {
@@ -84,4 +86,4 @@ SelectInput.propTypes = {
   defaultValue: PropTypes.any
 };
 
-export default SelectInput;
+export default injectIntl(SelectInput, {withRef: true});

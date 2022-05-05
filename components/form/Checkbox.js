@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Icon from 'components/ui/icon';
+import { injectIntl } from 'react-intl';
 
 import FormElement from './FormElement';
 
-export default class Checkbox extends FormElement {
+class Checkbox extends FormElement {
   /**
    * UI EVENTS
    * - triggerChange
@@ -52,3 +53,5 @@ Checkbox.propTypes = {
   properties: PropTypes.object,
   onChange: PropTypes.func
 };
+
+export default injectIntl(Checkbox, { withRef: true });
