@@ -21,7 +21,8 @@ import {
   setOperatorsSidebar,
   setOperatorsUrl,
   getOperatorsUrl,
-  getGladMaxDate
+  getGladMaxDate,
+  getIntegratedAlertsMaxDate
 } from 'modules/operators-ranking';
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
 
@@ -53,6 +54,10 @@ class OperatorsPage extends React.Component {
 
     if (!operatorsRanking.layersSettings.glad) {
       await store.dispatch(getGladMaxDate());
+    }
+
+    if (!operatorsRanking.layersSettings['integrated-alerts']) {
+      await store.dispatch(getIntegratedAlertsMaxDate());
     }
 
     if (!operatorsRanking.data.length) {

@@ -50,11 +50,11 @@ const initialState = {
   hoverInteractions: {},
 
   // LAYERS
-  layers: LAYERS,
+  layers: LAYERS.filter(l => l.id !== 'glad'),
   layersActive: [
     'gain',
     'loss',
-    'glad',
+    /* 'glad', */
     'integrated-alerts',
     'fmus',
     'protected-areas'
@@ -336,6 +336,60 @@ export function setFilters(filter) {
       type: SET_FILTERS_RANKING,
       payload: newFilters
     });
+  };
+}
+
+export function getIntegratedAlertsMaxDate() {
+  return (dispatch) => {
+    return fetch('https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest', {
+      method: 'GET'
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then(({ data }) => {
+        const endDate = data.metadata.content_date_range.max;
+        dispatch({
+          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'integrated-alerts',
+            settings: {
+              decodeParams: {
+                endDate,
+                trimEndDate: endDate,
+                maxDate: endDate
+              },
+              timelineParams: {
+                maxDate: endDate
+              }
+            }
+          }
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        const date = new Date();
+
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'integrated-alerts',
+            settings: {
+              decodeParams: {
+                endDate: date.toISOString(),
+                trimEndDate: date.toISOString(),
+                maxDate: date.toISOString()
+              },
+              timelineParams: {
+                maxDate: date.toISOString()
+              }
+            }
+          }
+        });
+      });
   };
 }
 

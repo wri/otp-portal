@@ -243,11 +243,9 @@ export const LAYERS = [
       speed: 100,
       interval: 'days',
       dateFormat: 'YYYY-MM-DD',
-      /* trimEndDate: '2022-04-20',
-       * maxDate: '2022-04-20', */
-      trimEndDate: '2022-05-01',
-      maxDate: '2022-05-01',
-      minDate: '2010-09-21',
+      trimEndDate: '{maxDate}',
+      maxDate: '{maxDate}',
+      minDate: '2014-12-31',
       canPlay: true,
       railStyle: {
         background: '#DDD'
