@@ -22,6 +22,52 @@ function Gallery({
   const visits = operatorsDetail.data.observations ? HELPERS_OBS.getMonitorVisits(operatorObservations) : 0;
   const fmus = operatorsDetail.data?.fmus?.length || 0;
 
+  let fmuDescription = intl.formatMessage(
+    {
+      id: 'operator-detail.overview.cardfmu.description',
+      defaultMessage: '{fmus, plural, one {{fmus} is managed by {company_name}.} other {{fmus} are managed by {company_name}.}}'
+    },
+    {
+      fmus,
+      company_name: operatorsDetail.data.name || '',
+    }
+  );
+  if (fmus > 0) {
+    fmuDescription += ' ';
+    fmuDescription += intl.formatMessage(
+      {
+        id: 'operator-detail.overview.cardfmu.description_2',
+        defaultMessage: '{fmus, plural, one {The map of this FMU is available in the FMUs section} other {The map of these FMUs is available in the FMUs section.}}',
+      },
+      {fmus}
+    );
+  }
+  let obsDescription;
+  if (observations > 0) {
+    obsDescription = intl.formatMessage(
+      {
+        id: 'operator-detail.overview.cardobs.description',
+        defaultMessage: '{observations, plural, one {There was {observations} observation} other {There were {observations} observations}}'
+      },
+      {observations}
+    )
+    obsDescription += ' ';
+    obsDescription += intl.formatMessage(
+      {
+        id: 'operator-detail.overview.cardobs.description_2',
+        defaultMessage: 'from {visits, plural, one {{visits} independent monitor visit} other {{visits} independent monitor visits}}.'
+      },
+      {visits}
+    )
+  } else {
+    obsDescription = intl.formatMessage(
+      {
+        id: 'operator-detail.overview.cardobs.none',
+        defaultMessage: 'There are no observations.'
+      }
+    );
+  }
+
   return (
     <div className="c-gallery">
       <div className="row l-row">
@@ -65,18 +111,7 @@ function Gallery({
             title={intl.formatMessage({
               id: 'operator-detail.overview.card2.title',
             })}
-            description={intl.formatMessage(
-              {
-                id: observations > 0 ? 'operator-detail.overview.cardobs.description' : 'operator-detail.overview.cardobs.none',
-                defaultMessage: observations > 0
-                  ? '{observations, plural, one {There was {observations} observation} other {There were {observations} observations}} from {visits, plural, one {{visits} independent monitor visit} other {{visits} independent monitor visits}}.'
-                  : 'There are no observations.'
-              },
-              {
-                observations,
-                visits
-              }
-            )}
+            description={obsDescription}
             link={{
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card2.link.label',
@@ -98,16 +133,7 @@ function Gallery({
               },
               { fmus }
             )}
-            description={intl.formatMessage(
-              {
-                id: 'operator-detail.overview.cardfmu.description',
-                defaultMessage: '{fmus, plural, =0 {{fmus} are managed by {company_name}.} one {{fmus} is managed by {company_name}. The map of this FMU is available in the FMUs section} other {{fmus} are managed by {company_name}. The map of these FMUs is available in the FMUs section.}}'
-              },
-              {
-                fmus,
-                company_name: operatorsDetail.data.name || '',
-              }
-            )}
+            description={fmuDescription}
             link={{
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card3.link.label',
