@@ -63,19 +63,21 @@ class NavigationList extends React.Component {
             </Dropdown>
           </li>
         )}
-        <li>
-          <Link href="/countries">
-            <a
-              className={
+        {process.env.FEATURE_COUNTRY_PAGES === 'true' && (
+          <li>
+            <Link href="/countries">
+              <a
+                className={
                 !hideActive
                   ? this.setActive(['/countries', '/countries-detail'])
                   : ''
-              }
-            >
-              {this.props.intl.formatMessage({ id: 'countries' })}
-            </a>
-          </Link>
-        </li>
+                }
+              >
+                {this.props.intl.formatMessage({ id: 'countries' })}
+              </a>
+            </Link>
+          </li>
+        )}
         <li>
           <Dropdown
             className="c-account-dropdown"

@@ -56,35 +56,42 @@ app
   .prepare()
   .then(() => {
     // COUNTRIES
-    server.get('/countries', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/countries',
-        Object.assign(req.params, query)
-      );
-    });
+    if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
+      server.get('/countries', (req, res) => {
+        const { query } = parse(req.url, true);
+        return app.render(
+          req,
+          res,
+          '/countries',
+          Object.assign(req.params, query)
+        );
+      });
 
-    server.get('/countries/:id', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/countries-detail',
-        Object.assign(req.params, query)
-      );
-    });
+      server.get('/countries/:id', (req, res) => {
+        const { query } = parse(req.url, true);
+        return app.render(
+          req,
+          res,
+          '/countries-detail',
+          Object.assign(req.params, query)
+        );
+      });
 
-    server.get('/countries/:id/:tab', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/countries-detail',
-        Object.assign(req.params, query)
-      );
-    });
+      server.get('/countries/:id/:tab', (req, res) => {
+        const { query } = parse(req.url, true);
+        return app.render(
+          req,
+          res,
+          '/countries-detail',
+          Object.assign(req.params, query)
+        );
+      });
+    } else {
+      const homeRedirect = (req, res) => res.redirect('/');
+      server.get('/countries', homeRedirect);
+      server.get('/countries/:id', homeRedirect);
+      server.get('/countries/:id/:tab', homeRedirect);
+    }
 
     // PROFILE
     server.get('/profile', (req, res) => {
