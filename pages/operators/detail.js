@@ -43,6 +43,12 @@ import OperatorsDetailDocumentation from 'components/operators-detail/documentat
 import OperatorsDetailObservations from 'components/operators-detail/observations';
 import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
+const COUNTRIES_FRENCH_FIX = {
+  'CMR': 'au', // Cameroon
+  'COG': 'au', // Congo
+  'GAB': 'au', // Gabon
+};
+
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
@@ -134,12 +140,27 @@ class OperatorsDetail extends React.Component {
       operatorObservations,
       operatorDocumentation,
       operatorTimeline,
+      intl
     } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
     const logoPath = operatorsDetail.data.logo
       ? operatorsDetail.data.logo.url
       : '';
+    let subtitle = intl.formatMessage(
+      { id: 'operator-detail.subtitle' },
+      {
+        rank: operatorsDetail.data['country-doc-rank'],
+        rankCount: operatorsDetail.data['country-operators'],
+        country: operatorsDetail.data.country?.name
+      }
+    );
+    if (intl.locale === 'fr') {
+      const newPreposition = COUNTRIES_FRENCH_FIX[operatorsDetail.data.country?.iso];
+      if (newPreposition) {
+        subtitle = subtitle.replace(/\sen\s/, ` ${newPreposition} `);
+      }
+    }
 
     return (
       <Layout
@@ -151,16 +172,7 @@ class OperatorsDetail extends React.Component {
 
         <StaticHeader
           title={operatorsDetail.data.name || '-'}
-          subtitle={this.props.intl.formatMessage(
-            { id: 'operator-detail.subtitle' },
-            {
-              rank: operatorsDetail.data['country-doc-rank'],
-              rankCount: operatorsDetail.data['country-operators'],
-              country:
-                !!operatorsDetail.data.country &&
-                operatorsDetail.data.country.name,
-            }
-          )}
+          subtitle={subtitle}
           background="/static/images/static-header/bg-operator-detail.jpg"
           Component={
             user &&
@@ -169,7 +181,7 @@ class OperatorsDetail extends React.Component {
             user.operator_ids.includes(+id) && (
               <Link href="/operators/edit">
                 <a className="c-button -secondary -small">
-                  {this.props.intl.formatMessage({ id: 'update.profile' })}
+                  {intl.formatMessage({ id: 'update.profile' })}
                 </a>
               </Link>
             )
