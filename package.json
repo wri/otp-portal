@@ -99,8 +99,8 @@
     "start": "node index.js",
     "prod": "yarn build && NODE_ENV=production node index.js",
     "lint": "eslint --fix './components/operators-detail/**/*.js'",
-    "transifex:push": "node transifex/transifex-push.js",
-    "transifex:pull": "node transifex/transifex-pull.js"
+    "transifex:push": "tx push -s",
+    "transifex:pull": "tx pull -a"
   },
   "prettier": {
     "singleQuote": true
