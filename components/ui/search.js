@@ -220,11 +220,12 @@ class Search extends React.Component {
             type="text"
             size={this.props.intl.formatMessage({ id: 'search.operators' }).length + 5}
             placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
+            data-test-id="search-input"
             onKeyUp={this.onKeyUp}
           />
         </div>
         <div className={resultsClass}>
-          <div className="results">
+          <div className="results" data-test-id="search-results">
             <ul>
               {results.length ?
                 results.map((op, i) => {
