@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
 import {
   setMapLocation,
   unmountMap
@@ -27,26 +28,7 @@ import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import LocationSearch from 'components/map/location-search';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
+import { FormElements } from 'utils/form';
 
 class SawmillModal extends React.Component {
   static propTypes = {
@@ -61,6 +43,8 @@ class SawmillModal extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.formElements = new FormElements();
     this.sawmillsService = new SawmillsService({
       authorization: props.user.token
     });
@@ -80,7 +64,6 @@ class SawmillModal extends React.Component {
         ...formState
       },
       submitting: false,
-      errors: [],
       hasMapLayer: false
     };
   }
@@ -125,12 +108,12 @@ class SawmillModal extends React.Component {
     const { sawmill } = this.props;
 
     // Validate the form
-    FORM_ELEMENTS.validate();
+    this.formElements.validate();
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -142,14 +125,23 @@ class SawmillModal extends React.Component {
           body: this.getBody()
         })
           .then(() => {
-            this.setState({ submitting: false, errors: [] });
+            this.setState({ submitting: false });
             this.props.onChange && this.props.onChange();
             modal.toggleModal(false);
           })
           .catch((err) => {
             console.error(err);
-            this.setState({ submitting: false, errors: err });
+            this.setState({ submitting: false });
+            try {
+              err.forEach(er =>
+                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+              );
+            } catch (e) {
+              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+            }
           });
+      } else {
+        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
       }
     }, 0);
   }
@@ -200,8 +192,8 @@ class SawmillModal extends React.Component {
         <Spinner isLoading={submitting} className="-light" />
         <h2 className="c-title -extrabig">
           {
-          sawmill ? this.props.intl.formatMessage({ id: 'sawmills.modal.title.edit' }) :
-            this.props.intl.formatMessage({ id: 'sawmills.modal.title' })
+            sawmill ? this.props.intl.formatMessage({ id: 'sawmills.modal.title.edit' }) :
+              this.props.intl.formatMessage({ id: 'sawmills.modal.title' })
           }
         </h2>
         <form className="c-form" onSubmit={e => this.handleSubmit(e)} noValidate>
@@ -210,6 +202,7 @@ class SawmillModal extends React.Component {
               <div className="l-row row -equal-heigth">
                 <div className="columns medium-8 small-12">
                   <Field
+                    ref={(c) => { { if (c) this.formElements.elements.name = c; } }}
                     onChange={value => this.handleChange({ name: value })}
                     className="-fluid"
                     validations={['required']}
@@ -218,7 +211,8 @@ class SawmillModal extends React.Component {
                       label: this.props.intl.formatMessage({ id: 'sawmills.modal.name' }),
                       required: true,
                       type: 'text',
-                      default: this.state.form.name
+                      default: this.state.form.name,
+                      'data-test-id': 'sawmill-name'
                     }}
                   >
                     {Input}
@@ -231,7 +225,8 @@ class SawmillModal extends React.Component {
                     properties={{
                       name: 'is-active',
                       label: this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
-                      checked: this.state.form['is-active']
+                      checked: this.state.form['is-active'],
+                      'data-test-id': 'sawmill-isactive'
                     }}
                   >
                     {Checkbox}
@@ -261,7 +256,7 @@ class SawmillModal extends React.Component {
                 transformRequest={(url, resourceType) => {
                   if (
                     resourceType === 'Source' &&
-                    url.startsWith(process.env.OTP_API)
+                      url.startsWith(process.env.OTP_API)
                   ) {
                     return {
                       url,
@@ -331,7 +326,6 @@ class SawmillModal extends React.Component {
             <div className="c-field-row">
               <div className="l-row row -equal-heigth">
                 <div className="columns medium-6 small-12">
-                  {/* DATE */}
                   <Field
                     onChange={value => this.handleChange({ lat: +value })}
                     className="-fluid"
@@ -341,13 +335,13 @@ class SawmillModal extends React.Component {
                       type: 'number',
                       default: this.state.form.lat.toFixed(2),
                       value: this.state.form.lat.toFixed(2),
+                      'data-test-id': 'sawmill-latitude'
                     }}
                   >
                     {Input}
                   </Field>
                 </div>
                 <div className="columns medium-6 small-12">
-                  {/* DATE */}
                   <Field
                     onChange={value => this.handleChange({ lng: +value })}
                     className="-fluid"
@@ -356,7 +350,8 @@ class SawmillModal extends React.Component {
                       label: this.props.intl.formatMessage({ id: 'sawmills.modal.lng' }),
                       type: 'number',
                       default: this.state.form.lng.toFixed(2),
-                      value: this.state.form.lng.toFixed(2)
+                      value: this.state.form.lng.toFixed(2),
+                      'data-test-id': 'sawmill-longitude'
                     }}
                   >
                     {Input}
