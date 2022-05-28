@@ -99,8 +99,8 @@
     "start": "node index.js",
     "prod": "yarn build && NODE_ENV=production node index.js",
     "lint": "eslint --fix './components/operators-detail/**/*.js'",
-    "transifex:push": "tx push -s",
-    "transifex:pull": "tx pull -a"
+    "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
+    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a"
   },
   "prettier": {
     "singleQuote": true
