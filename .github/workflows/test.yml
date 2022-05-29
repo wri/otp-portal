@@ -1,0 +1,48 @@
+name: Run tests
+
+on: push
+
+jobs:
+  test:
+    name: Testing build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read .nvmrc
+        id: nvm
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+
+      - run: yarn install
+
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Set Sample ENV Variables
+        run: |
+          echo "
+          PORT=4000
+          NODE_ENV=production
+          ENV=production
+          SECRET=some_secret
+          OTP_API_KEY=Bearer jwttoken
+          OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
+          OTP_COUNTRIES_IDS='7,47,45,188,53'
+          OTP_API=http://localhost:3000
+          " > .env
+
+      - name: Run Build
+        run: yarn build

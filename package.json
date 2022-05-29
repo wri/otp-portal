@@ -4,7 +4,6 @@
   "description": "Open Timber Portal description",
   "author": "Vizzuality",
   "license": "ISC",
-  "repository": "https://github.com/iaincollins/nextjs-starter.git",
   "main": "index.js",
   "dependencies": {
     "@turf/bbox": "^6.0.1",
