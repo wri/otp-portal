@@ -6,6 +6,7 @@ jobs:
   test:
     name: Testing build
     runs-on: ubuntu-latest
+    if: false # skip for now, until we configure repository
 
     steps:
       - uses: actions/checkout@v2
@@ -42,7 +43,17 @@ jobs:
           OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
           OTP_COUNTRIES_IDS='7,47,45,188,53'
           OTP_API=http://localhost:3000
+          TRANSIFEX_URL=https://www.transifex.com/api/2/project
+          TRANSIFEX_PROJECT=open-timber-portal
+          TRANSIFEX_SLUG=open-timber-portal
           " > .env
+
+      - name: Pull translations from transifex
+        env:
+          TRANSIFEX_TOKEN: ${{ secrets.transifex-token }}
+        run: |
+          echo 'Pulling the translations…'
+          TRANSIFEX_API_TOKEN=${{ env.TRANSIFEX_API_TOKEN }} yarn transifex:pull
 
       - name: Run Build
         run: yarn build
