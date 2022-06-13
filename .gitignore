@@ -1,11 +1,12 @@
 .next/
-lang/
 node_modules/
 static/tiles
 /npm-debug.log
 .env
 .DS_Store
 
+lang/*.json
+!lang/zu.json
 
 # vscode
 .vscode
