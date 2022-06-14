@@ -303,7 +303,11 @@ export const getFMU = createSelector(
       return {};
     }
 
-    const analysisLayers = ['loss', 'glad'];
+    const analysisLayers = [
+      'loss',
+      'glad',
+      'integrated-alerts'
+    ];
 
     let FMU;
 

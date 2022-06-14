@@ -32,7 +32,8 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'glad',
+    /* 'glad', */
+    'integrated-alerts',
     // 'aac-cog',
     // 'aac-cod',
     // 'aac-cmr',
@@ -200,13 +201,63 @@ export function setOperatorsDetailFmuBounds(payload) {
   };
 }
 
+function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
+  const geostoreId = data.id;
+  const { startDate, trimEndDate } = fmu['integrated-alerts'];
+  const sql = `
+    SELECT count(*), SUM(area__ha)
+    FROM data
+    WHERE gfw_integrated_alerts__date >= '${startDate}' AND
+          gfw_integrated_alerts__date <= '${trimEndDate}'
+    GROUP BY gfw_integrated_alerts__confidence
+  `
+  const url = new URL(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest/query`);
+  url.searchParams.set('geostore_id', geostoreId);
+  url.searchParams.set('geostore_origin', 'rw');
+  url.searchParams.set('sql', sql);
+
+  return fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then((response) => {
+      if (response.ok) return response.json();
+    })
+    .then((response) => {
+      const { operatorsDetailFmus } = getState();
+      const { analysis } = operatorsDetailFmus;
+      const { data: analysisData } = analysis;
+
+      // response data array element example
+      // { gfw_integrated_alerts__confidence: 'high', count: 1232, area__ha: 15.151760000000001 }
+
+      dispatch({
+        type: GET_FMU_ANALYSIS_SUCCESS,
+        payload: {
+          type,
+          data: {
+            [fmu.id]: {
+              geostore: data.id,
+              ...analysisData[fmu.id],
+              'integrated-alerts': response && response.data
+            }
+          }
+        }
+      });
+    })
+  .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+}
 
 function fetchAnalysis(dispatch, getState, data, fmu, type) {
   dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
 
+  if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
+
   const requestEndpoints = {
     loss: 'umd-loss-gain',
-    glad: 'glad-alerts'
+    glad: 'glad-alerts',
   };
 
   const { startDate, trimEndDate } = fmu[type];
@@ -277,15 +328,12 @@ export function setOperatorsDetailAnalysis(fmu, type) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ geojson: fmu.geojson })
-    })
-    .then((response) => {
+    }).then((response) => {
       if (response.ok) return response.json();
       throw new Error(response.statusText);
-    })
-    .then(({ data }) => {
+    }).then(({ data }) => {
       return fetchAnalysis(dispatch, getState, data, fmu, type);
-    })
-    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+    }).catch((error) => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
   };
 }
 
@@ -307,6 +355,60 @@ export function setOperatorsDetailMapHoverInteractions(payload) {
   return {
     type: SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS,
     payload
+  };
+}
+
+export function getIntegratedAlertsMaxDate() {
+  return (dispatch) => {
+    return fetch('https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest', {
+      method: 'GET'
+    })
+      .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(response.statusText);
+      })
+      .then(({ data }) => {
+        const endDate = data.metadata.content_date_range.max;
+        dispatch({
+          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'integrated-alerts',
+            settings: {
+              decodeParams: {
+                endDate,
+                trimEndDate: endDate,
+                maxDate: endDate
+              },
+              timelineParams: {
+                maxDate: endDate
+              }
+            }
+          }
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+
+        const date = new Date();
+
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
+          payload: {
+            id: 'integrated-alerts',
+            settings: {
+              decodeParams: {
+                endDate: date.toISOString(),
+                trimEndDate: date.toISOString(),
+                maxDate: date.toISOString()
+              },
+              timelineParams: {
+                maxDate: date.toISOString()
+              }
+            }
+          }
+        });
+      });
   };
 }
 
@@ -361,5 +463,3 @@ export function getGladMaxDate() {
       });
   };
 }
-
-
