@@ -90,18 +90,18 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (
       fmu.loss &&
-      prevFmu.loss &&
-      (fmu.loss.startDate !== prevFmu.loss.startDate ||
-        fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
+        prevFmu.loss &&
+        (fmu.loss.startDate !== prevFmu.loss.startDate ||
+          fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
     }
 
     if (
       fmu.glad &&
-      prevFmu.glad &&
-      (fmu.glad.startDate !== prevFmu.glad.startDate ||
-        fmu.glad.trimEndDate !== prevFmu.glad.trimEndDate)
+        prevFmu.glad &&
+        (fmu.glad.startDate !== prevFmu.glad.startDate ||
+          fmu.glad.trimEndDate !== prevFmu.glad.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'glad');
     }
@@ -125,9 +125,9 @@ class OperatorsDetailFMUs extends React.Component {
   onClick = (e) => {
     if (
       e.features &&
-      e.features.length &&
-      !e.target.classList.contains('mapbox-prevent-click')
-      ) {
+        e.features.length &&
+        !e.target.classList.contains('mapbox-prevent-click')
+    ) {
       // No better way to do this
       const { features, lngLat } = e;
       this.props.setOperatorsDetailMapInteractions({ features, lngLat });
@@ -278,7 +278,7 @@ class OperatorsDetailFMUs extends React.Component {
             }}
             mapOptions={{
               customAttribution:
-                '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
+                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
             }}
           >
             {(map) => (
