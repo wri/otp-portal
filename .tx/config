@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[o:WRI:p:open-timber-portal:r:open-timber-portal]
+file_filter  = lang/<lang>.json
+source_file  = lang/zu.json
+type         = KEYVALUEJSON
