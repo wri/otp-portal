@@ -100,7 +100,7 @@
     "prod": "yarn build && NODE_ENV=production node index.js",
     "lint": "eslint --fix './components/operators-detail/**/*.js'",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
-    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a"
+    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a && node transifex/format-locales.js"
   },
   "prettier": {
     "singleQuote": true
