@@ -21,7 +21,6 @@ import {
   setOperatorsSidebar,
   setOperatorsUrl,
   getOperatorsUrl,
-  getGladMaxDate,
   getIntegratedAlertsMaxDate
 } from 'modules/operators-ranking';
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
@@ -51,10 +50,6 @@ import OperatorsTable from 'components/operators/table';
 class OperatorsPage extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsRanking } = store.getState();
-
-    if (!operatorsRanking.layersSettings.glad) {
-      await store.dispatch(getGladMaxDate());
-    }
 
     if (!operatorsRanking.layersSettings['integrated-alerts']) {
       await store.dispatch(getIntegratedAlertsMaxDate());

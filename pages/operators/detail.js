@@ -26,7 +26,7 @@ import {
   getOperatorTimeline,
   setOperatorDocumentationDate,
 } from 'modules/operators-detail';
-import { getGladMaxDate, getIntegratedAlertsMaxDate } from 'modules/operators-detail-fmus';
+import { getIntegratedAlertsMaxDate } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
@@ -52,10 +52,6 @@ const COUNTRIES_FRENCH_FIX = {
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
-
-    if (!operatorsDetailFmus.layersSettings.glad) {
-      await store.dispatch(getGladMaxDate());
-    }
 
     if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
       await store.dispatch(getIntegratedAlertsMaxDate());

@@ -32,7 +32,6 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    /* 'glad', */
     'integrated-alerts',
     // 'aac-cog',
     // 'aac-cod',
@@ -256,8 +255,7 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
   if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
 
   const requestEndpoints = {
-    loss: 'umd-loss-gain',
-    glad: 'glad-alerts',
+    loss: 'umd-loss-gain'
   };
 
   const { startDate, trimEndDate } = fmu[type];
@@ -292,9 +290,6 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
               ...(type === 'loss') && {
                 gain: response && response.data && response.data.attributes,
                 loss: response && response.data && response.data.attributes
-              },
-              ...(type === 'glad') && {
-                glad: response && response.data && response.data.attributes
               }
             }
           }
@@ -360,7 +355,7 @@ export function setOperatorsDetailMapHoverInteractions(payload) {
 
 export function getIntegratedAlertsMaxDate() {
   return (dispatch) => {
-    return fetch('https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest', {
+    return fetch(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest`, {
       method: 'GET'
     })
       .then((response) => {
@@ -396,58 +391,6 @@ export function getIntegratedAlertsMaxDate() {
           type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
           payload: {
             id: 'integrated-alerts',
-            settings: {
-              decodeParams: {
-                endDate: date.toISOString(),
-                trimEndDate: date.toISOString(),
-                maxDate: date.toISOString()
-              },
-              timelineParams: {
-                maxDate: date.toISOString()
-              }
-            }
-          }
-        });
-      });
-  };
-}
-
-export function getGladMaxDate() {
-  return (dispatch) => {
-    return fetch('https://production-api.globalforestwatch.org/v1/glad-alerts/latest', {
-      method: 'GET'
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        dispatch({
-          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: data[0].attributes.date,
-                trimEndDate: data[0].attributes.date,
-                maxDate: data[0].attributes.date
-              },
-              timelineParams: {
-                maxDate: data[0].attributes.date
-              }
-            }
-          }
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-
-        const date = new Date();
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
             settings: {
               decodeParams: {
                 endDate: date.toISOString(),

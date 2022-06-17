@@ -305,7 +305,6 @@ export const getFMU = createSelector(
 
     const analysisLayers = [
       'loss',
-      'glad',
       'integrated-alerts'
     ];
 

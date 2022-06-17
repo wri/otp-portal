@@ -7,7 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 
-class LegendTemplateGLAD extends PureComponent {
+class LegendTemplateAlerts extends PureComponent {
   static propTypes = {
     activeLayer: PropTypes.shape({}).isRequired,
     setLayerSettings: PropTypes.func.isRequired,
@@ -45,7 +45,7 @@ class LegendTemplateGLAD extends PureComponent {
     const trim = trimEndDate > maxAbsoluteDate ? maxAbsoluteDate : trimEndDate;
 
     return (
-      <div className="c-legend-template-glad">
+      <div className="c-legend-template-alerts">
         {typeof window !== 'undefined' &&
           <>
             <span>
@@ -98,4 +98,4 @@ class LegendTemplateGLAD extends PureComponent {
   }
 }
 
-export default injectIntl(LegendTemplateGLAD);
+export default injectIntl(LegendTemplateAlerts);

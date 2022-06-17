@@ -50,11 +50,10 @@ const initialState = {
   hoverInteractions: {},
 
   // LAYERS
-  layers: LAYERS.filter(l => l.id !== 'glad'),
+  layers: LAYERS,
   layersActive: [
     'gain',
     'loss',
-    /* 'glad', */
     'integrated-alerts',
     'fmus',
     'protected-areas'
@@ -341,7 +340,7 @@ export function setFilters(filter) {
 
 export function getIntegratedAlertsMaxDate() {
   return (dispatch) => {
-    return fetch('https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest', {
+    return fetch(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest`, {
       method: 'GET'
     })
       .then((response) => {
@@ -377,58 +376,6 @@ export function getIntegratedAlertsMaxDate() {
           type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
           payload: {
             id: 'integrated-alerts',
-            settings: {
-              decodeParams: {
-                endDate: date.toISOString(),
-                trimEndDate: date.toISOString(),
-                maxDate: date.toISOString()
-              },
-              timelineParams: {
-                maxDate: date.toISOString()
-              }
-            }
-          }
-        });
-      });
-  };
-}
-
-export function getGladMaxDate() {
-  return (dispatch) => {
-    return fetch('https://production-api.globalforestwatch.org/v1/glad-alerts/latest', {
-      method: 'GET'
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: data[0].attributes.date,
-                trimEndDate: data[0].attributes.date,
-                maxDate: data[0].attributes.date
-              },
-              timelineParams: {
-                maxDate: data[0].attributes.date
-              }
-            }
-          }
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-
-        const date = new Date();
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
             settings: {
               decodeParams: {
                 endDate: date.toISOString(),

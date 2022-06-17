@@ -59,7 +59,6 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (fmu) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
       this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
   }
@@ -79,7 +78,6 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (fmu.id !== prevFmu.id) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
       this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
 
@@ -97,15 +95,6 @@ class OperatorsDetailFMUs extends React.Component {
         fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-    }
-
-    if (
-      fmu.glad &&
-      prevFmu.glad &&
-      (fmu.glad.startDate !== prevFmu.glad.startDate ||
-        fmu.glad.trimEndDate !== prevFmu.glad.trimEndDate)
-    ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
     }
 
     if (
