@@ -64,9 +64,6 @@ class OperatorsDetail extends React.Component {
 
     if (operatorsDetail.data.id !== url.query.id) {
       requests.push(store.dispatch(getOperator(url.query.id)));
-      requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
-      requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
-      requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
     }
 
     await Promise.all(requests);
@@ -79,7 +76,6 @@ class OperatorsDetail extends React.Component {
    */
   componentDidMount() {
     const { url } = this.props;
-    this.props.getOperator(url?.query?.id);
     this.props.getOperatorDocumentation(url?.query?.id);
     this.props.getOperatorDocumentationCurrent(url.query.id);
     this.props.getOperatorTimeline(url.query.id);
