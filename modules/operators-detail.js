@@ -279,6 +279,7 @@ export function getOperatorDocumentation(id) {
     const lang = language === 'zh' ? 'zh-CN' : language;
     const queryParams = queryString.stringify({
       include: includeFields.join(','),
+      'fields[fmus]': 'name',
       'filter[operator-id]': id,
       'filter[date]': date,
       locale: lang,

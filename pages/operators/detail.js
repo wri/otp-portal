@@ -52,21 +52,24 @@ const COUNTRIES_FRENCH_FIX = {
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
+    const requests = [];
 
     if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
-      await store.dispatch(getIntegratedAlertsMetadata());
+      requests.push(store.dispatch(getIntegratedAlertsMetadata()));
     }
 
     if (url.query.tab === 'documentation') {
-      await store.dispatch(setOperatorDocumentationDate(new Date()));
+      requests.push(store.dispatch(setOperatorDocumentationDate(new Date())));
     }
 
     if (operatorsDetail.data.id !== url.query.id) {
-      await store.dispatch(getOperator(url.query.id));
-      await store.dispatch(getOperatorDocumentation(url.query.id));
-      await store.dispatch(getOperatorDocumentationCurrent(url.query.id));
-      await store.dispatch(getOperatorTimeline(url.query.id));
+      requests.push(store.dispatch(getOperator(url.query.id)));
+      requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
+      requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
+      requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
     }
+
+    await Promise.all(requests);
 
     return { url };
   }
