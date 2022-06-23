@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 import * as queryString from 'query-string';
 
 /* Constants */
@@ -46,7 +47,7 @@ const initialState = {
     loading: false,
     error: false,
   },
-  date: new Date(),
+  date: moment().format('YYYY-MM-DD'),
   FMU: null,
   timeline: [],
   sawmills: {

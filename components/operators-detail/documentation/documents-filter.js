@@ -33,7 +33,7 @@ function DocumentsFilter({
   useEffect(() => {
     // on component load, reset FMU and date.
     setFMU(null);
-    setDate(new Date());
+    setDate(moment().format('YYYY-MM-DD'));
   }, []);
 
   useEffect(() => {

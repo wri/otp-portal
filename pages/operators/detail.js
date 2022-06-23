@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -49,6 +50,8 @@ const COUNTRIES_FRENCH_FIX = {
   'GAB': 'au', // Gabon
 };
 
+const isClient = typeof window !== 'undefined';
+
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
@@ -59,11 +62,17 @@ class OperatorsDetail extends React.Component {
     }
 
     if (url.query.tab === 'documentation') {
-      requests.push(store.dispatch(setOperatorDocumentationDate(new Date())));
+      requests.push(store.dispatch(setOperatorDocumentationDate(moment().format('YYYY-MM-DD'))));
     }
 
     if (operatorsDetail.data.id !== url.query.id) {
       requests.push(store.dispatch(getOperator(url.query.id)));
+
+      if (isClient || url.query.tab === 'documentation') {
+        requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
+        requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
+        requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
+      }
     }
 
     await Promise.all(requests);
@@ -76,14 +85,18 @@ class OperatorsDetail extends React.Component {
    */
   componentDidMount() {
     const { url } = this.props;
-    this.props.getOperatorDocumentation(url?.query?.id);
-    this.props.getOperatorDocumentationCurrent(url.query.id);
-    this.props.getOperatorTimeline(url.query.id);
+
+    // eager load documentation tab as high probabilty user will switch to it
+    if (url.query.tab !== 'documentation') {
+      this.props.getOperatorDocumentation(url.query.id);
+      this.props.getOperatorDocumentationCurrent(url.query.id);
+      this.props.getOperatorTimeline(url.query.id);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const prevDate = prevProps?.operatorsDetail?.date;
-    const newDate = this.props?.operatorsDetail?.date;
+    const prevDate = prevProps?.operatorsDetail?.date?.toString();
+    const newDate = this.props?.operatorsDetail?.date?.toString();
 
     if (prevDate !== newDate) {
       const { url } = this.props;
