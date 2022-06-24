@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-export NVM_DIR="$HOME/.nvm"
+echo "set project directory"
+cd "$(dirname "$(readlink -f "$0")")"
+cd ".."
 
+export NVM_DIR="$HOME/.nvm"
 . $NVM_DIR/nvm.sh
+
 echo "--> Setting node version"
 nvm use
 
