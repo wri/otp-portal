@@ -93,6 +93,18 @@ app
       server.get('/countries/:id/:tab', homeRedirect);
     }
 
+    // MAP only development
+    if (process.env.FEATURE_MAP_PAGE === 'true') {
+      server.get('/map', (req, res) => {
+        return app.render(
+          req,
+          res,
+          '/map',
+          Object.assign(req.params, req.query)
+        );
+      });
+    }
+
     // PROFILE
     server.get('/profile', (req, res) => {
       if (req.session.user) {
