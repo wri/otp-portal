@@ -1,10 +1,5 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-
-import * as Cookies from 'js-cookie';
-
-// Toastr
-import { toastr } from 'react-redux-toastr';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -12,16 +7,10 @@ import withTracker from 'components/layout/with-tracker';
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
 
-// Services
-import modal from 'services/modal';
-
 // Components
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
-import Map from 'components/map-new';
-import LayerManager from 'components/map-new/layer-manager';
-import FAAttributions from 'components/map-new/fa-attributions';
 import Search from 'components/ui/search';
 
 class HomePage extends React.Component {
@@ -48,21 +37,6 @@ class HomePage extends React.Component {
     //   );
     // }
   }
-
-  componentWillUnMount() {
-    // toastr.remove('home.disclaimer');
-
-    // Attribution listener
-    document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
-  }
-
-  onCustomAttribute = (e) => {
-    e.preventDefault();
-    modal.toggleModal(true, {
-      children: FAAttributions
-    });
-  }
-
 
   render() {
     const { url } = this.props;
