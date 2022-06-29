@@ -68,8 +68,6 @@ class MapPage extends React.Component {
                   longitude: 20
                 }}
                 customClass="c-map-fullscreen"
-                scrollZoom={false}
-                dragPan={false}
                 dragRotate={false}
                 transformRequest={(uri) => {
                   if (uri.startsWith(process.env.OTP_API)) {

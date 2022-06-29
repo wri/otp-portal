@@ -4,7 +4,7 @@ puppeteer
   .launch({
     defaultViewport: {
       width: 2560,
-      height: 1300
+      height: 800
     },
   })
   .then(async (browser) => {
@@ -15,8 +15,14 @@ puppeteer
     });
     await page.screenshot({
       type: 'jpeg',
-      quality: 75,
-      path: "../../static/images/home/bg-map.jpg"
+      quality: 80,
+      path: "../../static/images/home/bg-map.jpg",
+      clip: {
+        x: 0,
+        y: 0,
+        width: 2560,
+        height: 720
+      }
     });
     await browser.close();
   });
