@@ -46,11 +46,13 @@ export function getOperators() {
     dispatch({ type: GET_OPERATORS_LOADING });
 
     const lang = language === 'zh' ? 'zh-CN' : language;
+    const currentFields = { operators: 'name,country', countries: 'name' };
+    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
     return fetch(
       `${
         process.env.OTP_API
-      }/operators?locale=${lang}&page[size]=2000&include=country&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(
+      }/operators?locale=${lang}&page[size]=3000&${fields}&include=country&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(
         ','
       )}&filter[fa]=true`,
       {

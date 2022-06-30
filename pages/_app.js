@@ -49,7 +49,7 @@ class MyApp extends App {
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
-    if (!state.operators.data.length) {
+    if (!isServer && !state.operators.data.length) {
       await store.dispatch(getOperators());
     }
 
@@ -58,6 +58,15 @@ class MyApp extends App {
       {};
 
     return { pageProps };
+  }
+
+  componentDidMount() {
+    const { store } = this.props;
+    const state = store.getState();
+
+    if (!state.operators.data.length) {
+      store.dispatch(getOperators());
+    }
   }
 
   render() {
