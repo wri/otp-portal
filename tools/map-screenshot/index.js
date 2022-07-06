@@ -15,7 +15,7 @@ puppeteer
     });
     await page.screenshot({
       type: 'jpeg',
-      quality: 80,
+      quality: 90,
       path: "../../static/images/home/bg-map.jpg",
       clip: {
         x: 0,

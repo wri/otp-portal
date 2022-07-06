@@ -86,7 +86,6 @@ class HomePage extends React.Component {
 
         {/* SECTION B */}
         <StaticSection
-          className="c-map-section"
           position={{ top: true, right: true }}
           column={5}
           background="/static/images/home/bg-map.jpg"

@@ -63,7 +63,7 @@ class MapPage extends React.Component {
               <Map
                 mapStyle="mapbox://styles/mapbox/light-v9"
                 viewport={{
-                  zoom: 6,
+                  zoom: 5,
                   latitude: 0,
                   longitude: 20
                 }}
