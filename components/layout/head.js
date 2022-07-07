@@ -45,6 +45,20 @@ export default class Head extends React.Component {
         {Head.getStyles()}
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} />
+        {process.env.ENV === 'production' && (
+          <script
+            dangerouslySetInnerHTML={{__html: `
+              (function(h,o,t,j,a,r){
+              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+              h._hjSettings={hjid:2890428,hjsv:6};
+              a=o.getElementsByTagName('head')[0];
+              r=o.createElement('script');r.async=1;
+              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+              a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+            `}}
+          />
+        )}
       </HeadNext>
     );
   }
