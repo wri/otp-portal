@@ -245,7 +245,10 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-
+        // TODO: quick fix for cyclic problems, find a better way
+        dataParsed.observations.forEach((o) => {
+          o['relevant-operators'] = o['relevant-operators'].map((op) => ({ id: op.id, name: op.name }))
+        })
         dispatch({
           type: GET_OPERATOR_SUCCESS,
           payload: dataParsed,
