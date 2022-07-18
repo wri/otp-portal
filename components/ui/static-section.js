@@ -24,11 +24,11 @@ export default class StaticSection extends React.Component {
   }
 
   render() {
-    const { children, background, column } = this.props;
+    const { children, background, column, className } = this.props;
 
     return (
       <div
-        className="c-static-section"
+        className={classnames("c-static-section", className)}
         style={{
           backgroundImage: background ? `url(${background})` : 'none'
         }}
@@ -59,6 +59,7 @@ StaticSection.defaultProps = {
 };
 
 StaticSection.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.any.isRequired,
   background: PropTypes.string,
   map: PropTypes.any,
