@@ -52,11 +52,16 @@ class DocumentsDatabasePage extends React.Component {
   }
 
   componentDidMount() {
-    const { url } = this.props;
+    const { database, url } = this.props;
 
     this.props.getDocumentsDatabaseUrl(url);
-    this.props.getFilters();
-    this.props.getDocumentsDatabase();
+
+    if (isEmpty(database.filters.options)) {
+      this.props.getFilters();
+    }
+    if (isEmpty(database.data)) {
+      this.props.getDocumentsDatabase();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
