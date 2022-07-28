@@ -35,7 +35,6 @@ class SignNewsletter extends React.Component {
         />
 
         <UserNewsLetterForm />
-
       </Layout>
     );
   }
