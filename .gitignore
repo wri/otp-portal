@@ -1,5 +1,6 @@
 .next/
-lang/
+/lang/*
+!/lang/zu.json
 node_modules/
 static/tiles
 /npm-debug.log
