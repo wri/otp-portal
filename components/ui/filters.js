@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual';
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
 import Icon from 'components/ui/icon';
+import Spinner from 'components/ui/spinner';
 
 class Filters extends React.Component {
   constructor(props) {
@@ -132,7 +133,7 @@ class Filters extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, loading } = this.props;
 
     const classNames = classnames({
       [className]: !!className,
@@ -164,6 +165,7 @@ class Filters extends React.Component {
           </div>
           {this.state.open && (
             <div className="filters-wrapper">
+              <Spinner isLoading={loading} />
               <div className="l-container">
                 <div className="row l-row">
                   <div className="columns small-12 flex-wrapper">
@@ -185,6 +187,7 @@ Filters.propTypes = {
   options: PropTypes.object,
   intl: intlShape.isRequired,
   className: PropTypes.string,
+  loading: PropTypes.bool,
   // Actions
   setFilters: PropTypes.func,
   logFilter: PropTypes.func,
@@ -192,6 +195,7 @@ Filters.propTypes = {
 
 Filters.defaultProps = {
   options: {},
+  loading: false
 };
 
 export default injectIntl(Filters);
