@@ -218,7 +218,7 @@ app
     server.get('/newsletter', (req, res) =>
       app.render(req, res, '/newsletter', Object.assign(req.params, req.query))
     );
-    server.get('/thank-you', (req, res) =>
+    server.get('/newsletter/thank-you', (req, res) =>
       app.render(req, res, '/thank-you', Object.assign(req.params, req.query))
     );
 
