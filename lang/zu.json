@@ -464,5 +464,9 @@
   "The field is required": "The field is required",
   "The field should be a valid url: http://example.com": "The field should be a valid url: http://example.com",
   "The field should be a valid email address": "The field should be a valid email address",
-  "The field should be equal to password": "The field should be equal to password"
+  "The field should be equal to password": "The field should be equal to password",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "Organization": "Organization",
+  "Job Title": "Job Title"
 }

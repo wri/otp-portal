@@ -33,15 +33,16 @@ export default function (state = initialState, action) {
 }
 
 
-export function getCountries({all} = {all: false}) {
+export function getCountries({all, lang} = {all: false, lang: null}) {
   return (dispatch, getState) => {
     const { language } = getState();
 
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRIES_LOADING });
-    const lang = language === 'zh' ? 'zh-CN' : language;
+    let locale = lang;
+    if (!locale) locale = language === 'zh' ? 'zh-CN' : language;
     const url = new URL(`${process.env.OTP_API}/countries`)
-    url.searchParams.set('locale', lang);
+    url.searchParams.set('locale', locale);
     url.searchParams.set('page[size]', 2000);
     url.searchParams.set('sort', 'name');
     if (all) url.searchParams.set('filter[is-active]', 'all')

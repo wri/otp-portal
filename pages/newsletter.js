@@ -15,7 +15,7 @@ import UserNewsLetterForm from 'components/users/newsletter';
 
 class SignNewsletter extends React.Component {
   static async getInitialProps({ url, store }) {
-    await store.dispatch(getCountries({ all: true }));
+    await store.dispatch(getCountries({ all: true, lang: 'en' }));
 
     return { url };
   }
