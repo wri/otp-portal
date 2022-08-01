@@ -34,21 +34,14 @@ class ThankYouPage extends React.Component {
         <div className="c-section">
           <div className="c-form">
             <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'thankyou' })}
+              {this.props.intl.formatMessage({ id: 'You are now signed up to receive updates from the Open Timber Portal.' })}
             </h2>
 
             <ul className="c-field-buttons">
               <li>
-                <Link href="/operators">
+                <Link href="/">
                   <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'operators' })}
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/observations">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'observations' })}
+                    {this.props.intl.formatMessage({ id: 'Back to home page' })}
                   </a>
                 </Link>
               </li>

@@ -464,5 +464,7 @@
   "The field is required": "The field is required",
   "The field should be a valid url: http://example.com": "The field should be a valid url: http://example.com",
   "The field should be a valid email address": "The field should be a valid email address",
-  "The field should be equal to password": "The field should be equal to password"
+  "The field should be equal to password": "The field should be equal to password",
+  "You are now signed up to receive updates from the Open Timber Portal.": "You are now signed up to receive updates from the Open Timber Portal.",
+  "Back to home page": "Back to home page"
 }
