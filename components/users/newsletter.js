@@ -100,7 +100,7 @@ class NewsletterForm extends React.Component {
   }
 
   fetchCountries(lang) {
-    return API.get('countries', { locale: lang, 'filter[is-active]': 'all' })
+    return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
       .then((data) => JSONA.deserialize(data))
       .catch((error) => console.error(error));
   }
