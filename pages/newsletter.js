@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getCountries } from 'modules/countries';
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -14,9 +13,7 @@ import StaticHeader from 'components/ui/static-header';
 import UserNewsLetterForm from 'components/users/newsletter';
 
 class SignNewsletter extends React.Component {
-  static async getInitialProps({ url, store }) {
-    await store.dispatch(getCountries({ all: true, lang: 'en' }));
-
+  static async getInitialProps({ url }) {
     return { url };
   }
 

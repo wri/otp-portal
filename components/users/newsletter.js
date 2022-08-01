@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
+import Jsona from 'jsona';
+import groupBy from 'lodash/groupBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 import { connect } from 'react-redux';
+
+import API from 'services/api';
 
 // Components
 import Field from 'components/form/Field';
@@ -12,6 +16,8 @@ import Input from 'components/form/Input';
 import Select from 'components/form/SelectInput';
 
 import { FormElements } from 'utils/form';
+
+const JSONA = new Jsona();
 
 class NewsletterForm extends React.Component {
   constructor(props) {
@@ -28,6 +34,7 @@ class NewsletterForm extends React.Component {
         country: '',
         city: ''
       },
+      countryOptions: []
     };
 
     // Bindings
@@ -35,6 +42,10 @@ class NewsletterForm extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.formRef = null;
+  }
+
+  componentDidMount() {
+    this.loadCountries();
   }
 
   /**
@@ -56,35 +67,52 @@ class NewsletterForm extends React.Component {
     this.formElements.validate(form);
     setTimeout(() => {
       if (this.formElements.isValid(form)) {
-        this.formRef.submit(); // this do not trigger onSubmit again
+        this.formRef.submit(); // this does not trigger onSubmit again
       }
     }, 0);
   }
 
+  loadCountries() {
+    const { language } = this.props;
+
+    const countriesEnPromise = this.fetchCountries('en');
+    const countriesLangPromise = language === 'en' ? countriesEnPromise : this.fetchCountries(language);
+
+    Promise
+      .all([countriesEnPromise, countriesLangPromise])
+      .then(([countriesEn, countriesLang]) => {
+        if (language === 'en') return countriesEn.map(c => ({ label: c.name, value: c.name }));
+        const byId = groupBy(countriesLang, 'id');
+
+        return countriesEn.map(c => ({ label: byId[c.id][0].name, value: c.name }));
+      })
+      .then((cOptions) => {
+        return sortBy(cOptions, 'label');
+      })
+      .then((countryOptions) => {
+        this.setState({
+          countryOptions,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
+
+  fetchCountries(lang) {
+    return API.get('countries', { locale: lang, 'filter[is-active]': 'all' })
+      .then((data) => JSONA.deserialize(data))
+      .catch((error) => console.error(error));
+  }
+
   render() {
-    const { intl, countries } = this.props;
-    const countryOptions = sortBy(countries.data.map(c => ({
-      label: c.name,
-      value: c.name
-    })), 'label');
+    const { intl } = this.props;
+    const { countryOptions } = this.state;
 
     return (
       <div className="c-section">
         <form ref={(c) => {this.formRef = c}} className="c-form" action="https://connect.wri.org/l/120942/2022-03-31/582yt4" method="post" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.email = c; }}
-              onChange={value => this.onChange({ email: value })}
-              validations={['required', 'email']}
-              className="-fluid"
-              properties={{
-                name: 'email',
-                label: intl.formatMessage({ id: 'email' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
             <Field
               ref={(c) => { if (c) this.formElements.elements.first_name = c; }}
               onChange={value => this.onChange({ first_name: value })}
@@ -112,13 +140,13 @@ class NewsletterForm extends React.Component {
               {Input}
             </Field>
             <Field
-              ref={(c) => { if (c) this.formElements.elements.job_title = c; }}
-              onChange={value => this.onChange({ job_title: value })}
-              validations={['required']}
+              ref={(c) => { if (c) this.formElements.elements.email = c; }}
+              onChange={value => this.onChange({ email: value })}
+              validations={['required', 'email']}
               className="-fluid"
               properties={{
-                name: 'job_title',
-                label: intl.formatMessage({ id: 'Job Title' }),
+                name: 'email',
+                label: intl.formatMessage({ id: 'email' }),
                 required: true,
               }}
             >
@@ -132,19 +160,6 @@ class NewsletterForm extends React.Component {
               properties={{
                 name: 'organization',
                 label: intl.formatMessage({ id: 'Organization' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.city = c; }}
-              onChange={value => this.onChange({ city: value })}
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'city',
-                label: intl.formatMessage({ id: 'City' }),
                 required: true,
               }}
             >
@@ -185,11 +200,11 @@ class NewsletterForm extends React.Component {
 
 NewsletterForm.propTypes = {
   intl: intlShape.isRequired,
-  countries: PropTypes.object,
+  language: PropTypes.string,
 };
 
 export default injectIntl(connect(
   state => ({
-    countries: state.countries
+    language: state.language
   })
 )(NewsletterForm));
