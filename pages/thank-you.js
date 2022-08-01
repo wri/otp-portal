@@ -33,7 +33,7 @@ class ThankYouPage extends React.Component {
 
         <div className="c-section">
           <div className="c-form">
-            <h2 className="c-title -huge">
+            <h2 className="c-title -big">
               {this.props.intl.formatMessage({ id: 'You are now signed up to receive updates from the Open Timber Portal.' })}
             </h2>
 
