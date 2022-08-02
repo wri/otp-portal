@@ -42,11 +42,17 @@ export const getActiveLayers = createSelector(
 
       if (_layersActive.includes(id) && _fmu && (!l.iso || l.iso === country.iso)) {
         const interactionParams = { clickId: Number(_fmu) };
-        const hoverInteractionParams = _hoverInteractions[id] ? { hoverId: _hoverInteractions[id].data.cartodb_id || _hoverInteractions[id].data.id } : { hoverId: null };
+        const hoverInteractionParams = _hoverInteractions[id] ? { hoverId: _hoverInteractions[id].data.id || _hoverInteractions[id].data.cartodb_id } : { hoverId: null };
+
+        const layerConfig = {...l.config};
+        // just fetch only tiles for operator's fmus
+        if (id === 'fmusdetail') {
+          layerConfig.source.tiles = [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}?operator_id=${operator_id}`];
+        }
 
         return {
           id,
-          ...l.config,
+          ...layerConfig,
           ...settings,
 
           ...(!!paramsConfig) && {

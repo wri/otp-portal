@@ -53,6 +53,12 @@ class Search extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (!this.props.loading && prevProps.loading) {
+      this.updateSearchResults(this.state.value);
+    }
+  }
+
   componentWillUnmount() {
     this.removeListeners();
   }
@@ -118,18 +124,9 @@ class Search extends React.Component {
     const { value } = this.state;
     const currentValue = e.currentTarget.value;
     const isNewValue = currentValue !== value;
-    const active = currentValue !== '';
 
     if (isNewValue) {
-      const fuse = new Fuse(this.props.list, this.props.options);
-      const result = fuse.search(currentValue);
-
-      this.setState({
-        index: 0,
-        value: e.currentTarget.value,
-        results: result.slice(0, 8),
-        active
-      });
+      this.updateSearchResults(currentValue);
     }
   }
 
@@ -175,6 +172,18 @@ class Search extends React.Component {
     this.setState({ index });
   }
 
+  updateSearchResults(searchText) {
+    const fuse = new Fuse(this.props.list, this.props.options);
+    const result = fuse.search(searchText);
+
+    this.setState({
+      index: 0,
+      value: searchText,
+      results: result.slice(0, 8),
+      active: searchText !== ''
+    });
+  }
+
   /**
    * HELPERS
    * - addListeners
@@ -192,6 +201,7 @@ class Search extends React.Component {
 
   render() {
     const { active, results } = this.state;
+    const { loading } = this.props;
 
     const resultsClass = classnames({
       'results-container': true,
@@ -227,7 +237,12 @@ class Search extends React.Component {
         <div className={resultsClass}>
           <div className="results" data-test-id="search-results">
             <ul>
-              {results.length ?
+              {loading && (
+                <li>
+                  Loading...
+                </li>
+              )}
+              {!loading && (results.length ?
                 results.map((op, i) => {
                   const activeClass = classnames({
                     '-active': this.state.index === i
@@ -251,7 +266,7 @@ class Search extends React.Component {
                   );
                 }) :
                 <li>{this.props.intl.formatMessage({ id: 'noresults' })}</li>
-              }
+              )}
             </ul>
           </div>
         </div>
@@ -263,6 +278,7 @@ class Search extends React.Component {
 Search.propTypes = {
   theme: PropTypes.string,
   list: PropTypes.array,
+  loading: PropTypes.bool,
   intl: intlShape.isRequired,
   options: PropTypes.object
 };
@@ -275,6 +291,7 @@ Search.defaultProps = {
 
 export default connect(
   state => ({
-    list: state.operators.data
+    list: state.operators.data,
+    loading: state.operators.loading
   })
 )(injectIntl(Search));

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+echo "set project directory"
+cd "$(dirname "$(readlink -f "$0")")"
+cd ".."
+
+export NVM_DIR="$HOME/.nvm"
+. $NVM_DIR/nvm.sh
+
+echo "--> Setting node version"
+nvm use
+
+echo "--> Installing libraries"
+export NODE_ENV="development"
+yarn install
+export NODE_ENV="production"
+
+echo "Fetching languages"
+yarn transifex:pull
+
+echo "--> Building assets"
+yarn build
+
+echo "--> Restarting server"
+
+if [ $1 = "staging" ]; then
+  pm2 restart otp-portal-staging
+else
+  pm2 restart otp-portal
+fi

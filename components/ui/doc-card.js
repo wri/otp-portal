@@ -144,7 +144,7 @@ class DocCard extends React.Component {
           </div>
         }
 
-        {!!url && status !== 'doc_not_provided' &&
+        {!!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
           <div className="doc-card-content-container">
             <header className="doc-card-header">
               {startDate !== endDate &&

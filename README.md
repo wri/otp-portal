@@ -25,6 +25,12 @@ yarn start
 
 You should run the the build step again any time you make changes to pages or components.
 
+## Regenerate Home Page Static Map
+
+Home page map could be regenerated using `tools/map-screenshot/index.js` script.
+It's using puppeteer to take screenshot of locally running web page, that's why it's esential to first `yarn build` project and then `yarn start`.
+Make sure you have the map page enabled - set `FEATURE_MAP_PAGE` to `true` in .env file.
+
 ## Deploy landing
 
 ```

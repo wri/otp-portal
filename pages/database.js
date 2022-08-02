@@ -36,17 +36,7 @@ import {
 import { logEvent } from 'utils/analytics';
 
 class DocumentsDatabasePage extends React.Component {
-  static async getInitialProps({ url, store }) {
-    const { database } = store.getState();
-
-    if (isEmpty(database.data)) {
-      await store.dispatch(getDocumentsDatabase());
-    }
-
-    if (isEmpty(database.filters.options)) {
-      await store.dispatch(getFilters());
-    }
-
+  static async getInitialProps({ url }) {
     return { url };
   }
 
@@ -62,9 +52,16 @@ class DocumentsDatabasePage extends React.Component {
   }
 
   componentDidMount() {
-    const { url } = this.props;
+    const { database, url } = this.props;
 
     this.props.getDocumentsDatabaseUrl(url);
+
+    if (isEmpty(database.filters.options)) {
+      this.props.getFilters();
+    }
+    if (isEmpty(database.data)) {
+      this.props.getDocumentsDatabase();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -109,6 +106,7 @@ class DocumentsDatabasePage extends React.Component {
           options={parsedFilters.options}
           filters={parsedFilters.data}
           setFilters={this.props.setFilters}
+          loading={this.props.database.filters.loading}
           filtersRefs={FILTERS_REFS}
         />
 
@@ -137,6 +135,7 @@ DocumentsDatabasePage.propTypes = {
   intl: intlShape.isRequired,
   parsedFilters: PropTypes.object,
 
+  getFilters: PropTypes.func.isRequired,
   getDocumentsDatabase: PropTypes.func.isRequired,
   getDocumentsDatabaseUrl: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func.isRequired,

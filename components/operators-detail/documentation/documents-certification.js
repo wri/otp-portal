@@ -20,10 +20,10 @@ function DocumentsCertification(props) {
 
   const isLogged =
     (user && user.role === 'admin') ||
-    (user &&
-      (user.role === 'operator' || user.role === 'holding') &&
-      user.operator_ids &&
-      user.operator_ids.includes(+id));
+      (user &&
+        (user.role === 'operator' || user.role === 'holding') &&
+        user.operator_ids &&
+        user.operator_ids.includes(+id));
 
   if (!isLogged || isEmpty(doc)) {
     return null;
@@ -37,11 +37,7 @@ function DocumentsCertification(props) {
             <h3 className="c-title -proximanova -extrabig -uppercase">
               {intl.formatMessage({ id: 'operator-detail.license' })}
             </h3>
-            <p>
-              {intl.formatHTMLMessage({
-                id: `operator-detail.license.${status}`,
-              })}
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: intl.formatHTMLMessage({ id: `operator-detail.license.${status}` }) }} />
           </header>
 
           <div className="row l-row -equal-heigth">
@@ -65,27 +61,26 @@ function DocumentsCertification(props) {
                   (user.role === 'operator' || user.role === 'holding') &&
                   user.operator_ids &&
                   user.operator_ids.includes(+id))) && (
-                  <DocCardUpload
-                    {...doc}
-                    properties={{
-                    type: 'operator',
-                    id,
-                  }}
-                    buttons={{
-                    add: true,
-                    update: true,
-                    delete: true,
-                    not_required: false,
-                  }}
-                    user={user}
-                    onChange={() => {
-                      props.getOperator(id);
-                      props.getOperatorDocumentation(id);
-                      props.getOperatorTimeline(id);
-                      props.getOperatorDocumentationCurrent(id);
-                    }
-                    }
-                  />
+                    <DocCardUpload
+                      {...doc}
+                      properties={{
+                        type: 'operator',
+                        id,
+                      }}
+                      buttons={{
+                        add: true,
+                        update: true,
+                        delete: true,
+                        not_required: false,
+                      }}
+                      user={user}
+                      onChange={() => {
+                        props.getOperator(id);
+                        props.getOperatorDocumentation(id);
+                        props.getOperatorTimeline(id);
+                        props.getOperatorDocumentationCurrent(id);
+                      }}
+                    />
               )}
             </div>
           </div>

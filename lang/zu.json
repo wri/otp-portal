@@ -228,6 +228,8 @@
   "operators.map.legend.item.loss_layer.legendConfig.name": "Tree cover loss",
   "operators.map.legend.item.gain_layer": "Tree cover gain",
   "operators.map.legend.item.gain_layer.legendConfig.name": "Tree cover gain",
+  "operators.map.legend.item.glad_layer": "GLAD alerts (1 January 2015 - today)",
+  "operators.map.legend.item.glad_layer.legendConfig.name": "GLAD alerts (1 January 2015 - today)",
   "operators.map.legend.item.protected_areas_layer": "Protected areas",
   "operators.map.legend.item.protected_areas_layer.legendConfig.name": "Protected areas",
   "operators.map.legend.item.forest_concession_layer_hover": "Forest managment units",
@@ -408,6 +410,7 @@
   "reason": "Reason",
   "Tree cover gain": "Tree cover gain",
   "Tree cover loss": "Tree cover loss",
+  "GLAD alerts": "GLAD alerts",
   "Alerts": "Alerts",
   "Recent alerts (last 31 days)": "Recent alerts (last 31 days)",
   "Forest managment units": "Forest managment units",
@@ -448,6 +451,7 @@
   "analysis.integrated.high": "High confidence: {count}",
   "analysis.integrated.highest": "Highest confidence: {count}",
   "analysis.integrated.nominal": "Detected by single alert system: {count}",
+  "analysis.glad": "There were {alerts} GLAD alerts from {startDate} to {trimEndDate}",
   "from": "From",
   "to": "to",
   "My profile": "My profile",
@@ -464,5 +468,10 @@
   "The field is required": "The field is required",
   "The field should be a valid url: http://example.com": "The field should be a valid url: http://example.com",
   "The field should be a valid email address": "The field should be a valid email address",
-  "The field should be equal to password": "The field should be equal to password"
+  "The field should be equal to password": "The field should be equal to password",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "Organization": "Organization",
+  "You are now signed up to receive updates from the Open Timber Portal.": "You are now signed up to receive updates from the Open Timber Portal.",
+  "Back to home page": "Back to home page"
 }

@@ -110,6 +110,7 @@ class Header extends React.Component {
                           )}
                           {(user.role === 'operator' || user.role === 'holding') && uniq(user.operator_ids).map(id => {
                             const operator = operators.find(o => +o.id === id);
+                            if (!operator) return null;
 
                             return (
                               <li className="account-dropdown-list-item">

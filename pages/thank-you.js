@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 
 import withTracker from 'components/layout/with-tracker';
 
@@ -10,9 +11,8 @@ import { intlShape } from 'react-intl';
 // Components
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import UserNewsLetterForm from 'components/users/newsletter';
 
-class SignNewsletter extends React.Component {
+class ThankYouPage extends React.Component {
   static async getInitialProps({ url }) {
     return { url };
   }
@@ -31,16 +31,33 @@ class SignNewsletter extends React.Component {
           background="/static/images/static-header/bg-help.jpg"
         />
 
-        <UserNewsLetterForm />
+        <div className="c-section">
+          <div className="c-form">
+            <h2 className="c-title -big">
+              {this.props.intl.formatMessage({ id: 'You are now signed up to receive updates from the Open Timber Portal.' })}
+            </h2>
+
+            <ul className="c-field-buttons">
+              <li>
+                <Link href="/">
+                  <a className="card-link c-button -primary -fullwidth">
+                    {this.props.intl.formatMessage({ id: 'Back to home page' })}
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </Layout>
     );
   }
 }
 
-SignNewsletter.propTypes = {
+ThankYouPage.propTypes = {
   url: PropTypes.shape({}).isRequired,
   intl: intlShape.isRequired
 };
 
 
-export default withTracker(withIntl((SignNewsletter)));
+export default withTracker(withIntl((ThankYouPage)));

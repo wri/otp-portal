@@ -16,7 +16,8 @@ const nextConfig = {
     MAPBOX_API_KEY: process.env.MAPBOX_API_KEY,
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     DOCUMENTS_MINDATE: process.env.DOCUMENTS_MINDATE,
-    FEATURE_COUNTRY_PAGES: process.env.FEATURE_COUNTRY_PAGES
+    FEATURE_COUNTRY_PAGES: process.env.FEATURE_COUNTRY_PAGES,
+    FEATURE_MAP_PAGE: process.env.FEATURE_MAP_PAGE,
   },
 };
 
