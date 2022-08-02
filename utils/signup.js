@@ -3,21 +3,15 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import compact from 'lodash/compact';
 
+import API from 'services/api';
+
 const JSONA = new Jsona();
 
 const HELPERS_REGISTER = {
   getCountries(lang) {
-    return fetch(`${process.env.OTP_API}/countries?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
+    return API.get('countries', {
+      locale: lang,
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
       .then((data) => {
         const dataParsed = JSONA.deserialize(data);
 

@@ -1,6 +1,8 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 
+import API from 'services/api';
+
 /* Constants */
 const GET_COUNTRIES_SUCCESS = 'GET_COUNTRIES_SUCCESS';
 const GET_COUNTRIES_ERROR = 'GET_COUNTRIES_ERROR';
@@ -32,26 +34,19 @@ export default function (state = initialState, action) {
   }
 }
 
-
 export function getCountries() {
   return (dispatch, getState) => {
     const { language } = getState();
 
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRIES_LOADING });
-    const lang = language === 'zh' ? 'zh-CN' : language;
+    const params = {
+      locale: language,
+      'page[size]': 2000,
+      sort: 'name'
+    };
 
-    return fetch(`${process.env.OTP_API}/countries?locale=${lang}&page[size]=2000&sort=name`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('countries', params)
       .then((countries) => {
         const dataParsed = JSONA.deserialize(countries);
 

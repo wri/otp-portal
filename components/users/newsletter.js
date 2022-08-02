@@ -1,65 +1,58 @@
 import React from 'react';
-import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
+import Jsona from 'jsona';
+import groupBy from 'lodash/groupBy';
 
 // Intl
-import { injectIntl } from 'react-intl';
-
-// Redux
+import { injectIntl, intlShape } from 'react-intl';
 import { connect } from 'react-redux';
-import { saveNewsLetter } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
 
-// Next components
-import Link from 'next/link';
+import API from 'services/api';
 
 // Components
-import Spinner from 'components/ui/spinner';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Select from 'components/form/SelectInput';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
+import { FormElements } from 'utils/form';
 
-    return valid;
-  }
-};
+const JSONA = new Jsona();
 
-class UserNewForm extends React.Component {
+class NewsletterForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formElements = new FormElements();
     this.state = {
       form: {
-        email: ''
+        email: '',
+        first_name: '',
+        last_name: '',
+        job_title: '',
+        organization: '',
+        country: '',
+        city: ''
       },
-      submitting: false,
-      submitted: false
+      countryOptions: []
     };
 
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+
+    this.formRef = null;
+  }
+
+  componentDidMount() {
+    this.loadCountries();
   }
 
   /**
    * UI EVENTS
    * - onChange
    * - onSubmit
-  */
+   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
     this.setState({ form });
@@ -68,117 +61,150 @@ class UserNewForm extends React.Component {
   onSubmit(e) {
     e && e.preventDefault();
 
+    const { form } = this.state;
+
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
-
-    // Set a timeout due to the setState function of react
+    this.formElements.validate(form);
     setTimeout(() => {
-      // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
-
-      if (valid) {
-        // Start the submitting
-        this.setState({ submitting: true });
-
-        // Save newsletter
-        this.props.saveNewsLetter({ body: this.state.form })
-          .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            if (this.props.onSubmit) this.props.onSubmit();
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
-
-            try {
-              errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-              );
-            } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
-      } else {
-        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
+      if (this.formElements.isValid(form)) {
+        this.formRef.submit(); // this does not trigger onSubmit again
       }
     }, 0);
   }
 
+  loadCountries() {
+    const { language } = this.props;
+
+    const countriesEnPromise = this.fetchCountries('en');
+    const countriesLangPromise = language === 'en' ? countriesEnPromise : this.fetchCountries(language);
+
+    Promise
+      .all([countriesEnPromise, countriesLangPromise])
+      .then(([countriesEn, countriesLang]) => {
+        if (language === 'en') return countriesEn.map(c => ({ label: c.name, value: c.name }));
+        const byId = groupBy(countriesLang, 'id');
+
+        return countriesEn.map(c => ({ label: byId[c.id][0].name, value: c.name }));
+      })
+      .then((cOptions) => {
+        return sortBy(cOptions, 'label');
+      })
+      .then((countryOptions) => {
+        this.setState({
+          countryOptions,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
+
+  fetchCountries(lang) {
+    return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
+      .then((data) => JSONA.deserialize(data))
+      .catch((error) => console.error(error));
+  }
+
   render() {
-    const { submitting, submitted } = this.state;
-    const submittingClassName = classnames({
-      '-submitting': submitting
-    });
+    const { intl } = this.props;
+    const { countryOptions } = this.state;
 
     return (
       <div className="c-section">
-        <Spinner isLoading={submitting} className="-light -fixed" />
+        <form ref={(c) => {this.formRef = c}} className="c-form" action="https://connect.wri.org/l/120942/2022-03-31/582yt4" method="post" onSubmit={this.onSubmit} noValidate>
+          <fieldset className="c-field-container">
+            <Field
+              ref={(c) => { if (c) this.formElements.elements.first_name = c; }}
+              onChange={value => this.onChange({ first_name: value })}
+              validations={['required']}
+              className="-fluid"
+              properties={{
+                name: 'first_name',
+                label: intl.formatMessage({ id: 'First Name' }),
+                required: true,
+              }}
+            >
+              {Input}
+            </Field>
+            <Field
+              ref={(c) => { if (c) this.formElements.elements.last_name = c; }}
+              onChange={value => this.onChange({ last_name: value })}
+              validations={['required']}
+              className="-fluid"
+              properties={{
+                name: 'last_name',
+                label: intl.formatMessage({ id: 'Last Name' }),
+                required: true,
+              }}
+            >
+              {Input}
+            </Field>
+            <Field
+              ref={(c) => { if (c) this.formElements.elements.email = c; }}
+              onChange={value => this.onChange({ email: value })}
+              validations={['required', 'email']}
+              className="-fluid"
+              properties={{
+                name: 'email',
+                label: intl.formatMessage({ id: 'email' }),
+                required: true,
+              }}
+            >
+              {Input}
+            </Field>
+            <Field
+              ref={(c) => { if (c) this.formElements.elements.organization = c; }}
+              onChange={value => this.onChange({ organization: value })}
+              validations={['required']}
+              className="-fluid"
+              properties={{
+                name: 'organization',
+                label: intl.formatMessage({ id: 'Organization' }),
+                required: true,
+              }}
+            >
+              {Input}
+            </Field>
+            <Field
+              ref={(c) => { if (c) this.formElements.elements.country = c; }}
+              onChange={value => this.onChange({ country: value })}
+              validations={['required']}
+              className="-fluid"
+              options={countryOptions}
+              properties={{
+                name: 'country',
+                label: intl.formatMessage({ id: 'country' }),
+                instanceId: 'select.country',
+                required: true,
+              }}
+            >
+              {Select}
+            </Field>
+          </fieldset>
 
-        {!submitted &&
-          <form className="c-form" onSubmit={this.onSubmit} noValidate>
-            <fieldset className="c-field-container">
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.email = c; }}
-                onChange={value => this.onChange({ email: value })}
-                validations={['required', 'email']}
-                className="-fluid"
-                properties={{
-                  name: 'email',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.email' }),
-                  required: true,
-                  default: this.state.form.email
-                }}
+          <ul className="c-field-buttons">
+            <li>
+              <button
+                type="submit"
+                className={`c-button -secondary -expanded`}
               >
-                {Input}
-              </Field>
-            </fieldset>
-
-            <ul className="c-field-buttons">
-              <li>
-                <button
-                  type="submit"
-                  name="commit"
-                  disabled={submitting}
-                  className={`c-button -secondary -expanded ${submittingClassName}`}
-                >
-                  {this.props.intl.formatMessage({ id: 'signup' })}
-                </button>
-              </li>
-            </ul>
-          </form>
-        }
-
-        {submitted &&
-          <div className="c-form">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'thankyou' })}
-            </h2>
-
-            <ul className="c-field-buttons">
-              <li>
-                <Link href="/operators">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'operators' })}
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/observations">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'observations' })}
-                  </a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        }
+                {intl.formatMessage({ id: 'signup' })}
+              </button>
+            </li>
+          </ul>
+        </form>
       </div>
     );
   }
 }
 
+NewsletterForm.propTypes = {
+  intl: intlShape.isRequired,
+  language: PropTypes.string,
+};
+
 export default injectIntl(connect(
-  null,
-  { saveNewsLetter }
-)(UserNewForm));
+  state => ({
+    language: state.language
+  })
+)(NewsletterForm));
