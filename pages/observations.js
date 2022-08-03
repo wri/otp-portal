@@ -317,7 +317,7 @@ class ObservationsPage extends React.Component {
                   defaultSorted: [
                     {
                       id: 'date',
-                      desc: false,
+                      desc: true,
                     },
                   ],
                   showSubComponent: observations.columns.includes('location'),
