@@ -59,7 +59,7 @@ const initialState = {
 const JSONA = new Jsona();
 
 /* Reducer */
-export default function (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_OBSERVATIONS_SUCCESS:
       return Object.assign({}, state, {

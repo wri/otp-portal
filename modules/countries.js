@@ -21,7 +21,7 @@ const initialState = {
 };
 
 /* Reducer */
-export default function (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_COUNTRIES_SUCCESS:
       return Object.assign({}, state, { data: action.payload, loading: false, error: false });
