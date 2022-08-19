@@ -25,7 +25,7 @@ yarn build
 echo "--> Restarting server"
 
 if [ $1 = "staging" ]; then
-  pm2 restart otp-portal-staging
+  pm2 restart otp-portal-staging --update-env
 else
-  pm2 restart otp-portal
+  pm2 restart otp-portal --update-env
 fi
