@@ -94,7 +94,7 @@ $severity-width: 260px;
     display: block;
     width: 16px;
     height: 16px;
-    margin: 0 0 $space-1/2 $space-1/2;
+    margin: 0 0 $space-1*0.5 $space-1*0.5;
     border-radius: 50%;
 
     &.-severity-0 { background: $color-gray-3; }
