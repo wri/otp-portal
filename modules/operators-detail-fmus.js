@@ -1,4 +1,5 @@
 import { LAYERS } from 'constants/layers';
+import sumBy from 'lodash/sumBy';
 
 const GET_FMU_ANALYSIS_SUCCESS = 'GET_FMU_ANALYSIS_SUCCESS';
 const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
@@ -249,32 +250,55 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
   .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
 }
 
+const ANALYSIS = {
+  'gain': {
+    sum: 'area__ha',
+    filters: 'is__umd_tree_cover_gain',
+    group_by: 'is__umd_tree_cover_gain'
+  },
+  'loss': {
+    sum: 'area__ha',
+    filters: 'umd_tree_cover_density_2000__30', // extentYear: 2000, threshold: 30
+    group_by: 'umd_tree_cover_loss__year'
+  }
+}
+
+function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
+  const url = new URL(`${process.env.GFW_API}/analysis/zonal/${geostoreId}`);
+
+  url.searchParams.set('geostore_origin', 'rw');
+  url.searchParams.set('start_date', startDate);
+  url.searchParams.set('end_date', endDate);
+  url.searchParams.set('sum', ANALYSIS[analysis].sum);
+  url.searchParams.set('filters', ANALYSIS[analysis].filters);
+  url.searchParams.set('group_by', ANALYSIS[analysis].group_by);
+
+  return fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    if (response.ok) return response.json();
+  });
+}
+
 function fetchAnalysis(dispatch, getState, data, fmu, type) {
   dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
 
   if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
 
-  const requestEndpoints = {
-    loss: 'umd-loss-gain'
-  };
-
   const { startDate, trimEndDate } = fmu[type];
+  const geostoreId = data.id;
 
-  const queryparams = {
-    geostore: data.id,
-    period: `${startDate},${trimEndDate}`
-  };
+  return Promise.all([
+    fetchZonalAnalysis(geostoreId, startDate, trimEndDate, 'gain'),
+    fetchZonalAnalysis(geostoreId, startDate, trimEndDate, 'loss'),
+  ])
+    .then(([gainResponse, lossResponse]) => {
+      const gain = gainResponse.data[0].area__ha;
+      const loss = sumBy(lossResponse.data, 'area__ha');
 
-  return fetch(`${process.env.RW_API}/${requestEndpoints[type]}?${Object.keys(queryparams).map(q => `${q}=${queryparams[q]}`).join('&')}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => {
-      if (response.ok) return response.json();
-    })
-    .then((response) => {
       const { operatorsDetailFmus } = getState();
       const { analysis } = operatorsDetailFmus;
       const { data: analysisData } = analysis;
@@ -287,10 +311,8 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
             [fmu.id]: {
               geostore: data.id,
               ...analysisData[fmu.id],
-              ...(type === 'loss') && {
-                gain: response && response.data && response.data.attributes,
-                loss: response && response.data && response.data.attributes
-              }
+              loss: { loss },
+              gain: { gain }
             }
           }
         }
