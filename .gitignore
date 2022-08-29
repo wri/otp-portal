@@ -10,3 +10,6 @@ static/tiles
 
 # vscode
 .vscode
+
+# Sentry
+.sentryclirc
