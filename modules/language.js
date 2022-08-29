@@ -4,7 +4,7 @@ const SET_LANGUAGE = 'SET_LANGUAGE';
 // REDUCER
 const initialState = 'en';
 
-export default function (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case SET_LANGUAGE:
       return action.payload;
