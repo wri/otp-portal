@@ -12,6 +12,8 @@ import { setRouter } from 'modules/router';
 import { setLanguage } from 'modules/language';
 import { getOperators } from 'modules/operators';
 
+import 'css/index.scss';
+
 const reducer = combineReducers({
   ...reducers
 });

@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import NavigationList from 'components/ui/navigation-list';
 
-
-export default() => (
+const Footer = () => (
   <footer className="c-footer">
     <div className="upper-footer">
       <div className="l-container">
@@ -40,3 +39,4 @@ export default() => (
     </div>
   </footer>
 );
+export default Footer;

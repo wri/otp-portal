@@ -51,7 +51,7 @@ const initialState = {
 };
 
 /* Reducer */
-export default function (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_FMU_ANALYSIS_SUCCESS: {
       const analysis = {

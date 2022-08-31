@@ -11,3 +11,6 @@ lang/*.json
 
 # vscode
 .vscode
+
+# Sentry
+.sentryclirc

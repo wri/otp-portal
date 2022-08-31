@@ -1,9 +1,6 @@
 require('dotenv').load();
 
-const withPlugins = require('next-compose-plugins');
-const withSass = require('@zeit/next-sass');
-
-const nextConfig = {
+module.exports = {
   env: {
     ENV: process.env.ENV,
     PORT: process.env.PORT,
@@ -20,5 +17,3 @@ const nextConfig = {
     FEATURE_MAP_PAGE: process.env.FEATURE_MAP_PAGE,
   },
 };
-
-module.exports = withPlugins([[withSass]], nextConfig);
