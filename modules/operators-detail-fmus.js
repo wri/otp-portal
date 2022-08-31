@@ -1,4 +1,4 @@
-import { LAYERS } from 'constants/layers';
+import { LAYERS, OLD_TREE_COVER_LOSS } from 'constants/layers';
 
 const GET_FMU_ANALYSIS_SUCCESS = 'GET_FMU_ANALYSIS_SUCCESS';
 const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
@@ -28,7 +28,11 @@ const initialState = {
 
   hoverInteractions: {},
 
-  layers: LAYERS,
+  layers: [
+    ...LAYERS.filter(x => x.id !== 'loss'),
+    // show old tree cover loss layer until new analysis is fixed and deployed
+    OLD_TREE_COVER_LOSS
+  ],
   layersActive: [
     'gain',
     'loss',
