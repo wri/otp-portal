@@ -24,6 +24,7 @@ function ChartLegend({ title, list, className, intl }) {
               query: { tab: 'how-otp-works', article: 'assessing-severity-of-observations' }
             }}
             as={'/help/how-otp-works?article=assessing-severity-of-observations'}
+            prefetch={false}
           >
             <a><Icon name="icon-info" className="-smaller" /></a>
           </Link>

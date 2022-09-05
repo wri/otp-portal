@@ -9,7 +9,7 @@ const Footer = () => (
         <div className="footer-container">
           <div className="footer-item">
             <h1 className="logo">
-              <Link href="/">
+              <Link href="/" prefetch={false}>
                 <a>Open Timber Portal</a>
               </Link>
             </h1>

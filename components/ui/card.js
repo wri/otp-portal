@@ -42,7 +42,7 @@ export default function Card({ theme, letter, title, description, link, Componen
       </div>
 
       {!!link && (
-        <Link {...omit(link, 'label')} >
+        <Link {...omit(link, 'label')} prefetch={false}>
           <a className="card-link c-button -primary -fullwidth">{link.label}</a>
         </Link>
       )}

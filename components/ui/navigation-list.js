@@ -65,7 +65,7 @@ class NavigationList extends React.Component {
         )}
         {process.env.FEATURE_COUNTRY_PAGES === 'true' && (
           <li>
-            <Link href="/countries">
+            <Link href="/countries" prefetch={false}>
               <a
                 className={
                 !hideActive
@@ -101,7 +101,7 @@ class NavigationList extends React.Component {
             <DropdownContent>
               <ul className="header-dropdown-list">
                 <li className="header-dropdown-list-item">
-                  <Link href="/operators">
+                  <Link href="/operators" prefetch={false}>
                     <a>
                       {this.props.intl.formatMessage({
                         id: 'transparency_ranking',
@@ -110,7 +110,7 @@ class NavigationList extends React.Component {
                   </Link>
                 </li>
                 <li className="header-dropdown-list-item">
-                  <Link href="/database">
+                  <Link href="/database" prefetch={false}>
                     <a>
                       {this.props.intl.formatMessage({
                         id: 'producers_documents_database',
@@ -123,21 +123,21 @@ class NavigationList extends React.Component {
           </Dropdown>
         </li>
         <li>
-          <Link href="/observations">
+          <Link href="/observations" prefetch={false}>
             <a className={!hideActive ? this.setActive(['/observations']) : ''}>
               {this.props.intl.formatMessage({ id: 'observations' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link href="/help">
+          <Link href="/help" prefetch={false}>
             <a className={!hideActive ? this.setActive(['/help']) : ''}>
               {this.props.intl.formatMessage({ id: 'help' })}
             </a>
           </Link>
         </li>
         <li>
-          <Link href="/about">
+          <Link href="/about" prefetch={false}>
             <a className={!hideActive ? this.setActive(['/about']) : ''}>
               {this.props.intl.formatMessage({ id: 'about' })}
             </a>
@@ -145,7 +145,7 @@ class NavigationList extends React.Component {
         </li>
         {hideActive && (
           <li>
-            <Link href="/terms">
+            <Link href="/terms" prefetch={false}>
               <a className={!hideActive ? this.setActive(['/terms']) : ''}>
                 {this.props.intl.formatMessage({ id: 'terms' })}
               </a>
@@ -154,7 +154,7 @@ class NavigationList extends React.Component {
         )}
         {hideActive && (
           <li>
-            <Link href="/newsletter">
+            <Link href="/newsletter" prefetch={false}>
               <a className={!hideActive ? this.setActive(['/newsletter']) : ''}>
                 {this.props.intl.formatMessage({ id: 'newsletter' })}
               </a>

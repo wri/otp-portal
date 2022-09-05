@@ -51,6 +51,7 @@ export default class Tabs extends React.Component {
                       }
                     }}
                     as={`${href.as}/${option.value}`}
+                    prefetch={false}
                   >
                     <a className={`tabs-btn ${btnClasses}`}>
                       <span className="title">{option.label}</span>

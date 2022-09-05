@@ -45,7 +45,7 @@ class Header extends React.Component {
         <div className="l-container">
           <div className="header-container">
             <h1 className="header-logo">
-              <Link href="/">
+              <Link href="/" prefetch={false}>
                 <a>
                   Open Timber Portal
                 </a>
@@ -95,6 +95,7 @@ class Header extends React.Component {
                           <li className="account-dropdown-list-item">
                             <Link
                               href="/profile"
+                              prefetch={false}
                             >
                               <a>{this.props.intl.formatMessage({ id: 'My profile' })}</a>
                             </Link>
@@ -103,6 +104,7 @@ class Header extends React.Component {
                             <li className="account-dropdown-list-item">
                               <Link
                                 href="/operators/edit"
+                                prefetch={false}
                               >
                                 <a>{this.props.intl.formatMessage({ id: 'Producer profile' })}</a>
                               </Link>
@@ -116,6 +118,7 @@ class Header extends React.Component {
                               <li className="account-dropdown-list-item">
                                 <Link
                                   href={`/operators/${id}/documentation`}
+                                  prefetch={false}
                                 >
                                   <a>
                                     {operator.name}
