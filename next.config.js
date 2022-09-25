@@ -18,6 +18,13 @@ const config = {
     FEATURE_MAP_PAGE: process.env.FEATURE_MAP_PAGE,
     SENTRY_DSN: process.env.SENTRY_DSN
   },
+  sentry: {
+    ...(process.env.SENTRY_DISABLE_RELEASE && {
+      disableServerWebpackPlugin: true,
+      disableClientWebpackPlugin: true
+    })
+  },
+  /* productionBrowserSourceMaps: true, // for debugging prod build locally */
 };
 
 const sentryWebpackPluginOptions = {

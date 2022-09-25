@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/nextjs';
 class ErrorPage extends React.Component {
   static async getInitialProps(contextData) {
     const { res, xhr, url } = contextData;
-    const statusCode = res ? res.statusCode : xhr.status;
+    const statusCode = res ? res.statusCode : (xhr ? xhr.status : 0); // eslint-disable-line
 
     await Sentry.captureUnderscoreErrorException(contextData);
 
@@ -38,7 +38,16 @@ class ErrorPage extends React.Component {
 
     let response;
     switch (this.props.statusCode) {
-      case 200: // Also display a 404 if someone requests /_error explicitly
+      case 0:
+        response = (
+          <div>
+            {css}
+            <h1>Client Side Server Error</h1>
+            <p>A client side error occurred.</p>
+          </div>
+        );
+        break;
+          case 200: // Also display a 404 if someone requests /_error explicitly
       case 404:
         response = (
           <div>
