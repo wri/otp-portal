@@ -34,7 +34,7 @@
     "lodash": "4.17.4",
     "luma.gl": "7.3.2",
     "mapbox-gl": "^1.8.1",
-    "moment": "^2.22.1",
+    "moment": "^2.29.4",
     "moveto": "^1.8.1",
     "next": "10",
     "next-redux-wrapper": "^4.0.1",
