@@ -99,7 +99,7 @@ class AboutPage extends React.Component {
                     </header>
                     <div className="content">
                       <div className="description">
-                        <Html html={aboutEntry.body} />
+                        <Html html={aboutEntry.body} className="bigger georgia" />
                       </div>
 
                       {aboutEntry.code === 'donors' && this.renderDonors()}
