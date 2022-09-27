@@ -1,0 +1,8 @@
+.c-notifications {
+  padding: 20px;
+
+  .notification-date {
+    white-space: nowrap;
+    color: $color-doc-expired;
+  }
+}

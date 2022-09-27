@@ -1,18 +1,18 @@
 class API {
-  get(endpoint, params = {}) {
-    return this._request(endpoint, 'GET', { queryParams: params });
+  get(endpoint, params = {}, options = {}) {
+    return this._request(endpoint, 'GET', { queryParams: params, ...options });
   }
 
-  post(endpoint) {
-    return this._request(endpoint, 'POST');
+  post(endpoint, options = {}) {
+    return this._request(endpoint, 'POST', options);
   }
 
-  put(endpoint) {
-    return this._request(endpoint, 'PUT');
+  put(endpoint, options = {}) {
+    return this._request(endpoint, 'PUT', options);
   }
 
-  delete(endpoint) {
-    return this._request(endpoint, 'DELETE');
+  delete(endpoint, options = {}) {
+    return this._request(endpoint, 'DELETE', options);
   }
 
   _request(endpoint, method, options = {}) {
@@ -26,13 +26,17 @@ class API {
         url.searchParams.set(key, value);
       });
     }
+    const headers = {
+      'Content-Type': 'application/json',
+      'OTP-API-KEY': process.env.OTP_API_KEY
+    };
+    if (options.token) {
+      headers.Authorization = `Bearer ${options.token}`
+    }
 
     return fetch(url.toString(), {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      },
+      headers
     })
       .then(this._handleResponse)
   }
