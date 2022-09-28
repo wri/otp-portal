@@ -25,17 +25,25 @@ class Notifications extends React.Component {
 
     if (user.token && !render) {
       this.props.getNotifications();
+    }
+  }
 
-      if (!localStorage.getItem('notificationsShown')) {
-        modal.toggleModal(true, {
-          children: ConnectedNotifications,
-          childrenProps: {
-            render: true
-          },
-          size: '-auto'
-        });
-        localStorage.setItem('notificationsShown', true);
-      }
+  componentDidUpdate() {
+    const { user, render, notifications } = this.props;
+
+    if (!render
+      && user.token
+      && notifications.data.length
+      && !localStorage.getItem('notificationsShown')
+    ) {
+      modal.toggleModal(true, {
+        children: ConnectedNotifications,
+        childrenProps: {
+          render: true
+        },
+        size: '-auto'
+      });
+      localStorage.setItem('notificationsShown', true);
     }
   }
 
