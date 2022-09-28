@@ -5,6 +5,7 @@ import API from 'services/api';
 const GET_NOTIFICATIONS_SUCCESS = 'GET_NOTIFICATIONS_SUCCESS';
 const GET_NOTIFICATIONS_ERROR = 'GET_NOTIFICATIONS_ERROR';
 const GET_NOTIFICATIONS_LOADING = 'GET_NOTIFICATIONS_LOADING';
+const SET_NOTIFICATIONS = 'SET_NOTIFICATIONS';
 
 const JSONA = new Jsona();
 
@@ -18,7 +19,8 @@ const initialState = {
 /* Reducer */
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case GET_NOTIFICATIONS_SUCCESS: {
+    case GET_NOTIFICATIONS_SUCCESS:
+    case SET_NOTIFICATIONS: {
       return Object.assign({}, state, { data: action.payload, loading: false, error: false });
     }
     case GET_NOTIFICATIONS_ERROR: {
@@ -58,6 +60,14 @@ export function getNotifications() {
   };
 }
 
-export function dismissNotification(notificationId) {
-  return API.put(`notifications/${notificationId}/dismiss`, null, { token})
+export function dismissAll() {
+  return (dispatch, getState) => {
+    const { user, notifications } = getState();
+
+    // don't have to wait for success message it's not critical, can happen in the background
+    notifications.data.forEach((notification) => {
+      API.put(`notifications/${notification.id}/dismiss`, { token: user.token });
+    })
+    dispatch({ type: SET_NOTIFICATIONS, payload: [] });
+  }
 }
