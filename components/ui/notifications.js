@@ -16,36 +16,105 @@ class Notifications extends React.Component {
     modal.toggleModal(false);
   }
 
-  handleRemindLater = () => {
+  closeModal = () => {
     modal.toggleModal(false);
   }
 
   componentDidMount() {
     const { user, render } = this.props;
 
-    if (user.token
-      && !render) {
-      /* && !sessionStorage.getItem("notificationsShown")) { */
+    if (user.token && !render) {
       this.props.getNotifications();
+
+      if (!localStorage.getItem('notificationsShown')) {
+        modal.toggleModal(true, {
+          children: ConnectedNotifications,
+          childrenProps: {
+            render: true
+          },
+          size: '-auto'
+        });
+        localStorage.setItem('notificationsShown', true);
+      }
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.notifications
-      && nextProps.notifications.data
-      && nextProps.notifications.data.length > 0
-      && !nextProps.render
-    ) {
-      modal.toggleModal(true, {
-        children: Notifications,
-        childrenProps: {
-          ...nextProps,
-          render: true
-        },
-        size: '-auto'
-      });
-      sessionStorage.setItem("notificationsShown", true);
+  renderNotifications() {
+    const { notifications } = this.props;
+
+    if (!notifications.data.length && notifications.loading) {
+      return (
+        <div className="notifications-message">
+          <p>
+            Loading...
+          </p>
+        </div>
+      )
     }
+
+    if (!notifications.data.length) {
+      return (
+        <div className="notifications-message">
+          <p>There are no new notifications.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {sortBy(notifications.data, 'fmu-name').map((notification) => (
+          <p>
+            {notification['fmu-name'] ? (
+              <>
+                {notification['fmu-name']} document {notification['operator-document-name']} expires at <span className="notification-date">{notification['expiration-date']}</span>
+              </>
+            ) : (
+              <>
+                Document {notification['operator-document-name']} expires at <span className="notification-date">{notification['expiration-date']}</span>
+              </>
+            )}
+          </p>
+        ))}
+      </div>
+    )
+  }
+
+  renderNotificationsActions() {
+    const { notifications } = this.props;
+
+    if (!notifications.data.length) {
+      return (
+        <div className="notifications-actions">
+          <button
+            type="button"
+            className="c-button -secondary"
+            onClick={this.closeModal}
+          >
+            Close
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="notifications-actions">
+        <button
+          type="button"
+          className="c-button -primary"
+          onClick={this.closeModal}
+        >
+          Remind me later
+        </button>
+
+        <button
+          type="button"
+          className="c-button -secondary"
+          onClick={this.handleDismiss}
+        >
+          Dismiss All
+        </button>
+      </div>
+    )
   }
 
   render() {
@@ -54,39 +123,8 @@ class Notifications extends React.Component {
 
     return (
       <div className="c-notifications">
-        <div>
-          {sortBy(notifications.data, 'fmu-name').map((notification) => (
-            <p>
-              {notification['fmu-name'] ? (
-                <>
-                  {notification['fmu-name']} document {notification['operator-document-name']} expires soon at <span className="notification-date">{notification['expiration-date']}</span>
-                </>
-              ) : (
-                <>
-                  Document {notification['operator-document-name']} expires soon at <span className="notification-date">{notification['expiration-date']}</span>
-                </>
-              )}
-            </p>
-          ))}
-        </div>
-
-        <div className="notifications-actions">
-          <button
-            type="button"
-            className="c-button -primary"
-            onClick={this.handleRemindLater}
-          >
-            Remind me later
-          </button>
-
-          <button
-            type="button"
-            className="c-button -secondary"
-            onClick={this.handleDismiss}
-          >
-            Dismiss All
-          </button>
-        </div>
+        {this.renderNotifications()}
+        {this.renderNotificationsActions()}
       </div>
     )
   }
@@ -104,10 +142,12 @@ Notifications.defaultProps = {
   render: false
 };
 
-export default connect(
+const ConnectedNotifications = connect(
   state => ({
     user: state.user,
     notifications: state.notifications
   }),
   { getNotifications, dismissAll }
-)(Notifications)
+)(Notifications);
+
+export default ConnectedNotifications;

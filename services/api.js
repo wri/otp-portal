@@ -43,8 +43,11 @@ class API {
 
   _handleResponse(response) {
     if (response.ok) {
-      const data = typeof response.json === 'function' ? response.json() : response;
-      return data;
+      if (typeof response.json === 'function') {
+        return response.json().catch(() => ({}));
+      }
+
+      return response;
     }
     throw new Error(response.statusText);
   }

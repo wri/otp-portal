@@ -6,6 +6,10 @@
     color: $color-doc-expired;
   }
 
+  .notifications-message {
+    font-size: $font-size-big;
+  }
+
   .notifications-actions {
     display: flex;
     margin-top: 30px;
