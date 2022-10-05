@@ -19,12 +19,10 @@ const SET_FILTERS_DOCUMENTS_DB = 'SET_FILTERS_DOCUMENTS_DB';
 const SET_ACTIVE_COLUMNS_DOCUMENTS_DB = 'SET_ACTIVE_COLUMNS_DOCUMENTS_DB';
 const SET_PAGE_COUNT = 'SET_PAGE_COUNT';
 const SET_PAGE = 'SET_PAGE';
-const SET_SORT = 'SET_SORT';
 
 /* Initial state */
 const initialState = {
   data: [],
-  sort: [],
   page: 0,
   pageSize: 30,
   pageCount: 0,
@@ -101,24 +99,9 @@ export default function reducer(state = initialState, action) {
     }
     case SET_PAGE_COUNT:
       return Object.assign({}, state, { pageCount: action.payload });
-    case SET_SORT: {
-      return Object.assign({}, state, { sort: action.payload });
-    }
     default:
       return state;
   }
-}
-
-function getSortByQueryString(sorted) {
-  if (!sorted) return '';
-
-  const field = {
-    'operator': 'operator.name',
-    'country': 'country.iso'
-  }[sorted.id];
-  if (!field) return '';
-
-  return `sort=${sorted.desc ? '-' : ''}${field}`;
 }
 
 /* Action creators */
@@ -126,7 +109,7 @@ export function getDocumentsDatabase() {
   return (dispatch, getState) => {
     const { language } = getState();
     const filters = getState().database.filters.data;
-    const { page, pageSize, sort } = getState().database;
+    const { page, pageSize } = getState().database;
     const filtersQuery = compact(
       Object.keys(filters).map((key) => {
         if (!isEmpty(filters[key])) {
@@ -151,7 +134,6 @@ export function getDocumentsDatabase() {
       .map((f) => `fields[${f}]=${currentFields[f]}`)
       .join('&');
     const lang = language === 'zh' ? 'zh-CN' : language;
-    const sortBy = getSortByQueryString(sort[0]);
 
     const queryParams = [
       `locale=${lang}`,
@@ -159,8 +141,7 @@ export function getDocumentsDatabase() {
       `page[size]=${pageSize}`,
       fields,
       `include=${includes.join(',')}`,
-      ...filtersQuery,
-      sortBy
+      ...filtersQuery
     ].filter(x => x && x !== '');
 
     const url = `${process.env.OTP_API}/operator-documents?${queryParams.join('&')}`
@@ -254,15 +235,6 @@ export function setPage(page) {
     dispatch({
       type: SET_PAGE,
       payload: page,
-    });
-  };
-}
-
-export function setSort(sort) {
-  return (dispatch) => {
-    dispatch({
-      type: SET_SORT,
-      payload: sort,
     });
   };
 }

@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
-import { getDocumentsDatabase, setActiveColumns, setPage, setSort } from 'modules/documents-database';
+import { getDocumentsDatabase, setActiveColumns, setPage } from 'modules/documents-database';
 
 function DatabaseTable({
   database,
