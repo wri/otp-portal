@@ -79,11 +79,7 @@ function DatabaseTable({
       minWidth: 120,
       Cell: (attr) => (
         <span>
-          {attr.value
-            ? intl.formatMessage({
-                id: attr.value.name,
-              })
-            : ''}
+          {attr.value ? attr.value.name : ''}
         </span>
       ),
     },

@@ -19,13 +19,14 @@ const SET_FILTERS_DOCUMENTS_DB = 'SET_FILTERS_DOCUMENTS_DB';
 const SET_ACTIVE_COLUMNS_DOCUMENTS_DB = 'SET_ACTIVE_COLUMNS_DOCUMENTS_DB';
 const SET_PAGE_COUNT = 'SET_PAGE_COUNT';
 const SET_PAGE = 'SET_PAGE';
+const RELOAD_DOCUMENTS = 'RELOAD_DOCUMENTS';
 
 /* Initial state */
 const initialState = {
   data: [],
   page: 0,
   pageSize: 30,
-  pageCount: 0,
+  pageCount: -1, // react-table needs -1 by default
   loading: false,
   error: false,
   filters: {
@@ -52,6 +53,14 @@ const JSONA = new Jsona();
 /* Reducer */
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case RELOAD_DOCUMENTS:
+      return Object.assign({}, state, {
+        data: [],
+        loading: false,
+        error: false,
+        pageCount: -1,
+        page: 0
+      });
     case GET_DOCUMENTS_DB_SUCCESS:
       return Object.assign({}, state, {
         data: action.payload,
@@ -105,11 +114,18 @@ export default function reducer(state = initialState, action) {
 }
 
 /* Action creators */
-export function getDocumentsDatabase() {
+export function getDocumentsDatabase(options = { reload: false }) {
   return (dispatch, getState) => {
+    if (options.reload) {
+      dispatch({
+        type: RELOAD_DOCUMENTS
+      });
+    }
+
     const { language } = getState();
     const filters = getState().database.filters.data;
     const { page, pageSize } = getState().database;
+
     const filtersQuery = compact(
       Object.keys(filters).map((key) => {
         if (!isEmpty(filters[key])) {
