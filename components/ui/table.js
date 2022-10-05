@@ -23,13 +23,17 @@ export default function Table({ data, options, className }) {
         noDataText={options.noDataText}
         pages={options.pages}
         showPageSizeOptions={options.showPageSizeOptions}
-        sortable
+        multiSort={options.multiSort !== undefined ? options.multiSort : true}
+        sortable={options.sortable !== undefined ? options.sortable : true}
         resizable={false}
         minRows={0}
+        loading={options.loading}
         // Api pagination & sort
-        // manual={options.manual}
+        manual={options.manual}
         onPageChange={options.onPageChange}
+        onFetchData={options.onFetchData}
         defaultSorted={options.defaultSorted}
+        sorted={options.sorted}
         SubComponent={options.showSubComponent && options.subComponent}
       />
     </div>

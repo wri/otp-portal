@@ -9,7 +9,6 @@ import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
 /* Constants */
 const GET_DOCUMENTS_DB_SUCCESS = 'GET_DOCUMENTS_DB_SUCCESS';
-const GET_DOCUMENTS_DB_TOTAL_SIZE = 'GET_DOCUMENTS_DB_TOTAL_SIZE';
 const GET_DOCUMENTS_DB_ERROR = 'GET_DOCUMENTS_DB_ERROR';
 const GET_DOCUMENTS_DB_LOADING = 'GET_DOCUMENTS_DB_LOADING';
 
@@ -18,13 +17,17 @@ const GET_FILTERS_DOCUMENTS_DB_ERROR = 'GET_FILTERS_DOCUMENTS_DB_ERROR';
 const GET_FILTERS_DOCUMENTS_DB_LOADING = 'GET_FILTERS_DOCUMENTS_DB_LOADING';
 const SET_FILTERS_DOCUMENTS_DB = 'SET_FILTERS_DOCUMENTS_DB';
 const SET_ACTIVE_COLUMNS_DOCUMENTS_DB = 'SET_ACTIVE_COLUMNS_DOCUMENTS_DB';
-
-const DOCUMENTS_DB_MAX_SIZE = 3000;
+const SET_PAGE_COUNT = 'SET_PAGE_COUNT';
+const SET_PAGE = 'SET_PAGE';
+const SET_SORT = 'SET_SORT';
 
 /* Initial state */
 const initialState = {
   data: [],
-  totalSize: 0,
+  sort: [],
+  page: 0,
+  pageSize: 30,
+  pageCount: 0,
   loading: false,
   error: false,
   filters: {
@@ -57,8 +60,6 @@ export default function reducer(state = initialState, action) {
         loading: false,
         error: false,
       });
-    case GET_DOCUMENTS_DB_TOTAL_SIZE:
-      return Object.assign({}, state, { totalSize: action.payload });
     case GET_DOCUMENTS_DB_ERROR:
       return Object.assign({}, state, { error: true, loading: false });
     case GET_DOCUMENTS_DB_LOADING:
@@ -95,9 +96,29 @@ export default function reducer(state = initialState, action) {
     case SET_ACTIVE_COLUMNS_DOCUMENTS_DB: {
       return Object.assign({}, state, { columns: action.payload });
     }
+    case SET_PAGE: {
+      return Object.assign({}, state, { page: action.payload });
+    }
+    case SET_PAGE_COUNT:
+      return Object.assign({}, state, { pageCount: action.payload });
+    case SET_SORT: {
+      return Object.assign({}, state, { sort: action.payload });
+    }
     default:
       return state;
   }
+}
+
+function getSortByQueryString(sorted) {
+  if (!sorted) return '';
+
+  const field = {
+    'operator': 'operator.name',
+    'country': 'country.iso'
+  }[sorted.id];
+  if (!field) return '';
+
+  return `sort=${sorted.desc ? '-' : ''}${field}`;
 }
 
 /* Action creators */
@@ -105,6 +126,7 @@ export function getDocumentsDatabase() {
   return (dispatch, getState) => {
     const { language } = getState();
     const filters = getState().database.filters.data;
+    const { page, pageSize, sort } = getState().database;
     const filtersQuery = compact(
       Object.keys(filters).map((key) => {
         if (!isEmpty(filters[key])) {
@@ -129,12 +151,19 @@ export function getDocumentsDatabase() {
       .map((f) => `fields[${f}]=${currentFields[f]}`)
       .join('&');
     const lang = language === 'zh' ? 'zh-CN' : language;
+    const sortBy = getSortByQueryString(sort[0]);
 
-    const url = `${
-      process.env.OTP_API
-    }/operator-documents?locale=${lang}&page[size]=${DOCUMENTS_DB_MAX_SIZE}&${fields}&include=${includes.join(
-      ','
-    )}${filtersQuery.length ? `&${filtersQuery.join('&')}` : ''}`;
+    const queryParams = [
+      `locale=${lang}`,
+      `page[number]=${page+1}`,
+      `page[size]=${pageSize}`,
+      fields,
+      `include=${includes.join(',')}`,
+      ...filtersQuery,
+      sortBy
+    ].filter(x => x && x !== '');
+
+    const url = `${process.env.OTP_API}/operator-documents?${queryParams.join('&')}`
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DOCUMENTS_DB_LOADING });
 
@@ -156,6 +185,11 @@ export function getDocumentsDatabase() {
           type: GET_DOCUMENTS_DB_SUCCESS,
           payload: dataParsed,
         });
+
+        dispatch({
+          type: SET_PAGE_COUNT,
+          payload: documents.meta['page-count']
+        })
       })
       .catch((err) => {
         // Fetch from server ko -> Dispatch error
@@ -211,6 +245,24 @@ export function setActiveColumns(activeColumns) {
     dispatch({
       type: SET_ACTIVE_COLUMNS_DOCUMENTS_DB,
       payload: activeColumns,
+    });
+  };
+}
+
+export function setPage(page) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_PAGE,
+      payload: page,
+    });
+  };
+}
+
+export function setSort(sort) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_SORT,
+      payload: sort,
     });
   };
 }

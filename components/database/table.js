@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // Components
@@ -13,12 +13,14 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
-import { setActiveColumns } from 'modules/documents-database';
+import { getDocumentsDatabase, setActiveColumns, setPage, setSort } from 'modules/documents-database';
 
 function DatabaseTable({
   database,
   parsedTableDocuments,
   setActiveColumns: _setActiveColumns,
+  setPage: _setPage,
+  getDocumentsDatabase: _getDocumentsDatabase,
   intl,
 }) {
   const inputs = [
@@ -36,8 +38,6 @@ function DatabaseTable({
     'reason',
     'annexes',
   ];
-
-  const [page, setPage] = useState(0);
 
   const columnHeaders = [
     {
@@ -231,10 +231,6 @@ function DatabaseTable({
     value: column,
   }));
 
-  useEffect(() => {
-    setPage(0);
-  }, [parsedTableDocuments]);
-
   return (
     <section className="c-section -relative c-db-table">
       <div className="l-container">
@@ -255,33 +251,31 @@ function DatabaseTable({
           options={tableOptions}
         />
 
-        {!database.loading && (
-          <Table
-            className="database-table"
-            sortable
-            data={parsedTableDocuments}
-            options={{
-              columns: columnHeaders.filter((header) =>
-                database.columns.includes(header.accessor)
-              ),
-              pagination: true,
-              page,
-              pageSize: 30,
-              onPageChange: (p) => setPage(p),
-              onPageSizeChange: () => setPage(0),
-              previousText: '<',
-              nextText: '>',
-              noDataText: 'No rows found',
-              showPageSizeOptions: false,
-              defaultSorted: [
-                {
-                  id: 'operator_id', // include doc name
-                  desc: false,
-                },
-              ],
-            }}
-          />
-        )}
+        <Table
+          className="database-table"
+          data={parsedTableDocuments}
+          options={{
+            columns: columnHeaders.filter((header) =>
+              database.columns.includes(header.accessor)
+            ),
+            pagination: true,
+            manual: true,
+            sortable: false,
+            multiSort: false,
+            page: database.page,
+            pageSize: 30,
+            pages: database.pageCount,
+            loading: database.loading,
+            onFetchData: ((state) => {
+              _setPage(state.page);
+              _getDocumentsDatabase();
+            }),
+            previousText: '<',
+            nextText: '>',
+            noDataText: 'No rows found',
+            showPageSizeOptions: false
+          }}
+        />
       </div>
     </section>
   );
@@ -291,7 +285,9 @@ DatabaseTable.propTypes = {
   database: PropTypes.object,
   intl: intlShape.isRequired,
   parsedTableDocuments: PropTypes.array,
+  getDocumentsDatabase: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func,
+  setPage: PropTypes.func
 };
 
 export default injectIntl(
@@ -300,6 +296,6 @@ export default injectIntl(
       database: state.database,
       parsedTableDocuments: getParsedTableDocuments(state),
     }),
-    { setActiveColumns }
+    { setActiveColumns, setPage, getDocumentsDatabase }
   )(DatabaseTable)
 );
