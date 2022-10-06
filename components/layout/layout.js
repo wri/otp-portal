@@ -12,6 +12,7 @@ import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
 import Toastr from 'react-redux-toastr';
+import RouterSpinner from 'components/layout/router-spinner';
 
 export default class Layout extends React.Component {
   componentDidMount() {
@@ -56,6 +57,8 @@ export default class Layout extends React.Component {
           transitionIn="fadeIn"
           transitionOut="fadeOut"
         />
+
+        <RouterSpinner />
       </div>
     );
   }
