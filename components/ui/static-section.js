@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Image from 'next/image';
 
 export default class StaticSection extends React.Component {
 
@@ -29,10 +30,8 @@ export default class StaticSection extends React.Component {
     return (
       <div
         className={classnames("c-static-section", className)}
-        style={{
-          backgroundImage: background ? `url(${background})` : 'none'
-        }}
       >
+        {background && <Image src={background} layout="fill" objectFit="cover" objectPosition="center" />}
         {!!this.props.map &&
           <div className="c-map-container -absolute" type="full">
             {React.cloneElement(this.props.map)}
