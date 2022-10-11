@@ -297,6 +297,7 @@ class ObservationsPage extends React.Component {
               </div>
 
               <Table
+                className="-fit-to-page"
                 sortable
                 data={parsedTableObservations}
                 options={{

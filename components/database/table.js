@@ -248,7 +248,7 @@ function DatabaseTable({
         />
 
         <Table
-          className="database-table"
+          className="database-table -fit-to-page"
           data={parsedTableDocuments}
           options={{
             columns: columnHeaders.filter((header) =>
