@@ -103,12 +103,6 @@ class ObservationsPage extends React.Component {
     }
   }
 
-  onPageChange(page) {
-    this.setState({ page: page + 1 }, () => {
-      this.props.getObservations(page + 1);
-    });
-  }
-
   getPageSize() {
     const { observations } = this.props;
 
@@ -314,7 +308,6 @@ class ObservationsPage extends React.Component {
                   // pages: observations.totalSize,
                   // page: this.state.page - 1,
                   // manual: true
-                  onPageChange: (page) => this.onPageChange(page),
                   defaultSorted: [
                     {
                       id: 'date',
