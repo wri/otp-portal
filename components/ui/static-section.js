@@ -29,10 +29,18 @@ export default class StaticSection extends React.Component {
     return (
       <div
         className={classnames("c-static-section", className)}
-        style={{
-          backgroundImage: background ? `url(${background})` : 'none'
-        }}
       >
+        {background && (
+          <div className="c-static-background">
+            <picture>
+              {/* make sure webp image is also available */}
+              <source type="image/webp" srcSet={background.replace('.jpg', '.webp')} />
+              <source type="image/jpeg" srcSet={background} />
+              <img src={background} alt="" />
+            </picture>
+          </div>
+        )}
+
         {!!this.props.map &&
           <div className="c-map-container -absolute" type="full">
             {React.cloneElement(this.props.map)}

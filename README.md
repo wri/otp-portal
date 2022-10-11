@@ -31,6 +31,8 @@ Home page map could be regenerated using `tools/map-screenshot/index.js` script.
 It's using puppeteer to take screenshot of locally running web page, that's why it's esential to first `yarn build` project and then `yarn start`.
 Make sure you have the map page enabled - set `FEATURE_MAP_PAGE` to `true` in .env file.
 
+After creating screenshot run `cwebp -q 75 static/images/home/bg-map.jpg -o static/images/home/bg-map.webp` to create webp image.
+
 ## Deploy landing
 
 ```
