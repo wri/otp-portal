@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
+import moment from 'moment';
+/* import Router from 'next/router'; */
 
 // Redux
 import { connect } from 'react-redux';
+import { injectIntl, intlShape } from 'react-intl';
 
+import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { getNotifications, dismissAll } from 'modules/notifications';
 
@@ -47,15 +51,24 @@ class Notifications extends React.Component {
     }
   }
 
+  renderSingleNotification(notification) {
+    const { language, intl } = this.props;
+    const date = language === 'fr' ? moment(notification['expiration-date']).format('DD-MM-YYYY') : notification['expiration-date']
+
+    return (
+      <>
+        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: 'expires on' })} <span className="notification-date">{notification['expiration-date']}</span>
+      </>
+    )
+  }
+
   renderNotifications() {
-    const { notifications } = this.props;
+    const { notifications, intl } = this.props;
 
     if (!notifications.data.length && notifications.loading) {
       return (
-        <div className="notifications-message">
-          <p>
-            Loading...
-          </p>
+        <div className="notifications-message" style={{ width: 300 }}>
+          <Spinner className="-transparent -small" isLoading />
         </div>
       )
     }
@@ -63,24 +76,22 @@ class Notifications extends React.Component {
     if (!notifications.data.length) {
       return (
         <div className="notifications-message">
-          <p>There are no new notifications.</p>
+          <p>
+            {intl.formatMessage({ id: 'There are no new notifications.' })}
+          </p>
         </div>
       );
     }
 
     return (
       <div>
+        <h3>
+          {intl.formatMessage({ id: 'Your company has documents that are expiring soon that will need to be updated:' })}
+        </h3>
+
         {sortBy(notifications.data, 'fmu-name').map((notification) => (
-          <p>
-            {notification['fmu-name'] ? (
-              <>
-                {notification['fmu-name']} document {notification['operator-document-name']} expires at <span className="notification-date">{notification['expiration-date']}</span>
-              </>
-            ) : (
-              <>
-                Document {notification['operator-document-name']} expires at <span className="notification-date">{notification['expiration-date']}</span>
-              </>
-            )}
+          <p key={notification.id}>
+            {this.renderSingleNotification(notification)}
           </p>
         ))}
       </div>
@@ -88,7 +99,12 @@ class Notifications extends React.Component {
   }
 
   renderNotificationsActions() {
-    const { notifications } = this.props;
+    const { notifications, intl } = this.props;
+
+
+    if (!notifications.data.length && notifications.loading) {
+      return null;
+    }
 
     if (!notifications.data.length) {
       return (
@@ -98,7 +114,7 @@ class Notifications extends React.Component {
             className="c-button -secondary"
             onClick={this.closeModal}
           >
-            Close
+            {intl.formatMessage({ id: 'Close' })}
           </button>
         </div>
       );
@@ -111,7 +127,7 @@ class Notifications extends React.Component {
           className="c-button -primary"
           onClick={this.closeModal}
         >
-          Remind me later
+          {intl.formatMessage({ id: 'Remind me later' })}
         </button>
 
         <button
@@ -119,7 +135,7 @@ class Notifications extends React.Component {
           className="c-button -secondary"
           onClick={this.handleDismiss}
         >
-          Dismiss All
+          {intl.formatMessage({ id: 'Dismiss All' })}
         </button>
       </div>
     )
@@ -143,7 +159,9 @@ Notifications.propTypes = {
   user: PropTypes.object,
   notifications: PropTypes.object,
   getNotifications: PropTypes.func,
-  dismissAll: PropTypes.func
+  dismissAll: PropTypes.func,
+  language: PropTypes.string,
+  intl: intlShape.isRequired
 };
 
 Notifications.defaultProps = {
@@ -153,9 +171,10 @@ Notifications.defaultProps = {
 const ConnectedNotifications = connect(
   state => ({
     user: state.user,
-    notifications: state.notifications
+    notifications: state.notifications,
+    language: state.language
   }),
   { getNotifications, dismissAll }
 )(Notifications);
 
-export default ConnectedNotifications;
+export default injectIntl(ConnectedNotifications);
