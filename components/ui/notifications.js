@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
-/* import Router from 'next/router'; */
+import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
@@ -99,8 +99,7 @@ class Notifications extends React.Component {
   }
 
   renderNotificationsActions() {
-    const { notifications, intl } = this.props;
-
+    const { notifications, user, intl } = this.props;
 
     if (!notifications.data.length && notifications.loading) {
       return null;
@@ -132,11 +131,17 @@ class Notifications extends React.Component {
 
         <button
           type="button"
-          className="c-button -secondary"
+          className="c-button -primary"
           onClick={this.handleDismiss}
         >
           {intl.formatMessage({ id: 'Dismiss All' })}
         </button>
+
+        <Link href={`/operators/${user.operator_ids[0]}/documentation`}>
+          <a className="c-button -secondary">
+            {intl.formatMessage({ id: 'Update Now' })}
+          </a>
+        </Link>
       </div>
     )
   }
@@ -168,13 +173,15 @@ Notifications.defaultProps = {
   render: false
 };
 
-const ConnectedNotifications = connect(
+const ConnectedNotifications = injectIntl(
+  connect(
   state => ({
     user: state.user,
     notifications: state.notifications,
     language: state.language
   }),
   { getNotifications, dismissAll }
-)(Notifications);
+  )(Notifications)
+);
 
-export default injectIntl(ConnectedNotifications);
+export default ConnectedNotifications;
