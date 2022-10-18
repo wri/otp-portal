@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import moment from 'moment';
 import Link from 'next/link';
 
 // Redux
@@ -53,11 +52,11 @@ class Notifications extends React.Component {
 
   renderSingleNotification(notification) {
     const { language, intl } = this.props;
-    const date = language === 'fr' ? moment(notification['expiration-date']).format('DD-MM-YYYY') : notification['expiration-date']
+    const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(Date.parse(notification['expiration-date']));
 
     return (
       <>
-        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: 'expires on' })} <span className="notification-date">{notification['expiration-date']}</span>
+        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: 'expires on' })} <span className="notification-date">{date}</span>
       </>
     )
   }
