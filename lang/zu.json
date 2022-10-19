@@ -471,10 +471,12 @@
   "You are now signed up to receive updates from the Open Timber Portal.": "You are now signed up to receive updates from the Open Timber Portal.",
   "Back to home page": "Back to home page",
   "Your company has documents that are expiring soon that will need to be updated:": "Your company has documents that are expiring soon that will need to be updated:",
+  "Your company has documents that have expired that need to be updated:": "Your company has documents that have expired that need to be updated:",
   "There are no new notifications.": "There are no new notifications.",
   "Close": "Close",
   "Remind me later": "Remind me later",
   "Dismiss All": "Dismiss All",
   "Update Now": "Update Now",
-  "expires on": "expires on"
+  "expires on": "expires on",
+  "expired on": "expired on"
 }

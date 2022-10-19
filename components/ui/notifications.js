@@ -11,6 +11,12 @@ import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { getNotifications, dismissAll } from 'modules/notifications';
 
+function isBeforeToday(date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date < today;
+}
+
 class Notifications extends React.Component {
   handleDismiss = () => {
     const { notifications } = this.props;
@@ -52,11 +58,14 @@ class Notifications extends React.Component {
 
   renderSingleNotification(notification) {
     const { language, intl } = this.props;
-    const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(Date.parse(notification['expiration-date']));
+    const expirationDate = new Date(notification['expiration-date']);
+    const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(expirationDate);
+
+    const expiredText = isBeforeToday(expirationDate) ? 'expired on' : 'expires on';
 
     return (
       <>
-        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: 'expires on' })} <span className="notification-date">{date}</span>
+        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: expiredText })} <span className="notification-date">{date}</span>
       </>
     )
   }
@@ -82,17 +91,38 @@ class Notifications extends React.Component {
       );
     }
 
+    const expiringSoon = notifications.data.filter(x => !isBeforeToday(new Date(x['expiration-date'])));
+    const expired = notifications.data.filter(x => isBeforeToday(new Date(x['expiration-date'])));
+
     return (
       <div>
-        <h3>
-          {intl.formatMessage({ id: 'Your company has documents that are expiring soon that will need to be updated:' })}
-        </h3>
+        {expired.length > 0 && (
+          <>
+            <h3>
+              {intl.formatMessage({ id: 'Your company has documents that have expired that need to be updated:' })}
+            </h3>
 
-        {sortBy(notifications.data, 'fmu-name').map((notification) => (
-          <p key={notification.id}>
-            {this.renderSingleNotification(notification)}
-          </p>
-        ))}
+            {sortBy(expired, ['fmu-name', 'expiration-date']).map((notification) => (
+              <p key={notification.id}>
+                {this.renderSingleNotification(notification)}
+              </p>
+            ))}
+          </>
+        )}
+
+        {expiringSoon.length > 0 && (
+          <>
+            <h3>
+              {intl.formatMessage({ id: 'Your company has documents that are expiring soon that will need to be updated:' })}
+            </h3>
+
+            {sortBy(expiringSoon, ['fmu-name', 'expiration-date']).map((notification) => (
+              <p key={notification.id}>
+                {this.renderSingleNotification(notification)}
+              </p>
+            ))}
+          </>
+        )}
       </div>
     )
   }
