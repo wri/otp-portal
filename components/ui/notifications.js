@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 import Link from 'next/link';
 
 // Redux
@@ -91,8 +92,15 @@ class Notifications extends React.Component {
       );
     }
 
-    const expiringSoon = notifications.data.filter(x => !isBeforeToday(new Date(x['expiration-date'])));
-    const expired = notifications.data.filter(x => isBeforeToday(new Date(x['expiration-date'])));
+    // if there are two notifications for the same document just show one, as expiration date will be the same
+    const expiringSoon = uniqBy(
+      notifications.data.filter(x => !isBeforeToday(new Date(x['expiration-date']))),
+      'operator-document-id'
+    );
+    const expired = uniqBy(
+      notifications.data.filter(x => isBeforeToday(new Date(x['expiration-date']))),
+      'operator-document-id'
+    );
 
     return (
       <div>

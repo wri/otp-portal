@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Link from 'next/link';
 
 import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 
 // Services
 import modal from 'services/modal';
@@ -105,7 +106,7 @@ class Header extends React.Component {
                         <ul className="account-dropdown-list">
                           <li className="account-dropdown-list-item">
                             <a onClick={this.handleNotificationsClick}>
-                              Notifications ({notifications.length})
+                              Notifications ({uniqBy(notifications, 'operator-document-id').length})
                             </a>
                           </li>
                           <li className="account-dropdown-list-item">
