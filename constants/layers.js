@@ -145,7 +145,8 @@ export const LAYERS = [
       dateFormat: 'YYYY-MM-DD',
       trimEndDate: '{maxDate}',
       maxDate: '{maxDate}',
-      minDate: '2020-08-30',
+      minDate: '2020-01-01', // timeline min date
+      minDataDate: '2014-12-31', // layer data min date
       canPlay: true,
       railStyle: {
         background: '#DDD'

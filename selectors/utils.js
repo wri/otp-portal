@@ -14,11 +14,12 @@ export const dateDiffInDays = (startDate, endDate) => {
 };
 
 export const getDayRange = (params = {}) => {
-  const { startDate, endDate, minDate, maxDate } = params || {};
+  const { startDate, endDate, minDate, minDataDate, maxDate } = params || {};
+  const min = minDataDate < minDate ? minDataDate : minDate;
 
-  if (!startDate || !endDate || !minDate || !maxDate) return null;
+  if (!startDate || !endDate || !min || !maxDate) return null;
 
-  const minDateTime = new Date(minDate);
+  const minDateTime = new Date(min);
   const maxDateTime = new Date(maxDate);
   const numberOfDays = dateDiffInDays(maxDateTime, minDateTime);
 

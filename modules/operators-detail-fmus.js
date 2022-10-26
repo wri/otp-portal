@@ -392,6 +392,7 @@ export function getIntegratedAlertsMaxDate() {
       })
       .then(({ data }) => {
         const endDate = data.metadata.content_date_range.max;
+        const startDate = data.metadata.content_date_range.min;
         dispatch({
           type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
           payload: {
@@ -403,7 +404,8 @@ export function getIntegratedAlertsMaxDate() {
                 maxDate: endDate
               },
               timelineParams: {
-                maxDate: endDate
+                maxDate: endDate,
+                minDataDate: startDate
               }
             }
           }
