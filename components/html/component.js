@@ -1,22 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 
 import renderHTML from 'react-render-html';
 
-class HTML extends React.Component {
-  static propTypes = {
-    html: PropTypes.string.isRequired
-  };
+const HTML = ({ html, className }) => (
+  <div className={cx('c-html', className)}>
+    {renderHTML(html || '')}
+  </div>
+)
 
-  render() {
-    const { html } = this.props;
-
-    return (
-      <div className="c-html">
-        {renderHTML(html || '')}
-      </div>
-    );
-  }
+HTML.propTypes = {
+  html: PropTypes.string.isRequired,
+  className: PropTypes.string
 }
 
 export default HTML;

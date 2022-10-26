@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactTable from 'react-table/react-table';
@@ -7,6 +7,22 @@ export default function Table({ data, options, className }) {
   const classNames = classnames({
     [className]: !!className
   });
+  // react table has some issue with not changing page number in page navigation when providing
+  // new page number when using manual option
+  // in this case I will reset this control by rendering null for a milisecond
+  // maybe that is stupid but it works
+  const [reset, setReset] = useState(false);
+
+  useEffect(() => {
+    // only reset if page is set to 0, and options page is set to default value -1
+    // that should happen when filters are changed
+    if (options.page === 0 && options.manual && options.pages === -1) {
+      setReset(true);
+      setTimeout(() => setReset(false), 1);
+    }
+  }, [options.page]);
+
+  if (reset) return null;
 
   return (
     <div className={`c-table ${classNames}`}>
@@ -23,13 +39,17 @@ export default function Table({ data, options, className }) {
         noDataText={options.noDataText}
         pages={options.pages}
         showPageSizeOptions={options.showPageSizeOptions}
-        sortable
+        multiSort={options.multiSort !== undefined ? options.multiSort : true}
+        sortable={options.sortable !== undefined ? options.sortable : true}
         resizable={false}
         minRows={0}
+        loading={options.loading}
         // Api pagination & sort
-        // manual={options.manual}
+        manual={options.manual}
         onPageChange={options.onPageChange}
+        onFetchData={options.onFetchData}
         defaultSorted={options.defaultSorted}
+        sorted={options.sorted}
         SubComponent={options.showSubComponent && options.subComponent}
       />
     </div>

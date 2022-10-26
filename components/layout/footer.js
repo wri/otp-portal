@@ -9,7 +9,7 @@ const Footer = () => (
         <div className="footer-container">
           <div className="footer-item">
             <h1 className="logo">
-              <Link href="/">
+              <Link href="/" prefetch={false}>
                 <a>Open Timber Portal</a>
               </Link>
             </h1>
@@ -26,7 +26,7 @@ const Footer = () => (
         <div className="footer-container">
           <div className="footer-item">
             <a href="http://www.wri.org/" target="_blank" rel="noreferrer noopener">
-              <img src="/static/images/logos/wri-logo.svg" alt="WRI logo" />
+              <img src="/static/images/logos/wri-logo.svg" alt="WRI logo" width="155" height="55" />
             </a>
           </div>
           <div className="footer-item">

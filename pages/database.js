@@ -44,8 +44,7 @@ class DocumentsDatabasePage extends React.Component {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'documentation-list',
-      page: 1,
+      tab: this.props.url.query.subtab || 'documentation-list'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -59,14 +58,11 @@ class DocumentsDatabasePage extends React.Component {
     if (isEmpty(database.filters.options)) {
       this.props.getFilters();
     }
-    if (isEmpty(database.data)) {
-      this.props.getDocumentsDatabase();
-    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
-      this.props.getDocumentsDatabase();
+      this.props.getDocumentsDatabase({ reload: true });
     }
   }
 
