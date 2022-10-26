@@ -228,6 +228,7 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
   })
     .then((response) => {
       if (response.ok) return response.json();
+      throw new Error(response.statusText);
     })
     .then((response) => {
       const { operatorsDetailFmus } = getState();
@@ -284,6 +285,7 @@ function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
     }
   }).then((response) => {
     if (response.ok) return response.json();
+    throw new Error(response.statusText);
   });
 }
 
