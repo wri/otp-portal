@@ -38,7 +38,7 @@ const FMU_LEGEND = [
 export const LAYERS = [
   {
     id: 'integrated-alerts',
-    name: 'Integrated Alerts',
+    name: 'Integrated deforestation alerts',
     config: {
       type: 'raster',
       source: {
@@ -69,7 +69,7 @@ export const LAYERS = [
     },
     decodeConfig: [
       {
-        default: '2020-09-21',
+        default: '2021-02-28',
         key: 'startDate',
         required: true
       },
@@ -145,17 +145,17 @@ export const LAYERS = [
       dateFormat: 'YYYY-MM-DD',
       trimEndDate: '{maxDate}',
       maxDate: '{maxDate}',
-      minDate: '2014-12-31',
+      minDate: '2020-08-30',
       canPlay: true,
       railStyle: {
         background: '#DDD'
       },
       trackStyle: [
         {
-          background: '#FF0000'
+          background: '#eda4c3'
         },
         {
-          background: '#CC0000'
+          background: '#dc6699'
         }
       ]
     }
