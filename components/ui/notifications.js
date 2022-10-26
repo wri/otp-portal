@@ -66,7 +66,7 @@ class Notifications extends React.Component {
 
     return (
       <>
-        {notification['operator-document-name']} {notification['fmu-name']} {intl.formatMessage({ id: expiredText })} <span className="notification-date">{date}</span>
+        {notification['operator-document-name']} {notification['fmu-name'] ? `(${notification['fmu-name']})` : ''} {intl.formatMessage({ id: expiredText })} <span className="notification-date">{date}</span>
       </>
     )
   }
