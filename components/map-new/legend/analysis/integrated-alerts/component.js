@@ -20,7 +20,14 @@ const LegendAnalysisIntegratedAlerts = (props) => {
     high: 'High confidence: {count}',
     nominal: 'Detected by single alert system: {count}',
   };
-  const formatDate = (date) => moment(date).locale(language).format('MMMM Do, YYYY')
+  const formatDate = (date) => {
+    if (language === 'fr') {
+      return moment(date).locale(language).format('Do MMMM YYYY');
+    }
+
+    return moment(date).locale(language).format('MMMM Do, YYYY');
+  }
+
 
   return (
     <div className="c-legend-analysis">
