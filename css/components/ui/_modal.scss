@@ -108,4 +108,11 @@
       height: calc(100vh - 120px);
     }
   }
+
+  &.-auto {
+    .modal-container {
+      width: unset;
+      max-width: calc(100% - 120px);
+    }
+  }
 }

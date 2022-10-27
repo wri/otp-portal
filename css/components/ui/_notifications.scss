@@ -1,0 +1,19 @@
+.c-notifications {
+  padding: 20px;
+
+  .notification-date {
+    white-space: nowrap;
+    color: $color-doc-expired;
+  }
+
+  .notifications-message {
+    font-size: $font-size-big;
+  }
+
+  .notifications-actions {
+    display: flex;
+    margin-top: 30px;
+    gap: 20px;
+    justify-content: end;
+  }
+}

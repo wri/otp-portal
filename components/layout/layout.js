@@ -11,6 +11,7 @@ import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
+import Notifications from 'components/ui/notifications';
 import Toastr from 'react-redux-toastr';
 import RouterSpinner from 'components/layout/router-spinner';
 
@@ -58,6 +59,7 @@ export default class Layout extends React.Component {
           transitionOut="fadeOut"
         />
 
+        <Notifications />
         <RouterSpinner />
       </div>
     );
