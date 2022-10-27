@@ -14,6 +14,14 @@
     padding: 5px;
   }
 
+  &.-fit-to-page {
+    .rt-tbody {
+      min-height: 500px;
+      max-height: 70vh;
+      overflow-x: hidden!important;
+    }
+  }
+
   &.database-table {
     .report-item-wrapper {
       padding: 12px;

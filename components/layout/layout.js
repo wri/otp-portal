@@ -13,6 +13,7 @@ import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
 import Notifications from 'components/ui/notifications';
 import Toastr from 'react-redux-toastr';
+import RouterSpinner from 'components/layout/router-spinner';
 
 export default class Layout extends React.Component {
   componentDidMount() {
@@ -59,6 +60,7 @@ export default class Layout extends React.Component {
         />
 
         <Notifications />
+        <RouterSpinner />
       </div>
     );
   }
