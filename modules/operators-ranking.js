@@ -4,6 +4,9 @@ import Router from 'next/router';
 
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import moment from 'moment';
+
+import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
 import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -338,58 +341,27 @@ export function setFilters(filter) {
   };
 }
 
-export function getIntegratedAlertsMaxDate() {
+export function getIntegratedAlertsMetadata() {
   return (dispatch) => {
-    return fetch(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest`, {
-      method: 'GET'
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        const endDate = data.metadata.content_date_range.max;
-        const startDate = data.metadata.content_date_range.min;
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'integrated-alerts',
-            settings: {
-              decodeParams: {
-                endDate,
-                trimEndDate: endDate,
-                maxDate: endDate
-              },
-              timelineParams: {
-                maxDate: endDate,
-                minDataDate: startDate
-              }
+    return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      dispatch({
+        type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+        payload: {
+          id: 'integrated-alerts',
+          settings: {
+            decodeParams: {
+              endDate: maxDataDate,
+              trimEndDate: maxDataDate,
+              maxDate: maxDataDate
+            },
+            timelineParams: {
+              minDate: moment(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              maxDate: maxDataDate,
+              minDataDate
             }
           }
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-
-        const date = new Date();
-
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'integrated-alerts',
-            settings: {
-              decodeParams: {
-                endDate: date.toISOString(),
-                trimEndDate: date.toISOString(),
-                maxDate: date.toISOString()
-              },
-              timelineParams: {
-                maxDate: date.toISOString()
-              }
-            }
-          }
-        });
+        }
       });
+    })
   };
 }
