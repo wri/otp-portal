@@ -33,7 +33,7 @@ export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, fmu, operatorsDetail,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _fmu, _operatorsDetail) => {
     const { id: operator_id, fmus, country } = _operatorsDetail;
-    const fmuNames = fmus.map(f => slugify(f.name, { lower: true }));
+    const fmuNames = (fmus || []).map(f => slugify(f.name, { lower: true }));
 
     // Layers
     const aLayers = _layers.map((l) => {
