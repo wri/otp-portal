@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import sumBy from 'lodash/sumBy';
 import sortBy from 'lodash/sortBy';
@@ -9,7 +10,7 @@ import Spinner from 'components/ui/spinner';
 import { injectIntl, intlShape } from 'react-intl';
 
 const LegendAnalysisIntegratedAlerts = (props) => {
-  const { activeLayer, analysis, intl } = props;
+  const { activeLayer, analysis, intl, language } = props;
   const { decodeParams } = activeLayer;
   const { startDate, trimEndDate } = decodeParams;
   const { data, loading, error } = analysis;
@@ -19,7 +20,7 @@ const LegendAnalysisIntegratedAlerts = (props) => {
     high: 'High confidence: {count}',
     nominal: 'Detected by single alert system: {count}',
   };
-  const formatDate = (date) => moment(date).format('MMMM Do, YYYY')
+  const formatDate = (date) => moment(date).locale(language).format('MMMM Do, YYYY')
 
   return (
     <div className="c-legend-analysis">
@@ -54,9 +55,17 @@ const LegendAnalysisIntegratedAlerts = (props) => {
 }
 
 LegendAnalysisIntegratedAlerts.propTypes = {
+  language: PropTypes.string,
   activeLayer: PropTypes.shape({}).isRequired,
   analysis: PropTypes.shape({}).isRequired,
   intl: intlShape
 }
 
-export default injectIntl(LegendAnalysisIntegratedAlerts);
+export default injectIntl(
+  connect(
+    state => ({
+      language: state.language,
+    }),
+    null
+  )(LegendAnalysisIntegratedAlerts)
+);

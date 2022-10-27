@@ -215,6 +215,7 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
     GROUP BY gfw_integrated_alerts__confidence
   `
   const url = new URL(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest/query`);
+
   url.searchParams.set('geostore_id', geostoreId);
   url.searchParams.set('geostore_origin', 'rw');
   url.searchParams.set('sql', sql);
