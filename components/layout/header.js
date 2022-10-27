@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Link from 'next/link';
 
 import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 
 // Services
 import modal from 'services/modal';
@@ -20,9 +21,20 @@ import Icon from 'components/ui/icon';
 import NavigationList from 'components/ui/navigation-list';
 import Search from 'components/ui/search';
 import Login from 'components/ui/login';
+import Notifications from 'components/ui/notifications';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 
 class Header extends React.Component {
+  handleNotificationsClick = () => {
+    modal.toggleModal(true, {
+      children: Notifications,
+      childrenProps: {
+        render: true
+      },
+      size: '-auto'
+    });
+  }
+
   /**
    * HELPERS
    * - setTheme
@@ -38,7 +50,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { user, operators } = this.props;
+    const { user, operators, notifications } = this.props;
 
     return (
       <header className={`c-header ${this.setTheme()}`}>
@@ -93,6 +105,11 @@ class Header extends React.Component {
                       <DropdownContent>
                         <ul className="account-dropdown-list">
                           <li className="account-dropdown-list-item">
+                            <a onClick={this.handleNotificationsClick}>
+                              Notifications ({uniqBy(notifications, 'operator-document-id').length})
+                            </a>
+                          </li>
+                          <li className="account-dropdown-list-item">
                             <Link
                               href="/profile"
                               prefetch={false}
@@ -145,10 +162,10 @@ class Header extends React.Component {
                       </DropdownContent>
                     </Dropdown>
                   )}
-                </li>
+              </li>
               </ul>
             </nav>
-          </div>
+        </div>
         </div>
       </header>
     );
@@ -159,6 +176,7 @@ Header.propTypes = {
   url: PropTypes.object.isRequired,
   user: PropTypes.object,
   operators: PropTypes.array,
+  notifications: PropTypes.array,
   intl: intlShape.isRequired,
   logout: PropTypes.func
 };
@@ -167,7 +185,8 @@ export default injectIntl(connect(
 
   state => ({
     user: state.user,
-    operators: state.operators.data
+    operators: state.operators.data,
+    notifications: state.notifications.data
   }),
   { logout }
 )(Header));

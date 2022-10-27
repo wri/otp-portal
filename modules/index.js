@@ -16,6 +16,7 @@ export { default as sawmillMap } from './sawmill-map';
 export { default as user } from './user';
 export { default as help } from './help';
 export { default as about } from './about';
+export { default as notifications } from './notifications';
 
 // Toastr
 export { reducer as toastr } from 'react-redux-toastr';

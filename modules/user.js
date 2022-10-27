@@ -180,6 +180,7 @@ export function login({ body }) {
           },
         ],
         onSuccess: (response) => {
+          localStorage.removeItem('notificationsShown');
           window.location.reload();
         },
         onError: (error) => {
