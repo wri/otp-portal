@@ -238,9 +238,9 @@ class ObservationsPage extends React.Component {
                   options={parsedFilters.options}
                   filters={parsedFilters.data}
                   setFilters={this.props.setFilters}
+                  loading={observations.filters.loading}
                   filtersRefs={FILTERS_REFS}
                 />
-                <Spinner isLoading={observations.filters.loading} />
               </div>
 
               <div className="columns small-12 medium-6 medium-offset-1">

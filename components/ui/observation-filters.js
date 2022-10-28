@@ -7,6 +7,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
 
 import Checkbox from 'components/form/Checkbox';
+import Spinner from 'components/ui/spinner';
 
 class Filters extends React.Component {
   componentDidUpdate(prevProps) {
@@ -111,7 +112,7 @@ class Filters extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, loading } = this.props;
 
     const classNames = classnames({
       [className]: !!className,
@@ -119,6 +120,7 @@ class Filters extends React.Component {
 
     return (
       <aside className={`c-observation-filters ${classNames}`}>
+        <Spinner isLoading={loading} className="-absolute" />
         <div className="filters-content">
           <h2 className="c-title -light">
             {this.props.intl.formatMessage({ id: 'filter.title' })}
@@ -133,6 +135,7 @@ class Filters extends React.Component {
 Filters.propTypes = {
   filters: PropTypes.object,
   filtersRefs: PropTypes.array,
+  loading: PropTypes.bool,
   options: PropTypes.object,
   intl: intlShape.isRequired,
   className: PropTypes.string,
