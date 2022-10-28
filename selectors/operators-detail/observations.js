@@ -8,6 +8,10 @@ const operatorsDetail = (state) => state.operatorsDetail;
 const getParsedObservations = createSelector(
   operatorsDetail,
   (_operatorsDetail) => {
+    if (_operatorsDetail.observations.data.length > 0) {
+      return parseObservations(_operatorsDetail.observations.data);
+    }
+
     if (_operatorsDetail.data.observations) {
       return parseObservations(
         _operatorsDetail.data.observations.map((obs) => ({

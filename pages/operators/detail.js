@@ -24,6 +24,7 @@ import {
   getOperatorDocumentation,
   getOperatorDocumentationCurrent,
   getOperatorTimeline,
+  getOperatorObservations,
   setOperatorDocumentationDate,
 } from 'modules/operators-detail';
 import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
@@ -66,6 +67,7 @@ class OperatorsDetail extends React.Component {
       await store.dispatch(getOperatorDocumentation(url.query.id));
       await store.dispatch(getOperatorDocumentationCurrent(url.query.id));
       await store.dispatch(getOperatorTimeline(url.query.id));
+      await store.dispatch(getOperatorObservations(url.query.id, false));
     }
 
     return { url };
@@ -99,6 +101,7 @@ class OperatorsDetail extends React.Component {
 
     if (url.query.tab !== nextUrl.query.tab) {
       const { tab } = nextUrl.query || 'overview';
+      this.props.getOperatorObservations(url.query.id, false, true);
       logEvent('Producers', 'Change tab', tab);
     }
   }
@@ -260,6 +263,7 @@ export default withTracker(
         getOperatorDocumentation,
         getOperatorDocumentationCurrent,
         getOperatorTimeline,
+        getOperatorObservations
       }
     )(OperatorsDetail)
   )

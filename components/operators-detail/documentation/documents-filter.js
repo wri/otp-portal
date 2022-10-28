@@ -18,6 +18,7 @@ import {
 } from 'selectors/operators-detail/documentation';
 
 function DocumentsFilter({
+  children,
   date,
   setDate,
   showDate,
@@ -101,11 +102,14 @@ function DocumentsFilter({
           />
         </span>
       )}
+
+      {children}
     </div>
   );
 }
 
 DocumentsFilter.propTypes = {
+  children: PropTypes.any,
   date: PropTypes.string,
   setDate: PropTypes.func,
   FMU: PropTypes.object,

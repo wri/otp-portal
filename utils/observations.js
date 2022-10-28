@@ -143,11 +143,11 @@ function parseObservations(data) {
       subcategory: obs?.subcategory?.name || '',
       status: obs['validation-status-id'],
       'litigation-status': obs['litigation-status'],
-      'observer-types': obs.observers.map(
+      'observer-types': (obs.observers || []).map(
         (observer) => observer['observer-type']
       ),
       'observer-organizations': obs.observers,
-      'relevant-operators': obs['relevant-operators'].map((o) => o.name),
+      'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name),
     };
   });
 }

@@ -2,10 +2,16 @@ import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import * as queryString from 'query-string';
 
+import API from 'services/api';
+
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
 const GET_OPERATOR_ERROR = 'GET_OPERATOR_ERROR';
 const GET_OPERATOR_LOADING = 'GET_OPERATOR_LOADING';
+
+const GET_OPERATOR_OBSERVATIONS_SUCCESS = 'GET_OPERATOR_OBSERVATIONS_SUCCESS';
+const GET_OPERATOR_OBSERVATIONS_ERROR = 'GET_OPERATOR_OBSERVATIONS_ERROR';
+const GET_OPERATOR_OBSERVATIONS_LOADING = 'GET_OPERATOR_OBSERVATIONS_LOADING';
 
 const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
 const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
@@ -36,6 +42,11 @@ const initialState = {
   data: {},
   loading: false,
   error: false,
+  observations: {
+    data: [],
+    loading: false,
+    error: false,
+  },
   documentation: {
     data: [],
     loading: false,
@@ -126,7 +137,29 @@ export default function reducer(state = initialState, action) {
       });
       return Object.assign({}, state, { documentation });
     }
-
+    case GET_OPERATOR_OBSERVATIONS_SUCCESS: {
+      const observations = Object.assign({}, state.observations, {
+        data: action.payload,
+        loading: false,
+        error: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
+    case GET_OPERATOR_OBSERVATIONS_ERROR: {
+      const observations = Object.assign({}, state.observations, {
+        error: true,
+        loading: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
+    case GET_OPERATOR_OBSERVATIONS_LOADING: {
+      const observations = Object.assign({}, state.observations, {
+        data: [],
+        loading: true,
+        error: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
     case GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS: {
       const documentationCurrent = Object.assign({}, state.documentationCurrent, {
         data: action.payload,
@@ -208,21 +241,15 @@ export function getOperator(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
+    // beware of cyclic reference problems like fetching observation relevant operators
     const includeFields = [
       'country',
       'observations',
       'observations.severity',
       'observations.subcategory',
       'observations.subcategory.category',
-      'observations.observation-report',
-      'observations.observation-documents',
-      'observations.country',
-      'observations.fmu',
-      'observations.observers',
-      'observations.relevant-operators',
       'fmus',
     ];
-
     const lang = language === 'zh' ? 'zh-CN' : language;
 
     const queryParams = queryString.stringify({
@@ -245,10 +272,6 @@ export function getOperator(id) {
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-        // TODO: quick fix for cyclic problems, find a better way
-        dataParsed.observations.forEach((o) => {
-          o['relevant-operators'] = o['relevant-operators'].map((op) => ({ id: op.id, name: op.name }))
-        })
         dispatch({
           type: GET_OPERATOR_SUCCESS,
           payload: dataParsed,
@@ -312,6 +335,54 @@ export function getOperatorDocumentation(id) {
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_ERROR,
           payload: err.message,
+        });
+      });
+  };
+}
+
+export function getOperatorObservations(operatorId, includeHidden, reset) {
+  return (dispatch, getState) => {
+    // TODO; change this
+    if (reset) {
+      return dispatch({
+        type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
+        payload: []
+      });
+    }
+
+    const { language } = getState();
+
+    const includes = [
+      'country',
+      'fmu',
+      'observers',
+      'severity',
+      'subcategory',
+      'subcategory.category',
+    ];
+
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING });
+
+    return API.get('observations', {
+      locale: language,
+      include: includes.join(','),
+      'filter[operator]': operatorId,
+      'filter[hidden]': includeHidden ? 'all' : null
+    })
+      .then((observations) => {
+        const dataParsed = JSONA.deserialize(observations);
+
+        dispatch({
+          type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
+          payload: dataParsed
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_OPERATOR_OBSERVATIONS_ERROR,
+          payload: err.message
         });
       });
   };
