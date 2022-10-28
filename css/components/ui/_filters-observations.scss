@@ -15,5 +15,15 @@
       line-height: 26px;
       font-weight: normal;
     }
+
+    .c-checkbox {
+      margin-top: 10px;
+      .item-title {
+        font-size: 18px;
+        line-height: 26px;
+        font-weight: normal;
+        margin-top: -5px;
+      }
+    }
   }
 }

@@ -39,7 +39,6 @@ class Filters extends React.Component {
     });
 
     this.props.setFilters(filter);
-    // this.props.logFilter(key, filter[key]);
   }
 
   renderFiltersSelects() {
@@ -189,8 +188,7 @@ Filters.propTypes = {
   className: PropTypes.string,
   loading: PropTypes.bool,
   // Actions
-  setFilters: PropTypes.func,
-  logFilter: PropTypes.func,
+  setFilters: PropTypes.func
 };
 
 Filters.defaultProps = {

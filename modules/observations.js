@@ -47,7 +47,8 @@ const initialState = {
       category_id: [],
       subcategory_id: [],
       severity_level: [],
-      validation_status: []
+      validation_status: [],
+      hidden: []
     },
     options: {},
     loading: false,
