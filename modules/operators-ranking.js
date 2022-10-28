@@ -4,6 +4,9 @@ import Router from 'next/router';
 
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import moment from 'moment';
+
+import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
 import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -54,7 +57,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'glad',
+    'integrated-alerts',
     'fmus',
     'protected-areas'
   ],
@@ -338,54 +341,27 @@ export function setFilters(filter) {
   };
 }
 
-export function getGladMaxDate() {
+export function getIntegratedAlertsMetadata() {
   return (dispatch) => {
-    return fetch('https://production-api.globalforestwatch.org/v1/glad-alerts/latest', {
-      method: 'GET'
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: data[0].attributes.date,
-                trimEndDate: data[0].attributes.date,
-                maxDate: data[0].attributes.date
-              },
-              timelineParams: {
-                maxDate: data[0].attributes.date
-              }
+    return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      dispatch({
+        type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
+        payload: {
+          id: 'integrated-alerts',
+          settings: {
+            decodeParams: {
+              endDate: maxDataDate,
+              trimEndDate: maxDataDate,
+              maxDate: maxDataDate
+            },
+            timelineParams: {
+              minDate: moment(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              maxDate: maxDataDate,
+              minDataDate
             }
           }
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-
-        const date = new Date();
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: date.toISOString(),
-                trimEndDate: date.toISOString(),
-                maxDate: date.toISOString()
-              },
-              timelineParams: {
-                maxDate: date.toISOString()
-              }
-            }
-          }
-        });
+        }
       });
+    })
   };
 }

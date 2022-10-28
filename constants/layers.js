@@ -37,13 +37,13 @@ const FMU_LEGEND = [
 
 export const LAYERS = [
   {
-    id: 'glad',
-    name: 'GLAD alerts',
+    id: 'integrated-alerts',
+    name: 'Integrated deforestation alerts',
     config: {
       type: 'raster',
       source: {
         tiles: [
-          'https://tiles.globalforestwatch.org/glad_prod/tiles/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/gfw_integrated_alerts/latest/default/{z}/{x}/{y}.png'
         ],
         minzoom: 2,
         maxzoom: 12
@@ -54,23 +54,27 @@ export const LAYERS = [
       type: 'basic',
       items: [
         {
-          name: 'Alerts',
-          color: '#F00'
+          name: 'Detected by a single alert system',
+          color: '#eda4c3'
         },
         {
-          name: 'Recent alerts (last 31 days)',
-          color: '#840000'
+          name: 'High confidence: detected more than once by a single alert system',
+          color: '#dc6699'
+        },
+        {
+          name: 'Highest confidence: detected by multiple alert systems',
+          color: '#c92a6d'
         }
       ]
     },
     decodeConfig: [
       {
-        default: '2015-01-01',
+        default: '2021-02-28',
         key: 'startDate',
         required: true
       },
       {
-        default: '2020-01-30',
+        default: '2022-04-20',
         key: 'endDate',
         required: true
       },
@@ -81,57 +85,78 @@ export const LAYERS = [
       }
     ],
     decodeFunction: `
-      // values for creating power scale, domain (input), and range (output)
+    // First 6 bits Alpha channel used to individual alert confidence
+    // First two bits (leftmost) are GLAD-L
+    // Next, 3rd and 4th bits are GLAD-S2
+    // Finally, 5th and 6th bits are RADD
+    // Bits are either: 00 (0, no alerts), 01 (1, low conf), or 10 (2, high conf)
+    // e.g. 00 10 01 00 --> no GLAD-L, high conf GLAD-S2, low conf RADD
+    float agreementValue = alpha * 255.;
+    float r = color.r * 255.;
+    float g = color.g * 255.;
+    float b = color.b * 255.;
+    float day = r * 255. + g;
+    float confidence = floor(b / 100.) - 1.;
+    // float confidence = 255.;
+    float intensity = mod(b, 100.) * 50.;
+    // float intensity = 255.; //this is temporal above one does not work
+    if (
+      day > 0. &&
+      day >= startDayIndex &&
+      day <= endDayIndex &&
+      agreementValue > 0.
+    )
+    {
+      if (intensity > 255.) {
+        intensity = 255.;
+      }
+      // get high and highest confidence alerts
       float confidenceValue = 0.;
       if (confirmedOnly > 0.) {
-        confidenceValue = 200.;
+        confidenceValue = 255.;
       }
-      float day = color.r * 255. * 255. + (color.g * 255.);
-      float confidence = color.b * 255.;
-      if (
-        day > 0. &&
-        day >= startDayIndex &&
-        day <= endDayIndex &&
-        confidence >= confidenceValue
-      ) {
-        // get intensity
-        float intensity = mod(confidence, 100.) * 50.;
-        if (intensity > 255.) {
-          intensity = 255.;
-        }
-        if (day >= numberOfDays - 31. && day <= numberOfDays) {
-          color.r = 132. / 255.;
-          color.g = 0. / 255.;
-          color.b = 0.;
-          alpha = intensity / 255.;
-        } else {
-          color.r = 255. / 255.;
-          color.g = 0. / 255.;
-          color.b = 0. / 255.;
-          alpha = intensity / 255.;
-        }
+      if (agreementValue == 4. || agreementValue == 16. || agreementValue == 64.) {
+        // ONE ALERT LOW CONF: 4,8,16,32,64,128 i.e. 2**(2+n) for n<8
+        color.r = 237. / 255.;
+        color.g = 164. / 255.;
+        color.b = 194. / 255.;
+        alpha = (intensity -confidenceValue) / 255.;
+      } else if (agreementValue == 8. || agreementValue == 32. || agreementValue ==  128.){
+        // ONE HIGH CONF ALERT: 8,32,128 i.e. 2**(2+n) for n<8 and odd
+        color.r = 220. / 255.;
+        color.g = 102. / 255.;
+        color.b = 153. / 255.;
+        alpha = intensity / 255.;
       } else {
-        alpha = 0.;
+        // MULTIPLE ALERTS: >0 and not 2**(2+n)
+        color.r = 201. / 255.;
+        color.g = 42. / 255.;
+        color.b = 109. / 255.;
+        alpha = intensity / 255.;
       }
+    } else {
+      alpha = 0.;
+    }
     `,
     timelineConfig: {
       step: 7,
       speed: 100,
       interval: 'days',
       dateFormat: 'YYYY-MM-DD',
-      trimEndDate: '{maxDate}',
-      maxDate: '{maxDate}',
-      minDate: '2015-01-01',
+      trimEndDate: '{maxDate}', // updated after fetching layer metadata
+      maxDate: '{maxDate}', // updated after fetching layer metadata
+      minDate: '2020-08-30', // timeline min date - updated after fetching layer metadata
+      minDataDate: '2014-12-31', // layer data min date - updated after fetching layer metadata
       canPlay: true,
       railStyle: {
         background: '#DDD'
       },
       trackStyle: [
         {
-          background: '#FF0000'
+          background: '#eda4c3'
         },
         {
-          background: '#CC0000'
+          background: '#dc6699'
         }
       ]
     }

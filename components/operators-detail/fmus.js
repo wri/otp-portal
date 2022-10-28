@@ -59,7 +59,7 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (fmu) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
+      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
   }
 
@@ -78,7 +78,7 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (fmu.id !== prevFmu.id) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
+      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
 
     if (!isEqual(interactions, prevInteractions)) {
@@ -98,12 +98,12 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (
-      fmu.glad &&
-        prevFmu.glad &&
-        (fmu.glad.startDate !== prevFmu.glad.startDate ||
-          fmu.glad.trimEndDate !== prevFmu.glad.trimEndDate)
+      fmu['integrated-alerts'] &&
+        prevFmu['integrated-alerts'] &&
+        (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
+          fmu['integrated-alerts'].trimEndDate !== prevFmu['integrated-alerts'].trimEndDate)
     ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'glad');
+      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
   }
 
@@ -237,7 +237,6 @@ class OperatorsDetailFMUs extends React.Component {
             layerGroups={legendLayers}
             sortable={false}
             collapsable={false}
-            // expanded={false}
             setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
           />
         </Sidebar>

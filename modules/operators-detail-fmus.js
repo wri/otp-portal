@@ -1,4 +1,8 @@
 import { LAYERS } from 'constants/layers';
+import sumBy from 'lodash/sumBy';
+import moment from 'moment';
+
+import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
 const GET_FMU_ANALYSIS_SUCCESS = 'GET_FMU_ANALYSIS_SUCCESS';
 const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
@@ -32,7 +36,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'glad',
+    'integrated-alerts',
     // 'aac-cog',
     // 'aac-cod',
     // 'aac-cmr',
@@ -200,23 +204,23 @@ export function setOperatorsDetailFmuBounds(payload) {
   };
 }
 
+function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
+  const geostoreId = data.id;
+  const { startDate, trimEndDate } = fmu['integrated-alerts'];
+  const sql = `
+    SELECT count(*), SUM(area__ha)
+    FROM data
+    WHERE gfw_integrated_alerts__date >= '${startDate}' AND
+          gfw_integrated_alerts__date <= '${trimEndDate}'
+    GROUP BY gfw_integrated_alerts__confidence
+  `
+  const url = new URL(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest/query`);
 
-function fetchAnalysis(dispatch, getState, data, fmu, type) {
-  dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
+  url.searchParams.set('geostore_id', geostoreId);
+  url.searchParams.set('geostore_origin', 'rw');
+  url.searchParams.set('sql', sql);
 
-  const requestEndpoints = {
-    loss: 'umd-loss-gain',
-    glad: 'glad-alerts'
-  };
-
-  const { startDate, trimEndDate } = fmu[type];
-
-  const queryparams = {
-    geostore: data.id,
-    period: `${startDate},${trimEndDate}`
-  };
-
-  return fetch(`${process.env.RW_API}/${requestEndpoints[type]}?${Object.keys(queryparams).map(q => `${q}=${queryparams[q]}`).join('&')}`, {
+  return fetch(url.toString(), {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -224,8 +228,83 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
   })
     .then((response) => {
       if (response.ok) return response.json();
+      throw new Error(response.statusText);
     })
     .then((response) => {
+      const { operatorsDetailFmus } = getState();
+      const { analysis } = operatorsDetailFmus;
+      const { data: analysisData } = analysis;
+
+      // response data array element example
+      // { gfw_integrated_alerts__confidence: 'high', count: 1232, area__ha: 15.151760000000001 }
+
+      dispatch({
+        type: GET_FMU_ANALYSIS_SUCCESS,
+        payload: {
+          type,
+          data: {
+            [fmu.id]: {
+              geostore: data.id,
+              ...analysisData[fmu.id],
+              'integrated-alerts': response && response.data
+            }
+          }
+        }
+      });
+    })
+  .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+}
+
+const ANALYSIS = {
+  'gain': {
+    sum: 'area__ha',
+    filters: 'is__umd_tree_cover_gain',
+    group_by: 'is__umd_tree_cover_gain'
+  },
+  'loss': {
+    sum: 'area__ha',
+    filters: 'umd_tree_cover_density_2000__30', // extentYear: 2000, threshold: 30
+    group_by: 'umd_tree_cover_loss__year'
+  }
+}
+
+function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
+  const url = new URL(`${process.env.GFW_API}/analysis/zonal/${geostoreId}`);
+
+  url.searchParams.set('geostore_origin', 'rw');
+  url.searchParams.set('start_date', startDate);
+  url.searchParams.set('end_date', endDate);
+  url.searchParams.set('sum', ANALYSIS[analysis].sum);
+  url.searchParams.set('filters', ANALYSIS[analysis].filters);
+  url.searchParams.set('group_by', ANALYSIS[analysis].group_by);
+
+  return fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    if (response.ok) return response.json();
+    throw new Error(response.statusText);
+  });
+}
+
+function fetchAnalysis(dispatch, getState, data, fmu, type) {
+  dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
+
+  if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
+
+  const { startDate, trimEndDate } = fmu[type];
+  const geostoreId = data.id;
+
+  return Promise.all([
+    fetchZonalAnalysis(geostoreId, startDate, trimEndDate, 'gain'),
+    fetchZonalAnalysis(geostoreId, startDate, trimEndDate, 'loss'),
+  ])
+    .then(([gainResponse, lossResponse]) => {
+      const gain = gainResponse.data[0].area__ha;
+      const loss = sumBy(lossResponse.data, 'area__ha');
+
       const { operatorsDetailFmus } = getState();
       const { analysis } = operatorsDetailFmus;
       const { data: analysisData } = analysis;
@@ -238,13 +317,8 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
             [fmu.id]: {
               geostore: data.id,
               ...analysisData[fmu.id],
-              ...(type === 'loss') && {
-                gain: response && response.data && response.data.attributes,
-                loss: response && response.data && response.data.attributes
-              },
-              ...(type === 'glad') && {
-                glad: response && response.data && response.data.attributes
-              }
+              loss: { loss },
+              gain: { gain }
             }
           }
         }
@@ -277,15 +351,12 @@ export function setOperatorsDetailAnalysis(fmu, type) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ geojson: fmu.geojson })
-    })
-    .then((response) => {
+    }).then((response) => {
       if (response.ok) return response.json();
       throw new Error(response.statusText);
-    })
-    .then(({ data }) => {
+    }).then(({ data }) => {
       return fetchAnalysis(dispatch, getState, data, fmu, type);
-    })
-    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+    }).catch((error) => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
   };
 }
 
@@ -310,54 +381,27 @@ export function setOperatorsDetailMapHoverInteractions(payload) {
   };
 }
 
-export function getGladMaxDate() {
+export function getIntegratedAlertsMetadata() {
   return (dispatch) => {
-    return fetch('https://production-api.globalforestwatch.org/v1/glad-alerts/latest', {
-      method: 'GET'
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then(({ data }) => {
-        dispatch({
-          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: data[0].attributes.date,
-                trimEndDate: data[0].attributes.date,
-                maxDate: data[0].attributes.date
-              },
-              timelineParams: {
-                maxDate: data[0].attributes.date
-              }
+    return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      dispatch({
+        type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
+        payload: {
+          id: 'integrated-alerts',
+          settings: {
+            decodeParams: {
+              endDate: maxDataDate,
+              trimEndDate: maxDataDate,
+              maxDate: maxDataDate
+            },
+            timelineParams: {
+              minDate: moment(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              maxDate: maxDataDate,
+              minDataDate
             }
           }
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-
-        const date = new Date();
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-          payload: {
-            id: 'glad',
-            settings: {
-              decodeParams: {
-                endDate: date.toISOString(),
-                trimEndDate: date.toISOString(),
-                maxDate: date.toISOString()
-              },
-              timelineParams: {
-                maxDate: date.toISOString()
-              }
-            }
-          }
-        });
+        }
       });
+    })
   };
 }

@@ -26,7 +26,7 @@ import {
   getOperatorTimeline,
   setOperatorDocumentationDate,
 } from 'modules/operators-detail';
-import { getGladMaxDate } from 'modules/operators-detail-fmus';
+import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
 import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
@@ -53,8 +53,8 @@ class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
 
-    if (!operatorsDetailFmus.layersSettings.glad) {
-      await store.dispatch(getGladMaxDate());
+    if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
+      await store.dispatch(getIntegratedAlertsMetadata());
     }
 
     if (url.query.tab === 'documentation') {

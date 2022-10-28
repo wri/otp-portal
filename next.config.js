@@ -7,6 +7,7 @@ const config = {
     ENV: process.env.ENV,
     PORT: process.env.PORT,
     RW_API: process.env.RW_API,
+    GFW_API: process.env.GFW_API,
     OTP_API: process.env.OTP_API,
     OTP_API_KEY: process.env.OTP_API_KEY,
     OTP_COUNTRIES: process.env.OTP_COUNTRIES.split(','),
