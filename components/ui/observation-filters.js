@@ -10,22 +10,22 @@ import Checkbox from 'components/form/Checkbox';
 import Spinner from 'components/ui/spinner';
 
 class Filters extends React.Component {
-  componentDidUpdate(prevProps) {
-    const { options, filters } = this.props;
-    const { options: prevOptions } = prevProps;
+  /* componentDidUpdate(prevProps) {
+   *   const { options, filters } = this.props;
+   *   const { options: prevOptions } = prevProps;
 
-    if (!isEqual(options, prevOptions)) {
-      this.props.filtersRefs.map((f) => {
-        const value = options[f.key]
-          ? options[f.key].filter((opt) =>
-              filters[f.key] ? filters[f.key].includes(opt.value) : false
-            )
-          : [];
+   *   if (!isEqual(options, prevOptions)) {
+   *     this.props.filtersRefs.map((f) => {
+   *       const value = options[f.key]
+   *         ? options[f.key].filter((opt) =>
+   *             filters[f.key] ? filters[f.key].includes(opt.value) : false
+   *           )
+   *         : [];
 
-        this.setFilter(value, f.key);
-      });
-    }
-  }
+   *       this.setFilter(value, f.key);
+   *     });
+   *   }
+   * } */
 
   setFilter = (selected, key) => {
     const filter = {};

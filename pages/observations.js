@@ -96,6 +96,7 @@ class ObservationsPage extends React.Component {
 
     this.props.getFilters();
     this.props.getObservationsUrl(url);
+    this.props.getObservations();
   }
 
   componentWillReceiveProps(nextProps) {
