@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 import * as queryString from 'query-string';
 
 import API from 'services/api';
@@ -57,7 +58,7 @@ const initialState = {
     loading: false,
     error: false,
   },
-  date: new Date(),
+  date: moment().format('YYYY-MM-DD'),
   FMU: null,
   timeline: [],
   sawmills: {
@@ -302,6 +303,7 @@ export function getOperatorDocumentation(id) {
     const lang = language === 'zh' ? 'zh-CN' : language;
     const queryParams = queryString.stringify({
       include: includeFields.join(','),
+      'fields[fmus]': 'name',
       'filter[operator-id]': id,
       'filter[date]': date,
       locale: lang,
