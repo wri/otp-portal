@@ -4,21 +4,20 @@ import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 import compact from 'lodash/compact';
 
-import { toastr } from 'react-redux-toastr';
+import API from 'services/api';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
 
 /* Constants */
 const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
-const GET_OBSERVATIONS_TOTAL_SIZE = 'GET_OBSERVATIONS_TOTAL_SIZE';
 const GET_OBSERVATIONS_ERROR = 'GET_OBSERVATIONS_ERROR';
 const GET_OBSERVATIONS_LOADING = 'GET_OBSERVATIONS_LOADING';
 
 const GET_FILTERS_OBSERVATIONS_SUCCESS = 'GET_FILTERS_OBSERVATIONS_SUCCESS';
 const GET_FILTERS_OBSERVATIONS_ERROR = 'GET_FILTERS_OBSERVATIONS_ERROR';
 const GET_FILTERS_OBSERVATIONS_LOADING = 'GET_FILTERS_OBSERVATIONS_LOADING';
-const SET_FILTERS_OBSERRVATIONS = 'SET_FILTERS_OBSERRVATIONS';
+const SET_FILTERS_OBSERVATIONS = 'SET_FILTERS_OBSERVATIONS';
 const SET_ACTIVE_COLUMNS_OBSERVATIONS = 'SET_ACTIVE_COLUMNS_OBSERVATIONS';
 const SET_OBSERVATIONS_MAP_LOCATION = 'SET_OBSERVATIONS_MAP_LOCATION';
 const SET_OBSERVATIONS_MAP_CLUSTER = 'SET_OBSERVATIONS_MAP_CLUSTER';
@@ -28,7 +27,7 @@ const OBS_MAX_SIZE = 3000;
 /* Initial state */
 const initialState = {
   data: [],
-  totalSize: 0,
+  timestamp: null,
   loading: false,
   error: false,
   map: {
@@ -59,20 +58,24 @@ const initialState = {
 
 const JSONA = new Jsona();
 
+function isLatestAction(state, action) {
+  return action.metadata.timestamp >= state.timestamp;
+}
+
 /* Reducer */
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case GET_OBSERVATIONS_SUCCESS:
+      if (!isLatestAction(state, action)) return state;
       return Object.assign({}, state, {
         data: action.payload, loading: false, error: false
       });
-    case GET_OBSERVATIONS_TOTAL_SIZE:
-      return Object.assign({}, state, { totalSize: action.payload });
     case GET_OBSERVATIONS_ERROR:
+      if (!isLatestAction(state, action)) return state;
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OBSERVATIONS_LOADING:
-      return Object.assign({}, state, { loading: true, error: false });
-    // Filters
+      return Object.assign({}, state, { loading: true, error: false, timestamp: action.metadata.timestamp });
+      // Filters
     case GET_FILTERS_OBSERVATIONS_SUCCESS: {
       const newFilters = Object.assign({}, state.filters, {
         options: action.payload, loading: false, error: false
@@ -87,7 +90,7 @@ export default function reducer(state = initialState, action) {
       const newFilters = Object.assign({}, state.filters, { loading: true, error: false });
       return Object.assign({}, state, { filters: newFilters });
     }
-    case SET_FILTERS_OBSERRVATIONS: {
+    case SET_FILTERS_OBSERVATIONS: {
       const newFilters = Object.assign({}, state.filters, { data: action.payload });
       return Object.assign({}, state, { filters: newFilters });
     }
@@ -111,48 +114,54 @@ export function getObservations() {
   return (dispatch, getState) => {
     const { language } = getState();
     const filters = getState().observations.filters.data;
-    const filtersQuery = compact(Object.keys(filters).map((key) => {
-      if (!isEmpty(filters[key])) {
-        return `filter[${key}]=${filters[key].join(',')}`;
-      }
-      return null;
-    }));
+    const metadata = {
+      timestamp: new Date()
+    };
+    const includes = [
+      'country',
+      'subcategory',
+      'subcategory.category',
+      'operator',
+      'severity',
+      'fmu',
+      'observation-report',
+      'observers',
+      'observation-documents',
+      'relevant-operators'
+    ];
 
-    const includes = ['country', 'subcategory', 'subcategory.category', 'operator', 'severity', 'fmu', 'observation-report', 'observers', 'observation-documents', 'relevant-operators'];
-
-    // Fields
-    const currentFields = { fmus: ['name'], operator: ['name'] };
-    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const url = `${process.env.OTP_API}/observations?locale=${lang}&page[size]=${OBS_MAX_SIZE}&${fields}&include=${includes.join(',')}&${filtersQuery.join('&')}`;
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OBSERVATIONS_LOADING });
+    dispatch({ type: GET_OBSERVATIONS_LOADING, metadata });
 
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
+    return API.get('observations', {
+      locale: language,
+      'page[size]': OBS_MAX_SIZE,
+      include: includes.join(','),
+      'fields[fmus]': 'name',
+      'fields[operator]': 'name',
+      ...Object.keys(filters).reduce((acc, key) => {
+        if (isEmpty(filters[key])) return acc;
+        return {
+          ...acc,
+          [`filter[${key}]`]: filters[key].join(',')
+        }
+      }, {})
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
       .then((observations) => {
         const dataParsed = JSONA.deserialize(observations);
 
         dispatch({
           type: GET_OBSERVATIONS_SUCCESS,
-          payload: dataParsed
+          payload: dataParsed,
+          metadata
         });
       })
       .catch((err) => {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_OBSERVATIONS_ERROR,
-          payload: err.message
+          payload: err.message,
+          metadata
         });
       });
   };
@@ -211,7 +220,7 @@ export function setFilters(filter) {
     newFilters[key] = filter[key];
 
     dispatch({
-      type: SET_FILTERS_OBSERRVATIONS,
+      type: SET_FILTERS_OBSERVATIONS,
       payload: newFilters
     });
   };
@@ -246,7 +255,7 @@ export function getObservationsUrl(url) {
       };
 
       dispatch({
-        type: SET_FILTERS_OBSERRVATIONS,
+        type: SET_FILTERS_OBSERVATIONS,
         payload
       });
     }
