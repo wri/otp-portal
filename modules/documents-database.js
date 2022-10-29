@@ -1,8 +1,8 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
-import compact from 'lodash/compact';
+
+import API from 'services/api';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
@@ -24,6 +24,7 @@ const RELOAD_DOCUMENTS = 'RELOAD_DOCUMENTS';
 /* Initial state */
 const initialState = {
   data: [],
+  timestamp: null,
   page: 0,
   pageSize: 30,
   pageCount: -1, // react-table needs -1 by default
@@ -50,6 +51,10 @@ const initialState = {
 
 const JSONA = new Jsona();
 
+function isLatestAction(state, action) {
+  return action.metadata.timestamp >= state.timestamp;
+}
+
 /* Reducer */
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -58,19 +63,24 @@ export default function reducer(state = initialState, action) {
         data: [],
         loading: false,
         error: false,
+        timestamp: null,
         pageCount: -1,
         page: 0
       });
     case GET_DOCUMENTS_DB_SUCCESS:
+      if (!isLatestAction(state, action)) return state;
+
       return Object.assign({}, state, {
         data: action.payload,
         loading: false,
         error: false,
       });
     case GET_DOCUMENTS_DB_ERROR:
+      if (!isLatestAction(state, action)) return state;
+
       return Object.assign({}, state, { error: true, loading: false });
     case GET_DOCUMENTS_DB_LOADING:
-      return Object.assign({}, state, { loading: true, error: false });
+      return Object.assign({}, state, { loading: true, error: false, timestamp: action.metadata.timestamp });
     // Filters
     case GET_FILTERS_DOCUMENTS_DB_SUCCESS: {
       const newFilters = Object.assign({}, state.filters, {
@@ -107,6 +117,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { page: action.payload });
     }
     case SET_PAGE_COUNT:
+      if (!isLatestAction(state, action)) return state;
+
       return Object.assign({}, state, { pageCount: action.payload });
     default:
       return state;
@@ -126,15 +138,6 @@ export function getDocumentsDatabase(options = { reload: false }) {
     const filters = getState().database.filters.data;
     const { page, pageSize } = getState().database;
 
-    const filtersQuery = compact(
-      Object.keys(filters).map((key) => {
-        if (!isEmpty(filters[key])) {
-          return `filter[${key}]=${filters[key].join(',')}`;
-        }
-        return null;
-      })
-    );
-
     const includes = [
       'operator',
       'operator.country',
@@ -143,49 +146,39 @@ export function getDocumentsDatabase(options = { reload: false }) {
       'required-operator-document',
       'required-operator-document.required-operator-document-group',
     ];
+    const metadata = { timestamp: new Date() };
 
-    // Fields
-    const currentFields = { fmus: ['name,forest-type'], operator: ['name'] };
-    const fields = Object.keys(currentFields)
-      .map((f) => `fields[${f}]=${currentFields[f]}`)
-      .join('&');
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const queryParams = [
-      `locale=${lang}`,
-      `page[number]=${page+1}`,
-      `page[size]=${pageSize}`,
-      fields,
-      `include=${includes.join(',')}`,
-      ...filtersQuery
-    ].filter(x => x && x !== '');
-
-    const url = `${process.env.OTP_API}/operator-documents?${queryParams.join('&')}`
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_DOCUMENTS_DB_LOADING });
+    dispatch({ type: GET_DOCUMENTS_DB_LOADING, metadata });
 
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-      },
+    return API.get('operator-documents', {
+      locale: language,
+      'page[number]': page + 1,
+      'page[size]': pageSize,
+      include: includes.join(','),
+      'fields[fmus]': 'name,forest-type',
+      'fields[operator]': 'name',
+      ...Object.keys(filters).reduce((acc, key) => {
+        if (isEmpty(filters[key])) return acc;
+        return {
+          ...acc,
+          [`filter[${key}]`]: filters[key].join(',')
+        }
+      }, {})
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
       .then((documents) => {
         const dataParsed = JSONA.deserialize(documents);
 
         dispatch({
           type: GET_DOCUMENTS_DB_SUCCESS,
           payload: dataParsed,
+          metadata
         });
 
         dispatch({
           type: SET_PAGE_COUNT,
-          payload: documents.meta['page-count']
+          payload: documents.meta['page-count'],
+          metadata
         })
       })
       .catch((err) => {
@@ -193,6 +186,7 @@ export function getDocumentsDatabase(options = { reload: false }) {
         dispatch({
           type: GET_DOCUMENTS_DB_ERROR,
           payload: err.message,
+          metadata
         });
       });
   };
@@ -205,22 +199,9 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_DOCUMENTS_DB_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(
-      `${process.env.OTP_API}/operator_document_filters_tree?locale=${lang}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('operator_document_filters_tree', {
+      locale: language
+    })
       .then((filters) => {
         dispatch({
           type: GET_FILTERS_DOCUMENTS_DB_SUCCESS,
