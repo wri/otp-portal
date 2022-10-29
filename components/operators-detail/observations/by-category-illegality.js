@@ -43,6 +43,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
 
     // BINDINGS
     this.triggerSelectedIllegality = this.triggerSelectedIllegality.bind(this);
+    this.resetSelected = this.resetSelected.bind(this);
   }
 
   /**
