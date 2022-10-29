@@ -45,6 +45,7 @@ const initialState = {
   error: false,
   observations: {
     data: [],
+    timestamp: null,
     loading: false,
     error: false,
   },
@@ -59,7 +60,7 @@ const initialState = {
     error: false,
   },
   date: moment().format('YYYY-MM-DD'),
-  FMU: null,
+  fmu: null,
   timeline: [],
   sawmills: {
     data: [],
@@ -74,6 +75,11 @@ const initialState = {
 };
 
 const JSONA = new Jsona();
+
+
+function isLatestAction(state, action) {
+  return action.metadata.timestamp >= state.timestamp;
+}
 
 /* Reducer */
 export default function reducer(state = initialState, action) {
@@ -138,7 +144,17 @@ export default function reducer(state = initialState, action) {
       });
       return Object.assign({}, state, { documentation });
     }
+    case GET_OPERATOR_OBSERVATIONS_LOADING: {
+      const observations = Object.assign({}, state.observations, {
+        timestamp: action.metadata.timestamp,
+        loading: true,
+        error: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
     case GET_OPERATOR_OBSERVATIONS_SUCCESS: {
+      if (!isLatestAction(state.observations, action)) return state;
+
       const observations = Object.assign({}, state.observations, {
         data: action.payload,
         loading: false,
@@ -147,17 +163,11 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { observations });
     }
     case GET_OPERATOR_OBSERVATIONS_ERROR: {
+      if (!isLatestAction(state.observations, action)) return state;
+
       const observations = Object.assign({}, state.observations, {
         error: true,
         loading: false,
-      });
-      return Object.assign({}, state, { observations });
-    }
-    case GET_OPERATOR_OBSERVATIONS_LOADING: {
-      const observations = Object.assign({}, state.observations, {
-        data: [],
-        loading: true,
-        error: false,
       });
       return Object.assign({}, state, { observations });
     }
@@ -206,7 +216,7 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { sawmills });
     }
 
-    // Get all sawmills geojson by Operator ID
+      // Get all sawmills geojson by Operator ID
     case GET_SAWMILLS_LOCATIONS_SUCCESS: {
       const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
         data: action.payload.features,
@@ -245,10 +255,6 @@ export function getOperator(id) {
     // beware of cyclic reference problems like fetching observation relevant operators
     const includeFields = [
       'country',
-      'observations',
-      'observations.severity',
-      'observations.subcategory',
-      'observations.subcategory.category',
       'fmus',
     ];
     const lang = language === 'zh' ? 'zh-CN' : language;
@@ -342,16 +348,8 @@ export function getOperatorDocumentation(id) {
   };
 }
 
-export function getOperatorObservations(operatorId, includeHidden, reset) {
+export function getOperatorObservations(operatorId) {
   return (dispatch, getState) => {
-    // TODO; change this
-    if (reset) {
-      return dispatch({
-        type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
-        payload: []
-      });
-    }
-
     const { language } = getState();
 
     const includes = [
@@ -361,30 +359,38 @@ export function getOperatorObservations(operatorId, includeHidden, reset) {
       'severity',
       'subcategory',
       'subcategory.category',
+      'observation-report',
+      'observation-documents',
+      'relevant-operators',
+      'operator',
     ];
 
+    const timestamp = new Date();
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING });
+    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata: { timestamp } });
 
     return API.get('observations', {
       locale: language,
       include: includes.join(','),
+      'fields[fmus]': 'name',
       'filter[operator]': operatorId,
-      'filter[hidden]': includeHidden ? 'all' : null
+      'filter[hidden]': 'all'
     })
       .then((observations) => {
         const dataParsed = JSONA.deserialize(observations);
 
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
-          payload: dataParsed
+          payload: dataParsed,
+          metadata: { timestamp }
         });
       })
       .catch((err) => {
         // Fetch from server ko -> Dispatch error
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_ERROR,
-          payload: err.message
+          payload: err.message,
+          metadata: { timestamp }
         });
       });
   };

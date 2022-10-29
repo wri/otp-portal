@@ -148,6 +148,7 @@ function parseObservations(data) {
       ),
       'observer-organizations': obs.observers,
       'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name),
+      hidden: obs.hidden
     };
   });
 }

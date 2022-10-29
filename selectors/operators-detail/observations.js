@@ -12,15 +12,6 @@ const getParsedObservations = createSelector(
       return parseObservations(_operatorsDetail.observations.data);
     }
 
-    if (_operatorsDetail.data.observations) {
-      return parseObservations(
-        _operatorsDetail.data.observations.map((obs) => ({
-          ...obs,
-          operator: { name: _operatorsDetail.data.name },
-        }))
-      );
-    }
-
     return [];
   }
 );

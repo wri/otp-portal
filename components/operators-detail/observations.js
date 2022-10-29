@@ -66,15 +66,17 @@ class OperatorsDetailObservations extends React.Component {
   onChangeDisplayHidden({ checked }) {
     const displayHidden = checked;
     this.setState({ displayHidden });
-    this.props.getOperatorObservations(this.props.url.query.id, displayHidden);
   }
 
   render() {
-    const observationData = this.props.FMU
-      ? this.props.operatorObservations.filter(
-          (obs) => obs.fmu && obs.fmu.id === this.props.FMU.id
-        )
-      : this.props.operatorObservations;
+    const { displayHidden } = this.state;
+    const observationData = this.props.operatorObservations.filter(
+      (obs) => (
+        (!this.props.FMU || (obs.fmu && obs.fmu.id === this.props.FMU.id)) &&
+          (displayHidden || obs.hidden === false)
+      )
+    );
+
     return (
       <div className="c-section">
         <div className="l-container">

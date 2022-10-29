@@ -68,12 +68,12 @@ class OperatorsDetail extends React.Component {
 
     if (operatorsDetail.data.id !== url.query.id) {
       requests.push(store.dispatch(getOperator(url.query.id)));
+      requests.push(store.dispatch(getOperatorObservations(url.query.id)));
 
       if (isClient || url.query.tab === 'documentation') {
         requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
         requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
         requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
-        requests.push(store.dispatch(getOperatorObservations(url.query.id, false)));
       }
     }
 
@@ -113,7 +113,6 @@ class OperatorsDetail extends React.Component {
 
     if (url.query.tab !== nextUrl.query.tab) {
       const { tab } = nextUrl.query || 'overview';
-      this.props.getOperatorObservations(url.query.id, false, true);
       logEvent('Producers', 'Change tab', tab);
     }
   }
@@ -130,6 +129,10 @@ class OperatorsDetail extends React.Component {
       switch (tab.value) {
         case 'documentation': {
           number = `${HELPERS_DOC.getPercentage(operatorsDetail)}%`;
+          break;
+        }
+        case 'observations': {
+          number = this.props.operatorObservations.filter(o => !o.hidden).length;
           break;
         }
 
@@ -220,7 +223,7 @@ class OperatorsDetail extends React.Component {
           <OperatorsDetailOverview
             operatorsDetail={operatorsDetail}
             operatorDocumentation={operatorDocumentation}
-            operatorObservations={operatorObservations}
+            operatorObservations={operatorObservations.filter(o => !o.hidden)}
             url={url}
           />
         )}
