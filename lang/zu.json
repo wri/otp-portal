@@ -451,6 +451,7 @@
   "analysis.description": "Select a fmu by using the following select or by clicking on the map shapes.",
   "analysis.loss": "There were {alerts} ha of tree cover loss",
   "analysis.gain": "There were {alerts} ha of tree cover gain",
+  "analysis.integrated-zero": "There were 0 deforestation alerts between {startDate} and {trimEndDate}",
   "analysis.integrated": "There were {alerts} deforestation alerts between {startDate} and {trimEndDate} of which:",
   "analysis.integrated.high": "High confidence: {count}",
   "analysis.integrated.highest": "Highest confidence: {count}",
