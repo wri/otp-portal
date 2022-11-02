@@ -58,12 +58,15 @@ class Filters extends React.Component {
         }),
       }));
     }
+    const title = f.name && this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name });
 
     return (
       <div className="c-select">
-        <h3 className="title">
-          {this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name })}
-        </h3>
+        {title && (
+          <h3 className="title">
+            {title}
+          </h3>
+        )}
         <Select
           instanceId={f.key}
           name={f.key}
@@ -84,14 +87,16 @@ class Filters extends React.Component {
   }
 
   renderFilterCheckbox = (f) => {
-    const title = this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name });
+    const title = f.name && this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name });
     const description = this.props.intl.formatMessage({ id: `filter.${f.key}.description`, defaultMessage: f.description });
 
     return (
       <div className="filter-checkbox">
-        <h3 className="title">
-          {title}
-        </h3>
+        {title && (
+          <h3 className="title">
+            {title}
+          </h3>
+        )}
         <Checkbox
           properties={{ title: description, className: '-white' }}
           onChange={({ checked }) => this.setFilter(f.valueTransform ? f.valueTransform(checked) : checked, f.key) }

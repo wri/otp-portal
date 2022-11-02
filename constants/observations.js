@@ -1,7 +1,7 @@
 const FILTERS_REFS = [
   {
     key: 'hidden',
-    name: 'Visibility',
+    name: null,
     type: 'checkbox',
     description: 'Display observations that are more than five years old',
     valueTransform: (value) => value ? 'all' : null
