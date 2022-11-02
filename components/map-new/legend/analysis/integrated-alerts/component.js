@@ -14,7 +14,7 @@ const LegendAnalysisIntegratedAlerts = (props) => {
   const { decodeParams } = activeLayer;
   const { startDate, trimEndDate } = decodeParams;
   const { data, loading, error } = analysis;
-  const totalCount = sumBy((data || []), 'count');
+  const totalCount = sumBy((data || []), 'count') || 0;
   const defaultMessages = {
     highest: 'Highest confidence: {count}',
     high: 'High confidence: {count}',
@@ -27,7 +27,25 @@ const LegendAnalysisIntegratedAlerts = (props) => {
 
     return moment(date).locale(language).format('MMMM Do, YYYY');
   }
-
+  let alertText;
+  if (data && totalCount > 0) {
+    alertText = intl.formatMessage({
+      id: 'analysis.integrated',
+      defaultMessage: 'There were {alerts} deforestation alerts between {startDate} and {trimEndDate} of which:',
+    }, {
+      alerts: totalCount.toLocaleString(),
+      startDate: formatDate(startDate),
+      trimEndDate: formatDate(trimEndDate)
+    });
+  } else {
+    alertText = intl.formatMessage({
+      id: 'analysis.integrated-zero',
+      defaultMessage: 'There were 0 deforestation alerts between {startDate} and {trimEndDate}',
+    }, {
+      startDate: formatDate(startDate),
+      trimEndDate: formatDate(trimEndDate)
+    });
+  }
 
   return (
     <div className="c-legend-analysis">
@@ -37,16 +55,9 @@ const LegendAnalysisIntegratedAlerts = (props) => {
         'Oops!! There was an error during the analysis.'
       }
 
-      {!loading && data && data.length > 0 && (
+      {!loading && data && (
         <div>
-          {intl.formatMessage({
-            id: 'analysis.integrated',
-            defaultMessage: 'There were {alerts} deforestation alerts between {startDate} and {trimEndDate} of which:',
-          }, {
-            alerts: totalCount.toLocaleString(),
-            startDate: formatDate(startDate),
-            trimEndDate: formatDate(trimEndDate)
-          })}
+          {alertText}
           {sortBy(data, (d) => Object.keys(defaultMessages).indexOf(d.gfw_integrated_alerts__confidence)).map((d) => (
             <div key={d.gfw_integrated_alerts__confidence}>
               {intl.formatMessage({
