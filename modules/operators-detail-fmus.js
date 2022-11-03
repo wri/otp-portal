@@ -302,8 +302,8 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
     fetchZonalAnalysis(geostoreId, startDate, trimEndDate, 'loss'),
   ])
     .then(([gainResponse, lossResponse]) => {
-      const gain = gainResponse.data[0].area__ha;
-      const loss = sumBy(lossResponse.data, 'area__ha');
+      const gain = (gainResponse.data && gainResponse.data[0] && gainResponse.data[0].area__ha) || 0;
+      const loss = sumBy(lossResponse.data, 'area__ha') || 0;
 
       const { operatorsDetailFmus } = getState();
       const { analysis } = operatorsDetailFmus;
