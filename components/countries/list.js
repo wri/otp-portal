@@ -7,37 +7,31 @@ import { connect } from 'react-redux';
 // Components
 import CountryCard from 'components/ui/country-card';
 
-class CountriesList extends React.Component {
-  render() {
-    const { data } = this.props;
+const CountriesList = ({ data }) => {
+  return (
+    <div className="c-countries-list">
+      <h2 className="c-title">Select a country</h2>
 
-    return (
-      <div className="c-countries-list">
-        <h2 className="c-title">Select a country</h2>
-
-        <div className="row l-row -equal-heigth">
-          {data.map(country => (
-            <div className="columns small-12 medium-4">
-              <CountryCard
-                {...country}
-              />
-            </div>
-          ))}
-        </div>
-
+      <div className="row l-row -equal-heigth">
+        {data.map(country => (
+          <div className="columns small-12 medium-4" key={country.id}>
+            <CountryCard
+              {...country}
+            />
+          </div>
+        ))}
       </div>
-    );
-  }
+
+    </div>
+  );
 }
 
 CountriesList.defaultProps = {
-  data: [],
-  loading: false
+  data: []
 };
 
 CountriesList.propTypes = {
   data: PropTypes.array,
-  loading: PropTypes.bool
 };
 
 export default connect(

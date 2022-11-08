@@ -34,10 +34,14 @@ import CountriesDetailObservations from 'components/countries-detail/observation
 
 class CountriesDetail extends React.Component {
   static async getInitialProps({ url, store }) {
-    await store.dispatch(getCountry(url.query.id));
-    await store.dispatch(getCountryObservations(url.query.id));
-    await store.dispatch(getCountryLinks(url.query.id));
-    await store.dispatch(getCountryVPAs(url.query.id));
+    const { countriesDetail } = store.getState();
+
+    if (countriesDetail.data.id !== url.query.id) {
+      await store.dispatch(getCountry(url.query.id));
+      await store.dispatch(getCountryObservations(url.query.id));
+      await store.dispatch(getCountryLinks(url.query.id));
+      await store.dispatch(getCountryVPAs(url.query.id));
+    }
 
     return { url };
   }

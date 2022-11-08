@@ -6,24 +6,20 @@ import Link from 'next/link';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
-class CountryCard extends React.Component {
-  static propTypes = {
-    id: PropTypes.number,
-    name: PropTypes.string
-  };
+const CountryCard = ({ id, name }) => {
+  return (
+    <Link href={`/countries/${id}`}>
+      <a className="c-country-card">
+        <h2 className="c-title -extrabig -uppercase -proximanova"> {name} </h2>
+      </a>
+    </Link>
 
-  render() {
-    const { id, name } = this.props;
+  );
+}
 
-    return (
-      <Link href={`/countries/${id}`}>
-        <a className="c-country-card">
-          <h2 className="c-title -extrabig -uppercase -proximanova"> {name} </h2>
-        </a>
-      </Link>
-
-    );
-  }
+CountryCard.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string
 }
 
 export default injectIntl(connect(
