@@ -26,7 +26,29 @@ class Gallery1 extends React.Component {
   };
 
   render() {
-    const { url, countriesDetail, countryObservations, countryDocumentation } = this.props;
+    const { url, countriesDetail, countryObservations, countryDocumentation, intl } = this.props;
+
+    const observations = countryObservations?.length || 0;
+    const visits = countryObservations ? HELPERS_OBS.getMonitorVisits(countryObservations) : 0;
+
+    let obsDescription;
+    if (observations > 0) {
+      obsDescription = [
+        intl.formatMessage({
+          id: 'operator-detail.overview.cardobs.description',
+          defaultMessage: '{observations, plural, one {There was {observations} observation} other {There were {observations} observations}}'
+        }, {observations}),
+        intl.formatMessage({
+          id: 'operator-detail.overview.cardobs.description_2',
+          defaultMessage: 'from {visits, plural, one {{visits} independent monitor visit} other {{visits} independent monitor visits}}.'
+        }, {visits})
+      ].join(' ');
+    } else {
+      obsDescription = intl.formatMessage({
+        id: 'operator-detail.overview.cardobs.none',
+        defaultMessage: 'There are no observations.'
+      });
+    }
 
     return (
       <div className="c-gallery">
@@ -59,13 +81,7 @@ class Gallery1 extends React.Component {
               theme="-primary"
               letter={(countryObservations) ? HELPERS_OBS.getAvgObservationByMonitors(countryObservations) : '-'}
               title={this.props.intl.formatMessage({ id: 'country-detail.overview.card2.title' })}
-              description={this.props.intl.formatMessage(
-                { id: 'country-detail.overview.card2.description' },
-                {
-                  observations: (countryObservations) ? countryObservations.length : '-',
-                  visits: (countryObservations) ? HELPERS_OBS.getMonitorVisits(countryObservations) : '-'
-                }
-              )}
+              description={obsDescription}
               link={{
                 label: this.props.intl.formatMessage({ id: 'country-detail.overview.card2.link.label' }),
                 href: `/country-detail?tab=observations&id=${url.query.id}`,
