@@ -26,7 +26,8 @@ class File extends FormElement {
     };
 
     // BINDINGS
-    this.triggerBrowseOrCancel = this.triggerBrowseOrCancel.bind(this);
+    this.triggerBrowse = this.triggerBrowse.bind(this);
+    this.triggerCancel = this.triggerCancel.bind(this);
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
@@ -55,7 +56,10 @@ class File extends FormElement {
       this.getBase64(accepted[0])
         .then((value) => {
           this.setState({
-            value,
+            value: {
+              name: accepted[0].name,
+              base64: value
+            },
             accepted,
             rejected,
             dropzoneActive: false
@@ -71,29 +75,19 @@ class File extends FormElement {
 
   /**
    * UI EVENTS
-   * - triggerBrowseOrCancel
+   * - triggerBrowse
+   * - triggerCancel
    * - triggerChange
   */
-  triggerBrowseOrCancel() {
-    const { accepted } = this.state;
-    if (accepted.length) {
-      this.setState({
-        accepted: [],
-        value: ''
-      }, () => {
-        // Publish the new value to the form
-        if (this.props.onChange) this.props.onChange(this.state.value);
-        // Trigger validation
-        this.triggerValidate();
-      });
-    } else {
-      this.dropzone.open();
-    }
+
+  triggerBrowse() {
+    this.dropzone.open();
   }
 
-  triggerChange(e) {
+  triggerCancel() {
     this.setState({
-      value: e.currentTarget.value
+      accepted: [],
+      value: null
     }, () => {
       // Publish the new value to the form
       if (this.props.onChange) this.props.onChange(this.state.value);
@@ -102,25 +96,18 @@ class File extends FormElement {
     });
   }
 
-  /**
-   * HELPERS
-   * - getFileName
-   * @return {String}
-  */
-  getFileName() {
-    const { properties } = this.props;
-    const { accepted } = this.state;
-
-    if (accepted.length) {
-      const current = accepted[0];
-      return current.name;
-    }
-
-    if (properties.defaultFile) {
-      return properties.defaultFile;
-    }
-
-    return this.props.intl.formatMessage({ id: 'select-file' });
+  triggerChange(e) {
+    this.setState({
+      value: {
+        ...this.state.value,
+        name: e.currentTarget.value
+      }
+    }, () => {
+      // Publish the new value to the form
+      if (this.props.onChange) this.props.onChange(this.state.value);
+      // Trigger validation
+      this.triggerValidate();
+    });
   }
 
   /**
@@ -148,6 +135,7 @@ class File extends FormElement {
     const inputClassName = classnames({
       [properties.className]: !!properties.className
     });
+    const changeableName = (properties.changeableName !== null && properties.changeableName !== undefined) ? properties.changeableName : false;
 
     return (
       <div className="c-file">
@@ -162,31 +150,40 @@ class File extends FormElement {
           onDragLeave={this.onDragLeave}
         >
           {/* {dropzoneActive &&
-            <div className="dropzone-active">
+              <div className="dropzone-active">
               Drop files...
-            </div>
-          } */}
+              </div>
+              } */}
 
           <input
             {...omit(properties, 'authorization')}
             className={`input ${inputClassName}`}
-            value={this.getFileName()}
+            value={this.state.value?.name}
+            placeholder={this.props.intl.formatMessage({ id: 'select-file' })}
+            readOnly={!changeableName}
             id={`input-${properties.name}`}
-            readOnly={!!accepted.length}
             onChange={this.triggerChange}
           />
 
-          <button
-            type="button"
-            className="c-button -primary -compressed file-button"
-            onClick={this.triggerBrowseOrCancel}
-          >
-            <Spinner className="-light -small" isLoading={loading} />
-            {(accepted.length) ?
-              this.props.intl.formatMessage({ id: 'cancel' }) :
-              this.props.intl.formatMessage({ id: 'browse-file' })
-            }
-          </button>
+          {accepted.length ? (
+            <button
+              type="button"
+              className="c-button -primary -compressed file-button"
+              onClick={this.triggerCancel}
+            >
+              <Spinner className="-light -small" isLoading={loading} />
+              {this.props.intl.formatMessage({ id: 'cancel' })}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="c-button -primary -compressed file-button"
+              onClick={this.triggerBrowse}
+            >
+              <Spinner className="-light -small" isLoading={loading} />
+              {this.props.intl.formatMessage({ id: 'browse-file' })}
+            </button>
+          )}
         </Dropzone>
       </div>
     );

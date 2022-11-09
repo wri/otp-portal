@@ -13,6 +13,7 @@ import { injectIntl, intlShape } from 'react-intl';
 // Services
 import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
+import { FormElements } from 'utils/form';
 
 // Components
 import Field from 'components/form/Field';
@@ -20,31 +21,11 @@ import Input from 'components/form/Input';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
-
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.formElements = new FormElements();
     this.state = {
       form: {
         startDate: '',
@@ -93,7 +74,7 @@ class DocModal extends React.Component {
   onAddFiles() {
     const files = this.state.form.files.slice(0);
     if (files[files.length - 1]) {
-      const form = Object.assign({}, this.state.form, { files: [...files, ''] });
+      const form = Object.assign({}, this.state.form, { files: [...files, {}] });
       this.setState({ form });
     }
   }
@@ -102,12 +83,12 @@ class DocModal extends React.Component {
     e && e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate();
+    this.formElements.validate();
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         const { type, docType } = this.props;
@@ -181,7 +162,8 @@ class DocModal extends React.Component {
       data: {
         type: 'gov-files',
         attributes: {
-          attachment,
+          attachment: attachment.base64,
+          name: attachment.name,
           'gov-document-id': id
         }
       }
@@ -211,7 +193,7 @@ class DocModal extends React.Component {
               <div className="columns medium-6 small-12">
                 {/* DATE */}
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.startDate = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.startDate = c; }}
                   onChange={value => this.onChange({ startDate: value })}
                   validations={['required']}
                   className="-fluid"
@@ -231,7 +213,7 @@ class DocModal extends React.Component {
               <div className="columns medium-6 small-12">
                 {/* DATE */}
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.expireDate = c; }}
                   onChange={value => this.onChange({ expireDate: value })}
                   className="-fluid"
                   properties={{
@@ -252,7 +234,7 @@ class DocModal extends React.Component {
               <div className="l-row row">
                 <div className="columns small-6">
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.value = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.value = c; }}
                     onChange={value => this.onChange({ value })}
                     className="-fluid"
                     validations={['required']}
@@ -271,7 +253,7 @@ class DocModal extends React.Component {
 
                 <div className="columns small-6">
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.units = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.units = c; }}
                     onChange={value => this.onChange({ units: value })}
                     className="-fluid"
                     validations={['required']}
@@ -293,7 +275,7 @@ class DocModal extends React.Component {
               <div className="l-row row">
                 <div className="columns small-12">
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.link = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.link = c; }}
                     onChange={value => this.onChange({ link: value })}
                     className="-fluid"
                     validations={['required', 'url']}
@@ -318,7 +300,7 @@ class DocModal extends React.Component {
                   {this.state.form.files.map((file, i) => (
                     <Field
                       key={i}
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.files = c; }}
+                      ref={(c) => { if (c) this.formElements.elements.files = c; }}
                       onChange={value => this.onChangeFiles(i, value)}
                       validations={['required']}
                       className="-fluid"
@@ -326,6 +308,7 @@ class DocModal extends React.Component {
                         name: 'file',
                         label: i === 0 && this.props.intl.formatMessage({ id: 'files' }),
                         required: true,
+                        changeableName: true,
                         default: file
                       }}
                     >

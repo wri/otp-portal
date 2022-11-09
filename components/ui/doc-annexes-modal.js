@@ -12,14 +12,13 @@ import { injectIntl, intlShape } from 'react-intl';
 // Services
 import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
+import { FormElements } from 'utils/form';
 
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Spinner from 'components/ui/spinner';
 import File from 'components/form/File';
-
-import { FormElements } from 'utils/form';
 
 class DocAnnexesModal extends React.Component {
   static propTypes = {
@@ -43,7 +42,7 @@ class DocAnnexesModal extends React.Component {
       name: '',
       startDate: '',
       expiryDate: '',
-      file: ''
+      file: {}
     },
     submitting: false,
     errors: []
@@ -59,7 +58,7 @@ class DocAnnexesModal extends React.Component {
           name: this.state.form.name,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
-          attachment: this.state.form.file
+          attachment: this.state.form.file.base64
         },
         relationships: {
           "operator-document": {
