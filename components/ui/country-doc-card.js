@@ -164,6 +164,7 @@ class CountryDocCard extends React.Component {
                       overlay={
                         <div>
                           <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
+                          <h4 className="c-title -default tooltip-title">{annex.name}</h4>
                           {/* <h4 className="c-title -default tooltip-title">{annex.attachment.url}</h4> */}
                           {/* <dl className="tooltip-content">
                             <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
