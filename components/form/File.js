@@ -103,10 +103,12 @@ class File extends FormElement {
         name: e.currentTarget.value
       }
     }, () => {
-      // Publish the new value to the form
-      if (this.props.onChange) this.props.onChange(this.state.value);
-      // Trigger validation
-      this.triggerValidate();
+      if (this.state.value.base64) {
+        // Publish the new value to the form
+        if (this.props.onChange) this.props.onChange(this.state.value);
+        // Trigger validation
+        this.triggerValidate();
+      }
     });
   }
 
