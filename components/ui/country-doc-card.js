@@ -133,7 +133,13 @@ class CountryDocCard extends React.Component {
           <div>
             <header className="doc-card-header">
               {startDate !== endDate &&
-                <div className="doc-card-date">{endDate}</div>
+                <div className="doc-card-date">
+                  {this.props.intl.formatDate(endDate, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
+                </div>
               }
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
@@ -167,11 +173,11 @@ class CountryDocCard extends React.Component {
                           <h4 className="c-title -default tooltip-title">{annex.name}</h4>
                           {/* <h4 className="c-title -default tooltip-title">{annex.attachment.url}</h4> */}
                           {/* <dl className="tooltip-content">
-                            <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-                            <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
-                            <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-                            <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
-                          </dl> */}
+                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
+                              <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
+                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
+                              <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
+                              </dl> */}
                           <div className="tooltip-footer">
                             {annex.attachment &&
                               <a href={annex.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
