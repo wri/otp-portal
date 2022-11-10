@@ -82,11 +82,11 @@ class OperatorsDetailObservations extends React.Component {
         <div className="l-container">
           <DocumentsFilter showFMU>
             <span className="filter-option" style={{width: 'unset'}}>
-              <label>Visiblity</label>
+              <label>{this.props.intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
               <div className="filters-dropdown">
                 <Checkbox
                   properties={{
-                    title: 'Display observations that are more than five years old',
+                    title: this.props.intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
                   }}
                   onChange={this.onChangeDisplayHidden}
                 />
