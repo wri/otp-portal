@@ -69,13 +69,13 @@ class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {
     const { observations } = store.getState();
 
-    if (isEmpty(observations.data)) {
-      await store.dispatch(getObservations());
-    }
+    /* if (isEmpty(observations.data)) {
+     *   await store.dispatch(getObservations());
+     * } */
 
-    if (isEmpty(observations.filters.options)) {
-      await store.dispatch(getFilters());
-    }
+    /* if (isEmpty(observations.filters.options)) {
+     *   await store.dispatch(getFilters());
+     * } */
 
     return { url };
   }
@@ -94,7 +94,9 @@ class ObservationsPage extends React.Component {
   componentDidMount() {
     const { url } = this.props;
 
+    this.props.getFilters();
     this.props.getObservationsUrl(url);
+    this.props.getObservations();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -237,13 +239,14 @@ class ObservationsPage extends React.Component {
                   options={parsedFilters.options}
                   filters={parsedFilters.data}
                   setFilters={this.props.setFilters}
+                  loading={observations.filters.loading}
                   filtersRefs={FILTERS_REFS}
                 />
               </div>
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview parsedObservations={parsedChartObservations} />
+                <Overview parsedObservations={parsedChartObservations} loading={observations.loading} />
               </div>
             </div>
           </div>
@@ -372,7 +375,7 @@ class ObservationsPage extends React.Component {
               }}
               mapOptions={{
                 customAttribution:
-                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
+                        '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
               }}
             >
               {(map) => (

@@ -23,7 +23,9 @@ class API {
         if (key === 'locale') {
           value = value === 'zh' ? 'zh-CN' : value;
         }
-        url.searchParams.set(key, value);
+        if (value !== null && typeof value !== 'undefined') {
+          url.searchParams.set(key, value);
+        }
       });
     }
     const headers = {

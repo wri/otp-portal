@@ -18,6 +18,7 @@ import {
 } from 'selectors/operators-detail/documentation';
 
 function DocumentsFilter({
+  children,
   date,
   setDate,
   showDate,
@@ -33,7 +34,7 @@ function DocumentsFilter({
   useEffect(() => {
     // on component load, reset FMU and date.
     setFMU(null);
-    setDate(new Date());
+    setDate(moment().format('YYYY-MM-DD'));
   }, []);
 
   useEffect(() => {
@@ -101,11 +102,14 @@ function DocumentsFilter({
           />
         </span>
       )}
+
+      {children}
     </div>
   );
 }
 
 DocumentsFilter.propTypes = {
+  children: PropTypes.any,
   date: PropTypes.string,
   setDate: PropTypes.func,
   FMU: PropTypes.object,

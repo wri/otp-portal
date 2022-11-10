@@ -1,5 +1,12 @@
 const FILTERS_REFS = [
   {
+    key: 'hidden',
+    name: null,
+    type: 'checkbox',
+    description: 'Display observations that are more than five years old',
+    valueTransform: (value) => value ? 'all' : null
+  },
+  {
     key: 'observation_type',
     name: 'Type',
     placeholder: 'All Types'
@@ -53,7 +60,7 @@ const FILTERS_REFS = [
     key: 'observation-report',
     name: 'Report',
     placeholder: 'All reports'
-  }
+  },
 ];
 
 export {

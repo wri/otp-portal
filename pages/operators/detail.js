@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -24,6 +25,7 @@ import {
   getOperatorDocumentation,
   getOperatorDocumentationCurrent,
   getOperatorTimeline,
+  getOperatorObservations,
   setOperatorDocumentationDate,
 } from 'modules/operators-detail';
 import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
@@ -49,24 +51,33 @@ const COUNTRIES_FRENCH_FIX = {
   'GAB': 'au', // Gabon
 };
 
+const isClient = typeof window !== 'undefined';
+
 class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
+    const requests = [];
 
     if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
-      await store.dispatch(getIntegratedAlertsMetadata());
+      requests.push(store.dispatch(getIntegratedAlertsMetadata()));
     }
 
     if (url.query.tab === 'documentation') {
-      await store.dispatch(setOperatorDocumentationDate(new Date()));
+      requests.push(store.dispatch(setOperatorDocumentationDate(moment().format('YYYY-MM-DD'))));
     }
 
     if (operatorsDetail.data.id !== url.query.id) {
-      await store.dispatch(getOperator(url.query.id));
-      await store.dispatch(getOperatorDocumentation(url.query.id));
-      await store.dispatch(getOperatorDocumentationCurrent(url.query.id));
-      await store.dispatch(getOperatorTimeline(url.query.id));
+      requests.push(store.dispatch(getOperator(url.query.id)));
+      requests.push(store.dispatch(getOperatorObservations(url.query.id)));
+
+      if (isClient || url.query.tab === 'documentation') {
+        requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
+        requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
+        requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
+      }
     }
+
+    await Promise.all(requests);
 
     return { url };
   }
@@ -76,15 +87,18 @@ class OperatorsDetail extends React.Component {
    */
   componentDidMount() {
     const { url } = this.props;
-    this.props.getOperator(url?.query?.id);
-    this.props.getOperatorDocumentation(url?.query?.id);
-    this.props.getOperatorDocumentationCurrent(url.query.id);
-    this.props.getOperatorTimeline(url.query.id);
+
+    // eager load documentation tab as high probabilty user will switch to it
+    if (url.query.tab !== 'documentation') {
+      this.props.getOperatorDocumentation(url.query.id);
+      this.props.getOperatorDocumentationCurrent(url.query.id);
+      this.props.getOperatorTimeline(url.query.id);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const prevDate = prevProps?.operatorsDetail?.date;
-    const newDate = this.props?.operatorsDetail?.date;
+    const prevDate = prevProps?.operatorsDetail?.date?.toString();
+    const newDate = this.props?.operatorsDetail?.date?.toString();
 
     if (prevDate !== newDate) {
       const { url } = this.props;
@@ -115,6 +129,10 @@ class OperatorsDetail extends React.Component {
       switch (tab.value) {
         case 'documentation': {
           number = `${HELPERS_DOC.getPercentage(operatorsDetail)}%`;
+          break;
+        }
+        case 'observations': {
+          number = this.props.operatorObservations.filter(o => !o.hidden).length;
           break;
         }
 
@@ -205,7 +223,7 @@ class OperatorsDetail extends React.Component {
           <OperatorsDetailOverview
             operatorsDetail={operatorsDetail}
             operatorDocumentation={operatorDocumentation}
-            operatorObservations={operatorObservations}
+            operatorObservations={operatorObservations.filter(o => !o.hidden)}
             url={url}
           />
         )}
@@ -260,6 +278,7 @@ export default withTracker(
         getOperatorDocumentation,
         getOperatorDocumentationCurrent,
         getOperatorTimeline,
+        getOperatorObservations
       }
     )(OperatorsDetail)
   )

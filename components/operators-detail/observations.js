@@ -10,12 +10,15 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import { getOperatorDocumentationFMU } from 'selectors/operators-detail/documentation';
 
+import { getOperatorObservations } from 'modules/operators-detail';
+
 // Components
 import StaticTabs from 'components/ui/static-tabs';
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
+import Checkbox from 'components/form/Checkbox';
 
 class OperatorsDetailObservations extends React.Component {
   constructor(props) {
@@ -23,10 +26,12 @@ class OperatorsDetailObservations extends React.Component {
 
     this.state = {
       year: HELPERS_OBS.getMaxYear(props.operatorObservations),
+      displayHidden: false
     };
 
     // BINDINGS
     this.onChangeYear = this.onChangeYear.bind(this);
+    this.onChangeDisplayHidden = this.onChangeDisplayHidden.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,16 +63,36 @@ class OperatorsDetailObservations extends React.Component {
     this.setState({ year });
   }
 
+  onChangeDisplayHidden({ checked }) {
+    const displayHidden = checked;
+    this.setState({ displayHidden });
+  }
+
   render() {
-    const observationData = this.props.FMU
-      ? this.props.operatorObservations.filter(
-          (obs) => obs.fmu && obs.fmu.id === this.props.FMU.id
-        )
-      : this.props.operatorObservations;
+    const { displayHidden } = this.state;
+    const observationData = this.props.operatorObservations.filter(
+      (obs) => (
+        (!this.props.FMU || (obs.fmu && obs.fmu.id === this.props.FMU.id)) &&
+          (displayHidden || obs.hidden === false)
+      )
+    );
+
     return (
       <div className="c-section">
         <div className="l-container">
-          <DocumentsFilter showFMU />
+          <DocumentsFilter showFMU>
+            <span className="filter-option" style={{width: 'unset'}}>
+              <label>{this.props.intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
+              <div className="filters-dropdown">
+                <Checkbox
+                  properties={{
+                    title: this.props.intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
+                  }}
+                  onChange={this.onChangeDisplayHidden}
+                />
+              </div>
+            </span>
+          </DocumentsFilter>
         </div>
 
         {!!observationData.length && (
@@ -88,21 +113,21 @@ class OperatorsDetailObservations extends React.Component {
             </article>
 
             {/* {!isEmpty(groupedByFMU) && (
-              <article className="c-article">
+                <article className="c-article">
                 <div className="l-container">
-                  <header>
-                    <h2 className="c-title">
-                      {this.props.intl.formatMessage({
-                        id: 'observations_by_fmu',
-                      })}
-                    </h2>
-                  </header>
-                  <div className="content">
-                    <TotalObservationsByOperatorByFMU data={groupedByFMU} />
-                  </div>
+                <header>
+                <h2 className="c-title">
+                {this.props.intl.formatMessage({
+                id: 'observations_by_fmu',
+                })}
+                </h2>
+                </header>
+                <div className="content">
+                <TotalObservationsByOperatorByFMU data={groupedByFMU} />
                 </div>
-              </article>
-            )} */}
+                </div>
+                </article>
+                )} */}
 
             <article className="c-article">
               <div className="l-container">
@@ -160,7 +185,9 @@ class OperatorsDetailObservations extends React.Component {
 OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
+  getOperatorObservations: PropTypes.func,
   intl: intlShape.isRequired,
+  url: PropTypes.object
 };
 
 export default injectIntl(
@@ -168,6 +195,8 @@ export default injectIntl(
     (state) => ({
       FMU: getOperatorDocumentationFMU(state),
     }),
-    {}
+    {
+      getOperatorObservations
+    }
   )(OperatorsDetailObservations)
 );

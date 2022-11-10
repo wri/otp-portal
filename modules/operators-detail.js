@@ -1,11 +1,16 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
-import * as queryString from 'query-string';
+import moment from 'moment';
+
+import API from 'services/api';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
 const GET_OPERATOR_ERROR = 'GET_OPERATOR_ERROR';
 const GET_OPERATOR_LOADING = 'GET_OPERATOR_LOADING';
+
+const GET_OPERATOR_OBSERVATIONS_SUCCESS = 'GET_OPERATOR_OBSERVATIONS_SUCCESS';
+const GET_OPERATOR_OBSERVATIONS_ERROR = 'GET_OPERATOR_OBSERVATIONS_ERROR';
+const GET_OPERATOR_OBSERVATIONS_LOADING = 'GET_OPERATOR_OBSERVATIONS_LOADING';
 
 const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
 const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
@@ -36,18 +41,26 @@ const initialState = {
   data: {},
   loading: false,
   error: false,
+  observations: {
+    data: [],
+    timestamp: null,
+    loading: false,
+    error: false,
+  },
   documentation: {
     data: [],
     loading: false,
     error: false,
+    timestamp: null
   },
   documentationCurrent: {
     data: [],
     loading: false,
     error: false,
+    timestamp: null
   },
-  date: new Date(),
-  FMU: null,
+  date: moment().format('YYYY-MM-DD'),
+  fmu: null,
   timeline: [],
   sawmills: {
     data: [],
@@ -62,6 +75,11 @@ const initialState = {
 };
 
 const JSONA = new Jsona();
+
+
+function isLatestAction(state, action) {
+  return action.metadata.timestamp >= state.timestamp;
+}
 
 /* Reducer */
 export default function reducer(state = initialState, action) {
@@ -105,6 +123,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { loading: true, error: false });
     }
     case GET_OPERATOR_DOCUMENTATION_SUCCESS: {
+      if (!isLatestAction(state.documentation, action)) return state;
+
       const documentation = Object.assign({}, state.documentation, {
         data: action.payload,
         loading: false,
@@ -113,6 +133,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { documentation });
     }
     case GET_OPERATOR_DOCUMENTATION_ERROR: {
+      if (!isLatestAction(state.documentation, action)) return state;
+
       const documentation = Object.assign({}, state.documentation, {
         error: true,
         loading: false,
@@ -123,11 +145,40 @@ export default function reducer(state = initialState, action) {
       const documentation = Object.assign({}, state.documentation, {
         loading: true,
         error: false,
+        timestamp: action.metadata.timestamp
       });
       return Object.assign({}, state, { documentation });
     }
+    case GET_OPERATOR_OBSERVATIONS_LOADING: {
+      const observations = Object.assign({}, state.observations, {
+        timestamp: action.metadata.timestamp,
+        loading: true,
+        error: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
+    case GET_OPERATOR_OBSERVATIONS_SUCCESS: {
+      if (!isLatestAction(state.observations, action)) return state;
 
+      const observations = Object.assign({}, state.observations, {
+        data: action.payload,
+        loading: false,
+        error: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
+    case GET_OPERATOR_OBSERVATIONS_ERROR: {
+      if (!isLatestAction(state.observations, action)) return state;
+
+      const observations = Object.assign({}, state.observations, {
+        error: true,
+        loading: false,
+      });
+      return Object.assign({}, state, { observations });
+    }
     case GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS: {
+      if (!isLatestAction(state.documentationCurrent, action)) return state;
+
       const documentationCurrent = Object.assign({}, state.documentationCurrent, {
         data: action.payload,
         loading: false,
@@ -136,6 +187,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { documentationCurrent });
     }
     case GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR: {
+      if (!isLatestAction(state.documentationCurrent, action)) return state;
+
       const documentationCurrent = Object.assign({}, state.documentationCurrent, {
         error: true,
         loading: false,
@@ -146,6 +199,7 @@ export default function reducer(state = initialState, action) {
       const documentationCurrent = Object.assign({}, state.documentationCurrent, {
         loading: true,
         error: false,
+        timestamp: action.metadata.timestamp
       });
       return Object.assign({}, state, { documentationCurrent });
     }
@@ -172,7 +226,7 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { sawmills });
     }
 
-    // Get all sawmills geojson by Operator ID
+      // Get all sawmills geojson by Operator ID
     case GET_SAWMILLS_LOCATIONS_SUCCESS: {
       const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
         data: action.payload.features,
@@ -210,45 +264,17 @@ export function getOperator(id) {
 
     const includeFields = [
       'country',
-      'observations',
-      'observations.severity',
-      'observations.subcategory',
-      'observations.subcategory.category',
-      'observations.observation-report',
-      'observations.observation-documents',
-      'observations.country',
-      'observations.fmu',
-      'observations.observers',
-      'observations.relevant-operators',
       'fmus',
     ];
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const queryParams = queryString.stringify({
+    return API.get(`operators/${id}`, {
+      locale: language,
+      token: user.token,
       include: includeFields.join(','),
-      locale: lang,
-    });
-
-    return fetch(`${process.env.OTP_API}/operators/${id}?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-        Authorization: user.token ? `Bearer ${user.token}` : undefined,
-      },
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
-        // TODO: quick fix for cyclic problems, find a better way
-        dataParsed.observations.forEach((o) => {
-          o['relevant-operators'] = o['relevant-operators'].map((op) => ({ id: op.id, name: op.name }))
-        })
         dispatch({
           type: GET_OPERATOR_SUCCESS,
           payload: dataParsed,
@@ -268,7 +294,9 @@ export function getOperatorDocumentation(id) {
   return (dispatch, getState) => {
     const { user, language, operatorsDetail } = getState();
     const date = operatorsDetail.date;
-    dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING });
+    const metadata = { timestamp: new Date() };
+
+    dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING, metadata });
 
     const includeFields = [
       'required-operator-document',
@@ -276,42 +304,77 @@ export function getOperatorDocumentation(id) {
       'operator-document-annexes',
       'fmu',
     ];
-    const lang = language === 'zh' ? 'zh-CN' : language;
-    const queryParams = queryString.stringify({
+
+    return API.get('operator-document-histories', {
+      locale: language,
+      token: user.token,
       include: includeFields.join(','),
+      'fields[fmus]': 'name',
       'filter[operator-id]': id,
       'filter[date]': date,
-      locale: lang,
-    });
-
-    return fetch(
-      `${process.env.OTP_API}/operator-document-histories?${queryParams}`,
-      // /operator-document-histories?include=required-operator-document&filter[operator-id]=161&filter[date]=2017-10-10
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-          Authorization: user.token ? `Bearer ${user.token}` : undefined,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    })
       .then((operator) => {
         const dataParsed = JSONA.deserialize(operator);
 
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_SUCCESS,
           payload: dataParsed,
+          metadata
         });
       })
       .catch((err) => {
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_ERROR,
           payload: err.message,
+          metadata
+        });
+      });
+  };
+}
+
+export function getOperatorObservations(operatorId) {
+  return (dispatch, getState) => {
+    const { language } = getState();
+
+    const includes = [
+      'country',
+      'fmu',
+      'observers',
+      'severity',
+      'subcategory',
+      'subcategory.category',
+      'observation-report',
+      'observation-documents',
+      'relevant-operators',
+      'operator',
+    ];
+
+    const timestamp = new Date();
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata: { timestamp } });
+
+    return API.get('observations', {
+      locale: language,
+      include: includes.join(','),
+      'fields[fmus]': 'name',
+      'filter[operator]': operatorId,
+      'filter[hidden]': 'all'
+    })
+      .then((observations) => {
+        const dataParsed = JSONA.deserialize(observations);
+
+        dispatch({
+          type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
+          payload: dataParsed,
+          metadata: { timestamp }
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_OPERATOR_OBSERVATIONS_ERROR,
+          payload: err.message,
+          metadata: { timestamp }
         });
       });
   };
@@ -320,49 +383,36 @@ export function getOperatorDocumentation(id) {
 export function getOperatorDocumentationCurrent(id) {
   return (dispatch, getState) => {
     const { user, language } = getState();
-    dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING });
+    const metadata = { timestamp: new Date() };
+
+    dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING, metadata });
 
     const includeFields = [
       'required-operator-document',
       'required-operator-document.required-operator-document-group',
     ];
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-    const queryParams = queryString.stringify({
+    return API.get('operator-documents', {
+      locale: language,
+      token: user.token,
       include: includeFields.join(','),
+      'page[size]': 1000,
       'filter[operator-id]': id,
-      locale: lang,
-      'page[size]': 1000
-    });
-
-    return fetch(
-      `${process.env.OTP_API}/operator-documents?${queryParams}`,
-      // /operator-document-histories?include=required-operator-document&filter[operator-id]=161&filter[date]=2017-10-10
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-          Authorization: user.token ? `Bearer ${user.token}` : undefined,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    })
       .then((operator) => {
         const dataParsed = JSONA.deserialize(operator);
 
         dispatch({
           type: GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS,
           payload: dataParsed,
+          metadata
         });
       })
       .catch((err) => {
         dispatch({
           type: GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR,
           payload: err.message,
+          metadata
         });
       });
   };
@@ -373,27 +423,11 @@ export function getOperatorTimeline(id) {
     const { user, language } = getState();
     dispatch({ type: GET_OPERATOR_TIMELINE_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-    const queryParams = queryString.stringify({
+    return API.get('score-operator-documents', {
+      locale: language,
+      token: user.token,
       'filter[operator]': id,
-      locale: lang,
-    });
-
-    return fetch(
-      `${process.env.OTP_API}/score-operator-documents?${queryParams}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-          Authorization: user.token ? `Bearer ${user.token}` : undefined,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
@@ -419,17 +453,9 @@ export function getSawMillsByOperatorId(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILLS_LOADING });
 
-    return fetch(`${process.env.OTP_API}/sawmills?filter[operator]=${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-      },
+    return API.get('sawmills', {
+      'filter[operator]': id
     })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
       .then((data) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         const dataParsed = JSONA.deserialize(data);
@@ -454,20 +480,10 @@ export function getSawMillsLocationByOperatorId(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILLS_LOCATIONS_LOADING });
 
-    return fetch(
-      `${process.env.OTP_API}/sawmills?filter[operator]=${id}&format=geojson`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('sawmills', {
+      'filter[operator]': id,
+      format: 'geojson'
+    })
       .then((data) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         dispatch({

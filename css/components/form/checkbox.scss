@@ -18,6 +18,7 @@ $checkbox-size-small: 14px;
     text-align: left;
     color: $color-text-1;
     margin-left: 0;
+    user-select: none;
 
     &:hover {
       color: lighten($color-text-1, 12.5%);
@@ -70,6 +71,28 @@ $checkbox-size-small: 14px;
 
   input[type='checkbox']:disabled + label {
     opacity: 0.5;
+  }
+
+  &.-white {
+    input[type='checkbox']:checked + label {
+      .checkbox-icon {
+        background-color: transparent;
+      }
+    }
+
+    .checkbox-icon {
+      border: 1px solid $color-white;
+
+      &:after {
+        border-left: 2px solid $color-white;
+        border-bottom: 2px solid $color-white;
+      }
+    }
+
+    .item-title {
+      margin-left: 20px;
+      color: $color-white;
+    }
   }
 }
 

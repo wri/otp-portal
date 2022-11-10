@@ -99,7 +99,7 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
                         barCategoryGap={0}
                         margin={{
                           top: 20,
-                          right: 20,
+                          right: 30,
                           bottom: 20,
                           left: 20,
                         }}

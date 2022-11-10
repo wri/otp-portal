@@ -1,6 +1,7 @@
 .c-observation-filters {
   background-color: $color-secondary;
   padding: 30px 30px 65px;
+  position: relative;
 
   .c-title {
     margin-top: 0;
@@ -14,6 +15,16 @@
       font-size: $font-size-big;
       line-height: 26px;
       font-weight: normal;
+    }
+
+    .c-checkbox {
+      margin-top: 10px;
+      .item-title {
+        font-size: 18px;
+        line-height: 26px;
+        font-weight: normal;
+        margin-top: -5px;
+      }
     }
   }
 }

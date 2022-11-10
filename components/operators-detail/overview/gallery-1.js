@@ -18,8 +18,8 @@ function Gallery({
   operatorDocumentation,
   intl,
 }) {
-  const observations = operatorsDetail.data?.observations?.length || 0;
-  const visits = operatorsDetail.data.observations ? HELPERS_OBS.getMonitorVisits(operatorObservations) : 0;
+  const observations = operatorObservations.length || 0;
+  const visits = HELPERS_OBS.getMonitorVisits(operatorObservations) || 0;
   const fmus = operatorsDetail.data?.fmus?.length || 0;
 
   let fmuDescription;
@@ -96,9 +96,7 @@ function Gallery({
           <Card
             theme="-primary"
             letter={
-              operatorsDetail.data.observations
-                ? HELPERS_OBS.getAvgObservationByMonitors(operatorObservations)
-                : '-'
+              HELPERS_OBS.getAvgObservationByMonitors(operatorObservations)
             }
             title={intl.formatMessage({
               id: 'operator-detail.overview.card2.title',

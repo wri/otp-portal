@@ -316,6 +316,8 @@
   "filter.forest_types.placeholder": "All forest types",
   "filter.legal_categories": "Legal category",
   "filter.legal_categories.placeholder": "All legal categories",
+  "filter.hidden": "Archived observations",
+  "filter.hidden.description": "Display observations that are more than five years old",
   "help.title": "Help",
   "help.tabs.howto": "How the OTP works",
   "help.tabs.legislation": "Tools and resources on forest legislation and regulations",
