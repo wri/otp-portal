@@ -30,6 +30,7 @@ const getParsedDocumentation = createSelector(
             title: doc['required-operator-document'].name,
             public: doc.public,
             explanation: doc['required-operator-document'].explanation,
+            position: doc['required-operator-document'].position,
             category:
               doc['required-operator-document'][
                 'required-operator-document-group'

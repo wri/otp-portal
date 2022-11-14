@@ -71,7 +71,7 @@ function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
                 <h3>{intl.formatMessage({ id: 'operator-documents' })}:</h3>
 
                 <div className="row l-row -equal-heigth">
-                  {sortBy(producerDocs, (doc) => doc.title).map((card) => (
+                  {sortBy(producerDocs, ['position', 'title']).map((card) => (
                     <div key={card.id} className="columns small-12 medium-4">
                       <DocCard
                         {...card}
