@@ -1,5 +1,4 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
 
 import API from 'services/api';
 
@@ -14,10 +13,7 @@ const JSONA = new Jsona();
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    activeLayers: ['loss', 'gain', 'forest_concession', 'protected_areas', 'COG', 'COD', 'CMR', 'CAF', 'GAB']
-  }
+  error: false
 };
 
 /* Reducer */

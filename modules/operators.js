@@ -6,8 +6,6 @@ const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
 const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
 
-const SET_ACTIVE_MAP_LAYERS = 'SET_ACTIVE_MAP_LAYERS';
-
 const JSONA = new Jsona();
 
 /* Initial state */
@@ -30,10 +28,6 @@ export default function Operators(state = initialState, action) {
       return Object.assign({}, state, { error: true, loading: false });
     case GET_OPERATORS_LOADING:
       return Object.assign({}, state, { loading: true, error: false });
-    case SET_ACTIVE_MAP_LAYERS:
-      return Object.assign({}, state, {
-        map: { activeLayers: action.payload },
-      });
     default:
       return state;
   }
