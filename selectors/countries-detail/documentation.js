@@ -23,6 +23,7 @@ const getParsedDocumentation = createSelector(
           type: doc.type,
           title: requiredDoc.name,
           explanation: requiredDoc.explanation,
+          position: requiredDoc.position,
           category: requiredDoc['required-gov-document-group'].name,
           categoryPosition: requiredDoc['required-gov-document-group'].position,
           status: doc.status,

@@ -32,7 +32,7 @@ function DocumentsByOperator(props) {
     <ul className="c-doc-gallery">
       {Object.keys(groupedByCategory).map((category) => {
         const isCategoryOpen = categoriesOpen[category];
-        const docs = sortBy(groupedByCategory[category], doc => doc.title);
+        const docs = sortBy(groupedByCategory[category], ['position', 'title'])
 
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
