@@ -7,9 +7,6 @@ import sortBy from 'lodash/sortBy';
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
-// Components
-import Gallery1 from 'components/countries-detail/overview/gallery-1';
-
 function OperatorsDetailOverview(props) {
   const { countriesDetail } = props;
 
@@ -18,8 +15,6 @@ function OperatorsDetailOverview(props) {
       className="c-section"
     >
       <div className="l-container">
-        <Gallery1 {...props} />
-
         <article className="c-article">
           <header>
             <h2 className="c-title">
