@@ -99,7 +99,7 @@ class CountryDocCard extends React.Component {
     const { user, startDate, endDate, status, title, explanation, docType, units, value, link, govFiles, properties } = this.props;
     const { id } = properties;
     const isActiveUser = (user && user.role === 'admin') ||
-    (user && user.role === 'government' && user.country && user.country.toString() === id);
+      (user && user.role === 'government' && user.country && user.country.toString() === id);
 
     const classNames = classnames({
       [`-${status}`]: !!status
@@ -134,30 +134,37 @@ class CountryDocCard extends React.Component {
             <header className="doc-card-header">
               {startDate !== endDate &&
                 <div className="doc-card-date">
-                  {this.props.intl.formatDate(endDate, {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                  })}
+                  <span>
+                    {this.props.intl.formatMessage({ id: 'expiration' })}:
+                  </span>
+                  <span className="-date">
+                    {this.props.intl.formatDate(endDate, {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
+                  </span>
                 </div>
               }
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
-              <h3 className="doc-card-title c-title -big">
-                {title}
-              </h3>
+              {docType === 'link' ? (
+                <a href={link} target="_blank" rel="noopener noreferrer">
+                  <h3 className="doc-card-title c-title -big">
+                    {title}
+                  </h3>
+                </a>
+              ) : (
+                <h3 className="doc-card-title c-title -big">
+                  {title}
+                </h3>
+              )}
             </div>
 
             {docType === 'stats' &&
               <div>
                 {value} {units}
-              </div>
-            }
-
-            {docType === 'link' &&
-              <div>
-                <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
               </div>
             }
 
