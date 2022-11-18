@@ -163,7 +163,7 @@ class DocModal extends React.Component {
         type: 'gov-files',
         attributes: {
           attachment: attachment.base64,
-          name: attachment.name,
+          // name: attachment.name,
           'gov-document-id': id
         }
       }

@@ -132,7 +132,7 @@ class CountryDocCard extends React.Component {
         {status !== 'doc_not_provided' && status !== 'doc_not_required' &&
           <div>
             <header className="doc-card-header">
-              {startDate !== endDate &&
+              {endDate && startDate !== endDate &&
                 <div className="doc-card-date">
                   <span>
                     {this.props.intl.formatMessage({ id: 'expiration' })}:
@@ -168,7 +168,7 @@ class CountryDocCard extends React.Component {
               </div>
             }
 
-            {docType === 'file' &&
+            {false && docType === 'file' &&
               <ul className="doc-card-list">
                 {govFiles.map(govFile => (
                   <li className="doc-card-list-item" key={govFile.id}>

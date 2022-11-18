@@ -33,7 +33,9 @@ const getParsedDocumentation = createSelector(
           status: doc.status,
           reason: doc.reason,
           startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
-          endDate: new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/'),
+          endDate: doc['expire-date'] ?
+            new Date(doc['expire-date']).toJSON().slice(0, 10).replace(/-/g, '/') :
+            null,
 
           link: doc.link,
           units: doc.units,
