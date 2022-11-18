@@ -33,7 +33,7 @@ class CountryDocCard extends React.Component {
     onChange: PropTypes.func,
     units: PropTypes.string,
     value: PropTypes.number,
-    link: PropTypes.string,
+    url: PropTypes.string,
     govFiles: PropTypes.array
   };
 
@@ -96,7 +96,7 @@ class CountryDocCard extends React.Component {
   }
 
   render() {
-    const { user, startDate, endDate, status, title, explanation, docType, units, value, link, govFiles, properties } = this.props;
+    const { user, startDate, endDate, status, title, explanation, docType, units, value, url, govFiles, properties } = this.props;
     const { id } = properties;
     const isActiveUser = (user && user.role === 'admin') ||
       (user && user.role === 'government' && user.country && user.country.toString() === id);
@@ -149,8 +149,8 @@ class CountryDocCard extends React.Component {
               <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
             </header>
             <div className="doc-card-content">
-              {docType === 'link' ? (
-                <a href={link} target="_blank" rel="noopener noreferrer">
+              {url ? (
+                <a href={url} target="_blank" rel="noopener noreferrer">
                   <h3 className="doc-card-title c-title -big">
                     {title}
                   </h3>
@@ -170,30 +170,23 @@ class CountryDocCard extends React.Component {
 
             {docType === 'file' &&
               <ul className="doc-card-list">
-                {govFiles.map(annex => (
-                  <li className="doc-card-list-item" key={annex.id}>
+                {govFiles.map(govFile => (
+                  <li className="doc-card-list-item" key={govFile.id}>
                     <Tooltip
                       placement="bottom"
                       overlay={
                         <div>
                           <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-                          <h4 className="c-title -default tooltip-title">{annex.name}</h4>
-                          {/* <h4 className="c-title -default tooltip-title">{annex.attachment.url}</h4> */}
-                          {/* <dl className="tooltip-content">
-                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-                              <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
-                              <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-                              <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
-                              </dl> */}
+                          <h4 className="c-title -default tooltip-title">{govFile.name}</h4>
                           <div className="tooltip-footer">
-                            {annex.attachment &&
-                              <a href={annex.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
+                            {govFile.attachment &&
+                              <a href={govFile.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
                             }
                             {isActiveUser &&
                               <button
                                 className="c-button -small -tooltip -tooltip-secondary"
                                 type="button"
-                                onClick={() => this.triggerRemoveGovFile(annex.id)}
+                                onClick={() => this.triggerRemoveGovFile(govFile.id)}
                               >
                                 <span className="tooltip-hidden-button-text">{this.props.intl.formatMessage({ id: 'annex.remove' })}</span>
                                 <Icon className="" name="icon-bin" />

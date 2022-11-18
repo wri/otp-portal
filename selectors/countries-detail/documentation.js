@@ -14,12 +14,16 @@ const getParsedDocumentation = createSelector(
     if (_countriesDetail.data['required-gov-documents']) {
       countryDocumentation = _countriesDetail.data['required-gov-documents'].map((requiredDoc) => {
         const doc = requiredDoc['gov-documents'].find(d => d.current);
+        const docType = requiredDoc['document-type'];
+        let url;
+        if (docType === 'link') url = doc.link;
+        if (docType === 'file') url = (doc['gov-files'] || [])[0]?.attachment?.url;
 
         return {
           id: doc.id,
-          docType: requiredDoc['document-type'],
+          docType,
           requiredDocId: requiredDoc.id,
-          // url: doc.attachment.url,
+          url,
           type: doc.type,
           title: requiredDoc.name,
           explanation: requiredDoc.explanation,
@@ -35,7 +39,6 @@ const getParsedDocumentation = createSelector(
           units: doc.units,
           value: doc.value,
           govFiles: doc['gov-files']
-          // annexes: doc['country-document-annexes'] ? doc['country-document-annexes'] : []
         };
       });
     }
