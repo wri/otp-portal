@@ -23,6 +23,7 @@ function NavigationList({ hideActive, intl, url, className, countries }) {
     'c-navigation-list': true,
     [className]: !!className,
   });
+  const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
 
   return (
     <ul className={classNames}>
@@ -49,7 +50,7 @@ function NavigationList({ hideActive, intl, url, className, countries }) {
 
             <DropdownContent>
               <ul className="header-dropdown-list">
-                {countries.data.map((country) => (
+                {navCountries.map((country) => (
                   <li className="header-dropdown-list-item">
                     <Link href={`/countries/${country.id}`} prefetch={false}>
                       <a>

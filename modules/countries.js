@@ -38,6 +38,8 @@ export function getCountries() {
     dispatch({ type: GET_COUNTRIES_LOADING });
     const params = {
       locale: language,
+      include: 'required-gov-documents',
+      'fields[required-gov-documents]': 'id',
       'page[size]': 2000,
       sort: 'name'
     };
