@@ -316,24 +316,24 @@ class DocModal extends React.Component {
                     </Field>
                   ))}
 
-                  <div
-                    style={{
-                      padding: 16,
-                      background: '#EDECE3'
-                    }}
+              {/* <div
+                  style={{
+                  padding: 16,
+                  background: '#EDECE3'
+                  }}
                   >
-                    <button
-                      type="button"
-                      disabled={!this.state.form.files[this.state.form.files.length - 1]}
-                      className={classnames({
-                        'c-button -primary -small -fullwidth': true,
-                        '-disabled': !this.state.form.files[this.state.form.files.length - 1]
-                      })}
-                      onClick={this.onAddFiles}
-                    >
-                      Add More
-                    </button>
-                  </div>
+                  <button
+                  type="button"
+                  disabled={!this.state.form.files[this.state.form.files.length - 1]}
+                  className={classnames({
+                  'c-button -primary -small -fullwidth': true,
+                  '-disabled': !this.state.form.files[this.state.form.files.length - 1]
+                  })}
+                  onClick={this.onAddFiles}
+                  >
+                  Add More
+                  </button>
+                  </div> */}
                 </div>
               </div>
             }
