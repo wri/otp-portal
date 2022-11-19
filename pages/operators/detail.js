@@ -107,7 +107,7 @@ class OperatorsDetail extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { url } = this.props;
     const { url: nextUrl } = nextProps;
 

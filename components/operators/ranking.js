@@ -15,7 +15,7 @@ class OperatorsRanking extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.sortDirection !== this.props.sortDirection) {
       this.ranking.draw(this.props.data, nextProps.sortDirection);
     }

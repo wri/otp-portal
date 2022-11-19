@@ -44,7 +44,7 @@ class OperatorsEdit extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // // Get user operator
     if (!nextProps.user.operator_ids) {
       const location = {

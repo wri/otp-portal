@@ -34,7 +34,7 @@ class OperatorsDetailObservations extends React.Component {
     this.onChangeDisplayHidden = this.onChangeDisplayHidden.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.operatorObservations !== nextProps.operatorObservations) {
       this.setState({
         year: HELPERS_OBS.getMaxYear(nextProps.operatorObservations),

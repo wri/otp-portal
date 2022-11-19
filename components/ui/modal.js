@@ -28,7 +28,7 @@ class Modal extends React.Component {
     });
   }
 
-  componentWillReceiveProps({ modal }) {
+  UNSAFE_componentWillReceiveProps({ modal }) {
     function escKeyDownListener(e) {
       document.removeEventListener('keydown', escKeyDownListener);
       return e.keyCode === 27 && this.props.toggleModal(false);

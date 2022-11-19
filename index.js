@@ -220,7 +220,7 @@ app
     );
     server.get('/newsletter/thank-you', (req, res) =>
       app.render(req, res, '/thank-you', Object.assign(req.params, req.query))
-    );
+    )server;
 
     // LOGIN
     server.post('/login', (req, res) => {
@@ -260,11 +260,7 @@ app
     });
 
     // Default catch-all handler to allow Next.js to handle all other routes
-    server.all('*', (req, res) => handle(req, res));
-
-    // Set vary header (good practice)
-    // Note: This overrides any existing 'Vary' header but is okay in this app
-    server.use((req, res, _next) => {
+    server.all('*', (req, res) => handle(req, res))server.use((req, res, _next) => {
       res.setHeader('Vary', 'Accept-Encoding');
       _next();
     });

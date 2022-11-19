@@ -43,7 +43,7 @@ class Search extends React.Component {
     this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (nextState.active !== this.state.active) {
       if (nextState.active) {
         this.addListeners();

@@ -17,7 +17,7 @@ class CheckboxGroup extends FormElement {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!isEqual(nextProps.properties.value, this.props.properties.value)) {
       this.setState({
         value: nextProps.properties.value

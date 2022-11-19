@@ -14,7 +14,7 @@ export default class Tabs extends React.Component {
     this.triggerClickSelected = this.triggerClickSelected.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       selected: nextProps.defaultSelected
     });
