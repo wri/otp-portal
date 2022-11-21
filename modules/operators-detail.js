@@ -269,8 +269,9 @@ export function getOperator(id) {
 
     return API.get(`operators/${id}`, {
       locale: language,
-      token: user.token,
       include: includeFields.join(','),
+    }, {
+      token: user.token
     })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
@@ -307,11 +308,12 @@ export function getOperatorDocumentation(id) {
 
     return API.get('operator-document-histories', {
       locale: language,
-      token: user.token,
       include: includeFields.join(','),
       'fields[fmus]': 'name',
       'filter[operator-id]': id,
       'filter[date]': date,
+    }, {
+      token: user.token
     })
       .then((operator) => {
         const dataParsed = JSONA.deserialize(operator);
@@ -394,10 +396,11 @@ export function getOperatorDocumentationCurrent(id) {
 
     return API.get('operator-documents', {
       locale: language,
-      token: user.token,
       include: includeFields.join(','),
       'page[size]': 1000,
       'filter[operator-id]': id,
+    }, {
+      token: user.token,
     })
       .then((operator) => {
         const dataParsed = JSONA.deserialize(operator);
@@ -425,8 +428,9 @@ export function getOperatorTimeline(id) {
 
     return API.get('score-operator-documents', {
       locale: language,
-      token: user.token,
       'filter[operator]': id,
+    }, {
+      token: user.token
     })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
