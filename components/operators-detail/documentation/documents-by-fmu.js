@@ -24,7 +24,7 @@ function DocumentsByFMU({ documents, user, id, getOperator, intl }) {
             </div>
 
             <div className="row l-row -equal-heigth">
-              {sortBy(docs, (doc) => doc.title).map((card) => (
+              {sortBy(docs, ['position', 'title']).map((card) => (
                 <div key={card.id} className="columns small-12 medium-4">
                   <DocCard
                     {...card}
