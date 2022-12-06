@@ -18,6 +18,7 @@ const getParsedDocumentation = createSelector(
         let url;
         if (docType === 'link') url = doc.link;
         if (docType === 'file') url = (doc['gov-files'] || [])[0]?.attachment?.url;
+        const parentCategory = requiredDoc['required-gov-document-group'].parent;
 
         return {
           id: doc.id,
@@ -28,8 +29,10 @@ const getParsedDocumentation = createSelector(
           title: requiredDoc.name,
           explanation: requiredDoc.explanation,
           position: requiredDoc.position,
-          category: requiredDoc['required-gov-document-group'].name,
-          categoryPosition: requiredDoc['required-gov-document-group'].position,
+          category: parentCategory ? parentCategory.name : requiredDoc['required-gov-document-group'].name,
+          categoryPosition: parentCategory ? parentCategory.position : requiredDoc['required-gov-document-group'].position,
+          subCategory: parentCategory ? requiredDoc['required-gov-document-group'].name : null,
+          subCategoryPosition: parentCategory ? requiredDoc['required-gov-document-group'].position : null,
           status: doc.status,
           reason: doc.reason,
           startDate: new Date(doc['start-date']).toJSON().slice(0, 10).replace(/-/g, '/'),

@@ -80,6 +80,18 @@ const HELPERS_DOC = {
     return parentObj;
   },
 
+  getGroupedBySubCategory(data) {
+    const lookup = sortBy(uniqBy(data, 'subCategory'), 'subCategoryPosition').map(item => item.subCategory);
+    const childObj = groupBy(data, 'subCategory');
+    const parentObj = {};
+
+    for (let i = 0; i < lookup.length; ++i) {
+      parentObj[lookup[i]] = childObj[lookup[i]];
+    }
+
+    return parentObj;
+  },
+
   getGroupedByStatus(data) {
     return groupBy(data, 'status');
   },

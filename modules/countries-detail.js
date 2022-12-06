@@ -98,6 +98,7 @@ export function getCountry(id) {
       'governments',
       'required-gov-documents',
       'required-gov-documents.required-gov-document-group',
+      'required-gov-documents.required-gov-document-group.parent',
       'required-gov-documents.gov-documents',
       'required-gov-documents.gov-documents.gov-files'
     ];
