@@ -19,26 +19,7 @@ import Input from 'components/form/Input';
 import Spinner from 'components/ui/spinner';
 import File from 'components/form/File';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
+import { FormElements } from 'utils/form';
 
 class DocAnnexesModal extends React.Component {
   static propTypes = {
@@ -51,6 +32,7 @@ class DocAnnexesModal extends React.Component {
 
   constructor(props) {
     super(props);
+    this.formElements = new FormElements();
     this.documentationService = new DocumentationService({
       authorization: props.user.token
     });
@@ -100,13 +82,13 @@ class DocAnnexesModal extends React.Component {
     e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate();
+    this.formElements.validate();
 
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -133,7 +115,7 @@ class DocAnnexesModal extends React.Component {
   }
 
   render() {
-    const { submitting } = this.state;
+    const { submitting, errors } = this.state;
     const { title } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
@@ -147,7 +129,7 @@ class DocAnnexesModal extends React.Component {
           <fieldset className="c-field-container">
             <div className="c-field-row">
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+                ref={(c) => { if (c) this.formElements.elements.name = c; }}
                 onChange={value => this.handleChange({ name: value })}
                 className="-fluid"
                 validations={['required']}
@@ -167,7 +149,7 @@ class DocAnnexesModal extends React.Component {
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.startDate = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.startDate = c; }}
                     onChange={value => this.handleChange({ startDate: value })}
                     validations={['required']}
                     className="-fluid"
@@ -185,7 +167,7 @@ class DocAnnexesModal extends React.Component {
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
                   <Field
-                    ref={(c) => { if (c) FORM_ELEMENTS.elements.expireDate = c; }}
+                    ref={(c) => { if (c) this.formElements.elements.expireDate = c; }}
                     onChange={value => this.handleChange({ expireDate: value })}
                     className="-fluid"
                     properties={{
@@ -205,7 +187,7 @@ class DocAnnexesModal extends React.Component {
                 <div className="columns small-12">
                   <div className="c-field-row">
                     <Field
-                      ref={(c) => { if (c) FORM_ELEMENTS.elements.file = c; }}
+                      ref={(c) => { if (c) this.formElements.elements.file = c; }}
                       onChange={value => this.handleChange({ file: value })}
                       validations={['required']}
                       className="-fluid"
@@ -223,6 +205,9 @@ class DocAnnexesModal extends React.Component {
               </div>
             </div>
           </fieldset>
+
+          {!!errors.length && Array.isArray(errors) && <div>Error</div>}
+
           <ul className="c-field-buttons">
             <li>
               <button
