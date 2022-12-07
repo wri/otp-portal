@@ -11,4 +11,8 @@ POSTGRES_DATABASE=fti_api_cypress bundle exec rails s &
 echo 'Starting Portal...'
 cd ../otp-portal/
 fnm use
-yarn build && yarn start
+if [ $1 = "dev" ]; then
+  yarn dev
+else
+  yarn build && yarn start
+fi

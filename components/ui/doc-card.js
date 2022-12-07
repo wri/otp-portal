@@ -206,6 +206,7 @@ class DocCard extends React.Component {
                                   <button
                                     className="c-button -small -tooltip -tooltip-secondary"
                                     type="button"
+                                    data-test-id="remove-annex-button"
                                     onClick={() => this.triggerRemoveAnnex(annex.id)}
                                   >
                                     <span className="tooltip-hidden-button-text">{this.props.intl.formatMessage({ id: 'annex.remove' })}</span>
@@ -231,6 +232,7 @@ class DocCard extends React.Component {
                         <button
                           className="c-button -small -secondary"
                           type="button"
+                          data-test-id="add-annex-button"
                           onClick={this.triggerAddAnnexModal}
                         >
                           <span className="doc-card-hidden-button-text">Add an annex</span>

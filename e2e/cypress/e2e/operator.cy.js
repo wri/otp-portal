@@ -49,7 +49,7 @@ describe('User', function () {
         cy.location('pathname', {timeout: 25000}).should('include', '/documentation');
       })
 
-      it('can upload a new document', function () {
+      it.only('can upload a new document', function () {
         cy.docExpandCategory('Use right');
 
         cy.docGetFMUDocCard('Ngombe', 'Cahier des charges particulier')
@@ -61,7 +61,7 @@ describe('User', function () {
         cy.get('#input-expireDate').type('2030-03-30');
         cy.selectOption('#select-source', null, 'Other');
         cy.get('#input-source-info').clear().type('Here is example source info');
-        cy.get('.file-dropzone').attachFile('example.json');
+        cy.get('input[type=file]').attachFile('test_document.docx');
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
@@ -125,15 +125,44 @@ describe('User', function () {
 
       describe('annexes', function () {
         it('can add new annex', function () {
+          cy.docExpandCategory('Population rights');
+          cy.docGetFMUDocCard('Ngombe', 'Compte-rendu du conseil de concertation')
+            .find('.doc-card-annexes .doc-card-list-item')
+            .should('have.length', 0)
 
-        })
+          cy.docGetFMUDocCard('Ngombe', 'Compte-rendu du conseil de concertation')
+            .find('[data-test-id=add-annex-button]')
+            .click();
 
-        it('can edit new annex', function () {
+          cy.contains('Add a document for the annex of Compte-rendu du conseil de concertation');
+          cy.get('#input-name').type('Here is the name of annex');
+          cy.get('#input-startDate').type('2022-03-30');
+          cy.get('#input-expireDate').type('2030-03-30');
+          cy.get('input[type=file]').attachFile('test_document.docx');
 
+          cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+          cy.get('button').contains('Submit').click();
+          cy.wait('@documentsReload');
+          cy.wait(1000);
+
+          cy.docGetFMUDocCard('Ngombe', 'Compte-rendu du conseil de concertation')
+            .find('.doc-card-annexes .doc-card-list-item')
+            .should('have.length', 1)
         })
 
         it('can delete annex', function () {
+          cy.docExpandCategory('Labor regulations');
+          cy.docGetProducerDocCard('Arrêté d’agrément du personnel du centre socio-sanitaire de l’entreprise')
+            .find('.doc-card-annexes .doc-card-list-item')
+            .should('have.length', 1)
+            .trigger('mouseover');
 
+          cy.get('[data-test-id=remove-annex-button]')
+            .click();
+
+          cy.docGetProducerDocCard('Arrêté d’agrément du personnel du centre socio-sanitaire de l’entreprise')
+            .find('.doc-card-annexes .doc-card-list-item')
+            .should('have.length', 0)
         })
       });
     });
