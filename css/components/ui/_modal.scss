@@ -4,7 +4,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba($color-black, .75);
   transition: all $animation-time $ease-in-sine;
   z-index: 1000; // Just to be sure that is over all the content
   visibility: visible;
@@ -71,6 +70,7 @@
     height: 100%;
     top: 0;
     left: 0;
+    background: rgba($color-black, .75);
   }
 
 

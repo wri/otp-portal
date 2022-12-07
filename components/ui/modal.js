@@ -62,22 +62,26 @@ class Modal extends React.Component {
         ref={(node) => { this.el = node; }}
         className={`c-modal ${classNames}`}
       >
-        <div className="modal-container">
-          <button
-            className="modal-close"
-            onClick={() => this.props.toggleModal(false)}
-          >
-            <Icon name="icon-cross" className="-big" />
-          </button>
-          <div className="modal-content">
-            {loading ? <Spinner isLoading /> : this.getContent()}
-          </div>
-        </div>
+        {(loading || this.props.modal.options.children) && (
+          <>
+            <div className="modal-container">
+              <button
+                className="modal-close"
+                onClick={() => this.props.toggleModal(false)}
+              >
+                <Icon name="icon-cross" className="-big" />
+              </button>
+              <div className="modal-content">
+                {loading ? <Spinner isLoading /> : this.getContent()}
+              </div>
+            </div>
 
-        <area
-          className="modal-backdrop"
-          onClick={() => this.props.toggleModal(false)}
-        />
+            <area
+              className="modal-backdrop"
+              onClick={() => this.props.toggleModal(false)}
+            />
+          </>
+        )}
       </section>
     );
   }
