@@ -33,7 +33,7 @@ function Gallery1(props) {
                 title={tutorial.name}
                 description={tutorial.description}
                 link={{
-                  label: props.intl.formatMessage({ id: 'help.tabs.howto.post1.link.label' }),
+                  label: props.intl.formatMessage({ id: 'Read more' }),
                   href: `/help/tutorials?article=tutorial-article-${tutorial.id}`
                 }}
               />

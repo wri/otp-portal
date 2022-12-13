@@ -31,7 +31,7 @@ function Gallery3(props) {
                 title={faq.question}
                 description={faq.answer}
                 link={{
-                  label: props.intl.formatMessage({ id: 'help.tabs.faqs.overview.link.label' }),
+                  label: props.intl.formatMessage({ id: 'Read more' }),
                   href: `/help/faqs?article=faq-article-${faq.id}`
                 }}
               />
