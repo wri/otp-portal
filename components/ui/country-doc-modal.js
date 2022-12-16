@@ -24,18 +24,20 @@ import Spinner from 'components/ui/spinner';
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
+    const { startDate, endDate, link, value, units } = props;
 
     this.formElements = new FormElements();
     this.state = {
       form: {
-        startDate: '',
-        expireDate: '',
-        file: '',
-        reason: '',
-        link: '',
-        units: '',
-        value: '',
-        files: ['']
+        startDate:
+            startDate &&
+              startDate !== '1970/01/01' &&
+              startDate.replace(/\//g, '-'),
+        expireDate: endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
+        file: {},
+        link,
+        units,
+        value
       },
       submitting: false,
       errors: []
@@ -44,8 +46,6 @@ class DocModal extends React.Component {
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.onChangeFiles = this.onChangeFiles.bind(this);
-    this.onAddFiles = this.onAddFiles.bind(this);
 
     // Services
     this.documentationService = new DocumentationService({
@@ -57,26 +57,10 @@ class DocModal extends React.Component {
    * UI EVENTS
    * - onChange
    * - onSubmit
-  */
+   */
   onChange(value) {
     const form = Object.assign({}, this.state.form, value);
     this.setState({ form });
-  }
-
-  onChangeFiles(index, value) {
-    const files = this.state.form.files.slice(0);
-    files[index] = value;
-
-    const form = Object.assign({}, this.state.form, { files });
-    this.setState({ form });
-  }
-
-  onAddFiles() {
-    const files = this.state.form.files.slice(0);
-    if (files[files.length - 1]) {
-      const form = Object.assign({}, this.state.form, { files: [...files, {}] });
-      this.setState({ form });
-    }
   }
 
   onSubmit(e) {
@@ -91,33 +75,20 @@ class DocModal extends React.Component {
       const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
-        const { type, docType } = this.props;
+        const { docId } = this.props;
 
         // Start the submitting
         this.setState({ submitting: true });
 
         this.documentationService.saveDocument({
-          url: type,
-          type: 'POST',
+          url: `gov-documents/${docId}`,
+          type: 'PATCH',
           body: this.getBody()
         })
-          .then(({ data }) => {
-            if (docType === 'file') {
-              const promises = this.state.form.files.map(file => this.documentationService.saveGovFiles({
-                body: this.getFilesBody(data.id, file)
-              }));
-
-              Promise.all(promises)
-              .then(() => {
-                this.setState({ submitting: false, errors: [] });
-                this.props.onChange && this.props.onChange();
-                modal.toggleModal(false);
-              });
-            } else {
-              this.setState({ submitting: false, errors: [] });
-              this.props.onChange && this.props.onChange();
-              modal.toggleModal(false);
-            }
+          .then(() => {
+            this.setState({ submitting: false, errors: [] });
+            this.props.onChange && this.props.onChange();
+            modal.toggleModal(false);
           })
           .catch((err) => {
             console.error(err);
@@ -129,22 +100,23 @@ class DocModal extends React.Component {
     }, 0);
   }
 
-
   /**
    * HELPERS
    * - getBody
-  */
+   */
   getBody() {
-    const { requiredDocId, type, docType } = this.props;
+    const { docId, type, docType } = this.props;
 
     return {
       data: {
+        id: docId,
         type,
         attributes: {
-          current: true,
           'start-date': this.state.form.startDate,
           'expire-date': this.state.form.expireDate,
-          'required-gov-document-id': requiredDocId,
+          ...(docType === 'file' && this.state.form.file.base64 && {
+            attachment: this.state.form.file.base64,
+          }),
           ...docType === 'stats' && {
             value: this.state.form.value,
             units: this.state.form.units
@@ -157,23 +129,9 @@ class DocModal extends React.Component {
     };
   }
 
-  getFilesBody(id, attachment) {
-    return {
-      data: {
-        type: 'gov-files',
-        attributes: {
-          attachment: attachment.base64,
-          // name: attachment.name,
-          'gov-document-id': id
-        }
-      }
-    };
-  }
-
-
   render() {
     const { submitting, errors } = this.state;
-    const { title, docType, notRequired } = this.props;
+    const { title, url, docType } = this.props;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -199,9 +157,7 @@ class DocModal extends React.Component {
                   className="-fluid"
                   properties={{
                     name: 'startDate',
-                    label: notRequired ?
-                      this.props.intl.formatMessage({ id: 'start_date' }) :
-                      this.props.intl.formatMessage({ id: 'doc.start_date' }),
+                    label: this.props.intl.formatMessage({ id: 'doc.start_date' }),
                     type: 'date',
                     required: true,
                     default: this.state.form.startDate
@@ -218,9 +174,7 @@ class DocModal extends React.Component {
                   className="-fluid"
                   properties={{
                     name: 'expireDate',
-                    label: notRequired ?
-                      this.props.intl.formatMessage({ id: 'expire_date' }) :
-                      this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
+                    label: this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
                     type: 'date',
                     default: this.state.form.expireDate
                   }}
@@ -297,43 +251,20 @@ class DocModal extends React.Component {
             {docType === 'file' &&
               <div className="l-row row">
                 <div className="columns small-12">
-                  {this.state.form.files.map((file, i) => (
-                    <Field
-                      key={i}
-                      ref={(c) => { if (c) this.formElements.elements.files = c; }}
-                      onChange={value => this.onChangeFiles(i, value)}
-                      validations={['required']}
-                      className="-fluid"
-                      properties={{
-                        name: 'file',
-                        label: i === 0 && this.props.intl.formatMessage({ id: 'files' }),
-                        required: true,
-                        changeableName: true,
-                        default: file
-                      }}
-                    >
-                      {File}
-                    </Field>
-                  ))}
-
-              {/* <div
-                  style={{
-                  padding: 16,
-                  background: '#EDECE3'
-                  }}
+                  <Field
+                    ref={(c) => { if (c) this.formElements.elements.file = c; }}
+                    onChange={value => this.onChange({ file: value })}
+                    validations={!url ? ['required'] : []}
+                    className="-fluid"
+                    properties={{
+                      name: 'file',
+                      label: this.props.intl.formatMessage({ id: 'file' }),
+                      required: !url,
+                      default: { name: url }
+                    }}
                   >
-                  <button
-                  type="button"
-                  disabled={!this.state.form.files[this.state.form.files.length - 1]}
-                  className={classnames({
-                  'c-button -primary -small -fullwidth': true,
-                  '-disabled': !this.state.form.files[this.state.form.files.length - 1]
-                  })}
-                  onClick={this.onAddFiles}
-                  >
-                  Add More
-                  </button>
-                  </div> */}
+                    {File}
+                  </Field>
                 </div>
               </div>
             }
@@ -374,11 +305,16 @@ class DocModal extends React.Component {
 }
 
 DocModal.propTypes = {
+  docId: PropTypes.number,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  link: PropTypes.string,
+  value: PropTypes.string,
+  units: PropTypes.string,
   title: PropTypes.string,
-  requiredDocId: PropTypes.string,
-  type: PropTypes.string,
-  notRequired: PropTypes.bool,
+  url: PropTypes.string,
   docType: PropTypes.string,
+  type: PropTypes.string,
   user: PropTypes.object,
   onChange: PropTypes.func,
   intl: intlShape.isRequired

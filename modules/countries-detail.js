@@ -99,8 +99,7 @@ export function getCountry(id) {
       'required-gov-documents',
       'required-gov-documents.required-gov-document-group',
       'required-gov-documents.required-gov-document-group.parent',
-      'required-gov-documents.gov-documents',
-      'required-gov-documents.gov-documents.gov-files'
+      'required-gov-documents.gov-documents'
     ];
 
     const lang = language === 'zh' ? 'zh-CN' : language;

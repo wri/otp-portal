@@ -31,14 +31,7 @@ function DocumentsByOperator(props) {
   const renderDocs = (docs) => {
     return docs.map(card => (
       <div key={card.id} className="columns small-12 medium-4">
-        <CountryDocCard
-          {...card}
-          properties={{
-            type: 'government',
-            id
-          }}
-          onChange={() => props.getCountry(id)}
-        />
+        <CountryDocCard {...card} />
 
         {((user && user.role === 'admin') ||
           (user && user.role === 'government' && user.country && user.country.toString() === id)) && (
