@@ -27,7 +27,7 @@ const LanguageDropdown = ({ intl }) => {
             <a href="?language=fr-FR">Français</a>
           </li>
           <li className="language-dropdown-list-item">
-            <a href="?language=pt-PT">Portuguese</a>
+            <a href="?language=pt-PT">Português</a>
           </li>
           <li className="language-dropdown-list-item">
             <a href="?language=zh-CN">中文</a>
