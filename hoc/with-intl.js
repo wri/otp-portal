@@ -10,6 +10,7 @@ import langZhCN from 'lang/zh_CN.json';
 import langJa from 'lang/ja.json';
 import langKo from 'lang/ko.json';
 import langVi from 'lang/vi.json';
+import langPt from 'lang/pt.json';
 
 import en from 'react-intl/locale-data/en';
 import fr from 'react-intl/locale-data/fr';
@@ -17,8 +18,9 @@ import zh from 'react-intl/locale-data/zh';
 import ja from 'react-intl/locale-data/ja';
 import ko from 'react-intl/locale-data/ko';
 import vi from 'react-intl/locale-data/vi';
+import pt from 'react-intl/locale-data/pt';
 
-const LANGUAGES = { en, fr, zh, ja, ko, vi };
+const LANGUAGES = { en, fr, pt, zh, ja, ko, vi };
 const MESSAGES = {
   en: langEn,
   fr: langFr,
@@ -26,11 +28,13 @@ const MESSAGES = {
   ja: langJa,
   ko: langKo,
   vi: langVi,
+  pt: langPt
 };
 
 const LANG2LOCALE = {
   en: 'en-GB',
   fr: 'fr-FR',
+  pt: 'pt-PT',
   zh: 'zh-CN',
   ja: 'ja-JP',
   ko: 'ko-KR',
@@ -40,6 +44,7 @@ const LANG2LOCALE = {
 const LOCALE2LANG = {
   'en-GB': 'en',
   'fr-FR': 'fr',
+  'pt-PT': 'pt',
   'zh-CN': 'zh',
   'ja-JP': 'ja',
   'ko-KR': 'ko',
