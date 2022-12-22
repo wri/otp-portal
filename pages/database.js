@@ -7,6 +7,8 @@ import difference from 'lodash/difference';
 // Redux
 import { connect } from 'react-redux';
 
+import { withRouter } from 'next/router';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Intl
@@ -60,9 +62,13 @@ class DocumentsDatabasePage extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
+  componentDidUpdate(prevProps) {
+    if (!isEqual(this.props.parsedFilters.data, prevProps.parsedFilters.data)) {
       this.props.getDocumentsDatabase({ reload: true });
+    }
+
+    if (!isEqual(this.props.router.query, prevProps.router.query)) {
+      this.props.getDocumentsDatabaseUrl(this.props.router);
     }
   }
 
@@ -126,6 +132,7 @@ class DocumentsDatabasePage extends React.Component {
 }
 
 DocumentsDatabasePage.propTypes = {
+  router: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
   database: PropTypes.object,
   intl: intlShape.isRequired,
@@ -138,7 +145,7 @@ DocumentsDatabasePage.propTypes = {
   setFilters: PropTypes.func.isRequired,
 };
 
-export default withTracker(
+export default withRouter(withTracker(
   withIntl(
     connect(
       (state) => ({
@@ -154,4 +161,4 @@ export default withTracker(
       }
     )(DocumentsDatabasePage)
   )
-);
+));

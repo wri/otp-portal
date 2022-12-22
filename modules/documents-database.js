@@ -236,51 +236,45 @@ export function setPage(page) {
   };
 }
 
+function setUrlFilters(filters) {
+  const query = {};
+
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] && filters[key].length) query[key] = filters[key];
+  });
+
+  const location = {
+    pathname: '/database',
+    query: {},
+  };
+
+  if (Object.keys(query).length) location.query.filters = encode(query);
+
+  Router.push(location, null, { shallow: true, scroll: false });
+}
+
 export function setFilters(filter) {
   return (dispatch, state) => {
     const newFilters = Object.assign({}, state().database.filters.data);
-    const key = Object.keys(filter)[0];
-    newFilters[key] = filter[key];
-
-    dispatch({
-      type: SET_FILTERS_DOCUMENTS_DB,
-      payload: newFilters,
-    });
-  };
-}
-
-export function setDocumentsDatabaseUrl() {
-  return (dispatch, getState) => {
-    const filters = getState().database.filters.data;
-    const query = {};
-
-    Object.keys(filters).forEach((key) => {
-      if (filters[key] && filters[key].length) query[key] = filters[key];
-    });
-
-    const location = {
-      pathname: '/database',
-      query: {},
-    };
-
-    if (Object.keys(query).length) location.query.filters = encode(query);
-
-    Router.replace(location);
+    Object.keys(filter).forEach((key) => {
+      newFilters[key] = filter[key];
+    })
+    setUrlFilters(newFilters);
   };
 }
 
 export function getDocumentsDatabaseUrl(url) {
   return (dispatch) => {
     const filters = url.query.filters;
+    let payload = {};
     if (filters) {
-      const payload = {
+      payload = {
         ...decode(url.query.filters),
       };
-
-      dispatch({
-        type: SET_FILTERS_DOCUMENTS_DB,
-        payload,
-      });
     }
+    dispatch({
+      type: SET_FILTERS_DOCUMENTS_DB,
+      payload,
+    });
   };
 }

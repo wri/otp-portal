@@ -19,26 +19,28 @@ class Filters extends React.Component {
     const { options: prevOptions } = prevProps;
 
     if (!isEqual(options, prevOptions)) {
-      this.props.filtersRefs.map((f) => {
-        const value = options[f.key]
-          ? options[f.key].filter((opt) =>
-              filters[f.key] ? filters[f.key].includes(opt.value) : false
-            )
-          : [];
-
-        this.setFilter(value, f.key);
+      const filter = {};
+      // the below one will eliminate all selected filters that are missing options
+      // for example when someone selected producer first, and country later and that producer was from different country
+      this.props.filtersRefs.forEach((f) => {
+        const value = (options[f.key] || []).filter((opt) => (filters[f.key] || []).includes(opt.value));
+        filter[f.key] = this.getFilter(value);
       });
+      this.props.setFilters(filter);
     }
   }
 
-  setFilter(selected, key) {
-    const filter = {};
-    filter[key] = selected.map((opt) => {
+  getFilter(selected) {
+    return selected.map((opt) => {
       const isVal = opt.value !== null && typeof opt.value !== 'undefined';
       return isVal ? opt.value : opt;
     });
+  }
 
-    this.props.setFilters(filter);
+  setFilter(selected, key) {
+    this.props.setFilters({
+      [key]: this.getFilter(selected)
+    });
   }
 
   renderFiltersSelects() {

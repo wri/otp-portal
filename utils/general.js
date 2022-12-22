@@ -11,7 +11,11 @@ function encode(obj) {
 }
 
 function decode(obj) {
-  return JSON.parse(atob(obj));
+  try {
+    return JSON.parse(atob(obj));
+  } catch (e) {
+    return {};
+  }
 }
 
 function parseSelectOptions(options) {
