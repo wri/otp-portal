@@ -58,6 +58,13 @@ class Filters extends React.Component {
         }),
       }));
     }
+    if (f.key === 'observation_type') {
+      opts = (opts || []).map((o) => ({
+        ...o,
+        label: this.props.intl.formatMessage({ id: o.id }),
+        name: this.props.intl.formatMessage({ id: o.id })
+      }));
+    }
     if (f.key === 'severity_level') {
       const levelSlugs = ['unknown', 'low', 'medium', 'high'];
       opts = (opts || []).map((o) => ({
