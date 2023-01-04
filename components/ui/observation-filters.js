@@ -58,6 +58,15 @@ class Filters extends React.Component {
         }),
       }));
     }
+    if (f.key === 'severity_level') {
+      const levelSlugs = ['unknown', 'low', 'medium', 'high'];
+      opts = (opts || []).map((o) => ({
+        ...o,
+        label: this.props.intl.formatMessage({ id: levelSlugs[o.id] }),
+        name: this.props.intl.formatMessage({ id: levelSlugs[o.id] })
+      }));
+    }
+
     const title = f.name && this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name });
 
     return (
