@@ -148,6 +148,8 @@
   "doc_pending": "Pending approval",
   "doc_expired": "Expired",
   "doc_not_required": "Non applicable",
+  "gov_doc_valid": "Published",
+  "gov_doc_pending": "Pending",
   "doc.start_date": "Start date",
   "doc.expiry_date": "Expiry date",
   "start-date": "Start date",

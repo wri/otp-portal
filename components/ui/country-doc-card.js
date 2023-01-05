@@ -34,11 +34,18 @@ class CountryDocCard extends React.Component {
   }
 
   render() {
-    const { startDate, endDate, status, title, explanation, docType, units, value, url } = this.props;
+    const { startDate, endDate, status, title, explanation, docType, units, value, url, intl } = this.props;
 
     const classNames = classnames({
       [`-${status}`]: !!status
     });
+
+    let statusText = intl.formatMessage({ id: status });
+    if (status === 'doc_valid') {
+      statusText = intl.formatMessage({ id: 'gov_doc_valid', defaultMessage: 'Published' });
+    } else if (status === 'doc_pending') {
+      statusText = intl.formatMessage({ id: 'gov_doc_pending', defaultMessage: 'Pending' });
+    }
 
     return (
       <div className={`c-doc-card ${classNames}`}>
@@ -79,7 +86,7 @@ class CountryDocCard extends React.Component {
                   </span>
                 </div>
               }
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
+              <div className="doc-card-status">{statusText}</div>
             </header>
             <div className="doc-card-content">
               {url ? (
@@ -106,7 +113,7 @@ class CountryDocCard extends React.Component {
         {status === 'doc_not_provided' &&
           <div>
             <header className="doc-card-header">
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
+              <div className="doc-card-status">{statusText}</div>
             </header>
             <div className="doc-card-content">
               <h3 className="doc-card-title c-title -big">
