@@ -1,11 +1,11 @@
 import Jsona from 'jsona';
-import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 
 import API from 'services/api';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { setUrlParam } from 'utils/url';
 
 /* Constants */
 const GET_DOCUMENTS_DB_SUCCESS = 'GET_DOCUMENTS_DB_SUCCESS';
@@ -237,20 +237,13 @@ export function setPage(page) {
 }
 
 function setUrlFilters(filters) {
-  const query = {};
+  const queryFiltersObj = {};
 
   Object.keys(filters).forEach((key) => {
-    if (filters[key] && filters[key].length) query[key] = filters[key];
+    if (filters[key] && filters[key].length) queryFiltersObj[key] = filters[key];
   });
 
-  const location = {
-    pathname: '/database',
-    query: {},
-  };
-
-  if (Object.keys(query).length) location.query.filters = encode(query);
-
-  Router.push(location, null, { shallow: true, scroll: false });
+  setUrlParam('filters', Object.keys(queryFiltersObj).length ? encode(queryFiltersObj) : null);
 }
 
 export function setFilters(filter) {

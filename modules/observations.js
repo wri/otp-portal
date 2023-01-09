@@ -2,7 +2,6 @@ import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
-import compact from 'lodash/compact';
 
 import API from 'services/api';
 
