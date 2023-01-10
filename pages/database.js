@@ -19,7 +19,7 @@ import { intlShape } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import { FILTERS_REFS } from 'constants/documents-database';
-import Filters from 'components/ui/filters';
+import Filters from 'components/ui/database-filters';
 import DatabaseTable from 'components/database/table';
 import StaticTabs from 'components/ui/static-tabs';
 

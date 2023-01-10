@@ -1,46 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
 
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
 
 import Checkbox from 'components/form/Checkbox';
 import Spinner from 'components/ui/spinner';
+import Filters from 'components/ui/filters';
 
-class Filters extends React.Component {
-  componentDidUpdate(prevProps) {
-    const { options, filters } = this.props;
-    const { options: prevOptions } = prevProps;
-
-    if (!isEqual(options, prevOptions)) {
-      const filter = {};
-      // the below one will eliminate all selected filters that are missing options
-      // for example when someone selected producer first, and country later and that producer was from different country
-      this.props.filtersRefs.forEach((f) => {
-        const value = (options[f.key] || []).filter((opt) => (filters[f.key] || []).includes(opt.value));
-        filter[f.key] = this.getFilter(value);
-      });
-      this.props.setFilters(filter);
-    }
-  }
-
-  getFilter(selected) {
-    if (selected === undefined || selected === null) return [];
-
-    return [].concat(selected).map((opt) => {
-        const isVal = opt.value !== null && typeof opt.value !== 'undefined';
-      return isVal ? opt.value : opt;
-    });
-  }
-
-  setFilter(selected, key) {
-    this.props.setFilters({
-      [key]: this.getFilter(selected)
-    });
-  }
-
+class ObservationFilters extends Filters {
   renderFilterSelect = (f) => {
     const { options, filters } = this.props;
 
@@ -158,7 +127,7 @@ class Filters extends React.Component {
   }
 }
 
-Filters.propTypes = {
+ObservationFilters.propTypes = {
   filters: PropTypes.object,
   filtersRefs: PropTypes.array,
   loading: PropTypes.bool,
@@ -169,8 +138,8 @@ Filters.propTypes = {
   setFilters: PropTypes.func
 };
 
-Filters.defaultProps = {
+ObservationFilters.defaultProps = {
   options: {},
 };
 
-export default injectIntl(Filters);
+export default injectIntl(ObservationFilters);
