@@ -9,6 +9,8 @@ import debounce from 'lodash/debounce';
 // Redux
 import { connect } from 'react-redux';
 
+import { withRouter } from 'next/router';
+
 import withTracker from 'components/layout/with-tracker';
 
 // Services
@@ -99,9 +101,13 @@ class ObservationsPage extends React.Component {
     this.props.getObservations();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.parsedFilters.data, nextProps.parsedFilters.data)) {
+  componentDidUpdate(prevProps) {
+    if (!isEqual(this.props.parsedFilters.data, prevProps.parsedFilters.data)) {
       this.props.getObservations();
+    }
+
+    if (!isEqual(this.props.router.query, prevProps.router.query)) {
+      this.props.getObservationsUrl(this.props.router);
     }
   }
 
@@ -416,6 +422,7 @@ class ObservationsPage extends React.Component {
 }
 
 ObservationsPage.propTypes = {
+  router: PropTypes.object.isRequired,
   url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
   intl: intlShape.isRequired,
@@ -432,7 +439,7 @@ ObservationsPage.propTypes = {
   setObservationsMapCluster: PropTypes.func.isRequired,
 };
 
-export default withTracker(
+export default withRouter(withTracker(
   withIntl(
     connect(
       (state, props) => ({
@@ -454,4 +461,4 @@ export default withTracker(
       }
     )(ObservationsPage)
   )
-);
+));

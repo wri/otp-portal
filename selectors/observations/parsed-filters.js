@@ -32,7 +32,7 @@ const getParsedFilters = createSelector(
       };
     }
 
-    if (_filters.operator && !!_filters.operator.length) {
+    if (_filters.operator && !!_filters.operator.length && !isEmpty(_filterOptions)) {
       const activeOperators = _filterOptions.operator
         .filter(c => _filters.operator.map(i => +i).includes(c.id));
 
@@ -44,7 +44,7 @@ const getParsedFilters = createSelector(
       };
     }
 
-    if (_filters.category_id && !!_filters.category_id.length) {
+    if (_filters.category_id && !!_filters.category_id.length && !isEmpty(_filterOptions)) {
       const activeCategories = _filterOptions.category_id
         .filter(c => _filters.category_id.map(i => +i).includes(c.id));
 
