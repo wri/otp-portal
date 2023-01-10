@@ -187,15 +187,23 @@
       color: $color-text-1;
     }
 
-    &:after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 20px;
-      height: 1px;
-      background: rgba($color-text-1, 0.5);
+    &.-with-separator {
+      &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 1px;
+        background: rgba($color-text-1, 0.5);
+      }
     }
+  }
+
+  .doc-card-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .doc-card-date {

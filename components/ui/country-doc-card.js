@@ -119,8 +119,17 @@ class CountryDocCard extends React.Component {
             </div>
 
             {docType === 'stats' &&
-              <div>
-                {formatStatValue(value)} {formatStatUnit(units)}
+              <div className="doc-card-stats">
+                <div>
+                  {formatStatValue(value)} {formatStatUnit(units)}
+                </div>
+                <div className="doc-card-source">
+                  {url && (
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      <span>{this.props.intl.formatMessage({ id: 'source' })}</span>
+                    </a>
+                  )}
+                </div>
               </div>
             }
           </div>

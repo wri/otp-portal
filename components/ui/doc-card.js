@@ -172,7 +172,7 @@ class DocCard extends React.Component {
             </div>
             <div className="doc-card-footer">
               {source && (
-                <div className="doc-card-source">
+                <div className="doc-card-source -with-separator">
                   <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
                   {' '}
                   <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>

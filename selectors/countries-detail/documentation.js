@@ -16,7 +16,7 @@ const getParsedDocumentation = createSelector(
         const doc = requiredDoc['gov-documents'][0]
         const docType = requiredDoc['document-type'];
         let url;
-        if (docType === 'link') url = doc.link;
+        if (docType === 'link' || docType === 'stats') url = doc.link;
         if (docType === 'file') url = doc.attachment?.url;
         const parentCategory = requiredDoc['required-gov-document-group'].parent;
 
