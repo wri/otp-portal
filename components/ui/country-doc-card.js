@@ -13,6 +13,20 @@ import DocumentationService from 'services/documentationService';
 import DocInfoModal from 'components/ui/doc-info-modal';
 import Icon from 'components/ui/icon';
 
+function formatStatUnit(unit) {
+  if (unit === 'm3') return <>m<sup>3</sup></>;
+  if (unit === 'm2') return <>m<sup>2</sup></>;
+  if (unit === 'km2') return <>km<sup>2</sup></>;
+
+  return unit;
+}
+
+function formatStatValue(value) {
+  if (isNaN(value)) return value;
+
+  return new Intl.NumberFormat().format(value);
+}
+
 class CountryDocCard extends React.Component {
   static propTypes = {
     docType: PropTypes.string,
@@ -48,26 +62,28 @@ class CountryDocCard extends React.Component {
     }
 
     return (
-      <div className={`c-doc-card ${classNames}`}>
-        <div className="doc-card-info">
-          <button
-            className="c-button -clean -icon"
-            onClick={() => {
-              modal.toggleModal(true, {
-                children: DocInfoModal,
-                childrenProps: {
-                  title,
-                  explanation
-                }
-              });
-            }}
-          >
-            <Icon
-              name="icon-info"
-              className="-smaller"
-            />
-          </button>
-        </div>
+      <div className={`c-doc-card ${classNames} country`}>
+        {explanation && (
+          <div className="doc-card-info">
+            <button
+              className="c-button -clean -icon"
+              onClick={() => {
+                modal.toggleModal(true, {
+                  children: DocInfoModal,
+                  childrenProps: {
+                    title,
+                    explanation
+                  }
+                });
+              }}
+            >
+              <Icon
+                name="icon-info"
+                className="-smaller"
+              />
+            </button>
+          </div>
+        )}
 
         {status !== 'doc_not_provided' &&
           <div>
@@ -104,7 +120,7 @@ class CountryDocCard extends React.Component {
 
             {docType === 'stats' &&
               <div>
-                {value} {units}
+                {formatStatValue(value)} {formatStatUnit(units)}
               </div>
             }
           </div>

@@ -30,7 +30,7 @@ function DocumentsByOperator(props) {
 
   const renderDocs = (docs) => {
     return docs.map(card => (
-      <div key={card.id} className="columns small-12 medium-4">
+      <div key={card.id} className="columns small-12">
         <CountryDocCard {...card} />
 
         {((user && user.role === 'admin') ||
