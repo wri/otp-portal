@@ -1,41 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
 
 import { injectIntl, intlShape } from 'react-intl';
 import Select from 'react-select';
 
 import Checkbox from 'components/form/Checkbox';
 import Spinner from 'components/ui/spinner';
+import Filters from 'components/ui/filters';
 
-class Filters extends React.Component {
-  /* componentDidUpdate(prevProps) {
-   *   const { options, filters } = this.props;
-   *   const { options: prevOptions } = prevProps;
-
-   *   if (!isEqual(options, prevOptions)) {
-   *     this.props.filtersRefs.map((f) => {
-   *       const value = options[f.key]
-   *         ? options[f.key].filter((opt) =>
-   *             filters[f.key] ? filters[f.key].includes(opt.value) : false
-   *           )
-   *         : [];
-
-   *       this.setFilter(value, f.key);
-   *     });
-   *   }
-   * } */
-
-  setFilter = (selected, key) => {
-    const filter = {};
-    filter[key] = [].concat(selected).map((opt) => {
-      const isVal = opt?.value !== null && typeof opt?.value !== 'undefined';
-      return isVal ? opt.value : opt;
-    }).filter(val => val !== null && typeof val !== 'undefined');
-    this.props.setFilters(filter);
-  }
-
+class ObservationFilters extends Filters {
   renderFilterSelect = (f) => {
     const { options, filters } = this.props;
 
@@ -153,7 +127,7 @@ class Filters extends React.Component {
   }
 }
 
-Filters.propTypes = {
+ObservationFilters.propTypes = {
   filters: PropTypes.object,
   filtersRefs: PropTypes.array,
   loading: PropTypes.bool,
@@ -164,8 +138,8 @@ Filters.propTypes = {
   setFilters: PropTypes.func
 };
 
-Filters.defaultProps = {
+ObservationFilters.defaultProps = {
   options: {},
 };
 
-export default injectIntl(Filters);
+export default injectIntl(ObservationFilters);

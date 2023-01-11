@@ -61,7 +61,7 @@ export const getParsedFilters = createSelector(
       };
     }
 
-    if (filters.operator_id && !!filters.operator_id.length) {
+    if (filters.operator_id && !!filters.operator_id.length && !isEmpty(options)) {
       const activeOperators = options.operator_id.filter((c) =>
         filters.operator_id.map((i) => +i).includes(c.id)
       );
@@ -88,7 +88,7 @@ export const getParsedFilters = createSelector(
       };
     }
 
-    if (filters.legal_categories && !!filters.legal_categories.length) {
+    if (filters.legal_categories && !!filters.legal_categories.length && !isEmpty(options)) {
       const activeLegalCategories = options.legal_categories.filter((c) =>
         filters.legal_categories.map((i) => +i).includes(c.id)
       );

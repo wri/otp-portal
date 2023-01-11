@@ -1,11 +1,11 @@
 import Jsona from 'jsona';
-import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 
 import API from 'services/api';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { setUrlParam } from 'utils/url';
 
 /* Constants */
 const GET_DOCUMENTS_DB_SUCCESS = 'GET_DOCUMENTS_DB_SUCCESS';
@@ -236,51 +236,38 @@ export function setPage(page) {
   };
 }
 
+function setUrlFilters(filters) {
+  const queryFiltersObj = {};
+
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] && filters[key].length) queryFiltersObj[key] = filters[key];
+  });
+
+  setUrlParam('filters', Object.keys(queryFiltersObj).length ? encode(queryFiltersObj) : null);
+}
+
 export function setFilters(filter) {
   return (dispatch, state) => {
     const newFilters = Object.assign({}, state().database.filters.data);
-    const key = Object.keys(filter)[0];
-    newFilters[key] = filter[key];
-
-    dispatch({
-      type: SET_FILTERS_DOCUMENTS_DB,
-      payload: newFilters,
-    });
-  };
-}
-
-export function setDocumentsDatabaseUrl() {
-  return (dispatch, getState) => {
-    const filters = getState().database.filters.data;
-    const query = {};
-
-    Object.keys(filters).forEach((key) => {
-      if (filters[key] && filters[key].length) query[key] = filters[key];
-    });
-
-    const location = {
-      pathname: '/database',
-      query: {},
-    };
-
-    if (Object.keys(query).length) location.query.filters = encode(query);
-
-    Router.replace(location);
+    Object.keys(filter).forEach((key) => {
+      newFilters[key] = filter[key];
+    })
+    setUrlFilters(newFilters);
   };
 }
 
 export function getDocumentsDatabaseUrl(url) {
   return (dispatch) => {
     const filters = url.query.filters;
+    let payload = {};
     if (filters) {
-      const payload = {
+      payload = {
         ...decode(url.query.filters),
       };
-
-      dispatch({
-        type: SET_FILTERS_DOCUMENTS_DB,
-        payload,
-      });
     }
+    dispatch({
+      type: SET_FILTERS_DOCUMENTS_DB,
+      payload,
+    });
   };
 }

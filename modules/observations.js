@@ -2,12 +2,12 @@ import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
-import compact from 'lodash/compact';
 
 import API from 'services/api';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { setUrlParam } from 'utils/url';
 
 /* Constants */
 const GET_OBSERVATIONS_SUCCESS = 'GET_OBSERVATIONS_SUCCESS';
@@ -213,52 +213,40 @@ export function setActiveColumns(activeColumns) {
   };
 }
 
+function setUrlFilters(filters) {
+  const queryFiltersObj = {};
+
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] && filters[key].length) queryFiltersObj[key] = filters[key];
+  });
+
+  setUrlParam('filters', Object.keys(queryFiltersObj).length ? encode(queryFiltersObj) : null);
+}
+
 export function setFilters(filter) {
   return (dispatch, state) => {
     const newFilters = Object.assign({}, state().observations.filters.data);
-    const key = Object.keys(filter)[0];
-    newFilters[key] = filter[key];
+    Object.keys(filter).forEach((key) => {
+      newFilters[key] = filter[key];
+    })
 
-    dispatch({
-      type: SET_FILTERS_OBSERVATIONS,
-      payload: newFilters
-    });
-  };
-}
-
-export function setObservationsUrl() {
-  return (dispatch, getState) => {
-    const filters = getState().observations.filters.data;
-    const query = {};
-
-    Object.keys(filters).forEach((key) => {
-      if (filters[key] && filters[key].length) query[key] = filters[key];
-    });
-
-    const location = {
-      pathname: '/observations',
-      query: {}
-    };
-
-    if (Object.keys(query).length) location.query.filters = encode(query);
-
-    Router.replace(location);
+    setUrlFilters(newFilters);
   };
 }
 
 export function getObservationsUrl(url) {
   return (dispatch) => {
     const filters = url.query.filters;
+    let payload = {};
     if (filters) {
-      const payload = {
-        ...decode(url.query.filters)
+      payload = {
+        ...decode(url.query.filters),
       };
-
-      dispatch({
-        type: SET_FILTERS_OBSERVATIONS,
-        payload
-      });
     }
+    dispatch({
+      type: SET_FILTERS_OBSERVATIONS,
+      payload,
+    });
   };
 }
 
