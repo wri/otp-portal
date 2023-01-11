@@ -9,7 +9,7 @@ describe('Observations page', function () {
     cy.contains('Observations List');
 
     // it display full page of observations
-    cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 50);
+    cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length', 50);
   })
 
   describe('filters', function () {

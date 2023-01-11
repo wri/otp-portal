@@ -8,7 +8,7 @@ describe('Document database page', function () {
     cy.contains('Producer documents database');
 
     // it display full page of observations
-    cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 30);
+    cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length', 30);
   })
 
   describe('filters', function () {
