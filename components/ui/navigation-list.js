@@ -49,7 +49,7 @@ function NavigationList({ hideActive, intl, url, className, countries }) {
             </DropdownTrigger>
 
             <DropdownContent>
-              <ul className="header-dropdown-list">
+              <ul className="header-dropdown-list -auto-width">
                 {navCountries.map((country) => (
                   <li className="header-dropdown-list-item">
                     <Link href={`/countries/${country.id}`} prefetch={false}>

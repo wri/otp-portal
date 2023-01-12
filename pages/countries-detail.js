@@ -111,7 +111,7 @@ class CountriesDetail extends React.Component {
         }
         {tab === 'documentation' &&
           <CountriesDetailDocumentation
-            countriesDetail={countriesDetail}
+            vpaOverview={countriesDetail.data['vpa-overview']}
             countryDocumentation={countryDocumentation}
             url={url}
           />

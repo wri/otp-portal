@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import sortBy from 'lodash/sortBy';
 
+import Html from 'components/html';
+
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -18,6 +20,8 @@ function OperatorsDetailOverview(props) {
       className="c-section"
     >
       <div className="l-container">
+        {countriesDetail.data.overview && <Html html={countriesDetail.data.overview} className="georgia" /> }
+
         {(vpas || []).length > 0 && (
           <article className="c-article">
             <header>

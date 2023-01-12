@@ -61,6 +61,10 @@
     width: 220px;
     padding: $space-1 * 2;
     background: rgba($color-gray-1, 0.9);
+
+    &.-auto-width {
+      width: unset;
+    }
   }
 
   .header-dropdown-list-item {
