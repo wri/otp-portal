@@ -101,7 +101,7 @@ class NewOperator extends React.Component {
 
               try {
                 errors.forEach(er =>
-                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.detail}`)
                 );
               } catch (e) {
                 toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
