@@ -1,10 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import HeadNext from 'next/head';
 
-const Head = ({title, description}) => {
+const Head = ({language, title, description}) => {
   return (
     <HeadNext>
+      <html lang={language} />
       <title>{title} | Open Timber Portal</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -55,7 +57,10 @@ const Head = ({title, description}) => {
 
 Head.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
+  language: PropTypes.string
 };
 
-export default Head;
+export default connect(state => ({
+  language: state.language
+}))(Head);
