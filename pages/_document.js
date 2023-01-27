@@ -4,14 +4,16 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { Icons } from 'vizzuality-components';
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+  static async getInitialProps(context) {
+    const initialProps = await Document.getInitialProps(context);
+    const { req } = context;
+    const language = (req && req?.locale?.language) || 'en';
+    return { ...initialProps, language };
   }
 
   render() {
     return (
-      <Html lang="en">
+      <Html lang={this.props.language}>
         <Head />
         <body>
           <Main />
