@@ -67,8 +67,11 @@ function DatabaseTable({
         </span>
       ),
       accessor: 'forest-type',
-      className: '-uppercase',
+      className: 'description',
       minWidth: 150,
+      Cell: (attr) => (attr.value && intl.formatMessage({
+        id: attr.value,
+      })),
     },
     {
       Header: (
