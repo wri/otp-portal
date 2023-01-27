@@ -1,4 +1,3 @@
-import omit from 'lodash/omit';
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 import sortBy from 'lodash/sortBy';
@@ -68,21 +67,6 @@ const HELPERS_DOC = {
   getGroupedByType(data) {
     return groupBy(data, 'type');
   },
-
-  getGroupedByForestType(data) {
-    const groups = groupBy(data, (d) => {
-      const { fmu, type } = d;
-
-      if (type === 'operator-document-fmus') {
-        const { 'forest-type': forestType } = fmu;
-        return forestType;
-      }
-      return type;
-    });
-
-    return omit(groups, 'operator-document-countries');
-  },
-
 
   getGroupedByCategory(data) {
     const lookup = sortBy(uniqBy(data, 'category'), 'categoryPosition').map(item => item.category);
