@@ -490,6 +490,18 @@ export const LAYERS = [
               ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
               ['==', ['get', 'iso3_fmu'], 'CMR']
             ],
+            layout: {
+              'fill-sort-key': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['ufa', 1],
+                  ['communal', 2],
+                  ['ventes_de_coupe', 3]
+                ],
+                default: 1
+              }
+            },
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
@@ -637,6 +649,18 @@ export const LAYERS = [
               ['==', 'iso3_fmu', 'CMR'],
               ['==', 'operator_id', '{operator_id}']
             ],
+            layout: {
+              'fill-sort-key': {
+                property: 'fmu_type_label',
+                type: 'categorical',
+                stops: [
+                  ['ufa', 1],
+                  ['communal', 2],
+                  ['ventes_de_coupe', 3]
+                ],
+                default: 1
+              }
+            },
             paint: {
               'fill-color': {
                 property: 'fmu_type_label',
