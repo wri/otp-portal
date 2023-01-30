@@ -12,6 +12,7 @@ import { injectIntl, intlShape } from 'react-intl';
 // Services
 import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
+import { FormElements } from 'utils/form';
 
 // Components
 import Field from 'components/form/Field';
@@ -20,26 +21,6 @@ import Select from 'components/form/SelectInput';
 import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
-
-// Constants
-const FORM_ELEMENTS = {
-  elements: {},
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map((k) => elements[k].isValid())
-      .filter((v) => v !== null)
-      .every((element) => element);
-
-    return valid;
-  },
-};
 
 const TYPES = {
   'operator-document-countries': 'operator-document-countries',
@@ -51,6 +32,7 @@ class DocModal extends React.Component {
   constructor(props) {
     super(props);
     const { startDate, endDate, url, reason, source, sourceInfo } = props;
+    this.formElements = new FormElements();
 
     this.state = {
       form: {
@@ -60,7 +42,7 @@ class DocModal extends React.Component {
           startDate.replace(/\//g, '-'),
         expireDate:
           endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
-        file: '',
+        file: {},
         url,
         reason,
         source: source || 'company',
@@ -97,12 +79,12 @@ class DocModal extends React.Component {
     const { type, docId } = this.props;
 
     // Validate the form
-    FORM_ELEMENTS.validate();
+    this.formElements.validate();
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -147,8 +129,8 @@ class DocModal extends React.Component {
             this.state.form.source === 'other_source'
               ? this.state.form.sourceInfo
               : null,
-          ...(this.state.form.file && {
-            attachment: this.state.form.file,
+          ...(this.state.form.file.base64 && {
+            attachment: this.state.form.file.base64,
           }),
           ...(this.state.form.reason && {
             reason: this.state.form.reason,
@@ -188,7 +170,7 @@ class DocModal extends React.Component {
                 {/* DATE */}
                 <Field
                   ref={(c) => {
-                    if (c) FORM_ELEMENTS.elements.startDate = c;
+                    if (c) this.formElements.elements.startDate = c;
                   }}
                   onChange={(value) => this.onChange({ startDate: value })}
                   validations={['required']}
@@ -210,7 +192,7 @@ class DocModal extends React.Component {
                 {/* DATE */}
                 <Field
                   ref={(c) => {
-                    if (c) FORM_ELEMENTS.elements.expireDate = c;
+                    if (c) this.formElements.elements.expireDate = c;
                   }}
                   onChange={(value) => this.onChange({ expireDate: value })}
                   className="-fluid"
@@ -235,7 +217,7 @@ class DocModal extends React.Component {
                 <div className="columns small-12">
                   <Field
                     ref={(c) => {
-                      if (c) FORM_ELEMENTS.elements.source = c;
+                      if (c) this.formElements.elements.source = c;
                     }}
                     onChange={(value) => this.onChange({ source: value })}
                     validations={['required']}
@@ -272,7 +254,7 @@ class DocModal extends React.Component {
                   <div className="columns small-12">
                     <Field
                       ref={(c) => {
-                        if (c) FORM_ELEMENTS.elements.sourceInfo = c;
+                        if (c) this.formElements.elements.sourceInfo = c;
                       }}
                       onChange={(value) => this.onChange({ sourceInfo: value })}
                       validations={['required']}
@@ -295,12 +277,12 @@ class DocModal extends React.Component {
 
             {/* DOCUMENT */}
             {(!notRequired ||
-              (this.state.form.file && !this.state.form.reason)) && (
+              (this.state.form.file.base64 && !this.state.form.reason)) && (
               <div className="l-row row">
                 <div className="columns small-12">
                   <Field
                     ref={(c) => {
-                      if (c) FORM_ELEMENTS.elements.file = c;
+                      if (c) this.formElements.elements.file = c;
                     }}
                     onChange={(value) => this.onChange({ file: value })}
                     validations={!url ? ['required'] : []}
@@ -309,7 +291,7 @@ class DocModal extends React.Component {
                       name: 'file',
                       label: this.props.intl.formatMessage({ id: 'file' }),
                       required: !url,
-                      defaultFile: url,
+                      default: { name: url }
                     }}
                   >
                     {File}
@@ -320,12 +302,12 @@ class DocModal extends React.Component {
 
             {/* REASON */}
             {(notRequired ||
-              (this.state.form.reason && !this.state.form.file)) && (
+              (this.state.form.reason && !this.state.form.file.base64)) && (
               <div className="l-row row">
                 <div className="columns small-12">
                   <Field
                     ref={(c) => {
-                      if (c) FORM_ELEMENTS.elements.reason = c;
+                      if (c) this.formElements.elements.reason = c;
                     }}
                     onChange={(value) => this.onChange({ reason: value })}
                     className="-fluid"

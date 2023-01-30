@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as Cookies from 'js-cookie';
-
-// Toastr
-import { toastr } from 'react-redux-toastr';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -14,12 +9,9 @@ import { intlShape } from 'react-intl';
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
 import { getParsedObservations } from 'selectors/countries-detail/observations';
 
-// Constants
-import { TABS_COUNTRIES_DETAIL } from 'constants/countries-detail';
-
 // Redux
 import { connect } from 'react-redux';
-import { getCountry, getCountryObservations, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
+import { getCountry, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
 import withTracker from 'components/layout/with-tracker';
 
 // Components
@@ -30,37 +22,32 @@ import Spinner from 'components/ui/spinner';
 
 import CountriesDetailOverview from 'components/countries-detail/overview';
 import CountriesDetailDocumentation from 'components/countries-detail/documentation';
-import CountriesDetailObservations from 'components/countries-detail/observations';
+
+const TABS_COUNTRIES_DETAIL = [
+  {
+    label: 'overview',
+    value: 'overview'
+  },
+  {
+    label: 'vpas-documentation',
+    value: 'documentation'
+  }
+];
 
 class CountriesDetail extends React.Component {
   static async getInitialProps({ url, store }) {
-    await store.dispatch(getCountry(url.query.id));
-    await store.dispatch(getCountryObservations(url.query.id));
-    await store.dispatch(getCountryLinks(url.query.id));
-    await store.dispatch(getCountryVPAs(url.query.id));
+    const { countriesDetail } = store.getState();
+    const requests = [];
+
+    if (countriesDetail.data.id !== url.query.id) {
+      requests.push(store.dispatch(getCountry(url.query.id)));
+      requests.push(store.dispatch(getCountryLinks(url.query.id)));
+      requests.push(store.dispatch(getCountryVPAs(url.query.id)));
+    }
+
+    await Promise.all(requests);
 
     return { url };
-  }
-
-  // /**
-  //  * COMPONENT LIFECYCLE
-  // */
-  componentDidMount() {
-    // Set discalimer
-    // if (!Cookies.get('country-detail.disclaimer')) {
-    //   toastr.info(
-    //     'Info',
-    //     this.props.intl.formatMessage({ id: 'country-detail.disclaimer' }),
-    //     {
-    //       className: '-disclaimer',
-    //       position: 'bottom-right',
-    //       timeOut: 15000,
-    //       onCloseButtonClick: () => {
-    //         Cookies.set('country-detail.disclaimer', true);
-    //       }
-    //     }
-    //   );
-    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -100,11 +87,6 @@ class CountriesDetail extends React.Component {
 
         <StaticHeader
           title={countriesDetail.data.name || '-'}
-          // subtitle={this.props.intl.formatMessage({ id: 'country.subtitle' }, {
-          //   rank: countriesDetail.data['country-doc-rank'],
-          //   rankCount: countriesDetail.data['country-operators'],
-          //   country: !!countriesDetail.data.country && countriesDetail.data.country.name
-          // })}
           background="/static/images/static-header/bg-operator-detail.jpg"
         />
 
@@ -127,24 +109,13 @@ class CountriesDetail extends React.Component {
             url={url}
           />
         }
-
-
         {tab === 'documentation' &&
           <CountriesDetailDocumentation
-            countriesDetail={countriesDetail}
+            vpaOverview={countriesDetail.data['vpa-overview']}
             countryDocumentation={countryDocumentation}
             url={url}
           />
         }
-
-        {tab === 'observations' &&
-          <CountriesDetailObservations
-            countriesDetail={countriesDetail}
-            countryObservations={countryObservations}
-            url={url}
-          />
-        }
-
       </Layout>
     );
   }

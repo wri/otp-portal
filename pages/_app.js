@@ -10,6 +10,7 @@ import * as reducers from 'modules';
 import { setUser } from 'modules/user';
 import { setRouter } from 'modules/router';
 import { setLanguage } from 'modules/language';
+import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
 
 import 'css/index.scss';
@@ -51,8 +52,13 @@ class MyApp extends App {
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
-    if (!isServer && !state.operators.data.length) {
-      await store.dispatch(getOperators());
+    if (!isServer) {
+      if (!state.operators.data.length) {
+        await store.dispatch(getOperators());
+      }
+      if (!state.countries.data.length) {
+        await store.dispatch(getCountries());
+      }
     }
 
     const pageProps = Component.getInitialProps ?
@@ -68,6 +74,9 @@ class MyApp extends App {
 
     if (!state.operators.data.length) {
       store.dispatch(getOperators());
+    }
+    if (!state.countries.data.length) {
+      store.dispatch(getCountries());
     }
   }
 
