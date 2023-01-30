@@ -37,12 +37,12 @@ const withTracker = (Page, options = {}) => {
       trackPage(page);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
       const currentPage = this.props.url.pathname;
-      const nextPage = nextProps.url.pathname;
+      const prevPage = prevProps.url.pathname;
 
-      if (currentPage !== nextPage) {
-        trackPage(nextPage);
+      if (currentPage !== prevPage) {
+        trackPage(currentPage);
       }
     }
 

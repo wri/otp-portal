@@ -27,8 +27,8 @@ class Profile extends React.Component {
     return { url };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (!nextProps.user) {
+  componentDidUpdate(/* prevProps */) {
+    if (!this.props.user) {
       const location = {
         pathname: '/'
       };

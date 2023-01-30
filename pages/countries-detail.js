@@ -50,9 +50,9 @@ class CountriesDetail extends React.Component {
     return { url };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { url } = this.props;
-    const { url: nextUrl } = nextProps;
+  componentDidUpdate(prevProps) {
+    const { url } = prevProps;
+    const { url: nextUrl } = this.props;
 
     if (url.query.id !== nextUrl.query.id) {
       this.props.getCountry(nextUrl.query.id);

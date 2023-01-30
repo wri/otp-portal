@@ -100,20 +100,17 @@ class OperatorsDetail extends React.Component {
     const prevDate = prevProps?.operatorsDetail?.date?.toString();
     const newDate = this.props?.operatorsDetail?.date?.toString();
 
+    const { url } = prevProps;
+    const { url: nextUrl } = this.props;
+    if (url.query.tab !== nextUrl.query.tab) {
+      const { tab } = nextUrl.query || 'overview';
+      logEvent('Producers', 'Change tab', tab);
+    }
+
     if (prevDate !== newDate) {
       const { url } = this.props;
       this.props.getOperatorDocumentation(url?.query?.id);
       this.props.getOperatorDocumentationCurrent(url?.query?.id);
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { url } = this.props;
-    const { url: nextUrl } = nextProps;
-
-    if (url.query.tab !== nextUrl.query.tab) {
-      const { tab } = nextUrl.query || 'overview';
-      logEvent('Producers', 'Change tab', tab);
     }
   }
 

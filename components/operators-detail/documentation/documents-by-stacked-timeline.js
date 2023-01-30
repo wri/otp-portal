@@ -31,9 +31,9 @@ class DocumentsStackedTimeline extends React.Component {
     this.drawChart(this.props.documentation);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.documentation.length !== this.props.documentation.length) {
-      this.drawChart(nextProps.documentation);
+  componentDidUpdate(prevProps) {
+    if (this.props.documentation.length !== prevProps.documentation.length) {
+      this.drawChart(this.props.documentation);
     }
   }
 
