@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import Map from 'components/map-new';
-import LayerManager from 'components/map-new/layer-manager';
+import Map from 'components/map';
+import LayerManager from 'components/map/layer-manager';
 
 import Spinner from 'components/ui/spinner';
 

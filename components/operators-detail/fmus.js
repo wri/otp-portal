@@ -36,15 +36,15 @@ import { injectIntl, intlShape } from 'react-intl';
 import modal from 'services/modal';
 
 // Components
-import Map from 'components/map-new';
-import LayerManager from 'components/map-new/layer-manager';
+import Map from 'components/map';
+import LayerManager from 'components/map/layer-manager';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
-import FAAttributions from 'components/map-new/fa-attributions';
+import FAAttributions from 'components/map/fa-attributions';
 
 import Sidebar from 'components/ui/sidebar';
-import Legend from 'components/map-new/legend';
-import Popup from 'components/map-new/popup';
+import Legend from 'components/map/legend';
+import Popup from 'components/map/popup';
 
 import { CERTIFICATIONS } from 'constants/fmu';
 

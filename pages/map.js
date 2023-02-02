@@ -10,8 +10,8 @@ import { intlShape } from 'react-intl';
 // Components
 import Head from 'components/layout/head';
 import StaticSection from 'components/ui/static-section';
-import Map from 'components/map-new';
-import LayerManager from 'components/map-new/layer-manager';
+import Map from 'components/map';
+import LayerManager from 'components/map/layer-manager';
 import { LAYERS } from 'constants/layers';
 
 const Layers = [
