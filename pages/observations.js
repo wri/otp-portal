@@ -40,12 +40,12 @@ import Spinner from 'components/ui/spinner';
 import MapSubComponent from 'components/ui/map-sub-component';
 import StaticTabs from 'components/ui/static-tabs';
 
-import Map from 'components/map-new';
-import LayerManager from 'components/map-new/layer-manager';
-import Legend from 'components/map-new/legend';
+import Map from 'components/map';
+import LayerManager from 'components/map/layer-manager';
+import Legend from 'components/map/legend';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
-import FAAttributions from 'components/map-new/fa-attributions';
+import FAAttributions from 'components/map/fa-attributions';
 
 // Modules
 import {

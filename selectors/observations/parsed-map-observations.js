@@ -4,7 +4,7 @@ import { LAYERS } from 'constants/layers';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import { createSelector } from 'reselect';
-import { spiderifyCluster } from 'components/map-new/layer-manager/utils';
+import { spiderifyCluster } from 'components/map/layer-manager/utils';
 
 const FMU_LEGEND = [
   {
