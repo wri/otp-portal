@@ -4,9 +4,9 @@ const FMU_LEGEND = [
     iso: 'CMR',
     color: '#007A5E',
     items: [
-      { name: 'ventes_de_coupe', color: '#8BC2B5' },
+      { name: 'vdc', color: '#8BC2B5' },
       { name: 'ufa', color: '#007A5E' },
-      { name: 'communal', color: '#00382B' }
+      { name: 'cf', color: '#00382B' }
     ]
   },
   {
@@ -29,8 +29,8 @@ const FMU_LEGEND = [
     iso: 'GAB',
     color: '#e95800',
     items: [
-      { name: 'CPAET', color: '#e95800' },
-      { name: 'CFAD', color: '#e9A600' }
+      { name: 'cpaet', color: '#e95800' },
+      { name: 'cfad', color: '#e9A600' }
     ]
   }
 ];
@@ -432,30 +432,6 @@ export const LAYERS = [
       },
       render: {
         layers: [
-          // {
-          //   type: 'fill',
-          //   'source-layer': 'layer0',
-          //   filter: [
-          //     'all',
-          //     ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
-          //   ],
-          //   paint: {
-          //     'fill-color': {
-          //       property: 'fmu_type_label',
-          //       type: 'categorical',
-          //       stops: [
-          //         ['ventes_de_coupe', '#e92000'],
-          //         ['ufa', '#e95800'],
-          //         ['communal', '#e9A600'],
-          //         ['PEA', '#e9D400'],
-          //         ['CPAET', '#e9E200'],
-          //         ['CFAD', '#e9FF00']
-          //       ],
-          //       default: '#e98300'
-          //     },
-          //     'fill-opacity': 0.9
-          //   }
-          // },
           {
             type: 'fill',
             'source-layer': 'layer0',
@@ -492,24 +468,24 @@ export const LAYERS = [
             ],
             layout: {
               'fill-sort-key': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
                   ['ufa', 1],
-                  ['communal', 2],
-                  ['ventes_de_coupe', 3]
+                  ['cf', 2],
+                  ['vdc', 3]
                 ],
                 default: 1
               }
             },
             paint: {
               'fill-color': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['ventes_de_coupe', '#8BC2B5'],
+                  ['vdc', '#8BC2B5'],
                   ['ufa', '#007A5E'],
-                  ['communal', '#00382B']
+                  ['cf', '#00382B']
                 ],
                 default: '#007A5E'
               },
@@ -526,11 +502,11 @@ export const LAYERS = [
             ],
             paint: {
               'fill-color': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['CPAET', '#e95800'],
-                  ['CFAD', '#e9A600']
+                  ['cpaet', '#e95800'],
+                  ['cfad', '#e9A600']
                 ],
                 default: '#e95800'
               },
@@ -594,7 +570,7 @@ export const LAYERS = [
           label: 'name'
         },
         {
-          column: 'fmu_type_label',
+          column: 'forest_type',
           label: 'type'
         },
         {
@@ -651,24 +627,24 @@ export const LAYERS = [
             ],
             layout: {
               'fill-sort-key': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
                   ['ufa', 1],
-                  ['communal', 2],
-                  ['ventes_de_coupe', 3]
+                  ['cf', 2],
+                  ['vdc', 3]
                 ],
                 default: 1
               }
             },
             paint: {
               'fill-color': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['ventes_de_coupe', '#8BC2B5'],
+                  ['vdc', '#8BC2B5'],
                   ['ufa', '#007A5E'],
-                  ['communal', '#00382B']
+                  ['cf', '#00382B']
                 ],
                 default: '#007A5E'
               },
@@ -685,11 +661,11 @@ export const LAYERS = [
             ],
             paint: {
               'fill-color': {
-                property: 'fmu_type_label',
+                property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['CPAET', '#e95800'],
-                  ['CFAD', '#e9A600']
+                  ['cpaet', '#e95800'],
+                  ['cfad', '#e9A600']
                 ],
                 default: '#e95800'
               },
@@ -710,31 +686,6 @@ export const LAYERS = [
               'fill-opacity': 0.9
             }
           },
-          // {
-          //   type: 'fill',
-          //   'source-layer': 'layer0',
-          //   filter: [
-          //     'all',
-          //     ['==', 'operator_id', '{operator_id}'],
-          //     // ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
-          //   ],
-          //   paint: {
-          //     'fill-color': {
-          //       property: 'fmu_type_label',
-          //       type: 'categorical',
-          //       stops: [
-          //         ['ventes_de_coupe', '#e92000'],
-          //         ['ufa', '#e95800'],
-          //         ['communal', '#e9A600'],
-          //         ['PEA', '#e9D400'],
-          //         ['CPAET', '#e9E200'],
-          //         ['CFAD', '#e9FF00']
-          //       ],
-          //       default: '#e98300'
-          //     },
-          //     'fill-opacity': 0.9
-          //   }
-          // },
           {
             type: 'line',
             'source-layer': 'layer0',
