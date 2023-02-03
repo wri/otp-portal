@@ -19,7 +19,7 @@ class FMUTemplatePopup extends PureComponent {
 
   formatValue = (config, data) => {
     const { column, format: format_str, prefix = '', suffix = '', type } = config;
-    let value = data[column];
+    let value = data[column] || '-';
 
     switch (type) {
       case 'date': {
@@ -39,7 +39,9 @@ class FMUTemplatePopup extends PureComponent {
       }
 
       default: {
-        value = this.props.intl.formatMessage({ id: data[column] || '-' });
+        if (!['fmu_name', 'company_na'].includes(column)) {
+          value = this.props.intl.formatMessage({ id: data[column] || '-' });
+        }
       }
     }
 
