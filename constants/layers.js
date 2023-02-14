@@ -168,7 +168,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/umd_tree_cover_gain_from_height/v202206/mode/{z}/{x}/{y}.png'
         ],
         minzoom: 3,
         maxzoom: 12
