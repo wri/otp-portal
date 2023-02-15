@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import orderBy from 'lodash/orderBy';
 
 import modal from 'services/modal';
 
@@ -75,11 +76,14 @@ class OperatorsFilters extends React.Component {
     const { options, filters } = this.props;
 
     return FILTERS_REFS.map((f) => {
-      const value = options[f.key] ?
-        options[f.key].filter(opt => filters[f.key] ?
-          filters[f.key].includes(opt.value) :
-          false) :
-        [];
+      const sortedOptions = orderBy(
+        (options[f.key] || []).map(o => ({
+          ...o,
+          label: this.props.intl.formatMessage({ id: o.label })
+        })),
+        (o) => o.label.toLowerCase()
+      );
+      const value = sortedOptions.filter(opt => filters[f.key]?.includes(opt.value));
 
       return (
         <div key={f.key} className="columns medium-4 small-12">
@@ -94,10 +98,7 @@ class OperatorsFilters extends React.Component {
                   multi
                   instanceId={f.key}
                   name={f.key}
-                  options={options[f.key].map(o => ({
-                    ...o,
-                    label: this.props.intl.formatMessage({ id: o.label })
-                  }))}
+                  options={sortedOptions}
                   className={value.length ? '-filled' : ''}
                   value={value}
                   placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
