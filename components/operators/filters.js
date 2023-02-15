@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import sortBy from 'lodash/sortBy';
+import orderBy from 'lodash/orderBy';
 
 import modal from 'services/modal';
 
@@ -76,12 +76,12 @@ class OperatorsFilters extends React.Component {
     const { options, filters } = this.props;
 
     return FILTERS_REFS.map((f) => {
-      const sortedOptions = sortBy(
+      const sortedOptions = orderBy(
         (options[f.key] || []).map(o => ({
           ...o,
           label: this.props.intl.formatMessage({ id: o.label })
         })),
-        'label'
+        (o) => o.label.toLowerCase()
       );
       const value = sortedOptions.filter(opt => filters[f.key]?.includes(opt.value));
 
