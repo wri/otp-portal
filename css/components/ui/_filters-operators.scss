@@ -1,7 +1,7 @@
 
 .c-filters-operators {
   background-color: $color-primary;
-  padding: $space-1 * 4 $space-1 * 4 0;
+  padding: $space-1 * 4 $space-1 * 2 0;
   color: $color-tertiary;
   position: relative;
   z-index: 2;
@@ -32,6 +32,10 @@
   }
 
   .field {
+    .Select {
+      min-width: unset;
+    }
+
     .title {
       font-family: $font-family-georgia;
       color: $color-white;

@@ -17,8 +17,6 @@ import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
 
 import OperatorsCertificationsTd from 'components/operators/certificationsTd';
-import OperatorsObservationsTd from 'components/operators/observationsTd';
-
 
 const intl = (state, props) => props.intl;
 
@@ -288,7 +286,8 @@ export const getTable = createSelector(
   (_data, _filters) => {
     const activeCountries = _filters.data.country.length ? _filters.data.country : null;
     const activeCertifications = _filters.data.certification.length ? _filters.data.certification : null;
-    const activeSearch = _filters.data.operator.length ? _filters.data.operator : null;
+    const activeOperatorSearch = _filters.data.operator.length ? _filters.data.operator : null;
+    const activeFMUSearch = _filters.data.fmu.length ? _filters.data.fmu : null;
 
     let operatorsTable = null;
 
@@ -310,9 +309,19 @@ export const getTable = createSelector(
       });
     }
 
-    if (activeSearch) {
+    if (activeOperatorSearch) {
       const fuse = new Fuse(operatorsTable || _data, SEARCH_OPTIONS);
-      operatorsTable = fuse.search(activeSearch);
+      operatorsTable = fuse.search(activeOperatorSearch);
+    }
+
+    if (activeFMUSearch) {
+      const fuse = new Fuse(operatorsTable || _data, {
+        ...SEARCH_OPTIONS,
+        keys: ['fmus.name'],
+        distance: 100,
+        threshold: 0.15
+      });
+      operatorsTable = fuse.search(activeFMUSearch);
     }
 
     operatorsTable = (operatorsTable || _data).map(o => ({
@@ -322,7 +331,8 @@ export const getTable = createSelector(
       certification: <OperatorsCertificationsTd fmus={o.fmus} />,
       ranking: o.ranking,
       score: o.score || 0,
-      observations: <OperatorsObservationsTd name={o.name} fmus={o.fmus} obs_per_visit={o['obs-per-visit']} observations={o.observations} />,
+      observations: o.observations,
+      obsPerVisit: o['obs-per-visit'],
       documentation: HELPERS_DOC.getPercentage(o),
       fmus: o.fmus,
       fmusLenght: o.fmus ? o.fmus.length : 0,

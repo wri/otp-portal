@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
-import { toastr } from 'react-redux-toastr';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
@@ -43,10 +42,13 @@ import OperatorsTable from 'components/operators/table';
 class OperatorsPage extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsRanking } = store.getState();
+    const requests = [];
 
     if (!operatorsRanking.data.length) {
-      await store.dispatch(getOperatorsRanking());
+      requests.push(store.dispatch(getOperatorsRanking()));
     }
+
+    await Promise.all(requests);
 
     return { url };
   }
@@ -64,25 +66,9 @@ class OperatorsPage extends React.Component {
     if (!deviceInfo.isDesktop) {
       this.props.setOperatorsSidebar({ open: false });
     }
-    // if (!Cookies.get('operators.disclaimer')) {
-    //   toastr.info(
-    //     'Info',
-    //     this.props.intl.formatMessage({ id: 'operators.disclaimer' }),
-    //     {
-    //       className: '-disclaimer',
-    //       position: 'bottom-right',
-    //       timeOut: 15000,
-    //       onCloseButtonClick: () => {
-    //         Cookies.set('operators.disclaimer', true);
-    //       }edt mru
-    //     }
-    //   );
-    // }
   }
 
   componentWillUnMount() {
-    toastr.remove('operators.disclaimer');
-
     // Attribution listener
     document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
   }
@@ -121,16 +107,17 @@ class OperatorsPage extends React.Component {
       url,
       language,
       operatorsRanking,
-      operatorsTable,
       activeLayers,
       activeInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers,
       popup,
+      map,
+      sidebar,
       setOperatorsSidebar
     } = this.props;
 
-    const { open } = operatorsRanking.sidebar;
+    const { open } = sidebar;
 
     return (
       <Layout
@@ -149,17 +136,17 @@ class OperatorsPage extends React.Component {
             }}
           >
             <OperatorsFilters />
-            <OperatorsTable operators={operatorsRanking.data} operatorsTable={operatorsTable} />
+            <OperatorsTable />
           </Sidebar>
 
-          <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 700 : 50}px)`, left: open ? 700 : 50 }}>
+          <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 800 : 50}px)`, left: open ? 800 : 50 }}>
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"
               language={language}
 
               // viewport
-              viewport={operatorsRanking.map}
+              viewport={map}
               onViewportChange={this.setMapLocation}
 
               // Interaction
@@ -206,7 +193,7 @@ class OperatorsPage extends React.Component {
             {/* MapControls */}
             <MapControls>
               <ZoomControl
-                zoom={operatorsRanking.map.zoom}
+                zoom={map.zoom}
                 onZoomChange={(zoom) => {
                   this.props.setOperatorsMapLocation({
                     ...operatorsRanking.map,
@@ -232,12 +219,13 @@ export default withDeviceInfo(injectIntl(connect(
   (state, props) => ({
     language: state.language,
     operatorsRanking: state.operatorsRanking,
+    map: state.operatorsRanking.map,
+    sidebar: state.operatorsRanking.sidebar,
     activeLayers: getActiveLayers(state, props),
     activeInteractiveLayers: getActiveInteractiveLayers(state, props),
     activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
     legendLayers: getLegendLayers(state, props),
-    popup: getPopup(state, props),
-    operatorsTable: getTable(state, props)
+    popup: getPopup(state, props)
   }),
   dispatch => ({
     getOperatorsRanking() {

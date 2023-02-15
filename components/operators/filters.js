@@ -20,22 +20,32 @@ import RankingModal from 'components/ui/ranking-modal';
 const FILTERS_REFS = [
   {
     key: 'country',
-    name: 'Country',
+    name: 'filter.country',
     type: 'select',
-    placeholder: 'All Countries',
-    translate: true
+    placeholder: 'filter.country.placeholder',
+    translate: true,
+    columns: 4
   },
   {
     key: 'certification',
-    name: 'Certifications',
+    name: 'filter.certification',
     type: 'select',
-    placeholder: 'All certifications'
+    placeholder: 'filter.certification.placeholder',
+    columns: 3
   },
   {
     key: 'operator',
-    name: 'Producer',
+    name: 'filter.operator',
     type: 'input',
-    placeholder: 'Search producer'
+    placeholder: 'search.operators',
+    columns: 3
+  },
+  {
+    key: 'fmu',
+    name: 'fmu',
+    type: 'input',
+    placeholder: 'Search FMU',
+    columns: 2
   }
 ];
 
@@ -79,11 +89,11 @@ class OperatorsFilters extends React.Component {
       const value = sortedOptions.filter(opt => filters[f.key]?.includes(opt.value));
 
       return (
-        <div key={f.key} className="columns medium-4 small-12">
+        <div key={f.key} className={`columns medium-${f.columns} small-12`}>
           <div className="field">
             <div className="c-select">
               <h3 className="title">
-                {this.props.intl.formatMessage({ id: `filter.${f.key}` })}
+                {this.props.intl.formatMessage({ id: f.name })}
               </h3>
 
               {f.type === 'select' &&
@@ -95,7 +105,7 @@ class OperatorsFilters extends React.Component {
                   className='react-select-container'
                   classNamePrefix='react-select'
                   value={value}
-                  placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
+                  placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
                   onChange={opts => this.setSelect(opts, f.key)}
                 />
               }
@@ -104,7 +114,7 @@ class OperatorsFilters extends React.Component {
                 <div className="search">
                   <input
                     type="search"
-                    placeholder={this.props.intl.formatMessage({ id: 'search.operators' })}
+                    placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
                     className="search-input"
                     value={filters[f.key]}
                     onChange={e => this.setSearch(e.currentTarget.value, f.key)}
