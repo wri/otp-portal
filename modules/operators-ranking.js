@@ -79,6 +79,7 @@ const initialState = {
     },
 
     options: {
+      // TODO: refactor this eventually, remove COUNTRIES and OTP_COUNTRIES
       country: process.env.OTP_COUNTRIES.map(iso =>
         COUNTRIES.find(c => c.iso === iso)
       ),
