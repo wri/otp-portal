@@ -138,6 +138,8 @@ class OperatorsPage extends React.Component {
 
     const { open } = operatorsRanking.sidebar;
 
+    console.log('layesr', { activeLayers, legendLayers });
+
     return (
       <Layout
         title="Operators"

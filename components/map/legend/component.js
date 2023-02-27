@@ -21,6 +21,9 @@ import {
 import TEMPLATES from './templates';
 import ANALYSIS from './analysis';
 
+import modal from 'services/modal';
+import LayerInfo from 'components/map/layer-info';
+
 class LegendComponent extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
@@ -43,8 +46,19 @@ class LegendComponent extends PureComponent {
   }
 
   onChangeInfo = (info, id) => {
-    const { setLayerSettings } = this.props;
-    setLayerSettings({ id, settings: { info } });
+    // const { setLayerSettings } = this.props;
+    // setLayerSettings({ id, settings: { info } });
+    const { layerGroups } = this.props;
+    const layer = layerGroups.find(l => l.id === id);
+
+    console.log('layer', layer);
+
+    modal.toggleModal(true, {
+      children: LayerInfo,
+      childrenProps: {
+        metadata: layer.metadata
+      }
+    });
   }
 
   onChangeVisibility = (l, visibility, id) => {
@@ -117,7 +131,7 @@ class LegendComponent extends PureComponent {
               toolbar={
                 toolbar || (
                   <LegendItemToolbar>
-                    {layerGroup.description && <LegendItemButtonInfo />}
+                    {layerGroup.metadata && <LegendItemButtonInfo />}
                     <LegendItemButtonOpacity
                       trackStyle={{
                         background: '#FFCC00'
