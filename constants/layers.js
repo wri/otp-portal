@@ -329,7 +329,7 @@ export const LAYERS = [
     metadata: {
       title: 'Tree cover loss',
       subtitle: '(annual, 30m, global, Hansen/UMD/Google/USGS/NASA)',
-      dateOfContent: '2000-2020',
+      dateOfContent: '2001-2021',
       disclaimer: `
         Tree cover loss <span class="highlight">is not always deforestation</span>.
       `,
