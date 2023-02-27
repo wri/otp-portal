@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 
 import { injectIntl, intlShape } from 'react-intl';
+import renderHtml from 'html-react-parser';
 
 import {
   Legend,
@@ -17,6 +18,8 @@ import {
   LegendItemButtonVisibility,
   LegendItemTimeStep
 } from 'vizzuality-components';
+
+import Tooltip from 'rc-tooltip/dist/rc-tooltip';
 
 import TEMPLATES from './templates';
 import ANALYSIS from './analysis';
@@ -105,6 +108,27 @@ class LegendComponent extends PureComponent {
     toggleLayer(layer);
   }
 
+  renderDisclaimer({ disclaimer, disclaimerTooltip }) {
+    return renderHtml(disclaimer, {
+      replace: (node) => {
+        if (node.attribs && node.attribs.class === 'highlight' && disclaimerTooltip) {
+          return (
+            <Tooltip
+              placement="bottom"
+              overlay={
+                <div style={{ maxWidth: 200 }}>
+                  {disclaimerTooltip}
+                </div>
+              }
+              overlayClassName="c-tooltip no-pointer-events"
+            >
+              <span className="highlight">{node.children[0].data}</span>
+            </Tooltip>
+          );
+        }
+      }
+    });
+  }
 
   render() {
     const { intl, className, sortable, collapsable, expanded, layerGroups, toolbar, setLayerSettings } = this.props;
@@ -177,6 +201,11 @@ class LegendComponent extends PureComponent {
                   analysis: layerGroup.analysis
                 })
               }
+              {layerGroup.metadata && layerGroup.metadata.disclaimer && (
+                <div className="legend-item-disclaimer">
+                  {this.renderDisclaimer(layerGroup.metadata)}
+                </div>
+              )}
             </LegendListItem>
             ))}
         </Legend>

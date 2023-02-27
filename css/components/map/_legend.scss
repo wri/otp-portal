@@ -224,5 +224,14 @@ $legend_component: 'vizzuality';
   .#{$legend_component}__c-legend-item-basic {
     font-family: $font-family-proximanova;
   }
+
+  .legend-item-disclaimer {
+    margin-top: 10px;
+
+    .highlight {
+      cursor: help;
+      border-bottom: dashed 1px #9e9e9e;
+    }
+  }
 }
 

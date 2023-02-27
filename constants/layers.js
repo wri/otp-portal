@@ -330,6 +330,13 @@ export const LAYERS = [
       title: 'Tree cover loss',
       subtitle: '(annual, 30m, global, Hansen/UMD/Google/USGS/NASA)',
       dateOfContent: '2000-2020',
+      disclaimer: `
+        Tree cover loss <span class="highlight">is not always deforestation</span>.
+      `,
+      disclaimerTooltip: `
+      Loss of tree cover may occur for many reasons, including deforestation, fire, and logging within the course of sustainable forestry operations.
+      In sustainably managed forests, the “loss” will eventually show up as “gain”, as young trees get large enough to achieve canopy closure.
+      `,
       overview: `
       <p>
       This data set, a collaboration between the GLAD (Global Land Analysis & Discovery) lab at the University of Maryland, Google, USGS, and NASA,
