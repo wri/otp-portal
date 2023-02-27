@@ -212,12 +212,12 @@ export const getLegendLayers = createSelector(
       layerGroups.push({
         id,
         dataset: id,
-        name: _intl.formatMessage({ id: name || '-' }),
+        name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
         description,
         metadata,
         layers: [{
           ...layer,
-          name: _intl.formatMessage({ id: name || '-' }),
+          name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
           opacity: 1,
           active: true,
           legendConfig: {
