@@ -208,6 +208,7 @@ export const getLegendLayers = createSelector(
         dataset: id,
         name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
         description,
+        metadata,
         analysis: analysisParams,
         layers: [{
           ...layer,
