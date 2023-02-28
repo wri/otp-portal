@@ -1,30 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl, intlShape } from 'react-intl';
 
 import Html from 'components/html';
 
-const LayerInfo = ({ metadata }) => {
+const LayerInfo = ({ metadata, intl }) => {
   return (
     <div className="c-layer-info">
       <h2 className="c-layer-info__title">
-        {metadata.title} {metadata.dateOfContent && `(${metadata.dateOfContent})`}
+        {intl.formatMessage({ id: metadata.title })} {metadata.dateOfContent && `(${metadata.dateOfContent})`}
       </h2>
-      <p className="c-layer-info__subtitle">{metadata.subtitle}</p>
+      <p className="c-layer-info__subtitle">{intl.formatMessage({ id: metadata.subtitle })}</p>
       <div className="c-layer-info__overview">
-        <h3>Overview</h3>
-        <Html html={metadata.overview} linkify />
+        <h3>{intl.formatMessage({ id: 'overview' })}</h3>
+        <Html html={intl.formatMessage({ id: metadata.overview })} linkify />
       </div>
 
       <div className="c-layer-info__source">
-        <h3>Source</h3>
-        <Html html={metadata.source} linkify />
+        <h3>{intl.formatMessage({ id: 'source' })}</h3>
+        <Html html={intl.formatMessage({ id: metadata.source })} linkify />
       </div>
     </div>
   )
 }
 
 LayerInfo.propTypes = {
+  intl: intlShape.isRequired,
   metadata: PropTypes.object.isRequired
 }
 
-export default LayerInfo;
+export default injectIntl(LayerInfo);

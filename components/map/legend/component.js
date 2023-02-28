@@ -49,12 +49,8 @@ class LegendComponent extends PureComponent {
   }
 
   onChangeInfo = (info, id) => {
-    // const { setLayerSettings } = this.props;
-    // setLayerSettings({ id, settings: { info } });
     const { layerGroups } = this.props;
     const layer = layerGroups.find(l => l.id === id);
-
-    console.log('layer', layer);
 
     modal.toggleModal(true, {
       children: LayerInfo,
@@ -108,8 +104,10 @@ class LegendComponent extends PureComponent {
     toggleLayer(layer);
   }
 
-  renderDisclaimer({ disclaimer, disclaimerTooltip }) {
-    return renderHtml(disclaimer, {
+  renderDisclaimer = ({ disclaimer, disclaimerTooltip }) => {
+    const { intl } = this.props;
+
+    return renderHtml(intl.formatMessage({ id: disclaimer }), {
       replace: (node) => {
         if (node.attribs && node.attribs.class === 'highlight' && disclaimerTooltip) {
           return (
@@ -117,7 +115,7 @@ class LegendComponent extends PureComponent {
               placement="bottom"
               overlay={
                 <div style={{ maxWidth: 200 }}>
-                  {disclaimerTooltip}
+                  {intl.formatMessage({ id: disclaimerTooltip })}
                 </div>
               }
               overlayClassName="c-tooltip no-pointer-events"
