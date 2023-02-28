@@ -13,11 +13,12 @@ import {
   LegendListItem,
   LegendItemTypes,
   LegendItemToolbar,
-  LegendItemButtonInfo,
-  LegendItemButtonOpacity,
-  LegendItemButtonVisibility,
   LegendItemTimeStep
 } from 'vizzuality-components';
+
+import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-button-info';
+import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
+import LegendItemButtonVisibility from 'components/map/legend/buttons/legend-item-button-visibility';
 
 import Tooltip from 'rc-tooltip/dist/rc-tooltip';
 
@@ -154,14 +155,7 @@ class LegendComponent extends PureComponent {
                 toolbar || (
                   <LegendItemToolbar>
                     {layerGroup.metadata && <LegendItemButtonInfo />}
-                    <LegendItemButtonOpacity
-                      trackStyle={{
-                        background: '#FFCC00'
-                      }}
-                      handleStyle={{
-                        background: '#FFCC00'
-                      }}
-                    />
+                    <LegendItemButtonOpacity />
                     <LegendItemButtonVisibility />
                   </LegendItemToolbar>
                 )
