@@ -39,7 +39,6 @@ export const LAYERS = [
   {
     id: 'integrated-alerts',
     name: 'Integrated deforestation alerts',
-    description: 'Here is description',
     config: {
       type: 'raster',
       source: {
