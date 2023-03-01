@@ -6,20 +6,27 @@ import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 
 import { injectIntl, intlShape } from 'react-intl';
+import renderHtml from 'html-react-parser';
 
 import {
   Legend,
   LegendListItem,
   LegendItemTypes,
   LegendItemToolbar,
-  LegendItemButtonInfo,
-  LegendItemButtonOpacity,
-  LegendItemButtonVisibility,
   LegendItemTimeStep
 } from 'vizzuality-components';
 
+import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-button-info';
+import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
+import LegendItemButtonVisibility from 'components/map/legend/buttons/legend-item-button-visibility';
+
+import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+
 import TEMPLATES from './templates';
 import ANALYSIS from './analysis';
+
+import modal from 'services/modal';
+import LayerInfo from 'components/map/layer-info';
 
 class LegendComponent extends PureComponent {
   static propTypes = {
@@ -43,8 +50,15 @@ class LegendComponent extends PureComponent {
   }
 
   onChangeInfo = (info, id) => {
-    const { setLayerSettings } = this.props;
-    setLayerSettings({ id, settings: { info } });
+    const { layerGroups } = this.props;
+    const layer = layerGroups.find(l => l.id === id);
+
+    modal.toggleModal(true, {
+      children: LayerInfo,
+      childrenProps: {
+        metadata: layer.metadata
+      }
+    });
   }
 
   onChangeVisibility = (l, visibility, id) => {
@@ -91,6 +105,29 @@ class LegendComponent extends PureComponent {
     toggleLayer(layer);
   }
 
+  renderDisclaimer = ({ disclaimer, disclaimerTooltip }) => {
+    const { intl } = this.props;
+
+    return renderHtml(intl.formatMessage({ id: disclaimer }), {
+      replace: (node) => {
+        if (node.attribs && node.attribs.class === 'highlight' && disclaimerTooltip) {
+          return (
+            <Tooltip
+              placement="bottom"
+              overlay={
+                <div style={{ maxWidth: 200 }}>
+                  {intl.formatMessage({ id: disclaimerTooltip })}
+                </div>
+              }
+              overlayClassName="c-tooltip no-pointer-events"
+            >
+              <span className="highlight">{node.children[0].data}</span>
+            </Tooltip>
+          );
+        }
+      }
+    });
+  }
 
   render() {
     const { intl, className, sortable, collapsable, expanded, layerGroups, toolbar, setLayerSettings } = this.props;
@@ -117,15 +154,8 @@ class LegendComponent extends PureComponent {
               toolbar={
                 toolbar || (
                   <LegendItemToolbar>
-                    {layerGroup.description && <LegendItemButtonInfo />}
-                    <LegendItemButtonOpacity
-                      trackStyle={{
-                        background: '#FFCC00'
-                      }}
-                      handleStyle={{
-                        background: '#FFCC00'
-                      }}
-                    />
+                    {layerGroup.metadata && <LegendItemButtonInfo />}
+                    <LegendItemButtonOpacity />
                     <LegendItemButtonVisibility />
                   </LegendItemToolbar>
                 )
@@ -163,6 +193,11 @@ class LegendComponent extends PureComponent {
                   analysis: layerGroup.analysis
                 })
               }
+              {layerGroup.metadata && layerGroup.metadata.disclaimer && (
+                <div className="legend-item-disclaimer">
+                  {this.renderDisclaimer(layerGroup.metadata)}
+                </div>
+              )}
             </LegendListItem>
             ))}
         </Legend>

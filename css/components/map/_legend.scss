@@ -95,6 +95,12 @@ $legend_component: 'vizzuality';
     margin: 6px 0 0;
   }
 
+  .#{$legend_component}__legend-item-header {
+    .vizzuality__c-icon {
+      pointer-events: none;
+    }
+  }
+
   .#{$legend_component}__c-legend-type-choropleth > li {
     flex: 1 0 0;
   }
@@ -223,6 +229,15 @@ $legend_component: 'vizzuality';
 
   .#{$legend_component}__c-legend-item-basic {
     font-family: $font-family-proximanova;
+  }
+
+  .legend-item-disclaimer {
+    margin-top: 10px;
+
+    .highlight {
+      cursor: help;
+      border-bottom: dashed 1px #9e9e9e;
+    }
   }
 }
 

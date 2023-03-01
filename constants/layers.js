@@ -159,6 +159,12 @@ export const LAYERS = [
           background: '#dc6699'
         }
       ]
+    },
+    metadata: {
+      title: 'Integrated deforestation alerts',
+      subtitle: 'layer.integrated-alerts.metadata.subtitle',
+      overview: 'layer.integrated-alerts.metadata.overview',
+      source: 'layer.integrated-alerts.metadata.source',
     }
   },
   {
@@ -179,6 +185,13 @@ export const LAYERS = [
       items: [
         { name: 'Tree cover gain', color: '#6D6DE5' }
       ]
+    },
+    metadata: {
+      title: 'Tree cover gain',
+      subtitle: 'layer.tree-cover-gain.metadata.subtitle',
+      dateOfContent: '2000-2020',
+      overview: 'layer.tree-cover-gain.metadata.overview',
+      source: 'layer.tree-cover-gain.metadata.source'
     }
   },
   {
@@ -259,7 +272,16 @@ export const LAYERS = [
       } else {
         alpha = 0.;
       }
-    `
+    `,
+    metadata: {
+      title: 'Tree cover loss',
+      subtitle: 'layer.tree-cover-loss.metadata.subtitle',
+      dateOfContent: '2001-2021',
+      disclaimer: 'layer.tree-cover-loss.metadata.disclaimer',
+      disclaimerTooltip: 'layer.tree-cover-loss.metadata.disclaimer-tooltip',
+      overview: 'layer.tree-cover-loss.metadata.overview',
+      source: 'layer.tree-cover-loss.metadata.source'
+    }
   },
   {
     id: 'aac-cog',

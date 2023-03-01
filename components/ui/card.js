@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import omit from 'lodash/omit';
-import renderHTML from 'react-render-html';
+import renderHTML from 'html-react-parser';
 
 // Next components
 import Link from 'next/link';

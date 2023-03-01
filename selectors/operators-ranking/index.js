@@ -201,7 +201,7 @@ export const getLegendLayers = createSelector(
       const layer = legendLayers.find(r => r.id === lid);
       if (!layer) return false;
 
-      const { id, name, description, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
+      const { id, name, description, metadata, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
 
       const lSettings = _layersSettings[id] || {};
 
@@ -212,11 +212,12 @@ export const getLegendLayers = createSelector(
       layerGroups.push({
         id,
         dataset: id,
-        name: _intl.formatMessage({ id: name || '-' }),
+        name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
         description,
+        metadata,
         layers: [{
           ...layer,
-          name: _intl.formatMessage({ id: name || '-' }),
+          name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
           opacity: 1,
           active: true,
           legendConfig: {
