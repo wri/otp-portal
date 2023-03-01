@@ -95,6 +95,12 @@ $legend_component: 'vizzuality';
     margin: 6px 0 0;
   }
 
+  .#{$legend_component}__legend-item-header {
+    .vizzuality__c-icon {
+      pointer-events: none;
+    }
+  }
+
   .#{$legend_component}__c-legend-type-choropleth > li {
     flex: 1 0 0;
   }
