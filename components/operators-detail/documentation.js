@@ -15,6 +15,7 @@ import DocumentsByOperator from 'components/operators-detail/documentation/docum
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
+import Icon from 'components/ui/icon';
 
 function OperatorsDetailDocumentation({
   operatorsDetail,
@@ -106,12 +107,15 @@ function OperatorsDetailDocumentation({
             <label>
               Search documents
             </label>
-            <input
-              type="text"
-              placeholder="Start typing here to search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.currentTarget.value)}
-            />
+            <div className="search">
+              <Icon name="icon-search" />
+              <input
+                type="text"
+                placeholder="Start typing here to search..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.currentTarget.value)}
+              />
+            </div>
           </div>
 
           {/* Document sections with cards */}

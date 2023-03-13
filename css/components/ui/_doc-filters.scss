@@ -9,6 +9,20 @@
     line-height: 19px;
   }
 
+  .search {
+    display: flex;
+    align-items: center;
+    margin: 0;
+
+    svg {
+      position: relative;
+      margin-right: 5px;
+      top: -1px;
+      fill: $color-primary;
+    }
+  }
+
+
   input {
     appearance: none;
     background: none;
