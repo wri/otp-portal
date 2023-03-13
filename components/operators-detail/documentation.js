@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
@@ -41,6 +41,7 @@ function OperatorsDetailDocumentation({
   const validDocs = groupedByStatusChart.find(
     (status) => status.id === 'doc_valid'
   );
+  const [searchText, setSearchText] = useState(null);
 
   return (
     <div>
@@ -101,14 +102,27 @@ function OperatorsDetailDocumentation({
 
       <div className="c-section">
         <div className="l-container">
+          <div className="c-doc-search">
+            <label>
+              Search documents
+            </label>
+            <input
+              type="text"
+              placeholder="Start typing here to search..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.currentTarget.value)}
+            />
+          </div>
+
           {/* Document sections with cards */}
           <DocumentsByOperator
             groupedByCategory={docsGroupedByCategory}
+            searchText={searchText}
             id={url.query.id}
           />
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

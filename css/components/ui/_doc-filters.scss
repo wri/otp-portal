@@ -1,3 +1,31 @@
+.c-doc-search {
+  label {
+    display: block;
+    margin-bottom: 22px;
+    color: $color-primary;
+    font-family: $font-family-proximanova;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 19px;
+  }
+
+  input {
+    appearance: none;
+    background: none;
+    border: none;
+    font-family: $font-family-proximanova;
+    line-height: 32px;
+    font-weight: 700;
+    width: 100%;
+    outline: 0;
+
+    &::placeholder {
+      letter-spacing: 1px;
+      line-height: 32px;
+    }
+  }
+}
+
 .c-doc-filters {
   padding-top: 0;
 

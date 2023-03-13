@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import cx from 'classnames';
-
 import { injectIntl, intlShape } from 'react-intl';
+import Fuse from 'fuse.js';
 
 // Redux
 import { connect } from 'react-redux';
@@ -17,7 +17,7 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
 
-function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
+function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ...props }) {
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(groupedByCategory)
     .map((categoryDocs) => categoryDocs.length)
@@ -31,17 +31,29 @@ function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
     )
   );
 
+  const searchDocuments = (documents) => {
+    if (!searchText) return documents;
+
+    const fuse = new Fuse(documents, {
+      keys: ['title'],
+      threshold: 0.3,
+    });
+    return fuse.search(searchText);
+  }
+
   return (
     <ul className="c-doc-gallery">
       {Object.keys(groupedByCategory).map((category) => {
-        const producerDocs = groupedByCategory[category].filter(
+        const producerDocs = searchDocuments(groupedByCategory[category].filter(
           (doc) => doc.type === 'operator-document-country-histories'
-        );
-        const FMUDocs = groupedByCategory[category].filter(
+        ));
+        const FMUDocs = searchDocuments(groupedByCategory[category].filter(
           (doc) => doc.type === 'operator-document-fmu-histories'
-        );
+        ));
         const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
-        const isCategoryOpen = categoriesOpen[category];
+        const isCategoryOpen = categoriesOpen[category] || searchText?.length > 0;
+
+        if (searchText?.length > 0 && producerDocs.length === 0 && FMUDocs.length === 0) return null;
 
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
@@ -54,6 +66,7 @@ function DocumentsByOperator({ groupedByCategory, user, id, intl, ...props }) {
               <button
                 className={cx('doc-by-category-btn -proximanova', {
                   open: isCategoryOpen,
+                  disabled: searchText?.length > 0
                 })}
                 onClick={() =>
                   setCategoriesOpen({
@@ -137,6 +150,7 @@ DocumentsByOperator.defaultProps = {
 
 DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,
+  searchText: PropTypes.string,
   id: PropTypes.string,
   user: PropTypes.object,
   intl: intlShape
