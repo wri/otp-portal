@@ -41,20 +41,35 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
     return fuse.search(searchText);
   }
 
+  const results = Object.keys(groupedByCategory).map((category) => {
+    const producerDocs = searchDocuments(groupedByCategory[category].filter(
+      (doc) => doc.type === 'operator-document-country-histories'
+    ));
+    const FMUDocs = searchDocuments(groupedByCategory[category].filter(
+      (doc) => doc.type === 'operator-document-fmu-histories'
+    ));
+    const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
+    const isCategoryOpen = categoriesOpen[category] || searchText?.length > 0;
+
+    return {
+      category,
+      isCategoryOpen,
+      hide: searchText?.length > 0 && producerDocs.length === 0 && FMUDocs.length === 0,
+      producerDocs,
+      FMUDocs,
+      FMUDocsByFMU,
+    };
+  });
+  const hasResults = results.filter(r => !r.hide).length > 0;
+
   return (
     <ul className="c-doc-gallery">
-      {Object.keys(groupedByCategory).map((category) => {
-        const producerDocs = searchDocuments(groupedByCategory[category].filter(
-          (doc) => doc.type === 'operator-document-country-histories'
-        ));
-        const FMUDocs = searchDocuments(groupedByCategory[category].filter(
-          (doc) => doc.type === 'operator-document-fmu-histories'
-        ));
-        const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
-        const isCategoryOpen = categoriesOpen[category] || searchText?.length > 0;
-
-        if (searchText?.length > 0 && producerDocs.length === 0 && FMUDocs.length === 0) return null;
-
+      {!hasResults && (
+        <li className="doc-gallery-item no-results">
+          Cannot find any document matching your search
+        </li>
+      )}
+      {results.filter(r => !r.hide).map(({ category, isCategoryOpen, producerDocs, FMUDocs, FMUDocsByFMU }) => {
         return (
           <li key={category} className="doc-gallery-item c-doc-by-category">
             <header className="doc-gallery-item-header">
@@ -107,17 +122,17 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
                           <DocCardUpload
                             {...card}
                             properties={{
-                            type: 'operator',
-                            id,
-                          }}
+                              type: 'operator',
+                              id,
+                            }}
                             user={user}
                             onChange={() => {
-                            props.getOperator(id)
-                            props.getOperatorDocumentation(id)
-                            props.getOperatorTimeline(id)
-                          }}
+                              props.getOperator(id)
+                              props.getOperatorDocumentation(id)
+                              props.getOperatorTimeline(id)
+                            }}
                           />
-                      )}
+                        )}
                     </div>
                   ))}
                 </div>
