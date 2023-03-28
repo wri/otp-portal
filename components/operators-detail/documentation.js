@@ -15,6 +15,7 @@ import DocumentsByOperator from 'components/operators-detail/documentation/docum
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
+import DocumentsHeaderFilter from 'components/operators-detail/documentation/documents-header-filter';
 import Icon from 'components/ui/icon';
 
 function OperatorsDetailDocumentation({
@@ -49,6 +50,7 @@ function OperatorsDetailDocumentation({
       <div className="c-section">
         <div className="l-container">
           <DocumentsFilter showDate showFMU />
+          <DocumentsHeaderFilter searchText={searchText} setSearchText={setSearchText} />
 
           <DocumentsCertification
             // Publication authorization
@@ -103,7 +105,7 @@ function OperatorsDetailDocumentation({
 
       <div className="c-section">
         <div className="l-container">
-          <div className="c-doc-search">
+          {/* <div className="c-doc-search">
             <label>
               Search documents
             </label>
@@ -116,7 +118,7 @@ function OperatorsDetailDocumentation({
                 onChange={(e) => setSearchText(e.currentTarget.value)}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Document sections with cards */}
           <DocumentsByOperator

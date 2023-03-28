@@ -123,3 +123,112 @@
     }
   }
 }
+
+.c-doc-header-filters-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: $color-gray-2;
+  z-index: 1;
+}
+
+.c-doc-header-filters {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  align-items: center;
+
+  .c-doc-header-filters__item {
+    display: inline-flex;
+    flex-direction: column;
+    width: 260px;
+
+    &.c-doc-search {
+      flex: 1;
+      width: auto;
+
+      .search {
+        display: flex;
+        align-items: center;
+        margin: 0;
+
+        svg {
+          position: relative;
+          margin-right: 5px;
+          top: -1px;
+          fill: $color-primary;
+        }
+      }
+
+      input {
+        appearance: none;
+        background: none;
+        border: none;
+        font-family: $font-family-proximanova;
+        line-height: 32px;
+        font-weight: 700;
+        width: 100%;
+        outline: 0;
+
+        &::placeholder {
+          letter-spacing: 1px;
+          line-height: 32px;
+        }
+      }
+    }
+
+    .filters-dropdown {
+      position: relative;
+
+      .dropdown-placeholder {
+        position: relative;
+        cursor: pointer;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: -10px;
+          width: 0;
+          height: 0;
+          margin: -3px 0 0;
+          border-style: solid;
+          border-width: 4px 3px 0px 3px;
+          border-color: #005b23 transparent transparent transparent;
+        }
+      }
+
+      .dropdown-content {
+        position: absolute;
+        background-color: $color-tertiary;
+        border: 1px solid $border-color-1;
+        padding: 12px 18px;
+        box-shadow: 0 15px 29px 0 rgba(0, 0, 0, 0.14);
+        margin: 2px;
+        width: 100%;
+        z-index: 2;
+
+        option {
+          cursor: pointer;
+          margin: 4px 0;
+        }
+      }
+    }
+
+    button {
+      background: none;
+      color: inherit;
+      border: none;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      outline: inherit;
+      text-transform: unset;
+
+      &:after {
+        right: -10px;
+      }
+    }
+  }
+}
