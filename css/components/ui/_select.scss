@@ -63,12 +63,16 @@
         color: white;
         background-color: transparent;
         border-color: rgba($color-white, .3);
-        border-radius: 100px;
+        border-radius: 20px;
         padding-left: 5px;
         margin-left: 0;
         margin-right: 3px;
         margin-bottom: 5px;
         margin-top: 0;
+
+        display: inline-flex;
+        flex-direction: row-reverse;
+        align-items: center;
 
         &.last-child {
           margin-right: 0;
@@ -81,14 +85,15 @@
           line-height: 20px;
           font-weight: 700;
           font-size: $font-size-extrasmall;
-          margin-right: 20px;
           word-break: break-word;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
 
         .Select-value-icon {
-          position: absolute;
-          right: 3px;
-          top: 0px;
           border: 0;
           font-size: 16px;
           line-height: 20px;
