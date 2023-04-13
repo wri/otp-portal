@@ -77,7 +77,7 @@ class FMUTemplatePopup extends PureComponent {
           </tbody>
         </table>
 
-        {operatorId && operatorName &&
+        {operatorId && operatorName && id &&
           <Link href={`/operators/${operatorId}/documentation?fmuId=${id}`}>
             <a className="c-button -tertiary -fullwidth -ellipsis -small">
               {intl.formatMessage({ id: 'documentation' })}
@@ -86,7 +86,7 @@ class FMUTemplatePopup extends PureComponent {
         }
 
         {id &&
-          <Link href={{ pathname: '/observations', query: { filters: encode({ fmu_id: [id] }) } }}>
+          <Link href={`/operators/${operatorId}/observations?fmuId=${id}`}>
             <a className="c-button -tertiary -fullwidth -ellipsis -small">
               {intl.formatMessage({ id: 'observations' })} ({fmuObservations})
             </a>
