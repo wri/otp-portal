@@ -35,7 +35,6 @@ function DocumentsFilter({
   const router = useRouter();
 
   useEffect(() => {
-    console.log('set fmu');
     setFMU(fmus.find(f => f.id === router.query.fmuId));
   }, [router.query.fmuId, fmus])
   useEffect(() => {
