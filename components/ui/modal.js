@@ -28,14 +28,15 @@ class Modal extends React.Component {
     });
   }
 
-  UNSAFE_componentWillReceiveProps({ modal }) {
+  componentDidUpdate({ modal }) {
     function escKeyDownListener(e) {
       document.removeEventListener('keydown', escKeyDownListener);
       return e.keyCode === 27 && this.props.toggleModal(false);
     }
+
     // if opened property has changed
     if (this.props.modal.opened !== modal.opened) {
-      document[modal.opened ? 'addEventListener' : 'removeEventListener']('keydown', escKeyDownListener.bind(this));
+      document[this.props.modal.opened ? 'addEventListener' : 'removeEventListener']('keydown', escKeyDownListener.bind(this));
     }
   }
 

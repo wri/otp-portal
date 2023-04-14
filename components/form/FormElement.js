@@ -32,18 +32,6 @@ class FormElement extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const hasValue = Object.prototype.hasOwnProperty.call(nextProps.properties, 'value');
-    const isNew = nextProps.properties.value !== this.state.value;
-    if (hasValue && isNew) {
-      this.setState({
-        value: nextProps.properties.value
-      }, () => {
-        this.triggerValidate();
-      });
-    }
-  }
-
   componentDidUpdate(prevProps) {
     const prevPropsParsed = pick(prevProps, ['properties', 'validations']);
     const currentPropsParsed = pick(this.props, ['properties', 'validations']);
@@ -51,8 +39,17 @@ class FormElement extends React.Component {
     if (!isEqual(prevPropsParsed, currentPropsParsed)) {
       this.triggerValidate();
     }
-  }
 
+    const hasValue = Object.prototype.hasOwnProperty.call(this.props.properties, 'value');
+    const isNew = this.props.properties.value !== this.state.value;
+    if (hasValue && isNew) {
+      this.setState({
+        value: this.props.properties.value
+      }, () => {
+        this.triggerValidate();
+      });
+    }
+  }
 
   triggerValidate() {
     const { validations: validationsProps } = this.props;

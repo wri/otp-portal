@@ -43,19 +43,17 @@ class Search extends React.Component {
     this.onWindowKeyUp = this.onWindowKeyUp.bind(this);
   }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
-    if (nextState.active !== this.state.active) {
-      if (nextState.active) {
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.props.loading && prevProps.loading) {
+      this.updateSearchResults(this.state.value);
+    }
+
+    if (this.state.active !== prevState.active) {
+      if (this.state.active) {
         this.addListeners();
       } else {
         this.removeListeners();
       }
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (!this.props.loading && prevProps.loading) {
-      this.updateSearchResults(this.state.value);
     }
   }
 

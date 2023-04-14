@@ -19,7 +19,6 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import CheckboxGroup from 'components/form/CheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
