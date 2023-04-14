@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -16,10 +15,8 @@ import DocumentsTimeline from 'components/operators-detail/documentation/documen
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import DocumentsHeaderFilter from 'components/operators-detail/documentation/documents-header-filter';
-import Icon from 'components/ui/icon';
 
 function OperatorsDetailDocumentation({
-  operatorsDetail,
   operatorDocumentation,
   operatorTimeline,
   url,
@@ -105,21 +102,6 @@ function OperatorsDetailDocumentation({
 
       <div className="c-section">
         <div className="l-container">
-          {/* <div className="c-doc-search">
-            <label>
-              Search documents
-            </label>
-            <div className="search">
-              <Icon name="icon-search" />
-              <input
-                type="text"
-                placeholder="Start typing here to search..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.currentTarget.value)}
-              />
-            </div>
-          </div> */}
-
           {/* Document sections with cards */}
           <DocumentsByOperator
             groupedByCategory={docsGroupedByCategory}

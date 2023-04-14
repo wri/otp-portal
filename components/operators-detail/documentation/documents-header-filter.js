@@ -20,7 +20,6 @@ import {
 function DocumentsHeaderFilter({
   date,
   setDate,
-  showDate,
   fmus,
   FMU,
   setFMU,
@@ -32,13 +31,11 @@ function DocumentsHeaderFilter({
   const minDate = process.env.DOCUMENTS_MINDATE;
 
   const [isVisible, setVisible] = useState(false);
-  const [isSearchVisible, setSearchVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", () => {
         setVisible(window.pageYOffset > 900);
-        setSearchVisible(window.pageYOffset > 900);
       });
     }
   }, []);
@@ -91,19 +88,17 @@ function DocumentsHeaderFilter({
               onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
             />
           </div>
-          {isSearchVisible && (
-            <div className="c-doc-header-filters__item c-doc-search">
-              <div className="search">
-                <Icon name="icon-search" />
-                <input
-                  type="text"
-                  placeholder="Start typing here to search documents..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.currentTarget.value)}
-                />
-              </div>
+          <div className="c-doc-header-filters__item c-doc-search">
+            <div className="search">
+              <Icon name="icon-search" />
+              <input
+                type="text"
+                placeholder="Start typing here to search documents..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.currentTarget.value)}
+              />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
@@ -116,8 +111,8 @@ DocumentsHeaderFilter.propTypes = {
   FMU: PropTypes.object,
   setFMU: PropTypes.func,
   fmus: PropTypes.array,
-  showDate: PropTypes.bool,
-  showFMU: PropTypes.bool,
+  searchText: PropTypes.string,
+  setSearchText: PropTypes.func,
   intl: intlShape
 };
 
