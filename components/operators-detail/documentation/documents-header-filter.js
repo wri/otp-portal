@@ -93,7 +93,12 @@ function DocumentsHeaderFilter({
               <Icon name="icon-search" />
               <input
                 type="text"
-                placeholder="Start typing here to search documents..."
+                placeholder={
+                  intl.formatMessage({
+                    id: 'operator-detail.documents.search.placeholder',
+                    defaultMessage: "Start typing here to search documents..."
+                  })
+                }
                 value={searchText}
                 onChange={(e) => setSearchText(e.currentTarget.value)}
               />

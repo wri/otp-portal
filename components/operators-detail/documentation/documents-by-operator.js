@@ -65,8 +65,11 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
   return (
     <ul className="c-doc-gallery">
       {!hasResults && (
-        <li className="doc-gallery-item no-results">
-          Cannot find any document matching your search
+        <li className="doc-gallery-item no-results c-title -big">
+          {intl.formatMessage({
+            id: 'operator-detail.documents.search.no-results',
+            defaultMessage: 'Cannot find any document matching your search text "{searchText}"'
+          }, { searchText })}
         </li>
       )}
       {results.filter(r => !r.hide).map(({ category, isCategoryOpen, producerDocs, FMUDocs, FMUDocsByFMU }) => {

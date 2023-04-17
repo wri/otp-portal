@@ -19,7 +19,9 @@
     }
 
     &.no-results {
-      padding: $space-1 * 8 0;
+      padding: $space-1 * 8 $space-1 * 4;
+      background: $color-secondary;
+      color: $color-tertiary;
     }
 
     .doc-gallery-item-header {
