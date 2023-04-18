@@ -2,6 +2,7 @@ import Jsona from 'jsona';
 import moment from 'moment';
 
 import API from 'services/api';
+import { setUrlParam } from 'utils/url';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -514,11 +515,11 @@ export function setOperatorDocumentationDate(date) {
   };
 }
 
-export function setOperatorDocumentationFMU(date) {
+export function setOperatorDocumentationFMU(fmu) {
   return (dispatch) => {
     dispatch({
       type: SET_OPERATOR_DOCUMENTATION_FMU,
-      payload: date,
+      payload: fmu,
     });
   };
 }

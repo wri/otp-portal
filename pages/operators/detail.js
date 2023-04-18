@@ -62,10 +62,6 @@ class OperatorsDetail extends React.Component {
       requests.push(store.dispatch(getIntegratedAlertsMetadata()));
     }
 
-    if (url.query.tab === 'documentation') {
-      requests.push(store.dispatch(setOperatorDocumentationDate(moment().format('YYYY-MM-DD'))));
-    }
-
     if (operatorsDetail.data.id !== url.query.id) {
       requests.push(store.dispatch(getOperator(url.query.id)));
       requests.push(store.dispatch(getOperatorObservations(url.query.id)));

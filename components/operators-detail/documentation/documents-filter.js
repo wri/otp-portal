@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
-
+import { useRouter } from 'next/router';
 
 import Datepicker from 'components/ui/datepicker';
 
@@ -16,6 +16,8 @@ import {
   getOperatorDocumentationFMU,
   getHistoricFMUs,
 } from 'selectors/operators-detail/documentation';
+
+import { setUrlParam } from 'utils/url';
 
 function DocumentsFilter({
   children,
@@ -30,24 +32,16 @@ function DocumentsFilter({
 }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
+  const router = useRouter();
 
   useEffect(() => {
-    // on component load, reset FMU and date.
-    setFMU(null);
-    setDate(moment().format('YYYY-MM-DD'));
-  }, []);
-
+    setFMU(fmus.find(f => f.id === router.query.fmuId));
+  }, [router.query.fmuId, fmus])
   useEffect(() => {
-    // on component load, reset FMU and date.
-    if (!!FMU && !!fmus) {
-      const isFMUPresent = fmus.find(f => f.id === FMU.id);
+    setDate(router.query.date || moment().format('YYYY-MM-DD'));
+  }, [router.query.date])
 
-      if (!isFMUPresent) {
-        setFMU(null);
-      }
-    }
-  }, [fmus, FMU]);
-
+  const selectedFmu = FMU && fmus && fmus.find(f => f.id === FMU.id);
 
   return (
     <div className="c-doc-filters">
@@ -60,7 +54,7 @@ function DocumentsFilter({
               className="dropdown-placeholder"
               onClick={() => setDropdownOpen(!isDropdownOpen)}
             >
-              {FMU ? FMU.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
+              {selectedFmu ? selectedFmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
             </button>
 
             {isDropdownOpen && (
@@ -69,7 +63,7 @@ function DocumentsFilter({
                   <option
                     key={_fmu ? _fmu.id : 'no-fmu'}
                     onClick={() => {
-                      setFMU(_fmu);
+                      setUrlParam('fmuId', _fmu?.id);
                       setDropdownOpen(false);
                     }}
                   >
@@ -98,7 +92,7 @@ function DocumentsFilter({
               noBorder: true,
               readOnly: false,
             }}
-            onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
+            onDateChange={(d) => setUrlParam('date', moment(d).format('YYYY-MM-DD'))}
           />
         </span>
       )}
@@ -128,6 +122,6 @@ export default injectIntl(connect(
   }),
   {
     setDate: setOperatorDocumentationDate,
-    setFMU: setOperatorDocumentationFMU,
+    setFMU: setOperatorDocumentationFMU
   }
 )(DocumentsFilter));

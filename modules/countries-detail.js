@@ -1,6 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 
 /* Constants */
 const GET_COUNTRY_SUCCESS = 'GET_COUNTRY_SUCCESS';

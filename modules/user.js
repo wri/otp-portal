@@ -1,6 +1,6 @@
 import Jsona from 'jsona';
 import fetch from 'isomorphic-fetch';
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 import omitBy from 'lodash/omitBy';
 import isEmpty from 'lodash/isEmpty';
 
