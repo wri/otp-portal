@@ -36,7 +36,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'integrated-alerts',
+    //'integrated-alerts',
     // 'aac-cog',
     // 'aac-cod',
     // 'aac-cmr',
