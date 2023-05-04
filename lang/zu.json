@@ -234,6 +234,8 @@
   "operator-detail.overview.card3.link.label": "Read more",
   "operator-detail.overview.details_placeholder": "Text presenting the Forest Producer and describing its activities",
   "operator-detail.documents.title": "{percentage}% valid documents available",
+  "operator-detail.documents.search.no-results": "Cannot find any document matching your search text \"{searchText}\"",
+  "operator-detail.documents.search.placeholder": "Start typing here to search documents...",
   "country-detail.overview.card1.title": "Required documents uploaded",
   "country-detail.overview.card1.description": "{percentage}% of the requested documents are available for this country and accessible in the documentation section.",
   "country-detail.overview.card1.link.label": "Link",

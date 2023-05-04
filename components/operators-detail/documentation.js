@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
@@ -15,9 +14,9 @@ import DocumentsByOperator from 'components/operators-detail/documentation/docum
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
+import DocumentsHeaderFilter from 'components/operators-detail/documentation/documents-header-filter';
 
 function OperatorsDetailDocumentation({
-  operatorsDetail,
   operatorDocumentation,
   operatorTimeline,
   url,
@@ -41,12 +40,14 @@ function OperatorsDetailDocumentation({
   const validDocs = groupedByStatusChart.find(
     (status) => status.id === 'doc_valid'
   );
+  const [searchText, setSearchText] = useState(null);
 
   return (
     <div>
       <div className="c-section">
         <div className="l-container">
           <DocumentsFilter showDate showFMU />
+          <DocumentsHeaderFilter searchText={searchText} setSearchText={setSearchText} />
 
           <DocumentsCertification
             // Publication authorization
@@ -104,11 +105,12 @@ function OperatorsDetailDocumentation({
           {/* Document sections with cards */}
           <DocumentsByOperator
             groupedByCategory={docsGroupedByCategory}
+            searchText={searchText}
             id={url.query.id}
           />
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
