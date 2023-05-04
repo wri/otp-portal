@@ -57,7 +57,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    // 'integrated-alerts',
+    'integrated-alerts',
     'fmus',
     'protected-areas'
   ],

@@ -68,7 +68,6 @@ class OperatorsPage extends React.Component {
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
-    this.props.getIntegratedAlertsMetadata();
 
 
     // // Set discalimer
@@ -256,9 +255,6 @@ export default withTracker(withIntl(connect(
     operatorsTable: getTable(state, props)
   }),
   dispatch => ({
-    getIntegratedAlertsMetadata() {
-      dispatch(getIntegratedAlertsMetadata());
-    },
     getOperatorsRanking() {
       dispatch(getOperatorsRanking());
     },
