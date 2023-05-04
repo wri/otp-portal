@@ -68,7 +68,6 @@
     "request-promise": "4.2.2",
     "reselect": "^3.0.1",
     "slugify": "^1.4.0",
-    "turf-extent": "^1.0.4",
     "viewport-mercator-project": "6.1.1",
     "vizzuality-components": "^3.0.3"
   },
