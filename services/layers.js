@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/nextjs";
+
 export function fetchIntegratedAlertsMetadata() {
   return fetch(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest`, {
     method: 'GET'
@@ -7,8 +9,12 @@ export function fetchIntegratedAlertsMetadata() {
       throw new Error(response.statusText);
     })
     .then(({ data }) => {
-      const minDataDate = data.metadata.content_date_range.min;
-      const maxDataDate = data.metadata.content_date_range.max;
+      const minDataDate = data.metadata.content_date_range.start_date;
+      const maxDataDate = data.metadata.content_date_range.end_date;
+
+      if (!minDataDate || !maxDataDate) {
+        throw new Error('No min or max date found for integrated alerts layer');
+      }
 
       return {
         minDataDate,
@@ -16,12 +22,12 @@ export function fetchIntegratedAlertsMetadata() {
       }
     })
     .catch((err) => {
+      Sentry.captureException(err);
       console.error(err);
-      const date = new Date();
 
       return {
-        minDataDate: date.toISOString(),
-        maxDataDate: date.toISOString()
+        minDataDate: null,
+        maxDataDate: null
       }
     });
 }

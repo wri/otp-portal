@@ -101,6 +101,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { loading: true, error: false });
     case SET_OPERATORS_RANKING_MAP_LOCATION:
       return Object.assign({}, state, { map: action.payload });
+    case SET_OPERATORS_MAP_LAYERS_ACTIVE:
+      return Object.assign({}, state, { layersActive: action.payload });
     case SET_OPERATORS_MAP_INTERACTIONS: {
       const { features = [], lngLat = [] } = action.payload;
 
@@ -345,8 +347,16 @@ export function setFilters(filter) {
 }
 
 export function getIntegratedAlertsMetadata() {
-  return (dispatch) => {
+  return (dispatch, state) => {
     return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      if (!minDataDate || !maxDataDate) {
+        dispatch({
+          type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
+          payload: state().operatorsRanking.layersActive.filter(l => l !== 'integrated-alerts')
+        });
+        return;
+      }
+
       dispatch({
         type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
         payload: {
