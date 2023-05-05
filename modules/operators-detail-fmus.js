@@ -15,6 +15,7 @@ const SET_OPERATORS_DETAIL_MAP_LOCATION = 'SET_OPERATORS_DETAIL_MAP_LOCATION';
 const SET_OPERATORS_DETAIL_MAP_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_INTERACTIONS';
 const SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS';
 const SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS';
+const SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE';
 
 /* Initial state */
 const initialState = {
@@ -36,7 +37,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    //'integrated-alerts',
+    'integrated-alerts',
     // 'aac-cog',
     // 'aac-cod',
     // 'aac-cmr',
@@ -176,6 +177,12 @@ export default function reducer(state = initialState, action) {
         layersSettings
       };
     }
+    case SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE: {
+      return {
+        ...state,
+        layersActive: action.payload
+      };
+    }
     default:
       return state;
   }
@@ -254,7 +261,7 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
         }
       });
     })
-  .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
 }
 
 const ANALYSIS = {
@@ -384,8 +391,16 @@ export function setOperatorsDetailMapHoverInteractions(payload) {
 }
 
 export function getIntegratedAlertsMetadata() {
-  return (dispatch) => {
+  return (dispatch, state) => {
     return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      if (!minDataDate || !maxDataDate) {
+        dispatch({
+          type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
+          payload: state().operatorsRanking.layersActive.filter(l => l !== 'integrated-alerts')
+        });
+        return;
+      }
+
       dispatch({
         type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
         payload: {
