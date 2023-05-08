@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-// import Tooltip from 'rc-tooltip';
-import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+import Tooltip from 'rc-tooltip';
 
 // Intl
 import { connect } from 'react-redux';

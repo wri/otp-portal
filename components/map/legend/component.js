@@ -20,7 +20,7 @@ import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-butt
 import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
 import LegendItemButtonVisibility from 'components/map/legend/buttons/legend-item-button-visibility';
 
-import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+import Tooltip from 'rc-tooltip';
 
 import TEMPLATES from './templates';
 import ANALYSIS from './analysis';

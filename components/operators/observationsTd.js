@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+import Tooltip from 'rc-tooltip';
 
 // Intl
 import { injectIntl, intlShape } from 'react-intl';
