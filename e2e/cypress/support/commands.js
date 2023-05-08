@@ -22,16 +22,16 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
   if (text) {
     cy
       .get(selector)
-      .parents('.Select-control').first()
-      .find('input').first().click({ force: true }).type(text, { force: true })
+      .parents('.react-select-container').first()
+      .find('.react-select__control input').first().click({ force: true }).type(text, { force: true })
   } else {
     cy
       .get(selector)
-      .parents('.Select-control').first()
-      .find('input').first().click({ force: true })
+      .parents('.react-select-container').first()
+      .find('.react-select__control input').first().click({ force: true })
   }
 
   cy.get(selector)
-    .parents('.Select').first()
-    .find('.Select-menu').contains(option).click();
+    .parents('.react-select-container').first()
+    .find('.react-select__menu').contains(option).click();
 });

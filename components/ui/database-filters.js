@@ -89,6 +89,7 @@ class DatabaseFilters extends Filters {
               name={f.key}
               options={opts}
               isMulti
+              className='react-select-container'
               classNamePrefix='react-select'
               value={value}
               placeholder={this.props.intl.formatMessage({

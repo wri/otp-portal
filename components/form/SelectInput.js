@@ -49,6 +49,8 @@ class SelectInput extends FormElement {
     if (properties.creatable) {
       return (
         <CreatableSelect
+          className='react-select-container'
+          classNamePrefix='react-select'
           {...properties}
           options={options}
           id={`select-${properties.name}`}
@@ -60,6 +62,8 @@ class SelectInput extends FormElement {
 
     return (
       <Select
+        className='react-select-container'
+        classNamePrefix='react-select'
         {...properties}
         options={options}
         id={`select-${properties.name}`}

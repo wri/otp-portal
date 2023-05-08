@@ -99,6 +99,7 @@ class OperatorsFilters extends React.Component {
                   instanceId={f.key}
                   name={f.key}
                   options={sortedOptions}
+                  className='react-select-container'
                   classNamePrefix='react-select'
                   value={value}
                   placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
