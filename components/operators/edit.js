@@ -73,6 +73,7 @@ class EditOperator extends React.Component {
         fmus: operator.fmus.map(f => f.id)
       },
       certifications: HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus),
+      countryOptions: [],
       fmusOptions: [],
       fmusLoading: true,
       submitting: false,
@@ -86,6 +87,7 @@ class EditOperator extends React.Component {
   }
 
   componentDidMount() {
+    this.getCountries();
     this.fetchSawmills();
     this.fetchFmus(); // fetching operator fmus to have them in chosen language
   }
@@ -182,6 +184,14 @@ class EditOperator extends React.Component {
     const { operator } = this.props;
     this.props.getSawMillsByOperatorId(operator.id);
     this.props.getSawMillsLocationByOperatorId(operator.id);
+  }
+
+  async getCountries() {
+    const { language } = this.props;
+    const countries = await HELPERS_REGISTER.getCountries(language);
+    this.setState({
+      countryOptions: countries
+    });
   }
 
   async fetchFmus() {
@@ -332,7 +342,7 @@ class EditOperator extends React.Component {
                 ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
-                loadOptions={() => HELPERS_REGISTER.getCountries(language)}
+                options={this.state.countryOptions}
                 properties={{
                   name: 'country',
                   label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.country' }),

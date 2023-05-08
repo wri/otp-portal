@@ -43,7 +43,7 @@
 
 // - ui
 @import '../node_modules/react-table/react-table';
-@import '../node_modules/react-select/dist/react-select';
+// @import '../node_modules/react-select/dist/react-select';
 @import '../node_modules/react-redux-toastr/src/styles/index';
 @import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
 @import 'components/ui/accordion';
@@ -116,7 +116,6 @@
 @import 'components/form/file-image';
 @import 'components/form/checkbox';
 @import 'components/form/radio';
-@import 'components/form/select';
 @import 'components/form/token';
 @import 'components/form/toggle-switch';
 

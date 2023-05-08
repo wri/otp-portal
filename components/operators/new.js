@@ -124,7 +124,7 @@ class NewOperator extends React.Component {
     const countries = await HELPERS_REGISTER.getCountries(language);
 
     this.setState({
-      countryOptions: countries.options,
+      countryOptions: countries,
       countryLoading: false
     });
   }
@@ -203,6 +203,7 @@ class NewOperator extends React.Component {
                   required: true,
                   instanceId: 'select.operator_type',
                   default: this.state.form.operator_type,
+
                   placeholder: ''
                 }}
               >
@@ -300,7 +301,7 @@ class NewOperator extends React.Component {
                       name: 'fmus',
                       label: 'FMUs',
                       instanceId: 'select.fmus',
-                      multi: true,
+                      isMulti: true,
                       value: this.state.form.fmus,
                       placeholder: ''
                     }}

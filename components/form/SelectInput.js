@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select, { Creatable } from 'react-select';
+import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import { injectIntl } from 'react-intl';
 
 import FormElement from './FormElement';
@@ -36,27 +37,22 @@ class SelectInput extends FormElement {
   }
 
   render() {
-    const { options, loadOptions, properties } = this.props;
+    const { options, properties } = this.props;
+    const { isMulti } = properties;
+    let value;
+    if (isMulti) {
+      value = this.state.value ? options.filter(o => this.state.value.includes(o.value)) : null;
+    } else {
+      value = options.filter(o => o.value === this.state.value);
+    }
 
     if (properties.creatable) {
       return (
-        <Creatable
+        <CreatableSelect
           {...properties}
           options={options}
           id={`select-${properties.name}`}
-          value={this.state.value}
-          onChange={this.triggerChange}
-        />
-      );
-    }
-
-    if (loadOptions) {
-      return (
-        <Select.Async
-          {...properties}
-          loadOptions={loadOptions}
-          id={`select-${properties.name}`}
-          value={this.state.value}
+          value={value}
           onChange={this.triggerChange}
         />
       );
@@ -67,7 +63,7 @@ class SelectInput extends FormElement {
         {...properties}
         options={options}
         id={`select-${properties.name}`}
-        value={this.state.value}
+        value={value}
         onChange={this.triggerChange}
       />
     );

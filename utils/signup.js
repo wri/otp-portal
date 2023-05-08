@@ -14,10 +14,7 @@ const HELPERS_REGISTER = {
     })
       .then((data) => {
         const dataParsed = JSONA.deserialize(data);
-
-        return {
-          options: dataParsed.map(c => ({ label: c.name, value: c.id }))
-        };
+        return dataParsed.map(c => ({ label: c.name, value: c.id }));
       });
   },
 

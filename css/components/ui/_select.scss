@@ -1,49 +1,26 @@
 .c-select {
-
-  .Select {
-
-    &.-filled {
-      &.Select--multi .Select-input {
-        margin-left: $space-1;
-      }
-
-    }
-
-    .Select-control {
+  .react-select {
+    &__control {
       background-color: transparent;
       border: 0;
       border-radius: 0;
       cursor: text;
-      height: 30px;
+      min-height: 30px;
+
+      &--is-focused {
+        border-color: rgba($color-tertiary, .3);
+        box-shadow: none;
+      }
 
       &:hover {
         box-shadow: none;
       }
 
-      .Select-clear-zone {
-        padding-bottom: 0;
+      .react-select__value-container {
+        padding-left: 0;
       }
 
-      .Select-clear {
-        color: rgba($color-white, .54);
-      }
-
-      .Select-arrow-zone {
-        padding: 0;
-
-      }
-
-      .Select-arrow {
-        border: 0;
-        border-right: 2px solid rgba($color-white, .5);
-        border-bottom: 2px solid rgba($color-white, .5);
-        width: 6px;
-        height: 6px;
-        transform: rotate(45deg) translate(-3px,-3px);
-        margin-right: 0;
-      }
-
-      .Select-placeholder {
+      .react-select__placeholder {
         color: rgba($color-white, .5);
         font-family: $font-family-proximanova;
         text-transform: uppercase;
@@ -53,79 +30,88 @@
         font-size: $font-size-extrasmall;
         padding-left: 0;
       }
-    }
 
-    .Select-multi-value-wrapper {
-      margin: 0;
-
-      .Select-value {
-        position: relative;
-        color: white;
-        background-color: transparent;
-        border-color: rgba($color-white, .3);
-        border-radius: 20px;
-        padding-left: 5px;
-        margin-left: 0;
-        margin-right: 3px;
-        margin-bottom: 5px;
-        margin-top: 0;
-
-        display: inline-flex;
-        flex-direction: row-reverse;
-        align-items: center;
-
-        &.last-child {
-          margin-right: 0;
+      .react-select__indicators {
+        .react-select__indicator-separator {
+          display: none;
         }
 
-        .Select-value-label {
-          font-family: $font-family-proximanova;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          line-height: 20px;
-          font-weight: 700;
-          font-size: $font-size-extrasmall;
-          word-break: break-word;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
+        .react-select__dropdown-indicator, .react-select__clear-indicator {
+          cursor: pointer;
+          color: rgba($color-white, .54);
+          padding: 4px;
 
-        .Select-value-icon {
-          border: 0;
-          font-size: 16px;
-          line-height: 20px;
-          color: $color-white;
-
-          &:hover {
-            background-color: transparent;
-            opacity: .7;
+          svg {
+            height: 14px;
+            width: 14px;
           }
         }
       }
     }
 
-    &.Select--multi .Select-input {
+    &__multi-value {
+      color: white;
+      background-color: transparent;
+      border: 1px solid rgba($color-white, .3);
+      border-radius: 20px;
+      padding-left: 5px;
       margin-left: 0;
+      margin-right: 3px;
+      margin-bottom: 5px;
+      margin-top: 0;
 
-      > input {
-        padding: 0px;
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+
+      &.last-child {
+        margin-right: 0;
+      }
+
+      &__label {
+        color: $color-white;
+        font-family: $font-family-proximanova;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 20px;
+        font-weight: 700;
+        font-size: $font-size-extrasmall;
+        word-break: break-word;
+        white-space: unset;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &__remove {
+        cursor: pointer;
+        margin-top: -3px;
+
+        svg {
+          height: 14px;
+          width: 14px;
+        }
+
+        &:hover {
+          background-color: transparent;
+          color: rgba($color-white, .7);
+        }
       }
     }
 
-    .Select-menu-outer {
+    &__menu {
       background-color: white;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
 
-      .Select-option {
+      .react-select__option {
         font-family: $font-family-proximanova;
 
-        &.is-focused {
+        &--is-focused {
           background-color: rgba($color-text-1, .07);
           color: $color-text-1;
           font-family: $font-family-proximanova;
@@ -138,15 +124,4 @@
       }
     }
   }
-
-  .is-open > .Select-control .Select-arrow {
-    top: auto;
-  }
-
-  /* Overried react select */
-  .is-focused:not(.is-open) > .Select-control {
-    border-color: rgba($color-tertiary, .3);
-    box-shadow: none;
-  }
-
 }
