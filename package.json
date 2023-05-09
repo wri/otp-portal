@@ -39,7 +39,7 @@
     "next": "10",
     "next-redux-wrapper": "^4.0.1",
     "node-fetch": "^1.7.3",
-    "normalize.css": "^7.0.0",
+    "normalize.css": "^8.0.1",
     "postcss-easy-import": "^4.0.0",
     "prop-types": "^15.8.1",
     "query-string": "6",
