@@ -46,7 +46,7 @@
     "query-string": "6",
     "rc-tooltip": "6",
     "react": "17",
-    "react-datepicker": "^2.11.0",
+    "react-datepicker": "^4.11.0",
     "react-dom": "17",
     "react-dropzone": "^3.13.3",
     "react-fast-compare": "^2.0.4",
