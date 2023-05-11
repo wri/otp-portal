@@ -27,7 +27,7 @@ class FileImage extends FormElement {
     };
 
     // BINDINGS
-    this.triggerBrowseOrCancel = this.triggerBrowseOrCancel.bind(this);
+    this.triggerCancel = this.triggerCancel.bind(this);
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
@@ -53,7 +53,10 @@ class FileImage extends FormElement {
 
   onDrop(accepted, rejected) {
     this.setState({
-      accepted,
+      accepted: accepted.map(f => ({
+        ...f,
+        preview: URL.createObjectURL(f)
+      })),
       rejected,
       dropzoneActive: false
     }, () => {
@@ -108,11 +111,13 @@ class FileImage extends FormElement {
    * - triggerBrowseOrCancel
    * - triggerChange
   */
-  triggerBrowseOrCancel() {
+  triggerCancel(event) {
+    event.stopPropagation();
     const { accepted } = this.state;
     if (accepted.length) {
       this.setState({
         accepted: [],
+        rejected: [],
         value: ''
       }, () => {
         // Publish the new value to the form
@@ -120,8 +125,6 @@ class FileImage extends FormElement {
         // Trigger validation
         this.triggerValidate();
       });
-    } else {
-      this.dropzone.open();
     }
   }
 
@@ -154,35 +157,51 @@ class FileImage extends FormElement {
 
   render() {
     const { properties } = this.props;
-    const { accepted } = this.state;
+    const { accepted, rejected } = this.state;
 
     return (
       <div className="c-file-image">
         <Dropzone
-          accept=".jpg,.jpeg,.png"
-          ref={(node) => { this.dropzone = node; }}
-          className="file-dropzone"
-          disableClick
+          accept={{
+            "image/jpeg": [".jpg", ".jpeg"],
+            "image/png": [".png"]
+          }}
           multiple={false}
           onDrop={this.onDrop}
           onDragEnter={this.onDragEnter}
           onDragLeave={this.onDragLeave}
         >
-          {!accepted.length &&
-            <div className="file-placeholder" onClick={this.triggerBrowseOrCancel}>
-              {properties.placeholder}
-              <Icon name="icon-plus" className="-big" />
-            </div>
-          }
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps({ className: 'file-dropzone' })}>
+              <input {...getInputProps()} />
 
-          {!!accepted.length && accepted[0].preview &&
-            <div className="file-preview">
-              <img className="file-image" src={accepted[0].preview} alt={accepted[0].name} />
-              <button onClick={this.triggerBrowseOrCancel} className="file-button c-button">
-                <Icon name="icon-cross" className="-small" />
-              </button>
+              {!accepted.length &&
+                <div className="file-placeholder">
+                  {properties.placeholder}
+                  <Icon name="icon-plus" className="-big" />
+                </div>
+              }
+
+              {!!accepted.length && accepted[0].preview &&
+                <div className="file-preview">
+                  <img className="file-image" src={accepted[0].preview} alt={accepted[0].name} />
+                  <button onClick={this.triggerCancel} className="file-button c-button">
+                    <Icon name="icon-cross" className="-small" />
+                  </button>
+                </div>
+              }
+
+              {!accepted.length && !!rejected.length && (
+                <div className="file-rejected">
+                  {rejected.map((file, i) => (
+                    <div key={i}>
+                      {file.file.name}: {file.errors.map(e => e.message).join(', ')}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          }
+          )}
         </Dropzone>
       </div>
     );
@@ -195,4 +214,4 @@ FileImage.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(FileImage, {withRef: true});
+export default injectIntl(FileImage, { withRef: true });

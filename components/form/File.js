@@ -138,53 +138,53 @@ class File extends FormElement {
       [properties.className]: !!properties.className
     });
     const changeableName = (properties.changeableName !== null && properties.changeableName !== undefined) ? properties.changeableName : false;
+    const disableClick = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
 
     return (
       <div className="c-file">
         <Dropzone
           ref={(node) => { this.dropzone = node; }}
-          className="file-dropzone"
           multiple={false}
-          disableClick
-          disablePreview
           onDrop={this.onDrop}
           onDragEnter={this.onDragEnter}
           onDragLeave={this.onDragLeave}
         >
-          {/* {dropzoneActive &&
-              <div className="dropzone-active">
-              Drop files...
-              </div>
-              } */}
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps({ onClick: disableClick, className: 'file-dropzone' })}>
+              <input {...getInputProps()} />
+              <input
+                {...omit(properties, 'authorization')}
+                className={`input ${inputClassName}`}
+                value={this.state.value?.name}
+                placeholder={this.props.intl.formatMessage({ id: 'select-file' })}
+                readOnly={!changeableName}
+                id={`input-${properties.name}`}
+                onChange={this.triggerChange}
+              />
 
-          <input
-            {...omit(properties, 'authorization')}
-            className={`input ${inputClassName}`}
-            value={this.state.value?.name}
-            placeholder={this.props.intl.formatMessage({ id: 'select-file' })}
-            readOnly={!changeableName}
-            id={`input-${properties.name}`}
-            onChange={this.triggerChange}
-          />
-
-          {accepted.length ? (
-            <button
-              type="button"
-              className="c-button -primary -compressed file-button"
-              onClick={this.triggerCancel}
-            >
-              <Spinner className="-light -small" isLoading={loading} />
-              {this.props.intl.formatMessage({ id: 'cancel' })}
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="c-button -primary -compressed file-button"
-              onClick={this.triggerBrowse}
-            >
-              <Spinner className="-light -small" isLoading={loading} />
-              {this.props.intl.formatMessage({ id: 'browse-file' })}
-            </button>
+              {accepted.length ? (
+                <button
+                  type="button"
+                  className="c-button -primary -compressed file-button"
+                  onClick={this.triggerCancel}
+                >
+                  <Spinner className="-light -small" isLoading={loading} />
+                  {this.props.intl.formatMessage({ id: 'cancel' })}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="c-button -primary -compressed file-button"
+                  onClick={this.triggerBrowse}
+                >
+                  <Spinner className="-light -small" isLoading={loading} />
+                  {this.props.intl.formatMessage({ id: 'browse-file' })}
+                </button>
+              )}
+            </div>
           )}
         </Dropzone>
       </div>
