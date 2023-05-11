@@ -22,7 +22,7 @@
     "deck.gl": "7.3.6",
     "dotenv": "^4.0.0",
     "eventemitter3": "^2.0.3",
-    "express": "^4.14.0",
+    "express": "^4.17.3",
     "express-locale": "^1.0.2",
     "foundation-sites": "6.3.1",
     "fuse.js": "^3.0.5",
