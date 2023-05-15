@@ -49,7 +49,7 @@ describe('User', function () {
         cy.location('pathname', {timeout: 25000}).should('include', '/documentation');
       })
 
-      it.only('can upload a new document', function () {
+      it('can upload a new document', function () {
         cy.docExpandCategory('Use right');
 
         cy.docGetFMUDocCard('Ngombe', 'Cahier des charges particulier')
