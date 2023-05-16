@@ -271,7 +271,10 @@ function DatabaseTable({
             }),
             previousText: '<',
             nextText: '>',
-            noDataText: 'No rows found',
+            noDataText: intl.formatMessage({
+              id: 'operator-documents.no-data',
+              defaultMessage: 'There are no documents that match you selected criteria'
+            }),
             showPageSizeOptions: false
           }}
         />

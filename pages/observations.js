@@ -297,8 +297,12 @@ class ObservationsPage extends React.Component {
                   pagination: true,
                   previousText: '<',
                   nextText: '>',
-                  noDataText: 'No rows found',
+                  noDataText: this.props.intl.formatMessage({
+                    id: 'observations.no-data',
+                    defaultMessage: 'There are no observations that match you selected criteria'
+                  }),
                   showPageSizeOptions: false,
+                  loading: observations.loading,
                   // Api pagination & sort
                   // pages: observations.totalSize,
                   // page: this.state.page - 1,
