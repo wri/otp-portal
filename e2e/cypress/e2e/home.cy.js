@@ -4,6 +4,12 @@ describe('Home Page', () => {
     cy.visit('http://localhost:4000/');
   })
 
+  describe('content', () => {
+    it('matches visually', function () {
+      cy.document().toMatchImageSnapshot();
+    })
+  })
+
   describe('using operator search', () => {
     it('finds operator and goes to details page', function () {
       cy.get('.c-header [data-test-id=search-input]').type('sicofo')

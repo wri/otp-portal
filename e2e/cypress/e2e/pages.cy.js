@@ -1,19 +1,53 @@
-const { nanoid } = require('nanoid')
-
 describe('Pages', () => {
+  describe('Login page', () => {
+    it('matches visually', function () {
+      cy.visit('http://localhost:4000');
+      cy.get('a').contains('Sign in').click();
+      cy.get('.c-login').toMatchImageSnapshot();
+    });
+  })
+
+  describe('Create account page', () => {
+    it('matches visually', function () {
+      cy.visit('http://localhost:4000/signup');
+      cy.document().toMatchImageSnapshot();
+    });
+  })
+
+  describe('Create producer page', () => {
+    it('matches visually', function () {
+      cy.visit('http://localhost:4000/operators/new');
+      cy.document().toMatchImageSnapshot();
+    });
+  })
+
   describe('About page', () => {
-    it('displays content', function () {
+    beforeEach(() => {
       cy.visit('http://localhost:4000/about');
+    })
+
+    it('displays content', function () {
       cy.contains('About the portal');
       cy.contains('The Open Timber Portal is an initiative launched by the World Resources Institute');
+    })
+
+    it('matches visually', function () {
+      cy.document().toMatchImageSnapshot();
     })
   })
 
   describe('Help page', () => {
     context('when visitng overview/main', () => {
-      it('displays content', function () {
+      beforeEach(() => {
         cy.visit('http://localhost:4000/help');
+      })
+
+      it('displays content', function () {
         cy.contains('How the OTP works');
+      })
+
+      it('matches visually', function () {
+        cy.document().toMatchImageSnapshot();
       })
     })
 
@@ -47,21 +81,36 @@ describe('Pages', () => {
   })
 
   describe('Terms page', () => {
-    it('displays content', function () {
+    beforeEach(() => {
       cy.visit('http://localhost:4000/terms');
+    })
+
+    it('displays content', function () {
+
       cy.contains('World Resources Institute Privacy Policy');
+    })
+
+    it('matches visually', function () {
+      cy.document().toMatchImageSnapshot();
     })
   })
 
   describe('Newsletter page', () => {
-    it('displays content', function () {
+    beforeEach(() => {
       cy.visit('http://localhost:4000/newsletter');
+    })
+
+    it('displays content', function () {
       cy.contains('Newsletter');
       cy.contains('First Name');
       cy.contains('Last Name');
       cy.contains('Email');
       cy.contains('Organization');
       cy.contains('Country');
+    })
+
+    it('matches visually', function () {
+      cy.document().toMatchImageSnapshot();
     })
   })
 });

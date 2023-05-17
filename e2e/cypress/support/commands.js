@@ -1,4 +1,5 @@
 import 'cypress-file-upload';
+import 'cypress-plugin-snapshots/commands';
 import './commands/operator';
 
 Cypress.Commands.add('interceptMapRequests', () => {
