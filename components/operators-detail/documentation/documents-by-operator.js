@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
+import uniq from 'lodash/uniq';
 import cx from 'classnames';
 import { injectIntl, intlShape } from 'react-intl';
 import Fuse from 'fuse.js';
@@ -31,17 +32,27 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
     )
   );
 
+  const removeDiacritics = str => {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
   const searchDocuments = (documents) => {
     if (!searchText) return documents;
 
+    const exactSearch = (doc) => removeDiacritics(doc.title.toLowerCase()).includes(removeDiacritics(searchText.toLowerCase()));
     const fuse = new Fuse(documents, {
       keys: ['title'],
-      threshold: 0.3,
-      location: 0,
-      distance: 200,
+      threshold: 0.4,
+      minMatchCharLength: 2,
+      ignoreLocation: true,
       findAllMatches: true
     });
-    return fuse.search(searchText);
+
+    const exactSearchResults = searchText.length > 2 ? documents.filter(exactSearch) : [];
+    const fuseSearchResults = fuse.search(searchText);
+    return uniq([...exactSearchResults, ...fuseSearchResults]);
   }
 
   const results = Object.keys(groupedByCategory).map((category) => {
