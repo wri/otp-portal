@@ -52,83 +52,54 @@ server.use(
   })
 );
 
+const homeRedirect = (req, res) => res.redirect('/');
+const notFound = (req, res) => {
+  res.status(404);
+
+  return app.render(
+    req,
+    res,
+    '/_error',
+    Object.assign(req.params, req.query)
+  );
+}
+const onlyAuthenticated = (req, res) => {
+  if (!req.session.user) return res.redirect('/');
+
+  return handle(req, res);
+}
+
 app
   .prepare()
   .then(() => {
     // COUNTRIES
+    server.get('/countries/detail', notFound);
     if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
-      server.get('/countries', (req, res) => {
+      server.get('/countries/:id/:tab?', (req, res) => {
         const { query } = parse(req.url, true);
         return app.render(
           req,
           res,
-          '/countries',
-          Object.assign(req.params, query)
-        );
-      });
-
-      server.get('/countries/:id', (req, res) => {
-        const { query } = parse(req.url, true);
-        return app.render(
-          req,
-          res,
-          '/countries-detail',
-          Object.assign(req.params, query)
-        );
-      });
-
-      server.get('/countries/:id/:tab', (req, res) => {
-        const { query } = parse(req.url, true);
-        return app.render(
-          req,
-          res,
-          '/countries-detail',
+          '/countries/detail',
           Object.assign(req.params, query)
         );
       });
     } else {
-      const homeRedirect = (req, res) => res.redirect('/');
       server.get('/countries', homeRedirect);
-      server.get('/countries/:id', homeRedirect);
-      server.get('/countries/:id/:tab', homeRedirect);
+      server.get('/countries/:id/:tab?', homeRedirect);
     }
 
     // MAP only development
-    if (process.env.FEATURE_MAP_PAGE === 'true') {
-      server.get('/map', (req, res) => {
-        return app.render(
-          req,
-          res,
-          '/map',
-          Object.assign(req.params, req.query)
-        );
-      });
+    if (process.env.FEATURE_MAP_PAGE !== 'true') {
+      server.get('/map', notFound);
     }
 
     // PROFILE
-    server.get('/profile', (req, res) => {
-      if (req.session.user) {
-        return app.render(
-          req,
-          res,
-          '/profile',
-          Object.assign(req.params, req.query)
-        );
-      }
-      return res.redirect('/');
-    });
+    server.get('/profile', onlyAuthenticated);
 
     // OPERATORS
-    server.get('/operators', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/operators',
-        Object.assign(req.params, query)
-      );
-    });
-
+    server.get('/operators/edit', onlyAuthenticated);
+    server.get('/operators/detail', notFound);
     server.get('/operators/new', (req, res) =>
       app.render(
         req,
@@ -137,39 +108,7 @@ app
         Object.assign(req.params, req.query)
       )
     );
-
-    server.get('/operators/database', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/operators/database',
-        Object.assign(req.params, req.query)
-      )
-    );
-
-    server.get('/operators/edit', (req, res) => {
-      if (req.session.user) {
-        return app.render(
-          req,
-          res,
-          '/operators/edit',
-          Object.assign(req.params, req.query)
-        );
-      }
-      return res.redirect('/');
-    });
-
-    server.get('/operators/:id', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/operators/detail',
-        Object.assign(req.params, query)
-      );
-    });
-
-    server.get('/operators/:id/:tab', (req, res) => {
+    server.get('/operators/:id/:tab?', (req, res) => {
       const { query } = parse(req.url, true);
       return app.render(
         req,
@@ -180,14 +119,6 @@ app
     });
 
     // OBSERVATIONS
-    server.get('/observations', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/observations',
-        Object.assign(req.params, req.query)
-      )
-    );
     server.get('/observations/:tab', (req, res) =>
       app.render(
         req,
@@ -197,29 +128,8 @@ app
       )
     );
 
-    server.get('/about', (req, res) =>
-      app.render(req, res, '/about', Object.assign(req.params, req.query))
-    );
-
-    // HELP
-    server.get('/help', (req, res) =>
-      app.render(req, res, '/help', Object.assign(req.params, req.query))
-    );
     server.get('/help/:tab', (req, res) =>
       app.render(req, res, '/help', Object.assign(req.params, req.query))
-    );
-
-    // SIGNUP
-    server.get('/signup', (req, res) =>
-      app.render(req, res, '/signup', Object.assign(req.params, req.query))
-    );
-
-    // NEWSLETTER
-    server.get('/newsletter', (req, res) =>
-      app.render(req, res, '/newsletter', Object.assign(req.params, req.query))
-    );
-    server.get('/newsletter/thank-you', (req, res) =>
-      app.render(req, res, '/thank-you', Object.assign(req.params, req.query))
     );
 
     // LOGIN
