@@ -24,6 +24,7 @@ import RadioGroup from 'components/form/RadioGroup';
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 import { FormElements } from 'utils/form';
+import { logEventNew } from 'utils/analytics';
 
 class UserNewForm extends React.Component {
   constructor(props) {
@@ -88,6 +89,7 @@ class UserNewForm extends React.Component {
         this.props.saveUser({ body })
             .then(() => {
               this.setState({ submitting: false, submitted: true });
+              logEventNew('sign_up', { method: 'credentials' });
               if (this.props.onSubmit) this.props.onSubmit();
             })
             .catch((errors) => {

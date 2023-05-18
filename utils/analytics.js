@@ -28,3 +28,9 @@ export const logEvent = (category = '', action = '', label = '') => {
     // console.info(`[GA] Event: ${category}, ${action}, ${label}`);
   }
 };
+
+export const logEventNew = (event, params = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', event, params);
+  }
+}

@@ -13,6 +13,8 @@ import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
 
+import Analytics from 'components/layout/analytics';
+
 import 'css/index.scss';
 
 const reducer = combineReducers({
@@ -82,9 +84,13 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps, store } = this.props;
+
     return (
       <Provider store={store}>
-        <Component {...pageProps} />
+        <>
+          <Analytics />
+          <Component {...pageProps} />
+        </>
       </Provider>
     );
   }

@@ -6,6 +6,8 @@ import isEmpty from 'lodash/isEmpty';
 
 import { get, post } from 'utils/request';
 
+import { logEventNew } from 'utils/analytics';
+
 // CONSTANTS
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
@@ -181,6 +183,7 @@ export function login({ body }) {
         ],
         onSuccess: (response) => {
           localStorage.removeItem('notificationsShown');
+          logEventNew('login', { method: 'credentials' });
           window.location.reload();
         },
         onError: (error) => {
