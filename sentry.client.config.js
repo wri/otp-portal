@@ -8,6 +8,12 @@ const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 Sentry.init({
   dsn: SENTRY_DSN,
+  ignoreErrors: [
+    'ResizeObserver loop limit exceeded',
+    'ResizeObserver loop completed with undelivered notifications.',
+    'ResizeObserver is not defined',
+    "Can't find variable: ResizeObserver",
+  ],
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 0,
   // ...
