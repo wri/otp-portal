@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import renderHTML from 'html-react-parser';
+import renderHTML, { domToReact } from 'html-react-parser';
 
 function linkifyProcess(content) {
   const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
@@ -29,7 +29,7 @@ const HTML = ({ html, linkify, className }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {node.children[0].data}
+                {domToReact(node.children)}
               </a>
             );
           }
