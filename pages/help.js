@@ -72,7 +72,6 @@ class HelpPage extends React.Component {
             label: this.props.intl.formatMessage({ id: 'help.tabs.tutorials' }),
             value: 'tutorials'
           }]}
-          defaultSelected={tab}
           selected={tab}
         />
 

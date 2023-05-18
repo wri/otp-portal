@@ -95,11 +95,12 @@ class OperatorsFilters extends React.Component {
 
               {f.type === 'select' &&
                 <Select
-                  multi
+                  isMulti
                   instanceId={f.key}
                   name={f.key}
                   options={sortedOptions}
-                  className={value.length ? '-filled' : ''}
+                  className='react-select-container'
+                  classNamePrefix='react-select'
                   value={value}
                   placeholder={this.props.intl.formatMessage({ id: `filter.${f.key}.placeholder` })}
                   onChange={opts => this.setSelect(opts, f.key)}

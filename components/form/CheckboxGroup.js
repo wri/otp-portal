@@ -17,10 +17,10 @@ class CheckboxGroup extends FormElement {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.properties.value, this.props.properties.value)) {
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.properties.value, this.props.properties.value)) {
       this.setState({
-        value: nextProps.properties.value
+        value: this.props.properties.value
       });
     }
   }

@@ -1,4 +1,4 @@
-import Tooltip from 'rc-tooltip/dist/rc-tooltip';
+import Tooltip from 'rc-tooltip';
 import ReadMore from 'components/ui/read-more';
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 import Icon from 'components/ui/icon';

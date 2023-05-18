@@ -19,7 +19,6 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import CheckboxGroup from 'components/form/CheckboxGroup';
 import Select from 'components/form/SelectInput';
 
 // Utils
@@ -125,7 +124,7 @@ class NewOperator extends React.Component {
     const countries = await HELPERS_REGISTER.getCountries(language);
 
     this.setState({
-      countryOptions: countries.options,
+      countryOptions: countries,
       countryLoading: false
     });
   }
@@ -204,6 +203,7 @@ class NewOperator extends React.Component {
                   required: true,
                   instanceId: 'select.operator_type',
                   default: this.state.form.operator_type,
+
                   placeholder: ''
                 }}
               >
@@ -301,7 +301,7 @@ class NewOperator extends React.Component {
                       name: 'fmus',
                       label: 'FMUs',
                       instanceId: 'select.fmus',
-                      multi: true,
+                      isMulti: true,
                       value: this.state.form.fmus,
                       placeholder: ''
                     }}

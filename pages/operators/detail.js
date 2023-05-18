@@ -208,7 +208,6 @@ class OperatorsDetail extends React.Component {
             as: `/operators/${id}`,
           }}
           options={this.getTabOptions()}
-          defaultSelected={tab}
           selected={tab}
         />
 

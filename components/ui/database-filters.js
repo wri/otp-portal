@@ -88,8 +88,9 @@ class DatabaseFilters extends Filters {
               instanceId={f.key}
               name={f.key}
               options={opts}
-              multi
-              className={value.length ? '-filled' : ''}
+              isMulti
+              className='react-select-container'
+              classNamePrefix='react-select'
               value={value}
               placeholder={this.props.intl.formatMessage({
                 id: `filter.${f.key}.placeholder`,

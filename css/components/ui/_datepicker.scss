@@ -28,10 +28,14 @@ $day-padding: 10px;
   font-weight: $font-weight-bold;
   letter-spacing: 1px;
 
+  &-wrapper {
+    width: unset;
+  }
+
   .react-datepicker__navigation {
     cursor: pointer;
     position: absolute;
-    top: 14px;
+    top: 10px;
     z-index: 1;
     width: 0;
     padding: 0;
@@ -45,17 +49,32 @@ $day-padding: 10px;
     line-height: 1;
     text-align: center;
 
-    &:after {
+    &--previous {
+      left: 10px;
+    }
+
+    &--next {
+      right: 10px;
+    }
+  }
+
+  .react-datepicker__navigation-icon {
+    top: 0px;
+
+    &:before {
       content: "";
       position: absolute;
+      transform: unset;
       top: 50%;
       left: 50%;
       width: 0;
       height: 0;
     }
 
-    &.react-datepicker__navigation--previous {
-      &:after {
+    &.react-datepicker__navigation-icon--previous {
+      right: 0px;
+
+      &:before {
         margin: -3px 0 0 -3px;
         border-style: solid;
         border-width: 3px 4px 3px 0;
@@ -63,8 +82,10 @@ $day-padding: 10px;
       }
     }
 
-    &.react-datepicker__navigation--next {
-      &:after {
+    &.react-datepicker__navigation-icon--next {
+      left: 0px;
+
+      &:before {
         margin: -3px 0 0 -2px;
         border-style: solid;
         border-width: 3px 0px 3px 4px;
@@ -75,12 +96,12 @@ $day-padding: 10px;
     &:hover {
       background: $color-primary;
 
-      &.react-datepicker__navigation--previous {
-        &:after {}
+      &.react-datepicker__navigation-icon--previous {
+        &:before {}
       }
 
-      &.react-datepicker__navigation--next {
-        &:after {}
+      &.react-datepicker__navigation-icon--next {
+        &:before {}
       }
     }
   }

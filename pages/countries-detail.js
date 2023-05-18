@@ -97,7 +97,6 @@ class CountriesDetail extends React.Component {
             as: `/countries/${id}`
           }}
           options={this.getTabOptions()}
-          defaultSelected={tab}
           selected={tab}
         />
 

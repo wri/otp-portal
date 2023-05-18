@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StickyContainer, Sticky } from 'react-sticky';
 import Spinner from 'components/ui/spinner';
 import Html from 'components/html';
 
@@ -49,56 +48,48 @@ class HelpTools extends React.Component {
       >
         <Spinner className="-transparent -small" isLoading={loading || error} />
         <div className="l-container">
-          <StickyContainer>
-            <div className="row l-row">
-              <div className="columns small-12 medium-3">
-                <Sticky>
-                  {
-                    ({ style }) => (
-                      <aside className="c-aside" style={style}>
-                        <h3>
-                          {this.props.intl.formatMessage({ id: 'help.tabs.legislation' })}
-                        </h3>
-                        <nav>
-                          <ul>
-                            {data.map(tutorial =>
-                              <li
-                                key={tutorial.id}
-                                onClick={() => this.triggerScrollTo(`#tutorial-article-${tutorial.id}`)}
-                              >
-                                {tutorial.name}
-                              </li>
-                            )}
-                          </ul>
-                        </nav>
-                      </aside>
-                    )
-                  }
-                </Sticky>
-              </div>
-
-              <div className="columns small-12 medium-8 medium-offset-1">
-                {data.map(tutorial =>
-                  <article
-                    key={tutorial.id}
-                    id={`tutorial-article-${tutorial.id}`}
-                    className="c-article"
-                  >
-                    <header>
-                      <h2 className="c-title">
+          <div className="row l-row">
+            <div className="columns small-12 medium-3">
+              <aside className="c-aside -sticky">
+                <h3>
+                  {this.props.intl.formatMessage({ id: 'help.tabs.legislation' })}
+                </h3>
+                <nav>
+                  <ul>
+                    {data.map(tutorial =>
+                      <li
+                        key={tutorial.id}
+                        onClick={() => this.triggerScrollTo(`#tutorial-article-${tutorial.id}`)}
+                      >
                         {tutorial.name}
-                      </h2>
-                    </header>
-                    <div className="content">
-                      <div className="description">
-                        <Html html={tutorial.description} />
-                      </div>
-                    </div>
-                  </article>
-                )}
-              </div>
+                      </li>
+                    )}
+                  </ul>
+                </nav>
+              </aside>
             </div>
-          </StickyContainer>
+
+            <div className="columns small-12 medium-8 medium-offset-1">
+              {data.map(tutorial =>
+                <article
+                  key={tutorial.id}
+                  id={`tutorial-article-${tutorial.id}`}
+                  className="c-article"
+                >
+                  <header>
+                    <h2 className="c-title">
+                      {tutorial.name}
+                    </h2>
+                  </header>
+                  <div className="content">
+                    <div className="description">
+                      <Html html={tutorial.description} />
+                    </div>
+                  </div>
+                </article>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );

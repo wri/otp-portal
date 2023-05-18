@@ -14,9 +14,9 @@ describe('Observations page', function () {
 
   describe('filters', function () {
     it('can filter by producer', function () {
-      cy.selectOption('#react-select-operator--value', 'CFF Bois', 'CFF Bois International')
+      cy.selectOption('#react-select-operator-input', 'CFF Bois', 'CFF Bois International')
       cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 6);
-      cy.selectOption('#react-select-operator--value', 'AFRIWOOD', 'AFRIWOOD INDUSTRIES')
+      cy.selectOption('#react-select-operator-input', 'AFRIWOOD', 'AFRIWOOD INDUSTRIES')
       cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 14);
     })
   })

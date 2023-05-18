@@ -43,7 +43,6 @@
 
 // - ui
 @import '../node_modules/react-table/react-table';
-@import '../node_modules/react-select/dist/react-select';
 @import '../node_modules/react-redux-toastr/src/styles/index';
 @import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
 @import 'components/ui/accordion';
@@ -72,7 +71,6 @@
 @import 'components/ui/fmus-checkbox';
 @import 'components/ui/fmu-card';
 @import 'components/ui/gallery';
-@import 'components/ui/gantt';
 @import 'components/ui/icon';
 @import 'components/ui/intro';
 @import 'components/ui/language-dropdown';
@@ -89,7 +87,6 @@
 @import 'components/ui/options-table';
 @import 'components/ui/partner-card';
 @import 'components/ui/ranking';
-@import 'components/ui/ranking-chart';
 @import 'components/ui/ranking-modal';
 @import 'components/ui/sidebar';
 @import 'components/ui/spinner';
@@ -100,7 +97,6 @@
 @import 'components/ui/tooltip';
 @import 'components/ui/search';
 @import 'components/ui/select';
-@import 'components/ui/stacked-timeline';
 @import 'components/ui/notifications';
 
 // Documents' database
@@ -116,9 +112,9 @@
 @import 'components/form/file-image';
 @import 'components/form/checkbox';
 @import 'components/form/radio';
-@import 'components/form/select';
 @import 'components/form/token';
 @import 'components/form/toggle-switch';
+@import 'components/form/select';
 
 // html
 @import 'components/html/html';

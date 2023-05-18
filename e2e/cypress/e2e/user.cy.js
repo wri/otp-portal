@@ -21,8 +21,8 @@ describe('User', () => {
     it('can create account', function () {
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register now').click();
-      cy.selectOption('#select-country_id', 'Co', 'Congo');
-      cy.selectOption('#select-operator_id', 'Si', 'SICOFOR');
+      cy.selectOption('[name=country_id]', 'Co', 'Congo');
+      cy.selectOption('[name=operator_id]', 'Si', 'SICOFOR');
       cy.get('#input-name').type('Test operator');
       cy.get('#input-email').type(`testoperator+${nanoid(6)}@example.com`);
       cy.get('#input-password').type('supersecret');
@@ -41,16 +41,16 @@ describe('User', () => {
 
       cy.get('#input-name').type(`Super New Producer ${nanoid(6)}`);
       cy.get('#input-details').type('Producer description');
-      cy.selectOption('#select-operator_type', 'E', 'Estate');
+      cy.selectOption('[name=operator_type]', 'E', 'Estate');
       cy.get('#input-website').type('wrong website');
       cy.get('#input-website').clear();
       cy.get('#input-website').type('https://example.com');
       cy.get('#input-address').type('Some address');
       cy.get('.file-dropzone').attachFile('acme-logo.png', { subjectType: 'drag-n-drop' });
 
-      cy.selectOption('#select-country', 'Ca', 'Cameroon');
-      cy.selectOption('#select-fmus', 'Lo', 'LOMIE');
-      cy.selectOption('#select-fmus', '08', '08-003');
+      cy.selectOption('[name=country]', 'Ca', 'Cameroon');
+      cy.selectOption('[name=fmus]', 'Lo', 'LOMIE');
+      cy.selectOption('[name=fmus]', '08', '08-003');
       cy.get('button').contains('Create producer').click();
       cy.get('.c-form > p', {timeout: 35000}).should('have.text', 'Wait for approval.');
     });

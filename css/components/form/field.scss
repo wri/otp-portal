@@ -76,7 +76,7 @@
     > textarea,
     > select,
     .input,
-    .Select {
+    .react-select-container {
       max-width: 100%;
     }
   }
@@ -86,7 +86,7 @@
     > textarea,
     > select,
     .input,
-    .Select {
+    .react-select-container {
       background: $color-tertiary;
     }
   }
@@ -96,7 +96,7 @@
     > textarea,
     > select,
     .input,
-    .Select-control {
+    .react-select__control {
       // border-color: $color-green;
     }
   }
@@ -106,7 +106,7 @@
     > textarea,
     > select,
     .input,
-    .Select-control {
+    .react-select__control {
       border-color: $color-error;
     }
   }
