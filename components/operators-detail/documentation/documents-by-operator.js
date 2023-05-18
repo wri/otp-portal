@@ -37,6 +37,9 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
     const fuse = new Fuse(documents, {
       keys: ['title'],
       threshold: 0.3,
+      location: 0,
+      distance: 200,
+      findAllMatches: true
     });
     return fuse.search(searchText);
   }
