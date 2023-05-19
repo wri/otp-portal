@@ -30,7 +30,7 @@ export const logEvent = (category = '', action = '', label = '') => {
 };
 
 export const logEventNew = (event, params = {}) => {
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', event, params);
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({ event, ...params });
   }
 }
