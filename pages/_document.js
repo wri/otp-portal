@@ -1,7 +1,8 @@
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-
 import { Icons } from 'vizzuality-components';
+
+import GoogleTagManager from 'components/layout/google-tag-manager';
 
 class MyDocument extends Document {
   static async getInitialProps(context) {
@@ -16,6 +17,7 @@ class MyDocument extends Document {
       <Html lang={this.props.language}>
         <Head />
         <body>
+          <GoogleTagManager noscript />
           <Main />
           <NextScript />
           <Icons />

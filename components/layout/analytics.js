@@ -4,7 +4,8 @@ import Script from 'next/script';
 const Analytics = () => {
   const gaKey = process.env.GOOGLE_ANALYTICS_KEY;
 
-  if (!gaKey) return null;
+  return null;
+  //if (!gaKey) return null;
 
   return (
     <>

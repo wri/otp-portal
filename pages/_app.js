@@ -4,6 +4,7 @@ import App from 'next/app';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
+import Script from 'next/script';
 
 import * as reducers from 'modules';
 
@@ -14,6 +15,7 @@ import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
 
 import Analytics from 'components/layout/analytics';
+import GoogleTagManager from 'components/layout/google-tag-manager';
 
 import 'css/index.scss';
 
@@ -88,6 +90,7 @@ class MyApp extends App {
     return (
       <Provider store={store}>
         <>
+          <GoogleTagManager />
           <Analytics />
           <Component {...pageProps} />
         </>

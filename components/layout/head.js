@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HeadNext from 'next/head';
+import Script from 'next/script';
 
-const Head = ({title, description}) => {
+const Head = ({ title, description }) => {
   return (
     <HeadNext>
       <title>{title} | Open Timber Portal</title>
@@ -37,7 +38,8 @@ const Head = ({title, description}) => {
       )}
       {process.env.ENV === 'production' && (
         <script
-          dangerouslySetInnerHTML={{__html: `
+          dangerouslySetInnerHTML={{
+            __html: `
               (function(h,o,t,j,a,r){
               h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
               h._hjSettings={hjid:3036814,hjsv:6};

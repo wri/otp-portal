@@ -18,7 +18,8 @@ const config = {
     FEATURE_COUNTRY_PAGES: process.env.FEATURE_COUNTRY_PAGES,
     FEATURE_MAP_PAGE: process.env.FEATURE_MAP_PAGE,
     SENTRY_DSN: process.env.SENTRY_DSN,
-    GOOGLE_ANALYTICS_KEY: process.env.GOOGLE_ANALYTICS_KEY
+    GOOGLE_ANALYTICS_KEY: process.env.GOOGLE_ANALYTICS_KEY,
+    GOOGLE_TAG_MANAGER_KEY: process.env.GOOGLE_TAG_MANAGER_KEY
   },
   sentry: {
     ...(process.env.SENTRY_DISABLE_RELEASE && {
