@@ -7,6 +7,7 @@ import Link from 'next/link';
 import NavigationList from 'components/ui/navigation-list';
 import Search from 'components/ui/search';
 
+import LanguageDropdown from 'components/ui/language-dropdown';
 import UserDropdown from 'components/ui/user-dropdown';
 
 const Header = ({ url }) => {
@@ -38,6 +39,9 @@ const Header = ({ url }) => {
               </li>
               <li>
                 <UserDropdown theme={theme} />
+              </li>
+              <li>
+                <LanguageDropdown showSelectedCode />
               </li>
             </ul>
           </nav>
