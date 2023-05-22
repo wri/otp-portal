@@ -15,7 +15,7 @@ const Footer = () => (
             </h1>
           </div>
           <div className="footer-item">
-            <NavigationList hideActive />
+            <NavigationList footer />
           </div>
         </div>
       </div>
