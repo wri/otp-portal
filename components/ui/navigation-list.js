@@ -28,7 +28,8 @@ function NavigationList({ footer, intl, url, className, countries }) {
     process.env.FEATURE_COUNTRY_PAGES === 'true' && {
       name: intl.formatMessage({ id: 'countries' }),
       children: navCountries.map((country) => ({
-        name: country.name
+        name: country.name,
+        href: `/countries/${country.id}`
       }))
     },
     {
