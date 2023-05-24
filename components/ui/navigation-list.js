@@ -74,12 +74,12 @@ function NavigationList({ footer, intl, url, className, countries }) {
         [className]: !!className,
       })}
     >
-      {elements.map((element) => {
+      {elements.map((element, idx) => {
         if (typeof element === 'function') {
           const Element = element;
 
           return (
-            <li>
+            <li key={idx}>
               <Element />
             </li>
           );
@@ -87,7 +87,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
 
         if (element.children) {
           return (
-            <li>
+            <li key={idx}>
               <Dropdown className="c-account-dropdown">
                 <DropdownTrigger>
                   <div
@@ -105,7 +105,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
                 <DropdownContent>
                   <ul className="header-dropdown-list">
                     {element.children.map((item) => (
-                      <li className="header-dropdown-list-item">
+                      <li key={item.href} className="header-dropdown-list-item">
                         <Link href={item.href} prefetch={false}>
                           <a>
                             {item.name}
@@ -120,7 +120,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
           );
         }
         return (
-          <li>
+          <li key={idx}>
             <Link href={element.href} prefetch={false}>
               <a className={setActive([element.href])}>
                 {element.name}
