@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
 
 import Dropdown, {
   DropdownTrigger,
@@ -7,14 +10,25 @@ import Dropdown, {
 
 import { injectIntl, intlShape } from 'react-intl';
 
-const LanguageDropdown = ({ intl }) => {
+import Icon from 'components/ui/icon';
+
+const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
   return (
     <Dropdown className="c-language-dropdown">
       <DropdownTrigger>
         <div className="header-nav-list-item">
-          <span>
-            {intl.formatMessage({ id: 'select_language' })}
-          </span>
+          {showSelectedCode && (
+            <>
+              <Icon name="icon-language" />
+              <span>{language}</span>
+            </>
+          )}
+
+          {!showSelectedCode && (
+            <span>
+              {intl.formatMessage({ id: 'select_language' })}
+            </span>
+          )}
         </div>
       </DropdownTrigger>
 
@@ -49,6 +63,19 @@ const LanguageDropdown = ({ intl }) => {
 
 LanguageDropdown.propTypes = {
   intl: intlShape.isRequired,
+  showSelectedCode: PropTypes.bool,
+  language: PropTypes.string
 }
 
-export default injectIntl(LanguageDropdown);
+LanguageDropdown.defaultProps = {
+  showSelectedCode: false
+}
+
+export default injectIntl(
+  connect(
+    state => ({
+      language: state.language,
+    }),
+    null
+  )(LanguageDropdown)
+);
