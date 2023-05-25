@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { injectIntl, intlShape } from 'react-intl';
+
 import Spinner from 'components/ui/spinner';
+import Icon from 'components/ui/icon';
 
 // Components
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
-function Overview(props) {
-  const { loading, parsedObservations, intl } = props;
+function Overview({ loading, parsedObservations, intl, onShowMap, onShowObservations }) {
   const noData = !loading && parsedObservations && parsedObservations.length === 0;
 
   return (
@@ -20,7 +21,7 @@ function Overview(props) {
       </h2>
 
       {noData && (
-        <div className="no-data">
+        <div className="c-obs-overview__no-data">
           {intl.formatMessage({
             id: 'observations.no-data',
             defaultMessage: 'There are no observations that match your selected criteria'
@@ -29,10 +30,22 @@ function Overview(props) {
       )}
 
       {!noData && (
-        <TotalObservationsByOperatorByCategory
-          data={parsedObservations}
-          horizontal
-        />
+        <>
+          <div className="c-obs-overview__links">
+            <div onClick={onShowObservations}>
+              <Icon name="icon-arrow-down" className="-small" />
+              Show the observations list
+            </div>
+            <div onClick={onShowMap}>
+              <Icon name="icon-arrow-down" className="-small" />
+              Show the observations map
+            </div>
+          </div>
+          <TotalObservationsByOperatorByCategory
+            data={parsedObservations}
+            horizontal
+          />
+        </>
       )}
     </div>
   );
@@ -41,6 +54,8 @@ function Overview(props) {
 Overview.propTypes = {
   parsedObservations: PropTypes.array,
   loading: PropTypes.bool,
+  onShowObservations: PropTypes.func,
+  onShowMap: PropTypes.func,
   intl: intlShape.isRequired,
 };
 

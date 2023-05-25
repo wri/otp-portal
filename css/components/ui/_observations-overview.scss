@@ -1,8 +1,30 @@
 .c-obs-overview {
   position: relative;
 
-  .no-data {
+  h2.c-title {
+    margin-bottom: 20px;
+  }
+
+  &__no-data {
     padding: 20px;
     background: $color-gray-2;
+  }
+
+  &__links {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+
+    div {
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .c-icon {
+      margin-right: 5px;
+    }
   }
 }
