@@ -1,3 +1,8 @@
 .c-obs-overview {
   position: relative;
+
+  .no-data {
+    padding: 20px;
+    background: $color-gray-2;
+  }
 }

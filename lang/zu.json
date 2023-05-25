@@ -64,7 +64,7 @@
   "observations.status-7.info": "OTP admin quality control on observation, no comment or question -> IM publishes the observation without modification",
   "observations.status-8.info": "OTP admin quality control on observation, comment or question -> IM reviews comment/questions but decides to publish the observation without modification",
   "observations.status-9.info": "OTP admin quality control on observation, comment or question asked -> IM modifies the observation and publishes",
-  "observations.no-data": "There are no observations that match you selected criteria",
+  "observations.no-data": "There are no observations that match your selected criteria",
   "help": "Help",
   "about": "About",
   "terms": "Terms",

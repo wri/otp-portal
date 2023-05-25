@@ -8,20 +8,32 @@ import Spinner from 'components/ui/spinner';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
 function Overview(props) {
-  const { loading, parsedObservations } = props;
+  const { loading, parsedObservations, intl } = props;
+  const noData = !loading && parsedObservations && parsedObservations.length === 0;
 
   return (
     <div className="c-obs-overview">
       <Spinner isLoading={loading} className="-absolute -transparent" />
 
       <h2 className="c-title">
-        {props.intl.formatMessage({ id: 'overview_by_category' })}
+        {intl.formatMessage({ id: 'overview_by_category' })}
       </h2>
 
-      <TotalObservationsByOperatorByCategory
-        data={parsedObservations}
-        horizontal
-      />
+      {noData && (
+        <div className="no-data">
+          {intl.formatMessage({
+            id: 'observations.no-data',
+            defaultMessage: 'There are no observations that match your selected criteria'
+          })}
+        </div>
+      )}
+
+      {!noData && (
+        <TotalObservationsByOperatorByCategory
+          data={parsedObservations}
+          horizontal
+        />
+      )}
     </div>
   );
 }

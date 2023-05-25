@@ -299,7 +299,7 @@ class ObservationsPage extends React.Component {
                   nextText: '>',
                   noDataText: this.props.intl.formatMessage({
                     id: 'observations.no-data',
-                    defaultMessage: 'There are no observations that match you selected criteria'
+                    defaultMessage: 'There are no observations that match your selected criteria'
                   }),
                   showPageSizeOptions: false,
                   loading: observations.loading,
