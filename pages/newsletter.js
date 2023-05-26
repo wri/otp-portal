@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -43,4 +41,4 @@ SignNewsletter.propTypes = {
 };
 
 
-export default withTracker(withIntl((SignNewsletter)));
+export default withIntl((SignNewsletter));

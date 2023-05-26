@@ -8,8 +8,6 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { getUserOperator } from 'modules/user';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -89,10 +87,10 @@ OperatorsEdit.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
   state => ({
     user: state.user,
     userOperator: state.user.userOperator
   }),
   { getUserOperator }
-)(OperatorsEdit)));
+)(OperatorsEdit));

@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -60,4 +58,4 @@ ThankYouPage.propTypes = {
 };
 
 
-export default withTracker(withIntl((ThankYouPage)));
+export default withIntl((ThankYouPage));

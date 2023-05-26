@@ -2,14 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
-import difference from 'lodash/difference';
 
 // Redux
 import { connect } from 'react-redux';
 
 import { withRouter } from 'next/router';
-
-import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -34,8 +31,6 @@ import {
   getDocumentsDatabaseUrl,
   setActiveColumns,
 } from 'modules/documents-database';
-
-import { logEvent } from 'utils/analytics';
 
 class DocumentsDatabasePage extends React.Component {
   static async getInitialProps({ url }) {
@@ -73,15 +68,6 @@ class DocumentsDatabasePage extends React.Component {
   }
 
   setActiveColumns(value) {
-    const { database } = this.props;
-    const addColumn = difference(value, database.columns);
-    const removeColumn = difference(database.columns, value);
-
-    if (addColumn.length)
-      logEvent('DocumentsDatabase', 'Add Column', addColumn[0]);
-    if (removeColumn.length)
-      logEvent('DocumentsDatabase', 'Remove Column', removeColumn[0]);
-
     this.props.setActiveColumns(value);
   }
 
@@ -145,7 +131,7 @@ DocumentsDatabasePage.propTypes = {
   setFilters: PropTypes.func.isRequired,
 };
 
-export default withRouter(withTracker(
+export default withRouter(
   withIntl(
     connect(
       (state) => ({
@@ -161,4 +147,4 @@ export default withRouter(withTracker(
       }
     )(DocumentsDatabasePage)
   )
-));
+);

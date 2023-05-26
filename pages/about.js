@@ -8,8 +8,6 @@ import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
 import { getAbout } from 'modules/about';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -124,11 +122,11 @@ AboutPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
   state => ({
     about: state.about,
     partners: state.partners,
     donors: state.donors
   }),
   { getPartners, getDonors, getAbout }
-)(AboutPage)));
+)(AboutPage));

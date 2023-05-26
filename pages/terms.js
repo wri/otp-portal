@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { store } from 'store';
-import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -256,6 +255,6 @@ TermsPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
   store
-)(TermsPage)));
+)(TermsPage));

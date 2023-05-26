@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getCountries } from 'modules/countries';
-import withTracker from 'components/layout/with-tracker';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -48,13 +47,11 @@ SignUp.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default withTracker(
-  withIntl(
-    connect(
-      (state) => ({
-        countries: state.countries,
-      }),
-      { getCountries }
-    )(SignUp)
-  )
+export default withIntl(
+  connect(
+    (state) => ({
+      countries: state.countries,
+    }),
+    { getCountries }
+  )(SignUp)
 );

@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Redux
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -44,5 +41,4 @@ OperatorsNew.propTypes = {
   intl: intlShape.isRequired
 };
 
-
-export default withTracker(withIntl(OperatorsNew));
+export default withIntl(OperatorsNew);
