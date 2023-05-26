@@ -58,3 +58,5 @@ Layout.propTypes = {
   className: PropTypes.string,
   footer: PropTypes.bool
 };
+
+export default Layout;
