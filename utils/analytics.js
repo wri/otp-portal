@@ -34,3 +34,8 @@ export const logEventNew = (event, params = {}) => {
     window.dataLayer.push({ event, ...params });
   }
 }
+
+export const pageview = (params = {}) => {
+  console.info('[GTM PageView] - Custom', params);
+  logEventNew('page_view');
+}

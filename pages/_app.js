@@ -14,6 +14,7 @@ import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
+import PageViewTracking from 'components/layout/pageview-tracking';
 
 import 'css/index.scss';
 
@@ -89,6 +90,7 @@ class MyApp extends App {
       <Provider store={store}>
         <>
           <GoogleTagManager />
+          <PageViewTracking />
           <Component {...pageProps} />
         </>
       </Provider>
