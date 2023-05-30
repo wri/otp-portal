@@ -12,7 +12,6 @@ import { getParsedObservations } from 'selectors/countries-detail/observations';
 // Redux
 import { connect } from 'react-redux';
 import { getCountry, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
-import withTracker from 'components/layout/with-tracker';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -131,7 +130,7 @@ CountriesDetail.propTypes = {
   getCountry: PropTypes.func.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
 
   state => ({
     user: state.user,
@@ -140,4 +139,4 @@ export default withTracker(withIntl(connect(
     countryObservations: getParsedObservations(state)
   }),
   { getCountry }
-)(CountriesDetail)));
+)(CountriesDetail));

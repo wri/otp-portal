@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -110,4 +108,4 @@ MapPage.propTypes = {
 };
 
 
-export default withTracker(withIntl(MapPage));
+export default withIntl(MapPage);

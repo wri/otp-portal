@@ -25,8 +25,6 @@ import {
 } from 'modules/operators-ranking';
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Services
 import modal from 'services/modal';
 
@@ -243,7 +241,7 @@ OperatorsPage.propTypes = {
 };
 
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
 
   (state, props) => ({
     operatorsRanking: state.operatorsRanking,
@@ -278,4 +276,4 @@ export default withTracker(withIntl(connect(
       dispatch(setOperatorsSidebar(obj));
     }
   })
-)(OperatorsPage)));
+)(OperatorsPage));

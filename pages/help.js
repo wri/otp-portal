@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -127,7 +125,7 @@ HelpPage.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
 
   state => ({
     howtos: state.help.howtos,
@@ -136,4 +134,4 @@ export default withTracker(withIntl(connect(
     tutorials: state.help.tutorials
   }),
   { getHowtos, getTools, getFAQs, getTutorials }
-)(HelpPage)));
+)(HelpPage));

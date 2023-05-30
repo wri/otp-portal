@@ -9,8 +9,6 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { getUserProfile } from 'modules/user';
 
-import withTracker from 'components/layout/with-tracker';
-
 // Intl
 import withIntl from 'hoc/with-intl';
 import { intlShape } from 'react-intl';
@@ -70,9 +68,9 @@ Profile.propTypes = {
   intl: intlShape.isRequired
 };
 
-export default withTracker(withIntl(connect(
+export default withIntl(connect(
   state => ({
     user: state.user,
     userProfile: state.user.userProfile
   }),
-)(Profile)));
+)(Profile));

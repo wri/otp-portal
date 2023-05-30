@@ -1,17 +1,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import orderBy from 'lodash/orderBy';
-import difference from 'lodash/difference';
 import debounce from 'lodash/debounce';
 
 // Redux
 import { connect } from 'react-redux';
 
 import { withRouter } from 'next/router';
-
-import withTracker from 'components/layout/with-tracker';
 
 // Services
 import modal from 'services/modal';
@@ -57,8 +53,6 @@ import {
   setObservationsMapLocation,
   setObservationsMapCluster,
 } from 'modules/observations';
-
-import { logEvent } from 'utils/analytics';
 
 // Constants
 import { FILTERS_REFS } from 'constants/observations';
@@ -130,14 +124,6 @@ class ObservationsPage extends React.Component {
   };
 
   setActiveColumns(value) {
-    const { observations } = this.props;
-    const addColumn = difference(value, observations.columns);
-    const removeColumn = difference(observations.columns, value);
-
-    if (addColumn.length) logEvent('Observations', 'Add Column', addColumn[0]);
-    if (removeColumn.length)
-      logEvent('Observations', 'Remove Column', removeColumn[0]);
-
     this.props.setActiveColumns(value);
   }
 
@@ -439,7 +425,7 @@ ObservationsPage.propTypes = {
   setObservationsMapCluster: PropTypes.func.isRequired,
 };
 
-export default withRouter(withTracker(
+export default withRouter(
   withIntl(
     connect(
       (state, props) => ({
@@ -461,4 +447,4 @@ export default withRouter(withTracker(
       }
     )(ObservationsPage)
   )
-));
+);

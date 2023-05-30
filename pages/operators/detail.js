@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
-import { logEvent } from 'utils/analytics';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -25,11 +23,9 @@ import {
   getOperatorDocumentation,
   getOperatorDocumentationCurrent,
   getOperatorTimeline,
-  getOperatorObservations,
-  setOperatorDocumentationDate,
+  getOperatorObservations
 } from 'modules/operators-detail';
 import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
-import withTracker from 'components/layout/with-tracker';
 
 import Link from 'next/link';
 
@@ -95,13 +91,6 @@ class OperatorsDetail extends React.Component {
   componentDidUpdate(prevProps) {
     const prevDate = prevProps?.operatorsDetail?.date?.toString();
     const newDate = this.props?.operatorsDetail?.date?.toString();
-
-    const { url } = prevProps;
-    const { url: nextUrl } = this.props;
-    if (url.query.tab !== nextUrl.query.tab) {
-      const { tab } = nextUrl.query || 'overview';
-      logEvent('Producers', 'Change tab', tab);
-    }
 
     if (prevDate !== newDate) {
       const { url } = this.props;
@@ -255,23 +244,21 @@ OperatorsDetail.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default withTracker(
-  withIntl(
-    connect(
-      (state) => ({
-        user: state.user,
-        operatorsDetail: state.operatorsDetail,
-        operatorObservations: getParsedObservations(state),
-        operatorDocumentation: getParsedDocumentation(state),
-        operatorTimeline: getParsedTimeline(state),
-      }),
-      {
-        getOperator,
-        getOperatorDocumentation,
-        getOperatorDocumentationCurrent,
-        getOperatorTimeline,
-        getOperatorObservations
-      }
-    )(OperatorsDetail)
-  )
+export default withIntl(
+  connect(
+    (state) => ({
+      user: state.user,
+      operatorsDetail: state.operatorsDetail,
+      operatorObservations: getParsedObservations(state),
+      operatorDocumentation: getParsedDocumentation(state),
+      operatorTimeline: getParsedTimeline(state),
+    }),
+    {
+      getOperator,
+      getOperatorDocumentation,
+      getOperatorDocumentationCurrent,
+      getOperatorTimeline,
+      getOperatorObservations
+    }
+  )(OperatorsDetail)
 );
