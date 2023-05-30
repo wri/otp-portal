@@ -8,6 +8,8 @@ function shouldTrack(url, prevUrl) {
   if (url === prevUrl) return false;
   // do not track extra pageviews when on the map page and changing parameters
   if (url.includes("/operators?") && prevUrl.includes("/operators")) return false;
+  if (url.includes("/database?") && prevUrl.includes("/database")) return false;
+  if (url.includes("/observations?") && prevUrl.includes("/observations")) return false;
 
   return true;
 }
