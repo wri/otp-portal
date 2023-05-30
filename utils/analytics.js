@@ -5,6 +5,9 @@ export const logEvent = (event, params = {}) => {
 }
 
 export const pageview = (params = {}) => {
-  console.info('[GTM PageView] - Custom', params);
+  if (process.env.NODE_ENV !== 'production') {
+    console.info('[GTM PageView] - Custom', params);
+  }
+
   logEvent('page_view');
 }
