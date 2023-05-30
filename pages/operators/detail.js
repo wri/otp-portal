@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -20,6 +21,7 @@ import { getParsedTimeline } from 'selectors/operators-detail/timeline';
 import { connect } from 'react-redux';
 import {
   getOperator,
+  getOperatorBySlug,
   getOperatorDocumentation,
   getOperatorDocumentationCurrent,
   getOperatorTimeline,
@@ -28,6 +30,7 @@ import {
 import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
 
 import Link from 'next/link';
+import Router from 'next/router';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -50,7 +53,7 @@ const COUNTRIES_FRENCH_FIX = {
 const isClient = typeof window !== 'undefined';
 
 class OperatorsDetail extends React.Component {
-  static async getInitialProps({ url, store }) {
+  static async getInitialProps({ url, res, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
     const requests = [];
 
@@ -58,14 +61,31 @@ class OperatorsDetail extends React.Component {
       requests.push(store.dispatch(getIntegratedAlertsMetadata()));
     }
 
-    if (operatorsDetail.data.id !== url.query.id) {
-      requests.push(store.dispatch(getOperator(url.query.id)));
-      requests.push(store.dispatch(getOperatorObservations(url.query.id)));
+    // we are going to redirect to slug if the id is a number
+    if (!isNaN(url.query.id)) {
+      await store.dispatch(getOperator(url.query.id));
+      const operator = store.getState().operatorsDetail.data;
 
-      if (isClient || url.query.tab === 'documentation') {
-        requests.push(store.dispatch(getOperatorDocumentation(url.query.id)));
-        requests.push(store.dispatch(getOperatorDocumentationCurrent(url.query.id)));
-        requests.push(store.dispatch(getOperatorTimeline(url.query.id)));
+      if (!operator || isEmpty(operator)) {
+        return { errorCode: 404 };
+      }
+      return { redirectTo: `/operators/${operator.slug}` };
+    }
+
+    if (operatorsDetail.data.slug !== url.query.id) {
+      await store.dispatch(getOperatorBySlug(url.query.id));
+      const operator = store.getState().operatorsDetail.data;
+
+      if (operator) {
+        requests.push(store.dispatch(getOperatorObservations(operator.id)));
+
+        if (isClient || url.query.tab === 'documentation') {
+          requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
+          requests.push(store.dispatch(getOperatorDocumentationCurrent(operator.id)));
+          requests.push(store.dispatch(getOperatorTimeline(operator.id)));
+        }
+      } else {
+        return { errorCode: 404 };
       }
     }
 
@@ -78,13 +98,14 @@ class OperatorsDetail extends React.Component {
    * COMPONENT LIFECYCLE
    */
   componentDidMount() {
-    const { url } = this.props;
+    const { url, operatorsDetail } = this.props;
+    const operator = operatorsDetail.data;
 
     // eager load documentation tab as high probabilty user will switch to it
     if (url.query.tab !== 'documentation') {
-      this.props.getOperatorDocumentation(url.query.id);
-      this.props.getOperatorDocumentationCurrent(url.query.id);
-      this.props.getOperatorTimeline(url.query.id);
+      this.props.getOperatorDocumentation(operator.id);
+      this.props.getOperatorDocumentationCurrent(operator.id);
+      this.props.getOperatorTimeline(operator.id);
     }
   }
 
@@ -93,9 +114,10 @@ class OperatorsDetail extends React.Component {
     const newDate = this.props?.operatorsDetail?.date?.toString();
 
     if (prevDate !== newDate) {
-      const { url } = this.props;
-      this.props.getOperatorDocumentation(url?.query?.id);
-      this.props.getOperatorDocumentationCurrent(url?.query?.id);
+      const { url, operatorsDetail } = this.props;
+      const operator = operatorsDetail.data;
+      this.props.getOperatorDocumentation(operator.id);
+      this.props.getOperatorDocumentationCurrent(operator.id);
     }
   }
 
@@ -142,7 +164,9 @@ class OperatorsDetail extends React.Component {
       operatorTimeline,
       intl
     } = this.props;
-    const id = url.query.id;
+
+    const id = operatorsDetail.data.id;
+    const slug = url.query.id;
     const tab = url.query.tab || 'overview';
     const logoPath = operatorsDetail.data.logo
       ? operatorsDetail.data.logo.url
@@ -193,8 +217,8 @@ class OperatorsDetail extends React.Component {
         <Tabs
           href={{
             pathname: url.pathname,
-            query: { id },
-            as: `/operators/${id}`,
+            query: { id: slug },
+            as: `/operators/${slug}`,
           }}
           options={this.getTabOptions()}
           selected={tab}

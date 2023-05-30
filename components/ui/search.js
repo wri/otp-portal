@@ -129,15 +129,14 @@ class Search extends React.Component {
     const item = this.item[this.state.index];
 
     if (item) {
-      const id = item.dataset.id;
-
+      const slug = item.dataset.slug;
       const location = {
         pathname: '/operators/detail',
-        query: { id }
+        query: { id: slug }
       };
       this.onClose();
       Router
-        .push(location, `/operators/${id}`)
+        .push(location, `/operators/${slug}`)
           .then(() => window.scrollTo(0, 0));
     }
   }
@@ -249,7 +248,7 @@ class Search extends React.Component {
                     >
                       <a
                         ref={(n) => { this.item[i] = n; }}
-                        data-id={op.id}
+                        data-slug={op.slug}
                         onClick={() => this.onChangeRoute()}
                       >
                         {op.name}
