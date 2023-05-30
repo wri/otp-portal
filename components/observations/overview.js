@@ -34,11 +34,11 @@ function Overview({ loading, parsedObservations, intl, onShowMap, onShowObservat
           <div className="c-obs-overview__links">
             <div onClick={onShowObservations}>
               <Icon name="icon-arrow-down" className="-small" />
-              Show the observations list
+              {intl.formatMessage({ id: 'View the observations list' })}
             </div>
             <div onClick={onShowMap}>
               <Icon name="icon-arrow-down" className="-small" />
-              Show the observations map
+              {intl.formatMessage({ id: 'View the observations map' })}
             </div>
           </div>
           <TotalObservationsByOperatorByCategory
