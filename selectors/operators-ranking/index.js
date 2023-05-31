@@ -318,6 +318,7 @@ export const getTable = createSelector(
     operatorsTable = (operatorsTable || _data).map(o => ({
       id: o.id,
       name: o.name,
+      slug: o.slug,
       certification: <OperatorsCertificationsTd fmus={o.fmus} />,
       ranking: o.ranking,
       score: o.score || 0,

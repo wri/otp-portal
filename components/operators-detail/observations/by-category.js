@@ -154,19 +154,6 @@ export default class TotalObservationsByOperatorByCategory extends React.Compone
             );
           })}
         </div>
-
-        {/* Footer */}
-        {/* <footer>
-          <Link
-            href={{
-              pathname: url.pathname,
-              query: { id, tab: 'observations' }
-            }}
-            as={`/operators/${id}/observations`}
-          >
-            <a className="c-button -primary">Go to observations</a>
-          </Link>
-        </footer> */}
       </div>
     );
   }

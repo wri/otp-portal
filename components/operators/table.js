@@ -29,6 +29,8 @@ class OperatorsTable extends React.Component {
     const { operators, operatorsTable } = this.props;
     const { sortColumn, sortDirection, table } = this.state;
 
+    console.log('operatorsTable', operatorsTable)
+
     if (!operators.loading) {
       return (
         <div className="c-ranking">
@@ -98,9 +100,9 @@ class OperatorsTable extends React.Component {
                     <Link
                       href={{
                         pathname: '/operators/detail',
-                        query: { id: r.id }
+                        query: { id: r.slug }
                       }}
-                      as={`/operators/${r.id}`}
+                      as={`/operators/${r.slug}`}
                     >
                       <a>{r.name}</a>
                     </Link>

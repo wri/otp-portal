@@ -8,9 +8,6 @@ import { injectIntl, intlShape } from 'react-intl';
 import { format } from 'd3-format';
 import moment from 'moment';
 
-// Utils
-import { encode } from 'utils/general';
-
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
     layers: PropTypes.array.isRequired,
