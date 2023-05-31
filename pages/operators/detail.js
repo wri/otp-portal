@@ -69,7 +69,7 @@ class OperatorsDetail extends React.Component {
       if (!operator || isEmpty(operator)) {
         return { errorCode: 404 };
       }
-      return { redirectTo: `/operators/${operator.slug}` };
+      return { redirectTo: url.asPath.replace(`/${url.query.id}`, `/${operator.slug}`) }
     }
 
     if (operatorsDetail.data.slug !== url.query.id) {
