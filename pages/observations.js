@@ -309,11 +309,6 @@ class ObservationsPage extends React.Component {
         {this.state.tab === 'observations-list' && (
           <section className="c-section -relative">
             <div className="l-container">
-              <h2 className="c-title">
-                {this.props.intl.formatMessage({
-                  id: 'observations.tab.observations-list',
-                })}
-              </h2>
               <Spinner isLoading={observations.loading} />
               <div className="c-field -fluid -valid">
                 <CheckboxGroup
