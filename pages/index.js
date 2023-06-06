@@ -51,11 +51,9 @@ class HomePage extends React.Component {
           column={9}
         >
           <div className="c-intro">
-            <h2
-              dangerouslySetInnerHTML={{
-                __html: this.props.intl.formatHTMLMessage({ id: 'home.intro' })
-              }}
-            />
+            <h2>
+              {this.props.intl.formatMessage({ id: 'home.intro' }, { span: (...chunks) => <span>{chunks}</span> })}
+            </h2>
           </div>
         </StaticSection>
 
