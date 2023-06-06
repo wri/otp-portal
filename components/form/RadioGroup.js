@@ -66,4 +66,4 @@ RadioGroup.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(RadioGroup, {withRef: true});
+export default injectIntl(RadioGroup, {forwardRef: true});

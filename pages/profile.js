@@ -11,7 +11,6 @@ import { getUserProfile } from 'modules/user';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -65,7 +64,7 @@ Profile.propTypes = {
   url: PropTypes.string,
   user: PropTypes.object,
   userProfile: PropTypes.object,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default withIntl(connect(

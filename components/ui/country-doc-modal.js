@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 
 // Services
@@ -339,7 +339,7 @@ DocModal.propTypes = {
   type: PropTypes.string,
   user: PropTypes.object,
   onChange: PropTypes.func,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

@@ -10,7 +10,6 @@ import { getAbout } from 'modules/about';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -119,7 +118,7 @@ AboutPage.propTypes = {
   about: PropTypes.shape({}).isRequired,
   partners: PropTypes.shape({}).isRequired,
   donors: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default withIntl(connect(

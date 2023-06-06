@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Router from 'next/router';
 
 // Intl
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Other libraries
 import Fuse from 'fuse.js';
@@ -271,7 +271,7 @@ Search.propTypes = {
   theme: PropTypes.string,
   list: PropTypes.array,
   loading: PropTypes.bool,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   options: PropTypes.object
 };
 

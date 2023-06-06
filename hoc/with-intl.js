@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as Cookies from 'js-cookie';
 
-import { IntlProvider, addLocaleData, injectIntl } from 'react-intl';
+import { IntlProvider, injectIntl } from 'react-intl';
 
 import langEn from 'lang/en.json';
 import langFr from 'lang/fr.json';
@@ -12,15 +12,6 @@ import langKo from 'lang/ko.json';
 import langVi from 'lang/vi.json';
 import langPt from 'lang/pt.json';
 
-import en from 'react-intl/locale-data/en';
-import fr from 'react-intl/locale-data/fr';
-import zh from 'react-intl/locale-data/zh';
-import ja from 'react-intl/locale-data/ja';
-import ko from 'react-intl/locale-data/ko';
-import vi from 'react-intl/locale-data/vi';
-import pt from 'react-intl/locale-data/pt';
-
-const LANGUAGES = { en, fr, pt, zh, ja, ko, vi };
 const MESSAGES = {
   en: langEn,
   fr: langFr,
@@ -30,6 +21,7 @@ const MESSAGES = {
   vi: langVi,
   pt: langPt
 };
+const LANGUAGES = Object.keys(MESSAGES);
 
 const LANG2LOCALE = {
   en: 'en-GB',
@@ -64,13 +56,6 @@ if (process.env.ENV === 'development') {
   };
 }
 
-// Register React Intl's locale data for the user's locale in the browser
-if (typeof window !== 'undefined') {
-  Object.keys(LANGUAGES).forEach((lang) => {
-    addLocaleData(LANGUAGES[lang]);
-  });
-}
-
 export default function withIntl(Page) {
   const IntlPage = injectIntl(Page);
 
@@ -95,7 +80,7 @@ export default function withIntl(Page) {
         language = LOCALE2LANG[Cookies.get('language')] || 'en';
       }
 
-      language = Object.keys(LANGUAGES).includes(language) ? language : 'en';
+      language = LANGUAGES.includes(language) ? language : 'en';
 
       // Always update the current time on page load/transition because the
       // <IntlProvider> will be a new instance even with pushState routing.
@@ -123,6 +108,7 @@ export default function withIntl(Page) {
           locale={language}
           messages={MESSAGES[language]}
           initialNow={now}
+          textComponent="span"
           defaultLocale="en"
         >
           <IntlPage {...this.props} />

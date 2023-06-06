@@ -7,7 +7,6 @@ import { HELPERS_DOC } from 'utils/documentation';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -265,7 +264,7 @@ OperatorsDetail.propTypes = {
   operatorDocumentation: PropTypes.array,
   operatorTimeline: PropTypes.array,
   user: PropTypes.shape({}),
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default withIntl(

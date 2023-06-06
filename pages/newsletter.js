@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -37,7 +36,7 @@ class SignNewsletter extends React.Component {
 
 SignNewsletter.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -49,7 +49,7 @@ function Gallery3(props) {
 }
 
 Gallery3.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   faqs: PropTypes.object
 };
 

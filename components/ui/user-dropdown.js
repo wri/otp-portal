@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 
@@ -117,7 +117,7 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
 UserDropdown.propTypes = {
   theme: PropTypes.string,
   user: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   operators: PropTypes.array,
   notifications: PropTypes.array,
   logout: PropTypes.func

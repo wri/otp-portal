@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 // Redux
 import { connect } from "react-redux";
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { getCountry } from "modules/countries-detail";
 
@@ -125,7 +125,7 @@ DocumentsByOperator.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
   user: PropTypes.object,
-  intl: intlShape
+  intl: PropTypes.object
 };
 
 export default injectIntl(

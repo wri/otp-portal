@@ -11,7 +11,7 @@ import Dropdown, {
 
 import LanguageDropdown from 'components/ui/language-dropdown';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 function NavigationList({ footer, intl, url, className, countries }) {
   const setActive = (pathname) => {
@@ -137,7 +137,7 @@ NavigationList.propTypes = {
   className: PropTypes.string,
   countries: PropTypes.object,
   footer: PropTypes.bool,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   url: PropTypes.object,
 };
 

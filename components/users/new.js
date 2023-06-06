@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -331,7 +331,7 @@ UserNewForm.propTypes = {
   countries: PropTypes.object,
   saveUser: PropTypes.func,
   onSubmit: PropTypes.func,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

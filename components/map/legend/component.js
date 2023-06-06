@@ -5,7 +5,7 @@ import classnames from 'classnames';
 
 import debounce from 'lodash/debounce';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import renderHtml from 'html-react-parser';
 
 import {
@@ -36,7 +36,7 @@ class LegendComponent extends PureComponent {
     collapsable: PropTypes.bool,
     expanded: PropTypes.bool,
     toolbar: PropTypes.node,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
 
     setLayerSettings: PropTypes.func.isRequired,
     setLayerOrder: PropTypes.func

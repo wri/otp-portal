@@ -8,7 +8,6 @@ import { store } from 'store';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -252,7 +251,7 @@ class TermsPage extends React.Component {
 
 TermsPage.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default withIntl(connect(

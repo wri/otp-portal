@@ -11,7 +11,7 @@ import {
 } from 'modules/sawmill-map';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -34,7 +34,7 @@ class SawmillModal extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     sawmill: PropTypes.object,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     sawmillMap: PropTypes.object,
     onChange: PropTypes.func,
     setMapLocation: PropTypes.func,

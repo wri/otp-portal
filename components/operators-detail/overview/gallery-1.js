@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
@@ -143,7 +143,7 @@ Gallery.propTypes = {
   operatorsDetail: PropTypes.object.isRequired,
   operatorObservations: PropTypes.array,
   operatorDocumentation: PropTypes.array,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 Gallery.defaultProptypes = {

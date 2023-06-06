@@ -8,7 +8,7 @@ import Dropdown, {
   DropdownContent,
 } from 'react-simple-dropdown';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Icon from 'components/ui/icon';
 
@@ -62,7 +62,7 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
 }
 
 LanguageDropdown.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   showSelectedCode: PropTypes.bool,
   language: PropTypes.string
 }

@@ -8,7 +8,6 @@ import { getCountries } from 'modules/countries';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -44,7 +43,7 @@ class SignUp extends React.Component {
 
 SignUp.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default withIntl(

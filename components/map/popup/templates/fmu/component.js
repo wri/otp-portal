@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { format } from 'd3-format';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import moment from 'moment';
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
     layers: PropTypes.array.isRequired,
-    intl: intlShape.isRequired
+    intl: PropTypes.object.isRequired
   };
 
   formatValue = (config, data) => {

@@ -214,4 +214,4 @@ FileImage.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(FileImage, { withRef: true });
+export default injectIntl(FileImage, { forwardRef: true });

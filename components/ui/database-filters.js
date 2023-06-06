@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Select from 'react-select';
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
@@ -158,7 +158,7 @@ DatabaseFilters.propTypes = {
   filters: PropTypes.object,
   filtersRefs: PropTypes.array,
   options: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   className: PropTypes.string,
   loading: PropTypes.bool,
   // Actions

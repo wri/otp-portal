@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -121,7 +121,7 @@ OperatorsDetailDocumentation.propTypes = {
   operatorDocumentation: PropTypes.array,
   operatorTimeline: PropTypes.array,
   url: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default injectIntl(OperatorsDetailDocumentation);

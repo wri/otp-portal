@@ -12,7 +12,6 @@ import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -92,7 +91,7 @@ class OperatorsEdit extends React.Component {
 }
 
 OperatorsEdit.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   url: PropTypes.object,
   user: PropTypes.object,
   userOperator: PropTypes.object,

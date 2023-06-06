@@ -10,7 +10,7 @@ import Icon from 'components/ui/icon';
 // Redux and HOC
 import { connect } from 'react-redux';
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
 import { getDocumentsDatabase, setActiveColumns, setPage } from 'modules/documents-database';
@@ -285,7 +285,7 @@ function DatabaseTable({
 
 DatabaseTable.propTypes = {
   database: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   parsedTableDocuments: PropTypes.array,
   getDocumentsDatabase: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func,

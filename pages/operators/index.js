@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
 // Toastr
@@ -6,7 +7,6 @@ import { toastr } from 'react-redux-toastr';
 
 // Intl
 import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -237,7 +237,7 @@ class OperatorsPage extends React.Component {
 }
 
 OperatorsPage.propTypes = {
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Intl
-import { injectIntl, intlShape } from 'react-intl';
-
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
@@ -30,7 +27,6 @@ OperatorsDetailDocumentation.propTypes = {
   countryDocumentation: PropTypes.array,
   vpaOverview: PropTypes.string,
   url: PropTypes.object,
-  intl: intlShape.isRequired
 };
 
-export default injectIntl(OperatorsDetailDocumentation);
+export default OperatorsDetailDocumentation;

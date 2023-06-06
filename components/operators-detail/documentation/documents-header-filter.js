@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 import Icon from 'components/ui/icon';
@@ -118,7 +118,7 @@ DocumentsHeaderFilter.propTypes = {
   fmus: PropTypes.array,
   searchText: PropTypes.string,
   setSearchText: PropTypes.func,
-  intl: intlShape
+  intl: PropTypes.object
 };
 
 export default injectIntl(connect(

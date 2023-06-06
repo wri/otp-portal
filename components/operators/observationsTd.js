@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tooltip from 'rc-tooltip';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import groupBy from 'lodash/groupBy';
 
@@ -16,7 +16,7 @@ class ObservationsTd extends React.Component {
   };
 
   static propTypes = {
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     name: PropTypes.string,
     fmus: PropTypes.array,
     observations: PropTypes.array,

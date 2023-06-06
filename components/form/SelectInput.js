@@ -86,4 +86,4 @@ SelectInput.propTypes = {
   defaultValue: PropTypes.any
 };
 
-export default injectIntl(SelectInput, {withRef: true});
+export default injectIntl(SelectInput, {forwardRef: true});

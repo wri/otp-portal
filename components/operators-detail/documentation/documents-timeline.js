@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 
@@ -61,7 +61,7 @@ CustomTooltip.propTypes = {
   active: PropTypes.bool,
   payload: PropTypes.object,
   label: PropTypes.string,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 function DocumentsTimeline({ timelineData = [], intl }) {
@@ -142,7 +142,7 @@ function DocumentsTimeline({ timelineData = [], intl }) {
 
 DocumentsTimeline.propTypes = {
   timelineData: PropTypes.array,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default injectIntl(DocumentsTimeline);

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
@@ -83,7 +83,7 @@ function OperatorsDetailOverview(props) {
 OperatorsDetailOverview.propTypes = {
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import omit from 'lodash/omit';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Dropzone from 'react-dropzone';
 
@@ -195,7 +195,7 @@ class File extends FormElement {
 File.propTypes = {
   properties: PropTypes.object.isRequired,
   onChange: PropTypes.func,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
-export default injectIntl(File, { withRef: true });
+export default injectIntl(File, { forwardRef: true });

@@ -4,7 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 
 // Redux
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { getOperator, getOperatorDocumentation, getOperatorDocumentationCurrent, getOperatorTimeline } from 'modules/operators-detail';
 
@@ -96,7 +96,7 @@ DocumentsCertification.propTypes = {
   doc: PropTypes.shape({}),
   id: PropTypes.string,
   user: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   getOperator: PropTypes.func,
   getOperatorDocumentation: PropTypes.func,
   getOperatorTimeline: PropTypes.func,

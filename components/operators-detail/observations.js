@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
 import { getOperatorDocumentationFMU } from 'selectors/operators-detail/documentation';
@@ -149,7 +149,7 @@ OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
   getOperatorObservations: PropTypes.func,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   url: PropTypes.object
 };
 
