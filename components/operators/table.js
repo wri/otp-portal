@@ -98,9 +98,9 @@ class OperatorsTable extends React.Component {
                     <Link
                       href={{
                         pathname: '/operators/detail',
-                        query: { id: r.id }
+                        query: { id: r.slug }
                       }}
-                      as={`/operators/${r.id}`}
+                      as={`/operators/${r.slug}`}
                     >
                       <a>{r.name}</a>
                     </Link>

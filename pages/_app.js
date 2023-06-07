@@ -1,6 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import App from 'next/app';
+import Error from 'next/error';
+import Router from 'next/router';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
@@ -37,7 +39,7 @@ const makeStore = (initialState = {}) =>
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
-    const { asPath, pathname, query, isServer, req, store } = ctx;
+    const { asPath, pathname, query, isServer, req, res, store } = ctx;
     const state = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
@@ -55,18 +57,32 @@ class MyApp extends App {
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
+    const requests = []
     if (!isServer) {
       if (!state.operators.data.length) {
-        await store.dispatch(getOperators());
+        requests.push(store.dispatch(getOperators()));
       }
       if (!state.countries.data.length) {
-        await store.dispatch(getCountries());
+        requests.push(store.dispatch(getCountries()));
       }
     }
+    await Promise.all(requests);
 
     const pageProps = Component.getInitialProps ?
       await Component.getInitialProps({ ...ctx, url }) :
       {};
+
+    if (pageProps.errorCode && isServer) {
+      res.statusCode = pageProps.errorCode;
+    }
+    if (pageProps.redirectTo) {
+      if (isServer) {
+        res.writeHead(301, { Location: pageProps.redirectTo });
+        res.end();
+      } else {
+        Router.replace(pageProps.redirectTo);
+      }
+    }
 
     return { pageProps };
   }
@@ -85,6 +101,10 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps, store } = this.props;
+
+    if (pageProps.errorCode) {
+      return <Error statusCode={pageProps.errorCode} />;
+    }
 
     return (
       <Provider store={store}>

@@ -84,7 +84,7 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
             return (
               <li key={`dropdown-operator-${id}`} className="account-dropdown-list-item">
                 <Link
-                  href={`/operators/${id}/documentation`}
+                  href={`/operators/${operator.slug}/documentation`}
                   prefetch={false}
                 >
                   <a>

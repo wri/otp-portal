@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 
 // Next
@@ -7,6 +8,7 @@ import Router from 'next/router';
 // Redux
 import { connect } from 'react-redux';
 import { getUserOperator } from 'modules/user';
+import { getOperators } from 'modules/operators';
 
 // Intl
 import withIntl from 'hoc/with-intl';
@@ -51,6 +53,11 @@ class OperatorsEdit extends React.Component {
     }
   }
 
+  handleOperatorEditSubmit = () => {
+    this.props.getOperators();
+    this.props.getUserOperator(this.props.user.operator_ids[0]);
+  }
+
   render() {
     const { url, user, userOperator } = this.props;
 
@@ -76,6 +83,7 @@ class OperatorsEdit extends React.Component {
         {userOperator && !isEmpty(userOperator.data) &&
           <EditOperator
             operator={userOperator.data}
+            onSubmit={this.handleOperatorEditSubmit}
           />
         }
       </Layout>
@@ -84,7 +92,12 @@ class OperatorsEdit extends React.Component {
 }
 
 OperatorsEdit.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  url: PropTypes.object,
+  user: PropTypes.object,
+  userOperator: PropTypes.object,
+  getOperators: PropTypes.func,
+  getUserOperator: PropTypes.func
 };
 
 export default withIntl(connect(
@@ -92,5 +105,5 @@ export default withIntl(connect(
     user: state.user,
     userOperator: state.user.userOperator
   }),
-  { getUserOperator }
+  { getUserOperator, getOperators }
 )(OperatorsEdit));

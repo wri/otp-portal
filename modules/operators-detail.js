@@ -256,6 +256,45 @@ export default function reducer(state = initialState, action) {
   }
 }
 
+export function getOperatorBySlug(slug) {
+  return (dispatch, getState) => {
+    const { user, language } = getState();
+    // Waiting for fetch from server -> Dispatch loading
+    dispatch({ type: GET_OPERATOR_LOADING });
+
+    const includeFields = [
+      'country',
+      'fmus',
+    ];
+
+    return API.get(`operators`, {
+      locale: language,
+      include: includeFields.join(','),
+      'filter[slug]': slug
+    }, {
+      token: user.token
+    })
+      .then((operators) => {
+        // Fetch from server ok -> Dispatch operator and deserialize the data
+        const dataParsed = JSONA.deserialize(operators);
+        const operator = dataParsed[0];
+        if (!operator) throw new Error('Operator not found');
+
+        dispatch({
+          type: GET_OPERATOR_SUCCESS,
+          payload: operator,
+        });
+      })
+      .catch((err) => {
+        // Fetch from server ko -> Dispatch error
+        dispatch({
+          type: GET_OPERATOR_ERROR,
+          payload: err.message,
+        });
+      });
+  };
+}
+
 /* Action creators */
 export function getOperator(id) {
   return (dispatch, getState) => {

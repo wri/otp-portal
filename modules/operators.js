@@ -40,7 +40,7 @@ export function getOperators() {
     dispatch({ type: GET_OPERATORS_LOADING });
 
     const lang = language === 'zh' ? 'zh-CN' : language;
-    const currentFields = { operators: 'name,country', countries: 'name' };
+    const currentFields = { operators: 'name,slug,country', countries: 'name' };
     const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
 
     return fetch(

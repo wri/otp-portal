@@ -19,9 +19,11 @@ import DocumentsHeaderFilter from 'components/operators-detail/documentation/doc
 function OperatorsDetailDocumentation({
   operatorDocumentation,
   operatorTimeline,
+  operatorsDetail,
   url,
   intl,
 }) {
+  const operator = operatorsDetail.data;
   const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
     operatorDocumentation
   );
@@ -51,7 +53,7 @@ function OperatorsDetailDocumentation({
 
           <DocumentsCertification
             // Publication authorization
-            id={url.query.id}
+            id={operator.id}
           />
 
           <article className="c-article">
@@ -106,7 +108,7 @@ function OperatorsDetailDocumentation({
           <DocumentsByOperator
             groupedByCategory={docsGroupedByCategory}
             searchText={searchText}
-            id={url.query.id}
+            id={operator.id}
           />
         </div>
       </div>
