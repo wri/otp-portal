@@ -29,8 +29,6 @@ class OperatorsTable extends React.Component {
     const { operators, operatorsTable } = this.props;
     const { sortColumn, sortDirection, table } = this.state;
 
-    console.log('operatorsTable', operatorsTable)
-
     if (!operators.loading) {
       return (
         <div className="c-ranking">

@@ -76,7 +76,7 @@ class OperatorsDetail extends React.Component {
       await store.dispatch(getOperatorBySlug(url.query.id));
       const operator = store.getState().operatorsDetail.data;
 
-      if (operator) {
+      if (operator && !isEmpty(operator)) {
         requests.push(store.dispatch(getOperatorObservations(operator.id)));
 
         if (isClient || url.query.tab === 'documentation') {
