@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import cx from 'classnames';
 import ReactTable from 'react-table/react-table';
 
 export default function Table({ data, options, className }) {
-  const classNames = classnames({
-    [className]: !!className
-  });
+
   // react table has some issue with not changing page number in page navigation when providing
   // new page number when using manual option
   // in this case I will reset this control by rendering null for a milisecond
@@ -24,6 +22,22 @@ export default function Table({ data, options, className }) {
 
   if (reset) return null;
 
+  const noData = !options.loading && data && data.length === 0;
+  const noDataComponent = () => {
+    if (!noData) return null;
+
+    return (
+      <div className="c-table__no-data">
+        <h3 className="c-title -big">{options.noDataText}</h3>
+      </div>
+    )
+  }
+
+  const classNames = cx({
+    [className]: !!className,
+    '-no-data': noData
+  });
+
   return (
     <div className={`c-table ${classNames}`}>
       <ReactTable
@@ -36,14 +50,14 @@ export default function Table({ data, options, className }) {
         page={options.page}
         previousText={options.previousText}
         nextText={options.nextText}
-        noDataText={options.noDataText}
+        NoDataComponent={noDataComponent}
         pages={options.pages}
         showPageSizeOptions={options.showPageSizeOptions}
         multiSort={options.multiSort !== undefined ? options.multiSort : true}
         sortable={options.sortable !== undefined ? options.sortable : true}
         resizable={false}
         minRows={0}
-        loading={options.loading}
+        loading={options.reactTableLoading}
         // Api pagination & sort
         manual={options.manual}
         onPageChange={options.onPageChange}

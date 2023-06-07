@@ -178,6 +178,44 @@ class ObservationsPage extends React.Component {
     }
   };
 
+  jumpToStaticHeader() {
+    const element = document.querySelector('header.c-static-tabs');
+    element.scrollIntoView({ behavior: 'smooth', block: 'start'});
+  }
+
+  onShowObservations = () => {
+    let delay = 0;
+    if (this.state.tab !== 'observations-list') {
+      this.setState({ tab: 'observations-list' });
+      delay = 100;
+    }
+
+    setTimeout(this.jumpToStaticHeader, delay);
+  }
+
+  onShowMap = () => {
+    if (this.state.tab !== 'map-view') {
+      this.setState({ tab: 'map-view' });
+      this.makeJumpToStaticHeader = true;
+    } else {
+      this.jumpToStaticHeader();
+    }
+  }
+
+  onMapLoaded = ({ map }) => {
+    this.map = map;
+
+    // Attribution listener
+    document
+      .getElementById('forest-atlas-attribution')
+      .addEventListener('click', this.onCustomAttribute);
+
+    if (this.makeJumpToStaticHeader) {
+      this.jumpToStaticHeader();
+      this.makeJumpToStaticHeader = false;
+    }
+  }
+
   // onHover = (e) => {
   //   const { features } = e;
   //   if (features) {
@@ -238,7 +276,12 @@ class ObservationsPage extends React.Component {
 
               <div className="columns small-12 medium-6 medium-offset-1">
                 {/* Overview by category graphs */}
-                <Overview parsedObservations={parsedChartObservations} loading={observations.loading} />
+                <Overview
+                  parsedObservations={parsedChartObservations}
+                  loading={observations.loading}
+                  onShowObservations={this.onShowObservations}
+                  onShowMap={this.onShowMap}
+                />
               </div>
             </div>
           </div>
@@ -259,18 +302,13 @@ class ObservationsPage extends React.Component {
               value: 'map-view',
             },
           ]}
-          defaultSelected={this.state.tab}
+          selected={this.state.tab}
           onChange={this.triggerChangeTab}
         />
 
         {this.state.tab === 'observations-list' && (
           <section className="c-section -relative">
             <div className="l-container">
-              <h2 className="c-title">
-                {this.props.intl.formatMessage({
-                  id: 'observations.tab.observations-list',
-                })}
-              </h2>
               <Spinner isLoading={observations.loading} />
               <div className="c-field -fluid -valid">
                 <CheckboxGroup
@@ -297,8 +335,12 @@ class ObservationsPage extends React.Component {
                   pagination: true,
                   previousText: '<',
                   nextText: '>',
-                  noDataText: 'No rows found',
+                  noDataText: this.props.intl.formatMessage({
+                    id: 'observations.no-data',
+                    defaultMessage: 'There are no observations that match your selected criteria'
+                  }),
                   showPageSizeOptions: false,
+                  loading: observations.loading,
                   // Api pagination & sort
                   // pages: observations.totalSize,
                   // page: this.state.page - 1,
@@ -342,14 +384,7 @@ class ObservationsPage extends React.Component {
               ]}
               onClick={this.onClick}
               onHover={this.onHover}
-              onLoad={({ map }) => {
-                this.map = map;
-
-                // Attribution listener
-                document
-                  .getElementById('forest-atlas-attribution')
-                  .addEventListener('click', this.onCustomAttribute);
-              }}
+              onLoad={this.onMapLoaded}
               onUnmount={() => (this.map = null)}
               // Options
               transformRequest={(url, resourceType) => {

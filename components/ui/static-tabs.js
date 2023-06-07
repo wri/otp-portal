@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-export default function Tabs({ options, defaultSelected, onChange }) {
-  const [selected, setSelected] = React.useState(defaultSelected);
+export default function Tabs({ options, selected, defaultSelected, onChange }) {
+  const [innerSelected, setInnerSelected] = React.useState(defaultSelected);
+  const selectedTab = selected !== undefined ? selected : innerSelected;
 
   const triggerClickSelected = (value) => {
-    setSelected(value);
+    setInnerSelected(value);
     onChange && onChange(value);
   };
 
@@ -16,7 +17,7 @@ export default function Tabs({ options, defaultSelected, onChange }) {
         <div className="row l-row">
           {options.map((option) => {
             const btnClasses = classnames({
-              '-active': option.value === selected
+              '-active': option.value === selectedTab
             });
 
             return (
@@ -42,6 +43,7 @@ export default function Tabs({ options, defaultSelected, onChange }) {
 
 Tabs.propTypes = {
   options: PropTypes.array.isRequired,
+  selected: PropTypes.string,
   defaultSelected: PropTypes.string,
   onChange: PropTypes.func
 };
