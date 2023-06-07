@@ -234,7 +234,6 @@
   "operator-detail.overview.cardfmu.description": "{fmus, plural, one {{fmus} is managed by {company_name}.} other {{fmus} are managed by {company_name}.}}",
   "operator-detail.overview.cardfmu.description_2": "{fmus, plural, one {The map of this FMU is available in the FMUs section} other {The map of these FMUs is available in the FMUs section.}}",
   "operator-detail.overview.card3.link.label": "Read more",
-  "operator-detail.overview.details_placeholder": "Text presenting the Forest Producer and describing its activities",
   "operator-detail.documents.title": "{percentage}% valid documents available",
   "operator-detail.documents.search.no-results": "Cannot find any document matching your search text \"{searchText}\"",
   "operator-detail.documents.search.placeholder": "Start typing here to search documents...",

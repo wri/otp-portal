@@ -11,7 +11,8 @@ import Gallery1 from 'components/operators-detail/overview/gallery-1';
 import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
 
 function OperatorsDetailOverview(props) {
-  const { address, website } = props.operatorsDetail.data;
+  const { address, website, details } = props.operatorsDetail.data;
+  const showOverview = address || website || details;
 
   return (
     <div
@@ -20,56 +21,60 @@ function OperatorsDetailOverview(props) {
       <div className="l-container">
         <Gallery1 {...props} />
 
-        <article className="c-article">
-          <header>
-            <h2 className="c-title">
-              {props.intl.formatMessage({ id: 'overview' })}
-            </h2>
-          </header>
-          <div className="content">
+        {showOverview && (
+          <article className="c-article">
+            <header>
+              <h2 className="c-title">
+                {props.intl.formatMessage({ id: 'overview' })}
+              </h2>
+            </header>
+            <div className="content">
+              <div className="row l-row -equal-heigth">
+                <div className="columns small-12 medium-8">
+                  {Boolean(details) && (
+                    <p className="description">
+                      {details}
+                    </p>
+                  )}
 
-            <div className="row l-row -equal-heigth">
-              <div className="columns small-12 medium-8">
-                <p className="description">
-                  {props.operatorsDetail.data.details || props.intl.formatMessage({ id: 'operator-detail.overview.details_placeholder' })}
-                </p>
-
-                { (Boolean(address) || Boolean(website)) &&
-                  <ul className="details-list">
-                    { address &&
-                      <li key="address" className="">
-                        <span>
-                          <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.address' })}:</strong>
-                          <address>{address}</address>
-                        </span>
-                      </li>
-                    }
-                    { website &&
-                      <li key="website" className="">
-                        <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.website' })}:</strong>
-                        <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
-                      </li>
-                    }
-                  </ul>
-                }
+                  {(Boolean(address) || Boolean(website)) &&
+                    <ul className="details-list">
+                      {address &&
+                        <li key="address" className="">
+                          <span>
+                            <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.address' })}:</strong>
+                            <address>{address}</address>
+                          </span>
+                        </li>
+                      }
+                      {website &&
+                        <li key="website" className="">
+                          <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.website' })}:</strong>
+                          <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
+                        </li>
+                      }
+                    </ul>
+                  }
+                </div>
               </div>
             </div>
-          </div>
-
-        </article>
+          </article>
+        )}
 
         {/* CHARTS */}
-        <article className="c-article">
-          <header>
-            <h2 className="c-title">
-              {props.intl.formatMessage({ id: 'observations_by_category' })}
-            </h2>
-          </header>
+        {props.operatorObservations.length > 0 && (
+          <article className="c-article">
+            <header>
+              <h2 className="c-title">
+                {props.intl.formatMessage({ id: 'observations_by_category' })}
+              </h2>
+            </header>
 
-          <div className="content">
-            <TotalObservationsByOperatorByCategory data={props.operatorObservations} />
-          </div>
-        </article>
+            <div className="content">
+              <TotalObservationsByOperatorByCategory data={props.operatorObservations} />
+            </div>
+          </article>
+        )}
       </div>
     </div>
   );
