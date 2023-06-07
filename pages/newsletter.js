@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -40,4 +40,4 @@ SignNewsletter.propTypes = {
 };
 
 
-export default withIntl((SignNewsletter));
+export default injectIntl((SignNewsletter));

@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { toastr } from 'react-redux-toastr';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -241,7 +241,7 @@ OperatorsPage.propTypes = {
 };
 
 
-export default withIntl(connect(
+export default injectIntl(connect(
 
   (state, props) => ({
     operatorsRanking: state.operatorsRanking,

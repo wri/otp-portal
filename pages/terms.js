@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { store } from 'store';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -254,6 +254,6 @@ TermsPage.propTypes = {
   intl: PropTypes.object.isRequired
 };
 
-export default withIntl(connect(
+export default injectIntl(connect(
   store
 )(TermsPage));

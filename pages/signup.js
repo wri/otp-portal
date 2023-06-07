@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getCountries } from 'modules/countries';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -46,7 +46,7 @@ SignUp.propTypes = {
   intl: PropTypes.object.isRequired,
 };
 
-export default withIntl(
+export default injectIntl(
   connect(
     (state) => ({
       countries: state.countries,

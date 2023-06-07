@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -57,4 +57,4 @@ ThankYouPage.propTypes = {
 };
 
 
-export default withIntl((ThankYouPage));
+export default injectIntl((ThankYouPage));

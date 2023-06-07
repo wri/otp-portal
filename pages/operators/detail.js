@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Constants
 import { TABS_OPERATORS_DETAIL } from 'constants/operators-detail';
@@ -267,7 +267,7 @@ OperatorsDetail.propTypes = {
   intl: PropTypes.object.isRequired,
 };
 
-export default withIntl(
+export default injectIntl(
   connect(
     (state) => ({
       user: state.user,

@@ -7,8 +7,8 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 class MyDocument extends Document {
   static async getInitialProps(context) {
     const initialProps = await Document.getInitialProps(context);
-    const { req } = context;
-    const language = (req && req?.locale?.language) || 'en';
+    const { locale } = context;
+    const language = locale || 'en';
     return { ...initialProps, language };
   }
 

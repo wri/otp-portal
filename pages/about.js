@@ -8,9 +8,6 @@ import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
 import { getAbout } from 'modules/about';
 
-// Intl
-import withIntl from 'hoc/with-intl';
-
 // Components
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
@@ -121,11 +118,11 @@ AboutPage.propTypes = {
   intl: PropTypes.object.isRequired
 };
 
-export default withIntl(connect(
+export default connect(
   state => ({
     about: state.about,
     partners: state.partners,
     donors: state.donors
   }),
   { getPartners, getDonors, getAbout }
-)(AboutPage));
+)(AboutPage);

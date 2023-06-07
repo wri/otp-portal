@@ -11,7 +11,7 @@ import { getUserOperator } from 'modules/user';
 import { getOperators } from 'modules/operators';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -99,7 +99,7 @@ OperatorsEdit.propTypes = {
   getUserOperator: PropTypes.func
 };
 
-export default withIntl(connect(
+export default injectIntl(connect(
   state => ({
     user: state.user,
     userOperator: state.user.userOperator

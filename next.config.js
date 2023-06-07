@@ -20,6 +20,10 @@ const config = {
     SENTRY_DSN: process.env.SENTRY_DSN,
     GOOGLE_TAG_MANAGER_KEY: process.env.GOOGLE_TAG_MANAGER_KEY
   },
+  i18n: {
+    locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
+    defaultLocale: 'en'
+  },
   sentry: {
     ...(process.env.SENTRY_DISABLE_RELEASE && {
       disableServerWebpackPlugin: true,

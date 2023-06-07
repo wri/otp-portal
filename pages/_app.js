@@ -6,6 +6,7 @@ import Router from 'next/router';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
+import { IntlProvider } from 'react-intl';
 
 import * as reducers from 'modules';
 
@@ -19,6 +20,24 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
 
 import 'css/index.scss';
+
+import langEn from 'lang/en.json';
+import langFr from 'lang/fr.json';
+import langZhCN from 'lang/zh_CN.json';
+import langJa from 'lang/ja.json';
+import langKo from 'lang/ko.json';
+import langVi from 'lang/vi.json';
+import langPt from 'lang/pt.json';
+
+const MESSAGES = {
+  en: langEn,
+  fr: langFr,
+  zh: langZhCN,
+  ja: langJa,
+  ko: langKo,
+  vi: langVi,
+  pt: langPt
+};
 
 const reducer = combineReducers({
   ...reducers
@@ -39,21 +58,19 @@ const makeStore = (initialState = {}) =>
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
-    const { asPath, pathname, query, isServer, req, res, store } = ctx;
+    const { asPath, pathname, query, isServer, req, store, locale, defaultLocale } = ctx;
     const state = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
-    let lang = 'en';
+    let language = locale || 'en';
 
     if (isServer) {
-      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
-      lang = state.language;
       user = state.user;
     }
 
-    store.dispatch(setLanguage(lang));
+    store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
@@ -84,7 +101,7 @@ class MyApp extends App {
       }
     }
 
-    return { pageProps };
+    return { pageProps, language, defaultLocale };
   }
 
   componentDidMount() {
@@ -100,20 +117,27 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, store } = this.props;
+    const { Component, pageProps, store, defaultLocale, language } = this.props;
 
     if (pageProps.errorCode) {
       return <Error statusCode={pageProps.errorCode} />;
     }
 
     return (
-      <Provider store={store}>
-        <>
-          <GoogleTagManager />
-          <PageViewTracking />
-          <Component {...pageProps} />
-        </>
-      </Provider>
+      <IntlProvider
+        locale={language}
+        messages={MESSAGES[language]}
+        textComponent="span"
+        defaultLocale={defaultLocale}
+      >
+        <Provider store={store}>
+          <>
+            <GoogleTagManager />
+            <PageViewTracking />
+            <Component {...pageProps} language={language} />
+          </>
+        </Provider>
+      </IntlProvider>
     );
   }
 

@@ -13,7 +13,7 @@ import { withRouter } from 'next/router';
 import modal from 'services/modal';
 
 // Intl
-import withIntl from 'hoc/with-intl';
+import { injectIntl } from 'react-intl';
 
 // Selectors
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
@@ -460,7 +460,7 @@ ObservationsPage.propTypes = {
 };
 
 export default withRouter(
-  withIntl(
+  injectIntl(
     connect(
       (state, props) => ({
         observations: state.observations,

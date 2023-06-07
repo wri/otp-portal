@@ -5,7 +5,6 @@ const express = require('express');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const request = require('request-promise');
-const localeMiddleware = require('express-locale');
 const bodyParser = require('body-parser');
 const next = require('next');
 const { parse } = require('url');
@@ -35,14 +34,6 @@ const server = express();
 
 // configure Express
 server.use(cookieParser());
-server.use(
-  localeMiddleware({
-    priority: ['query', 'cookie', 'default'],
-    default: 'en-GB',
-    cookie: { name: 'language' },
-    query: { name: 'language' },
-  })
-);
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 server.use(
@@ -52,7 +43,7 @@ server.use(
   })
 );
 
-const homeRedirect = (req, res) => res.redirect('/');
+const homeRedirect = (req, res) => res.redirect(req.params.locale ? `/${req.params.locale}` : '/');
 const notFound = (req, res) => {
   res.status(404);
 
@@ -64,7 +55,7 @@ const notFound = (req, res) => {
   );
 }
 const onlyAuthenticated = (req, res) => {
-  if (!req.session.user) return res.redirect('/');
+  if (!req.session.user) return homeRedirect(req, res);
 
   return handle(req, res);
 }
@@ -73,9 +64,9 @@ app
   .prepare()
   .then(() => {
     // COUNTRIES
-    server.get('/countries/detail', notFound);
+    server.get('/:locale?/countries/detail', notFound);
     if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
-      server.get('/countries/:id/:tab?', (req, res) => {
+      server.get('/:locale?/countries/:id/:tab?', (req, res) => {
         const { query } = parse(req.url, true);
         return app.render(
           req,
@@ -85,22 +76,22 @@ app
         );
       });
     } else {
-      server.get('/countries', homeRedirect);
-      server.get('/countries/:id/:tab?', homeRedirect);
+      server.get('/:locale?/countries', homeRedirect);
+      server.get('/:locale?/countries/:id/:tab?', homeRedirect);
     }
 
     // MAP only development
     if (process.env.FEATURE_MAP_PAGE !== 'true') {
-      server.get('/map', notFound);
+      server.get('/:locale?/map', notFound);
     }
 
     // PROFILE
-    server.get('/profile', onlyAuthenticated);
+    server.get('/:locale?/profile', onlyAuthenticated);
 
     // OPERATORS
-    server.get('/operators/edit', onlyAuthenticated);
-    server.get('/operators/detail', notFound);
-    server.get('/operators/new', (req, res) =>
+    server.get('/:locale?/operators/edit', onlyAuthenticated);
+    server.get('/:locale?/operators/detail', notFound);
+    server.get('/:locale?/operators/new', (req, res) =>
       app.render(
         req,
         res,
@@ -108,7 +99,7 @@ app
         Object.assign(req.params, req.query)
       )
     );
-    server.get('/operators/:id/:tab?', (req, res) => {
+    server.get('/:locale?/operators/:id/:tab?', (req, res) => {
       const { query } = parse(req.url, true);
       return app.render(
         req,
@@ -119,7 +110,7 @@ app
     });
 
     // OBSERVATIONS
-    server.get('/observations/:tab', (req, res) =>
+    server.get('/:locale?/observations/:tab', (req, res) =>
       app.render(
         req,
         res,
@@ -128,7 +119,7 @@ app
       )
     );
 
-    server.get('/help/:tab', (req, res) =>
+    server.get('/:locale?/help/:tab', (req, res) =>
       app.render(req, res, '/help', Object.assign(req.params, req.query))
     );
 
