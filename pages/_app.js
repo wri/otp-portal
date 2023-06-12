@@ -19,6 +19,8 @@ import { getOperators } from 'modules/operators';
 import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
 
+import { getCookie, setCookie, deleteCookie } from 'services/cookies';
+
 import 'css/index.scss';
 
 import langEn from 'lang/en.json';
@@ -55,6 +57,32 @@ const makeStore = (initialState = {}) =>
         typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
     )
   );
+
+const cookieMigration = () => {
+  if (getCookie('NEXT_LOCALE')) return;
+  if (!getCookie('language')) return;
+  if (localStorage.getItem('languageCookieMigration')) return;
+
+  const lang = getCookie('language');
+  const oldToNew = {
+    'en-GB': 'en',
+    'fr-FR': 'fr',
+    'zh-CN': 'zh',
+    'ja-JP': 'ja',
+    'ko-KR': 'ko',
+    'vi-VN': 'vi',
+    'pt-PT': 'pt'
+  }
+  const newLanguageCode = oldToNew[lang];
+  if (!newLanguageCode) return;
+
+  setCookie('NEXT_LOCALE', newLanguageCode, 365);
+  deleteCookie('language');
+  localStorage.setItem('languageCookieMigration', true);
+  if (window.location.pathname === '/') {
+    window.location.reload();
+  }
+}
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -107,6 +135,8 @@ class MyApp extends App {
   componentDidMount() {
     const { store } = this.props;
     const state = store.getState();
+
+    cookieMigration();
 
     if (!state.operators.data.length) {
       store.dispatch(getOperators());

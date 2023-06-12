@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -21,7 +21,7 @@ import { setCookie } from 'services/cookies';
 // otherwise we will have to deal with reloading all of the data
 // this is also preserving old behaviour
 // we should revisit this in the future
-const LanguageLink = ({ href, locale, children }) => {
+const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
   const saveLocale = () => {
     setCookie('NEXT_LOCALE', locale, 365);
   }
@@ -31,7 +31,7 @@ const LanguageLink = ({ href, locale, children }) => {
       {children}
     </a>
   )
-}
+});
 
 const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
   const { asPath } = useRouter();
