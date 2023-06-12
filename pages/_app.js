@@ -23,24 +23,6 @@ import { getCookie, setCookie, deleteCookie } from 'services/cookies';
 
 import 'css/index.scss';
 
-import langEn from 'lang/en.json';
-import langFr from 'lang/fr.json';
-import langZhCN from 'lang/zh_CN.json';
-import langJa from 'lang/ja.json';
-import langKo from 'lang/ko.json';
-import langVi from 'lang/vi.json';
-import langPt from 'lang/pt.json';
-
-const MESSAGES = {
-  en: langEn,
-  fr: langFr,
-  zh: langZhCN,
-  ja: langJa,
-  ko: langKo,
-  vi: langVi,
-  pt: langPt
-};
-
 const reducer = combineReducers({
   ...reducers
 });
@@ -98,6 +80,9 @@ class MyApp extends App {
       user = state.user;
     }
 
+    const languageFile = language === 'zh' ? 'zh_CN' : language;
+    const messages = await import(`lang/${languageFile}.json`);
+
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
@@ -129,7 +114,7 @@ class MyApp extends App {
       }
     }
 
-    return { pageProps, language, defaultLocale };
+    return { pageProps, language, messages, defaultLocale };
   }
 
   componentDidMount() {
@@ -147,7 +132,7 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, store, defaultLocale, language } = this.props;
+    const { Component, pageProps, store, defaultLocale, language, messages } = this.props;
 
     if (pageProps.errorCode) {
       return <Error statusCode={pageProps.errorCode} />;
@@ -156,7 +141,7 @@ class MyApp extends App {
     return (
       <IntlProvider
         locale={language}
-        messages={MESSAGES[language]}
+        messages={messages}
         textComponent="span"
         defaultLocale={defaultLocale}
       >
