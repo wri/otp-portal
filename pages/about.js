@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
+import { injectIntl } from 'react-intl';
+
 // Redux
 import { connect } from 'react-redux';
 import { getPartners } from 'modules/partners';
@@ -118,11 +120,11 @@ AboutPage.propTypes = {
   intl: PropTypes.object.isRequired
 };
 
-export default connect(
+export default injectIntl(connect(
   state => ({
     about: state.about,
     partners: state.partners,
     donors: state.donors
   }),
   { getPartners, getDonors, getAbout }
-)(AboutPage);
+)(AboutPage));
