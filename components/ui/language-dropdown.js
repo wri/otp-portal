@@ -15,16 +15,23 @@ import { injectIntl } from 'react-intl';
 import Icon from 'components/ui/icon';
 
 import { LOCALES } from 'constants/locales';
+import { setCookie } from 'services/cookies';
 
 // TODO: for now we will force full reload when changing language
 // otherwise we will have to deal with reloading all of the data
 // this is also preserving old behaviour
 // we should revisit this in the future
-const LanguageLink = ({ href, children }) => (
-  <a href={href}>
-    {children}
-  </a>
-)
+const LanguageLink = ({ href, locale, children }) => {
+  const saveLocale = () => {
+    setCookie('NEXT_LOCALE', locale, 365);
+  }
+
+  return (
+    <a href={href} onClick={saveLocale}>
+      {children}
+    </a>
+  )
+}
 
 const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
   const { asPath } = useRouter();
@@ -56,7 +63,7 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
               className="language-dropdown-list-item"
             >
               <Link href={asPath} passHref locale={locale.code}>
-                <LanguageLink>
+                <LanguageLink locale={locale.code}>
                   {locale.name}
                 </LanguageLink>
               </Link>
