@@ -61,7 +61,7 @@ class Profile extends React.Component {
 }
 
 Profile.propTypes = {
-  url: PropTypes.string,
+  url: PropTypes.object.isRequired,
   user: PropTypes.object,
   userProfile: PropTypes.object,
   intl: PropTypes.object.isRequired

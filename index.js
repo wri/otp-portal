@@ -143,7 +143,7 @@ app
         });
     });
 
-    server.get('/logout', (req, res) => {
+    server.delete('/logout', (req, res) => {
       req.session = null;
       res.json({});
     });

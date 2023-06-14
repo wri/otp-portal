@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-// Redux
 import { connect } from 'react-redux';
 import { toastr } from 'react-redux-toastr';
 import {
@@ -10,14 +9,11 @@ import {
   unmountMap
 } from 'modules/sawmill-map';
 
-// Intl
 import { injectIntl } from 'react-intl';
 
-// Services
 import modal from 'services/modal';
 import SawmillsService from 'services/sawmillsService';
 
-// Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Checkbox from 'components/form/Checkbox';
@@ -29,6 +25,7 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import LocationSearch from 'components/map/location-search';
 
 import { FormElements } from 'utils/form';
+import { transformRequest } from 'utils/map';
 
 class SawmillModal extends React.Component {
   static propTypes = {
@@ -120,7 +117,6 @@ class SawmillModal extends React.Component {
         this.setState({ submitting: true });
 
         this.sawmillsService.saveSawmill({
-          type: (sawmill && sawmill.id) ? 'PATCH' : 'POST',
           id: sawmill && sawmill.id,
           body: this.getBody()
         })
@@ -253,22 +249,7 @@ class SawmillModal extends React.Component {
                 onClick={this.onClick}
 
                 // Options
-                transformRequest={(url, resourceType) => {
-                  if (
-                    resourceType === 'Source' &&
-                      url.startsWith(process.env.OTP_API)
-                  ) {
-                    return {
-                      url,
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'OTP-API-KEY': process.env.OTP_API_KEY
-                      }
-                    };
-                  }
-
-                  return null;
-                }}
+                transformRequest={transformRequest}
               >
                 {map => (
                   <Fragment>

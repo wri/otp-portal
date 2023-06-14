@@ -1,5 +1,4 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
 import Router from 'next/router';
 
 import groupBy from 'lodash/groupBy';
@@ -7,6 +6,7 @@ import flatten from 'lodash/flatten';
 import moment from 'moment';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import API from 'services/api';
 
 import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -203,64 +203,54 @@ export function getOperatorsRanking() {
     ].join(',');
 
     // Fields
-    const currentFields = { fmus: [
-      'name',
-      'certification-fsc',
-      'certification-olb',
-      'certification-pefc',
-      'certification-pafc',
-      'certification-fsc-cw',
-      'certification-tlv',
-      'certification-ls'
-    ] };
-    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
+    const fields = {
+      fmus: [
+        'name',
+        'certification-fsc',
+        'certification-olb',
+        'certification-pefc',
+        'certification-pafc',
+        'certification-fsc-cw',
+        'certification-tlv',
+        'certification-ls'
+      ]
+    };
 
-    // Filters
-    const filters = `&filter[fa]=true&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(',')}`;
+    return API.get('operators', {
+      locale: language,
+      'page[size]': 2000,
+      include: includes,
+      'fields[fmus]': fields.fmus.join(','),
+      'filter[fa]': true,
+      'filter[country]': process.env.OTP_COUNTRIES_IDS.join(','),
+    }).then((operatorsRanking) => {
+      const dataParsed = JSONA.deserialize(operatorsRanking);
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
+      const groupByDocPercentage = groupBy(dataParsed, (o) => {
+        if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
 
-    return fetch(`${process.env.OTP_API}/operators?locale=${lang}&page[size]=2000&${fields}&include=${includes}${filters}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then((operatorsRanking) => {
-        const dataParsed = JSONA.deserialize(operatorsRanking);
-
-        const groupByDocPercentage = groupBy(dataParsed, (o) => {
-          if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
-
-          return o['percentage-valid-documents-all'];
-        });
-        const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
-        const rankedData = flatten(groupByDocPercentageKeys.map((k, i) => {
-          return groupByDocPercentage[k].map(o => ({
-            ...o,
-            ranking: i
-          }));
-        }));
-
-
-        dispatch({
-          type: GET_OPERATORS_RANKING_SUCCESS,
-          payload: rankedData
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATORS_RANKING_ERROR,
-          payload: err.message
-        });
+        return o['percentage-valid-documents-all'];
       });
+      const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
+      const rankedData = flatten(groupByDocPercentageKeys.map((k, i) => {
+        return groupByDocPercentage[k].map(o => ({
+          ...o,
+          ranking: i
+        }));
+      }));
+
+      dispatch({
+        type: GET_OPERATORS_RANKING_SUCCESS,
+        payload: rankedData
+      });
+    }).catch((err) => {
+      console.error(err);
+      // Fetch from server ko -> Dispatch error
+      dispatch({
+        type: GET_OPERATORS_RANKING_ERROR,
+        payload: err.message
+      });
+    });
   };
 }
 

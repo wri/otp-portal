@@ -95,7 +95,6 @@ class DocAnnexesModal extends React.Component {
 
         this.documentationService.saveAnnex({
           url: 'operator-document-annexes',
-          type: 'POST',
           body: this.getBody()
         })
         .then(() => {

@@ -48,6 +48,8 @@ import Popup from 'components/map/popup';
 
 import { CERTIFICATIONS } from 'constants/fmu';
 
+import { transformRequest } from 'utils/map';
+
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
     const { fmus, fmu } = this.props;
@@ -262,19 +264,7 @@ class OperatorsDetailFMUs extends React.Component {
                 .addEventListener('click', this.onCustomAttribute);
             }}
             // Options
-            transformRequest={(url) => {
-              if (url.startsWith(process.env.OTP_API)) {
-                return {
-                  url,
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'OTP-API-KEY': process.env.OTP_API_KEY,
-                  },
-                };
-              }
-
-              return null;
-            }}
+            transformRequest={transformRequest}
             mapOptions={{
               customAttribution:
                   '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',

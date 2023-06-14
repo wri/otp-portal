@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+import API from 'services/api';
 
 const SAWMILL_MAP_LOCATION = 'SAWMILL_MAP_LOCATION';
 const SAWMILL_UNMOUNT_MAP = 'SAWMILL_UNMOUNT_MAP';
@@ -71,17 +71,7 @@ export function getSawMillLocationById(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_SAWMILL_LOCATION_LOADING });
 
-    return fetch(`${process.env.OTP_API}/sawmills/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-      },
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get(`sawmills/${id}`)
       .then((data) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         dispatch({

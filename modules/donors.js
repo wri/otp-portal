@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
+
+import API from 'services/api';
 
 /* Constants */
 const GET_DONORS_SUCCESS = 'GET_DONORS_SUCCESS';
@@ -43,19 +44,7 @@ export function getDonors() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_DONORS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/donors?locale=${lang}&page[size]=2000`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('donors', { locale: language, 'page[size]': 2000 })
       .then((donors) => {
         const dataParsed = JSONA.deserialize(donors);
 

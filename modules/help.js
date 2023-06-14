@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
+
+import API from 'services/api';
 
 /* Constants */
 const GET_HOWTOS_SUCCESS = 'GET_HOWTOS_SUCCESS';
@@ -130,19 +131,7 @@ export function getHowtos() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_HOWTOS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/how-tos?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('how-tos', { locale: language })
       .then((tutorials) => {
         const dataParsed = JSONA.deserialize(tutorials);
 
@@ -168,19 +157,7 @@ export function getTools() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_TOOLS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/tools?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('tools', { locale: language })
       .then((tutorials) => {
         const dataParsed = JSONA.deserialize(tutorials);
 
@@ -207,19 +184,7 @@ export function getFAQs() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FAQS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/faqs?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('faqs', { locale: language })
       .then((faqs) => {
         const dataParsed = JSONA.deserialize(faqs);
 
@@ -246,19 +211,7 @@ export function getTutorials() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_TUTORIALS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/tutorials?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('tutorials', { locale: language })
       .then((tutorials) => {
         const dataParsed = JSONA.deserialize(tutorials);
 

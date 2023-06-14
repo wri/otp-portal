@@ -82,7 +82,6 @@ class DocModal extends React.Component {
 
         this.documentationService.saveDocument({
           url: `gov-documents/${docId}`,
-          type: 'PATCH',
           body: this.getBody()
         })
           .then(() => {
