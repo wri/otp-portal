@@ -34,7 +34,11 @@ const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
 });
 
 const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
-  const { asPath } = useRouter();
+  const { asPath, locale } = useRouter();
+
+  // when using custom server asPath is prefixed with locale sometimes, it should not be
+  // maybe better to not use custom server
+  const fixedAsPath = asPath.replace(`/${locale}/`, '/');
 
   return (
     <Dropdown className="c-language-dropdown">
@@ -62,7 +66,7 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
               key={locale.code}
               className="language-dropdown-list-item"
             >
-              <Link href={asPath} passHref locale={locale.code}>
+              <Link href={fixedAsPath} passHref locale={locale.code}>
                 <LanguageLink locale={locale.code}>
                   {locale.name}
                 </LanguageLink>
