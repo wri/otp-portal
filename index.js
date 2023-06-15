@@ -4,7 +4,6 @@ require('dotenv').load();
 const express = require('express');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
-const request = require('request-promise');
 const bodyParser = require('body-parser');
 const next = require('next');
 const { parse } = require('url');
@@ -125,15 +124,20 @@ app
 
     // LOGIN
     server.post('/login', (req, res) => {
-      request({
-        url: `${process.env.OTP_API}/login`,
+      fetch(`${process.env.OTP_API}/login`, {
+        method: 'POST',
         headers: {
           'OTP-API-KEY': process.env.OTP_API_KEY,
+          'Content-Type': 'application/json',
         },
-        body: req.body,
-        method: 'POST',
-        json: true,
+        body: JSON.stringify(req.body)
       })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.statusText);
+        })
         .then((data) => {
           req.session.user = data;
           res.json(data);
