@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -24,7 +24,7 @@ class SawmillsTable extends React.Component {
     user: PropTypes.object,
     sawmills: PropTypes.array,
     onChange: PropTypes.func,
-    intl: intlShape.isRequired
+    intl: PropTypes.object.isRequired
   };
 
   constructor(props) {

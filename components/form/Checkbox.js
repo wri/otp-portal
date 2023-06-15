@@ -54,4 +54,4 @@ Checkbox.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(Checkbox, { withRef: true });
+export default injectIntl(Checkbox, { forwardRef: true });

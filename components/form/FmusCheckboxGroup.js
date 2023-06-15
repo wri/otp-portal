@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Utils
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -124,7 +124,7 @@ FmusCheckboxGroup.propTypes = {
   grid: PropTypes.object,
   certifications: PropTypes.object,
   onChange: PropTypes.func,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(FmusCheckboxGroup, {withRef: true});
+export default injectIntl(FmusCheckboxGroup, {forwardRef: true});

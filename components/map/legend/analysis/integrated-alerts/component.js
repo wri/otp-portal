@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import Spinner from 'components/ui/spinner';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 const LegendAnalysisIntegratedAlerts = (props) => {
   const { activeLayer, analysis, intl, language } = props;
@@ -76,7 +76,7 @@ LegendAnalysisIntegratedAlerts.propTypes = {
   language: PropTypes.string,
   activeLayer: PropTypes.shape({}).isRequired,
   analysis: PropTypes.shape({}).isRequired,
-  intl: intlShape
+  intl: PropTypes.object
 }
 
 export default injectIntl(

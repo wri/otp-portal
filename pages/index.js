@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -52,11 +51,9 @@ class HomePage extends React.Component {
           column={9}
         >
           <div className="c-intro">
-            <h2
-              dangerouslySetInnerHTML={{
-                __html: this.props.intl.formatHTMLMessage({ id: 'home.intro' })
-              }}
-            />
+            <h2>
+              {this.props.intl.formatMessage({ id: 'home.intro' }, { span: (...chunks) => <span>{chunks}</span> })}
+            </h2>
           </div>
         </StaticSection>
 
@@ -128,8 +125,8 @@ class HomePage extends React.Component {
 
 HomePage.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 
-export default withIntl(HomePage);
+export default injectIntl(HomePage);

@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Selectors
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
@@ -125,12 +124,12 @@ CountriesDetail.propTypes = {
   countriesDetail: PropTypes.shape({}).isRequired,
   countryDocumentation: PropTypes.shape({}).isRequired,
   countryObservations: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 
   getCountry: PropTypes.func.isRequired
 };
 
-export default withIntl(connect(
+export default injectIntl(connect(
 
   state => ({
     user: state.user,

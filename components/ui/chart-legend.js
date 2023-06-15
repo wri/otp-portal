@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Link from 'next/link';
@@ -52,7 +52,7 @@ ChartLegend.propTypes = {
   title: PropTypes.string,
   list: PropTypes.array,
   className: PropTypes.string,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default injectIntl(ChartLegend);

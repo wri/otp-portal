@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 
@@ -11,7 +11,7 @@ class LegendTemplateAlerts extends PureComponent {
   static propTypes = {
     activeLayer: PropTypes.shape({}).isRequired,
     setLayerSettings: PropTypes.func.isRequired,
-    intl: intlShape
+    intl: PropTypes.object
   }
 
   onDateChange = (value, who) => {

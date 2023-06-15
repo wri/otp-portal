@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -54,8 +53,8 @@ class ThankYouPage extends React.Component {
 
 ThankYouPage.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 
-export default withIntl((ThankYouPage));
+export default injectIntl((ThankYouPage));

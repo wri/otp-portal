@@ -6,6 +6,7 @@ import Router from 'next/router';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
+import { IntlProvider } from 'react-intl';
 
 import * as reducers from 'modules';
 
@@ -17,6 +18,8 @@ import { getOperators } from 'modules/operators';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
+
+import { getCookie, setCookie, deleteCookie } from 'services/cookies';
 
 import 'css/index.scss';
 
@@ -37,23 +40,50 @@ const makeStore = (initialState = {}) =>
     )
   );
 
+const cookieMigration = () => {
+  if (getCookie('NEXT_LOCALE')) return;
+  if (!getCookie('language')) return;
+  if (localStorage.getItem('languageCookieMigration')) return;
+
+  const lang = getCookie('language');
+  const oldToNew = {
+    'en-GB': 'en',
+    'fr-FR': 'fr',
+    'zh-CN': 'zh',
+    'ja-JP': 'ja',
+    'ko-KR': 'ko',
+    'vi-VN': 'vi',
+    'pt-PT': 'pt'
+  }
+  const newLanguageCode = oldToNew[lang];
+  if (!newLanguageCode) return;
+
+  setCookie('NEXT_LOCALE', newLanguageCode, 365);
+  deleteCookie('language');
+  localStorage.setItem('languageCookieMigration', true);
+  if (window.location.pathname === '/') {
+    window.location.reload();
+  }
+}
+
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
-    const { asPath, pathname, query, isServer, req, res, store } = ctx;
+    const { asPath, pathname, query, isServer, req, store, locale, defaultLocale } = ctx;
     const state = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
-    let lang = 'en';
+    let language = locale || 'en';
 
     if (isServer) {
-      lang = req.locale.language;
       user = req.session ? req.session.user : {};
     } else {
-      lang = state.language;
       user = state.user;
     }
 
-    store.dispatch(setLanguage(lang));
+    const languageFile = language === 'zh' ? 'zh_CN' : language;
+    const messages = await import(`lang/${languageFile}.json`);
+
+    store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
     store.dispatch(setRouter(url));
 
@@ -84,12 +114,14 @@ class MyApp extends App {
       }
     }
 
-    return { pageProps };
+    return { pageProps, language, messages, defaultLocale };
   }
 
   componentDidMount() {
     const { store } = this.props;
     const state = store.getState();
+
+    cookieMigration();
 
     if (!state.operators.data.length) {
       store.dispatch(getOperators());
@@ -100,20 +132,27 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, store } = this.props;
+    const { Component, pageProps, store, defaultLocale, language, messages } = this.props;
 
     if (pageProps.errorCode) {
       return <Error statusCode={pageProps.errorCode} />;
     }
 
     return (
-      <Provider store={store}>
-        <>
-          <GoogleTagManager />
-          <PageViewTracking />
-          <Component {...pageProps} />
-        </>
-      </Provider>
+      <IntlProvider
+        locale={language}
+        messages={messages}
+        textComponent="span"
+        defaultLocale={defaultLocale}
+      >
+        <Provider store={store}>
+          <>
+            <GoogleTagManager />
+            <PageViewTracking />
+            <Component {...pageProps} language={language} />
+          </>
+        </Provider>
+      </IntlProvider>
     );
   }
 

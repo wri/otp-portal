@@ -5,7 +5,7 @@ import Tooltip from 'rc-tooltip';
 
 // Intl
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -33,7 +33,7 @@ class DocCard extends React.Component {
     properties: PropTypes.object,
     annexes: PropTypes.array,
     layout: PropTypes.shape({}),
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     onChange: PropTypes.func
   };
 

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import trim from 'lodash/trim';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 class FMUAACTemplatePopup extends PureComponent {
   static propTypes = {
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     layers: PropTypes.array
   };
 

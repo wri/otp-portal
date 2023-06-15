@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
@@ -203,7 +203,7 @@ Notifications.propTypes = {
   getNotifications: PropTypes.func,
   dismissAll: PropTypes.func,
   language: PropTypes.string,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 Notifications.defaultProps = {

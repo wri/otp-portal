@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 
 // Intl
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { login } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
@@ -192,7 +192,7 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired
 };
 

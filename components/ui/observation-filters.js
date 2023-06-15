@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Select from 'react-select';
 
 import Checkbox from 'components/form/Checkbox';
@@ -133,7 +133,7 @@ ObservationFilters.propTypes = {
   filtersRefs: PropTypes.array,
   loading: PropTypes.bool,
   options: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   className: PropTypes.string,
   // Actions
   setFilters: PropTypes.func

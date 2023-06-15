@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -422,7 +422,7 @@ EditOperator.propTypes = {
   sawmills: PropTypes.object,
   getSawMillsByOperatorId: PropTypes.func,
   getSawMillsLocationByOperatorId: PropTypes.func,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default injectIntl(connect(

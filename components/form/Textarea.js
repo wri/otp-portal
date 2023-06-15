@@ -38,4 +38,4 @@ Textarea.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(Textarea, {withRef: true});
+export default injectIntl(Textarea, {forwardRef: true});

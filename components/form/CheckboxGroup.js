@@ -122,4 +122,4 @@ CheckboxGroup.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(CheckboxGroup, {withRef: true});
+export default injectIntl(CheckboxGroup, {forwardRef: true});

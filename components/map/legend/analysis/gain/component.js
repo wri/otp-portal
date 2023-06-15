@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 
 class LegendAnalysisGain extends PureComponent {
   static propTypes = {
     analysis: PropTypes.shape({}).isRequired,
-    intl: intlShape
+    intl: PropTypes.object
   }
 
   render() {

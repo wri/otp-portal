@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Html from 'components/html';
 
@@ -25,7 +25,7 @@ const LayerInfo = ({ metadata, intl }) => {
 }
 
 LayerInfo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   metadata: PropTypes.object.isRequired
 }
 

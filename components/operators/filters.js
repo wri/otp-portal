@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { setFilters } from 'modules/operators-ranking';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Select from 'react-select';
@@ -44,7 +44,7 @@ class OperatorsFilters extends React.Component {
   };
 
   static propTypes = {
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     filters: PropTypes.object,
     options: PropTypes.object,
     className: PropTypes.string,

@@ -4,7 +4,7 @@ import Spinner from 'components/ui/spinner';
 import Html from 'components/html';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 let MoveTo;
 
@@ -97,7 +97,7 @@ class HelpTools extends React.Component {
 }
 
 HelpTools.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
   tools: PropTypes.object
 };

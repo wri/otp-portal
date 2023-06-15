@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -35,7 +35,7 @@ class CountryDocCard extends React.Component {
     explanation: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     units: PropTypes.string,
     value: PropTypes.number,
     url: PropTypes.string

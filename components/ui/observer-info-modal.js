@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 class ObserverInfoModal extends React.Component {
   render() {
@@ -71,7 +71,7 @@ ObserverInfoModal.propTypes = {
   'data-email': PropTypes.string,
   'data-name': PropTypes.string,
   'data-phone': PropTypes.string,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

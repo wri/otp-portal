@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { connect } from 'react-redux';
 
@@ -8,11 +10,32 @@ import Dropdown, {
   DropdownContent,
 } from 'react-simple-dropdown';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Icon from 'components/ui/icon';
 
+import { LOCALES } from 'constants/locales';
+import { setCookie } from 'services/cookies';
+
+// TODO: for now we will force full reload when changing language
+// otherwise we will have to deal with reloading all of the data
+// this is also preserving old behaviour
+// we should revisit this in the future
+const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
+  const saveLocale = () => {
+    setCookie('NEXT_LOCALE', locale, 365);
+  }
+
+  return (
+    <a href={href} onClick={saveLocale}>
+      {children}
+    </a>
+  )
+});
+
 const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
+  const { asPath } = useRouter();
+
   return (
     <Dropdown className="c-language-dropdown">
       <DropdownTrigger>
@@ -34,27 +57,18 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
 
       <DropdownContent>
         <ul className="language-dropdown-list">
-          <li className="language-dropdown-list-item">
-            <a href="?language=en-GB">English</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=fr-FR">Français</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=pt-PT">Português</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=zh-CN">中文</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=ja-JP">日本語</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=ko-KR">한국어</a>
-          </li>
-          <li className="language-dropdown-list-item">
-            <a href="?language=vi-VN">Tiếng Việt</a>
-          </li>
+          {LOCALES.map(locale => (
+            <li
+              key={locale.code}
+              className="language-dropdown-list-item"
+            >
+              <Link href={asPath} passHref locale={locale.code}>
+                <LanguageLink locale={locale.code}>
+                  {locale.name}
+                </LanguageLink>
+              </Link>
+            </li>
+          ))}
         </ul>
       </DropdownContent>
     </Dropdown>
@@ -62,7 +76,7 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
 }
 
 LanguageDropdown.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   showSelectedCode: PropTypes.bool,
   language: PropTypes.string
 }

@@ -2,15 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
+import { injectIntl } from 'react-intl';
+
 // Redux
 import { connect } from 'react-redux';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
 import { getAbout } from 'modules/about';
-
-// Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -119,10 +117,10 @@ AboutPage.propTypes = {
   about: PropTypes.shape({}).isRequired,
   partners: PropTypes.shape({}).isRequired,
   donors: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
-export default withIntl(connect(
+export default injectIntl(connect(
   state => ({
     about: state.about,
     partners: state.partners,

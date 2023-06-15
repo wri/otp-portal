@@ -30,7 +30,7 @@ import {
 } from 'selectors/operators-detail/fmus';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -314,7 +314,7 @@ class OperatorsDetailFMUs extends React.Component {
 }
 
 OperatorsDetailFMUs.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,

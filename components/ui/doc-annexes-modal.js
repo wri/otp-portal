@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -23,7 +23,7 @@ import File from 'components/form/File';
 class DocAnnexesModal extends React.Component {
   static propTypes = {
     title: PropTypes.string,
-    intl: intlShape.isRequired,
+    intl: PropTypes.object.isRequired,
     user: PropTypes.object,
     docId: PropTypes.string,
     onChange: PropTypes.func

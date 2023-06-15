@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
@@ -257,7 +257,7 @@ class TotalObservationsByOperatorByCategorybyIlegallity extends React.Component 
 TotalObservationsByOperatorByCategorybyIlegallity.propTypes = {
   data: PropTypes.array,
   year: PropTypes.number,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default injectIntl(TotalObservationsByOperatorByCategorybyIlegallity);

@@ -13,8 +13,7 @@ import { withRouter } from 'next/router';
 import modal from 'services/modal';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Selectors
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
@@ -446,7 +445,7 @@ ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,
   url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,
   getObservationsLayers: PropTypes.array,
   parsedChartObservations: PropTypes.array,
@@ -461,7 +460,7 @@ ObservationsPage.propTypes = {
 };
 
 export default withRouter(
-  withIntl(
+  injectIntl(
     connect(
       (state, props) => ({
         observations: state.observations,

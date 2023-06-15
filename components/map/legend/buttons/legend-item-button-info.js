@@ -1,5 +1,6 @@
 import React from 'react';
-import { injectIntl, intlShape } from 'react-intl';
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import {
   LegendItemButtonInfo,
@@ -12,7 +13,7 @@ const CustomLegendItemButtonInfo = (props) => {
 };
 
 CustomLegendItemButtonInfo.propTypes = {
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default injectIntl(CustomLegendItemButtonInfo);

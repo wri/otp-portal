@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
@@ -95,7 +95,7 @@ function TotalObservationsByOperator({ data, intl }) {
 
 TotalObservationsByOperator.propTypes = {
   data: PropTypes.array,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default injectIntl(TotalObservationsByOperator);

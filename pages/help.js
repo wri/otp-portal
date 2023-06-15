@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -122,10 +121,10 @@ HelpPage.propTypes = {
   tools: PropTypes.shape({}),
   faqs: PropTypes.shape({}),
   tutorials: PropTypes.shape({}),
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
-export default withIntl(connect(
+export default injectIntl(connect(
 
   state => ({
     howtos: state.help.howtos,

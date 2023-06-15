@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import cx from 'classnames';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Fuse from 'fuse.js';
 
 // Redux
@@ -185,7 +185,7 @@ DocumentsByOperator.propTypes = {
   searchText: PropTypes.string,
   id: PropTypes.string,
   user: PropTypes.object,
-  intl: intlShape
+  intl: PropTypes.object
 };
 
 export default injectIntl(connect(

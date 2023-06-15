@@ -7,7 +7,7 @@ import sortBy from 'lodash/sortBy';
 import Html from 'components/html';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 function OperatorsDetailOverview(props) {
   const { countriesDetail } = props;
@@ -76,7 +76,7 @@ function OperatorsDetailOverview(props) {
 
 OperatorsDetailOverview.propTypes = {
   countriesDetail: PropTypes.object,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 

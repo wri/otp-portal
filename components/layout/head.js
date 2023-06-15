@@ -1,15 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HeadNext from 'next/head';
-import Script from 'next/script';
+import { useRouter } from 'next/router';
 
 const Head = ({ title, description }) => {
+  const { locales, asPath } = useRouter();
+
   return (
     <HeadNext>
       <title>{title} | Open Timber Portal</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="author" content="Vizzuality" />
+
+      <link
+        rel="alternate"
+        hrefLang="x-default"
+        href={`https://opentimberportal.org${asPath}`}
+      />
+      <link
+        rel="alternate"
+        hrefLang="en"
+        href={`https://opentimberportal.org${asPath}`}
+      />
+      {locales.filter(l => l !== 'en').map((locale) => (
+        <link
+          key={locale}
+          rel="alternate"
+          hrefLang={locale}
+          href={`https://opentimberportal.org/${locale}${asPath}`}
+        />
+      ))}
 
       {/* Favicon */}
       <link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/apple-icon-57x57.png" />

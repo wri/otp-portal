@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Services
 import DocumentationService from 'services/documentationService';
@@ -220,7 +220,7 @@ DocCardUpload.propTypes = {
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
   date: PropTypes.string,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 DocCardUpload.defaultProps = {

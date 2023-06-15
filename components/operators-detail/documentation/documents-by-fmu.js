@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -64,7 +64,7 @@ DocumentsByFMU.propTypes = {
   user: PropTypes.object,
   id: PropTypes.string,
   getOperator: PropTypes.func,
-  intl: intlShape
+  intl: PropTypes.object
 };
 
 export default injectIntl(DocumentsByFMU);

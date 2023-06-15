@@ -41,4 +41,4 @@ Input.propTypes = {
   onChange: PropTypes.func
 };
 
-export default injectIntl(Input, { withRef: true });
+export default injectIntl(Input, { forwardRef: true });

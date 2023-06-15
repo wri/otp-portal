@@ -5,7 +5,7 @@ import Jsona from 'jsona';
 import groupBy from 'lodash/groupBy';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import API from 'services/api';
@@ -199,7 +199,7 @@ class NewsletterForm extends React.Component {
 }
 
 NewsletterForm.propTypes = {
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   language: PropTypes.string,
 };
 

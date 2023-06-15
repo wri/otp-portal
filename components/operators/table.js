@@ -6,7 +6,7 @@ import sortBy from 'lodash/sortBy';
 import Link from 'next/link';
 
 // Intl
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
@@ -127,7 +127,7 @@ class OperatorsTable extends React.Component {
 OperatorsTable.propTypes = {
   operators: PropTypes.array.isRequired,
   operatorsTable: PropTypes.array.isRequired,
-  intl: intlShape.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 export default injectIntl(OperatorsTable);

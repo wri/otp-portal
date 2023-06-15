@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { injectIntl, intlShape } from 'react-intl';
-
+import { injectIntl } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
@@ -56,7 +55,7 @@ Overview.propTypes = {
   loading: PropTypes.bool,
   onShowObservations: PropTypes.func,
   onShowMap: PropTypes.func,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
 };
 
 export default injectIntl(Overview);

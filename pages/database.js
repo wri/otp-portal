@@ -9,8 +9,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 
 // Intl
-import withIntl from 'hoc/with-intl';
-import { intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -121,7 +120,7 @@ DocumentsDatabasePage.propTypes = {
   router: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
   database: PropTypes.object,
-  intl: intlShape.isRequired,
+  intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,
 
   getFilters: PropTypes.func.isRequired,
@@ -132,7 +131,7 @@ DocumentsDatabasePage.propTypes = {
 };
 
 export default withRouter(
-  withIntl(
+  injectIntl(
     connect(
       (state) => ({
         database: state.database,
