@@ -71,7 +71,7 @@ app
           req,
           res,
           '/countries/detail',
-          Object.assign(req.params, query)
+          Object.assign(req.params, query, { __nextLocale: req.params.locale })
         );
       });
     } else {
@@ -95,7 +95,7 @@ app
         req,
         res,
         '/operators/new',
-        Object.assign(req.params, req.query)
+        Object.assign(req.params, req.query, { __nextLocale: req.params.locale })
       )
     );
     server.get('/:locale?/operators/:id/:tab?', (req, res) => {
@@ -104,7 +104,7 @@ app
         req,
         res,
         '/operators/detail',
-        Object.assign(req.params, query)
+        Object.assign(req.params, query, { __nextLocale: req.params.locale })
       );
     });
 
@@ -114,12 +114,12 @@ app
         req,
         res,
         '/observations',
-        Object.assign(req.params, req.query)
+        Object.assign(req.params, req.query, { __nextLocale: req.params.locale })
       )
     );
 
     server.get('/:locale?/help/:tab', (req, res) =>
-      app.render(req, res, '/help', Object.assign(req.params, req.query))
+      app.render(req, res, '/help', Object.assign(req.params, req.query, { __nextLocale: req.params.locale }))
     );
 
     // LOGIN
