@@ -45,6 +45,14 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-// Make sure adding Sentry options is the last code to run before exporting, to
-// ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(config, sentryWebpackPluginOptions);
+if (process.env.ANALYZE === 'true') {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: true
+  })
+  module.exports = withBundleAnalyzer(withSentryConfig(config, sentryWebpackPluginOptions));
+} else {
+  // Make sure adding Sentry options is the last code to run before exporting, to
+  // ensure that your source maps include changes from all other Webpack plugins
+  module.exports = withSentryConfig(config, sentryWebpackPluginOptions);
+}
+
