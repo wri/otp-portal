@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
+
+import API from 'services/api'
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
@@ -39,28 +40,15 @@ export function getOperators() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-    const currentFields = { operators: 'name,slug,country', countries: 'name' };
-    const fields = Object.keys(currentFields).map(f => `fields[${f}]=${currentFields[f]}`).join('&');
-
-    return fetch(
-      `${
-        process.env.OTP_API
-      }/operators?locale=${lang}&page[size]=3000&${fields}&include=country&filter[country]=${process.env.OTP_COUNTRIES_IDS.join(
-        ','
-      )}&filter[fa]=true`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('operators', {
+      locale: language,
+      include: 'country',
+      'page[size]': 3000,
+      'filter[country]': process.env.OTP_COUNTRIES_IDS.join(','),
+      'filter[fa]': true,
+      'fields[operators]': 'name,slug,country',
+      'fields[countries]': 'name',
+    })
       .then((operators) => {
         const dataParsed = JSONA.deserialize(operators);
         dispatch({

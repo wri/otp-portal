@@ -48,7 +48,9 @@ class DocCard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.documentationService = new DocumentationService();
+    this.documentationService = new DocumentationService({
+      authorization: props.user.token
+    });
   }
 
   state = {
@@ -84,11 +86,9 @@ class DocCard extends React.Component {
   }
 
   triggerRemoveAnnex = (id) => {
-    const { user } = this.props;
-
     this.setState({ deleteLoading: true });
 
-    this.documentationService.deleteAnnex(id, user)
+    this.documentationService.deleteAnnex(id)
       .then(() => {
         this.setState({ deleteLoading: false });
         this.props.onChange && this.props.onChange();

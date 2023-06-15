@@ -1,5 +1,4 @@
-import 'isomorphic-fetch';
-import { post, remove } from 'utils/request';
+import API from 'services/api';
 
 export default class DocumentationService {
 
@@ -7,103 +6,19 @@ export default class DocumentationService {
     this.opts = options;
   }
 
-  saveDocument({ url, type, body }) {
-    return new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/${url}`,
-        type,
-        body,
-        headers: [{
-          key: 'Content-Type',
-          value: 'application/vnd.api+json' // application/vnd.api+json
-        }, {
-          key: 'Authorization',
-          value: `Bearer ${this.opts.authorization}`
-        }, {
-          key: 'OTP-API-KEY',
-          value: process.env.OTP_API_KEY
-        }],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        }
-      });
-    });
+  saveDocument({ url, body }) {
+    return API.patch(url, { body, token: this.opts.authorization });
   }
 
   deleteDocument(id, path = 'operator-documents') {
-    return new Promise((resolve, reject) => {
-      remove({
-        url: `${process.env.OTP_API}/${path}/${id}`,
-        headers: [{
-          key: 'Content-Type',
-          value: 'application/json'
-        }, {
-          key: 'Authorization',
-          value: `Bearer ${this.opts.authorization}`
-        }, {
-          key: 'OTP-API-KEY',
-          value: process.env.OTP_API_KEY
-        }],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        }
-      });
-    });
+    return API.delete(`${path}/${id}`, { token: this.opts.authorization });
   }
 
-  saveAnnex({ url, type, body }) {
-    return new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/${url}`,
-        type,
-        body,
-        headers: [{
-          key: 'Content-Type',
-          value: 'application/vnd.api+json' // application/vnd.api+json
-        }, {
-          key: 'Authorization',
-          value: `Bearer ${this.opts.authorization}`
-        }, {
-          key: 'OTP-API-KEY',
-          value: process.env.OTP_API_KEY
-        }],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        }
-      });
-    });
+  saveAnnex({ url, body }) {
+    return API.post(url, { body, token: this.opts.authorization });
   }
 
-  deleteAnnex(id, user) {
-    return new Promise((resolve, reject) => {
-      remove({
-        url: `${process.env.OTP_API}/operator-document-annexes/${id}`,
-        headers: [{
-          key: 'Content-Type',
-          value: 'application/json'
-        }, {
-          key: 'Authorization',
-          value: `Bearer ${user.token}`
-        }, {
-          key: 'OTP-API-KEY',
-          value: process.env.OTP_API_KEY
-        }],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        }
-      });
-    });
+  deleteAnnex(id) {
+    return API.delete(`operator-document-annexes/${id}`, { token: this.opts.authorization });
   }
 }

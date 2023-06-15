@@ -1,6 +1,4 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
-import Router from 'next/router';
 import isEmpty from 'lodash/isEmpty';
 
 import API from 'services/api';
@@ -174,19 +172,7 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_OBSERVATIONS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    return fetch(`${process.env.OTP_API}/observation_filters_tree?locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('observation_filters_tree', { locale: language })
       .then((filters) => {
         // Fetch from server ok -> Dispatch observations
         dispatch({

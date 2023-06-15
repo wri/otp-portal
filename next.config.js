@@ -6,6 +6,7 @@ const config = {
   env: {
     ENV: process.env.ENV,
     PORT: process.env.PORT,
+    APP_URL: process.env.APP_URL,
     RW_API: process.env.RW_API,
     GFW_API: process.env.GFW_API,
     OTP_API: process.env.OTP_API,

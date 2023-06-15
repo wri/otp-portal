@@ -1,14 +1,8 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
-
-// Toastr
 import { toastr } from 'react-redux-toastr';
-
-// Intl
 import { injectIntl } from 'react-intl';
-
-// Redux
 import { connect } from 'react-redux';
 
 import {
@@ -25,10 +19,10 @@ import {
 } from 'modules/operators-ranking';
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
 
-// Services
 import modal from 'services/modal';
 
-// Components
+import { transformRequest } from 'utils/map';
+
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
 import Map from 'components/map';
@@ -40,7 +34,6 @@ import FAAttributions from 'components/map/fa-attributions';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 
-// Operators components
 import OperatorsFilters from 'components/operators/filters';
 import OperatorsTable from 'components/operators/table';
 
@@ -180,17 +173,7 @@ class OperatorsPage extends React.Component {
               }}
 
               // Options
-              transformRequest={(url, resourceType) => {
-                if (url.startsWith(process.env.OTP_API)) {
-                  return {
-                    url,
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'OTP-API-KEY': process.env.OTP_API_KEY
-                    }
-                  };
-                }
-              }}
+              transformRequest={transformRequest}
             >
               {map => (
                 <Fragment>

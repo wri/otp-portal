@@ -3,19 +3,14 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import orderBy from 'lodash/orderBy';
 import debounce from 'lodash/debounce';
-
-// Redux
 import { connect } from 'react-redux';
-
 import { withRouter } from 'next/router';
-
-// Services
-import modal from 'services/modal';
-
-// Intl
 import { injectIntl } from 'react-intl';
 
-// Selectors
+import modal from 'services/modal';
+
+import { transformRequest } from 'utils/map';
+
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import {
@@ -24,7 +19,6 @@ import {
 } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
-// Components
 import Layout from 'components/layout/layout';
 import Overview from 'components/observations/overview';
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -42,7 +36,6 @@ import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map/fa-attributions';
 
-// Modules
 import {
   getObservations,
   getFilters,
@@ -53,7 +46,6 @@ import {
   setObservationsMapCluster,
 } from 'modules/observations';
 
-// Constants
 import { FILTERS_REFS } from 'constants/observations';
 import {
   tableCheckboxes,
@@ -386,19 +378,7 @@ class ObservationsPage extends React.Component {
               onLoad={this.onMapLoaded}
               onUnmount={() => (this.map = null)}
               // Options
-              transformRequest={(url, resourceType) => {
-                if (url.startsWith(process.env.OTP_API)) {
-                  return {
-                    url,
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'OTP-API-KEY': process.env.OTP_API_KEY,
-                    },
-                  };
-                }
-
-                return null;
-              }}
+              transformRequest={transformRequest}
               mapOptions={{
                 customAttribution:
                         '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',

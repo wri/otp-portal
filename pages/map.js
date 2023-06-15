@@ -1,15 +1,14 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-// Intl
 import { injectIntl } from 'react-intl';
 
-// Components
 import Head from 'components/layout/head';
 import StaticSection from 'components/ui/static-section';
 import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
 import { LAYERS } from 'constants/layers';
+import { transformRequest } from 'utils/map';
 
 const Layers = [
   {
@@ -66,20 +65,7 @@ class MapPage extends React.Component {
                 }}
                 customClass="c-map-fullscreen"
                 dragRotate={false}
-                transformRequest={(uri) => {
-                  if (uri.startsWith(process.env.OTP_API)) {
-                    return {
-                      url: uri,
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'OTP-API-KEY': process.env.OTP_API_KEY
-                      }
-                    };
-                  }
-
-                  return null;
-                }}
-
+                transformRequest={transformRequest}
               >
                 {map => (
                   <Fragment>

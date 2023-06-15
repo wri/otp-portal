@@ -39,11 +39,9 @@ class SawmillsTable extends React.Component {
   };
 
   handleSawmillActiveDelete(id) {
-    const { user } = this.props;
-
     this.setState({ loading: true });
 
-    this.sawmillsService.deleteSawmill(id, user)
+    this.sawmillsService.deleteSawmill(id)
       .then(() => {
         this.setState({ loading: false });
         this.props.onChange && this.props.onChange();

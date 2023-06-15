@@ -1,15 +1,14 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-// Components
 import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
 
 import Spinner from 'components/ui/spinner';
 
-// Constants
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
+import { transformRequest } from 'utils/map';
 
 class MapSubComponent extends React.Component {
   static propTypes = {
@@ -52,20 +51,7 @@ class MapSubComponent extends React.Component {
               onViewportChange={this.setMapocation}
 
               // Options
-              transformRequest={(url, resourceType) => {
-                if (
-                  resourceType === 'Source' &&
-                  url.startsWith(process.env.OTP_API)
-                ) {
-                  return {
-                    url,
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'OTP-API-KEY': process.env.OTP_API_KEY
-                    }
-                  };
-                }
-              }}
+              transformRequest={transformRequest}
             >
               {map => (
                 <Fragment>

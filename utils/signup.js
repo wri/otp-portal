@@ -57,17 +57,7 @@ const HELPERS_REGISTER = {
   },
 
   getOperatorFmus(countryId, lang) {
-    return fetch(`${process.env.OTP_API}/fmus?filter[country]=${countryId}&filter[free]=true&locale=${lang}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('fmus', { locale: lang, 'filter[country]': countryId, 'filter[free]': true })
       .then((data) => {
         const dataParsed = JSONA.deserialize(data);
         return sortBy(dataParsed.map(f => ({ label: f.name, value: f.id })), 'label');

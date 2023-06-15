@@ -1,6 +1,6 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
-import queryString from 'query-string';
+
+import API from 'services/api';
 
 /* Constants */
 const GET_COUNTRY_SUCCESS = 'GET_COUNTRY_SUCCESS';
@@ -102,26 +102,12 @@ export function getCountry(id) {
       'required-gov-documents.gov-documents'
     ];
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const queryParams = queryString.stringify({
+    const queryParams = {
       ...!!includeFields.length && { include: includeFields.join(',') },
-      locale: lang
-    });
+      locale: language
+    };
 
-
-    return fetch(`${process.env.OTP_API}/countries/${id}?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-        Authorization: user.token ? `Bearer ${user.token}` : undefined
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get(`countries/${id}`, queryParams, { token: user.token })
       .then((country) => {
         // Fetch from server ok -> Dispatch country and deserialize the data
         const dataParsed = JSONA.deserialize(country);
@@ -148,25 +134,12 @@ export function getCountryLinks(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRY_LINKS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const queryParams = queryString.stringify({
+    const queryParams = {
       country: id,
-      locale: lang
-    });
+      locale: language
+    };
 
-    return fetch(`${process.env.OTP_API}/country-links?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-        Authorization: user.token ? `Bearer ${user.token}` : undefined
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('country-links', queryParams, { token: user.token })
       .then((links) => {
         // Fetch from server ok -> Dispatch country and deserialize the data
         const dataParsed = JSONA.deserialize(links);
@@ -193,25 +166,12 @@ export function getCountryVPAs(id) {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_COUNTRY_VPAS_LOADING });
 
-    const lang = language === 'zh' ? 'zh-CN' : language;
-
-    const queryParams = queryString.stringify({
+    const queryParams = {
       country: id,
-      locale: lang
-    });
+      locale: language
+    };
 
-    return fetch(`${process.env.OTP_API}/country-vpas?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-        Authorization: user.token ? `Bearer ${user.token}` : undefined
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('country-vpas', queryParams, { token: user.token })
       .then((links) => {
         // Fetch from server ok -> Dispatch country and deserialize the data
         const dataParsed = JSONA.deserialize(links);

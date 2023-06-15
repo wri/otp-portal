@@ -1,10 +1,8 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
-import queryString from 'query-string';
 import omitBy from 'lodash/omitBy';
 import isEmpty from 'lodash/isEmpty';
 
-import { get, post } from 'utils/request';
+import API, { NEXTAPIClient } from 'services/api'
 
 import { logEvent } from 'utils/analytics';
 
@@ -109,13 +107,8 @@ export function getUserOperator(id) {
     dispatch({ type: GET_USER_OPERATOR_LOADING });
 
     const includeFields = ['country', 'fmus'];
-
-    const queryParams = queryString.stringify({
-      include: includeFields.join(','),
-    });
-
     // Fields
-    const currentFields = {
+    const fields = {
       fmus: [
         'name',
         'certification-fsc',
@@ -127,96 +120,41 @@ export function getUserOperator(id) {
         'certification-ls',
       ],
     };
-    const fields = Object.keys(currentFields)
-      .map((f) => `fields[${f}]=${currentFields[f]}`)
-      .join('&');
 
-    return fetch(
-      `${process.env.OTP_API}/operators/${id}?${queryParams}&${fields}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
+    return API.get(`operators/${id}`, {
+      include: includeFields.join(','),
+      'fields[fmus]': fields.fmus.join(',')
+    }).then((operator) => {
+      // Fetch from server ok -> Dispatch operator and deserialize the data
+      const dataParsed = JSONA.deserialize(operator);
 
-        dispatch({
-          type: GET_USER_OPERATOR_SUCCESS,
-          payload: dataParsed,
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_USER_OPERATOR_ERROR,
-          payload: err.message,
-        });
+      dispatch({
+        type: GET_USER_OPERATOR_SUCCESS,
+        payload: dataParsed,
       });
+    }).catch((err) => {
+      // Fetch from server ko -> Dispatch error
+      dispatch({
+        type: GET_USER_OPERATOR_ERROR,
+        payload: err.message,
+      });
+    });
   };
 }
 
 export function login({ body }) {
-  return (dispatch) =>
-    new Promise((resolve, reject) => {
-      post({
-        url: '/login',
-        type: 'POST',
-        body,
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-        ],
-        onSuccess: (response) => {
-          localStorage.removeItem('notificationsShown');
-          logEvent('login', { method: 'credentials' });
-          window.location.reload();
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+  return () => NEXTAPIClient.post('login', { body }).then(() => {
+    localStorage.removeItem('notificationsShown');
+    logEvent('login', { method: 'credentials' });
+    window.location.reload();
+  });
 }
 
 export function logout() {
-  return (dispatch) =>
-    new Promise((resolve, reject) => {
-      get({
-        url: '/logout',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-        ],
-        onSuccess: (response) => {
-          window.location.reload();
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
-}
+  return () => NEXTAPIClient.delete('logout').then(() => {
+    window.location.reload();
+  })
+ }
 
 export function getUserProfile() {
   return (dispatch, getState) => {
@@ -224,21 +162,7 @@ export function getUserProfile() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_USER_PROFILE_LOADING });
 
-    return fetch(
-      `${process.env.OTP_API}/users/${user.user_id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'OTP-API-KEY': process.env.OTP_API_KEY,
-          Authorization: `Bearer ${user.token}`
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get(`users/${user.user_id}`, null, { token: user.token })
       .then((operator) => {
         // Fetch from server ok -> Dispatch operator and deserialize the data
         const dataParsed = JSONA.deserialize(operator);
@@ -259,157 +183,34 @@ export function getUserProfile() {
 }
 
 export function saveUser({ body }) {
-  return () =>
-    new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/register`,
-        type: 'POST',
-        body,
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/vnd.api+json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-        ],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+  return () => API.post('register', { body })
 }
 
 export function updateUserProfile({ attributes }) {
   return (dispatch, getState) => {
     const { user } = getState();
 
-    return new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/users/${user.user_id}`,
-        type: 'PATCH',
-        body: {
-          data: {
-            id: user.user_id,
-            type: 'users',
-            attributes: omitBy(attributes, isEmpty)
-          }
-        },
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/vnd.api+json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-          {
-            key: 'Authorization',
-            value: `Bearer ${user.token}`,
-          },
-        ],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
+    return API.patch(`users/${user.user_id}`, {
+      body: {
+        data: {
+          id: user.user_id,
+          type: 'users',
+          attributes: omitBy(attributes, isEmpty)
+        }
+      },
+      token: user.token
     });
   }
 }
 
 export function saveOperator({ body }) {
-  return () =>
-    new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/operators`,
-        type: 'POST',
-        body,
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/vnd.api+json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-        ],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+  return () => API.post('operators', { body });
 }
 
 export function updateOperator({ body, id, authorization }) {
-  return () =>
-    new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/operators/${id}`,
-        type: 'PATCH',
-        body,
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/vnd.api+json',
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-          {
-            key: 'Authorization',
-            value: `Bearer ${authorization}`,
-          },
-        ],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+  return () => API.patch(`operators/${id}`, { body, token: authorization });
 }
 
 export function updateFmu({ id, body, authorization }) {
-  return () =>
-    new Promise((resolve, reject) => {
-      post({
-        url: `${process.env.OTP_API}/fmus/${id}`,
-        type: 'PATCH',
-        body,
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/vnd.api+json',
-          },
-          {
-            key: 'Authorization',
-            value: `Bearer ${authorization}`,
-          },
-          {
-            key: 'OTP-API-KEY',
-            value: process.env.OTP_API_KEY,
-          },
-        ],
-        onSuccess: (response) => {
-          resolve(response);
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+  return () => API.patch(`fmus/${id}`, { body, token: authorization });
 }

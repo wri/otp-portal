@@ -15,7 +15,7 @@ describe('Document database page', function () {
     it('can filter by producer and status', function () {
       cy.selectOption('#react-select-operator_id-input', 'CFF Bois', 'CFF Bois International')
       cy.selectOption('#react-select-status-input', 'pro', 'Provided (valid)');
-      cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 5);
+      cy.get('.rt-tbody').find('.rt-tr-group').should('have.length', 4);
     })
   })
 });

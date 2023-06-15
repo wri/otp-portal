@@ -1,5 +1,6 @@
 import Jsona from 'jsona';
-import fetch from 'isomorphic-fetch';
+
+import API from 'services/api';
 
 /* Constants */
 const GET_PARTNERS_SUCCESS = 'GET_PARTNERS_SUCCESS';
@@ -45,17 +46,7 @@ export function getPartners() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_PARTNERS_LOADING });
 
-    return fetch(`${process.env.OTP_API}/partners?page[size]=2000`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'OTP-API-KEY': process.env.OTP_API_KEY,
-      },
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(response.statusText);
-      })
+    return API.get('partners', { 'page[size]': 2000 })
       .then((partners) => {
         const dataParsed = JSONA.deserialize(partners);
 
