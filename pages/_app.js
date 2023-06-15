@@ -68,7 +68,7 @@ const cookieMigration = () => {
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
-    const { asPath, pathname, query, isServer, req, store, locale, defaultLocale } = ctx;
+    const { asPath, pathname, query, isServer, req, res, store, locale, defaultLocale } = ctx;
     const state = store.getState();
     const url = { asPath, pathname, query };
     let user = null;
