@@ -17,29 +17,11 @@ import modal from 'services/modal';
 
 // Components
 import Spinner from 'components/ui/spinner';
+import ForgotPassword from 'components/ui/forgot-password';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
+import { FormElements } from 'utils/form';
 
 class Login extends React.Component {
   constructor(props) {
@@ -53,9 +35,12 @@ class Login extends React.Component {
       submitting: false
     };
 
+    this.formElements = new FormElements();
+
     // Bindings
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onForgotPasswordClick = this.onForgotPasswordClick.bind(this);
   }
 
   /**
@@ -71,44 +56,50 @@ class Login extends React.Component {
   onSubmit(e) {
     e && e.preventDefault();
 
+    const { intl } = this.props;
+
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
+    this.formElements.validate(this.state.form);
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
         this.setState({ submitting: true });
 
         // Save data
-        this.props.login({ body: { auth: this.state.form } })
+        login({ body: { auth: this.state.form } })
           .then(() => {
-            this.setState({ submitting: false });
-            modal.toggleModal(false);
-            // toastr.success('Success', `Logged`);
+            window.location.reload();
           })
           .catch((errors) => {
             this.setState({ submitting: false });
             console.error(errors);
             try {
               errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title}`)
+                toastr.error(intl.formatMessage({ id: 'Error' }), `${er.title}`)
               );
             } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+              toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
             }
           });
       } else {
-        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
+        toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Fill all the required fields' }));
       }
     }, 0);
   }
 
+  onForgotPasswordClick() {
+    modal.toggleModal(true, {
+      children: ForgotPassword
+    });
+  }
 
   render() {
+    const { intl } = this.props;
     const { submitting } = this.state;
     const submittingClassName = classnames({
       '-submitting': submitting
@@ -121,20 +112,20 @@ class Login extends React.Component {
         <Spinner isLoading={submitting} className="-light" />
 
         <h2 className="c-title -huge">
-          {this.props.intl.formatMessage({ id: 'login' })}
+          {intl.formatMessage({ id: 'login' })}
         </h2>
 
         <form className="c-form" onSubmit={this.onSubmit} noValidate>
           <fieldset className="c-field-container">
             {/* EMAIL */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.email = c; }}
+              ref={(c) => { if (c) this.formElements.elements.email = c; }}
               onChange={value => this.onChange({ email: value })}
               validations={['required', 'email']}
               className="-fluid"
               properties={{
                 name: 'email',
-                label: this.props.intl.formatMessage({ id: 'login.form.field.email' }),
+                label: intl.formatMessage({ id: 'login.form.field.email' }),
                 type: 'email',
                 required: true,
                 default: this.state.form.email
@@ -145,13 +136,13 @@ class Login extends React.Component {
 
             {/* PASSWORD */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.password = c; }}
+              ref={(c) => { if (c) this.formElements.elements.password = c; }}
               onChange={value => this.onChange({ password: value })}
               validations={['required']}
               className="-fluid"
               properties={{
                 name: 'password',
-                label: this.props.intl.formatMessage({ id: 'login.form.field.password' }),
+                label: intl.formatMessage({ id: 'login.form.field.password' }),
                 type: 'password',
                 required: true,
                 default: this.state.form.password
@@ -161,9 +152,11 @@ class Login extends React.Component {
             </Field>
           </fieldset>
 
-          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup"><a onClick={closeModal}>{this.props.intl.formatMessage({ id: 'signin.register_now' })}</a></Link></p>
-
-          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operators/new"><a onClick={closeModal}>{this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a></Link></p>
+          <div className="c-field-extra-actions">
+            <p>{intl.formatMessage({ id: 'signin.forgot_password', defaultMessage: 'Did you forget your password?' })}  <button type="button" className="c-link-button" onClick={this.onForgotPasswordClick}>{intl.formatMessage({ id: 'signin.reset_your_password', defaultMessage: 'Reset your password' })}</button></p>
+            <p>{intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_now' })}</a></Link></p>
+            <p>{intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operators/new"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_producer' })}</a></Link></p>
+          </div>
 
           <ul className="c-field-buttons">
             <li>
@@ -173,7 +166,7 @@ class Login extends React.Component {
                 className="c-button -primary -expanded"
                 onClick={closeModal}
               >
-                {this.props.intl.formatMessage({ id: 'cancel' })}
+                {intl.formatMessage({ id: 'cancel' })}
               </button>
             </li>
             <li>
@@ -183,7 +176,7 @@ class Login extends React.Component {
                 disabled={submitting}
                 className={`c-button -secondary -expanded ${submittingClassName}`}
               >
-                {this.props.intl.formatMessage({ id: 'login' })}
+                {intl.formatMessage({ id: 'login' })}
               </button>
             </li>
           </ul>
@@ -194,12 +187,8 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  intl: PropTypes.object.isRequired,
-  login: PropTypes.func.isRequired
+  intl: PropTypes.object.isRequired
 };
 
 
-export default connect(
-  null,
-  { login }
-)(injectIntl(Login));
+export default injectIntl(Login);

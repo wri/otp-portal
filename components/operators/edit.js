@@ -33,27 +33,8 @@ import SawmillModal from 'components/ui/sawmill-modal';
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 import { HELPERS_FMU } from 'utils/fmu';
+import { FormElements } from 'utils/form';
 
-// Constants
-const FORM_ELEMENTS = {
-  elements: {
-  },
-  validate() {
-    const elements = this.elements;
-    Object.keys(elements).forEach((k) => {
-      elements[k].validate();
-    });
-  },
-  isValid() {
-    const elements = this.elements;
-    const valid = Object.keys(elements)
-      .map(k => elements[k].isValid())
-      .filter(v => v !== null)
-      .every(element => element);
-
-    return valid;
-  }
-};
 
 class EditOperator extends React.Component {
   constructor(props) {
@@ -79,6 +60,8 @@ class EditOperator extends React.Component {
       submitting: false,
       submitted: false
     };
+
+    this.formElements = new FormElements();
 
     // Bindings
     this.onChange = this.onChange.bind(this);
@@ -111,12 +94,12 @@ class EditOperator extends React.Component {
     e && e.preventDefault();
 
     // Validate the form
-    FORM_ELEMENTS.validate(this.state.form);
+    this.formElements.validate(this.state.form);
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = FORM_ELEMENTS.isValid(this.state.form);
+      const valid = this.formElements.isValid(this.state.form);
 
       if (valid) {
         // Start the submitting
@@ -237,7 +220,7 @@ class EditOperator extends React.Component {
 
             {/* Operator name */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.name = c; }}
+              ref={(c) => { if (c) this.formElements.elements.name = c; }}
               onChange={value => this.onChange({ name: value })}
               validations={['required']}
               className="-fluid"
@@ -253,7 +236,7 @@ class EditOperator extends React.Component {
 
             {/* Operator description */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.details = c; }}
+              ref={(c) => { if (c) this.formElements.elements.details = c; }}
               onChange={value => this.onChange({ details: value })}
               className="-fluid"
               properties={{
@@ -268,7 +251,7 @@ class EditOperator extends React.Component {
 
             {/* Operator type */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.operator_type = c; }}
+              ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
               onChange={value => this.onChange({ operator_type: value })}
               validations={['required']}
               className="-fluid"
@@ -289,7 +272,7 @@ class EditOperator extends React.Component {
 
             {/* Website */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.website = c; }}
+              ref={(c) => { if (c) this.formElements.elements.website = c; }}
               onChange={value => this.onChange({ website: value })}
               validations={['url']}
               className="-fluid"
@@ -304,7 +287,7 @@ class EditOperator extends React.Component {
 
             {/* Address */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.address = c; }}
+              ref={(c) => { if (c) this.formElements.elements.address = c; }}
               onChange={value => this.onChange({ address: value })}
               className="-fluid"
               properties={{
@@ -318,7 +301,7 @@ class EditOperator extends React.Component {
 
             {/* Logo */}
             <Field
-              ref={(c) => { if (c) FORM_ELEMENTS.elements.logo = c; }}
+              ref={(c) => { if (c) this.formElements.elements.logo = c; }}
               onChange={value => this.onChange({ logo: value })}
               className="-fluid"
               properties={{
@@ -339,7 +322,7 @@ class EditOperator extends React.Component {
             <div className="c-field-row">
               {/* Country */}
               <Field
-                ref={(c) => { if (c) FORM_ELEMENTS.elements.country = c; }}
+                ref={(c) => { if (c) this.formElements.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
                 options={this.state.countryOptions}
@@ -358,7 +341,7 @@ class EditOperator extends React.Component {
               {/* FMUs */}
               {!!this.state.fmusOptions.length && (
                 <Field
-                  ref={(c) => { if (c) FORM_ELEMENTS.elements.fmus = c; }}
+                  ref={(c) => { if (c) this.formElements.elements.fmus = c; }}
                   name="fmus"
                   onChange={value => this.onChange({ fmus: value })}
                   onChangeCertifications={value => this.onChangeCertifications(value)}

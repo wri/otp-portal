@@ -41,13 +41,15 @@ class API {
     if (options.token) {
       headers.Authorization = `Bearer ${options.token}`
     }
-
-    return fetch(url.toString(), {
+    const fetchParams = {
       method,
-      headers,
-      body: options.body ? JSON.stringify(options.body) : undefined,
-    })
-      .then(this._handleResponse)
+      headers
+    };
+    if (options.body) {
+      fetchParams.body = JSON.stringify(options.body);
+    }
+
+    return fetch(url.toString(), fetchParams).then(this._handleResponse)
   }
 
   _handleResponse(response) {
