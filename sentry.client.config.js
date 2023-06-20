@@ -13,6 +13,7 @@ Sentry.init({
     'ResizeObserver loop completed with undelivered notifications.',
     'ResizeObserver is not defined',
     "Can't find variable: ResizeObserver",
+    "Could not load image blob:"
   ],
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 0,
