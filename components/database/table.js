@@ -134,7 +134,7 @@ function DatabaseTable({
       className: 'status',
       Cell: (attr) => (
         <span>
-          {intl.formatMessage({
+          {attr.value && intl.formatMessage({
             id: attr.value,
           })}
         </span>
@@ -179,7 +179,7 @@ function DatabaseTable({
       minWidth: 200,
       Cell: (attr) => (
         <span className="-source">
-          {attr.value !== 'other_source'
+          {attr.value && attr.value !== 'other_source'
             ? intl.formatMessage({ id: attr.value })
             : attr.original.sourceInfo}
         </span>
