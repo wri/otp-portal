@@ -3,6 +3,7 @@ import Router from 'next/router';
 
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
+import uniq from 'lodash/uniq';
 import moment from 'moment';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
@@ -57,7 +58,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'integrated-alerts',
+    // 'integrated-alerts', // this should be activated when metadata is loaded
     'fmus',
     'protected-areas'
   ],
@@ -339,10 +340,12 @@ export function setFilters(filter) {
 export function getIntegratedAlertsMetadata() {
   return (dispatch, state) => {
     return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      const activeLayers = state().operatorsRanking.layersActive;
+
       if (!minDataDate || !maxDataDate) {
         dispatch({
           type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
-          payload: state().operatorsRanking.layersActive.filter(l => l !== 'integrated-alerts')
+          payload: activeLayers.filter(l => l !== 'integrated-alerts')
         });
         return;
       }
@@ -364,6 +367,16 @@ export function getIntegratedAlertsMetadata() {
             }
           }
         }
+      });
+
+      // put integrated-alerts before fmus
+      dispatch({
+        type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
+        payload: uniq([
+          ...activeLayers.slice(0, activeLayers.indexOf('fmus')),
+          'integrated-alerts',
+          ...activeLayers.slice(activeLayers.indexOf('fmus'))
+        ])
       });
     })
   };

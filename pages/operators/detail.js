@@ -56,10 +56,6 @@ class OperatorsDetail extends React.Component {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
     const requests = [];
 
-    if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
-      requests.push(store.dispatch(getIntegratedAlertsMetadata()));
-    }
-
     // we are going to redirect to slug if the id is a number
     if (!isNaN(url.query.id)) {
       await store.dispatch(getOperator(url.query.id));
@@ -281,7 +277,8 @@ export default injectIntl(
       getOperatorDocumentation,
       getOperatorDocumentationCurrent,
       getOperatorTimeline,
-      getOperatorObservations
+      getOperatorObservations,
+      getIntegratedAlertsMetadata
     }
   )(OperatorsDetail)
 );

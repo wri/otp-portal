@@ -1,5 +1,6 @@
 import { LAYERS } from 'constants/layers';
 import sumBy from 'lodash/sumBy';
+import uniq from 'lodash/uniq';
 import moment from 'moment';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
@@ -37,7 +38,7 @@ const initialState = {
   layersActive: [
     'gain',
     'loss',
-    'integrated-alerts',
+    // 'integrated-alerts', //activate when metadata is loaded
     // 'aac-cog',
     // 'aac-cod',
     // 'aac-cmr',
@@ -393,10 +394,12 @@ export function setOperatorsDetailMapHoverInteractions(payload) {
 export function getIntegratedAlertsMetadata() {
   return (dispatch, state) => {
     return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
+      const activeLayers = state().operatorsDetailFmus.layersActive;
+
       if (!minDataDate || !maxDataDate) {
         dispatch({
           type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
-          payload: state().operatorsRanking.layersActive.filter(l => l !== 'integrated-alerts')
+          payload: activeLayers.filter(l => l !== 'integrated-alerts')
         });
         return;
       }
@@ -418,6 +421,16 @@ export function getIntegratedAlertsMetadata() {
             }
           }
         }
+      });
+
+      // put integrated-alerts before fmusdetail
+      dispatch({
+        type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
+        payload: uniq([
+          ...activeLayers.slice(0, activeLayers.indexOf('fmusdetail')),
+          'integrated-alerts',
+          ...activeLayers.slice(activeLayers.indexOf('fmusdetail'))
+        ])
       });
     })
   };

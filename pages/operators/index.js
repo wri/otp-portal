@@ -42,10 +42,6 @@ class OperatorsPage extends React.Component {
   static async getInitialProps({ url, store }) {
     const { operatorsRanking } = store.getState();
 
-    if (!operatorsRanking.layersSettings['integrated-alerts']) {
-      await store.dispatch(getIntegratedAlertsMetadata());
-    }
-
     if (!operatorsRanking.data.length) {
       await store.dispatch(getOperatorsRanking());
     }
@@ -55,13 +51,13 @@ class OperatorsPage extends React.Component {
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url } = this.props;
+    const { url, operatorsRanking } = this.props;
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
-
-
-    // // Set discalimer
+    if (!operatorsRanking.layersSettings['integrated-alerts']) {
+      this.props.getIntegratedAlertsMetadata();
+    }
     // if (!Cookies.get('operators.disclaimer')) {
     //   toastr.info(
     //     'Info',
@@ -238,6 +234,9 @@ export default injectIntl(connect(
   dispatch => ({
     getOperatorsRanking() {
       dispatch(getOperatorsRanking());
+    },
+    getIntegratedAlertsMetadata() {
+      dispatch(getIntegratedAlertsMetadata());
     },
     setOperatorsMapLocation(mapLocation) {
       dispatch(setOperatorsMapLocation(mapLocation));

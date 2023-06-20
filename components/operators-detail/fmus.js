@@ -10,6 +10,7 @@ import getBBox from '@turf/bbox';
 // Redux
 import { connect } from 'react-redux';
 import {
+  getIntegratedAlertsMetadata,
   setOperatorsDetailMapLocation,
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailFmu,
@@ -52,7 +53,12 @@ import { transformRequest } from 'utils/map';
 
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
-    const { fmus, fmu } = this.props;
+    const { fmus, fmu, operatorsDetailFmus } = this.props;
+
+
+    if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
+      this.props.getIntegratedAlertsMetadata();
+    }
 
     if (fmus.length) {
       this.props.setOperatorsDetailFmu(fmus[0].id);
@@ -315,6 +321,7 @@ OperatorsDetailFMUs.propTypes = {
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
 
+  getIntegratedAlertsMetadata: PropTypes.func,
   setOperatorsDetailMapLocation: PropTypes.func,
   setOperatorsDetailMapLayersSettings: PropTypes.func,
   setOperatorsDetailFmu: PropTypes.func,
@@ -343,6 +350,7 @@ export default injectIntl(
       legendLayers: getLegendLayers(state, props),
     }),
     {
+      getIntegratedAlertsMetadata,
       setOperatorsDetailMapLocation,
       setOperatorsDetailMapLayersSettings,
       setOperatorsDetailFmu,
