@@ -112,7 +112,7 @@ class ForgotPassword extends React.Component {
                   className="c-button -primary -expanded"
                   onClick={() => modal.toggleModal(false)}
                 >
-                  {this.props.intl.formatMessage({ id: 'close' })}
+                  {this.props.intl.formatMessage({ id: 'Close' })}
                 </button>
               </li>
             </ul>
