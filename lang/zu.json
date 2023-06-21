@@ -168,6 +168,8 @@
   "login.form.field.email": "Email",
   "login.form.field.password": "Password",
   "signin": "Sign in",
+  "signin.forgot_password": "Did you forget your password?",
+  "signin.reset_your_password": "Reset your password",
   "signin.not_a_member": "You don't have an account yet?",
   "signin.register_now": "Register now",
   "signin.not_a_producer": "Your company isn't listed yet?",
@@ -441,5 +443,6 @@
   "View the observations list": "View the observations list",
   "View the observations map": "View the observations map",
   "Reset Password": "Reset Password",
-  "Password changed successfully": "Password changed successfully"
+  "Password changed successfully": "Password changed successfully",
+  "forgot-password.submitted": "If account exists for {email}, you will get an email with instructions on how to reset your password. Be sure to check your spam folder. If you do not receive an e-mail from us, it means that we do not have an account associated with that e-mail address."
 }

@@ -86,7 +86,7 @@ class ForgotPassword extends React.Component {
   }
 
   render() {
-    const { submitting, submitted } = this.state;
+    const { submitting, submitted, form } = this.state;
     const submittingClassName = classnames({
       '-submitting': submitting
     });
@@ -98,9 +98,12 @@ class ForgotPassword extends React.Component {
 
         {submitted && (
           <>
-            <h2 className="c-title -extrabig">
-              {this.props.intl.formatMessage({ id: 'forgot-password.submitted', defaultMessage: 'Password reset instruction has been sent to your email.' })}
-            </h2>
+            <p>
+              {this.props.intl.formatMessage({
+                id: 'forgot-password.submitted',
+                defaultMessage: 'If account exists for {email}, you will get an email with instructions on how to reset your password. Be sure to check your spam folder. If you do not receive an e-mail from us, it means that we do not have an account associated with that e-mail address.'
+              }, { email: form.email })}
+            </p>
             <ul className="c-field-buttons">
               <li>
                 <button
