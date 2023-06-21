@@ -53,7 +53,7 @@ const Head = ({ title, description }) => {
       <meta name="theme-color" content="#ffffff" />
 
       {/* Styles and scripts */}
-      <script src="https://cdn.polyfill.io/v2/polyfill.min.js" />
+      <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />
       {process.env.GOOGLE_API_KEY && (
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} />
       )}
