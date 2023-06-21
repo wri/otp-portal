@@ -217,6 +217,10 @@ export function setOperatorsDetailFmuBounds(payload) {
 function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
   const geostoreId = data.id;
   const { startDate, trimEndDate } = fmu['integrated-alerts'];
+
+  // if trimEndDate is not valid, that means we probably did not download layer metadata yet, do not fetch analysis
+  if (isNaN(Date.parse(trimEndDate))) return null;
+
   const sql = `
     SELECT count(*), SUM(area__ha)
     FROM data
