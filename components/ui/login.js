@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
@@ -112,6 +113,7 @@ class Login extends React.Component {
     const submittingClassName = classnames({
       '-submitting': submitting
     });
+    const closeModal = () => { modal.toggleModal(false); };
 
     return (
       <div className="c-login">
@@ -159,9 +161,9 @@ class Login extends React.Component {
             </Field>
           </fieldset>
 
-          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_member' })} <a href="/signup">{this.props.intl.formatMessage({ id: 'signin.register_now' })}</a></p>
+          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup"><a onClick={closeModal}>{this.props.intl.formatMessage({ id: 'signin.register_now' })}</a></Link></p>
 
-          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">{this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a></p>
+          <p>{this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operators/new"><a onClick={closeModal}>{this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a></Link></p>
 
           <ul className="c-field-buttons">
             <li>
@@ -169,7 +171,7 @@ class Login extends React.Component {
                 type="button"
                 name="commit"
                 className="c-button -primary -expanded"
-                onClick={() => modal.toggleModal(false)}
+                onClick={closeModal}
               >
                 {this.props.intl.formatMessage({ id: 'cancel' })}
               </button>
