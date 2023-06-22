@@ -143,10 +143,9 @@ export function getUserOperator(id) {
 }
 
 export function login({ body }) {
-  return () => NEXTAPIClient.post('login', { body }).then(() => {
+  return NEXTAPIClient.post('login', { body }).then(() => {
     localStorage.removeItem('notificationsShown');
     logEvent('login', { method: 'credentials' });
-    window.location.reload();
   });
 }
 
@@ -155,6 +154,18 @@ export function logout() {
     window.location.reload();
   })
  }
+
+export function resetPassword(attributes) {
+  return API.post('users/password', {
+    body: {
+      password: attributes
+    }
+  }).then((data) => JSONA.deserialize(data));
+}
+
+export function forgotPassword(email) {
+  return API.post('reset-password', { body: { password: { email } } });
+}
 
 export function getUserProfile() {
   return (dispatch, getState) => {

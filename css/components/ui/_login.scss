@@ -1,6 +1,10 @@
 .c-login {
-  padding: $space-1 * 10;
+  padding: $space-1 * 5;
   background: $color-tertiary;
+
+  .c-form {
+    padding-bottom: 0;
+  }
 
   h2 {
     margin: 0;

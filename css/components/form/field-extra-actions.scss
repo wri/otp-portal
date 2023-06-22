@@ -1,0 +1,14 @@
+.c-field-extra-actions {
+  a, .c-link-button {
+    color: $color-primary;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $color-primary;
+    }
+  }
+}
