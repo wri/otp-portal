@@ -27,6 +27,8 @@ if (!process.env.SECRET) throw new Error('Missing session SECRET')
 const app = next({
   dir: '.',
   dev: process.env.NODE_ENV === 'development',
+  hostname: 'localhost',
+  port: process.env.PORT
 });
 
 const handle = app.getRequestHandler();
