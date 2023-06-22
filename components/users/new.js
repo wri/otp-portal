@@ -87,23 +87,23 @@ class UserNewForm extends React.Component {
 
         // Save data
         this.props.saveUser({ body })
-            .then(() => {
-              this.setState({ submitting: false, submitted: true });
-              logEvent('sign_up', { method: 'credentials' });
-              if (this.props.onSubmit) this.props.onSubmit();
-            })
-            .catch((errors) => {
-              this.setState({ submitting: false });
-              console.error(errors);
+          .then(() => {
+            this.setState({ submitting: false, submitted: true });
+            logEvent('sign_up', { method: 'credentials' });
+            if (this.props.onSubmit) this.props.onSubmit();
+          })
+          .catch((errors) => {
+            this.setState({ submitting: false });
+            console.error(errors);
 
-              try {
-                errors.forEach(er =>
-                  toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-                );
-              } catch (e) {
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-              }
-            });
+            try {
+              errors.forEach(er =>
+                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+              );
+            } catch (e) {
+              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+            }
+          });
       } else {
         toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
       }
@@ -115,6 +115,15 @@ class UserNewForm extends React.Component {
     const submittingClassName = classnames({
       '-submitting': submitting
     });
+    const registerNewProducerHint = (
+      <>
+        {this.props.intl.formatMessage({ id: 'signin.not_a_producer' })}
+        {' '}
+        <Link href="/operators/new">
+          {this.props.intl.formatMessage({ id: 'signin.register_producer' })}
+        </Link>
+      </>
+    );
 
     return (
       <div className="c-section">
@@ -170,8 +179,8 @@ class UserNewForm extends React.Component {
                   onChange={value => this.onChange({ operator_id: value })}
                   validations={['required']}
                   className="-fluid"
-                  hint={`${this.props.intl.formatMessage({ id: 'signin.not_a_producer' })} <a href="/operators/new">${this.props.intl.formatMessage({ id: 'signin.register_producer' })}</a>`}
-                  options={HELPERS_REGISTER.mapToSelectOptions(this.props.operators.data.filter(o => o.country && o.country.id === this.state.form.country_id ))}
+                  hint={registerNewProducerHint}
+                  options={HELPERS_REGISTER.mapToSelectOptions(this.props.operators.data.filter(o => o.country && o.country.id === this.state.form.country_id))}
                   properties={{
                     name: 'operator_id',
                     label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),

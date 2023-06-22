@@ -43,6 +43,26 @@ class Field extends React.Component {
     return this.state.valid;
   }
 
+  renderHint() {
+    const { hint } = this.props;
+
+    if (!hint) return null;
+    if (typeof hint === 'string') {
+      return (
+        <p className="hint" dangerouslySetInnerHTML={{ __html: hint }} />
+      )
+    }
+    if (typeof hint === 'function') {
+      return (
+        <p className="hint">{hint()}</p>
+      )
+    }
+
+    return (
+      <p className="hint">{hint}</p>
+    )
+  }
+
   render() {
     const { properties, className, hint } = this.props;
     const { valid, error } = this.state;
@@ -63,9 +83,7 @@ class Field extends React.Component {
           </label>
         }
 
-        {hint &&
-          <p className="hint" dangerouslySetInnerHTML={{ __html: hint }} />
-        }
+        {this.renderHint()}
 
         <this.props.children
           {...this.props}
