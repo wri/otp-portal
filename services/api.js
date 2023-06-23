@@ -1,3 +1,21 @@
+import get from 'lodash/get';
+
+export class APIError extends Error {
+  constructor(response, responseJSON) {
+    const message = get(responseJSON, 'errors[0].title') || response.statusText || 'APIError';
+    super(message);
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, APIError);
+    }
+
+    this.status = response.status;
+    this.statusText = response.statusText;
+    this.errors = responseJSON.errors;
+  }
+}
+
 class API {
   constructor(options = {}) {
     this.baseURL = options.baseURL;
@@ -52,15 +70,15 @@ class API {
     return fetch(url.toString(), fetchParams).then(this._handleResponse)
   }
 
-  _handleResponse(response) {
-    if (response.ok) {
-      if (typeof response.json === 'function') {
-        return response.json().catch(() => ({}));
-      }
-
-      return response;
+  async _handleResponse(response) {
+    if (typeof response.json === 'function') {
+      const json = await response.json().catch(() => ({}));
+      if (response.ok) return json;
+      throw new APIError(response, json);
     }
-    throw new Error(response.statusText);
+    if (response.ok) return response;
+
+    throw new APIError(response, {});
   }
 }
 

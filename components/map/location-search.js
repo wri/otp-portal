@@ -2,7 +2,6 @@ import React from 'react';
 import Geosuggest from 'react-geosuggest';
 import PropTypes from 'prop-types';
 
-
 class LocationSearch extends React.Component {
   static propTypes = {
     setMapLocation: PropTypes.func,

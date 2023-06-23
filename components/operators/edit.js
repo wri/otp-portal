@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import sortBy from 'lodash/sortBy';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -19,22 +17,20 @@ import { toastr } from 'react-redux-toastr';
 import modal from 'services/modal';
 
 // Components
+import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
 import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
-import Spinner from 'components/ui/spinner';
 import SawmillsTable from 'components/ui/sawmills-table';
 import SawmillModal from 'components/ui/sawmill-modal';
-
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 import { HELPERS_FMU } from 'utils/fmu';
-import { FormElements } from 'utils/form';
-
+import SubmitButton from '../form/SubmitButton';
 
 class EditOperator extends React.Component {
   constructor(props) {
@@ -43,7 +39,7 @@ class EditOperator extends React.Component {
     const { operator } = props;
 
     this.state = {
-      form: {
+      formIntialState: {
         name: operator.name || '',
         details: operator.details || '',
         operator_type: operator['operator-type'],
@@ -56,16 +52,10 @@ class EditOperator extends React.Component {
       certifications: HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus),
       countryOptions: [],
       fmusOptions: [],
-      fmusLoading: true,
-      submitting: false,
-      submitted: false
+      fmusLoading: true
     };
 
-    this.formElements = new FormElements();
-
     // Bindings
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.fetchSawmills = this.fetchSawmills.bind(this);
   }
 
@@ -75,92 +65,42 @@ class EditOperator extends React.Component {
     this.fetchFmus(); // fetching operator fmus to have them in chosen language
   }
 
-  /**
-   * UI EVENTS
-   * - onChange
-   * - onSubmit
-  */
-  onChange(value) {
-    const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
-  }
-
   onChangeCertifications(value) {
     const certifications = Object.assign({}, this.state.certifications, value);
     this.setState({ certifications });
   }
 
-  onSubmit(e) {
-    e && e.preventDefault();
+  handleSubmit = ({ form }) => {
+    const { intl } = this.props;
 
-    // Validate the form
-    this.formElements.validate(this.state.form);
+    return this.props.updateOperator({
+      body: HELPERS_REGISTER.getBody(form, this.props.operator.id),
+      type: 'PATCH',
+      id: this.props.operator.id,
+      authorization: this.props.user.token
+    }).then(() => {
+      const promises = [];
 
-    // Set a timeout due to the setState function of react
-    setTimeout(() => {
-      // Validate all the inputs on the current step
-      const valid = this.formElements.isValid(this.state.form);
+      if (Object.keys(this.state.certifications).length) {
+        Object.keys(this.state.certifications).forEach((k) => {
+          promises.push(this.props.updateFmu({
+            id: k,
+            body: HELPERS_REGISTER.getBodyFmu(
+              this.state.certifications[k],
+              k
+            ),
+            authorization: this.props.user.token
+          }));
+        });
 
-      if (valid) {
-        // Start the submitting
-        this.setState({ submitting: true });
-
-        // Save data
-        this.props.updateOperator({
-          body: HELPERS_REGISTER.getBody(this.state.form, this.props.operator.id),
-          type: 'PATCH',
-          id: this.props.operator.id,
-          authorization: this.props.user.token
-        })
-          .then(() => {
-            const promises = [];
-
-            if (Object.keys(this.state.certifications).length) {
-              Object.keys(this.state.certifications).forEach((k) => {
-                promises.push(this.props.updateFmu({
-                  id: k,
-                  body: HELPERS_REGISTER.getBodyFmu(
-                    this.state.certifications[k],
-                    k
-                  ),
-                  authorization: this.props.user.token
-                }));
-              });
-
-              Promise.all(promises)
-                .then(() => {
-                  toastr.success(
-                    this.props.intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
-                    this.props.intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
-                  );
-                  this.setState({ submitting: false, submitted: true });
-                  if (this.props.onSubmit) this.props.onSubmit();
-                })
-                .catch((errors) => {
-                  this.setState({ submitting: false });
-                  console.error(errors);
-                });
-            } else {
-              this.setState({ submitting: false, submitted: true });
-              if (this.props.onSubmit) this.props.onSubmit();
-            }
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
-
-            try {
-              errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-              );
-            } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
-      } else {
-        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
+        return Promise.all(promises);
       }
-    }, 0);
+    }).then(() => {
+      toastr.success(
+        intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
+        intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
+      );
+    });
   }
 
   fetchSawmills() {
@@ -200,197 +140,164 @@ class EditOperator extends React.Component {
   }
 
   render() {
-    const { submitting } = this.state;
-    const { language, sawmills } = this.props;
-
-    const submittingClassName = classnames({
-      '-submitting': submitting
-    });
+    const { intl, sawmills } = this.props;
 
     return (
       <div className="c-section">
+        <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formIntialState}>
+          <Form>
+            <fieldset className="c-field-container">
+              <h2 className="c-title -huge">
+                {intl.formatMessage({ id: 'info.operator' })}
+              </h2>
 
-        <Spinner isLoading={submitting} className="-light -fixed" />
-
-        <form className="c-form" onSubmit={this.onSubmit} noValidate>
-          <fieldset className="c-field-container">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'info.operator' })}
-            </h2>
-
-            {/* Operator name */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.name = c; }}
-              onChange={value => this.onChange({ name: value })}
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'name',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.name' }),
-                required: true,
-                default: this.state.form.name
-              }}
-            >
-              {Input}
-            </Field>
-
-            {/* Operator description */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.details = c; }}
-              onChange={value => this.onChange({ details: value })}
-              className="-fluid"
-              properties={{
-                name: 'details',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.details' }),
-                default: this.state.form.details,
-                rows: '6'
-              }}
-            >
-              {Textarea}
-            </Field>
-
-            {/* Operator type */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
-              onChange={value => this.onChange({ operator_type: value })}
-              validations={['required']}
-              className="-fluid"
-              options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
-                ...t,
-                label: this.props.intl.formatMessage({ id: t.label })
-              }))}
-              properties={{
-                name: 'operator_type',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
-                required: true,
-                instanceId: 'select.operator_type',
-                default: this.state.form.operator_type
-              }}
-            >
-              {Select}
-            </Field>
-
-            {/* Website */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.website = c; }}
-              onChange={value => this.onChange({ website: value })}
-              validations={['url']}
-              className="-fluid"
-              properties={{
-                name: 'website',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.website' }),
-                default: this.state.form.website
-              }}
-            >
-              {Input}
-            </Field>
-
-            {/* Address */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.address = c; }}
-              onChange={value => this.onChange({ address: value })}
-              className="-fluid"
-              properties={{
-                name: 'address',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.address' }),
-                default: this.state.form.address
-              }}
-            >
-              {Input}
-            </Field>
-
-            {/* Logo */}
-            <Field
-              ref={(c) => { if (c) this.formElements.elements.logo = c; }}
-              onChange={value => this.onChange({ logo: value })}
-              className="-fluid"
-              properties={{
-                name: 'logo',
-                label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
-              }}
-            >
-              {FileImage}
-            </Field>
-
-          </fieldset>
-
-          <fieldset className="c-field-container">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'forest-management-units' })}
-            </h2>
-
-            <div className="c-field-row">
-              {/* Country */}
+              {/* Operator name */}
               <Field
-                ref={(c) => { if (c) this.formElements.elements.country = c; }}
                 validations={['required']}
                 className="-fluid"
-                options={this.state.countryOptions}
                 properties={{
-                  name: 'country',
-                  label: this.props.intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                  name: 'name',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.name' }),
+                  required: true
+                }}
+              >
+                {Input}
+              </Field>
+
+              {/* Operator description */}
+              <Field
+                className="-fluid"
+                properties={{
+                  name: 'details',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.details' }),
+                  rows: '6'
+                }}
+              >
+                {Textarea}
+              </Field>
+
+              {/* Operator type */}
+              <Field
+                validations={['required']}
+                className="-fluid"
+                options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
+                  ...t,
+                  label: intl.formatMessage({ id: t.label })
+                }))}
+                properties={{
+                  name: 'operator_type',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
                   required: true,
-                  disabled: true,
-                  instanceId: 'select.country',
-                  default: this.state.form.country
+                  instanceId: 'select.operator_type'
                 }}
               >
                 {Select}
               </Field>
 
-              {/* FMUs */}
-              {!!this.state.fmusOptions.length && (
+              {/* Website */}
+              <Field
+                validations={['url']}
+                className="-fluid"
+                properties={{
+                  name: 'website',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.website' })
+                }}
+              >
+                {Input}
+              </Field>
+
+              {/* Address */}
+              <Field
+                className="-fluid"
+                properties={{
+                  name: 'address',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
+                }}
+              >
+                {Input}
+              </Field>
+
+              {/* Logo */}
+              <Field
+                className="-fluid"
+                properties={{
+                  name: 'logo',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
+                }}
+              >
+                {FileImage}
+              </Field>
+
+            </fieldset>
+
+            <fieldset className="c-field-container">
+              <h2 className="c-title -huge">
+                {intl.formatMessage({ id: 'forest-management-units' })}
+              </h2>
+
+              <div className="c-field-row">
+                {/* Country */}
                 <Field
-                  ref={(c) => { if (c) this.formElements.elements.fmus = c; }}
-                  name="fmus"
-                  onChange={value => this.onChange({ fmus: value })}
-                  onChangeCertifications={value => this.onChangeCertifications(value)}
+                  validations={['required']}
                   className="-fluid"
-                  options={this.state.fmusOptions}
-                  certifications={this.state.certifications}
+                  options={this.state.countryOptions}
                   properties={{
-                    name: 'fmus',
-                    default: this.state.form.fmus
+                    name: 'country',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                    required: true,
+                    disabled: true,
+                    instanceId: 'select.country'
                   }}
                 >
-                  {FmusCheckboxGroup}
+                  {Select}
                 </Field>
-              )}
 
-            </div>
-          </fieldset>
+                {/* FMUs */}
+                {!!this.state.fmusOptions.length && (
+                  <Field
+                    name="fmus"
+                    onChangeCertifications={value => this.onChangeCertifications(value)}
+                    className="-fluid"
+                    options={this.state.fmusOptions}
+                    certifications={this.state.certifications}
+                    properties={{
+                      name: 'fmus'
+                    }}
+                  >
+                    {FmusCheckboxGroup}
+                  </Field>
+                )}
 
-          <fieldset className="c-field-container">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
-            </h2>
+              </div>
+            </fieldset>
 
-            <SawmillsTable
-              sawmills={sawmills.data}
-              onChange={this.fetchSawmills}
-            />
+            <fieldset className="c-field-container">
+              <h2 className="c-title -huge">
+                {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
+              </h2>
 
-            <button
-              onClick={this.handleAddSawmill} className="c-button -small -secondary"
-            >
-              {this.props.intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
-            </button>
-          </fieldset>
+              <SawmillsTable
+                sawmills={sawmills.data}
+                onChange={this.fetchSawmills}
+              />
 
-          <ul className="c-field-buttons">
-            <li>
               <button
-                type="submit"
-                name="commit"
-                disabled={submitting}
-                className={`c-button -secondary -expanded ${submittingClassName}`}
+                onClick={this.handleAddSawmill} className="c-button -small -secondary"
               >
-                {this.props.intl.formatMessage({ id: 'update.operator' })}
+                {intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
               </button>
-            </li>
-          </ul>
-        </form>
-      </div>
+            </fieldset>
+
+            <ul className="c-field-buttons">
+              <li>
+                <SubmitButton>
+                  {intl.formatMessage({ id: 'update.operator' })}
+                </SubmitButton>
+              </li>
+            </ul>
+          </Form>
+        </FormProvider>
+      </div >
     );
   }
 }
@@ -414,7 +321,8 @@ export default injectIntl(connect(
     sawmills: state.operatorsDetail.sawmills,
     language: state.language
   }),
-  { updateOperator,
+  {
+    updateOperator,
     updateFmu,
     getSawMillsByOperatorId,
     getSawMillsLocationByOperatorId
