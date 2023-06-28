@@ -201,7 +201,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.9/tcd_30/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.10/tcd_30/{z}/{x}/{y}.png'
         ],
         minzoom: 3,
         maxzoom: 12
@@ -217,7 +217,7 @@ export const LAYERS = [
         required: true
       },
       {
-        default: '2021-12-31',
+        default: '2022-12-31',
         key: 'endDate',
         required: true
       }
@@ -227,8 +227,8 @@ export const LAYERS = [
       speed: 250,
       interval: 'years',
       dateFormat: 'YYYY',
-      trimEndDate: '2021-12-31',
-      maxDate: '2021-12-31',
+      trimEndDate: '2022-12-31',
+      maxDate: '2022-12-31',
       minDate: '2001-01-01',
       canPlay: true,
       railStyle: {
@@ -276,7 +276,7 @@ export const LAYERS = [
     metadata: {
       title: 'Tree cover loss',
       subtitle: 'layer.tree-cover-loss.metadata.subtitle',
-      dateOfContent: '2001-2021',
+      dateOfContent: '2001-2022',
       disclaimer: 'layer.tree-cover-loss.metadata.disclaimer',
       disclaimerTooltip: 'layer.tree-cover-loss.metadata.disclaimer-tooltip',
       overview: 'layer.tree-cover-loss.metadata.overview',
