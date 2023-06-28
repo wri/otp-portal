@@ -5,9 +5,18 @@ import Spinner from 'components/ui/spinner';
 
 const SHOW_AFTER = 300; // ms
 
+function skipSpinner(url, prevUrl) {
+  if (!prevUrl || !url) return false;
+  if (url.includes("/operators?") && prevUrl.includes("/operators")) return true;
+
+  return false;
+}
+
 const RouterSpinner = () => {
   const router = useRouter();
   const [isLoading, setLoading] = useState(false);
+
+  const previousUrl = useRef(null);
   const mounted = useRef(false);
   const initiated = useRef(false);
 
@@ -20,8 +29,11 @@ const RouterSpinner = () => {
   }, []);
 
   useEffect(() => {
-    const showSpinner = () => {
+    const showSpinner = (url) => {
+      if (skipSpinner(url, previousUrl.current)) return;
+
       initiated.current = true;
+      previousUrl.current = router.asPath;
       setTimeout(() => {
         if (initiated.current) {
           setLoading(true);
