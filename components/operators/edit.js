@@ -39,7 +39,7 @@ class EditOperator extends React.Component {
     const { operator } = props;
 
     this.state = {
-      formIntialState: {
+      formInitialState: {
         name: operator.name || '',
         details: operator.details || '',
         operator_type: operator['operator-type'],
@@ -144,14 +144,13 @@ class EditOperator extends React.Component {
 
     return (
       <div className="c-section">
-        <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formIntialState}>
+        <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formInitialState}>
           <Form>
             <fieldset className="c-field-container">
               <h2 className="c-title -huge">
                 {intl.formatMessage({ id: 'info.operator' })}
               </h2>
 
-              {/* Operator name */}
               <Field
                 validations={['required']}
                 className="-fluid"
