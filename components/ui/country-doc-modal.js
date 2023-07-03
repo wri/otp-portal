@@ -13,39 +13,34 @@ import { injectIntl } from 'react-intl';
 // Services
 import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
-import { FormElements } from 'utils/form';
 
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import File from 'components/form/File';
 import Spinner from 'components/ui/spinner';
+import SubmitButton from '../form/SubmitButton';
+import { FormProvider } from '../form/Form';
+import CancelButton from '../form/CancelButton';
 
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
     const { startDate, endDate, link, value, units } = props;
 
-    this.formElements = new FormElements();
     this.state = {
-      form: {
+      formInitialState: {
         startDate:
-            startDate &&
-              startDate !== '1970/01/01' &&
-              startDate.replace(/\//g, '-'),
+          startDate &&
+          startDate !== '1970/01/01' &&
+          startDate.replace(/\//g, '-'),
         expireDate: endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: {},
         link,
         units,
         value
-      },
-      submitting: false,
-      errors: []
+      }
     };
-
-    // Bindings
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
 
     // Services
     this.documentationService = new DocumentationService({
@@ -53,57 +48,23 @@ class DocModal extends React.Component {
     });
   }
 
-  /**
-   * UI EVENTS
-   * - onChange
-   * - onSubmit
-   */
-  onChange(value) {
-    const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
-  }
+  handleSubmit = ({ form }) => {
+    const { docId } = this.props;
 
-  onSubmit(e) {
-    e && e.preventDefault();
-
-    // Validate the form
-    this.formElements.validate();
-
-    // Set a timeout due to the setState function of react
-    setTimeout(() => {
-      // Validate all the inputs on the current step
-      const valid = this.formElements.isValid(this.state.form);
-
-      if (valid) {
-        const { docId } = this.props;
-
-        // Start the submitting
-        this.setState({ submitting: true });
-
-        this.documentationService.saveDocument({
-          url: `gov-documents/${docId}`,
-          body: this.getBody()
-        })
-          .then(() => {
-            this.setState({ submitting: false, errors: [] });
-            this.props.onChange && this.props.onChange();
-            modal.toggleModal(false);
-          })
-          .catch((err) => {
-            console.error(err);
-            this.setState({ submitting: false, errors: err });
-          });
-      } else {
-        // toastr.error('Error', 'Fill all the required fields');
-      }
-    }, 0);
+    return this.documentationService.saveDocument({
+      url: `gov-documents/${docId}`,
+      body: this.getBody(form)
+    }).then(() => {
+      this.props.onChange && this.props.onChange();
+      modal.toggleModal(false);
+    })
   }
 
   /**
    * HELPERS
    * - getBody
    */
-  getBody() {
+  getBody(form) {
     const { docId, type, docType } = this.props;
 
     return {
@@ -111,18 +72,18 @@ class DocModal extends React.Component {
         id: docId,
         type,
         attributes: {
-          'start-date': this.state.form.startDate,
-          'expire-date': this.state.form.expireDate,
-          ...(docType === 'file' && this.state.form.file.base64 && {
-            attachment: this.state.form.file.base64,
+          'start-date': form.startDate,
+          'expire-date': form.expireDate,
+          ...(docType === 'file' && form.file.base64 && {
+            attachment: form.file.base64,
           }),
           ...docType === 'stats' && {
-            value: this.state.form.value,
-            units: this.state.form.units,
-            link: this.state.form.link
+            value: form.value,
+            units: form.units,
+            link: form.link
           },
           ...docType === 'link' && {
-            link: this.state.form.link
+            link: form.link
           }
         }
       }
@@ -130,136 +91,111 @@ class DocModal extends React.Component {
   }
 
   render() {
-    const { submitting, errors } = this.state;
-    const { title, url, docType } = this.props;
-    const submittingClassName = classnames({
-      '-submitting': submitting
-    });
+    const { title, url, docType, intl } = this.props;
 
     return (
       <div className="c-login">
-        <Spinner isLoading={submitting} className="-light" />
-
         <h2 className="c-title -extrabig">
           {title}
         </h2>
 
-        <form className="c-form" onSubmit={this.onSubmit} noValidate>
-          <fieldset className="c-field-container">
-
-            <div className="l-row row">
-              <div className="columns medium-6 small-12">
-                {/* DATE */}
-                <Field
-                  ref={(c) => { if (c) this.formElements.elements.startDate = c; }}
-                  onChange={value => this.onChange({ startDate: value })}
-                  validations={['required']}
-                  className="-fluid"
-                  properties={{
-                    name: 'startDate',
-                    label: this.props.intl.formatMessage({ id: 'doc.start_date' }),
-                    type: 'date',
-                    required: true,
-                    default: this.state.form.startDate
-                  }}
-                >
-                  {Input}
-                </Field>
-              </div>
-              <div className="columns medium-6 small-12">
-                {/* DATE */}
-                <Field
-                  ref={(c) => { if (c) this.formElements.elements.expireDate = c; }}
-                  onChange={value => this.onChange({ expireDate: value })}
-                  className="-fluid"
-                  properties={{
-                    name: 'expireDate',
-                    label: this.props.intl.formatMessage({ id: 'doc.expiry_date' }),
-                    type: 'date',
-                    default: this.state.form.expireDate
-                  }}
-                >
-                  {Input}
-                </Field>
-              </div>
-            </div>
-
-            {docType === 'stats' &&
-              <>
-                <div className="l-row row">
-                  <div className="columns small-6">
-                    <Field
-                      ref={(c) => { if (c) this.formElements.elements.value = c; }}
-                      onChange={value => this.onChange({ value })}
-                      className="-fluid"
-                      validations={['required']}
-                      properties={{
-                        name: 'value',
-                        label: this.props.intl.formatMessage({ id: 'value' }),
-                        type: 'number',
-                        required: true,
-                        default: this.state.form.value
-                      }}
-
-                    >
-                      {Input}
-                    </Field>
-                  </div>
-
-                  <div className="columns small-6">
-                    <Field
-                      ref={(c) => { if (c) this.formElements.elements.units = c; }}
-                      onChange={value => this.onChange({ units: value })}
-                      className="-fluid"
-                      validations={['required']}
-                      properties={{
-                        name: 'units',
-                        label: this.props.intl.formatMessage({ id: 'units' }),
-                        type: 'text',
-                        required: true,
-                        default: this.state.form.units
-                      }}
-                    >
-                      {Input}
-                    </Field>
-                  </div>
+        <FormProvider initialValues={this.state.formInitialState} onSubmit={this.handleSubmit}>
+          <Form>
+            <fieldset className="c-field-container">
+              <div className="l-row row">
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'startDate',
+                      label: intl.formatMessage({ id: 'doc.start_date' }),
+                      type: 'date',
+                      required: true
+                    }}
+                  >
+                    {Input}
+                  </Field>
                 </div>
-                <div className="l-row row">
-                  <div className="columns small-12">
-                    <Field
-                      ref={(c) => { if (c) this.formElements.elements.link = c; }}
-                      onChange={value => this.onChange({ link: value })}
-                      className="-fluid"
-                      validations={['url']}
-                      properties={{
-                        name: 'link',
-                        label: this.props.intl.formatMessage({ id: 'source' }),
-                        type: 'text',
-                        default: this.state.form.link
-                      }}
-
-                    >
-                      {Input}
-                    </Field>
-                  </div>
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    className="-fluid"
+                    properties={{
+                      name: 'expireDate',
+                      label: intl.formatMessage({ id: 'doc.expiry_date' }),
+                      type: 'date'
+                    }}
+                  >
+                    {Input}
+                  </Field>
                 </div>
-              </>
-            }
+              </div>
+
+              {docType === 'stats' &&
+                <>
+                  <div className="l-row row">
+                    <div className="columns small-6">
+                      <Field
+                        className="-fluid"
+                        validations={['required']}
+                        properties={{
+                          name: 'value',
+                          label: intl.formatMessage({ id: 'value' }),
+                          type: 'number',
+                          required: true
+                        }}
+                      >
+                        {Input}
+                      </Field>
+                    </div>
+
+                    <div className="columns small-6">
+                      <Field
+                        className="-fluid"
+                        validations={['required']}
+                        properties={{
+                          name: 'units',
+                          label: intl.formatMessage({ id: 'units' }),
+                          type: 'text',
+                          required: true
+                        }}
+                      >
+                        {Input}
+                      </Field>
+                    </div>
+                  </div>
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <Field
+                        className="-fluid"
+                        validations={['url']}
+                        properties={{
+                          name: 'link',
+                          label: intl.formatMessage({ id: 'source' }),
+                          type: 'text'
+                        }}
+
+                      >
+                        {Input}
+                      </Field>
+                    </div>
+                  </div>
+                </>
+              }
 
               {docType === 'link' &&
                 <div className="l-row row">
                   <div className="columns small-12">
                     <Field
-                      ref={(c) => { if (c) this.formElements.elements.link = c; }}
-                      onChange={value => this.onChange({ link: value })}
                       className="-fluid"
                       validations={['required', 'url']}
                       properties={{
                         name: 'link',
-                        label: this.props.intl.formatMessage({ id: 'link' }),
+                        label: intl.formatMessage({ id: 'link' }),
                         type: 'text',
-                        required: true,
-                        default: this.state.form.link
+                        required: true
                       }}
 
                     >
@@ -273,13 +209,11 @@ class DocModal extends React.Component {
                 <div className="l-row row">
                   <div className="columns small-12">
                     <Field
-                      ref={(c) => { if (c) this.formElements.elements.file = c; }}
-                      onChange={value => this.onChange({ file: value })}
                       validations={!url ? ['required'] : []}
                       className="-fluid"
                       properties={{
                         name: 'file',
-                        label: this.props.intl.formatMessage({ id: 'file' }),
+                        label: intl.formatMessage({ id: 'file' }),
                         required: !url,
                         default: { name: url }
                       }}
@@ -289,38 +223,21 @@ class DocModal extends React.Component {
                   </div>
                 </div>
               }
-          </fieldset>
+            </fieldset>
 
-          {!!errors.length &&
-            errors.map(e => e.title)
-          }
-
-          <ul className="c-field-buttons">
-            <li>
-              <button
-                type="button"
-                name="commit"
-                className="c-button -primary -expanded"
-                onClick={() => modal.toggleModal(false)}
-              >
-                {this.props.intl.formatMessage({ id: 'cancel' })}
-              </button>
-            </li>
-            <li>
-              <button
-                type="submit"
-                name="commit"
-                disabled={submitting}
-                className={`c-button -secondary -expanded ${submittingClassName}`}
-              >
-                {this.props.intl.formatMessage({
-                  id: 'submit'
-                })}
-              </button>
-            </li>
-          </ul>
-        </form>
-                </div>
+            <ul className="c-field-buttons">
+              <li>
+                <CancelButton onClick={() => modal.toggleModal(false)} />
+              </li>
+              <li>
+                <SubmitButton>
+                  {intl.formatMessage({ id: 'submit' })}
+                </SubmitButton>
+              </li>
+            </ul>
+          </Form>
+        </FormProvider>
+      </div>
     );
   }
 }

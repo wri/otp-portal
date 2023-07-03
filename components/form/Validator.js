@@ -1,9 +1,13 @@
+import isEmpty from "lodash/isEmpty";
+
 class Validator {
   constructor(intl) {
     // Validations
     this.validations = {
       required: {
         validate(value) {
+          if (typeof value === 'object') return !isEmpty(value);
+
           const regex = /.*\S.*/;
           const val = (typeof value !== 'undefined' && value !== null) ? value : '';
 

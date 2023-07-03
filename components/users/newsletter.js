@@ -1,81 +1,38 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import Jsona from 'jsona';
 import groupBy from 'lodash/groupBy';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import API from 'services/api';
 
 // Components
+import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Select from 'components/form/SelectInput';
 
-import { FormElements } from 'utils/form';
+import SubmitButton from '../form/SubmitButton';
 
 const JSONA = new Jsona();
 
-class NewsletterForm extends React.Component {
-  constructor(props) {
-    super(props);
+function fetchCountries(lang) {
+  return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
+    .then((data) => JSONA.deserialize(data))
+    .catch((error) => console.error(error));
+}
 
-    this.formElements = new FormElements();
-    this.state = {
-      form: {
-        email: '',
-        first_name: '',
-        last_name: '',
-        job_title: '',
-        organization: '',
-        country: '',
-        city: ''
-      },
-      countryOptions: []
-    };
+const NewsletterForm = ({ language }) => {
+  const intl = useIntl();
+  const formRef = useRef(null);
+  const [countryOptions, setCountryOptions] = useState([]);
 
-    // Bindings
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-
-    this.formRef = null;
-  }
-
-  componentDidMount() {
-    this.loadCountries();
-  }
-
-  /**
-   * UI EVENTS
-   * - onChange
-   * - onSubmit
-   */
-  onChange(value) {
-    const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
-  }
-
-  onSubmit(e) {
-    e && e.preventDefault();
-
-    const { form } = this.state;
-
-    // Validate the form
-    this.formElements.validate(form);
-    setTimeout(() => {
-      if (this.formElements.isValid(form)) {
-        this.formRef.submit(); // this does not trigger onSubmit again
-      }
-    }, 0);
-  }
-
-  loadCountries() {
-    const { language } = this.props;
-
-    const countriesEnPromise = this.fetchCountries('en');
+  const loadCountries = () => {
+    const countriesEnPromise = fetchCountries('en');
     const countriesLangPromise = language === 'en' ? countriesEnPromise : this.fetchCountries(language);
 
     Promise
@@ -89,33 +46,36 @@ class NewsletterForm extends React.Component {
       .then((cOptions) => {
         return sortBy(cOptions, 'label');
       })
-      .then((countryOptions) => {
-        this.setState({
-          countryOptions,
-        });
+      .then((_countryOptions) => {
+        setCountryOptions(_countryOptions);
       })
       .catch((error) => {
         console.error(error);
       })
   }
 
-  fetchCountries(lang) {
-    return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
-      .then((data) => JSONA.deserialize(data))
-      .catch((error) => console.error(error));
+  useEffect(() => {
+    loadCountries();
+  }, []);
+
+  const handleSubmit = () => {
+    formRef.current.submit();
   }
 
-  render() {
-    const { intl } = this.props;
-    const { countryOptions } = this.state;
+  const formInitialState = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    organization: '',
+    country: '',
+  }
 
-    return (
-      <div className="c-section">
-        <form ref={(c) => {this.formRef = c}} className="c-form" action="https://connect.wri.org/l/120942/2022-03-31/582yt4" method="post" onSubmit={this.onSubmit} noValidate>
+  return (
+    <div className="c-section">
+      <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
+        <Form ref={formRef} action="https://example.com/l/sddds/2022-03-31/fdsfdsfdh" method="post">
           <fieldset className="c-field-container">
             <Field
-              ref={(c) => { if (c) this.formElements.elements.first_name = c; }}
-              onChange={value => this.onChange({ first_name: value })}
               validations={['required']}
               className="-fluid"
               properties={{
@@ -127,8 +87,6 @@ class NewsletterForm extends React.Component {
               {Input}
             </Field>
             <Field
-              ref={(c) => { if (c) this.formElements.elements.last_name = c; }}
-              onChange={value => this.onChange({ last_name: value })}
               validations={['required']}
               className="-fluid"
               properties={{
@@ -140,8 +98,6 @@ class NewsletterForm extends React.Component {
               {Input}
             </Field>
             <Field
-              ref={(c) => { if (c) this.formElements.elements.email = c; }}
-              onChange={value => this.onChange({ email: value })}
               validations={['required', 'email']}
               className="-fluid"
               properties={{
@@ -153,8 +109,6 @@ class NewsletterForm extends React.Component {
               {Input}
             </Field>
             <Field
-              ref={(c) => { if (c) this.formElements.elements.organization = c; }}
-              onChange={value => this.onChange({ organization: value })}
               validations={['required']}
               className="-fluid"
               properties={{
@@ -166,8 +120,6 @@ class NewsletterForm extends React.Component {
               {Input}
             </Field>
             <Field
-              ref={(c) => { if (c) this.formElements.elements.country = c; }}
-              onChange={value => this.onChange({ country: value })}
               validations={['required']}
               className="-fluid"
               options={countryOptions}
@@ -184,27 +136,23 @@ class NewsletterForm extends React.Component {
 
           <ul className="c-field-buttons">
             <li>
-              <button
-                type="submit"
-                className={`c-button -secondary -expanded`}
-              >
+              <SubmitButton>
                 {intl.formatMessage({ id: 'signup' })}
-              </button>
+              </SubmitButton>
             </li>
           </ul>
-        </form>
-      </div>
-    );
-  }
+        </Form>
+      </FormProvider>
+    </div>
+  );
 }
 
 NewsletterForm.propTypes = {
-  intl: PropTypes.object.isRequired,
   language: PropTypes.string,
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     language: state.language
   })
-)(NewsletterForm));
+)(NewsletterForm);

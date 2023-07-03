@@ -1,126 +1,52 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Link from 'next/link';
 
-// Redux
-import { connect } from 'react-redux';
-
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { login } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
 
 // Services
 import modal from 'services/modal';
 
 // Components
-import Spinner from 'components/ui/spinner';
 import ForgotPassword from 'components/ui/forgot-password';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Form, { FormProvider } from 'components/form/Form';
+import SubmitButton from 'components/form/SubmitButton';
+import CancelButton from 'components/form/CancelButton';
 
-import { FormElements } from 'utils/form';
+const Login = () => {
+  const intl = useIntl();
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
+  const handleSubmit = ({ form }) => {
+    return login({ body: { auth: form } })
+      .then(() => {
+        window.location.reload();
+      })
+  };
 
-    this.state = {
-      form: {
-        email: '',
-        password: ''
-      },
-      submitting: false
-    };
-
-    this.formElements = new FormElements();
-
-    // Bindings
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onForgotPasswordClick = this.onForgotPasswordClick.bind(this);
-  }
-
-  /**
-   * UI EVENTS
-   * - onChange
-   * - onSubmit
-  */
-  onChange(value) {
-    const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
-  }
-
-  onSubmit(e) {
-    e && e.preventDefault();
-
-    const { intl } = this.props;
-
-    // Validate the form
-    this.formElements.validate(this.state.form);
-
-    // Set a timeout due to the setState function of react
-    setTimeout(() => {
-      // Validate all the inputs on the current step
-      const valid = this.formElements.isValid(this.state.form);
-
-      if (valid) {
-        // Start the submitting
-        this.setState({ submitting: true });
-
-        // Save data
-        login({ body: { auth: this.state.form } })
-          .then(() => {
-            window.location.reload();
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
-            try {
-              errors.forEach(er =>
-                toastr.error(intl.formatMessage({ id: 'Error' }), `${er.title}`)
-              );
-            } catch (e) {
-              toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
-      } else {
-        toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Fill all the required fields' }));
-      }
-    }, 0);
-  }
-
-  onForgotPasswordClick() {
+  const handleForgotPasswordClick = () => {
     modal.toggleModal(true, {
       children: ForgotPassword
     });
-  }
+  };
 
-  render() {
-    const { intl } = this.props;
-    const { submitting } = this.state;
-    const submittingClassName = classnames({
-      '-submitting': submitting
-    });
-    const closeModal = () => { modal.toggleModal(false); };
+  const closeModal = () => { modal.toggleModal(false); };
 
-    return (
-      <div className="c-login">
+  return (
+    <div className="c-login">
+      <h2 className="c-title -huge">
+        {intl.formatMessage({ id: 'login' })}
+      </h2>
 
-        <Spinner isLoading={submitting} className="-light" />
-
-        <h2 className="c-title -huge">
-          {intl.formatMessage({ id: 'login' })}
-        </h2>
-
-        <form className="c-form" onSubmit={this.onSubmit} noValidate>
+      <FormProvider onSubmit={handleSubmit} initialValues={{ email: '', password: '' }}>
+        <Form>
           <fieldset className="c-field-container">
             {/* EMAIL */}
             <Field
-              ref={(c) => { if (c) this.formElements.elements.email = c; }}
-              onChange={value => this.onChange({ email: value })}
               validations={['required', 'email']}
               className="-fluid"
               properties={{
@@ -128,7 +54,6 @@ class Login extends React.Component {
                 label: intl.formatMessage({ id: 'login.form.field.email' }),
                 type: 'email',
                 required: true,
-                default: this.state.form.email
               }}
             >
               {Input}
@@ -136,8 +61,6 @@ class Login extends React.Component {
 
             {/* PASSWORD */}
             <Field
-              ref={(c) => { if (c) this.formElements.elements.password = c; }}
-              onChange={value => this.onChange({ password: value })}
               validations={['required']}
               className="-fluid"
               properties={{
@@ -145,7 +68,6 @@ class Login extends React.Component {
                 label: intl.formatMessage({ id: 'login.form.field.password' }),
                 type: 'password',
                 required: true,
-                default: this.state.form.password
               }}
             >
               {Input}
@@ -153,42 +75,25 @@ class Login extends React.Component {
           </fieldset>
 
           <div className="c-field-extra-actions">
-            <p>{intl.formatMessage({ id: 'signin.forgot_password', defaultMessage: 'Did you forget your password?' })}  <button type="button" className="c-link-button" onClick={this.onForgotPasswordClick}>{intl.formatMessage({ id: 'signin.reset_your_password', defaultMessage: 'Reset your password' })}</button></p>
+            <p>{intl.formatMessage({ id: 'signin.forgot_password', defaultMessage: 'Did you forget your password?' })}  <button type="button" className="c-link-button" onClick={handleForgotPasswordClick}>{intl.formatMessage({ id: 'signin.reset_your_password', defaultMessage: 'Reset your password' })}</button></p>
             <p>{intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_now' })}</a></Link></p>
             <p>{intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operators/new"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_producer' })}</a></Link></p>
           </div>
 
           <ul className="c-field-buttons">
             <li>
-              <button
-                type="button"
-                name="commit"
-                className="c-button -primary -expanded"
-                onClick={closeModal}
-              >
-                {intl.formatMessage({ id: 'cancel' })}
-              </button>
+              <CancelButton onClick={closeModal} />
             </li>
             <li>
-              <button
-                type="submit"
-                name="commit"
-                disabled={submitting}
-                className={`c-button -secondary -expanded ${submittingClassName}`}
-              >
+              <SubmitButton>
                 {intl.formatMessage({ id: 'login' })}
-              </button>
+              </SubmitButton>
             </li>
           </ul>
-        </form>
-      </div>
-    );
-  }
+        </Form>
+      </FormProvider>
+    </div>
+  );
 }
 
-Login.propTypes = {
-  intl: PropTypes.object.isRequired
-};
-
-
-export default injectIntl(Login);
+export default Login;

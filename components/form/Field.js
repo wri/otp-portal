@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { withFormContext } from './Form';
+
 class Field extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      value: this.props.properties.default,
       valid: null,
       error: []
     };
@@ -30,17 +31,31 @@ class Field extends React.Component {
 
   validate() {
     if (this.child.triggerValidate) this.child.triggerValidate();
-
-    // // React intl forces to do this...
-    // // I'm starting to think that our inputs are not very well done...
-    // if (this.child.getWrappedInstance) {
-    //   const wrapper = this.child.getWrappedInstance();
-    //   if (wrapper) wrapper.triggerValidate();
-    // }
   }
 
   isValid() {
     return this.state.valid;
+  }
+
+  getElementProps() {
+    const { properties, onChange, formContext } = this.props;
+
+    const defaultOnChange = (value) => {
+      if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, 'checked')) {
+        formContext.setFormValues({ [properties.name]: value.checked });
+      } else {
+        formContext.setFormValues({ [properties.name]: value });
+      }
+    };
+
+    return {
+      ...this.props,
+      onChange: onChange || defaultOnChange,
+      properties: {
+        ...properties,
+        default: typeof properties.default !== 'undefined' ? properties.default : formContext.form[properties.name],
+      }
+    };
   }
 
   renderHint() {
@@ -64,7 +79,7 @@ class Field extends React.Component {
   }
 
   render() {
-    const { properties, className, hint } = this.props;
+    const { properties, className } = this.props;
     const { valid, error } = this.state;
 
     // Set classes
@@ -86,7 +101,7 @@ class Field extends React.Component {
         {this.renderHint()}
 
         <this.props.children
-          {...this.props}
+          {...this.getElementProps()}
           ref={(c) => { if (c) this.child = c; }}
           onValid={this.onValid}
         />
@@ -112,7 +127,8 @@ class Field extends React.Component {
 Field.propTypes = {
   properties: PropTypes.object.isRequired,
   hint: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  formContext: PropTypes.object
 };
 
-export default Field;
+export default withFormContext(Field);

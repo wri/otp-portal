@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
 import { saveUser } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
 
 // Next components
 import Link from 'next/link';
 
 // Components
-import Spinner from 'components/ui/spinner';
+import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Select from 'components/form/SelectInput';
@@ -23,331 +21,244 @@ import RadioGroup from 'components/form/RadioGroup';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
-import { FormElements } from 'utils/form';
 import { logEvent } from 'utils/analytics';
+import SubmitButton from '../form/SubmitButton';
 
-class UserNewForm extends React.Component {
-  constructor(props) {
-    super(props);
+const UserNewForm = (props) => {
+  const { countries, operators } = props;
+  const intl = useIntl();
 
-    this.formElements = new FormElements();
-    this.state = {
-      form: {
-        name: '',
-        email: '',
-        operator_id: '',
-        country_id: '',
-        password: '',
-        password_confirmation: '',
-        permissions_request: 'operator',
-        agree: false
-      },
-      submitting: false,
-      submitted: false
-    };
-
-    // Bindings
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  /**
-   * UI EVENTS
-   * - onChange
-   * - onSubmit
-   */
-  onChange(value) {
-    const form = Object.assign({}, this.state.form, value);
-    this.setState({ form });
-  }
-
-  onSubmit(e) {
-    e && e.preventDefault();
-
-    // Validate the form
-    this.formElements.validate(this.state.form);
-
-    // Set a timeout due to the setState function of react
-    setTimeout(() => {
-      // Validate all the inputs on the current step
-      const valid = this.formElements.isValid(this.state.form);
-
-      if (valid) {
-        // Start the submitting
-        this.setState({ submitting: true });
-
-        const body = {
-          user: {
-            ...this.state.form
-          }
-        };
-        if (this.state.form.permissions_request === 'government') {
-          delete body.user.operator_id;
-        }
-
-        // Save data
-        this.props.saveUser({ body })
-          .then(() => {
-            this.setState({ submitting: false, submitted: true });
-            logEvent('sign_up', { method: 'credentials' });
-            if (this.props.onSubmit) this.props.onSubmit();
-          })
-          .catch((errors) => {
-            this.setState({ submitting: false });
-            console.error(errors);
-
-            try {
-              errors.forEach(er =>
-                toastr.error(this.props.intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
-              );
-            } catch (e) {
-              toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Oops! There was an error, try again' }));
-            }
-          });
-      } else {
-        toastr.error(this.props.intl.formatMessage({ id: 'Error' }), this.props.intl.formatMessage({ id: 'Fill all the required fields' }));
+  const handleSubmit = ({ form }) => {
+    const body = {
+      user: {
+        ...form
       }
-    }, 0);
+    };
+    if (form.permissions_request === 'government') {
+      delete body.user.operator_id;
+    }
+
+    // Save data
+    return props.saveUser({ body })
+      .then(() => {
+        logEvent('sign_up', { method: 'credentials' });
+        if (props.onSubmit) props.onSubmit();
+      })
   }
 
-  render() {
-    const { submitting, submitted } = this.state;
-    const submittingClassName = classnames({
-      '-submitting': submitting
-    });
-    const registerNewProducerHint = (
-      <>
-        {this.props.intl.formatMessage({ id: 'signin.not_a_producer' })}
-        {' '}
-        <Link href="/operators/new">
-          {this.props.intl.formatMessage({ id: 'signin.register_producer' })}
-        </Link>
-      </>
-    );
+  const registerNewProducerHint = (
+    <>
+      {intl.formatMessage({ id: 'signin.not_a_producer' })}
+      {' '}
+      <Link href="/operators/new">
+        {intl.formatMessage({ id: 'signin.register_producer' })}
+      </Link>
+    </>
+  );
 
-    return (
-      <div className="c-section">
-        <Spinner isLoading={submitting} className="-light -fixed" />
+  const formInitialState = {
+    name: '',
+    email: '',
+    operator_id: '',
+    country_id: '',
+    password: '',
+    password_confirmation: '',
+    permissions_request: 'operator',
+    agree: false
+  }
 
-        {!submitted && (
-          <form className="c-form" onSubmit={this.onSubmit} noValidate>
-            <fieldset className="c-field-container">
-              {/* Permission request */}
-              <Field
-                ref={(c) => { { if (c) this.formElements.elements.permissions_request = c; } }}
-                onChange={value => this.onChange({ permissions_request: value })}
-                validations={['required']}
-                className="-fluid"
-                options={[
-                  { label: this.props.intl.formatMessage({ id: 'operator' }), value: 'operator' },
-                  { label: this.props.intl.formatMessage({ id: 'government' }), value: 'government' }
-                ]}
-                hint={this.props.intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
-                properties={{
-                  name: 'permissions_request',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.permissions_request' }),
-                  required: true,
-                  default: this.state.form.permissions_request
-                }}
-              >
-                {RadioGroup}
-              </Field>
-
-              {/* Countries */}
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.country_id = c; }}
-                onChange={value => this.onChange({ country_id: value, operator_id: null })}
-                validations={['required']}
-                className="-fluid"
-                options={HELPERS_REGISTER.mapToSelectOptions(this.props.countries.data)}
-                properties={{
-                  name: 'country_id',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.country' }),
-                  required: true,
-                  instanceId: 'select.country_id',
-                  default: this.state.form.country_id,
-                  placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
-                }}
-              >
-                {Select}
-              </Field>
-
-              {/* Operators */}
-              {this.state.form.permissions_request === 'operator' && this.state.form.country_id && (
+  return (
+    <div className="c-section">
+      <FormProvider onSubmit={handleSubmit} initialValues={formInitialState}>
+        {({ form, submitted }) => (<>
+          {!submitted && (
+            <Form>
+              <fieldset className="c-field-container">
+                {/* Permission request */}
                 <Field
-                  ref={(c) => { if (c) this.formElements.elements.operator_type = c; }}
-                  onChange={value => this.onChange({ operator_id: value })}
                   validations={['required']}
                   className="-fluid"
-                  hint={registerNewProducerHint}
-                  options={HELPERS_REGISTER.mapToSelectOptions(this.props.operators.data.filter(o => o.country && o.country.id === this.state.form.country_id))}
+                  options={[
+                    { label: intl.formatMessage({ id: 'operator' }), value: 'operator' },
+                    { label: intl.formatMessage({ id: 'government' }), value: 'government' }
+                  ]}
+                  hint={intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
                   properties={{
-                    name: 'operator_id',
-                    label: this.props.intl.formatMessage({ id: 'signup.user.form.field.producer' }),
+                    name: 'permissions_request',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.permissions_request' }),
                     required: true,
-                    instanceId: 'select.operator_id',
-                    default: this.state.form.operator_id,
-                    value: this.state.form.operator_id,
-                    placeholder: this.props.intl.formatMessage({ id: 'select.placeholder' })
+                  }}
+                >
+                  {RadioGroup}
+                </Field>
+
+                {/* Countries */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={HELPERS_REGISTER.mapToSelectOptions(countries.data)}
+                  properties={{
+                    name: 'country_id',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.country' }),
+                    required: true,
+                    instanceId: 'select.country_id',
+                    placeholder: intl.formatMessage({ id: 'select.placeholder' })
                   }}
                 >
                   {Select}
                 </Field>
-              )}
 
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.name = c; }}
-                onChange={value => this.onChange({ name: value })}
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'name',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.name' }),
-                  required: true,
-                  default: this.state.form.name
-                }}
-              >
-                {Input}
-              </Field>
+                {/* Operators */}
+                {form.permissions_request === 'operator' && form.country_id && (
+                  <Field
+                    validations={['required']}
+                    className="-fluid"
+                    hint={registerNewProducerHint}
+                    options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
+                    properties={{
+                      name: 'operator_id',
+                      label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
+                      required: true,
+                      instanceId: 'select.operator_id',
+                      placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                    }}
+                  >
+                    {Select}
+                  </Field>
+                )}
 
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.email = c; }}
-                onChange={value => this.onChange({ email: value })}
-                validations={['required', 'email']}
-                className="-fluid"
-                properties={{
-                  name: 'email',
-                  autoComplete: 'email',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.email' }),
-                  required: true,
-                  default: this.state.form.email
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.password = c; }}
-                onChange={value => this.onChange({ password: value })}
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'password',
-                  autoComplete: 'new-password',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password' }),
-                  type: 'password',
-                  required: true,
-                  default: this.state.form.password
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Name */}
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.password_confirmation = c; }}
-                onChange={value => this.onChange({ password_confirmation: value })}
-                validations={[
-                  'required',
-                  {
-                    type: 'isEqual',
-                    condition: this.state.form.password,
-                    message: this.props.intl.formatMessage({ id: 'The field should be equal to password' })
-                  }
-                ]}
-                className="-fluid"
-                properties={{
-                  name: 'password_confirmation',
-                  autoComplete: 'new-password',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
-                  type: 'password',
-                  required: true,
-                  default: this.state.form.password_confirmation
-                }}
-              >
-                {Input}
-              </Field>
-
-              <Field
-                ref={(c) => { if (c) this.formElements.elements.agree = c; }}
-                onChange={value => this.onChange({ agree: value.checked })}
-                className="-fluid"
-                validations={['required']}
-                properties={{
-                  required: true,
-                  name: 'agree',
-                  label: this.props.intl.formatMessage({ id: 'signup.user.form.field.agree' }), // this.props.intl.formatMessage({ id: 'sawmills.modal.active' }),
-                  checked: this.state.form.agree
-                }}
-              >
-                {Checkbox}
-              </Field>
-            </fieldset>
-
-            <ul className="c-field-buttons">
-              <li>
-                <button
-                  type="submit"
-                  name="commit"
-                  disabled={submitting}
-                  className={`c-button -secondary -expanded ${submittingClassName}`}
+                {/* Name */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'name',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
+                    required: true
+                  }}
                 >
-                  {this.props.intl.formatMessage({ id: 'signup' })}
-                </button>
-              </li>
-            </ul>
-          </form>
-        )}
+                  {Input}
+                </Field>
 
-        {submitted && (
-          <div className="c-form">
-            <h2 className="c-title -huge">
-              {this.props.intl.formatMessage({ id: 'thankyou' })}
-            </h2>
+                {/* Name */}
+                <Field
+                  validations={['required', 'email']}
+                  className="-fluid"
+                  properties={{
+                    name: 'email',
+                    autoComplete: 'email',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.email' }),
+                    required: true,
+                  }}
+                >
+                  {Input}
+                </Field>
 
-            <p>
-              {this.props.intl.formatMessage({ id: 'wait-for-approval' })}
-            </p>
+                {/* Name */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'password',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.password' }),
+                    type: 'password',
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
 
-            <ul className="c-field-buttons">
-              <li>
-                <Link href="/operators">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'operators' })}
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/observations">
-                  <a className="card-link c-button -primary -fullwidth">
-                    {this.props.intl.formatMessage({ id: 'observations' })}
-                  </a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  }
+                {/* Name */}
+                <Field
+                  validations={[
+                    'required',
+                    {
+                      type: 'isEqual',
+                      condition: form.password,
+                      message: intl.formatMessage({ id: 'The field should be equal to password' })
+                    }
+                  ]}
+                  className="-fluid"
+                  properties={{
+                    name: 'password_confirmation',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
+                    type: 'password',
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                <Field
+                  className="-fluid"
+                  validations={['required']}
+                  properties={{
+                    required: true,
+                    name: 'agree',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.agree' })
+                  }}
+                >
+                  {Checkbox}
+                </Field>
+              </fieldset>
+
+              <ul className="c-field-buttons">
+                <li>
+                  <SubmitButton>
+                    {intl.formatMessage({ id: 'signup' })}
+                  </SubmitButton>
+                </li>
+              </ul>
+            </Form>
+          )}
+
+          {submitted && (
+            <div className="c-form">
+              <h2 className="c-title -huge">
+                {intl.formatMessage({ id: 'thankyou' })}
+              </h2>
+
+              <p>
+                {intl.formatMessage({ id: 'wait-for-approval' })}
+              </p>
+
+              <ul className="c-field-buttons">
+                <li>
+                  <Link href="/operators">
+                    <a className="card-link c-button -primary -fullwidth">
+                      {intl.formatMessage({ id: 'operators' })}
+                    </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/observations">
+                    <a className="card-link c-button -primary -fullwidth">
+                      {intl.formatMessage({ id: 'observations' })}
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
+        </>)}
+      </FormProvider>
+    </div>
+  );
 }
 
 UserNewForm.propTypes = {
   operators: PropTypes.object,
   countries: PropTypes.object,
   saveUser: PropTypes.func,
-  onSubmit: PropTypes.func,
-  intl: PropTypes.object.isRequired
+  onSubmit: PropTypes.func
 };
 
-
-export default injectIntl(connect(
+export default connect(
   state => ({
     operators: state.operators,
     countries: state.countries
   }),
   { saveUser }
-)(UserNewForm));
+)(UserNewForm);
