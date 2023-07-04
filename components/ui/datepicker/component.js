@@ -5,6 +5,7 @@ import ReactDatePicker, { CalendarContainer, registerLocale } from 'react-datepi
 import classnames from 'classnames';
 
 import frLocale from 'date-fns/locale/fr';
+import ptLocale from 'date-fns/locale/pt';
 import jaLocale from 'date-fns/locale/ja';
 import koLocale from 'date-fns/locale/ko';
 import viLocale from 'date-fns/locale/vi';
@@ -13,6 +14,7 @@ import zhCNLocale from 'date-fns/locale/zh-CN';
 import Input from './input';
 
 registerLocale('fr', frLocale);
+registerLocale('pt', ptLocale);
 registerLocale('ja', jaLocale);
 registerLocale('ko', koLocale);
 registerLocale('vi', viLocale);
