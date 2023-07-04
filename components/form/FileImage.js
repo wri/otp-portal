@@ -13,7 +13,7 @@ class FileImage extends FormElement {
     super(props);
 
     const defaultValue = props.properties.default;
-    const previewURL = `${process.env.BACKOFFICE_API_URL}/${defaultValue || ''}`;
+    const previewURL = `${process.env.OTP_API}/${defaultValue || ''}`;
     this.state = {
       value: (defaultValue) ?
         this.getBase64FromURL(previewURL) :
@@ -97,6 +97,8 @@ class FileImage extends FormElement {
   }
 
   getBase64FromURL(url) {
+    if (typeof XMLHttpRequest === 'undefined') return;
+
     const xhr = new XMLHttpRequest();
     xhr.open('get', url);
     xhr.responseType = 'blob';
