@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { connect } from 'react-redux';
 
@@ -110,8 +110,8 @@ class DocCardUpload extends React.Component {
   render() {
     const { status, buttons, date } = this.props;
     const { deleteLoading } = this.state;
-    const currentDate = moment(new Date());
-    const selectedDate = moment(date);
+    const currentDate = dayjs(new Date());
+    const selectedDate = dayjs(date);
     const isEditable =
       currentDate.year() === selectedDate.year() &&
       currentDate.month() === selectedDate.month() &&

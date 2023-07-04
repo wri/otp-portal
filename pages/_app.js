@@ -21,6 +21,13 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 
 import { getCookie, setCookie, deleteCookie } from 'services/cookies';
 
+import 'dayjs/locale/fr';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/ja';
+import 'dayjs/locale/ko';
+import 'dayjs/locale/vi';
+import 'dayjs/locale/zh-cn';
+
 import 'css/index.scss';
 
 const reducer = combineReducers({

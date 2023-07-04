@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { useRouter } from 'next/router';
@@ -38,7 +38,7 @@ function DocumentsFilter({
     setFMU(fmus.find(f => f.id === router.query.fmuId));
   }, [router.query.fmuId, fmus])
   useEffect(() => {
-    setDate(router.query.date || moment().format('YYYY-MM-DD'));
+    setDate(router.query.date || dayjs().format('YYYY-MM-DD'));
   }, [router.query.date])
 
   const selectedFmu = FMU && fmus && fmus.find(f => f.id === FMU.id);
@@ -82,17 +82,17 @@ function DocumentsFilter({
 
           <Datepicker
             className="filters-date -inline"
-            date={moment(date)}
+            date={dayjs(date)}
             dateFormat="dd MMM yyyy"
             settings={{
               numberOfMonths: 1,
-              minDate: moment(minDate).add(1, 'days'),
-              maxDate: moment(new Date()),
+              minDate: dayjs(minDate).add(1, 'days'),
+              maxDate: dayjs(),
               hideKeyboardShortcutsPanel: true,
               noBorder: true,
               readOnly: false,
             }}
-            onDateChange={(d) => setUrlParam('date', moment(d).format('YYYY-MM-DD'))}
+            onDateChange={(d) => setUrlParam('date', dayjs(d).format('YYYY-MM-DD'))}
           />
         </span>
       )}

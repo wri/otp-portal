@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -24,9 +24,9 @@ class LegendTemplateAlerts extends PureComponent {
       settings: {
         decodeParams: {
           ...decodeParams,
-          [who]: moment(value).format('YYYY-MM-DD'),
+          [who]: dayjs(value).format('YYYY-MM-DD'),
           ...who === 'trimEndDate' && {
-            endDate: moment(value).format('YYYY-MM-DD')
+            endDate: dayjs(value).format('YYYY-MM-DD')
           }
         }
       }
@@ -54,15 +54,15 @@ class LegendTemplateAlerts extends PureComponent {
 
             <Datepicker
               className="-inline"
-              date={moment(startDate < min ? min : startDate)}
+              date={dayjs(startDate < min ? min : startDate)}
               dateFormat="dd MMM yyyy"
               settings={{
                 numberOfMonths: 1,
                 minDate: min,
                 maxDate: trim,
                 isOutsideRange: d =>
-                  d.isAfter(moment(trim)) ||
-                    d.isBefore(moment(min)),
+                  d.isAfter(dayjs(trim)) ||
+                    d.isBefore(dayjs(min)),
                 hideKeyboardShortcutsPanel: true,
                 noBorder: true,
                 readOnly: true
@@ -76,14 +76,14 @@ class LegendTemplateAlerts extends PureComponent {
 
             <Datepicker
               className="-inline"
-              date={moment(trim || max)}
+              date={dayjs(trim || max)}
               dateFormat="dd MMM yyyy"
               settings={{
                 numberOfMonths: 1,
                 minDate: startDate,
                 maxDate: max,
                 isOutsideRange: d =>
-                  d.isAfter(moment(max)) || d.isBefore(moment(startDate)),
+                  d.isAfter(dayjs(max)) || d.isBefore(dayjs(startDate)),
                 hideKeyboardShortcutsPanel: true,
                 noBorder: true,
                 readOnly: true

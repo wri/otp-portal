@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { injectIntl } from 'react-intl';
 
 import { format } from 'd3-format';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
@@ -21,7 +21,7 @@ class FMUTemplatePopup extends PureComponent {
     switch (type) {
       case 'date': {
         if (value && format_str) {
-          value = moment(value).format(format_str);
+          value = dayjs(value).format(format_str);
         }
 
         break;

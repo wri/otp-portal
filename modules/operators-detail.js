@@ -1,8 +1,8 @@
 import Jsona from 'jsona';
-import moment from 'moment';
+
+import dayjs from 'dayjs';
 
 import API from 'services/api';
-import { setUrlParam } from 'utils/url';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -60,7 +60,7 @@ const initialState = {
     error: false,
     timestamp: null
   },
-  date: moment().format('YYYY-MM-DD'),
+  date: dayjs().format('YYYY-MM-DD'),
   fmu: null,
   timeline: [],
   sawmills: {

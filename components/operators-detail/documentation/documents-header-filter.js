@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
@@ -75,17 +75,17 @@ function DocumentsHeaderFilter({
           <div className="c-doc-header-filters__item">
             <Datepicker
               className="filters-date -inline"
-              date={moment(date)}
+              date={dayjs(date)}
               dateFormat="dd MMM yyyy"
               settings={{
                 numberOfMonths: 1,
-                minDate: moment(minDate).add(1, 'days'),
-                maxDate: moment(new Date()),
+                minDate: dayjs(minDate).add(1, 'days'),
+                maxDate: dayjs(),
                 hideKeyboardShortcutsPanel: true,
                 noBorder: true,
                 readOnly: false,
               }}
-              onDateChange={(d) => setDate(moment(d).format('YYYY-MM-DD'))}
+              onDateChange={(d) => setDate(dayjs(d).format('YYYY-MM-DD'))}
             />
           </div>
           <div className="c-doc-header-filters__item c-doc-search">

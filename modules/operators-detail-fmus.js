@@ -1,7 +1,7 @@
 import { LAYERS } from 'constants/layers';
 import sumBy from 'lodash/sumBy';
 import uniq from 'lodash/uniq';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
@@ -419,7 +419,7 @@ export function getIntegratedAlertsMetadata() {
               maxDate: maxDataDate
             },
             timelineParams: {
-              minDate: moment(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              minDate: dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
               maxDate: maxDataDate,
               minDataDate
             }

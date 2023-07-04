@@ -1,4 +1,7 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import dayOfYear from 'dayjs/plugin/dayOfYear';
+
+dayjs.extend(dayOfYear);
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -70,19 +73,19 @@ export const getParams = (config = [], params = {}) => {
   return {
     ...newParams,
     ...(!!start && {
-      startYear: moment(start).year(),
-      startMonth: moment(start).month(),
-      startDay: moment(start).dayOfYear()
+      startYear: dayjs(start).year(),
+      startMonth: dayjs(start).month(),
+      startDay: dayjs(start).dayOfYear()
     }),
     ...(!!endDate && {
-      endYear: moment(end).year(),
-      endMonth: moment(end).month(),
-      endDay: moment(end).dayOfYear()
+      endYear: dayjs(end).year(),
+      endMonth: dayjs(end).month(),
+      endDay: dayjs(end).dayOfYear()
     }),
     ...(!!trimEndDate && {
-      trimEndYear: moment(trim).year(),
-      trimEndMonth: moment(trim).month(),
-      trimEndDay: moment(trim).dayOfYear()
+      trimEndYear: dayjs(trim).year(),
+      trimEndMonth: dayjs(trim).month(),
+      trimEndDay: dayjs(trim).dayOfYear()
     }),
     ...getDayRange(newParams)
   };

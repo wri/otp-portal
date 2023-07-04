@@ -4,7 +4,8 @@ import Router from 'next/router';
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
 import uniq from 'lodash/uniq';
-import moment from 'moment';
+
+import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import API from 'services/api';
@@ -361,7 +362,7 @@ export function getIntegratedAlertsMetadata() {
               maxDate: maxDataDate
             },
             timelineParams: {
-              minDate: moment(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              minDate: dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
               maxDate: maxDataDate,
               minDataDate
             }

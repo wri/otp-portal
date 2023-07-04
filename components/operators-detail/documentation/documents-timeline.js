@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { injectIntl } from 'react-intl';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import groupBy from 'lodash/groupBy';
 
 // Utils
@@ -115,7 +115,7 @@ function DocumentsTimeline({ timelineData = [], intl }) {
             ticks={ticks}
             tick={{ fontWeight: 'bold', fontFamily: "Proxima Nova", fontSize: 12 }}
             tickLine={false}
-            tickFormatter={(l) => moment(l).format('YYYY')}
+            tickFormatter={(l) => dayjs(l).format('YYYY')}
           />
 
           {chartData &&

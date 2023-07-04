@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import sumBy from 'lodash/sumBy';
 import sortBy from 'lodash/sortBy';
-import moment from 'moment';
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import dayjs from 'dayjs';
 
 import Spinner from 'components/ui/spinner';
 
 import { injectIntl } from 'react-intl';
+
+dayjs.extend(advancedFormat)
 
 const LegendAnalysisIntegratedAlerts = (props) => {
   const { activeLayer, analysis, intl, language } = props;
@@ -22,10 +25,10 @@ const LegendAnalysisIntegratedAlerts = (props) => {
   };
   const formatDate = (date) => {
     if (language === 'fr') {
-      return moment(date).locale(language).format('Do MMMM YYYY');
+      return dayjs(date).locale(language).format('Do MMMM YYYY');
     }
 
-    return moment(date).locale(language).format('MMMM Do, YYYY');
+    return dayjs(date).locale(language).format('MMMM Do, YYYY');
   }
   let alertText;
   if (data && totalCount > 0) {
