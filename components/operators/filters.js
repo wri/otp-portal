@@ -22,7 +22,8 @@ const FILTERS_REFS = [
     key: 'country',
     name: 'Country',
     type: 'select',
-    placeholder: 'All Countries'
+    placeholder: 'All Countries',
+    translate: true
   },
   {
     key: 'certification',
@@ -71,7 +72,7 @@ class OperatorsFilters extends React.Component {
       const sortedOptions = orderBy(
         (options[f.key] || []).map(o => ({
           ...o,
-          label: this.props.intl.formatMessage({ id: o.label })
+          label: f.translate ? this.props.intl.formatMessage({ id: o.label }) : o.label
         })),
         (o) => o.label.toLowerCase()
       );
