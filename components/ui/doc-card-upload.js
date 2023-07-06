@@ -216,7 +216,7 @@ class DocCardUpload extends React.Component {
 DocCardUpload.propTypes = {
   status: PropTypes.string,
   user: PropTypes.object,
-  docId: PropTypes.string,
+  docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
   date: PropTypes.string,

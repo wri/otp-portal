@@ -273,7 +273,7 @@ class DocModal extends React.Component {
 
 DocModal.propTypes = {
   id: PropTypes.string,
-  docId: PropTypes.number,
+  docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   startDate: PropTypes.string,
   endDate: PropTypes.string,
   status: PropTypes.string,

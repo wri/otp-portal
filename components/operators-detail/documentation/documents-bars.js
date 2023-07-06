@@ -1,14 +1,18 @@
-import { injectIntl } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import sortBy from 'lodash/sortBy';
+
 import { HELPERS_DOC } from 'utils/documentation';
 
 function DocumentStatusBar({
   category,
   className,
   docs,
-  maxDocs,
-  intl
+  maxDocs
 }) {
+  const intl = useIntl();
+
   const groupedByStatus = HELPERS_DOC.getGroupedByStatus(docs);
   delete groupedByStatus.doc_not_required;
 
@@ -59,4 +63,11 @@ function DocumentStatusBar({
   );
 }
 
-export default injectIntl(DocumentStatusBar);
+DocumentStatusBar.propTypes = {
+  category: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  docs: PropTypes.array.isRequired,
+  maxDocs: PropTypes.number
+};
+
+export default DocumentStatusBar;

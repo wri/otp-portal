@@ -42,7 +42,7 @@ function OperatorsDetailDocumentation({
   const validDocs = groupedByStatusChart.find(
     (status) => status.id === 'doc_valid'
   );
-  const [searchText, setSearchText] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   return (
     <div>
@@ -83,6 +83,7 @@ function OperatorsDetailDocumentation({
                 {Object.entries(docsGroupedByCategory).map(
                   ([category, docs]) => (
                     <DocumentStatusBar
+                      key={category}
                       category={category}
                       docs={docs}
                       maxDocs={maxDocs}

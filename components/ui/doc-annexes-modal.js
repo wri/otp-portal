@@ -25,7 +25,7 @@ class DocAnnexesModal extends React.Component {
     title: PropTypes.string,
     intl: PropTypes.object.isRequired,
     user: PropTypes.object,
-    docId: PropTypes.string,
+    docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func
   };
 

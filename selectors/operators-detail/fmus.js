@@ -130,7 +130,7 @@ export const getActiveInteractiveLayersIds = createSelector(
 export const getActiveInteractiveLayers = createSelector(
   [layers, interactions],
   (_layers, _interactions) => {
-    if (!_layers || isEmpty(_interactions)) return {};
+    if (!_layers || isEmpty(_interactions)) return [];
 
     const allLayers = uniqBy(flatten(_layers.map((l) => {
       const { config, name } = l;
@@ -153,7 +153,7 @@ export const getActiveInteractiveLayers = createSelector(
 export const getActiveHoverInteractiveLayers = createSelector(
   [layers, hoverInteractions],
   (_layers, _hoverInteractions) => {
-    if (!_layers || isEmpty(_hoverInteractions)) return {};
+    if (!_layers || isEmpty(_hoverInteractions)) return [];
 
     const allLayers = uniqBy(flatten(_layers.map((l) => {
       const { config, name } = l;

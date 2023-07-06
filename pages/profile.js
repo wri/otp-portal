@@ -39,7 +39,7 @@ class Profile extends React.Component {
     return (
       <Layout
         title={this.props.intl.formatMessage({ id: 'User profile' })}
-        description={this.props.intl.formatMessage({ id: 'edit.profile.description' })}
+        description={this.props.intl.formatMessage({ id: 'User profile' })}
         url={url}
       >
         <StaticHeader

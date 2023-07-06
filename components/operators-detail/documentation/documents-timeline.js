@@ -8,7 +8,7 @@ import groupBy from 'lodash/groupBy';
 // Utils
 import { PALETTE } from 'utils/documentation';
 
-function CustomTooltip({ active, payload, label, intl }) {
+function CustomTooltip({ active, payload, label: timestamp, intl }) {
   if (active) {
     const validDocs = payload.find((p) => p.dataKey === 'doc_valid');
 
@@ -16,7 +16,7 @@ function CustomTooltip({ active, payload, label, intl }) {
       <div className="c-custom-tooltip">
         <p className="date-label">
           {
-            intl.formatDate(label, {
+            intl.formatDate(timestamp, {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric'
@@ -38,7 +38,7 @@ function CustomTooltip({ active, payload, label, intl }) {
             const pctValue = category && category.value && category.value[2];
             if (pctValue) {
               return (
-                <p className="tooltip-category">
+                <p key={category.name} className="tooltip-category">
                   <svg height="10" width="10">
                     <circle cx="5" cy="5" r="5" fill={category.fill} />
                   </svg>
@@ -59,8 +59,8 @@ function CustomTooltip({ active, payload, label, intl }) {
 
 CustomTooltip.propTypes = {
   active: PropTypes.bool,
-  payload: PropTypes.object,
-  label: PropTypes.string,
+  payload: PropTypes.array,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   intl: PropTypes.object.isRequired,
 };
 
@@ -124,6 +124,7 @@ function DocumentsTimeline({ timelineData = [], intl }) {
               .filter((k) => k !== 'date' && k !== 'time' && k !== 'year')
               .map((k) => (
                 <Area
+                  key={k}
                   dataKey={k}
                   stroke={PALETTE[k].stroke}
                   fill={PALETTE[k].fill}

@@ -20,7 +20,7 @@ class PopupComponent extends PureComponent {
   static propTypes = {
     popup: PropTypes.shape({}).isRequired,
     template: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func
   };
 
   componentDidUpdate(prevProps) {
