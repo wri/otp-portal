@@ -61,7 +61,7 @@ function DocumentsByOperator(props) {
         const groupedBySubCategory = HELPERS_DOC.getGroupedBySubCategory(groupedByCategory[category].filter(x => x.subCategory));
 
         return (
-          <li key={category} className="doc-gallery-item c-doc-by-category">
+          <li key={category} className="doc-gallery-item -top-border c-doc-by-category">
             <header className="doc-gallery-item-header">
               <h3 className="c-title -proximanova -extrabig -uppercase">
                 {category}

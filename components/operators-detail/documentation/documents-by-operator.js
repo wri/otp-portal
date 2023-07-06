@@ -88,7 +88,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
       )}
       {results.filter(r => !r.hide).map(({ category, isCategoryOpen, producerDocs, FMUDocs, FMUDocsByFMU }) => {
         return (
-          <li key={category} className="doc-gallery-item c-doc-by-category">
+          <li key={category} className="doc-gallery-item -top-border c-doc-by-category">
             <header className="doc-gallery-item-header">
               <DocumentStatusBar
                 category={category}
