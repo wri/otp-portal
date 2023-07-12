@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import ReactTable from 'react-table/react-table';
@@ -10,6 +10,7 @@ export default function Table({ data, options, className }) {
   // in this case I will reset this control by rendering null for a milisecond
   // maybe that is stupid but it works
   const [reset, setReset] = useState(false);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     // only reset if page is set to 0, and options page is set to default value -1
@@ -33,13 +34,18 @@ export default function Table({ data, options, className }) {
     )
   }
 
+  const onPageChange = (page) => {
+    tableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start'});
+    if (options.onPageChange) options.onPageChange(page);
+  }
+
   const classNames = cx({
     [className]: !!className,
     '-no-data': noData
   });
 
   return (
-    <div className={`c-table ${classNames}`}>
+    <div ref={tableRef} className={`c-table ${classNames}`}>
       <ReactTable
         data={data}
         className={`table ${classNames}`}
@@ -60,7 +66,7 @@ export default function Table({ data, options, className }) {
         loading={options.reactTableLoading}
         // Api pagination & sort
         manual={options.manual}
-        onPageChange={options.onPageChange}
+        onPageChange={onPageChange}
         onFetchData={options.onFetchData}
         defaultSorted={options.defaultSorted}
         sorted={options.sorted}
