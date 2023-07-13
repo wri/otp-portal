@@ -3,6 +3,7 @@
 
   &.dropdown--active .dropdown__content {
     display: block;
+    z-index: $z-index-2;
   }
 
   .dropdown__trigger {

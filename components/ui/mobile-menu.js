@@ -4,27 +4,16 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Link from 'next/link';
-import Dropdown, {
-  DropdownTrigger,
-  DropdownContent,
-} from 'react-simple-dropdown';
 
 import LanguageDropdown from 'components/ui/language-dropdown';
+import UserDropdown from 'components/ui/user-dropdown';
 
 import { injectIntl } from 'react-intl';
 
-function NavigationList({ footer, intl, url, className, countries }) {
-  const setActive = (pathname) => {
-    if (footer) return '';
-
-    return classnames({
-      '-active': pathname.includes(url.pathname),
-    });
-  }
+function MobileMenu({ intl, className, countries }) {
   const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
 
   const elements = [
-    footer && LanguageDropdown,
     process.env.FEATURE_COUNTRY_PAGES === 'true' && {
       name: intl.formatMessage({ id: 'countries' }),
       children: navCountries.map((country) => ({
@@ -57,11 +46,11 @@ function NavigationList({ footer, intl, url, className, countries }) {
       href: '/about',
       name: intl.formatMessage({ id: 'about' })
     },
-    footer && {
+    {
       href: '/terms',
       name: intl.formatMessage({ id: 'terms' })
     },
-    footer && {
+    {
       href: '/newsletter',
       name: intl.formatMessage({ id: 'newsletter' })
     }
@@ -70,7 +59,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
   return (
     <ul
       className={classnames({
-        'c-navigation-list': true,
+        'c-mobile-menu': true,
         [className]: !!className,
       })}
     >
@@ -88,67 +77,53 @@ function NavigationList({ footer, intl, url, className, countries }) {
         if (element.children) {
           return (
             <li key={idx}>
-              <Dropdown className="header-dropdown">
-                <DropdownTrigger>
-                  <div
-                    className={classnames(
-                      'header-nav-list-item',
-                      setActive(element.children.map(el => el.href))
-                    )}
-                  >
-                    <span>
-                      {element.name}
-                    </span>
-                  </div>
-                </DropdownTrigger>
-
-                <DropdownContent>
-                  <ul className="header-dropdown-list">
-                    {element.children.map((item) => (
-                      <li key={item.href} className="header-dropdown-list-item">
-                        <Link href={item.href} prefetch={false}>
-                          <a>
-                            {item.name}
-                          </a>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </DropdownContent>
-              </Dropdown>
+              <span>
+                {element.name}
+              </span>
+              <ul>
+                {element.children.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} prefetch={false}>
+                      <a>
+                        {item.name}
+                      </a>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </li>
           );
         }
         return (
           <li key={idx}>
             <Link href={element.href} prefetch={false}>
-              <a className={setActive([element.href])}>
+              <a>
                 {element.name}
               </a>
             </Link>
           </li>
         )
       })}
+      <li>
+        <UserDropdown displayIcon={false} />
+      </li>
+      <li>
+        <LanguageDropdown />
+      </li>
     </ul>
   );
 }
 
-NavigationList.propTypes = {
+MobileMenu.propTypes = {
   className: PropTypes.string,
   countries: PropTypes.object,
-  footer: PropTypes.bool,
-  intl: PropTypes.object.isRequired,
-  url: PropTypes.object,
+  intl: PropTypes.object.isRequired
 };
-
-NavigationList.defaultProps = {
-  footer: false
-}
 
 export default injectIntl(
   connect(
     (state) => ({
       countries: state.countries,
     }),
-  )(NavigationList)
+  )(MobileMenu)
 );

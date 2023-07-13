@@ -7,7 +7,7 @@ import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 
 import { connect } from 'react-redux';
-import { logout } from 'modules/user';
+import User, { logout } from 'modules/user';
 
 import modal from 'services/modal';
 
@@ -15,7 +15,7 @@ import Notifications from 'components/ui/notifications';
 import Login from 'components/ui/login';
 import Icon from 'components/ui/icon';
 
-const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications, theme }) => {
+const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications, displayIcon, theme }) => {
   if (!user.token) {
     return (
       <a
@@ -25,7 +25,7 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
           });
         }}
       >
-        <Icon name="icon-user" />
+        {displayIcon && <Icon name="icon-user" />}
         <span>{intl.formatMessage({ id: 'signin' })}</span>
       </a>
     )
@@ -47,7 +47,7 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
     >
       <DropdownTrigger>
         <div className="header-nav-list-item">
-          <Icon name="icon-user" />
+          {displayIcon && <Icon name="icon-user" />}
           <span>{intl.formatMessage({ id: 'logged_in.trigger' })}</span>
         </div>
       </DropdownTrigger>
@@ -115,12 +115,17 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
 }
 
 UserDropdown.propTypes = {
+  displayIcon: PropTypes.bool,
   theme: PropTypes.string,
   user: PropTypes.object,
   intl: PropTypes.object.isRequired,
   operators: PropTypes.array,
   notifications: PropTypes.array,
   logout: PropTypes.func
+}
+
+UserDropdown.defaultProps = {
+  displayIcon: true
 }
 
 export default injectIntl(connect(

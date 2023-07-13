@@ -1,9 +1,11 @@
 .c-language-dropdown {
   display: inline-block;
+  position: relative;
 
   &.dropdown--active .dropdown__content {
     display: block;
     min-width: 150px;
+    z-index: $z-index-2;
   }
 
   // Content
