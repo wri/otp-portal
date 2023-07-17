@@ -8,9 +8,11 @@ import Link from 'next/link';
 import LanguageDropdown from 'components/ui/language-dropdown';
 import UserDropdown from 'components/ui/user-dropdown';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
+import UserMenuList from 'components/ui/user-menu-list';
 
-function MobileMenu({ intl, className, countries }) {
+function MobileMenu({ className, countries, user }) {
+  const intl = useIntl();
   const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
 
   const elements = [
@@ -22,17 +24,12 @@ function MobileMenu({ intl, className, countries }) {
       }))
     },
     {
-      name: intl.formatMessage({ id: 'operators' }),
-      children: [
-        {
-          href: '/operators',
-          name: intl.formatMessage({ id: 'transparency_ranking' })
-        },
-        {
-          href: '/database',
-          name: intl.formatMessage({ id: 'producers_documents_database' })
-        }
-      ]
+      href: '/operators',
+      name: intl.formatMessage({ id: 'transparency_ranking' })
+    },
+    {
+      href: '/database',
+      name: intl.formatMessage({ id: 'producers_documents_database' })
     },
     {
       href: '/observations',
@@ -63,6 +60,15 @@ function MobileMenu({ intl, className, countries }) {
         [className]: !!className,
       })}
     >
+      <li>
+        {user.token && (
+          <>
+            <span>{intl.formatMessage({ id: 'logged_in.trigger' })}</span>
+            <UserMenuList />
+          </>
+        )}
+        {!user.token && <UserDropdown displayIcon={false} />}
+      </li>
       {elements.map((element, idx) => {
         if (typeof element === 'function') {
           const Element = element;
@@ -105,9 +111,6 @@ function MobileMenu({ intl, className, countries }) {
         )
       })}
       <li>
-        <UserDropdown displayIcon={false} />
-      </li>
-      <li>
         <LanguageDropdown />
       </li>
     </ul>
@@ -117,13 +120,12 @@ function MobileMenu({ intl, className, countries }) {
 MobileMenu.propTypes = {
   className: PropTypes.string,
   countries: PropTypes.object,
-  intl: PropTypes.object.isRequired
+  user: PropTypes.object
 };
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      countries: state.countries,
-    }),
-  )(MobileMenu)
-);
+export default connect(
+  (state) => ({
+    user: state.user,
+    countries: state.countries,
+  }),
+)(MobileMenu);

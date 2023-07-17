@@ -1,21 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+
 import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 import { injectIntl } from 'react-intl';
-import uniq from 'lodash/uniq';
-import uniqBy from 'lodash/uniqBy';
 
 import { connect } from 'react-redux';
-import User, { logout } from 'modules/user';
+import { logout } from 'modules/user';
 
 import modal from 'services/modal';
 
-import Notifications from 'components/ui/notifications';
+import UserMenuList from 'components/ui/user-menu-list';
 import Login from 'components/ui/login';
 import Icon from 'components/ui/icon';
 
-const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications, displayIcon, theme }) => {
+const UserDropdown = ({ intl, user, displayIcon, theme }) => {
   if (!user.token) {
     return (
       <a
@@ -31,16 +29,6 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
     )
   }
 
-  const handleNotificationsClick = () => {
-    modal.toggleModal(true, {
-      children: Notifications,
-      childrenProps: {
-        render: true
-      },
-      size: '-auto'
-    });
-  }
-
   return (
     <Dropdown
       className={`c-account-dropdown ${theme}`}
@@ -53,62 +41,7 @@ const UserDropdown = ({ intl, user, logout: userLogout, operators, notifications
       </DropdownTrigger>
 
       <DropdownContent>
-        <ul className="account-dropdown-list">
-          <li className="account-dropdown-list-item">
-            <a onClick={handleNotificationsClick}>
-              Notifications ({uniqBy(notifications, 'operator-document-id').length})
-            </a>
-          </li>
-          <li className="account-dropdown-list-item">
-            <Link
-              href="/profile"
-              prefetch={false}
-            >
-              <a>{intl.formatMessage({ id: 'My profile' })}</a>
-            </Link>
-          </li>
-          {(user.role === 'operator' || user.role === 'holding') && (
-            <li className="account-dropdown-list-item">
-              <Link
-                href="/operators/edit"
-                prefetch={false}
-              >
-                <a>{intl.formatMessage({ id: 'Producer profile' })}</a>
-              </Link>
-            </li>
-          )}
-          {(user.role === 'operator' || user.role === 'holding') && uniq(user.operator_ids).map(id => {
-            const operator = operators.find(o => +o.id === id);
-            if (!operator) return null;
-
-            return (
-              <li key={`dropdown-operator-${id}`} className="account-dropdown-list-item">
-                <Link
-                  href={`/operators/${operator.slug}/documentation`}
-                  prefetch={false}
-                >
-                  <a>
-                    {operator.name}
-                  </a>
-                </Link>
-              </li>
-            )
-          })}
-          {user.role === 'admin' && (
-            <li className="account-dropdown-list-item">
-              <a href="/admin" >{intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
-            </li>
-          )}
-          <li className="account-dropdown-list-item">
-            <a
-              onClick={() => {
-                userLogout();
-              }}
-            >
-              <span>{intl.formatMessage({ id: 'signout' })}</span>
-            </a>
-          </li>
-        </ul>
+        <UserMenuList className="account-dropdown-list" listItemClassName="account-dropdown-list-item" />
       </DropdownContent>
     </Dropdown>
   )
@@ -118,10 +51,7 @@ UserDropdown.propTypes = {
   displayIcon: PropTypes.bool,
   theme: PropTypes.string,
   user: PropTypes.object,
-  intl: PropTypes.object.isRequired,
-  operators: PropTypes.array,
-  notifications: PropTypes.array,
-  logout: PropTypes.func
+  intl: PropTypes.object.isRequired
 }
 
 UserDropdown.defaultProps = {
@@ -130,9 +60,7 @@ UserDropdown.defaultProps = {
 
 export default injectIntl(connect(
   state => ({
-    user: state.user,
-    operators: state.operators.data,
-    notifications: state.notifications.data
+    user: state.user
   }),
   { logout }
 )(UserDropdown));
