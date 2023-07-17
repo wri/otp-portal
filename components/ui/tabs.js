@@ -19,7 +19,7 @@ export default function Tabs({ options, selected, href }) {
             return (
               <div
                 key={option.value}
-                className={`medium-${12 / options.length} columns`}
+                className="column"
               >
                 <Link
                   href={{
