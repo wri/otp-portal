@@ -61,9 +61,6 @@ $hamburger-height: 18px;
   }
 
   &.open {
-    // position: fixed;
-    // right: 20px;
-
     .c-hamburger__line {
       &:nth-of-type(1) {
         transform: rotate(45deg);

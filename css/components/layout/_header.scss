@@ -67,7 +67,11 @@
       }
 
       .c-hamburger {
-        margin-left: $space-1 * 2;
+        margin-left: $space-1;
+
+        @include breakpoint(medium) {
+          margin-left: $space-1 * 2;
+        }
       }
     }
 
@@ -159,9 +163,15 @@
     background: rgba($color-gray-1, 0.7);
 
     .header-logo {
-      width: 220px;
-      height: 56px;
+      width: 130px;
+      height: 40px;
       background-image: url('/static/images/otp-logo-white.svg');
+
+      @include breakpoint(medium) {
+        width: 220px;
+        height: 56px;
+        background-image: url('/static/images/otp-logo.svg');
+      }
 
       .header-logo-staging {
         position: absolute;

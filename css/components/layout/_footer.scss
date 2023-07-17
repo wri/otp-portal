@@ -69,6 +69,15 @@
         margin: 0;
         padding: 0;
 
+        .header-dropdown {
+          display: flex;
+        }
+
+        .dropdown__content {
+          left: 0;
+          right: unset;
+        }
+
         > li {
           margin-right: 0;
 
@@ -77,6 +86,16 @@
             padding: 16px 0;
           }
         }
+      }
+    }
+
+    @include breakpoint(small only) {
+      .footer-container {
+        flex-direction: column;
+      }
+
+      .c-navigation-list {
+        margin-top: $space-1 * 2;
       }
     }
   }
