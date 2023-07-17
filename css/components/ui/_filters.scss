@@ -38,16 +38,23 @@
     position: relative;
 
     background-color: $color-primary;
-    padding: 30px 30px 65px;
+    padding: 30px 0;
 
-    .flex-wrapper {
-      display: flex;
-      flex-flow: row wrap;
+    .grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 20px;
+
+      @include breakpoint(medium) {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 30px;
+      }
+
+      @include breakpoint(large) {
+        column-gap: 60px;
+      }
 
       .field {
-        width: calc(25% - 50px);
-        margin-right: 50px;
-
         .title {
           font-family: $font-family-georgia;
           color: $color-white;
