@@ -45,6 +45,7 @@ class Profile extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'User profile' })}
           background="/static/images/static-header/bg-help.jpg"
+          className="-short"
         />
 
         {userProfile && userProfile.loading && (

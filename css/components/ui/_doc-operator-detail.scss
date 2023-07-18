@@ -2,12 +2,15 @@
   display: flex;
   justify-content: space-between;
 
+  @include breakpoint(800px down) {
+    flex-direction: column;
+  }
+
   .c-doc-provided {
     flex-grow: 7;
   }
 
   .pie-categories {
-    width: 286px;
     margin-bottom: 14px;
     flex-grow: 3;
 
