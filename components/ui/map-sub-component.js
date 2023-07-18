@@ -14,7 +14,8 @@ class MapSubComponent extends React.Component {
   static propTypes = {
     id: PropTypes.string,
     location: PropTypes.object,
-    level: PropTypes.number
+    level: PropTypes.number,
+    language: PropTypes.string
   };
 
   state = {
@@ -38,6 +39,7 @@ class MapSubComponent extends React.Component {
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"
+              language={this.props.language}
 
               // options
               scrollZoom={false}

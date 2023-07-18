@@ -253,6 +253,7 @@ class OperatorsDetailFMUs extends React.Component {
           {/* Map */}
           <Map
             mapStyle="mapbox://styles/mapbox/light-v9"
+            language={this.props.language}
             bounds={fmu.bounds}
             // options
             scrollZoom={false}
@@ -320,6 +321,7 @@ OperatorsDetailFMUs.propTypes = {
   hoverActiveInteractiveLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
+  language: PropTypes.string.isRequired,
 
   getIntegratedAlertsMetadata: PropTypes.func,
   setOperatorsDetailMapLocation: PropTypes.func,
@@ -334,6 +336,7 @@ OperatorsDetailFMUs.propTypes = {
 export default injectIntl(
   connect(
     (state, props) => ({
+      language: state.language,
       operatorsDetailFmus: state.operatorsDetailFmus,
       interactions: state.operatorsDetailFmus.interactions,
       hoverInteractions: state.operatorsDetailFmus.hoverInteractions,

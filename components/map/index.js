@@ -75,7 +75,10 @@ class Map extends Component {
     onMouseLeave: PropTypes.func,
 
     /** A function that exposes the viewport */
-    getCursor: PropTypes.func
+    getCursor: PropTypes.func,
+
+    /** A string that defines the language for mapbox labels */
+    language: PropTypes.string
   };
 
   static defaultProps = {
@@ -181,6 +184,8 @@ class Map extends Component {
         height: this.mapContainer && this.mapContainer.offsetHeight
       }
     });
+
+    this.setLocalizedLabels();
 
     onLoad({
       map: this.map,
@@ -314,6 +319,42 @@ class Map extends Component {
       this.setState({ flying: false });
     }, transitionDuration);
   };
+
+  setLocalizedLabels = () => {
+    if (!this.props.language) return;
+
+    const LABELS_GROUP = ['labels'];
+
+    if (this.map) {
+      const { layers, metadata } = this.map.getStyle();
+
+      const labelGroups = Object.keys(metadata['mapbox:groups']).filter((k) => {
+        const { name } = metadata['mapbox:groups'][k];
+
+        const matchedGroups = LABELS_GROUP.filter((rgr) =>
+          name.toLowerCase().includes(rgr)
+        );
+
+        return matchedGroups.some((bool) => bool);
+      });
+
+      const labelLayers = layers.filter((l) => {
+        const { metadata: layerMetadata } = l;
+        if (!layerMetadata) return false;
+
+        const gr = layerMetadata['mapbox:group'];
+        return labelGroups.includes(gr);
+      });
+
+      labelLayers.forEach((_layer) => {
+        this.map.setLayoutProperty(_layer.id, 'text-field', [
+          'coalesce',
+          ['get', `name_${this.props.language}`],
+          ['get', 'name_en']
+        ]);
+      });
+    }
+  }
 
   render() {
     const {
