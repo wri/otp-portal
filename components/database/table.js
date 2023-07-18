@@ -48,7 +48,7 @@ function DatabaseTable({
       ),
       accessor: 'country',
       className: '-uppercase',
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       Header: (
@@ -79,7 +79,7 @@ function DatabaseTable({
       ),
       accessor: 'fmu',
       className: 'description',
-      minWidth: 120,
+      minWidth: 100,
       Cell: (attr) => (
         <span>
           {attr.value ? attr.value.name : ''}

@@ -1,7 +1,11 @@
 .c-title {
-  font-size: $font-size-huge;
+  font-size: $font-size-extrabig;
   font-weight: $font-weight-default;
   line-height: 1.25;
+
+  @include breakpoint(large) {
+    font-size: $font-size-huge;
+  }
 
   &.-proximanova {
     font-family: $font-family-proximanova;
