@@ -12,9 +12,13 @@ import Hamburger from 'components/ui/hamburger';
 import LanguageDropdown from 'components/ui/language-dropdown';
 import UserDropdown from 'components/ui/user-dropdown';
 
+import useDeviceInfo from 'hooks/use-device-info';
+
 const Header = ({ url }) => {
   const isHomePage = url.pathname === '/';
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { isDesktop } = useDeviceInfo();
+  const isMenuOpen = menuOpen && !isDesktop;
   const theme = isMenuOpen || !isHomePage ? '-theme-default' : '-theme-home';
   const hamburgerTheme = classnames({
     '-theme-light': !isMenuOpen,
