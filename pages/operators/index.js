@@ -113,6 +113,7 @@ class OperatorsPage extends React.Component {
   render() {
     const {
       url,
+      language,
       operatorsRanking,
       operatorsTable,
       activeLayers,
@@ -149,6 +150,7 @@ class OperatorsPage extends React.Component {
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"
+              language={language}
 
               // viewport
               viewport={operatorsRanking.map}
@@ -219,10 +221,9 @@ OperatorsPage.propTypes = {
   intl: PropTypes.object.isRequired
 };
 
-
 export default injectIntl(connect(
-
   (state, props) => ({
+    language: state.language,
     operatorsRanking: state.operatorsRanking,
     activeLayers: getActiveLayers(state, props),
     activeInteractiveLayers: getActiveInteractiveLayers(state, props),

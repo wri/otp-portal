@@ -347,6 +347,7 @@ class ObservationsPage extends React.Component {
                     observations.columns.includes('location') && (
                       <MapSubComponent
                         id={row.original.id}
+                        language={this.props.language}
                         location={row.original.location}
                         level={row.original.level}
                       />
@@ -362,6 +363,7 @@ class ObservationsPage extends React.Component {
             {/* Map */}
             <Map
               mapStyle="mapbox://styles/mapbox/light-v9"
+              language={this.props.language}
               // options
               scrollZoom={false}
               // viewport
@@ -430,6 +432,7 @@ ObservationsPage.propTypes = {
   getObservationsLayers: PropTypes.array,
   parsedChartObservations: PropTypes.array,
   parsedTableObservations: PropTypes.array,
+  language: PropTypes.string.isRequired,
 
   getObservations: PropTypes.func.isRequired,
   getObservationsUrl: PropTypes.func.isRequired,
@@ -443,6 +446,7 @@ export default withRouter(
   injectIntl(
     connect(
       (state, props) => ({
+        language: state.language,
         observations: state.observations,
         parsedFilters: getParsedFilters(state),
         parsedTableObservations: getParsedTableObservations(state),

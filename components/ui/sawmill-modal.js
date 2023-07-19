@@ -31,6 +31,7 @@ import { set } from 'lodash';
 class SawmillModal extends React.Component {
   static propTypes = {
     user: PropTypes.object,
+    language: PropTypes.string,
     sawmill: PropTypes.object,
     intl: PropTypes.object.isRequired,
     sawmillMap: PropTypes.object,
@@ -201,6 +202,7 @@ class SawmillModal extends React.Component {
                   {/* Map */}
                   <Map
                     mapStyle="mapbox://styles/mapbox/light-v9"
+                    language={this.props.language}
 
                     // viewport
                     viewport={sawmillMap.viewport}
@@ -323,6 +325,7 @@ class SawmillModal extends React.Component {
 export default injectIntl(connect(
   state => ({
     user: state.user,
+    language: state.language,
     operatorsDetailFmus: state.operatorsDetailFmus,
     sawmillMap: state.sawmillMap
   }), {
