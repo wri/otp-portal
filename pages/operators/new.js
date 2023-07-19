@@ -30,7 +30,6 @@ class OperatorsNew extends React.Component {
         />
 
         <NewOperator />
-
       </Layout>
     );
   }

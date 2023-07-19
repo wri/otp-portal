@@ -63,93 +63,95 @@ const UserEditForm = (props) => {
 
   return (
     <div className="c-section">
-      <FormProvider initialValues={{ name: userProfile.name, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
-        {({ form }) => (
-          <Form>
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {intl.formatMessage({ id: 'Personal Information' })}
-              </h2>
+      <div className="l-container">
+        <FormProvider initialValues={{ name: userProfile.name, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
+          {({ form }) => (
+            <Form>
+              <fieldset className="c-field-container">
+                <h2 className="c-title -huge">
+                  {intl.formatMessage({ id: 'Personal Information' })}
+                </h2>
 
-              <Field
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'name',
-                  label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
-                  required: true
-                }}
-              >
-                {Input}
-              </Field>
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {intl.formatMessage({ id: 'Update Password' })}
-              </h2>
-
-              <Field
-                className="-fluid"
-                properties={{
-                  name: 'password',
-                  autoComplete: 'new-password',
-                  label: intl.formatMessage({ id: 'New Password' }),
-                  type: 'password',
-                  required: false
-                }}
-              >
-                {Input}
-              </Field>
-
-              <Field
-                validations={[
-                  {
-                    type: 'isEqual',
-                    condition: form.password,
-                    message: intl.formatMessage({ id: 'The field should be equal to password' })
-                  }
-                ]}
-                className="-fluid"
-                properties={{
-                  name: 'passwordConfirmation',
-                  autoComplete: 'new-password',
-                  label: intl.formatMessage({ id: 'Confirm New Password' }),
-                  type: 'password',
-                  required: false
-                }}
-              >
-                {Input}
-              </Field>
-
-              {form.password && form.password.length && (
                 <Field
-                  className="-fluid"
                   validations={['required']}
-                  hint={intl.formatMessage({ id: 'We need your current password to confirm your changes' })}
+                  className="-fluid"
                   properties={{
-                    name: 'currentPassword',
-                    autoComplete: 'current-password',
-                    label: intl.formatMessage({ id: 'Current Password' }),
-                    type: 'password',
+                    name: 'name',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
                     required: true
                   }}
                 >
                   {Input}
                 </Field>
-              )}
-            </fieldset>
+              </fieldset>
 
-            <ul className="c-field-buttons">
-              <li>
-                <SubmitButton>
-                  {intl.formatMessage({ id: 'Update' })}
-                </SubmitButton>
-              </li>
-            </ul>
-          </Form>
-        )}
-      </FormProvider>
+              <fieldset className="c-field-container">
+                <h2 className="c-title -huge">
+                  {intl.formatMessage({ id: 'Update Password' })}
+                </h2>
+
+                <Field
+                  className="-fluid"
+                  properties={{
+                    name: 'password',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'New Password' }),
+                    type: 'password',
+                    required: false
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                <Field
+                  validations={[
+                    {
+                      type: 'isEqual',
+                      condition: form.password,
+                      message: intl.formatMessage({ id: 'The field should be equal to password' })
+                    }
+                  ]}
+                  className="-fluid"
+                  properties={{
+                    name: 'passwordConfirmation',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'Confirm New Password' }),
+                    type: 'password',
+                    required: false
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                {form.password && form.password.length && (
+                  <Field
+                    className="-fluid"
+                    validations={['required']}
+                    hint={intl.formatMessage({ id: 'We need your current password to confirm your changes' })}
+                    properties={{
+                      name: 'currentPassword',
+                      autoComplete: 'current-password',
+                      label: intl.formatMessage({ id: 'Current Password' }),
+                      type: 'password',
+                      required: true
+                    }}
+                  >
+                    {Input}
+                  </Field>
+                )}
+              </fieldset>
+
+              <ul className="c-field-buttons">
+                <li>
+                  <SubmitButton>
+                    {intl.formatMessage({ id: 'Update' })}
+                  </SubmitButton>
+                </li>
+              </ul>
+            </Form>
+          )}
+        </FormProvider>
+      </div>
     </div>
   );
 }
