@@ -68,7 +68,7 @@ const UserEditForm = (props) => {
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
-                <h2 className="c-title -huge">
+                <h2 className="c-title">
                   {intl.formatMessage({ id: 'Personal Information' })}
                 </h2>
 
@@ -86,7 +86,7 @@ const UserEditForm = (props) => {
               </fieldset>
 
               <fieldset className="c-field-container">
-                <h2 className="c-title -huge">
+                <h2 className="c-title">
                   {intl.formatMessage({ id: 'Update Password' })}
                 </h2>
 

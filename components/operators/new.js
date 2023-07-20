@@ -100,10 +100,6 @@ class NewOperator extends React.Component {
               {!submitted && (
                 <Form>
                   <fieldset className="c-field-container">
-                    <h2 className="c-title -huge">
-                      {intl.formatMessage({ id: 'info.operator' })}
-                    </h2>
-
                     {/* Operator name */}
                     <Field
                       validations={['required']}
@@ -184,7 +180,7 @@ class NewOperator extends React.Component {
                   </fieldset>
 
                   <fieldset className="c-field-container">
-                    <h2 className="c-title -huge">
+                    <h2 className="c-title">
                       {intl.formatMessage({ id: 'forest-management-units' })}
                     </h2>
 
@@ -248,7 +244,7 @@ class NewOperator extends React.Component {
 
               {submitted && (
                 <div className="c-form">
-                  <h2 className="c-title -huge">
+                  <h2 className="c-title">
                     {intl.formatMessage({ id: 'thankyou' })}
                   </h2>
 

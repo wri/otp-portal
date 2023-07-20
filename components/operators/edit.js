@@ -148,10 +148,6 @@ class EditOperator extends React.Component {
           <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formInitialState}>
             <Form>
               <fieldset className="c-field-container">
-                <h2 className="c-title -huge">
-                  {intl.formatMessage({ id: 'info.operator' })}
-                </h2>
-
                 <Field
                   validations={['required']}
                   className="-fluid"
@@ -231,7 +227,7 @@ class EditOperator extends React.Component {
               </fieldset>
 
               <fieldset className="c-field-container">
-                <h2 className="c-title -huge">
+                <h2 className="c-title">
                   {intl.formatMessage({ id: 'forest-management-units' })}
                 </h2>
 
@@ -267,12 +263,11 @@ class EditOperator extends React.Component {
                       {FmusCheckboxGroup}
                     </Field>
                   )}
-
                 </div>
               </fieldset>
 
               <fieldset className="c-field-container">
-                <h2 className="c-title -huge">
+                <h2 className="c-title">
                   {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
                 </h2>
 

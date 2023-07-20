@@ -217,7 +217,7 @@ const UserNewForm = (props) => {
 
             {submitted && (
               <div className="c-form">
-                <h2 className="c-title -huge">
+                <h2 className="c-title">
                   {intl.formatMessage({ id: 'thankyou' })}
                 </h2>
 
