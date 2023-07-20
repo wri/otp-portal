@@ -1,5 +1,6 @@
 $hamburger-width: 24px;
 $hamburger-height: 18px;
+$hamburger-button-height: 66px;
 
 .c-hamburger {
   @include breakpoint(large) {
@@ -12,7 +13,7 @@ $hamburger-height: 18px;
   border: 0;
   padding: 0;
   width: $hamburger-width;
-  height: $hamburger-height;
+  height: $hamburger-button-height;
   z-index: $z-index-3;
 
   &.-theme-light {
@@ -32,7 +33,7 @@ $hamburger-height: 18px;
     position: absolute;
     width: $hamburger-width;
     height: $hamburger-height;
-    top: 0;
+    top: calc(50% - $hamburger-height / 2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

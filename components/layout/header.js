@@ -56,11 +56,10 @@ const Header = ({ url }) => {
           </nav>
           <nav className="header-nav -mobile">
             <ul className="header-nav-list c-navigation-list">
-              <li className="search">
-                <Search theme={theme} />
+              <li>
+                <Hamburger theme={hamburgerTheme} isOpen={isMenuOpen} onClick={() => setMenuOpen(!isMenuOpen)} />
               </li>
             </ul>
-            <Hamburger theme={hamburgerTheme} isOpen={isMenuOpen} onClick={() => setMenuOpen(!isMenuOpen)} />
           </nav>
         </div>
       </div>

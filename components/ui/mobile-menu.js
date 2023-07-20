@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import LanguageDropdown from 'components/ui/language-dropdown';
 import UserDropdown from 'components/ui/user-dropdown';
+import Search from 'components/ui/search';
 
 import { useIntl } from 'react-intl';
 import UserMenuList from 'components/ui/user-menu-list';
@@ -60,6 +61,9 @@ function MobileMenu({ className, countries, user }) {
         [className]: !!className,
       })}
     >
+      <li>
+        <Search />
+      </li>
       <li>
         {user.token && (
           <>

@@ -68,10 +68,6 @@ const UserEditForm = (props) => {
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
-                <h2 className="c-title">
-                  {intl.formatMessage({ id: 'Personal Information' })}
-                </h2>
-
                 <Field
                   validations={['required']}
                   className="-fluid"
