@@ -52,7 +52,11 @@
   .filter-option {
     display: inline-flex;
     flex-direction: column;
-    width: 260px;
+    width: 150px;
+
+    @include breakpoint(medium) {
+      width: 260px;
+    }
 
     label {
       margin-bottom: 22px;
@@ -137,12 +141,12 @@
   padding-top: 20px;
   padding-bottom: 20px;
   display: flex;
+  gap: 30px;
   align-items: center;
 
   .c-doc-header-filters__item {
     display: inline-flex;
     flex-direction: column;
-    margin-right: 30px;
 
     @media screen and (min-width: 780px) {
       width: 150px;

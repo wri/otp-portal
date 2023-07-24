@@ -25,7 +25,7 @@ function DocumentStatusBar({
   // }
 
   const validDocs = groupedByStatus.doc_valid?.length || 0;
-  const docsLenght = docs.filter(d => d.status !== 'doc_not_required').length;
+  const docsLength = docs.filter(d => d.status !== 'doc_not_required').length;
 
   return (
     <div className={`c-doc-by-category ${className || ''}`}>
@@ -33,9 +33,9 @@ function DocumentStatusBar({
         <div className="doc-by-category-chart">
           <div className="doc-by-category-bar">
             {sortBy(Object.keys(groupedByStatus)).map((status) => {
-              let segmentWidth = (groupedByStatus[status].length / docsLenght) * (docsLenght / (maxDocs || docsLenght)) * 100;
+              let segmentWidth = (groupedByStatus[status].length / docsLength) * (docsLength / (maxDocs || docsLength)) * 100;
 
-              if (!docsLenght) {
+              if (!docsLength) {
                 segmentWidth = 100;
               }
 
@@ -51,7 +51,7 @@ function DocumentStatusBar({
 
           <span>{`${
             groupedByStatus.doc_valid
-              ? ((validDocs / docsLenght) * 100).toFixed(0)
+              ? ((validDocs / docsLength) * 100).toFixed(0)
               : 0
           }% ${intl.formatMessage({ id: 'doc_valid' })}`}</span>
         </div>
