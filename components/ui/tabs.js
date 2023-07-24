@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -6,6 +6,15 @@ import classnames from 'classnames';
 import Link from 'next/link';
 
 export default function Tabs({ options, selected, href }) {
+  useEffect(() => {
+    if (options.length && selected) {
+      const selectedOption = options.find((option) => option.value === selected);
+      if (selectedOption) {
+        document.querySelector(`.tabs-btn.-active`).scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [options, selected]);
+
   return (
     <header className="c-tabs">
       <div className="l-container">
