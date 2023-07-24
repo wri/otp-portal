@@ -20,3 +20,12 @@ export default function useDeviceInfo() {
     isDesktop: width >= BREAKPOINTS.tablet
   }
 }
+
+export const withDeviceInfo = Component => {
+  const NewComponent = props => {
+    const deviceInfo = useDeviceInfo();
+    return <Component {...props} deviceInfo={deviceInfo} />;
+  };
+  NewComponent.getInitialProps = Component.getInitialProps;
+  return NewComponent;
+}

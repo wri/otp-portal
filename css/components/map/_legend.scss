@@ -2,12 +2,21 @@ $legend_component: 'vizzuality';
 
 .c-legend {
   position: absolute;
-  left: $space-1 * 3;
+  left: $space-1;
   right: auto;
   bottom: auto;
   top: $space-1 * 3;
-  width: 300px;
   z-index: 5;
+  max-width: 270px;
+
+  @include breakpoint(medium) {
+    max-width: 300px;
+    left: $space-1 * 3;
+  }
+
+  @include breakpoint(large) {
+    width: 300px;
+  }
 
   &.-relative {
     z-index: 0;
