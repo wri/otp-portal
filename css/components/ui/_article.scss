@@ -1,5 +1,10 @@
 .c-article {
-  margin: $space-1 * 8 0 0;
+  margin: $space-1 * 4 0 0;
+
+  @include breakpoint(large) {
+    margin: $space-1 * 8 0 0;
+  }
+
   &:first-child { margin: 0; }
 
   h2 {

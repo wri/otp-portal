@@ -11,9 +11,11 @@ import { HELPERS_DOC } from 'utils/documentation';
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
+import useDeviceInfo from 'hooks/use-device-info';
 
 function DocumentsProvided(props) {
   const { data, user, router } = props;
+  const { isMobile, isServer } = useDeviceInfo();
   const filteredData = data.filter((d) => d.status !== 'doc_not_required');
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
@@ -24,18 +26,22 @@ function DocumentsProvided(props) {
     legend[item.id].value = item.value;
   });
 
+  let chartHeight = isMobile ? 450 : 600;
+  const radius = isMobile ? 160 : 200;
+  if (isServer) chartHeight = null; // fixing some issue with setting height on server and then first change doesn't work
+
   return (
     <div className="c-doc-provided">
       <div className="row l-row">
         <div className="columns small-12">
           <div className="c-chart">
-            <ResponsiveContainer height={600}>
+            <ResponsiveContainer height={chartHeight}>
               <PieChart>
                 <Pie
                   data={groupedByStatusChart}
                   dataKey="value"
-                  outerRadius={200}
-                  innerRadius={190}
+                  outerRadius={radius}
+                  innerRadius={radius - 10}
                   startAngle={90}
                   endAngle={-270}
                   isAnimationActive={false}

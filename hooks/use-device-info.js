@@ -7,7 +7,7 @@ const BREAKPOINTS = {
 };
 
 export default function useDeviceInfo() {
-  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : BREAKPOINTS.tablet);
+  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : BREAKPOINTS.mobile);
 
   const handleResize = useCallback(() => {
     setWidth(window.innerWidth);
@@ -17,7 +17,8 @@ export default function useDeviceInfo() {
   return {
     isMobile: width < BREAKPOINTS.mobile,
     isTablet: width >= BREAKPOINTS.mobile && width < BREAKPOINTS.tablet,
-    isDesktop: width >= BREAKPOINTS.tablet
+    isDesktop: width >= BREAKPOINTS.tablet,
+    isServer: typeof window === 'undefined',
   }
 }
 

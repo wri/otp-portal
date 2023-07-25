@@ -61,7 +61,7 @@ const OperatorsDetailObservations = (props) => {
     <div className="c-section">
       <div className="l-container">
         <DocumentsFilter showFMU>
-          <span className="filter-option" style={{ width: 'unset' }}>
+          <span className="filter-option">
             <label>{intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
             <div className="filters-dropdown">
               <Checkbox

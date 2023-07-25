@@ -2,6 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 300px;
-  font-size: $font-size-large;
+  height: 150px;
+  font-size: $font-size-extrabig;
+
+  @include breakpoint(large) {
+    height: 300px;
+    font-size: $font-size-large;
+  }
 }
