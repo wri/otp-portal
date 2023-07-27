@@ -16,4 +16,10 @@
   .columns {
     display: flex;
   }
+
+  @include breakpoint(small only) {
+    .columns.small-12:not(:last-child) {
+      margin-bottom: $space-1 * 3;
+    }
+  }
 }

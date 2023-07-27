@@ -74,16 +74,6 @@ function MobileMenu({ className, countries, user }) {
         {!user.token && <UserDropdown displayIcon={false} />}
       </li>
       {elements.map((element, idx) => {
-        if (typeof element === 'function') {
-          const Element = element;
-
-          return (
-            <li key={idx}>
-              <Element />
-            </li>
-          );
-        }
-
         if (element.children) {
           return (
             <li key={idx}>

@@ -13,27 +13,46 @@
   }
 
   .card-letter {
-    line-height: 130px;
-    font-size: 130px;
+    line-height: 100px;
+    font-size: 100px;
     letter-spacing: -3px;
-    margin: -#{$space-1 * 2} 0 #{$space-1 * 4};
+    margin: -#{$space-1} 0 #{$space-1 * 2};
+
+    @include breakpoint(medium) {
+      line-height: 130px;
+      font-size: 130px;
+      margin: -#{$space-1 * 2} 0 #{$space-1 * 4};
+    }
 
     &.-number {
-      line-height: $font-size-extrahuge;
-      font-size: $font-size-extrahuge;
+      line-height: $font-size-huge;
+      font-size: $font-size-huge;
+
+      @include breakpoint(medium) {
+        line-height: $font-size-extrahuge;
+        font-size: $font-size-extrahuge;
+      }
     }
   }
 
   .card-title {
     font-family: $font-family-proximanova;
-    font-size: $font-size-extrabig;
+    font-size: $font-size-bigger;
     font-weight: $font-weight-default;
     line-height: 1.25;
     text-transform: uppercase;
+
+    @include breakpoint(medium) {
+      font-size: $font-size-extrabig;
+    }
   }
 
   .card-description {
-    font-size: 18px;
+    font-size: $font-size-default;
+
+    @include breakpoint(medium) {
+      font-size: 18px;
+    }
   }
 
   .card-link {

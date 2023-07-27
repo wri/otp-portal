@@ -26,7 +26,6 @@ class OperatorsNew extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'new.operators' })}
           background="/static/images/static-header/bg-help.jpg"
-          className="-short"
         />
 
         <NewOperator />

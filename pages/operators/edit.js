@@ -73,7 +73,6 @@ class OperatorsEdit extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
           background="/static/images/static-header/bg-help.jpg"
-          className="-short"
         />
 
         {userOperator && userOperator.loading &&

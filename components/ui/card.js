@@ -27,7 +27,7 @@ export default function Card({ theme, letter, title, description, link, Componen
       <div className="card-content">
         {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
-        <h2 className="c-title -extrabig -uppercase -proximanova card-title"> {title} </h2>
+        <h2 className="card-title">{title}</h2>
         <p className="card-description">
           <Truncate lines={6}>
             {renderHTML(description || '')}

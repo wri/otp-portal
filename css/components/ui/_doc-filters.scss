@@ -57,7 +57,7 @@
     display: flex;
     gap: 20px;
 
-    @include breakpoint(small) {
+    @include breakpoint(small only) {
       flex-wrap: wrap;
     }
   }
@@ -150,12 +150,18 @@
   z-index: 1;
 }
 
+.c-doc-header-filters-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .c-doc-header-filters {
   padding-top: 20px;
   padding-bottom: 20px;
   display: flex;
   gap: 30px;
   align-items: center;
+  min-width: 600px;
 
   .c-doc-header-filters__item {
     display: inline-flex;
@@ -204,8 +210,6 @@
     }
 
     .filters-dropdown {
-      position: relative;
-
       .dropdown-placeholder {
         position: relative;
         cursor: pointer;
@@ -231,7 +235,7 @@
         padding: 12px 18px;
         box-shadow: 0 15px 29px 0 rgba(0, 0, 0, 0.14);
         margin: 2px;
-        width: 100%;
+        max-width: 200px;
         z-index: 2;
 
         option {

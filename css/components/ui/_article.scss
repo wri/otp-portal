@@ -16,8 +16,12 @@
   }
 
   .description {
-    font-size: $font-size-big;
+    font-size: 18px;
     line-height: 1.5;
+
+    @include breakpoint(medium) {
+      font-size: $font-size-big;
+    }
 
     > * {
       margin: $space-1 * 2 0 0;

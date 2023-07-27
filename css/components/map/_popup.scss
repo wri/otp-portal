@@ -1,12 +1,16 @@
 .c-map-popup {
-  padding: $space-1 * 2;
+  padding: $space-1 * 1.5;
+
+  @include breakpoint(large) {
+    padding: $space-1 * 3;
+  }
 
   .map-popup--close {
     appearance: none;
     cursor: pointer;
     position: absolute;
-    top: $space-1;
-    right: $space-1;
+    top: $space-1 * 1.5;
+    right: $space-1 * 1.5;
     z-index: 2;
     border-radius: 50%;
     width: 24px;
@@ -14,6 +18,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include breakpoint(large) {
+      top: $space-1 * 3;
+      right: $space-1 * 3;
+    }
 
     &:hover {
       background: darken($color-white, 5%);
@@ -30,8 +39,11 @@
 
 .c-layer-popup {
   font-size: $font-size-small;
-  max-width: 300px;
-  padding: $space-1 * 1.5;
+  max-width: 200px;
+
+  @include breakpoint(medium) {
+    max-width: 300px;
+  }
 
   .layer-popup--title {
     position: relative;

@@ -33,7 +33,7 @@ const NewsletterForm = ({ language }) => {
 
   const loadCountries = () => {
     const countriesEnPromise = fetchCountries('en');
-    const countriesLangPromise = language === 'en' ? countriesEnPromise : this.fetchCountries(language);
+    const countriesLangPromise = language === 'en' ? countriesEnPromise : fetchCountries(language);
 
     Promise
       .all([countriesEnPromise, countriesLangPromise])

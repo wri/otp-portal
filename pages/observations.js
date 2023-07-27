@@ -249,7 +249,6 @@ class ObservationsPage extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'observations' })}
           background="/static/images/static-header/bg-observations.jpg"
-          className="-short"
         />
 
         <div className="c-section">

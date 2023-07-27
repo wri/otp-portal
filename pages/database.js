@@ -88,7 +88,6 @@ class DocumentsDatabasePage extends React.Component {
             id: 'producers_documents_database',
           })}
           background="/static/images/static-header/bg-observations.jpg"
-          className="-short"
         />
         <Filters
           options={parsedFilters.options}

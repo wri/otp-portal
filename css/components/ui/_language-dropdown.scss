@@ -33,6 +33,9 @@
 
   .dropdown__trigger {
     cursor: pointer;
+    display: flex;
+    gap: 5px;
+    margin-right: 0;
   }
 
   // List
