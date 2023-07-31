@@ -35,7 +35,7 @@ function DocumentsHeaderFilter({
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", () => {
-        setVisible(window.pageYOffset > 900);
+        setVisible(window.scrollY > 900);
       });
     }
   }, []);

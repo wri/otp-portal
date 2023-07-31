@@ -50,6 +50,7 @@ $sidebar-width: 700px;
   &.-open {
     width: $sidebar-width;
     max-width: 100vw;
+    max-height: 100%;
     transform: translate(0, 0);
 
     .sidebar--button {
@@ -69,13 +70,17 @@ $sidebar-width: 700px;
     }
   }
 
-  &.-fluid {
-    position: absolute;
-    top: 0;
-    left: 0;
+  &.-fmumap {
+    background: $white;
 
-    &.-open {
-      width: 300px;
+    @include breakpoint(medium) {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      &.-open {
+        width: 315px;
+      }
     }
   }
 }

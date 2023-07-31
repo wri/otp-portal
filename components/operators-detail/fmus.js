@@ -49,6 +49,8 @@ import Popup from 'components/map/popup';
 
 import { CERTIFICATIONS } from 'constants/fmu';
 
+import { withDeviceInfo } from 'hooks/use-device-info';
+
 import { transformRequest } from 'utils/map';
 
 class OperatorsDetailFMUs extends React.Component {
@@ -98,18 +100,18 @@ class OperatorsDetailFMUs extends React.Component {
 
     if (
       fmu.loss &&
-        prevFmu.loss &&
-        (fmu.loss.startDate !== prevFmu.loss.startDate ||
-          fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
+      prevFmu.loss &&
+      (fmu.loss.startDate !== prevFmu.loss.startDate ||
+        fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'loss');
     }
 
     if (
       fmu['integrated-alerts'] &&
-        prevFmu['integrated-alerts'] &&
-        (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
-          fmu['integrated-alerts'].trimEndDate !== prevFmu['integrated-alerts'].trimEndDate)
+      prevFmu['integrated-alerts'] &&
+      (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
+        fmu['integrated-alerts'].trimEndDate !== prevFmu['integrated-alerts'].trimEndDate)
     ) {
       this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
     }
@@ -133,8 +135,8 @@ class OperatorsDetailFMUs extends React.Component {
   onClick = (e) => {
     if (
       e.features &&
-        e.features.length &&
-        !e.target.classList.contains('mapbox-prevent-click')
+      e.features.length &&
+      !e.target.classList.contains('mapbox-prevent-click')
     ) {
       // No better way to do this
       const { features, lngLat } = e;
@@ -158,7 +160,7 @@ class OperatorsDetailFMUs extends React.Component {
   }, 250);
 
   getBBOX() {
-    const { fmus } = this.props;
+    const { fmus, deviceInfo } = this.props;
 
     const bbox = getBBox({
       type: 'FeatureCollection',
@@ -169,9 +171,9 @@ class OperatorsDetailFMUs extends React.Component {
       bbox,
       options: {
         padding: {
-          top: 50,
+          top: deviceInfo.isMobile ? 350 : 50,
           bottom: 50,
-          left: 350,
+          left: deviceInfo.isMobile ? 50 : 350,
           right: 50,
         },
       },
@@ -188,6 +190,7 @@ class OperatorsDetailFMUs extends React.Component {
       hoverActiveInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers,
+      deviceInfo
     } = this.props;
 
     const certifications = CERTIFICATIONS.filter(
@@ -195,11 +198,11 @@ class OperatorsDetailFMUs extends React.Component {
     ).map((ct) => ct.label);
 
     return (
-      <div className="c-section -map">
-        <Sidebar className="-fluid">
+      <div className="c-section -map -sm-flex-column">
+        <Sidebar className="-fmumap">
           {fmus && !!fmus.length && (
             <div className="c-fmu-card">
-              <h3 className="c-title -extrabig -uppercase -proximanova">
+              <h3 className="c-title -big -uppercase -proximanova">
                 {this.props.intl.formatMessage({ id: 'analysis' })}
               </h3>
               <p>
@@ -240,13 +243,16 @@ class OperatorsDetailFMUs extends React.Component {
             </div>
           )}
 
-          <Legend
-            className="-relative"
-            layerGroups={legendLayers}
-            sortable={false}
-            collapsable={false}
-            setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
-          />
+          {!deviceInfo.isMobile && (
+            <Legend
+              className="-relative"
+              layerGroups={legendLayers}
+              sortable={false}
+              collapsable={false}
+              setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
+            />
+          )}
+
         </Sidebar>
 
         <div className="c-map-container -static">
@@ -274,13 +280,22 @@ class OperatorsDetailFMUs extends React.Component {
             transformRequest={transformRequest}
             mapOptions={{
               customAttribution:
-                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
+                '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
             }}
           >
             {(map) => (
               <Fragment>
                 {/* LAYER MANAGER */}
                 <LayerManager map={map} layers={activeLayers} />
+
+                {deviceInfo.isMobile && (
+                  <Legend
+                    className="-relative"
+                    layerGroups={legendLayers}
+                    sortable={false}
+                    setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
+                  />
+                )}
 
                 <Popup
                   popup={hoverPopup}
@@ -311,6 +326,7 @@ class OperatorsDetailFMUs extends React.Component {
 }
 
 OperatorsDetailFMUs.propTypes = {
+  deviceInfo: PropTypes.object,
   intl: PropTypes.object.isRequired,
   interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
@@ -333,7 +349,7 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailMapHoverInteractions: PropTypes.func,
 };
 
-export default injectIntl(
+export default withDeviceInfo(injectIntl(
   connect(
     (state, props) => ({
       language: state.language,
@@ -363,4 +379,4 @@ export default injectIntl(
       setOperatorsDetailMapHoverInteractions,
     }
   )(OperatorsDetailFMUs)
-);
+));
