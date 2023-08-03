@@ -30,7 +30,7 @@ function OperatorsDetailOverview(props) {
             </header>
             <div className="content">
               <div className="row l-row -equal-heigth">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   {Boolean(details) && (
                     <p className="description">
                       {details}

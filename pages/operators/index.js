@@ -61,7 +61,7 @@ class OperatorsPage extends React.Component {
       this.props.getIntegratedAlertsMetadata();
     }
 
-    if (deviceInfo.isMobile) {
+    if (!deviceInfo.isDesktop) {
       this.props.setOperatorsSidebar({ open: false });
     }
     // if (!Cookies.get('operators.disclaimer')) {

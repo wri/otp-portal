@@ -1,9 +1,14 @@
 .c-card {
   position: relative;
   width: 100%;
-  padding: $space-1 * 4;
+  padding: $space-1 * 3;
   padding-bottom: 100px;
   background: $color-tertiary;
+
+  @include breakpoint(large) {
+    padding: $space-1 * 4;
+    padding-bottom: 100px;
+  }
 
   .card-content {
     > * {
@@ -18,7 +23,7 @@
     letter-spacing: -3px;
     margin: -#{$space-1} 0 #{$space-1 * 2};
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       line-height: 130px;
       font-size: 130px;
       margin: -#{$space-1 * 2} 0 #{$space-1 * 4};
@@ -28,7 +33,7 @@
       line-height: $font-size-huge;
       font-size: $font-size-huge;
 
-      @include breakpoint(medium) {
+      @include breakpoint(large) {
         line-height: $font-size-extrahuge;
         font-size: $font-size-extrahuge;
       }
@@ -42,7 +47,7 @@
     line-height: 1.25;
     text-transform: uppercase;
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       font-size: $font-size-extrabig;
     }
   }
@@ -50,17 +55,21 @@
   .card-description {
     font-size: $font-size-default;
 
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       font-size: 18px;
     }
   }
 
   .card-link {
     position: absolute;
-    width: calc(100% - #{$space-1 * 8});
+    width: calc(100% - #{$space-1 * 6});
     left: 50%;
     bottom: $space-1 * 4;
     transform: translate(-50%,0);
+
+    @include breakpoint(large) {
+      width: calc(100% - #{$space-1 * 8});
+    }
   }
 
   .card-component {
