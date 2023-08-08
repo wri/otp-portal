@@ -129,7 +129,7 @@ const getObservationsLayers = createSelector(
                 type: 'Feature',
                 properties: {
                   id: obs.id,
-                  date: new Date(obs['publication-date']).getFullYear(),
+                  date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
                   country: obs.country.iso,
                   operator: !!obs.operator && obs.operator.name,
                   category: obs?.subcategory?.category?.name,

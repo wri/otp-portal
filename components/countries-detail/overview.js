@@ -7,10 +7,10 @@ import sortBy from 'lodash/sortBy';
 import Html from 'components/html';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-function OperatorsDetailOverview(props) {
-  const { countriesDetail } = props;
+function CountriesDetailOverview({ countriesDetail }) {
+  const intl = useIntl();
 
   const vpas = sortBy(countriesDetail.vpas.data, 'position');
   const links = sortBy(countriesDetail.links.data, 'position');
@@ -26,7 +26,7 @@ function OperatorsDetailOverview(props) {
           <article className="c-article">
             <header>
               <h2 className="c-title -extrabig">
-                {props.intl.formatMessage({ id: 'country-detail.vpas.title' })}
+                {intl.formatMessage({ id: 'country-detail.vpas.title' })}
               </h2>
             </header>
 
@@ -50,7 +50,7 @@ function OperatorsDetailOverview(props) {
           <article className="c-article">
             <header>
               <h2 className="c-title -extrabig">
-                {props.intl.formatMessage({ id: 'country-detail.links.title' })}
+                {intl.formatMessage({ id: 'country-detail.links.title' })}
               </h2>
             </header>
 
@@ -74,10 +74,8 @@ function OperatorsDetailOverview(props) {
   );
 }
 
-OperatorsDetailOverview.propTypes = {
-  countriesDetail: PropTypes.object,
-  intl: PropTypes.object.isRequired
+CountriesDetailOverview.propTypes = {
+  countriesDetail: PropTypes.object
 };
 
-
-export default injectIntl(OperatorsDetailOverview);
+export default CountriesDetailOverview;
