@@ -6,7 +6,6 @@ import { injectIntl } from 'react-intl';
 
 // Selectors
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
-import { getParsedObservations } from 'selectors/countries-detail/observations';
 
 // Redux
 import { connect } from 'react-redux';
@@ -71,7 +70,7 @@ class CountriesDetail extends React.Component {
   }
 
   render() {
-    const { url, countriesDetail, countryDocumentation, countryObservations } = this.props;
+    const { url, countriesDetail, countryDocumentation } = this.props;
     const id = url.query.id;
     const tab = url.query.tab || 'overview';
 
@@ -101,8 +100,6 @@ class CountriesDetail extends React.Component {
         {tab === 'overview' &&
           <CountriesDetailOverview
             countriesDetail={countriesDetail}
-            countryDocumentation={countryDocumentation}
-            countryObservations={countryObservations}
             url={url}
           />
         }
@@ -123,9 +120,7 @@ CountriesDetail.propTypes = {
   url: PropTypes.object.isRequired,
   countriesDetail: PropTypes.shape({}).isRequired,
   countryDocumentation: PropTypes.shape({}).isRequired,
-  countryObservations: PropTypes.shape({}).isRequired,
   intl: PropTypes.object.isRequired,
-
   getCountry: PropTypes.func.isRequired
 };
 
@@ -134,8 +129,7 @@ export default injectIntl(connect(
   state => ({
     user: state.user,
     countriesDetail: state.countriesDetail,
-    countryDocumentation: getParsedDocumentation(state),
-    countryObservations: getParsedObservations(state)
+    countryDocumentation: getParsedDocumentation(state)
   }),
   { getCountry }
 )(CountriesDetail));
