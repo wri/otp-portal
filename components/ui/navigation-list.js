@@ -58,10 +58,6 @@ function NavigationList({ footer, intl, url, className, countries }) {
       name: intl.formatMessage({ id: 'about' })
     },
     footer && {
-      href: '/terms',
-      name: intl.formatMessage({ id: 'terms' })
-    },
-    footer && {
       href: '/newsletter',
       name: intl.formatMessage({ id: 'newsletter' })
     }
