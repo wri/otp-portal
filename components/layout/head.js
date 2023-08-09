@@ -53,7 +53,9 @@ const Head = ({ title, description }) => {
       <meta name="theme-color" content="#ffffff" />
 
       {/* Styles and scripts */}
-      <script src="https://cmp.osano.com/AzyfddTRtqi1560Dk/852e437c-9e22-45b8-8c24-755d0e300816/osano.js" />
+      {process.env.OSANO_ID && (
+        <script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} />
+      )}
       <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />
       {process.env.GOOGLE_API_KEY && (
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} />
