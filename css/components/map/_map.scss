@@ -16,7 +16,8 @@
   z-index: 1;
 
   &.-static {
-    height: 860px;
+    height: 960px;
+    max-height: 95vh;
   }
 
   &.-modal {

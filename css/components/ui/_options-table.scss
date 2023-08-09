@@ -1,7 +1,9 @@
 .c-options-table {
   width: 100%;
   min-height: 100px;
+  max-width: calc(100vw - 40px);
   position: relative;
+  overflow-x: auto;
 
   table {
     width: 100%;
@@ -13,11 +15,21 @@
   }
 
   th {
-    min-width: 140px;
+    min-width: 100px;
   }
 
   td {
-    min-width: 140px;
+    min-width: 100px;
+  }
+
+  @include breakpoint(medium) {
+    th {
+      min-width: 140px;
+    }
+
+    td {
+      min-width: 140px;
+    }
   }
 
   td:first-child {

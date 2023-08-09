@@ -88,7 +88,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
         if (element.children) {
           return (
             <li key={idx}>
-              <Dropdown className="c-account-dropdown">
+              <Dropdown className="header-dropdown">
                 <DropdownTrigger>
                   <div
                     className={classnames(

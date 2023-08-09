@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import * as Sentry from "@sentry/nextjs";
 
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
@@ -291,33 +292,37 @@ class Map extends Component {
     const { bounds, onViewportChange } = this.props;
     const { bbox, options } = bounds;
 
-    const { longitude, latitude, zoom } = fitBounds({
-      width: this.mapContainer.offsetWidth,
-      height: this.mapContainer.offsetHeight,
-      bounds: [
-        [bbox[0], bbox[1]],
-        [bbox[2], bbox[3]]
-      ],
-      ...options
-    });
+    try {
+      const { longitude, latitude, zoom } = fitBounds({
+        width: this.mapContainer.offsetWidth,
+        height: this.mapContainer.offsetHeight,
+        bounds: [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]]
+        ],
+        ...options
+      });
 
-    const newViewport = {
-      ...this.state.viewport,
-      longitude,
-      latitude,
-      zoom,
-      transitionDuration
-    };
+      const newViewport = {
+        ...this.state.viewport,
+        longitude,
+        latitude,
+        zoom,
+        transitionDuration
+      };
 
-    this.setState({
-      flying: true,
-      viewport: newViewport
-    });
-    onViewportChange(newViewport);
+      this.setState({
+        flying: true,
+        viewport: newViewport
+      });
+      onViewportChange(newViewport);
 
-    setTimeout(() => {
-      this.setState({ flying: false });
-    }, transitionDuration);
+      setTimeout(() => {
+        this.setState({ flying: false });
+      }, transitionDuration);
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   };
 
   setLocalizedLabels = () => {

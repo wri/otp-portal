@@ -72,77 +72,79 @@ const NewsletterForm = ({ language }) => {
 
   return (
     <div className="c-section">
-      <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-        <Form ref={formRef} action="https://example.com/l/sddds/2022-03-31/fdsfdsfdh" method="post">
-          <fieldset className="c-field-container">
-            <Field
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'first_name',
-                label: intl.formatMessage({ id: 'First Name' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
-            <Field
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'last_name',
-                label: intl.formatMessage({ id: 'Last Name' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
-            <Field
-              validations={['required', 'email']}
-              className="-fluid"
-              properties={{
-                name: 'email',
-                label: intl.formatMessage({ id: 'email' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
-            <Field
-              validations={['required']}
-              className="-fluid"
-              properties={{
-                name: 'organization',
-                label: intl.formatMessage({ id: 'Organization' }),
-                required: true,
-              }}
-            >
-              {Input}
-            </Field>
-            <Field
-              validations={['required']}
-              className="-fluid"
-              options={countryOptions}
-              properties={{
-                name: 'country',
-                label: intl.formatMessage({ id: 'country' }),
-                instanceId: 'select.country',
-                required: true,
-              }}
-            >
-              {Select}
-            </Field>
-          </fieldset>
+      <div className="l-container">
+        <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
+          <Form ref={formRef} action="https://example.com/l/sddds/2022-03-31/fdsfdsfdh" method="post">
+            <fieldset className="c-field-container">
+              <Field
+                validations={['required']}
+                className="-fluid"
+                properties={{
+                  name: 'first_name',
+                  label: intl.formatMessage({ id: 'First Name' }),
+                  required: true,
+                }}
+              >
+                {Input}
+              </Field>
+              <Field
+                validations={['required']}
+                className="-fluid"
+                properties={{
+                  name: 'last_name',
+                  label: intl.formatMessage({ id: 'Last Name' }),
+                  required: true,
+                }}
+              >
+                {Input}
+              </Field>
+              <Field
+                validations={['required', 'email']}
+                className="-fluid"
+                properties={{
+                  name: 'email',
+                  label: intl.formatMessage({ id: 'email' }),
+                  required: true,
+                }}
+              >
+                {Input}
+              </Field>
+              <Field
+                validations={['required']}
+                className="-fluid"
+                properties={{
+                  name: 'organization',
+                  label: intl.formatMessage({ id: 'Organization' }),
+                  required: true,
+                }}
+              >
+                {Input}
+              </Field>
+              <Field
+                validations={['required']}
+                className="-fluid"
+                options={countryOptions}
+                properties={{
+                  name: 'country',
+                  label: intl.formatMessage({ id: 'country' }),
+                  instanceId: 'select.country',
+                  required: true,
+                }}
+              >
+                {Select}
+              </Field>
+            </fieldset>
 
-          <ul className="c-field-buttons">
-            <li>
-              <SubmitButton>
-                {intl.formatMessage({ id: 'signup' })}
-              </SubmitButton>
-            </li>
-          </ul>
-        </Form>
-      </FormProvider>
+            <ul className="c-field-buttons">
+              <li>
+                <SubmitButton>
+                  {intl.formatMessage({ id: 'signup' })}
+                </SubmitButton>
+              </li>
+            </ul>
+          </Form>
+        </FormProvider>
+      </div>
     </div>
   );
 }

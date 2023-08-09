@@ -144,158 +144,155 @@ class EditOperator extends React.Component {
 
     return (
       <div className="c-section">
-        <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formInitialState}>
-          <Form>
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {intl.formatMessage({ id: 'info.operator' })}
-              </h2>
-
-              <Field
-                validations={['required']}
-                className="-fluid"
-                properties={{
-                  name: 'name',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.name' }),
-                  required: true
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Operator description */}
-              <Field
-                className="-fluid"
-                properties={{
-                  name: 'details',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.details' }),
-                  rows: '6'
-                }}
-              >
-                {Textarea}
-              </Field>
-
-              {/* Operator type */}
-              <Field
-                validations={['required']}
-                className="-fluid"
-                options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
-                  ...t,
-                  label: intl.formatMessage({ id: t.label })
-                }))}
-                properties={{
-                  name: 'operator_type',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
-                  required: true,
-                  instanceId: 'select.operator_type'
-                }}
-              >
-                {Select}
-              </Field>
-
-              {/* Website */}
-              <Field
-                validations={['url']}
-                className="-fluid"
-                properties={{
-                  name: 'website',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.website' })
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Address */}
-              <Field
-                className="-fluid"
-                properties={{
-                  name: 'address',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
-                }}
-              >
-                {Input}
-              </Field>
-
-              {/* Logo */}
-              <Field
-                className="-fluid"
-                properties={{
-                  name: 'logo',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
-                }}
-              >
-                {FileImage}
-              </Field>
-
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {intl.formatMessage({ id: 'forest-management-units' })}
-              </h2>
-
-              <div className="c-field-row">
-                {/* Country */}
+        <div className="l-container">
+          <FormProvider onSubmit={this.handleSubmit} initialValues={this.state.formInitialState}>
+            <Form>
+              <fieldset className="c-field-container">
                 <Field
                   validations={['required']}
                   className="-fluid"
-                  options={this.state.countryOptions}
                   properties={{
-                    name: 'country',
-                    label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                    name: 'name',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.name' }),
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                {/* Operator description */}
+                <Field
+                  className="-fluid"
+                  properties={{
+                    name: 'details',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.details' }),
+                    rows: '6'
+                  }}
+                >
+                  {Textarea}
+                </Field>
+
+                {/* Operator type */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
+                    ...t,
+                    label: intl.formatMessage({ id: t.label })
+                  }))}
+                  properties={{
+                    name: 'operator_type',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
                     required: true,
-                    disabled: true,
-                    instanceId: 'select.country'
+                    instanceId: 'select.operator_type'
                   }}
                 >
                   {Select}
                 </Field>
 
-                {/* FMUs */}
-                {!!this.state.fmusOptions.length && (
+                {/* Website */}
+                <Field
+                  validations={['url']}
+                  className="-fluid"
+                  properties={{
+                    name: 'website',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.website' })
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                {/* Address */}
+                <Field
+                  className="-fluid"
+                  properties={{
+                    name: 'address',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                {/* Logo */}
+                <Field
+                  className="-fluid"
+                  properties={{
+                    name: 'logo',
+                    label: intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
+                  }}
+                >
+                  {FileImage}
+                </Field>
+
+              </fieldset>
+
+              <fieldset className="c-field-container">
+                <h2 className="c-title">
+                  {intl.formatMessage({ id: 'forest-management-units' })}
+                </h2>
+
+                <div className="c-field-row">
+                  {/* Country */}
                   <Field
-                    name="fmus"
-                    onChangeCertifications={value => this.onChangeCertifications(value)}
+                    validations={['required']}
                     className="-fluid"
-                    options={this.state.fmusOptions}
-                    certifications={this.state.certifications}
+                    options={this.state.countryOptions}
                     properties={{
-                      name: 'fmus'
+                      name: 'country',
+                      label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                      required: true,
+                      disabled: true,
+                      instanceId: 'select.country'
                     }}
                   >
-                    {FmusCheckboxGroup}
+                    {Select}
                   </Field>
-                )}
 
-              </div>
-            </fieldset>
+                  {/* FMUs */}
+                  {!!this.state.fmusOptions.length && (
+                    <Field
+                      name="fmus"
+                      onChangeCertifications={value => this.onChangeCertifications(value)}
+                      className="-fluid"
+                      options={this.state.fmusOptions}
+                      certifications={this.state.certifications}
+                      properties={{
+                        name: 'fmus'
+                      }}
+                    >
+                      {FmusCheckboxGroup}
+                    </Field>
+                  )}
+                </div>
+              </fieldset>
 
-            <fieldset className="c-field-container">
-              <h2 className="c-title -huge">
-                {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
-              </h2>
+              <fieldset className="c-field-container">
+                <h2 className="c-title">
+                  {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
+                </h2>
 
-              <SawmillsTable
-                sawmills={sawmills.data}
-                onChange={this.fetchSawmills}
-              />
+                <SawmillsTable
+                  sawmills={sawmills.data}
+                  onChange={this.fetchSawmills}
+                />
 
-              <button
-                onClick={this.handleAddSawmill} className="c-button -small -secondary"
-              >
-                {intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
-              </button>
-            </fieldset>
+                <button
+                  onClick={this.handleAddSawmill} className="c-button -small -secondary"
+                >
+                  {intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
+                </button>
+              </fieldset>
 
-            <ul className="c-field-buttons">
-              <li>
-                <SubmitButton>
-                  {intl.formatMessage({ id: 'update.operator' })}
-                </SubmitButton>
-              </li>
-            </ul>
-          </Form>
-        </FormProvider>
+              <ul className="c-field-buttons">
+                <li>
+                  <SubmitButton>
+                    {intl.formatMessage({ id: 'update.operator' })}
+                  </SubmitButton>
+                </li>
+              </ul>
+            </Form>
+          </FormProvider>
+        </div>
       </div >
     );
   }

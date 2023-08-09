@@ -40,12 +40,50 @@
     }
   }
 
+  @include breakpoint(medium down) {
+    &.open {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
   // Nav
   .header-nav {
     flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &.-mobile {
+      @include breakpoint(large) {
+        display: none;
+      }
+
+      .c-navigation-list {
+        margin-left: auto;
+      }
+
+      .c-hamburger {
+        margin-left: $space-1;
+
+        @include breakpoint(medium) {
+          margin-left: $space-1 * 2;
+        }
+      }
+    }
+
+    &.-desktop {
+      @include breakpoint(medium down) {
+        display: none;
+      }
+
+      .c-hamburger {
+        margin-left: auto;
+      }
+    }
   }
 
   .header-nav-list-item {
@@ -65,6 +103,10 @@
   &.-theme-default {
     position: relative;
     background: $color-tertiary;
+
+    &.-home {
+      padding: $space-1 * 3 0;
+    }
 
     .header-logo {
       width: 130px;
@@ -121,19 +163,29 @@
     background: rgba($color-gray-1, 0.7);
 
     .header-logo {
-      width: 220px;
-      height: 56px;
+      width: 130px;
+      height: 40px;
       background-image: url('/static/images/otp-logo-white.svg');
+
+      @include breakpoint(medium) {
+        width: 220px;
+        height: 56px;
+      }
 
       .header-logo-staging {
         position: absolute;
-        left: 75px;
-        bottom: -15px;
+        left: 44px;
+        bottom: -12px;
         font-size: 10px;
         font-family: $font-family-proximanova;
         color: #EEE;
         text-transform: uppercase;
         letter-spacing: 1px;
+
+        @include breakpoint(medium) {
+          left: 75px;
+          bottom: -15px;
+        }
       }
 
     }

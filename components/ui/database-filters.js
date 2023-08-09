@@ -141,7 +141,7 @@ class DatabaseFilters extends Filters {
               <Spinner isLoading={loading} />
               <div className="l-container">
                 <div className="row l-row">
-                  <div className="columns small-12 flex-wrapper">
+                  <div className="columns small-12 grid-wrapper">
                     {this.renderFiltersSelects()}
                   </div>
                 </div>

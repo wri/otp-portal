@@ -38,7 +38,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <div className="content">
                     <div className="description">
                       <p>
@@ -56,7 +56,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.privacy' })}</h2>
                   </header>
@@ -75,7 +75,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.service' })}</h2>
                   </header>
@@ -93,7 +93,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.usage' })}</h2>
                   </header>
@@ -115,7 +115,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.accounts' })}</h2>
                   </header>
@@ -138,7 +138,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.third-party' })}</h2>
                   </header>
@@ -159,7 +159,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.submitted-content' })}</h2>
                   </header>
@@ -180,7 +180,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.disclaimers' })}</h2>
                   </header>
@@ -201,7 +201,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.compliance' })}</h2>
                   </header>
@@ -223,7 +223,7 @@ class TermsPage extends React.Component {
               className="c-article"
             >
               <div className="row l-row">
-                <div className="columns small-12 medium-8">
+                <div className="columns small-12">
                   <header>
                     <h2 className="c-title">{this.props.intl.formatMessage({ id: 'terms.additional' })}</h2>
                   </header>

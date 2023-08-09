@@ -21,6 +21,8 @@ import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayers
 
 import modal from 'services/modal';
 
+import { withDeviceInfo } from 'hooks/use-device-info';
+
 import { transformRequest } from 'utils/map';
 
 import Layout from 'components/layout/layout';
@@ -51,12 +53,16 @@ class OperatorsPage extends React.Component {
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operatorsRanking } = this.props;
+    const { url, operatorsRanking, deviceInfo } = this.props;
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(url));
     if (!operatorsRanking.layersSettings['integrated-alerts']) {
       this.props.getIntegratedAlertsMetadata();
+    }
+
+    if (!deviceInfo.isDesktop) {
+      this.props.setOperatorsSidebar({ open: false });
     }
     // if (!Cookies.get('operators.disclaimer')) {
     //   toastr.info(
@@ -68,7 +74,7 @@ class OperatorsPage extends React.Component {
     //       timeOut: 15000,
     //       onCloseButtonClick: () => {
     //         Cookies.set('operators.disclaimer', true);
-    //       }
+    //       }edt mru
     //     }
     //   );
     // }
@@ -218,10 +224,11 @@ class OperatorsPage extends React.Component {
 }
 
 OperatorsPage.propTypes = {
-  intl: PropTypes.object.isRequired
+  intl: PropTypes.object.isRequired,
+  deviceInfo: PropTypes.object,
 };
 
-export default injectIntl(connect(
+export default withDeviceInfo(injectIntl(connect(
   (state, props) => ({
     language: state.language,
     operatorsRanking: state.operatorsRanking,
@@ -259,4 +266,4 @@ export default injectIntl(connect(
       dispatch(setOperatorsSidebar(obj));
     }
   })
-)(OperatorsPage));
+)(OperatorsPage)));

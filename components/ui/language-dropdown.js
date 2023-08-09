@@ -33,42 +33,31 @@ const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
   )
 });
 
-const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
+const LanguageDropdown = ({ showSelectedCode }) => {
   const { asPath, locale } = useRouter();
 
   // when using custom server asPath is prefixed with locale sometimes, it should not be
   // maybe better to not use custom server
   const fixedAsPath = asPath.replace(`/${locale}/`, '/');
+  const selectedLocale = LOCALES.find(l => l.code === locale);
 
   return (
     <Dropdown className="c-language-dropdown">
       <DropdownTrigger>
-        <div className="header-nav-list-item">
-          {showSelectedCode && (
-            <>
-              <Icon name="icon-language" />
-              <span>{language}</span>
-            </>
-          )}
-
-          {!showSelectedCode && (
-            <span>
-              {intl.formatMessage({ id: 'select_language' })}
-            </span>
-          )}
-        </div>
+        <Icon name="icon-language" />
+        <span>{showSelectedCode ? selectedLocale.code : selectedLocale.name}</span>
       </DropdownTrigger>
 
       <DropdownContent>
         <ul className="language-dropdown-list">
-          {LOCALES.map(locale => (
+          {LOCALES.map(l => (
             <li
-              key={locale.code}
+              key={l.code}
               className="language-dropdown-list-item"
             >
-              <Link href={fixedAsPath} passHref locale={locale.code}>
-                <LanguageLink locale={locale.code}>
-                  {locale.name}
+              <Link href={fixedAsPath} passHref locale={l.code}>
+                <LanguageLink locale={l.code}>
+                  {l.name}
                 </LanguageLink>
               </Link>
             </li>
@@ -80,20 +69,11 @@ const LanguageDropdown = ({ intl, showSelectedCode, language }) => {
 }
 
 LanguageDropdown.propTypes = {
-  intl: PropTypes.object.isRequired,
-  showSelectedCode: PropTypes.bool,
-  language: PropTypes.string
+  showSelectedCode: PropTypes.bool
 }
 
 LanguageDropdown.defaultProps = {
   showSelectedCode: false
 }
 
-export default injectIntl(
-  connect(
-    state => ({
-      language: state.language,
-    }),
-    null
-  )(LanguageDropdown)
-);
+export default LanguageDropdown;

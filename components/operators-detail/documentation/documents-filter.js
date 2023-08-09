@@ -46,58 +46,60 @@ function DocumentsFilter({
   return (
     <div className="c-doc-filters">
       <h3>{intl.formatMessage({ id: 'filter.title' })}</h3>
-      {fmus.length > 0 && showFMU && (
-        <span className="filter-option">
-          <label htmlFor="business">{intl.formatMessage({ id: 'fmu' })}</label>
-          <div className="filters-dropdown">
-            <button
-              className="dropdown-placeholder"
-              onClick={() => setDropdownOpen(!isDropdownOpen)}
-            >
-              {selectedFmu ? selectedFmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
-            </button>
+      <div className="filter-options">
+        {fmus.length > 0 && showFMU && (
+          <span className="filter-option">
+            <label htmlFor="business">{intl.formatMessage({ id: 'fmu' })}</label>
+            <div className="filters-dropdown">
+              <button
+                className="dropdown-placeholder"
+                onClick={() => setDropdownOpen(!isDropdownOpen)}
+              >
+                {selectedFmu ? selectedFmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
+              </button>
 
-            {isDropdownOpen && (
-              <div className="dropdown-content">
-                {[null, ...fmus].map((_fmu) => (
-                  <option
-                    key={_fmu ? _fmu.id : 'no-fmu'}
-                    onClick={() => {
-                      setUrlParam('fmuId', _fmu?.id);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    {_fmu ? _fmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
-                  </option>
-                ))}
-              </div>
-            )}
-          </div>
-        </span>
-      )}
+              {isDropdownOpen && (
+                <div className="dropdown-content">
+                  {[null, ...fmus].map((_fmu) => (
+                    <option
+                      key={_fmu ? _fmu.id : 'no-fmu'}
+                      onClick={() => {
+                        setUrlParam('fmuId', _fmu?.id);
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      {_fmu ? _fmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
+                    </option>
+                  ))}
+                </div>
+              )}
+            </div>
+          </span>
+        )}
 
-      {showDate && (
-        <span className="filter-option">
-          <label htmlFor="business">{intl.formatMessage({ id: 'date' })}</label>
+        {showDate && (
+          <span className="filter-option">
+            <label htmlFor="business">{intl.formatMessage({ id: 'date' })}</label>
 
-          <Datepicker
-            className="filters-date -inline"
-            date={dayjs(date)}
-            dateFormat="dd MMM yyyy"
-            settings={{
-              numberOfMonths: 1,
-              minDate: dayjs(minDate).add(1, 'days'),
-              maxDate: dayjs(),
-              hideKeyboardShortcutsPanel: true,
-              noBorder: true,
-              readOnly: false,
-            }}
-            onDateChange={(d) => setUrlParam('date', dayjs(d).format('YYYY-MM-DD'))}
-          />
-        </span>
-      )}
+            <Datepicker
+              className="filters-date -inline"
+              date={dayjs(date)}
+              dateFormat="dd MMM yyyy"
+              settings={{
+                numberOfMonths: 1,
+                minDate: dayjs(minDate).add(1, 'days'),
+                maxDate: dayjs(),
+                hideKeyboardShortcutsPanel: true,
+                noBorder: true,
+                readOnly: false,
+              }}
+              onDateChange={(d) => setUrlParam('date', dayjs(d).format('YYYY-MM-DD'))}
+            />
+          </span>
+        )}
 
-      {children}
+        {children}
+      </div>
     </div>
   );
 }

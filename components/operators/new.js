@@ -94,187 +94,185 @@ class NewOperator extends React.Component {
 
     return (
       <div className="c-section">
-        <FormProvider initialValues={this.state.formInitialState} onSubmit={this.handleSubmit}>
-          {({ form, submitted, setFormValues }) => (<>
-            {!submitted && (
-              <Form>
-                <fieldset className="c-field-container">
-                  <h2 className="c-title -huge">
-                    {intl.formatMessage({ id: 'info.operator' })}
-                  </h2>
-
-                  {/* Operator name */}
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'name',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.name' }),
-                      required: true
-                    }}
-                  >
-                    {Input}
-                  </Field>
-
-                  {/* Operator description */}
-                  <Field
-                    className="-fluid"
-                    properties={{
-                      name: 'details',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.details' }),
-                      rows: '6'
-                    }}
-                  >
-                    {Textarea}
-                  </Field>
-
-                  {/* Operator type */}
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
-                      ...t,
-                      label: intl.formatMessage({ id: t.label })
-                    }))}
-                    properties={{
-                      name: 'operator_type',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
-                      required: true,
-                      instanceId: 'select.operator_type',
-                      placeholder: ''
-                    }}
-                  >
-                    {Select}
-                  </Field>
-
-                  {/* Website */}
-                  <Field
-                    validations={['url']}
-                    className="-fluid"
-                    properties={{
-                      name: 'website',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.website' }),
-                    }}
-                  >
-                    {Input}
-                  </Field>
-
-                  {/* Address */}
-                  <Field
-                    className="-fluid"
-                    properties={{
-                      name: 'address',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
-                    }}
-                  >
-                    {Input}
-                  </Field>
-
-                  {/* Logo */}
-                  <Field
-                    className="-fluid"
-                    properties={{
-                      name: 'logo',
-                      label: intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
-                    }}
-                  >
-                    {FileImage}
-                  </Field>
-                </fieldset>
-
-                <fieldset className="c-field-container">
-                  <h2 className="c-title -huge">
-                    {intl.formatMessage({ id: 'forest-management-units' })}
-                  </h2>
-
-                  <div className="c-field-row">
-                    {/* Country */}
+        <div className="l-container">
+          <FormProvider initialValues={this.state.formInitialState} onSubmit={this.handleSubmit}>
+            {({ form, submitted, setFormValues }) => (<>
+              {!submitted && (
+                <Form>
+                  <fieldset className="c-field-container">
+                    {/* Operator name */}
                     <Field
-                      onChange={(value) => {
-                        setFormValues({
-                          country: value,
-                          fmus: []
-                        });
-                        this.getFmus(value);
-                      }}
                       validations={['required']}
                       className="-fluid"
-                      options={this.state.countryOptions}
                       properties={{
-                        name: 'country',
-                        label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                        name: 'name',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.name' }),
+                        required: true
+                      }}
+                    >
+                      {Input}
+                    </Field>
+
+                    {/* Operator description */}
+                    <Field
+                      className="-fluid"
+                      properties={{
+                        name: 'details',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.details' }),
+                        rows: '6'
+                      }}
+                    >
+                      {Textarea}
+                    </Field>
+
+                    {/* Operator type */}
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      options={HELPERS_REGISTER.getOperatorTypes().map(t => ({
+                        ...t,
+                        label: intl.formatMessage({ id: t.label })
+                      }))}
+                      properties={{
+                        name: 'operator_type',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.operator_type' }),
                         required: true,
-                        instanceId: 'select.country',
+                        instanceId: 'select.operator_type',
                         placeholder: ''
                       }}
                     >
                       {Select}
                     </Field>
 
-                    {!!form.country && (
-                      <Spinner isLoading={this.state.fmusLoading} />
-                    )}
+                    {/* Website */}
+                    <Field
+                      validations={['url']}
+                      className="-fluid"
+                      properties={{
+                        name: 'website',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.website' }),
+                      }}
+                    >
+                      {Input}
+                    </Field>
 
-                    {/* FMUs */}
-                    {!!this.state.fmusOptions.length && (
+                    {/* Address */}
+                    <Field
+                      className="-fluid"
+                      properties={{
+                        name: 'address',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
+                      }}
+                    >
+                      {Input}
+                    </Field>
+
+                    {/* Logo */}
+                    <Field
+                      className="-fluid"
+                      properties={{
+                        name: 'logo',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.logo' }),
+                      }}
+                    >
+                      {FileImage}
+                    </Field>
+                  </fieldset>
+
+                  <fieldset className="c-field-container">
+                    <h2 className="c-title">
+                      {intl.formatMessage({ id: 'forest-management-units' })}
+                    </h2>
+
+                    <div className="c-field-row">
+                      {/* Country */}
                       <Field
+                        onChange={(value) => {
+                          setFormValues({
+                            country: value,
+                            fmus: []
+                          });
+                          this.getFmus(value);
+                        }}
+                        validations={['required']}
                         className="-fluid"
-                        options={this.state.fmusOptions}
+                        options={this.state.countryOptions}
                         properties={{
-                          name: 'fmus',
-                          label: 'FMUs',
-                          instanceId: 'select.fmus',
-                          isMulti: true,
-                          value: form.fmus,
+                          name: 'country',
+                          label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                          required: true,
+                          instanceId: 'select.country',
                           placeholder: ''
                         }}
                       >
                         {Select}
                       </Field>
-                    )}
-                  </div>
-                </fieldset>
 
-                <ul className="c-field-buttons">
-                  <li>
-                    <SubmitButton>
-                      {intl.formatMessage({ id: 'create.operator' })}
-                    </SubmitButton>
-                  </li>
-                </ul>
-              </Form>
-            )}
+                      {!!form.country && (
+                        <Spinner isLoading={this.state.fmusLoading} />
+                      )}
 
-            {submitted && (
-              <div className="c-form">
-                <h2 className="c-title -huge">
-                  {intl.formatMessage({ id: 'thankyou' })}
-                </h2>
+                      {/* FMUs */}
+                      {!!this.state.fmusOptions.length && (
+                        <Field
+                          className="-fluid"
+                          options={this.state.fmusOptions}
+                          properties={{
+                            name: 'fmus',
+                            label: 'FMUs',
+                            instanceId: 'select.fmus',
+                            isMulti: true,
+                            value: form.fmus,
+                            placeholder: ''
+                          }}
+                        >
+                          {Select}
+                        </Field>
+                      )}
+                    </div>
+                  </fieldset>
 
-                <p>
-                  {intl.formatMessage({ id: 'wait-for-approval' })}
-                </p>
+                  <ul className="c-field-buttons">
+                    <li>
+                      <SubmitButton>
+                        {intl.formatMessage({ id: 'create.operator' })}
+                      </SubmitButton>
+                    </li>
+                  </ul>
+                </Form>
+              )}
 
-                <ul className="c-field-buttons">
-                  <li>
-                    <Link href="/operators">
-                      <a className="card-link c-button -primary -fullwidth">
-                        {intl.formatMessage({ id: 'operators' })}
-                      </a>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/observations">
-                      <a className="card-link c-button -primary -fullwidth">
-                        {intl.formatMessage({ id: 'observations' })}
-                      </a>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </>)}
-        </FormProvider>
+              {submitted && (
+                <div className="c-form">
+                  <h2 className="c-title">
+                    {intl.formatMessage({ id: 'thankyou' })}
+                  </h2>
+
+                  <p>
+                    {intl.formatMessage({ id: 'wait-for-approval' })}
+                  </p>
+
+                  <ul className="c-field-buttons">
+                    <li>
+                      <Link href="/operators">
+                        <a className="card-link c-button -primary -fullwidth">
+                          {intl.formatMessage({ id: 'operators' })}
+                        </a>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/observations">
+                        <a className="card-link c-button -primary -fullwidth">
+                          {intl.formatMessage({ id: 'observations' })}
+                        </a>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </>)}
+          </FormProvider>
+        </div>
       </div>
     );
   }

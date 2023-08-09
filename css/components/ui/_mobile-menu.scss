@@ -1,0 +1,68 @@
+.c-mobile-menu {
+  background: $color-tertiary;
+  height: calc(100% - 66px);
+  overflow: auto;
+  margin: 0;
+  padding: 20px;
+
+  font-family: $font-family-proximanova;
+  font-weight: $font-weight-default;
+  font-size: $font-size-big;
+  text-transform: uppercase;
+
+  @include breakpoint(large) {
+    display: none;
+  }
+
+  .c-search {
+    padding-top: $space-1 * 1.5;
+    padding-bottom: $space-1 * 3;
+
+    .search {
+      input {
+        font-size: $font-size-default;
+      }
+
+      .c-icon {
+        width: 18px;
+        height: 18px;
+        top: 0px;
+      }
+    }
+
+    .results-container {
+      top: calc(100% - $space-1);
+      left: 0;
+      transform: unset;
+    }
+
+    .results {
+      padding: $space-1 $space-1 * 3;
+    }
+  }
+
+  .c-language-dropdown {
+    .c-icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  li {
+    list-style: none;
+    padding: $space-1 0;
+
+    ul {
+      padding-left: $space-1 * 3;
+
+      li:last-of-type {
+        padding-bottom: 0;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: $color-gray-1;
+    }
+  }
+}

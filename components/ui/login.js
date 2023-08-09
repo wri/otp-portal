@@ -38,7 +38,7 @@ const Login = () => {
 
   return (
     <div className="c-login">
-      <h2 className="c-title -huge">
+      <h2 className="c-title">
         {intl.formatMessage({ id: 'login' })}
       </h2>
 

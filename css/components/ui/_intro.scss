@@ -1,6 +1,10 @@
 .c-intro {
   background: $color-tertiary;
-  padding: $space-1 * 5 $space-1 * 7;
+  padding: $space-1 * 4;
+
+  @include breakpoint(medium) {
+    padding: $space-1 * 5 $space-1 * 7;
+  }
 
   h2 {
     padding: 0;

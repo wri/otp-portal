@@ -56,7 +56,7 @@ class FMUTemplatePopup extends PureComponent {
 
     return (
       <div className="c-layer-popup">
-        <h2 className="c-title -extrabig">
+        <h2 className="layer-popup--title">
           {data.data.fmu_name}
         </h2>
 
