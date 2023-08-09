@@ -50,7 +50,7 @@ const Header = ({ url }) => {
                 <UserDropdown theme={theme} />
               </li>
               <li>
-                <LanguageDropdown showSelectedCode />
+                <LanguageDropdown className="header-nav-list-item" showSelectedCode />
               </li>
             </ul>
           </nav>

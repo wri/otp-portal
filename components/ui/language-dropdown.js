@@ -2,15 +2,12 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
-import { connect } from 'react-redux';
+import cx from 'classnames';
 
 import Dropdown, {
   DropdownTrigger,
   DropdownContent,
 } from 'react-simple-dropdown';
-
-import { injectIntl } from 'react-intl';
 
 import Icon from 'components/ui/icon';
 
@@ -33,7 +30,7 @@ const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
   )
 });
 
-const LanguageDropdown = ({ showSelectedCode }) => {
+const LanguageDropdown = ({ showSelectedCode, className }) => {
   const { asPath, locale } = useRouter();
 
   // when using custom server asPath is prefixed with locale sometimes, it should not be
@@ -42,7 +39,7 @@ const LanguageDropdown = ({ showSelectedCode }) => {
   const selectedLocale = LOCALES.find(l => l.code === locale);
 
   return (
-    <Dropdown className="c-language-dropdown">
+    <Dropdown className={cx("c-language-dropdown", className)}>
       <DropdownTrigger>
         <Icon name="icon-language" />
         <span>{showSelectedCode ? selectedLocale.code : selectedLocale.name}</span>
@@ -69,6 +66,7 @@ const LanguageDropdown = ({ showSelectedCode }) => {
 }
 
 LanguageDropdown.propTypes = {
+  className: PropTypes.string,
   showSelectedCode: PropTypes.bool
 }
 
