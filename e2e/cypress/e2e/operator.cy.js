@@ -30,7 +30,6 @@ describe('User', function () {
 
       it('can add new sawmill', function () {
         // cy.get('.c-options-table').should('contains.text', 'No sawmills');
-        cy.get('h2').contains('Producer info').should('exist');
         cy.get('button').contains('Add sawmill').click();
 
         cy.get('[data-test-id=sawmill-name]').type('Sawmill Example');

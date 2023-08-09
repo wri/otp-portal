@@ -3,21 +3,21 @@ describe('Pages', () => {
     it('matches visually', function () {
       cy.visit('http://localhost:4000');
       cy.get('a').contains('Sign in').click();
-      cy.get('.c-login').toMatchImageSnapshot();
+      cy.get('.c-login').matchImage();
     });
   })
 
   describe('Create account page', () => {
     it('matches visually', function () {
       cy.visit('http://localhost:4000/signup');
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     });
   })
 
   describe('Create producer page', () => {
     it('matches visually', function () {
       cy.visit('http://localhost:4000/operators/new');
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     });
   })
 
@@ -32,7 +32,7 @@ describe('Pages', () => {
     })
 
     it('matches visually', function () {
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     })
   })
 
@@ -47,7 +47,7 @@ describe('Pages', () => {
       })
 
       it('matches visually', function () {
-        cy.document().toMatchImageSnapshot();
+        cy.matchImage();
       })
     })
 
@@ -91,7 +91,7 @@ describe('Pages', () => {
     })
 
     it('matches visually', function () {
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     })
   })
 
@@ -110,7 +110,7 @@ describe('Pages', () => {
     })
 
     it('matches visually', function () {
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     })
   })
 });

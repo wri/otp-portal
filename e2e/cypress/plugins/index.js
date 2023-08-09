@@ -16,7 +16,7 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
-const { initPlugin } = require('cypress-plugin-snapshots/plugin');
+const { initPlugin } = require("@frsource/cypress-plugin-visual-regression-diff/plugins");
 
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits

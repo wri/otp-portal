@@ -1,5 +1,5 @@
 import 'cypress-file-upload';
-import 'cypress-plugin-snapshots/commands';
+import '@frsource/cypress-plugin-visual-regression-diff';
 import './commands/operator';
 
 Cypress.Commands.add('interceptMapRequests', () => {

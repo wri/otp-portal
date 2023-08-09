@@ -6,7 +6,7 @@ describe('Home Page', () => {
 
   describe('content', () => {
     it('matches visually', function () {
-      cy.document().toMatchImageSnapshot();
+      cy.matchImage();
     })
   })
 
