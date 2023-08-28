@@ -6,6 +6,19 @@ describe('User', () => {
     cy.visit('http://localhost:4000/');
   })
 
+  context('Login form', () => {
+    it('can log in', function () {
+      cy.get('a').contains('Sign in').click();
+      cy.get('#input-email').type('operator@example.com');
+      cy.get('#input-password').type('wrongpassword');
+      cy.get('button').contains('Log in').click();
+      cy.get('.rrt-text').should('have.text', 'Wrong email or password');
+      cy.get('#input-password').clear().type('secret');
+      cy.get('button').contains('Log in').click();
+      cy.contains('a', 'My account');
+    });
+  })
+
   context('Public user', () => {
     it('can log in and out', function () {
       cy.login('operator@example.com', 'secret');

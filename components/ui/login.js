@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 import Link from 'next/link';
 
 // Intl
@@ -25,6 +24,12 @@ const Login = () => {
     return login({ body: { auth: form } })
       .then(() => {
         window.location.reload();
+      }).catch((err) => {
+        let errorMessage = intl.formatMessage({ id: 'Oops! There was an error, try again' });
+        if (err.status === 401) {
+          errorMessage = intl.formatMessage({ id: 'login.error', defaultMessage: 'Wrong email or password' });
+        }
+        throw new Error(errorMessage);
       })
   };
 

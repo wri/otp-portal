@@ -166,6 +166,7 @@
   "login": "Log in (to upload information only)",
   "login.form.field.email": "Email",
   "login.form.field.password": "Password",
+  "login.error": "Wrong email or password",
   "signin": "Sign in",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",
