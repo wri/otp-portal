@@ -447,5 +447,6 @@
   "Password changed successfully": "Password changed successfully",
   "forgot-password.title": "Enter your email to reset password",
   "forgot-password.submitted": "If account exists for {email}, you will get an email with instructions on how to reset your password. Be sure to check your spam folder. If you do not receive an e-mail from us, it means that we do not have an account associated with that e-mail address.",
-  "Cookie Preferences": "Cookie Preferences"
+  "Cookie Preferences": "Cookie Preferences",
+  "Privacy Policy": "Privacy Policy"
 }
