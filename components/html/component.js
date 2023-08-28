@@ -9,16 +9,22 @@ function linkifyProcess(content) {
   return content.replace(reg, "<a href='$1$2'>$1$2</a>");
 }
 
-function preprocess(text, linkify) {
-  if (linkify) return linkifyProcess(text);
+function preprocess(text, linkify, placeholders) {
+  let processedText = text;
+  if (linkify) processedText = linkifyProcess(processedText);
+  if (placeholders) {
+    Object.keys(placeholders).forEach((key) => {
+      processedText = processedText.replace(`{${key}}`, placeholders[key]);
+    });
+  }
 
-  return text;
+  return processedText;
 }
 
-const HTML = ({ html, linkify, className }) => (
+const HTML = ({ html, linkify, placeholders, className }) => (
   <div className={cx('c-html', className)}>
     {renderHTML(
-      preprocess(html, linkify) || '',
+      preprocess(html, linkify, placeholders) || '',
       {
         replace: (node) => {
           if (node.name === 'a') {
@@ -46,7 +52,8 @@ HTML.defaultProps = {
 HTML.propTypes = {
   html: PropTypes.string.isRequired,
   className: PropTypes.string,
-  linkify: PropTypes.bool.isRequired
+  linkify: PropTypes.bool.isRequired,
+  placeholders: PropTypes.object
 }
 
 export default HTML;
