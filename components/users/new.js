@@ -24,6 +24,8 @@ import { HELPERS_REGISTER } from 'utils/signup';
 import { logEvent } from 'utils/analytics';
 import SubmitButton from '../form/SubmitButton';
 
+import { LOCALES } from 'constants/locales';
+
 const UserNewForm = (props) => {
   const { countries, operators } = props;
   const intl = useIntl();
@@ -64,7 +66,8 @@ const UserNewForm = (props) => {
     password: '',
     password_confirmation: '',
     permissions_request: 'operator',
-    agree: false
+    agree: false,
+    locale: intl.locale
   }
 
   return (
@@ -128,7 +131,6 @@ const UserNewForm = (props) => {
                     </Field>
                   )}
 
-                  {/* Name */}
                   <Field
                     validations={['required']}
                     className="-fluid"
@@ -141,7 +143,6 @@ const UserNewForm = (props) => {
                     {Input}
                   </Field>
 
-                  {/* Name */}
                   <Field
                     validations={['required', 'email']}
                     className="-fluid"
@@ -155,7 +156,21 @@ const UserNewForm = (props) => {
                     {Input}
                   </Field>
 
-                  {/* Name */}
+                  <Field
+                    validations={['required']}
+                    className="-fluid"
+                    options={LOCALES.map(l => ({ label: l.name, value: l.code }))}
+                    properties={{
+                      name: 'locale',
+                      label: intl.formatMessage({ id: 'signup.user.form.field.preferred_language', defaultMessage: 'Preferred Language' }),
+                      required: true,
+                      instanceId: 'select.locale',
+                      placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                    }}
+                  >
+                    {Select}
+                  </Field>
+
                   <Field
                     validations={['required']}
                     className="-fluid"
@@ -170,7 +185,6 @@ const UserNewForm = (props) => {
                     {Input}
                   </Field>
 
-                  {/* Name */}
                   <Field
                     validations={[
                       'required',
