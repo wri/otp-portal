@@ -93,7 +93,8 @@ const UserEditForm = (props) => {
                     autoComplete: 'new-password',
                     label: intl.formatMessage({ id: 'New Password' }),
                     type: 'password',
-                    required: false
+                    required: false,
+                    value: form.password
                   }}
                 >
                   {Input}
@@ -113,7 +114,8 @@ const UserEditForm = (props) => {
                     autoComplete: 'new-password',
                     label: intl.formatMessage({ id: 'Confirm New Password' }),
                     type: 'password',
-                    required: false
+                    required: false,
+                    value: form.passwordConfirmation
                   }}
                 >
                   {Input}
@@ -129,7 +131,8 @@ const UserEditForm = (props) => {
                       autoComplete: 'current-password',
                       label: intl.formatMessage({ id: 'Current Password' }),
                       type: 'password',
-                      required: true
+                      required: true,
+                      value: form.currentPassword
                     }}
                   >
                     {Input}

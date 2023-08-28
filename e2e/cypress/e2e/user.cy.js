@@ -73,6 +73,8 @@ describe('User', () => {
 
       cy.get('button').contains('Update').click();
       cy.get('.rrt-text').should('have.text', 'Profile saved correctly');
+      cy.get('#input-password').should('have.value', '');
+      cy.get('#input-passwordConfirmation').should('have.value', '');
 
       cy.get('a').contains('My account').click({ force: true });
       cy.get('a').contains('Sign out').click();
