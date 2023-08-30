@@ -39,7 +39,8 @@ function generateSiteMap(operators, countries) {
       `/operators/${slug}/fmus`,
     ]),
     ...countries.flatMap(({ id }) => [
-      `/countries/${id}`
+      `/countries/${id}/overview`,
+      `/countries/${id}/documentation`
     ])
   ];
 
