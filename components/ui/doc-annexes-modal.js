@@ -76,7 +76,9 @@ class DocAnnexesModal extends React.Component {
 
     return (
       <div className="c-login">
-        <h2 className="c-title -extrabig">Add a document for the annex of {title}</h2>
+        <h2 className="c-title -extrabig">
+          {intl.formatMessage({ id: "annex.form.title", defaultMessage: "Add a document for the annex of {title}" }, { title })}
+        </h2>
 
         <FormProvider initialValues={{ name: '', startDate: '', expiryDate: '', file: {} }} onSubmit={this.handleSubmit}>
           <Form>
