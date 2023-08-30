@@ -129,8 +129,8 @@ app
     );
 
     server.get('/:locale?/help/:tab', (req, res) => {
-      return app.render(req, res, '/help', Object.assign(req.params, req.query, localeParams(req)))
-    });;
+      return app.render(req, res, '/help', Object.assign(req.params, req.query, localeParams(req)));
+    });
 
     // LOGIN
     server.post('/login', (req, res) => {
