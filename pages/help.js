@@ -22,6 +22,8 @@ import HelpTutorials from 'components/help/tutorials';
 
 class HelpPage extends React.Component {
   static async getInitialProps({ url, store }) {
+    if (!url.query.tab) return { redirectTo: `${url.asPath}/overview` };
+
     const { howtos, tools, faqs, tutorials } = store.getState().help;
 
     if (!howtos.data.length) await store.dispatch(getHowtos());

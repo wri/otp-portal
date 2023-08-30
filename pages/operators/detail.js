@@ -67,6 +67,10 @@ class OperatorsDetail extends React.Component {
       return { redirectTo: url.asPath.replace(`/${url.query.id}`, `/${operator.slug}`) }
     }
 
+    if (!url.query.tab) {
+      return { redirectTo: `${url.asPath}/overview` };
+    }
+
     if (operatorsDetail.data.slug !== url.query.id) {
       await store.dispatch(getOperatorBySlug(url.query.id));
       const operator = store.getState().operatorsDetail.data;

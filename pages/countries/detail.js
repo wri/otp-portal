@@ -33,6 +33,10 @@ const TABS_COUNTRIES_DETAIL = [
 
 class CountriesDetail extends React.Component {
   static async getInitialProps({ url, store }) {
+    if (!url.query.tab) {
+      return { redirectTo: `${url.asPath}/overview` };
+    }
+
     const { countriesDetail } = store.getState();
     const requests = [];
 
