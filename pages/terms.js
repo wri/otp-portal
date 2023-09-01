@@ -17,8 +17,8 @@ const JSONA = new Jsona();
 const TermsPage = ({ url, intl, page }) => {
   return (
     <Layout
-      title="Terms of service"
-      description="Terms of service"
+      title={intl.formatMessage({ id: 'terms.title' })}
+      description={intl.formatMessage({ id: 'terms.title' })}
       url={url}
     >
       <StaticHeader

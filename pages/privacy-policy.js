@@ -41,8 +41,8 @@ const PrivacyPolicyPage = ({ url, intl, page, cookies }) => {
 
   return (
     <Layout
-      title="Privacy Policy"
-      description="Privacy Policy"
+      title={intl.formatMessage({ id: 'Privacy Policy' })}
+      description={intl.formatMessage({ id: 'Privacy Policy' })}
       url={url}
     >
       <StaticHeader
