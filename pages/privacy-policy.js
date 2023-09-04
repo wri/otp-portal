@@ -10,6 +10,7 @@ import { injectIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Html from 'components/html';
+import CookiesTable from 'components/page/cookies-table';
 
 import API from 'services/api';
 
@@ -17,26 +18,7 @@ const JSONA = new Jsona();
 
 const PrivacyPolicyPage = ({ url, intl, page, cookies }) => {
   const placeholders = {
-    CookiesTable: renderToString(
-      <table>
-        <thead>
-          <tr>
-            <th>Classification</th>
-            <th>Provider</th>
-            <th>Purpose</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cookies.map((cookie) => (
-            <tr key={cookie.id}>
-              <td>{cookie.classification}</td>
-              <td>{cookie.provider}</td>
-              <td>{cookie.purpose}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )
+    CookiesTable: renderToString(<CookiesTable cookies={cookies} />)
   }
 
   return (
