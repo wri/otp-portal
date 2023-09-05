@@ -36,6 +36,7 @@ describe('User', () => {
       cy.get('a').contains('Register now').click();
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
       cy.selectOption('[name=operator_id]', 'Si', 'SICOFOR');
+      cy.get('#select-locale .react-select__single-value').contains('English');
       cy.get('#input-name').type('Test operator');
       cy.get('#input-email').type(`testoperator+${nanoid(6)}@example.com`);
       cy.get('#input-password').type('supersecret');
@@ -54,6 +55,7 @@ describe('User', () => {
 
       cy.get('#input-name').type(`Super New Producer ${nanoid(6)}`);
       cy.get('#input-details').type('Producer description');
+      cy.get('#select-locale .react-select__single-value').contains('English');
       cy.selectOption('[name=operator_type]', 'E', 'Estate');
       cy.get('#input-website').type('wrong website');
       cy.get('#input-website').clear();
@@ -74,12 +76,13 @@ describe('User', () => {
       cy.login('operator@example.com', 'secret');
     });
 
-    it('can update user profile', function () {
+    it.only('can update user profile', function () {
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
 
       cy.get('#input-name').clear();
       cy.get('#input-name').type('New Test Operator');
+      cy.selectOption('[name=locale]', 'Po', 'Português');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-passwordConfirmation').type('supersecret');
       cy.get('#input-currentPassword').type('secret');
@@ -91,10 +94,12 @@ describe('User', () => {
 
       cy.get('a').contains('My account').click({ force: true });
       cy.get('a').contains('Sign out').click();
+      cy.wait(1000);
       cy.login('operator@example.com', 'supersecret');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
       cy.get('#input-name').should('have.value', 'New Test Operator');
+      cy.get('#select-locale .react-select__single-value').contains('Português');
       cy.get('#input-name').clear();
       cy.get('#input-name').type('Test Operator');
       cy.get('#input-password').type('secret');

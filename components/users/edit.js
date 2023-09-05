@@ -13,7 +13,10 @@ import { toastr } from 'react-redux-toastr';
 import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Select from 'components/form/SelectInput';
 import SubmitButton from 'components/form/SubmitButton';
+
+import { LOCALES } from 'constants/locales';
 
 const UserEditForm = (props) => {
   const intl = useIntl();
@@ -23,6 +26,7 @@ const UserEditForm = (props) => {
     const attributes = {
       name: form.name,
       password: form.password,
+      locale: form.locale,
       'password-confirmation': form.passwordConfirmation,
       'current-password': form.password && form.password.length && form.currentPassword
     }
@@ -64,7 +68,7 @@ const UserEditForm = (props) => {
   return (
     <div className="c-section">
       <div className="l-container">
-        <FormProvider initialValues={{ name: userProfile.name, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
+        <FormProvider initialValues={{ name: userProfile.name, locale: userProfile.locale, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
@@ -78,6 +82,21 @@ const UserEditForm = (props) => {
                   }}
                 >
                   {Input}
+                </Field>
+
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={LOCALES.map(l => ({ label: l.name, value: l.code }))}
+                  properties={{
+                    name: 'locale',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.preferred_language', defaultMessage: 'Preferred Language' }),
+                    required: true,
+                    instanceId: 'select.locale',
+                    placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                  }}
+                >
+                  {Select}
                 </Field>
               </fieldset>
 
