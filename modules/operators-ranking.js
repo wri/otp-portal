@@ -267,7 +267,7 @@ export function setOperatorsUrl(mapLocation) {
       }
     };
 
-    Router.replace(location);
+    Router.replace(location, null, { shallow: true });
   };
 }
 
