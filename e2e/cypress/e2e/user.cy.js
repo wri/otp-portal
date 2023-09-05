@@ -76,7 +76,7 @@ describe('User', () => {
       cy.login('operator@example.com', 'secret');
     });
 
-    it.only('can update user profile', function () {
+    it('can update user profile', function () {
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
 
