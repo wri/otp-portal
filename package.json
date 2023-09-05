@@ -23,6 +23,7 @@
     "express": "^4.14.0",
     "foundation-sites": "^6.3.1",
     "fuse.js": "^3.0.5",
+    "globalthis": "^1.0.3",
     "html-react-parser": "^3.0.16",
     "jsona": "^1.0.9",
     "layer-manager": "3.0.9",

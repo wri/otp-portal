@@ -8,6 +8,8 @@ import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
 import { IntlProvider } from 'react-intl';
 
+import 'globalthis/auto';
+
 import * as reducers from 'modules';
 
 import { setUser } from 'modules/user';
