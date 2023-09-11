@@ -54,6 +54,10 @@ const Footer = () => {
                   {intl.formatMessage({ id: 'terms.title' })}
                 </Link>
                 <span> | </span>
+                <Link href="/privacy-policy" prefetch={false}>
+                  {intl.formatMessage({ id: 'Privacy Policy' })}
+                </Link>
+                <span> | </span>
                 <button type="button" onClick={handleCookiePreferencesClick} className="c-link-button">
                   {intl.formatMessage({ id: 'Cookie Preferences' })}
                 </button>
