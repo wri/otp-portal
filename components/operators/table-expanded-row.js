@@ -6,8 +6,8 @@ import { injectIntl } from 'react-intl';
 
 import { SEARCH_OPTIONS } from 'constants/general';
 
-import Tooltip from 'rc-tooltip';
-import Icon from 'components/ui/icon';
+// import Tooltip from 'rc-tooltip';
+// import Icon from 'components/ui/icon';
 
 const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
   const formatCertifications = (fmu) => {
@@ -47,7 +47,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
               <th className="-ta-left">{intl.formatMessage({ id: 'fmu' })}</th>
               <th className="-ta-center -contextual">{intl.formatMessage({ id: 'forest-type' })}</th>
               <th className="-contextual">{intl.formatMessage({ id: 'certifications' })}</th>
-              <th className="-contextual">Map</th>
+              {/* <th className="-contextual">Map</th> */}
             </tr>
           </thead>
           <tbody>
@@ -58,7 +58,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
                   {fmu['forest-type'] && intl.formatMessage({ id: fmu['forest-type'] })}
                 </td>
                 <td>{formatCertifications(fmu)}</td>
-                <td>
+                {/* <td>
                   <Tooltip
                     placement="top"
                     overlay="Show on map"
@@ -68,7 +68,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
                       <Icon name="icon-location" />
                     </button>
                   </Tooltip>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
