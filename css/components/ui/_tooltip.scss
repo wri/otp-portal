@@ -16,6 +16,10 @@
     pointer-events: none;
   }
 
+  &.auto-width {
+    min-width: unset;
+  }
+
   dd {
     margin-left: 0;
   }

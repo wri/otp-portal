@@ -1,6 +1,6 @@
 .c-ranking {
   overflow-x: auto;
-  margin: $space-1 * 4;
+  margin: $space-1 * 2;
 
   table {
     width: 100%;
@@ -67,6 +67,10 @@
         margin-left: 5px;
       }
     }
+
+    .c-button.-icon {
+      margin-left: 5px;
+    }
   }
 
   td {
@@ -110,6 +114,30 @@
       &:first-child { margin: 0;}
     }
   }
+
+  .expand-row-btn {
+    background: none;
+    border: 1px solid $color-primary;
+    cursor: pointer;
+    outline: none;
+    height: 20px;
+    width: 20px;
+    padding: 0;
+
+    svg {
+      fill: $color-primary;
+      height: 8px;
+      width: 8px;
+    }
+
+    &.-green {
+      background-color: $color-primary;
+
+      svg {
+        fill: white;
+      }
+    }
+  }
 }
 
 .c-observations-td {
@@ -120,6 +148,32 @@
 
     li {
 
+    }
+  }
+}
+
+.c-table-expanded-row {
+  table {
+    margin-bottom: $space-1 * 2;
+
+    td:first-child { padding-left: 0; }
+  }
+
+  .show-on-map-btn {
+    outline: none;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-block;
+    padding-top: 3px;
+    cursor: pointer;
+
+    svg {
+      fill: $color-primary;
+      height: 16px;
+      width: 16px;
+      pointer-events: none;
+      margin-bottom: -3px;
     }
   }
 }

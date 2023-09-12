@@ -7,8 +7,8 @@ import uniq from 'lodash/uniq';
 
 import dayjs from 'dayjs';
 
-import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import API from 'services/api';
+import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
 import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -77,7 +77,8 @@ const initialState = {
       fa: true,
       country: [],
       certification: [],
-      operator: ''
+      operator: '',
+      fmu: ''
     },
 
     options: {
@@ -197,17 +198,15 @@ export function getOperatorsRanking() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATORS_RANKING_LOADING });
 
-    // Filters
     const includes = [
       'observations',
       'fmus',
       'country'
-    ].join(',');
-
-    // Fields
+    ];
     const fields = {
       fmus: [
         'name',
+        'forest-type',
         'certification-fsc',
         'certification-olb',
         'certification-pefc',
@@ -215,16 +214,36 @@ export function getOperatorsRanking() {
         'certification-fsc-cw',
         'certification-tlv',
         'certification-ls'
+      ],
+      operators: [
+        'name',
+        'slug',
+        'obs-per-visit',
+        'percentage-valid-documents-all',
+        'score',
+        'country',
+        'fmus',
+        'observations'
+      ],
+      countries: [
+        'name'
+      ],
+      observations: [
+        'country-id',
+        'fmu-id'
       ]
     };
 
     return API.get('operators', {
       locale: language,
-      'page[size]': 2000,
-      include: includes,
-      'fields[fmus]': fields.fmus.join(','),
+      'page[size]': 3000,
+      include: includes.join(','),
       'filter[fa]': true,
       'filter[country]': process.env.OTP_COUNTRIES_IDS.join(','),
+      'fields[fmus]': fields.fmus.join(','),
+      'fields[countries]': fields.countries.join(','),
+      'fields[operators]': fields.operators.join(','),
+      'fields[observations]': fields.observations.join(','),
     }).then((operatorsRanking) => {
       const dataParsed = JSONA.deserialize(operatorsRanking);
 
@@ -245,7 +264,8 @@ export function getOperatorsRanking() {
         type: GET_OPERATORS_RANKING_SUCCESS,
         payload: rankedData
       });
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.error(err);
       // Fetch from server ko -> Dispatch error
       dispatch({
