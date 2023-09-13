@@ -13,6 +13,8 @@ export const getOperatorDocumentationDate = (state) =>
 const getParsedDocumentation = createSelector(
   [operatorDocumentation, getOperatorDocumentationFMU],
   (documentation, fmu) => {
+    if (!documentation.data) return null;
+
     return documentation.data
       .filter((doc) => !doc['required-operator-document']['contract-signature'])
       .filter((doc) => !fmu || (doc.fmu && doc.fmu.id === fmu.id))
@@ -112,6 +114,8 @@ const getContractSignatureDocumentation = createSelector(
 const getHistoricFMUs = createSelector(
   [operatorDocumentation],
   (documentation) => {
+    if (!documentation.data) return [];
+
     const FMUS = uniqBy(documentation.data
       .filter(d => d.fmu)
       .map(d => d.fmu), 'id');

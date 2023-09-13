@@ -99,7 +99,7 @@ class ObservationsPage extends React.Component {
   getPageSize() {
     const { observations } = this.props;
 
-    if (observations.data.length) {
+    if (observations.data && observations.data.length) {
       // What if the page only have 5 results...
       return observations.data.length > 50 ? 50 : observations.data.length;
     }
