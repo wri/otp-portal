@@ -116,6 +116,28 @@ $day-padding: 10px;
       font-weight: bold;
       letter-spacing: 2px;
       text-transform: uppercase;
+
+      &.react-datepicker__current-month--hasMonthDropdown.react-datepicker__current-month--hasYearDropdown {
+        display: none;
+
+        &~.react-datepicker__header__dropdown {
+          .react-datepicker__month-dropdown {
+            top: 10px;
+            left: 30px;
+          }
+
+          .react-datepicker__year-dropdown {
+            top: 10px;
+            left: unset;
+            right: 30px;
+          }
+        }
+      }
+    }
+
+    .react-datepicker__header__dropdown {
+      font-size: $font-size-small;
+      font-weight: bold;
     }
   }
 
