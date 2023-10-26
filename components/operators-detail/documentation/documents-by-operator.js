@@ -62,7 +62,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
     const FMUDocs = searchDocuments(groupedByCategory[category].filter(
       (doc) => doc.type === 'operator-document-fmu-histories'
     ));
-    const FMUDocsByFMU = groupBy(FMUDocs, 'fmu.id');
+    const FMUDocsByFMU = groupBy(sortBy(FMUDocs, 'fmu.name'), 'fmu.name');
     const isCategoryOpen = categoriesOpen[category] || searchText?.length > 0;
 
     return {

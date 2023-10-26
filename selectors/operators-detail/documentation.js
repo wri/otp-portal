@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import uniqBy from 'lodash/uniqBy';
+import sortBy from 'lodash/sortBy';
 
 // Get the datasets and filters from state
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
@@ -120,7 +121,7 @@ const getHistoricFMUs = createSelector(
       .filter(d => d.fmu)
       .map(d => d.fmu), 'id');
 
-    return FMUS
+    return sortBy(FMUS, 'name');
   }
 );
 
