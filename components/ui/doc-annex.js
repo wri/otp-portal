@@ -9,19 +9,27 @@ import Spinner from 'components/ui/spinner';
 
 export default function DocAnnex({ annex, isRemoving, showRemoveButton, onRemove }) {
   const intl = useIntl();
+  const formatDate = (date) => intl.formatDate(date, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 
   return (
     <Tooltip
       placement="bottom"
+      align={{
+        offset: [0, 10],
+      }}
       overlay={
         <div>
           <Spinner isLoading={isRemoving} className="-tiny -transparent" />
-          <h4 className="c-title -default tooltip-title">{annex.name}</h4>
+          <h4 className="c-title -default tooltip-title"><strong>{annex.name}</strong></h4>
           <dl className="tooltip-content">
             <dt><strong>{intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-            <dd>{annex['start-date'] ? annex['start-date'] : '-'}</dd>
+            <dd>{annex['start-date'] ? formatDate(annex['start-date']) : '-'}</dd>
             <dt><strong>{intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-            <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
+            <dd>{annex['expire-date'] ? formatDate(annex['expire-date']) : '-'}</dd>
           </dl>
           <div className="tooltip-footer">
             {annex.attachment &&
@@ -41,7 +49,7 @@ export default function DocAnnex({ annex, isRemoving, showRemoveButton, onRemove
           </div>
         </div>
       }
-      overlayClassName="c-tooltip"
+      overlayClassName="c-tooltip fixed-width"
     >
       <button
         className="c-button"
