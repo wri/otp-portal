@@ -15,6 +15,7 @@ import DocumentationService from 'services/documentationService';
 import DocInfoModal from 'components/ui/doc-info-modal';
 import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
+import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
 
@@ -185,45 +186,7 @@ class DocCard extends React.Component {
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
-                        <Tooltip
-                          placement="bottom"
-                          overlay={
-                            <div>
-                              <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-                              <h4 className="c-title -default tooltip-title">{annex.name}</h4>
-                              <dl className="tooltip-content">
-                                <dt><strong>{this.props.intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
-                                <dd>{annex['start-date'] ? annex['start-date'] : '-' }</dd>
-                                <dt><strong>{this.props.intl.formatMessage({ id: 'annex.expiry_date' })}:</strong></dt>
-                                <dd>{annex['expire-date'] ? annex['expire-date'] : '-'}</dd>
-                              </dl>
-                              <div className="tooltip-footer">
-                                {annex.attachment &&
-                                  <a href={annex.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{this.props.intl.formatMessage({ id: 'file' })}</a>
-                                }
-                                {isActiveUser &&
-                                  <button
-                                    className="c-button -small -tooltip -tooltip-secondary"
-                                    type="button"
-                                    data-test-id="remove-annex-button"
-                                    onClick={() => this.triggerRemoveAnnex(annex.id)}
-                                  >
-                                    <span className="tooltip-hidden-button-text">{this.props.intl.formatMessage({ id: 'annex.remove' })}</span>
-                                    <Icon className="" name="icon-bin" />
-                                  </button>
-                                }
-                              </div>
-                            </div>
-                          }
-                          overlayClassName="c-tooltip"
-                        >
-                          <button
-                            className="c-button"
-                            type="button"
-                          >
-                            <Icon className="" name="icon-file-empty" />
-                          </button>
-                        </Tooltip>
+                        <DocAnnex annex={annex} isRemoving={deleteLoading} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} />
                       </li>
                     ))}
                     {isActiveUser &&
