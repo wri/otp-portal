@@ -7,13 +7,8 @@ import Link from 'next/link';
 
 export default function Tabs({ options, selected, href }) {
   useEffect(() => {
-    if (options.length && selected) {
-      const selectedOption = options.find((option) => option.value === selected);
-      if (selectedOption) {
-        document.querySelector(`.tabs-btn.-active`).scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
-      }
-    }
-  }, [options, selected]);
+    document.querySelector(`.tabs-btn.-active`).scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+  }, []);
 
   return (
     <header className="c-tabs">
