@@ -171,7 +171,9 @@ class OperatorsPage extends React.Component {
                   <Popup
                     popup={popup}
                     template="fmus"
-                    layers={activeInteractiveLayers}
+                    templateProps={{
+                      layers: activeInteractiveLayers
+                    }}
                     onClose={() => this.props.setOperatorsMapInteractions({})}
                   />
                   {/* LAYER MANAGER */}

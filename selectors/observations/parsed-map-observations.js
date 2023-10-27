@@ -3,8 +3,11 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import { LAYERS } from 'constants/layers';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
+import omitBy from 'lodash/omitBy';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map/layer-manager/utils';
+
+import { parseObservation } from 'utils/observations';
 
 const intl = (state, props) => props && props.intl;
 
@@ -64,6 +67,7 @@ const getObservationsLayers = createSelector(
                     metadata: {
                       position: 'top'
                     },
+                    id: 'observations-leaves',
                     type: 'circle',
                     paint: {
                       'circle-radius': 6,
@@ -91,7 +95,7 @@ const getObservationsLayers = createSelector(
                 layers: [
                   {
                     metadata: {
-                      position: 'top'
+                      // position: 'top'
                     },
                     type: 'line',
                     paint: {
@@ -127,23 +131,13 @@ const getObservationsLayers = createSelector(
               type: 'FeatureCollection',
               features: features.map(obs => ({
                 type: 'Feature',
-                properties: {
-                  id: obs.id,
-                  date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
-                  country: obs.country.iso,
-                  operator: !!obs.operator && obs.operator.name,
-                  category: obs?.subcategory?.category?.name,
-                  observation: obs.details,
-                  level: obs.severity && obs.severity.level,
+                properties: omitBy({
+                  ...parseObservation(obs),
+                  'observer-organizations': obs.observers.map(o => o.name).join(', '),
+                  'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name).join(', '),
                   fmu: !!obs.fmu && obs.fmu.name,
-                  report: obs['observation-report'] ? obs['observation-report'].attachment.url : null,
-                  'operator-type': obs.operator && obs.operator.type,
-                  subcategory: obs?.subcategory?.name,
-                  evidence: obs.evidence,
-                  'litigation-status': obs['litigation-status'],
-                  'observer-types': obs.observers.map(observer => observer['observer-type']),
-                  'observer-organizations': obs.observers.map(observer => observer.organization)
-                },
+                  country: obs.country.name
+                }, val => val === null || val === undefined || val === "" || (Array.isArray(val) && val.length === 0)),
                 geometry: {
                   type: 'Point',
                   coordinates: getLocation(obs)

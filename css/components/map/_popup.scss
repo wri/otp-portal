@@ -45,6 +45,10 @@
     max-width: 300px;
   }
 
+  @include breakpoint(large) {
+    max-width: 400px;
+  }
+
   .layer-popup--title {
     position: relative;
     margin: 0 0 $space-1 * 2;
@@ -67,7 +71,8 @@
       padding: 0 0 $space-1 * 1.5;
       font-weight: $font-weight-bold;
       vertical-align: baseline;
-      // text-align: right;
+      width: 1%;
+      white-space: nowrap;
     }
 
     .layer-popup--list-dd {
@@ -80,5 +85,37 @@
   .layer-popup--list {
     margin: 0;
     padding-left: $space-1 * 2;
+  }
+
+  .severity {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: -5px;
+
+    &__icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+
+      &.-severity-0 { background: $color-gray-3; }
+      &.-severity-1 { background: $color-primary; }
+      &.-severity-2 { background: $color-gray-1; }
+      &.-severity-3 { background: $color-secondary; }
+    }
+
+    &__name {
+      text-transform: uppercase;
+      font-family: $font-family-proximanova;
+      font-weight: $font-weight-bold;
+      font-size: $font-size-extrasmall;
+      margin-top: 5px;
+      letter-spacing: 1px;
+    }
+  }
+
+  .evidences {
+    display: flex;
+    gap: 2px;
   }
 }

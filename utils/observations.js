@@ -116,41 +116,43 @@ function getLocation(obs = {}) {
 }
 
 function parseObservations(data) {
-  return data.map((obs) => {
-    const evidence =
-      obs['evidence-type'] !== 'Evidence presented in the report'
-        ? obs['observation-documents']
-        : obs['evidence-on-report'];
-
-    return {
-      category: obs?.subcategory?.category?.name || '',
-      country: obs.country?.iso || '',
-      rawdate: new Date(obs['observation-report'] && obs['observation-report']['publication-date']),
-      date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
-      details: obs.details,
-      evidence,
-      fmu: obs.fmu,
-      id: obs.id,
-      level: obs.severity && obs.severity.level,
-      operator: !!obs.operator && obs.operator.name,
-      observation: obs.details,
-      location: getLocation(obs),
-      'location-accuracy': obs['location-accuracy'],
-      'operator-type': obs.operator && obs.operator['operator-type'],
-      report: obs['observation-report']
-        ? obs['observation-report'].attachment.url
-        : null,
-      subcategory: obs?.subcategory?.name || '',
-      status: obs['validation-status-id'],
-      'litigation-status': obs['litigation-status'],
-      'observer-types': (obs.observers || []).map(
-        (observer) => observer['observer-type']
-      ),
-      'observer-organizations': obs.observers,
-      'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name),
-      hidden: obs.hidden
-    };
-  });
+  return data.map(parseObservation);
 }
 
-export { HELPERS_OBS, parseObservations };
+function parseObservation(obs) {
+  const evidence =
+    obs['evidence-type'] !== 'Evidence presented in the report'
+      ? obs['observation-documents']
+      : obs['evidence-on-report'];
+
+  return {
+    category: obs?.subcategory?.category?.name || '',
+    country: obs.country?.iso || '',
+    rawdate: new Date(obs['observation-report'] && obs['observation-report']['publication-date']),
+    date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
+    details: obs.details,
+    evidence,
+    fmu: obs.fmu,
+    id: obs.id,
+    level: obs.severity && obs.severity.level,
+    operator: !!obs.operator && obs.operator.name,
+    observation: obs.details,
+    location: getLocation(obs),
+    'location-accuracy': obs['location-accuracy'],
+    'operator-type': obs.operator && obs.operator['operator-type'],
+    report: obs['observation-report']
+      ? obs['observation-report'].attachment.url
+      : null,
+    subcategory: obs?.subcategory?.name || '',
+    status: obs['validation-status-id'],
+    'litigation-status': obs['litigation-status'],
+    'observer-types': (obs.observers || []).map(
+      (observer) => observer['observer-type']
+    ),
+    'observer-organizations': obs.observers,
+    'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name),
+    hidden: obs.hidden
+  };
+}
+
+export { HELPERS_OBS, parseObservations, parseObservation };

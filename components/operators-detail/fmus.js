@@ -300,7 +300,9 @@ class OperatorsDetailFMUs extends React.Component {
                 <Popup
                   popup={hoverPopup}
                   template="fmus-detail"
-                  layers={hoverActiveInteractiveLayers}
+                  templateProps={{
+                    layers: hoverActiveInteractiveLayers
+                  }}
                 />
               </Fragment>
             )}
