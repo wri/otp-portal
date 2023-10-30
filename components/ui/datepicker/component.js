@@ -61,11 +61,13 @@ class Datepicker extends PureComponent {
           minDate={new Date(minDate)}
           maxDate={new Date(maxDate)}
           dateFormat={dateFormat || 'dd MMM'}
+          showMonthDropdown
+          showYearDropdown
           // Custom components
           customInput={<Input />}
           // Popper
           popperContainer={this.renderCalendarContainer}
-          popperPlacement="top-start"
+          popperPlacement="bottom-start"
           popperClassName="c-datepicker-popper"
           popperModifiers={{
             flip: {
