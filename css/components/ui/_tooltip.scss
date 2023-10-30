@@ -20,6 +20,10 @@
     min-width: unset;
   }
 
+  &.fixed-width {
+    width: 320px;
+  }
+
   dd {
     margin-left: 0;
   }
