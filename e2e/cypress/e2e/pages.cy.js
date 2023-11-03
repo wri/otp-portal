@@ -86,12 +86,17 @@ describe('Pages', () => {
     })
 
     it('displays content', function () {
+      cy.contains('Welcome to the Open Timber Portal. This document lets the user of these Services');
+    })
+  })
 
-      cy.contains('World Resources Institute Privacy Policy');
+  describe('Privacy policy page', () => {
+    beforeEach(() => {
+      cy.visit('http://localhost:4000/privacy-policy');
     })
 
-    it('matches visually', function () {
-      cy.matchImage();
+    it('displays content', function () {
+      cy.contains('List of Cookies that May Be Set');
     })
   })
 

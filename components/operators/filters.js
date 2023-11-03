@@ -116,6 +116,7 @@ class OperatorsFilters extends React.Component {
                     type="search"
                     placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
                     className="search-input"
+                    data-test-id={`search-input-${f.key}`}
                     value={filters[f.key]}
                     onChange={e => this.setSearch(e.currentTarget.value, f.key)}
                   />

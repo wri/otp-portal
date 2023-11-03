@@ -13,8 +13,13 @@ describe('Transparency ranking page', function () {
 
   describe('filters', function () {
     it('can filter by producer name', function () {
-      cy.get('.search-input').clear().type('lorem')
+      cy.get('[data-test-id=search-input-operator]').clear().type('lorem')
       cy.get('.c-ranking table tbody').find('tr').should('have.length', 1);
-    })
+    });
+
+    it('can filter by fmu name', function () {
+      cy.get('[data-test-id=search-input-fmu]').clear().type('lopola')
+      cy.get('.c-table-expanded-row table tbody').find('tr').should('have.length', 1);
+    });
   })
 });

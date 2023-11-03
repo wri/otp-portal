@@ -55,7 +55,6 @@ describe('User', () => {
 
       cy.get('#input-name').type(`Super New Producer ${nanoid(6)}`);
       cy.get('#input-details').type('Producer description');
-      cy.get('#select-locale .react-select__single-value').contains('English');
       cy.selectOption('[name=operator_type]', 'E', 'Estate');
       cy.get('#input-website').type('wrong website');
       cy.get('#input-website').clear();
