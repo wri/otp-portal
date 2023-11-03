@@ -215,7 +215,7 @@ class DocModal extends React.Component {
                         name: 'file',
                         label: intl.formatMessage({ id: 'file' }),
                         required: !url,
-                        default: { name: url }
+                        default: !url ? null : { name: url }
                       }}
                     >
                       {File}

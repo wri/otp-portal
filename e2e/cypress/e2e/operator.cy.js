@@ -78,7 +78,7 @@ describe('User', function () {
           .should('contains.text', '50% Provided (valid)')
       })
 
-      it('can delete existing document', function () {
+      it('can delete existing document and reupload it', function () {
         cy.docExpandCategory('Legal registration');
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
@@ -98,6 +98,27 @@ describe('User', function () {
           .parents('.c-doc-by-category')
           .find('.doc-by-category-chart')
           .should('contains.text', '75% Provided (valid)')
+
+        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+          .siblings('.c-doc-card-upload')
+          .contains('button', 'Add file')
+          .click();
+
+        // testing validation
+        cy.get('button').contains('Submit').click();
+        cy.get('.c-file ~ .error').should('have.text', 'The field is required');
+        cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
+
+        cy.get('input[type=file]').attachFile('test_document.docx');
+
+        // cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.get('button').contains('Submit').click();
+        cy.wait('@documentsReload');
+        cy.wait(1000);
+
+        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+          .find('.doc-card-status')
+          .should('contains.text', 'Pending approval');
       })
 
       it('can mark document as non applicable', function () {
@@ -107,6 +128,11 @@ describe('User', function () {
           .siblings('.c-doc-card-upload')
           .contains('button', 'Non applicable')
           .click();
+
+        // testing validation
+        cy.get('button').contains('Submit').click();
+        cy.get('textarea[name=reason] ~ .error').should('have.text', 'The field is required');
+        cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
 
         cy.get('#input-startDate').type('2022-03-30');
         cy.get('#input-expireDate').type('2030-03-30');
@@ -134,6 +160,14 @@ describe('User', function () {
             .click();
 
           cy.contains('Add a document for the annex of Compte-rendu du conseil de concertation');
+
+          // testing validation
+          cy.get('button').contains('Submit').click();
+          cy.get('input[name=name] ~ .error').should('have.text', 'The field is required');
+          cy.get('input[name=startDate] ~ .error').should('have.text', 'The field is required');
+          cy.get('.c-file ~ .error').should('have.text', 'The field is required');
+          cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
+
           cy.get('#input-name').type('Here is the name of annex');
           cy.get('#input-startDate').type('2022-03-30');
           cy.get('#input-expireDate').type('2030-03-30');
