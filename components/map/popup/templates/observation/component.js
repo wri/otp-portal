@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -19,33 +20,38 @@ function parseValue(value) {
 export default function ObservationPopup({ data }) {
   const intl = useIntl();
   const evidence = parseValue(data.evidence);
+
   const fields = [
     {
-      label: 'Category',
+      label: intl.formatMessage({ id: 'category' }),
       value: data.category
     },
-    data.subcategory && {
-      label: 'Subcategory',
-      value: data.subcategory
-    },
-    data.operator && {
-      label: 'Producer',
-      value: data.operator,
-    },
-    data['relevant-operators'] && {
-      label: 'Relevant producers',
-      value: data['relevant-operators'],
+    {
+      label: intl.formatMessage({ id: 'detail' }),
+      value: data.observation
     },
     {
-      label: 'Country',
-      value: data.country
+      label: intl.formatMessage({ id: 'year' }),
+      value: data.date
+    },
+    data.operator && {
+      label: intl.formatMessage({ id: 'operator' }),
+      value: (
+        data['operator-profile-id'] ? (
+          <Link href={`/operators/${data['operator-profile-id']}`} passHref>
+            <a target="_blank" rel="noopener noreferrer">
+              {data.operator}
+            </a>
+          </Link>
+        ) : data.operator
+      )
     },
     data.fmu && {
-      label: 'FMU',
+      label: intl.formatMessage({ id: 'fmu' }),
       value: data.fmu
     },
     {
-      label: 'Severity',
+      label: intl.formatMessage({ id: 'severity' }),
       value: (
         <div className="severity">
           <div className={`severity__icon -severity-${data.level || 0}`} />
@@ -56,15 +62,15 @@ export default function ObservationPopup({ data }) {
       )
     },
     data['litigation-status'] && {
-      label: 'Litigation Status',
+      label: intl.formatMessage({ id: 'litigation-status' }),
       value: data['litigation-status']
     },
     {
-      label: 'Monitors',
+      label: intl.formatMessage({ id: 'observer-organizations' }),
       value: data['observer-organizations']
     },
     evidence && {
-      label: 'Evidence',
+      label: intl.formatMessage({ id: 'evidence' }),
       value: (
         <div className="evidences">
           {Array.isArray(evidence) &&
@@ -86,7 +92,7 @@ export default function ObservationPopup({ data }) {
       )
     },
     data.report && {
-      label: 'Report',
+      label: intl.formatMessage({ id: 'report' }),
       value: (
         <a
           href={data.report}
@@ -103,18 +109,14 @@ export default function ObservationPopup({ data }) {
   return (
     <div className="c-layer-popup">
       <h2 className="layer-popup--title">
-        Observation Details
+        {data.subcategory}
       </h2>
-
-      <p>
-        {data.observation}
-      </p>
 
       <table className="layer-popup--table">
         <tbody>
           {fields.map(o => (
             <tr
-              key={o.column}
+              key={o.label}
               className="layer-popup--table-item"
             >
               <td className="layer-popup--list-dt">{o.label}:</td>

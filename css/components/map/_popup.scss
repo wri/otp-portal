@@ -32,6 +32,8 @@
 
 
 .mapboxgl-popup {
+  z-index: 6;
+
   .mapboxgl-popup-content {
     padding: 0;
   }
@@ -40,6 +42,8 @@
 .c-layer-popup {
   font-size: $font-size-small;
   max-width: 200px;
+  max-height: 70vh;
+  overflow: auto;
 
   @include breakpoint(medium) {
     max-width: 300px;
@@ -72,7 +76,6 @@
       font-weight: $font-weight-bold;
       vertical-align: baseline;
       width: 1%;
-      white-space: nowrap;
     }
 
     .layer-popup--list-dd {

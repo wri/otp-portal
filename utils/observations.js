@@ -136,6 +136,9 @@ function parseObservation(obs) {
     id: obs.id,
     level: obs.severity && obs.severity.level,
     operator: !!obs.operator && obs.operator.name,
+    'operator-profile-id': (obs.operator && obs.operator['fa-id']?.length && obs.operator['is-active'])
+      ? obs.operator.id
+      : null,
     observation: obs.details,
     location: getLocation(obs),
     'location-accuracy': obs['location-accuracy'],
