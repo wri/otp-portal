@@ -134,9 +134,7 @@ const getObservationsLayers = createSelector(
                 properties: omitBy({
                   ...parseObservation(obs),
                   'observer-organizations': obs.observers.map(o => o.name).join(', '),
-                  'relevant-operators': (obs['relevant-operators'] || []).map((o) => o.name).join(', '),
-                  fmu: !!obs.fmu && obs.fmu.name,
-                  country: obs.country.name
+                  fmu: !!obs.fmu && obs.fmu.name
                 }, val => val === null || val === undefined || val === "" || (Array.isArray(val) && val.length === 0)),
                 geometry: {
                   type: 'Point',
