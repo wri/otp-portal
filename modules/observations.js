@@ -101,7 +101,6 @@ export default function reducer(state = initialState, action) {
     case SET_OBSERVATIONS_MAP_CLUSTER: {
       return Object.assign({}, state, { cluster: action.payload });
     }
-
     default:
       return state;
   }

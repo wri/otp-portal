@@ -10,16 +10,19 @@ import Icon from 'components/ui/icon';
 // import LayerTemplate from './templates/layer';
 import FmuTemplate from './templates/fmu';
 import FmuTemplateAAC from './templates/fmu-aac';
+import ObservationTemplate from './templates/observation';
 
 const TEMPLATES = {
   fmus: FmuTemplate,
-  'fmus-detail': FmuTemplateAAC
+  'fmus-detail': FmuTemplateAAC,
+  observation: ObservationTemplate
 };
 
 class PopupComponent extends PureComponent {
   static propTypes = {
     popup: PropTypes.shape({}).isRequired,
     template: PropTypes.string.isRequired,
+    templateProps: PropTypes.shape({}),
     onClose: PropTypes.func
   };
 
@@ -52,7 +55,7 @@ class PopupComponent extends PureComponent {
   }
 
   render() {
-    const { popup, template, onClose } = this.props;
+    const { popup, template, templateProps, onClose } = this.props;
 
     if (isEmpty(popup)) return null;
 
@@ -72,7 +75,7 @@ class PopupComponent extends PureComponent {
 
           {!!TEMPLATES[template] &&
             React.createElement(TEMPLATES[template], {
-              ...this.props
+              ...templateProps
             })
           }
         </div>
