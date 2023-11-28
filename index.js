@@ -98,7 +98,16 @@ app
     server.get('/:locale?/profile', onlyAuthenticated);
 
     // OPERATORS
-    server.get('/:locale?/operators/edit', onlyAuthenticated);
+    server.get('/:locale?/operators/edit/:id?', (req, res) => {
+      if (!req.session.user) return homeRedirect(req, res);
+
+      return app.render(
+        req,
+        res,
+        '/operators/edit',
+        Object.assign(req.params, req.query, localeParams(req))
+      );
+    });
     server.get('/:locale?/operators/detail', notFound);
     server.get('/:locale?/operators/new', (req, res) =>
       app.render(

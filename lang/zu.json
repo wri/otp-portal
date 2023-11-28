@@ -398,6 +398,7 @@
   "to": "to",
   "My profile": "My profile",
   "Producer profile": "Producer profile",
+  "company.profile": "{company} profile",
   "Current Password": "Current Password",
   "We need your current password to confirm your changes": "We need your current password to confirm your changes",
   "User profile": "User profile",
