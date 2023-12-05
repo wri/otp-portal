@@ -48,7 +48,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
         </li>
       )}
       {user.role === 'holding' && userOperators.map(operator => (
-        <li className={listItemClassName}>
+        <li key={`dropodown-operator-profile-${operator.id}`} className={listItemClassName}>
           <Link
             href={`/operators/edit/${operator.id}`}
             prefetch={false}

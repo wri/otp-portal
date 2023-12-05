@@ -16,18 +16,21 @@
 
   text-align: center;
 
+  .wrapper {
+    max-width: 1240px;
+    padding: 0 20px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .container {
+    position: relative;
+  }
+
   &.-tabs {
     .container {
       margin-bottom: 45px;
       text-align: left;
-      position: relative;
-    }
-
-    .wrapper {
-      max-width: 1240px;
-      padding: 0 20px;
-      margin: 0 auto;
-      width: 100%;
     }
   }
 
@@ -35,7 +38,6 @@
     height: auto;
 
     .container {
-      position: relative;
       margin-bottom: 75px;
     }
 

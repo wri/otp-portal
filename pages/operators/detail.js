@@ -211,7 +211,7 @@ class OperatorsDetail extends React.Component {
             (user.role === 'operator' || user.role === 'holding') &&
             user.operator_ids &&
             user.operator_ids.includes(+id) && (
-              <Link href="/operators/edit">
+              <Link href={`/operators/edit/${id}`}>
                 <a className="c-button -secondary -small">
                   {intl.formatMessage({ id: 'update.profile' })}
                 </a>

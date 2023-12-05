@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 
 // Next
 import Router from 'next/router';
+import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
@@ -62,7 +63,7 @@ class OperatorsEdit extends React.Component {
   }
 
   render() {
-    const { url, userOperator, operatorId } = this.props;
+    const { url, userOperator, operatorId, intl } = this.props;
 
     if (!operatorId) {
       return null;
@@ -77,6 +78,13 @@ class OperatorsEdit extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
           background="/static/images/static-header/bg-help.jpg"
+          Component={
+            <Link href={`/operators/${userOperator.data.slug}/documentation`}>
+              <a className="c-button -secondary -small">
+                {intl.formatMessage({ id: 'documentation' })}
+              </a>
+            </Link>
+          }
         />
 
         {userOperator && userOperator.loading &&
