@@ -66,7 +66,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
             prefetch={false}
           >
             <a>
-              {operator.name}
+              {operator.name} {intl.formatMessage({ id: 'documentation' })}
             </a>
           </Link>
         </li>
