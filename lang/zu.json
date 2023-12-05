@@ -451,5 +451,7 @@
   "Cookie Preferences": "Cookie Preferences",
   "Privacy Policy": "Privacy Policy",
   "Search FMU": "Search FMU",
-  "obs_per_visit_explanation": "The observations/visit calculates the average number of observations made by independent forest monitors per visit."
+  "obs_per_visit_explanation": "The observations/visit calculates the average number of observations made by independent forest monitors per visit.",
+  "notifications.expiring_soon_note": "{company} has documents that are expiring soon that will need to be updated:",
+  "notifications.expired_note": "{company} has documents that have expired that need to be updated:"
 }
