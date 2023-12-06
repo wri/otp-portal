@@ -48,6 +48,12 @@ const COUNTRIES_FRENCH_FIX = {
   'COG': 'au', // Congo
   'GAB': 'au', // Gabon
 };
+const TABS = [
+  'overview',
+  'documentation',
+  'observations',
+  'fmus'
+];
 
 const isClient = typeof window !== 'undefined';
 
@@ -69,6 +75,9 @@ class OperatorsDetail extends React.Component {
 
     if (!url.query.tab) {
       return { redirectTo: `${url.asPath}/overview` };
+    }
+    if (!TABS.includes(url.query.tab)) {
+      return { redirectTo: `${url.asPath.replace(`/${url.query.tab}`, '/overview')}` };
     }
 
     if (operatorsDetail.data.slug !== url.query.id) {

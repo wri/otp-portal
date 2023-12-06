@@ -7,7 +7,10 @@ import Link from 'next/link';
 
 export default function Tabs({ options, selected, href }) {
   useEffect(() => {
-    document.querySelector(`.tabs-btn.-active`).scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+    const element = document.querySelector(`.tabs-btn.-active`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+    }
   }, []);
 
   return (
