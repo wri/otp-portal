@@ -13,7 +13,7 @@ class FileImage extends FormElement {
     super(props);
 
     const defaultValue = props.properties.default;
-    const previewURL = `${process.env.OTP_API}/${defaultValue || ''}`;
+    const previewURL = defaultValue;
     this.state = {
       value: (defaultValue) ?
         this.getBase64FromURL(previewURL) :
