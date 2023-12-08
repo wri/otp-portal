@@ -789,30 +789,13 @@ export const LAYERS = [
       type: 'vector',
       source: {
         type: 'vector',
-        provider: {
-          type: 'carto',
-          account: 'wri-01',
-          layers: [
-            {
-              options: {
-                cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
-                cartocss_version: '2.3.0',
-                sql: 'SELECT * FROM wdpa_protected_areas'
-              },
-              type: 'mapnik'
-            }
-          ]
-        }
+        tiles: [`${process.env.OTP_API}/protected_areas/tiles/{z}/{x}/{y}`]
       },
       render: {
         layers: [
           {
             type: 'fill',
             'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['in', ['get', 'iso3'], ['literal', '{country_iso_codes}']]
-            ],
             paint: {
               'fill-color': '#CCCCCC',
               'fill-opacity': 1
