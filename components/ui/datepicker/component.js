@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
-import ReactDatePicker, { CalendarContainer, registerLocale } from 'react-datepicker';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import classnames from 'classnames';
 
 import frLocale from 'date-fns/locale/fr';
@@ -21,20 +20,6 @@ registerLocale('vi', viLocale);
 registerLocale('zh', zhCNLocale);
 
 class Datepicker extends PureComponent {
-  // eslint-disable-next-line class-methods-use-this
-  renderCalendarContainer({ children }) {
-    let container;
-    if (typeof window !== 'undefined') {
-      container = document.querySelector('#__next');
-    }
-    return container
-      ? createPortal(
-        <CalendarContainer>{children}</CalendarContainer>,
-          container
-        )
-      : null;
-  }
-
   render() {
     const {
       className,
@@ -66,7 +51,6 @@ class Datepicker extends PureComponent {
           // Custom components
           customInput={<Input />}
           // Popper
-          popperContainer={this.renderCalendarContainer}
           popperPlacement="bottom-start"
           popperClassName="c-datepicker-popper"
           popperModifiers={{
@@ -83,6 +67,7 @@ class Datepicker extends PureComponent {
               boundariesElement: 'viewport',
             },
           }}
+          portalId="__next"
           // Func
           onSelect={onDateChange}
           // renderCustomHeader={this.renderCalendarHeader}
