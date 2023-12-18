@@ -35,3 +35,7 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
     .parents('.react-select-container').first()
     .find('.react-select__menu').contains(option).click();
 });
+
+Cypress.Commands.add('resetDB', () => {
+  cy.exec('./restore-db.sh');
+});

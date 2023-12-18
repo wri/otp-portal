@@ -18,7 +18,7 @@ describe('Transparency ranking page', function () {
     });
 
     it('can filter by fmu name', function () {
-      cy.get('[data-test-id=search-input-fmu]').clear().type('lopola')
+      cy.get('[data-test-id=search-input-fmu]').clear().type('ngombe')
       cy.get('.c-table-expanded-row table tbody').find('tr').should('have.length', 1);
     });
   })

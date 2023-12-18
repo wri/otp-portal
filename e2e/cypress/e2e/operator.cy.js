@@ -4,11 +4,15 @@ describe('User', function () {
   beforeEach(function () {
     cy.interceptMapRequests();
     cy.visit('http://localhost:4000/');
-  })
+  });
+
+  after(() => {
+    cy.resetDB();
+  });
 
   context('when logged in as Operator', function () {
     beforeEach(function () {
-      cy.login('operator@example.com', 'secret');
+      cy.login('operator@example.com', 'password');
     });
 
     describe('updating operator profile', function () {
