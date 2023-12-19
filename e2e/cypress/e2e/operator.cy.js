@@ -115,7 +115,7 @@ describe('User', function () {
 
         cy.get('input[type=file]').attachFile('test_document.docx');
 
-        // cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
         cy.wait('@documentsReload');
         cy.wait(1000);
@@ -126,9 +126,9 @@ describe('User', function () {
       })
 
       it('can mark document as non applicable', function () {
-        cy.docExpandCategory('Legal registration');
+        cy.docExpandCategory('Timber harvesting');
 
-        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
           .siblings('.c-doc-card-upload')
           .contains('button', 'Non applicable')
           .click();
@@ -147,7 +147,7 @@ describe('User', function () {
         cy.wait('@documentsReload');
         cy.wait(1000);
 
-        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
           .find('.doc-card-status')
           .should('contains.text', 'Pending approval')
       })
