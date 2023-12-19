@@ -7,6 +7,7 @@ module.exports = defineConfig({
   viewportWidth: 1280,
   viewportHeight: 720,
   e2e: {
+    baseUrl: 'http://localhost:4000',
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {

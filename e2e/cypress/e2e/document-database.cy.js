@@ -1,7 +1,7 @@
 describe('Document database page', function () {
   beforeEach(function () {
     cy.interceptMapRequests(); // keep if we won't test the map
-    cy.visit('http://localhost:4000/database');
+    cy.visit('/database');
   })
 
   it('displays the page', function () {

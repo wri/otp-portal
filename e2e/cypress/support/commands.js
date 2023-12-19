@@ -14,7 +14,7 @@ Cypress.Commands.add('login', (username, password) => {
   cy.session(
     [username, password],
     () => {
-      cy.visit('http://localhost:4000/');
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('#input-email').type(username);
       cy.get('#input-password').type(password);
@@ -25,7 +25,7 @@ Cypress.Commands.add('login', (username, password) => {
       cacheAcrossSpecs: true
     }
   );
-  cy.visit('http://localhost:4000/');
+  cy.visit('/');
 });
 
 Cypress.Commands.add('selectOption', (selector, text, option) => {

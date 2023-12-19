@@ -1,5 +1,3 @@
-const { nanoid } = require('nanoid')
-
 describe('Operator', function () {
   beforeEach(function () {
     cy.interceptMapRequests();

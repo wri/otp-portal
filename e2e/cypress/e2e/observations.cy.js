@@ -1,7 +1,7 @@
 describe('Observations page', function () {
   beforeEach(function () {
     cy.interceptMapRequests(); // keep if we won't test the map
-    cy.visit('http://localhost:4000/observations');
+    cy.visit('/observations');
   })
 
   it('displays the page', function () {

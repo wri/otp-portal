@@ -1,6 +1,6 @@
 describe('Password Reset', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
   })
 
   describe('Forgot password form', () => {
@@ -16,7 +16,7 @@ describe('Password Reset', () => {
   describe('Reset password form', () => {
     describe('errors', () => {
       it('shows error with invalid token', function () {
-        cy.visit('http://localhost:4000/reset-password?reset_password_token=invalid');
+        cy.visit('/reset-password?reset_password_token=invalid');
         cy.get('#input-password').type('newpassword');
         cy.get('#input-passwordConfirmation').type('newpassword');
         cy.get('button').contains('Change Password').click();

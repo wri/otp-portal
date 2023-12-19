@@ -1,5 +1,3 @@
-const { nanoid } = require('nanoid')
-
 describe('User', () => {
   beforeEach(() => {
     cy.interceptMapRequests();
@@ -11,7 +9,7 @@ describe('User', () => {
 
   context('Login form', () => {
     it('can log in', function () {
-      cy.visit('http://localhost:4000/');
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
@@ -36,14 +34,14 @@ describe('User', () => {
     });
 
     it('can create account', function () {
-      cy.visit('http://localhost:4000/');
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register now').click();
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
       cy.selectOption('[name=operator_id]', 'Si', 'SIFCO');
       cy.get('#select-locale .react-select__single-value').contains('English');
       cy.get('#input-name').type('Test operator');
-      cy.get('#input-email').type(`testoperator+${nanoid(6)}@example.com`);
+      cy.get('#input-email').type('testoperator@example.com');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-password_confirmation').type('supersecret');
       cy.get('button').contains('Sign up').click();
@@ -55,11 +53,11 @@ describe('User', () => {
     });
 
     it('can create producer', function () {
-      cy.visit('http://localhost:4000/');
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register new producer').click();
 
-      cy.get('#input-name').type(`Super New Producer ${nanoid(6)}`);
+      cy.get('#input-name').type('Super New Producer');
       cy.get('#input-details').type('Producer description');
       cy.selectOption('[name=operator_type]', 'E', 'Estate');
       cy.get('#input-website').type('wrong website');

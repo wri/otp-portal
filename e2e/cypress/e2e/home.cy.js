@@ -1,7 +1,7 @@
 describe('Home Page', () => {
   beforeEach(() => {
     cy.interceptMapRequests();
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
   })
 
   it('displays the page', function () {
