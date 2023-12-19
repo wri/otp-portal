@@ -3,7 +3,6 @@ const { nanoid } = require('nanoid')
 describe('User', () => {
   beforeEach(() => {
     cy.interceptMapRequests();
-    cy.visit('http://localhost:4000/');
   })
 
   after(() => {
@@ -12,6 +11,7 @@ describe('User', () => {
 
   context('Login form', () => {
     it('can log in', function () {
+      cy.visit('http://localhost:4000/');
       cy.get('a').contains('Sign in').click();
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
@@ -36,6 +36,7 @@ describe('User', () => {
     });
 
     it('can create account', function () {
+      cy.visit('http://localhost:4000/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register now').click();
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
@@ -54,6 +55,7 @@ describe('User', () => {
     });
 
     it('can create producer', function () {
+      cy.visit('http://localhost:4000/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register new producer').click();
 

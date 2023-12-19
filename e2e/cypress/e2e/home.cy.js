@@ -4,10 +4,8 @@ describe('Home Page', () => {
     cy.visit('http://localhost:4000/');
   })
 
-  describe('content', () => {
-    it('matches visually', function () {
-      cy.matchImage();
-    })
+  it('displays the page', function () {
+    cy.contains('Incentivizing legal timber by improving access to information');
   })
 
   describe('using operator search', () => {

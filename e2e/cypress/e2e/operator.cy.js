@@ -1,9 +1,8 @@
 const { nanoid } = require('nanoid')
 
-describe('User', function () {
+describe('Operator', function () {
   beforeEach(function () {
     cy.interceptMapRequests();
-    cy.visit('http://localhost:4000/');
   });
 
   after(() => {
