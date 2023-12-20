@@ -52,11 +52,10 @@ class StaticHeader extends React.Component {
               {logo && (
                 <div className="logo-container">
                   <img
-                    src={`${
-                      process.env.NODE_ENV !== 'production'
+                    src={`${process.env.NODE_ENV !== 'production'
                         ? process.env.OTP_API
                         : ''
-                    }${logo}`}
+                      }${logo}`}
                     alt={`${title} logo`}
                     className="logo"
                   />
@@ -72,9 +71,15 @@ class StaticHeader extends React.Component {
             </div>
           </div>
         ) : (
-          <div>
-            <h2>{title}</h2>
-            <h3>{subtitle}</h3>
+          <div className="wrapper">
+            <div className="container">
+              <h2>{title}</h2>
+              <h3>{subtitle}</h3>
+
+              {!!Component && (
+                <div className="static-header-component">{Component}</div>
+              )}
+            </div>
           </div>
         )}
       </div>

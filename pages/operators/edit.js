@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 
 // Next
 import Router from 'next/router';
+import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
@@ -23,10 +24,14 @@ class OperatorsEdit extends React.Component {
   static async getInitialProps({ store, url }) {
     const { user } = store.getState();
 
-    if (user.operator_ids) {
-      await store.dispatch(getUserOperator(user.operator_ids[0]));
+    if (url.query.id && !user.operator_ids.includes(Number(url.query.id))) {
+      return { errorCode: 404 };
     }
-    return { url };
+    const operatorId = Number(url.query.id) || user.operator_ids[0];
+    if (operatorId) {
+      await store.dispatch(getUserOperator(operatorId));
+    }
+    return { url, operatorId };
   }
 
   /**
@@ -54,13 +59,13 @@ class OperatorsEdit extends React.Component {
 
   handleOperatorEditSubmit = () => {
     this.props.getOperators();
-    this.props.getUserOperator(this.props.user.operator_ids[0]);
+    this.props.getUserOperator(this.props.operatorId);
   }
 
   render() {
-    const { url, user, userOperator } = this.props;
+    const { url, userOperator, operatorId, intl } = this.props;
 
-    if (!user.operator_ids) {
+    if (!operatorId) {
       return null;
     }
 
@@ -73,6 +78,13 @@ class OperatorsEdit extends React.Component {
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
           background="/static/images/static-header/bg-help.jpg"
+          Component={
+            <Link href={`/operators/${userOperator.data.slug}/documentation`}>
+              <a className="c-button -secondary -small">
+                {intl.formatMessage({ id: 'documentation' })}
+              </a>
+            </Link>
+          }
         />
 
         {userOperator && userOperator.loading &&
@@ -93,6 +105,7 @@ class OperatorsEdit extends React.Component {
 OperatorsEdit.propTypes = {
   intl: PropTypes.object.isRequired,
   url: PropTypes.object,
+  operatorId: PropTypes.number.isRequired,
   user: PropTypes.object,
   userOperator: PropTypes.object,
   getOperators: PropTypes.func,

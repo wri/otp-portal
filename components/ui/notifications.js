@@ -11,6 +11,7 @@ import { injectIntl } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { getNotifications, dismissAll } from 'modules/notifications';
+import { groupBy } from 'lodash';
 
 function isBeforeToday(date) {
   const today = new Date();
@@ -92,22 +93,39 @@ class Notifications extends React.Component {
       );
     }
 
+    const groupedByCompany = groupBy(notifications.data, 'operator-id');
+
+    return Object.keys(groupedByCompany).map((operatorId) => {
+      const companyNotifications = groupedByCompany[operatorId];
+
+      return (
+        <div key={operatorId}>
+          {this.renderCompanyNotifications(companyNotifications)}
+        </div>
+      )
+    });
+  }
+
+  renderCompanyNotifications(notifications) {
+    const { intl } = this.props;
+
     // if there are two notifications for the same document just show one, as expiration date will be the same
     const expiringSoon = uniqBy(
-      notifications.data.filter(x => !isBeforeToday(new Date(x['expiration-date']))),
+      notifications.filter(x => !isBeforeToday(new Date(x['expiration-date']))),
       'operator-document-id'
     );
     const expired = uniqBy(
-      notifications.data.filter(x => isBeforeToday(new Date(x['expiration-date']))),
+      notifications.filter(x => isBeforeToday(new Date(x['expiration-date']))),
       'operator-document-id'
     );
+    const company = notifications[0]['operator-name'];
 
     return (
       <div>
         {expired.length > 0 && (
           <>
             <h3>
-              {intl.formatMessage({ id: 'Your company has documents that have expired that need to be updated:' })}
+              {intl.formatMessage({ id: 'notifications.expired_note', defaultMessage: '{company} has documents that have expired that need to be updated:' }, { company })}
             </h3>
 
             {sortBy(expired, ['fmu-name', 'expiration-date']).map((notification) => (
@@ -121,7 +139,7 @@ class Notifications extends React.Component {
         {expiringSoon.length > 0 && (
           <>
             <h3>
-              {intl.formatMessage({ id: 'Your company has documents that are expiring soon that will need to be updated:' })}
+              {intl.formatMessage({ id: 'notifications.expiring_soon_note', defaultMessage: '{company} has documents that are expiring soon that will need to be updated:' }, { company })}
             </h3>
 
             {sortBy(expiringSoon, ['fmu-name', 'expiration-date']).map((notification) => (
@@ -212,12 +230,12 @@ Notifications.defaultProps = {
 
 const ConnectedNotifications = injectIntl(
   connect(
-  state => ({
-    user: state.user,
-    notifications: state.notifications,
-    language: state.language
-  }),
-  { getNotifications, dismissAll }
+    state => ({
+      user: state.user,
+      notifications: state.notifications,
+      language: state.language
+    }),
+    { getNotifications, dismissAll }
   )(Notifications)
 );
 
