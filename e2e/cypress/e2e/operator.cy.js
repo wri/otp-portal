@@ -76,7 +76,7 @@ describe('Operator', function () {
           .contains('Use right')
           .parents('.c-doc-by-category')
           .find('.doc-by-category-chart')
-          .should('contains.text', '50% Provided (valid)')
+          .should('contains.text', '33% Provided (valid)')
       })
 
       it('can delete existing document and reupload it', function () {
@@ -98,7 +98,7 @@ describe('Operator', function () {
           .contains('Legal registration')
           .parents('.c-doc-by-category')
           .find('.doc-by-category-chart')
-          .should('contains.text', '75% Provided (valid)')
+          .should('contains.text', '50% Provided (valid)')
 
         cy.docGetProducerDocCard("Certificat d'agrément forestier")
           .siblings('.c-doc-card-upload')
@@ -124,6 +124,15 @@ describe('Operator', function () {
 
       it('can mark document as non applicable', function () {
         cy.docExpandCategory('Timber harvesting');
+
+        // delete as document exist
+        cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
+          .siblings('.c-doc-card-upload')
+          .contains('button', 'Delete')
+          .click();
+        cy.wait('@documentsReload');
+        cy.wait(1000);
 
         cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
           .siblings('.c-doc-card-upload')
