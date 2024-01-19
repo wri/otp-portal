@@ -1,7 +1,7 @@
 describe('Pages', () => {
   describe('Login page', () => {
     it('matches visually', function () {
-      cy.visit('http://localhost:4000');
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('.c-login').matchImage();
     });
@@ -9,21 +9,21 @@ describe('Pages', () => {
 
   describe('Create account page', () => {
     it('matches visually', function () {
-      cy.visit('http://localhost:4000/signup');
+      cy.visit('/signup');
       cy.matchImage();
     });
   })
 
   describe('Create producer page', () => {
     it('matches visually', function () {
-      cy.visit('http://localhost:4000/operators/new');
+      cy.visit('/operators/new');
       cy.matchImage();
     });
   })
 
   describe('About page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:4000/about');
+      cy.visit('/about');
     })
 
     it('displays content', function () {
@@ -39,7 +39,7 @@ describe('Pages', () => {
   describe('Help page', () => {
     context('when visitng overview/main', () => {
       beforeEach(() => {
-        cy.visit('http://localhost:4000/help');
+        cy.visit('/help');
       })
 
       it('displays content', function () {
@@ -53,28 +53,28 @@ describe('Pages', () => {
 
     context('when visiting how otp works', () => {
       it('displays content', function () {
-        cy.visit('http://localhost:4000/help/how-otp-works');
+        cy.visit('/help/how-otp-works');
         cy.contains('What are severity parameters and why are they important? ');
       })
     })
 
     context('when visiting legislations and regulations', () => {
       it('displays content', function () {
-        cy.visit('http://localhost:4000/help/legislation-and-regulations');
+        cy.visit('/help/legislation-and-regulations');
         cy.contains('The Risk Tool, hosted by WRI, provides an overview of relevant legislations and regulations');
       })
     })
 
     context('when visiting tutorials', () => {
       it('displays content', function () {
-        cy.visit('http://localhost:4000/help/tutorials');
+        cy.visit('/help/tutorials');
         cy.contains('Introductory video to the OTP');
       })
     })
 
     context('when visiting faq', () => {
       it('displays content', function () {
-        cy.visit('http://localhost:4000/help/faqs');
+        cy.visit('/help/faqs');
         cy.contains('About the OTP and the data on the site');
       })
     })
@@ -82,7 +82,7 @@ describe('Pages', () => {
 
   describe('Terms page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:4000/terms');
+      cy.visit('/terms');
     })
 
     it('displays content', function () {
@@ -92,7 +92,7 @@ describe('Pages', () => {
 
   describe('Privacy policy page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:4000/privacy-policy');
+      cy.visit('/privacy-policy');
     })
 
     it('displays content', function () {
@@ -102,7 +102,7 @@ describe('Pages', () => {
 
   describe('Newsletter page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:4000/newsletter');
+      cy.visit('/newsletter');
     })
 
     it('displays content', function () {

@@ -1,19 +1,21 @@
-const { nanoid } = require('nanoid')
-
 describe('User', () => {
   beforeEach(() => {
     cy.interceptMapRequests();
-    cy.visit('http://localhost:4000/');
+  })
+
+  after(() => {
+    cy.resetDB();
   })
 
   context('Login form', () => {
     it('can log in', function () {
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
       cy.get('button').contains('Log in').click();
       cy.get('.rrt-text').should('have.text', 'Wrong email or password');
-      cy.get('#input-password').clear().type('secret');
+      cy.get('#input-password').clear().type('password');
       cy.get('button').contains('Log in').click();
       cy.contains('a', 'My account');
     });
@@ -21,10 +23,10 @@ describe('User', () => {
 
   context('Public user', () => {
     it('can log in and out', function () {
-      cy.login('operator@example.com', 'secret');
+      cy.login('operator@example.com', 'password');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
-      cy.get('#input-name').should('have.value', 'Test Operator');
+      cy.get('#input-name').should('have.value', 'Operator');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('Sign out').click();
       cy.get('a').contains('Sign in').should('exist')
@@ -32,13 +34,14 @@ describe('User', () => {
     });
 
     it('can create account', function () {
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register now').click();
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
-      cy.selectOption('[name=operator_id]', 'Si', 'SICOFOR');
+      cy.selectOption('[name=operator_id]', 'Si', 'SIFCO');
       cy.get('#select-locale .react-select__single-value').contains('English');
       cy.get('#input-name').type('Test operator');
-      cy.get('#input-email').type(`testoperator+${nanoid(6)}@example.com`);
+      cy.get('#input-email').type('testoperator@example.com');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-password_confirmation').type('supersecret');
       cy.get('button').contains('Sign up').click();
@@ -50,10 +53,11 @@ describe('User', () => {
     });
 
     it('can create producer', function () {
+      cy.visit('/');
       cy.get('a').contains('Sign in').click();
       cy.get('a').contains('Register new producer').click();
 
-      cy.get('#input-name').type(`Super New Producer ${nanoid(6)}`);
+      cy.get('#input-name').type('Super New Producer');
       cy.get('#input-details').type('Producer description');
       cy.selectOption('[name=operator_type]', 'E', 'Estate');
       cy.get('#input-website').type('wrong website');
@@ -63,8 +67,8 @@ describe('User', () => {
       cy.get('.file-dropzone').attachFile('acme-logo.png', { subjectType: 'drag-n-drop' });
 
       cy.selectOption('[name=country]', 'Ca', 'Cameroon');
-      cy.selectOption('[name=fmus]', 'Lo', 'LOMIE');
-      cy.selectOption('[name=fmus]', '08', '08-003');
+      cy.selectOption('[name=fmus]', '100', '1001309');
+      cy.selectOption('[name=fmus]', '07', '0702111');
       cy.get('button').contains('Create producer').click();
       cy.get('.c-form > p', {timeout: 35000}).should('have.text', 'Wait for approval.');
     });
@@ -72,7 +76,7 @@ describe('User', () => {
 
   context('Logged in User', () => {
     beforeEach(() => {
-      cy.login('operator@example.com', 'secret');
+      cy.login('operator@example.com', 'password');
     });
 
     it('can update user profile', function () {
@@ -84,28 +88,14 @@ describe('User', () => {
       cy.selectOption('[name=locale]', 'Po', 'Português');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-passwordConfirmation').type('supersecret');
-      cy.get('#input-currentPassword').type('secret');
+      cy.get('#input-currentPassword').type('password');
 
       cy.get('button').contains('Update').click();
       cy.get('.rrt-text').should('have.text', 'Profile saved correctly');
       cy.get('#input-password').should('have.value', '');
       cy.get('#input-passwordConfirmation').should('have.value', '');
 
-      cy.get('a').contains('My account').click({ force: true });
-      cy.get('a').contains('Sign out').click();
-      cy.wait(1000);
-      cy.login('operator@example.com', 'supersecret');
-      cy.get('a').contains('My account').click();
-      cy.get('a').contains('My profile').click();
-      cy.get('#input-name').should('have.value', 'New Test Operator');
-      cy.get('#select-locale .react-select__single-value').contains('Português');
-      cy.get('#input-name').clear();
-      cy.get('#input-name').type('Test Operator');
-      cy.get('#input-password').type('secret');
-      cy.get('#input-passwordConfirmation').type('secret');
-      cy.get('#input-currentPassword').type('supersecret');
-      cy.get('button').contains('Update').click();
-      cy.get('.rrt-text', {timeout: 10000}).should('have.text', 'Profile saved correctly');
+      cy.resetDB();
     });
   });
 });

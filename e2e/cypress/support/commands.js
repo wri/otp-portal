@@ -11,11 +11,21 @@ Cypress.Commands.add('interceptMapRequests', () => {
 });
 
 Cypress.Commands.add('login', (username, password) => {
-  cy.get('a').contains('Sign in').click();
-  cy.get('#input-email').type(username);
-  cy.get('#input-password').type(password);
-  cy.get('button').contains('Log in').click();
-  cy.get(':nth-child(2) > :nth-child(2) > .dropdown > .dropdown__trigger > .header-nav-list-item > span').should('have.text', 'My account');
+  cy.session(
+    [username, password],
+    () => {
+      cy.visit('/');
+      cy.get('a').contains('Sign in').click();
+      cy.get('#input-email').type(username);
+      cy.get('#input-password').type(password);
+      cy.get('button').contains('Log in').click();
+      cy.get(':nth-child(2) > :nth-child(2) > .dropdown > .dropdown__trigger > .header-nav-list-item > span').should('have.text', 'My account');
+    },
+    {
+      cacheAcrossSpecs: true
+    }
+  );
+  cy.visit('/');
 });
 
 Cypress.Commands.add('selectOption', (selector, text, option) => {
@@ -34,4 +44,8 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
   cy.get(selector)
     .parents('.react-select-container').first()
     .find('.react-select__menu').contains(option).click();
+});
+
+Cypress.Commands.add('resetDB', () => {
+  cy.exec('./restore-db.sh');
 });

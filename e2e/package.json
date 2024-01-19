@@ -6,7 +6,7 @@
   "private": true,
   "devDependencies": {
     "@frsource/cypress-plugin-visual-regression-diff": "^3.3.10",
-    "cypress": "^10"
+    "cypress": "^13"
   },
   "dependencies": {
     "cypress-file-upload": "^5.0.8",

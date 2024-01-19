@@ -1,14 +1,15 @@
-const { nanoid } = require('nanoid')
-
-describe('User', function () {
+describe('Operator', function () {
   beforeEach(function () {
     cy.interceptMapRequests();
-    cy.visit('http://localhost:4000/');
-  })
+  });
+
+  after(() => {
+    cy.resetDB();
+  });
 
   context('when logged in as Operator', function () {
     beforeEach(function () {
-      cy.login('operator@example.com', 'secret');
+      cy.login('operator@example.com', 'password');
     });
 
     describe('updating operator profile', function () {
@@ -75,7 +76,7 @@ describe('User', function () {
           .contains('Use right')
           .parents('.c-doc-by-category')
           .find('.doc-by-category-chart')
-          .should('contains.text', '50% Provided (valid)')
+          .should('contains.text', '33% Provided (valid)')
       })
 
       it('can delete existing document and reupload it', function () {
@@ -97,7 +98,7 @@ describe('User', function () {
           .contains('Legal registration')
           .parents('.c-doc-by-category')
           .find('.doc-by-category-chart')
-          .should('contains.text', '75% Provided (valid)')
+          .should('contains.text', '50% Provided (valid)')
 
         cy.docGetProducerDocCard("Certificat d'agrément forestier")
           .siblings('.c-doc-card-upload')
@@ -111,7 +112,7 @@ describe('User', function () {
 
         cy.get('input[type=file]').attachFile('test_document.docx');
 
-        // cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
         cy.wait('@documentsReload');
         cy.wait(1000);
@@ -122,9 +123,18 @@ describe('User', function () {
       })
 
       it('can mark document as non applicable', function () {
-        cy.docExpandCategory('Legal registration');
+        cy.docExpandCategory('Timber harvesting');
 
-        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+        // delete as document exist
+        cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
+          .siblings('.c-doc-card-upload')
+          .contains('button', 'Delete')
+          .click();
+        cy.wait('@documentsReload');
+        cy.wait(1000);
+
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
           .siblings('.c-doc-card-upload')
           .contains('button', 'Non applicable')
           .click();
@@ -143,7 +153,7 @@ describe('User', function () {
         cy.wait('@documentsReload');
         cy.wait(1000);
 
-        cy.docGetProducerDocCard("Certificat d'agrément forestier")
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
           .find('.doc-card-status')
           .should('contains.text', 'Pending approval')
       })
