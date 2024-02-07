@@ -74,7 +74,7 @@ const NewsletterForm = ({ language }) => {
     <div className="c-section">
       <div className="l-container">
         <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-          <Form ref={formRef} action="https://example.com/l/sddds/2022-03-31/fdsfdsfdh" method="post">
+          <Form ref={formRef} action="https://connect.wri.org/l/120942/2022-03-31/582yt4" method="post">
             <fieldset className="c-field-container">
               <Field
                 validations={['required']}
