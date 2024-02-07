@@ -30,6 +30,12 @@ const NewsletterForm = ({ language }) => {
   const intl = useIntl();
   const formRef = useRef(null);
   const [countryOptions, setCountryOptions] = useState([]);
+  const [ipAddress, setIPAddress] = useState('');
+  useEffect(() => {
+    fetch('https://api.db-ip.com/v2/free/self')
+      .then(response => response.json())
+      .then(data => setIPAddress(data.ipAddress));
+  }, []);
 
   const loadCountries = () => {
     const countriesEnPromise = fetchCountries('en');
@@ -74,7 +80,13 @@ const NewsletterForm = ({ language }) => {
     <div className="c-section">
       <div className="l-container">
         <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-          <Form ref={formRef} action="https://connect.wri.org/l/120942/2022-03-31/582yt4" method="post">
+          <Form ref={formRef} action="https://ortto.wri.org/custom-forms/" method="post">
+            <input type="hidden" name="website" value="opentimberportal.org" />
+            <input type="hidden" name="form-name" value="Open Timber Portal Newsletter Signup" />
+            <input type="hidden" name="list" value="FOR - OTP - Open Timber Portal Newsletter – LIST" />
+            <input type="hidden" name="interests" value="Forests" />
+            <input type="hidden" name="preferred_language" value={language} />
+            <input type="hidden" name="ip_addr" value={ipAddress} />
             <fieldset className="c-field-container">
               <Field
                 validations={['required']}
