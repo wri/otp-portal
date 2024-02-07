@@ -414,7 +414,6 @@
   "First Name": "First Name",
   "Last Name": "Last Name",
   "Organization": "Organization",
-  "You are now signed up to receive updates from the Open Timber Portal.": "You are now signed up to receive updates from the Open Timber Portal.",
   "Back to home page": "Back to home page",
   "Your company has documents that are expiring soon that will need to be updated:": "Your company has documents that are expiring soon that will need to be updated:",
   "Your company has documents that have expired that need to be updated:": "Your company has documents that have expired that need to be updated:",
@@ -453,5 +452,7 @@
   "Search FMU": "Search FMU",
   "obs_per_visit_explanation": "The observations/visit calculates the average number of observations made by independent forest monitors per visit.",
   "notifications.expiring_soon_note": "{company} has documents that are expiring soon that will need to be updated:",
-  "notifications.expired_note": "{company} has documents that have expired that need to be updated:"
+  "notifications.expired_note": "{company} has documents that have expired that need to be updated:",
+  "newsletter.thankyou.paragraph1": "Thanks for your information - there's just one more step to finalize your request!",
+  "newsletter.thankyou.paragraph2": "To confirm your request to receive emails from us, please check your inbox for a confirmation email and click on the button to finalize your subscription."
 }

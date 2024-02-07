@@ -30,9 +30,20 @@ class ThankYouPage extends React.Component {
 
         <div className="c-section">
           <div className="c-form">
-            <h2 className="c-title -big">
-              {this.props.intl.formatMessage({ id: 'You are now signed up to receive updates from the Open Timber Portal.' })}
-            </h2>
+            <div className="c-title -big">
+              <p>
+                {this.props.intl.formatMessage({
+                  id: 'newsletter.thankyou.paragraph1',
+                  defaultMessage: "Thanks for your information - there's just one more step to finalize your request!"
+                })}
+              </p>
+              <p>
+                {this.props.intl.formatMessage({
+                  id: 'newsletter.thankyou.paragraph2',
+                  defaultMessage: "To confirm your request to receive emails from us, please check your inbox for a confirmation email and click on the button to finalize your subscription."
+                })}
+              </p>
+            </div>
 
             <ul className="c-field-buttons">
               <li>

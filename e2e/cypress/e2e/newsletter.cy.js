@@ -56,6 +56,6 @@ describe('Newsletter page', () => {
 
     cy.get('button').contains('Sign up').click();
     cy.wait('@submitForm');
-    cy.contains('You are now signed up to receive updates from the Open Timber Portal.');
+    cy.contains("Thanks for your information - there's just one more step to finalize your request!");
   });
 })
