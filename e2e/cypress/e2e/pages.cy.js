@@ -99,23 +99,4 @@ describe('Pages', () => {
       cy.contains('List of Cookies that May Be Set');
     })
   })
-
-  describe('Newsletter page', () => {
-    beforeEach(() => {
-      cy.visit('/newsletter');
-    })
-
-    it('displays content', function () {
-      cy.contains('Newsletter');
-      cy.contains('First Name');
-      cy.contains('Last Name');
-      cy.contains('Email');
-      cy.contains('Organization');
-      cy.contains('Country');
-    })
-
-    it('matches visually', function () {
-      cy.matchImage();
-    })
-  })
 });

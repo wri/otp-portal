@@ -66,6 +66,7 @@ const NewsletterForm = ({ language }) => {
 
   const handleSubmit = () => {
     formRef.current.submit();
+    return Promise.resolve();
   }
 
   const formInitialState = {
