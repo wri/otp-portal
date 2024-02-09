@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
-const ThankYouPage = ({ url }) => {
+const SubscriptionConfirmedPage = ({ url }) => {
   const intl = useIntl();
 
   return (
@@ -26,21 +26,15 @@ const ThankYouPage = ({ url }) => {
       <div className="c-section">
         <div className="c-form">
           <div className="c-title -big">
-            <p>
+            <center>
               {intl.formatMessage({
-                id: 'newsletter.thankyou.paragraph1',
-                defaultMessage: "Thanks for your information - there's just one more step to finalize your request!"
+                id: 'newsletter.subscription_confirmed',
+                defaultMessage: "Your subscription is confirmed."
               })}
-            </p>
-            <p>
-              {intl.formatMessage({
-                id: 'newsletter.thankyou.paragraph2',
-                defaultMessage: "To confirm your request to receive emails from us, please check your inbox for a confirmation email and click on the button to finalize your subscription."
-              })}
-            </p>
+            </center>
           </div>
 
-          <ul className="c-field-buttons">
+          <ul className="c-field-buttons -center-content">
             <li>
               <Link href="/">
                 <a className="card-link c-button -primary -fullwidth">
@@ -56,10 +50,10 @@ const ThankYouPage = ({ url }) => {
   );
 }
 
-ThankYouPage.getInitialProps = ({ url }) => ({ url });
+SubscriptionConfirmedPage.getInitialProps = ({ url }) => ({ url });
 
-ThankYouPage.propTypes = {
+SubscriptionConfirmedPage.propTypes = {
   url: PropTypes.shape({}).isRequired,
 };
 
-export default ThankYouPage;
+export default SubscriptionConfirmedPage;
