@@ -84,7 +84,7 @@ const NewsletterForm = ({ language }) => {
           <Form ref={formRef} action="https://ortto.wri.org/custom-forms/" method="post">
             <input type="hidden" name="website" value="opentimberportal.org" />
             <input type="hidden" name="form-name" value="Open Timber Portal Newsletter Signup" />
-            <input type="hidden" name="list" value="FOR - OTP - Open Timber Portal Newsletter – LIST" />
+            <input type="hidden" name="list" value="FOR - FGP - NEWSL – Open Timber Portal - LIST" />
             <input type="hidden" name="interests" value="Forests" />
             <input type="hidden" name="preferred_language" value={language} />
             <input type="hidden" name="ip_addr" value={ipAddress} />
