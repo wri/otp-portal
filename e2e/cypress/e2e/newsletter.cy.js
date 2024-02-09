@@ -42,7 +42,7 @@ describe('Newsletter', () => {
 
         expect(formData.get('website')).to.equal('opentimberportal.org');
         expect(formData.get('form-name')).to.equal('Open Timber Portal Newsletter Signup');
-        expect(formData.get('list')).to.equal('FOR - FGP - NEWSL – Open Timber Portal - LIST');
+        expect(formData.get('list')).to.equal('FOR - FGP - NEWSL - Open Timber Portal - LIST');
         expect(formData.get('interests')).to.equal('Forests');
         expect(formData.get('preferred_language')).to.equal('en');
         expect(formData.get('ip_addr')).to.equal('85.34.21.23');
