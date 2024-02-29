@@ -57,7 +57,7 @@ const Head = ({ title, description }) => {
       {process.env.GOOGLE_API_KEY && (
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} />
       )}
-      {process.env.ENV === 'production' && (
+      {process.env.ENV === 'production' && !(process.env.DISABLE_HOTJAR === 'true') && (
         <script
           dangerouslySetInnerHTML={{
             __html: `
