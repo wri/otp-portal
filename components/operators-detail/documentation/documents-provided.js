@@ -31,55 +31,49 @@ function DocumentsProvided(props) {
   if (isServer) chartHeight = null; // fixing some issue with setting height on server and then first change doesn't work
 
   return (
-    <div className="c-doc-provided">
-      <div className="row l-row">
-        <div className="columns small-12">
-          <div className="c-chart">
-            <ResponsiveContainer height={chartHeight}>
-              <PieChart>
-                <Pie
-                  data={groupedByStatusChart}
-                  dataKey="value"
-                  outerRadius={radius}
-                  innerRadius={radius - 10}
-                  startAngle={90}
-                  endAngle={-270}
-                  isAnimationActive={false}
-                  // If you want to change the labels you should do something similar to this
-                  // https://github.com/recharts/recharts/blob/master/src/polar/Pie.js#L339
-                >
-                  {groupedByStatusChart.map((entry) => (
-                    <Cell
-                      key={entry.label}
-                      fill={entry.fill}
-                      stroke={entry.stroke}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+    <div className="c-doc-provided c-chart">
+      <ResponsiveContainer height={chartHeight}>
+        <PieChart>
+          <Pie
+            data={groupedByStatusChart}
+            dataKey="value"
+            outerRadius={radius}
+            innerRadius={radius - 10}
+            startAngle={90}
+            endAngle={-270}
+            isAnimationActive={false}
+          // If you want to change the labels you should do something similar to this
+          // https://github.com/recharts/recharts/blob/master/src/polar/Pie.js#L339
+          >
+            {groupedByStatusChart.map((entry) => (
+              <Cell
+                key={entry.label}
+                fill={entry.fill}
+                stroke={entry.stroke}
+              />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
 
-            {/* Legend */}
-            <ChartLegend
-              list={Object.keys(legend)
-                .map((k) => ({ id: k, value: 0, ...legend[k] }))
-                .filter((k) => {
-                  if (
-                    (user.token && user.role === 'admin') ||
-                    (user.token &&
-                      (user.role === 'operator' || user.role === 'holding') &&
-                      user.operator_ids.includes(+router.query.id))
-                  ) {
-                    return true;
-                  }
+      {/* Legend */}
+      <ChartLegend
+        list={Object.keys(legend)
+          .map((k) => ({ id: k, value: 0, ...legend[k] }))
+          .filter((k) => {
+            if (
+              (user.token && user.role === 'admin') ||
+              (user.token &&
+                (user.role === 'operator' || user.role === 'holding') &&
+                user.operator_ids.includes(+router.query.id))
+            ) {
+              return true;
+            }
 
-                  return !k.user;
-                })}
-              className="-absolute"
-            />
-          </div>
-        </div>
-      </div>
+            return !k.user;
+          })}
+        className="-absolute"
+      />
     </div>
   );
 }
