@@ -1,36 +1,101 @@
+env:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_PORT_5432_TCP_ADDR: localhost
+  POSTGRES_PORT_5432_TCP_PORT: 5432
+  APP_URL: http://localhost:3000
+  RAILS_ENV: e2e
+  SECRET_KEY_BASE: f54c9d76c42e397e17cbc0d0a024da5a762a7a0d934839b417a77dac6fda65a49a37b32bcd229ac5fd5c1fedef8ed6acf7a57ed6465d6339862cdc0dfab8886f
+  AUTH_SECRET: secret
+  CONTACT_EMAIL: contact@example.com
+  RESPONSIBLE_EMAIL: responsible@example.com
+  CI_SERVER: true
+  CYPRESS_API_PATH: ../otp_api
+
 name: Run tests
 
 on: push
 
 jobs:
   test:
-    name: Testing build
+    name: E2E Tests
     runs-on: ubuntu-latest
-    if: false # skip for now, until we configure repository
+
+    services:
+      postgres:
+        image: postgis/postgis:12-3.1-alpine
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports: ["5432:5432"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: wri/fti_api
+          ref: chore/upgrade-rails
+          path: otp_api
+
+      - name: Install API dependencies
+        run: |
+          sudo apt update --fix-missing
+          sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev gdal-bin
+          npm install -g mjml
+
+      - name: Setup API Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: otp_api
+
+      - name: Setup API
+        working-directory: otp_api
+        run: |
+          bin/rails e2e:setup
+
+      - name: Read API Access Token
+        id: api_key
+        working-directory: otp_api
+        run: |
+          bin/rails runner 'puts "VALUE=#{User.find_by(email: "webuser@example.com").api_key.access_token}"' > $GITHUB_OUTPUT
+
+      - name: Run API Server
+        working-directory: otp_api
+        run: |
+          bin/rails s &
 
       - name: Read .nvmrc
         id: nvm
-        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
       - uses: actions/setup-node@v2
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-      - run: yarn install
-
       - name: Cache Node Modules
-        id: cache-node-modules
-        uses: actions/cache@v2
+        id: cache-portal-modules
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+      - name: Install Portal Dependencies
+        # if: steps.cache-portal-modules.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+
+      - name: Cache Node Modules
+        id: cache-e2e-modules
+        uses: actions/cache@v3
+        with:
+          path: e2e/node_modules
+          key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
+
+      - name: Install E2E Dependencies
+        # if: steps.cache-e2e-modules.outputs.cache-hit != 'true'
+        working-directory: e2e
+        run: yarn install --immutable
 
       - name: Set Sample ENV Variables
         run: |
@@ -38,22 +103,53 @@ jobs:
           PORT=4000
           NODE_ENV=production
           ENV=production
-          SECRET=some_secret
-          OTP_API_KEY=Bearer jwttoken
+          SECRET=${{ env.AUTH_SECRET }}
           OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
           OTP_COUNTRIES_IDS='7,47,45,188,53'
           OTP_API=http://localhost:3000
+          OTP_API_KEY=Bearer ${{ steps.api_key.outputs.VALUE }}
           TRANSIFEX_URL=https://www.transifex.com/api/2/project
           TRANSIFEX_PROJECT=open-timber-portal
           TRANSIFEX_SLUG=open-timber-portal
           " > .env
 
-      - name: Pull translations from transifex
-        env:
-          TRANSIFEX_TOKEN: ${{ secrets.transifex-token }}
-        run: |
-          echo 'Pulling the translations…'
-          TRANSIFEX_API_TOKEN=${{ env.TRANSIFEX_API_TOKEN }} yarn transifex:pull
+      # - name: Pull translations from transifex
+      #   env:
+      #     TRANSIFEX_TOKEN: ${{ secrets.transifex-token }}
+      #   run: |
+      #     echo 'Pulling the translations…'
+      #     TRANSIFEX_API_TOKEN=${{ env.TRANSIFEX_API_TOKEN }} yarn transifex:pull
 
-      - name: Run Build
+      - name: Build Portal
         run: yarn build
+
+      - name: Start Portal
+        run: yarn start &
+
+      - name: Run E2E Tests
+        working-directory: e2e
+        run: yarn cypress run
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: e2e/cypress/screenshots
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-videos
+          path: e2e/cypress/videos
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-logs
+          path: e2e/cypress/logs
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-image-snapshots
+          path: e2e/cypress/e2e/__image_snapshots__

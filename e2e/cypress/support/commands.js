@@ -47,5 +47,6 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
 });
 
 Cypress.Commands.add('resetDB', () => {
-  cy.exec('./restore-db.sh');
+  const apiPath = Cypress.env('API_PATH') || '../../otp-api';
+  cy.exec(`cd ${apiPath}; RAILS_ENV=e2e bin/rails e2e:db_reset`);
 });

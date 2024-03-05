@@ -22,6 +22,7 @@ const config = {
     GOOGLE_TAG_MANAGER_KEY: process.env.GOOGLE_TAG_MANAGER_KEY,
     OSANO_ID: process.env.OSANO_ID,
     DISABLE_HOTJAR: process.env.DISABLE_HOTJAR,
+    CI_SERVER: process.env.CI_SERVER,
   },
   i18n: {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
