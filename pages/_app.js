@@ -90,10 +90,7 @@ class MyApp extends App {
       user = state.user;
     }
 
-    let languageFile = language === 'zh' ? 'zh_CN' : language;
-    if (process.env.CI_SERVER === 'true') {
-      languageFile = 'zu';
-    }
+    const languageFile = language === 'zh' ? 'zh_CN' : language;
     const messages = await import(`lang/${languageFile}.json`);
 
     store.dispatch(setLanguage(language));

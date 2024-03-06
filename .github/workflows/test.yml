@@ -9,7 +9,6 @@ env:
   AUTH_SECRET: secret
   CONTACT_EMAIL: contact@example.com
   RESPONSIBLE_EMAIL: responsible@example.com
-  CI_SERVER: true
   CYPRESS_API_PATH: ../otp_api
 
 name: Run tests
@@ -108,17 +107,7 @@ jobs:
           OTP_COUNTRIES_IDS='7,47,45,188,53'
           OTP_API=http://localhost:3000
           OTP_API_KEY=Bearer ${{ steps.api_key.outputs.VALUE }}
-          TRANSIFEX_URL=https://www.transifex.com/api/2/project
-          TRANSIFEX_PROJECT=open-timber-portal
-          TRANSIFEX_SLUG=open-timber-portal
           " > .env
-
-      # - name: Pull translations from transifex
-      #   env:
-      #     TRANSIFEX_TOKEN: ${{ secrets.transifex-token }}
-      #   run: |
-      #     echo 'Pulling the translations…'
-      #     TRANSIFEX_API_TOKEN=${{ env.TRANSIFEX_API_TOKEN }} yarn transifex:pull
 
       - name: Build Portal
         run: yarn build
