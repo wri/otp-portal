@@ -6,6 +6,9 @@ module.exports = defineConfig({
   video: false,
   viewportWidth: 1280,
   viewportHeight: 720,
+  env: {
+    pluginVisualRegressionMaxDiffThreshold: 0.03,
+  },
   e2e: {
     baseUrl: 'http://localhost:4000',
     // We've imported your old cypress plugins here.
