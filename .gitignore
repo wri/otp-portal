@@ -6,9 +6,6 @@ static/tiles
 .env
 .DS_Store
 
-lang/*.json
-!lang/zu.json
-
 # vscode
 .vscode
 
