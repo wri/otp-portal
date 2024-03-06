@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      redis:
+        image: redis
+        ports: ["6379:6379"]
       postgres:
         image: postgis/postgis:12-3.1-alpine
         env:
@@ -73,7 +76,7 @@ jobs:
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-      - name: Cache Node Modules
+      - name: Restore Portal Node Modules Cache
         id: cache-portal-modules
         uses: actions/cache/restore@v3
         with:
@@ -83,56 +86,59 @@ jobs:
       - name: Install Portal Dependencies
         run: yarn install --immutable
 
-      - uses: actions/cache/save@v3
+      - name: Save Portal Node Modules Cache
+        uses: actions/cache/save@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Cache Node Modules
-        id: cache-e2e-modules
-        uses: actions/cache/restore@v3
-        with:
-          path: e2e/node_modules
-          key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
+      # - name: Cache Node Modules
+      #   id: cache-e2e-modules
+      #   uses: actions/cache/restore@v3
+      #   with:
+      #     path: e2e/node_modules
+      #     key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
 
       - name: Install E2E Dependencies
         working-directory: e2e
         run: yarn install --immutable
 
-      - uses: actions/cache/save@v3
-        with:
-          path: e2e/node_modules
-          key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
+      # - uses: actions/cache/save@v3
+      #   with:
+      #     path: e2e/node_modules
+      #     key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
 
-      - name: Set Sample ENV Variables
+      - name: Set Portal ENV Variables
         run: |
           echo "
           PORT=4000
           NODE_ENV=production
           ENV=production
-          SECRET=${{ env.AUTH_SECRET }}
+          SECRET=session_secret
           OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
           OTP_COUNTRIES_IDS='7,47,45,188,53'
+          APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
           OTP_API_KEY=Bearer ${{ steps.api_key.outputs.VALUE }}
+          DISABLE_HOTJAR=true
           " > .env
 
-      - name: Cache Next.js Build
-        id: cache-nextjs
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            ${{ github.workspace }}/.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+      # - name: Cache Next.js Build
+      #   id: cache-nextjs
+      #   uses: actions/cache/restore@v3
+      #   with:
+      #     path: |
+      #       ${{ github.workspace }}/.next/cache
+      #     # Generate a new cache whenever packages or source files change.
+      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
 
       - name: Build Portal
         run: yarn build
 
-      - uses: actions/cache/save@v3
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+      # - uses: actions/cache/save@v3
+      #   with:
+      #     path: .next/cache
+      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
 
       - name: Start Portal
         run: yarn start &
@@ -141,26 +147,14 @@ jobs:
         working-directory: e2e
         run: yarn cypress run
 
-      - uses: actions/upload-artifact@v2
+      - name: Uploading Test Artifacts
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-screenshots
-          path: e2e/cypress/screenshots
+          path: |
+            e2e/cypress/screenshots
+            e2e/cypress/videos
+            e2e/cypress/e2e/__image_snapshots__
+            otp_api/log
 
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-videos
-          path: e2e/cypress/videos
-
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-logs
-          path: e2e/cypress/logs
-
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-image-snapshots
-          path: e2e/cypress/e2e/__image_snapshots__
