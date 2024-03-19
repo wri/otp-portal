@@ -16,7 +16,6 @@ import DocumentationService from 'services/documentationService';
 import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
-import Select from 'components/form/SelectInput';
 import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import SubmitButton from 'components/form/SubmitButton';
@@ -31,7 +30,7 @@ const TYPES = {
 class DocModal extends React.Component {
   constructor(props) {
     super(props);
-    const { startDate, endDate, url, reason, source, sourceInfo } = props;
+    const { startDate, endDate, url, reason } = props;
 
     this.state = {
       formInitialState: {
@@ -43,9 +42,7 @@ class DocModal extends React.Component {
           endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: {},
         url,
-        reason,
-        source: source || 'company',
-        sourceInfo,
+        reason
       }
     };
 
@@ -84,11 +81,7 @@ class DocModal extends React.Component {
         attributes: {
           'start-date': form.startDate,
           'expire-date': form.expireDate,
-          'source-type': form.source,
-          'source-info':
-            form.source === 'other_source'
-              ? form.sourceInfo
-              : null,
+          'source-type': 'company',
           ...(form.file.base64 && {
             attachment: form.file.base64,
           }),
@@ -156,59 +149,6 @@ class DocModal extends React.Component {
                     </Field>
                   </div>
                 </div>
-
-                {!notRequired && (
-                  <div className="l-row row">
-                    <div className="columns small-12">
-                      <Field
-                        validations={['required']}
-                        className="-fluid"
-                        options={[
-                          {
-                            label: intl.formatMessage({ id: 'company' }),
-                            value: 'company',
-                          },
-                          {
-                            label: intl.formatMessage({
-                              id: 'forest_atlas',
-                            }),
-                            value: 'forest_atlas',
-                          },
-                          {
-                            label: intl.formatMessage({
-                              id: 'other_source',
-                            }),
-                            value: 'other_source',
-                          },
-                        ]}
-                        properties={{
-                          name: 'source',
-                          label: intl.formatMessage({ id: 'source' }),
-                          required: true
-                        }}
-                      >
-                        {Select}
-                      </Field>
-                    </div>
-                    {form.source === 'other_source' && (
-                      <div className="columns small-12">
-                        <Field
-                          validations={['required']}
-                          className="-fluid"
-                          properties={{
-                            name: 'sourceInfo',
-                            label: intl.formatMessage({
-                              id: 'source-info',
-                            }),
-                            required: true
-                          }}
-                        >
-                          {Input}
-                        </Field>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* DOCUMENT */}
                 {(!notRequired ||
@@ -279,8 +219,6 @@ DocModal.propTypes = {
   status: PropTypes.string,
   url: PropTypes.string,
   reason: PropTypes.string,
-  source: PropTypes.string,
-  sourceInfo: PropTypes.string,
   title: PropTypes.string,
   requiredDocId: PropTypes.string,
   type: PropTypes.string,

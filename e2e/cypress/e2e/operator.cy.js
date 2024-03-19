@@ -59,8 +59,6 @@ describe('Operator', function () {
 
         cy.get('#input-startDate').type('2022-03-30');
         cy.get('#input-expireDate').type('2030-03-30');
-        cy.selectOption('[name=source]', null, 'Other');
-        cy.get('#input-sourceInfo').clear().type('Here is example source info');
         cy.get('input[type=file]').attachFile('test_document.docx');
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
