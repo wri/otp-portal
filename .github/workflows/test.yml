@@ -1,8 +1,8 @@
 env:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
-  POSTGRES_PORT_5432_TCP_ADDR: localhost
-  POSTGRES_PORT_5432_TCP_PORT: 5432
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: 5432
   RAILS_ENV: e2e
   SECRET_KEY_BASE: f54c9d76c42e397e17cbc0d0a024da5a762a7a0d934839b417a77dac6fda65a49a37b32bcd229ac5fd5c1fedef8ed6acf7a57ed6465d6339862cdc0dfab8886f
   AUTH_SECRET: secret
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: wri/fti_api
-          ref: chore/upgrade-rails
+          ref: master
           path: otp_api
 
       - name: Save OTP API Commit SHA
@@ -115,21 +115,9 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      # - name: Cache Node Modules
-      #   id: cache-e2e-modules
-      #   uses: actions/cache/restore@v3
-      #   with:
-      #     path: e2e/node_modules
-      #     key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
-
       - name: Install E2E Dependencies
         working-directory: e2e
         run: yarn install --immutable
-
-      # - uses: actions/cache/save@v3
-      #   with:
-      #     path: e2e/node_modules
-      #     key: e2e-node-modules-${{ hashFiles('e2e/yarn.lock') }}
 
       - name: Set Portal ENV Variables
         run: |
