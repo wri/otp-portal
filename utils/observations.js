@@ -146,6 +146,7 @@ function parseObservation(obs) {
     report: obs['observation-report']
       ? obs['observation-report'].attachment.url
       : null,
+    'report-title': obs['observation-report'] ? obs['observation-report'].title : null,
     subcategory: obs?.subcategory?.name || '',
     status: obs['validation-status-id'],
     'litigation-status': obs['litigation-status'],

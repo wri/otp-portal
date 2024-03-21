@@ -80,6 +80,8 @@ export default function ObservationPopup({ data }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="evidence-item"
+                key={v.attachment.url}
+                title={v.name}
               >
                 <Icon className="" name="icon-file-empty" />
               </a>
@@ -99,6 +101,7 @@ export default function ObservationPopup({ data }) {
           target="_blank"
           rel="noopener noreferrer"
           className="report-item"
+          title={data['report-title']}
         >
           <Icon className="" name="icon-file-empty" />
         </a>
