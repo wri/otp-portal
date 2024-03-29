@@ -303,11 +303,13 @@ class Map extends Component {
         ...options
       });
 
+      // TODO: not sure why fitBounds maxZoom is not working, so fixing that manually
+      const useMaxZoom = options.maxZoom && zoom > options.maxZoom;
       const newViewport = {
         ...this.state.viewport,
         longitude,
         latitude,
-        zoom,
+        zoom: useMaxZoom ? options.maxZoom : zoom,
         transitionDuration
       };
 
