@@ -472,6 +472,7 @@ class ObservationsPage extends React.Component {
             <Legend
               layerGroups={getObservationsLegend}
               sortable={false}
+              expanded={false}
               toolbar={<></>}
               setLayerSettings={() => { }}
             />
