@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Tooltip from 'rc-tooltip';
 
 // Intl
 import { connect } from 'react-redux';
@@ -12,12 +11,9 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
-import DocInfoModal from 'components/ui/doc-info-modal';
-import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
-import Spinner from 'components/ui/spinner';
 
 class DocCard extends React.Component {
   static propTypes = {
@@ -26,6 +22,7 @@ class DocCard extends React.Component {
     status: PropTypes.string,
     public: PropTypes.bool,
     title: PropTypes.string,
+    reason: PropTypes.string,
     source: PropTypes.string,
     sourceInfo: PropTypes.string,
     explanation: PropTypes.string,
@@ -62,15 +59,17 @@ class DocCard extends React.Component {
 
   triggerWhy = (e) => {
     e && e.preventDefault();
+    const { title, reason } = this.props;
 
     modal.toggleModal(true, {
-      children: DocNotRequiredModal,
-      childrenProps: {
-        ...this.props,
-        onChange: () => {
-          this.props.onChange && this.props.onChange();
-        }
-      }
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{title}</h2>
+          <p>
+            {reason}
+          </p>
+        </div>
+      )
     });
   }
 
@@ -80,7 +79,7 @@ class DocCard extends React.Component {
 
     modal.toggleModal(true, {
       children: () => (
-        <div className="c-doc-notrequired-modal">
+        <div className="c-doc-info-modal">
           <h2>{intl.formatMessage({ id: "operator-detail.documents.not_published", defaultMessage: "Your document was not published" })}</h2>
           <p>
             {intl.formatMessage({
@@ -88,8 +87,24 @@ class DocCard extends React.Component {
               defaultMessage: "The OTP quality control could not approve the publication of this document because:"
             })}
           </p>
-          <p className="c-doc-notrequired-modal__comment">
+          <p className="c-doc-info-modal__comment">
             {adminComment}
+          </p>
+        </div>
+      )
+    });
+  }
+
+  triggerDocInfo = (e) => {
+    e && e.preventDefault();
+    const { title, explanation } = this.props;
+
+    modal.toggleModal(true, {
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{title}</h2>
+          <p>
+            {explanation}
           </p>
         </div>
       )
@@ -147,18 +162,7 @@ class DocCard extends React.Component {
 
         {layout.info &&
           <div className="doc-card-info">
-            <button
-              className="c-button -clean -icon"
-              onClick={() => {
-                modal.toggleModal(true, {
-                  children: DocInfoModal,
-                  childrenProps: {
-                    title,
-                    explanation
-                  }
-                });
-              }}
-            >
+            <button className="c-button -clean -icon" onClick={this.triggerDocInfo}>
               <Icon
                 name="icon-info"
                 className="-smaller"
