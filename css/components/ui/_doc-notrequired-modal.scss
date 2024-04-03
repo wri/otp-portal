@@ -1,3 +1,13 @@
 .c-doc-notrequired-modal {
-  padding: $space-1 * 4;
+  padding: $space-1 * 2 $space-1 * 4;
+
+  h2 {
+    text-transform: uppercase;
+  }
+
+  &__comment {
+    padding: $space-1 * 2;
+    background: rgba($color-black, 0.04);
+    font-style: italic;
+  }
 }

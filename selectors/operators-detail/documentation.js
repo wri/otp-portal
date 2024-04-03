@@ -44,6 +44,7 @@ const getParsedDocumentation = createSelector(
               ].position,
             status: doc.status,
             reason: doc.reason,
+            adminComment: doc['admin-comment'],
             startDate: new Date(doc['start-date'])
               .toJSON()
               .slice(0, 10)
