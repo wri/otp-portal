@@ -19,7 +19,7 @@ Cypress.Commands.add('login', (username, password) => {
       cy.get('#input-email').type(username);
       cy.get('#input-password').type(password);
       cy.get('button').contains('Log in').click();
-      cy.get(':nth-child(2) > :nth-child(2) > .dropdown > .dropdown__trigger > .header-nav-list-item > span').should('have.text', 'My account');
+      cy.get('a').contains('My account').should('exist');
     },
     {
       cacheAcrossSpecs: true
@@ -47,5 +47,6 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
 });
 
 Cypress.Commands.add('resetDB', () => {
-  cy.exec('./restore-db.sh');
+  const apiPath = Cypress.env('API_PATH') || '../../otp-api';
+  cy.exec(`cd ${apiPath}; RAILS_ENV=e2e bin/rails e2e:db_reset`);
 });
