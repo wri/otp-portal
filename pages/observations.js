@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import { injectIntl } from 'react-intl';
 
+import getBBox from '@turf/bbox';
+
 import modal from 'services/modal';
 
 import { transformRequest } from 'utils/map';
@@ -97,6 +99,23 @@ class ObservationsPage extends React.Component {
 
     if (!isEqual(this.props.router.query, prevProps.router.query)) {
       this.props.getObservationsUrl(this.props.router);
+    }
+
+    // when the data is loaded fitBounds to selected observations
+    if (!isEqual(this.props.observations.data, prevProps.observations.data)) {
+      const obsLayer = this.props.getObservationsLayers.find((l) => l.id === 'observations');
+      if (obsLayer) {
+        const bbox = getBBox(obsLayer.source.data);
+        this.setState({
+          bounds: {
+            bbox,
+            options: {
+              padding: 50,
+              maxZoom: 6
+            },
+          }
+        });
+      }
     }
   }
 
@@ -418,6 +437,8 @@ class ObservationsPage extends React.Component {
               // viewport
               viewport={observations.map}
               onViewportChange={this.onViewportChange}
+              // Bounds
+              bounds={this.state.bounds}
               // Interaction
               interactiveLayerIds={interactiveLayerIds}
               onClick={this.onClick}
@@ -451,6 +472,7 @@ class ObservationsPage extends React.Component {
             <Legend
               layerGroups={getObservationsLegend}
               sortable={false}
+              expanded={false}
               toolbar={<></>}
               setLayerSettings={() => { }}
             />
