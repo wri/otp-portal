@@ -154,7 +154,7 @@ export function getColumnHeaders(intl) {
           {attr.value.map((observer) => {
             return (<li>
               <span>
-                {observer.name || observer.organization}
+                {observer.name}
 
                 {observer['public-info'] && (
                   <Tooltip
