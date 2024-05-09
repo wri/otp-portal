@@ -8,6 +8,8 @@ env:
   AUTH_SECRET: secret
   CONTACT_EMAIL: contact@example.com
   RESPONSIBLE_EMAIL: responsible@example.com
+  FRONTEND_URL: http://localhost:4000
+  OBSERVATIONS_TOOL_URL: http://localhost:4200
   CYPRESS_API_PATH: ../otp_api
 
 name: Run tests
