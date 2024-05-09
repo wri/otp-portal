@@ -240,6 +240,8 @@
   "operator-detail.documents.title": "{percentage}% valid documents available",
   "operator-detail.documents.search.no-results": "Cannot find any document matching your search text \"{searchText}\"",
   "operator-detail.documents.search.placeholder": "Start typing here to search documents...",
+  "operator-detail.documents.not_published": "Your document was not published",
+  "operator-detail.documents.not_published_reason": "The OTP quality control could not approve the publication of this document because:",
   "country-detail.overview.card1.title": "Required documents uploaded",
   "country-detail.overview.card1.description": "{percentage}% of the requested documents are available for this country and accessible in the documentation section.",
   "country-detail.overview.card1.link.label": "Link",

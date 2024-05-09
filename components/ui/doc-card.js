@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Tooltip from 'rc-tooltip';
 
 // Intl
 import { connect } from 'react-redux';
@@ -12,12 +11,9 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
-import DocInfoModal from 'components/ui/doc-info-modal';
-import DocNotRequiredModal from 'components/ui/doc-notrequired-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
-import Spinner from 'components/ui/spinner';
 
 class DocCard extends React.Component {
   static propTypes = {
@@ -26,9 +22,11 @@ class DocCard extends React.Component {
     status: PropTypes.string,
     public: PropTypes.bool,
     title: PropTypes.string,
+    reason: PropTypes.string,
     source: PropTypes.string,
     sourceInfo: PropTypes.string,
     explanation: PropTypes.string,
+    adminComment: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
     properties: PropTypes.object,
@@ -61,15 +59,55 @@ class DocCard extends React.Component {
 
   triggerWhy = (e) => {
     e && e.preventDefault();
+    const { title, reason } = this.props;
 
     modal.toggleModal(true, {
-      children: DocNotRequiredModal,
-      childrenProps: {
-        ...this.props,
-        onChange: () => {
-          this.props.onChange && this.props.onChange();
-        }
-      }
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{title}</h2>
+          <p>
+            {reason}
+          </p>
+        </div>
+      )
+    });
+  }
+
+  triggerDocInvalidExplanation = (e) => {
+    e && e.preventDefault();
+    const { intl, adminComment } = this.props;
+
+    modal.toggleModal(true, {
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{intl.formatMessage({ id: "operator-detail.documents.not_published", defaultMessage: "Your document was not published" })}</h2>
+          <p>
+            {intl.formatMessage({
+              id: "operator-detail.documents.not_published_reason",
+              defaultMessage: "The OTP quality control could not approve the publication of this document because:"
+            })}
+          </p>
+          <p className="c-doc-info-modal__comment">
+            {adminComment}
+          </p>
+        </div>
+      )
+    });
+  }
+
+  triggerDocInfo = (e) => {
+    e && e.preventDefault();
+    const { title, explanation } = this.props;
+
+    modal.toggleModal(true, {
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{title}</h2>
+          <p>
+            {explanation}
+          </p>
+        </div>
+      )
     });
   }
 
@@ -101,7 +139,7 @@ class DocCard extends React.Component {
   }
 
   render() {
-    const { user, public: publicState, startDate, endDate, status, source, sourceInfo, title, explanation, url, annexes, layout, properties } = this.props;
+    const { user, adminComment, public: publicState, startDate, endDate, status, source, sourceInfo, title, explanation, url, annexes, layout, properties } = this.props;
     const { id } = properties;
     const { deleteLoading } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
@@ -124,18 +162,7 @@ class DocCard extends React.Component {
 
         {layout.info &&
           <div className="doc-card-info">
-            <button
-              className="c-button -clean -icon"
-              onClick={() => {
-                modal.toggleModal(true, {
-                  children: DocInfoModal,
-                  childrenProps: {
-                    title,
-                    explanation
-                  }
-                });
-              }}
-            >
+            <button className="c-button -clean -icon" onClick={this.triggerDocInfo}>
               <Icon
                 name="icon-info"
                 className="-smaller"
@@ -161,7 +188,17 @@ class DocCard extends React.Component {
                   </span>
                 </div>
               }
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
+              {(status !== 'doc_invalid' || !adminComment) && (
+                <div className="doc-card-status">
+                  {this.props.intl.formatMessage({ id: status })}
+                </div>
+              )}
+              {status === 'doc_invalid' && adminComment && (
+                <div className="doc-card-status -why" onClick={this.triggerDocInvalidExplanation}>
+                  {this.props.intl.formatMessage({ id: status })} <br />
+                  See why
+                </div>
+              )}
             </header>
             <div className="doc-card-content">
               <a rel="noopener noreferrer" target="_blank" href={url}>
@@ -226,7 +263,17 @@ class DocCard extends React.Component {
                   </span>
                 </div>
               }
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
+              {(status !== 'doc_invalid' || !adminComment) && (
+                <div className="doc-card-status">
+                  {this.props.intl.formatMessage({ id: status })}
+                </div>
+              )}
+              {status === 'doc_invalid' && adminComment && (
+                <div className="doc-card-status -why" onClick={this.triggerDocInvalidExplanation}>
+                  {this.props.intl.formatMessage({ id: status })} <br />
+                  See why
+                </div>
+              )}
             </header>
             <div className="doc-card-content">
               <h3 className="doc-card-title c-title -big">

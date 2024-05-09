@@ -10,7 +10,6 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
-import DocInfoModal from 'components/ui/doc-info-modal';
 import Icon from 'components/ui/icon';
 
 function formatStatUnit(unit) {
@@ -47,6 +46,21 @@ class CountryDocCard extends React.Component {
     this.documentationService = new DocumentationService();
   }
 
+  triggerDocInfo = () => {
+    const { title, explanation } = this.props;
+
+    modal.toggleModal(true, {
+      children: () => (
+        <div className="c-doc-info-modal">
+          <h2>{title}</h2>
+          <p>
+            {explanation}
+          </p>
+        </div>
+      )
+    });
+  }
+
   render() {
     const { startDate, endDate, status, title, explanation, docType, units, value, url, intl } = this.props;
 
@@ -65,18 +79,7 @@ class CountryDocCard extends React.Component {
       <div className={`c-doc-card ${classNames} country`}>
         {explanation && (
           <div className="doc-card-info">
-            <button
-              className="c-button -clean -icon"
-              onClick={() => {
-                modal.toggleModal(true, {
-                  children: DocInfoModal,
-                  childrenProps: {
-                    title,
-                    explanation
-                  }
-                });
-              }}
-            >
+            <button className="c-button -clean -icon" onClick={this.triggerDocInfo}>
               <Icon
                 name="icon-info"
                 className="-smaller"
