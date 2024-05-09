@@ -125,14 +125,14 @@ describe('Operator', function () {
 
         // delete as document exist
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
-        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe annuelle')
           .siblings('.c-doc-card-upload')
           .contains('button', 'Delete')
           .click();
         cy.wait('@documentsReload');
         cy.wait(1000);
 
-        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe annuelle')
           .siblings('.c-doc-card-upload')
           .contains('button', 'Non applicable')
           .click();
@@ -151,7 +151,7 @@ describe('Operator', function () {
         cy.wait('@documentsReload');
         cy.wait(1000);
 
-        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe provisoire')
+        cy.docGetFMUDocCard('Ngombe', 'Autorisation de coupe annuelle')
           .find('.doc-card-status')
           .should('contains.text', 'Pending approval')
       })
