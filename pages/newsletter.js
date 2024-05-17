@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
 import Link from 'next/link';
 import Jsona from 'jsona';
 
@@ -85,11 +84,9 @@ const Newsletter = ({ url, newsletters }) => {
             {newsletters.map(newsletter => (
               // genereate newsletter card with image on top and title and description below
               <div className="newsletter-card">
-                <div className="newsletter-card__image">
-                  <a href={newsletter.attachment.url}>
-                    <Image src={newsletter.image.url} alt={newsletter.title} layout="fill" objectFit="cover" objectPosition="center" />
-                  </a>
-                </div>
+                <a href={newsletter.attachment.url}>
+                  <div className="newsletter-card__image" style={{ backgroundImage: `url(${newsletter.image.thumbnail.url})` }} />
+                </a>
                 <div className="newsletter-card__content">
                   <h3>
                     <a href={newsletter.attachment.url}>
