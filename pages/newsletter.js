@@ -71,11 +71,13 @@ const Newsletter = ({ url, newsletters }) => {
       <div className="c-section">
         <div className="l-container">
           <div className="newsletter-header">
-            <h2>Showing {newsletters.length} previous newsletters</h2>
+            <h2>
+              {intl.formatMessage({ id: 'newsletter.showing_results', defaultMessage: 'Showing {count} previous newsletters' }, { count: newsletters.length })}
+            </h2>
 
             <Link href="/newsletter/sign-up">
               <a className="card-link c-button -secondary">
-                Subscribe to our newsletter
+                {intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}
               </a>
             </Link>
           </div>
@@ -103,7 +105,8 @@ const Newsletter = ({ url, newsletters }) => {
           </div>
 
           <div className="newsletter-cta">
-            Want to receive the latest updates from the Open Timber Portal? <Link href="/newsletter/sign-up"><a>Subscribe to our newsletter.</a></Link>
+            {intl.formatMessage({ id: 'newsletter.want_to_receive', defaultMessage: 'Want to receive the latest updates from the Open Timber Portal?' })}
+            &nbsp;<Link href="/newsletter/sign-up"><a>{intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}</a></Link>.
           </div>
         </div>
       </div>

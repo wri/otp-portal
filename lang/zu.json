@@ -457,5 +457,8 @@
   "notifications.expired_note": "{company} has documents that have expired that need to be updated:",
   "newsletter.thankyou.paragraph1": "Thanks for your information - there's just one more step to finalize your request!",
   "newsletter.thankyou.paragraph2": "To confirm your request to receive emails from us, please check your inbox for a confirmation email and click on the button to finalize your subscription.",
-  "newsletter.subscription_confirmed": "Your subscription is confirmed."
+  "newsletter.subscription_confirmed": "Your subscription is confirmed.",
+  "newsletter.want_to_receive": "Want to receive the latest updates from the Open Timber Portal?",
+  "newsletter.subscribe_to": "Subscribe to our newsletter",
+  "newsletter.showing_results": "Showing {count} previous newsletters"
 }
