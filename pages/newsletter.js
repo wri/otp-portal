@@ -94,7 +94,7 @@ const Newsletter = ({ url, newsletters }) => {
                     </a>
                   </h3>
                   <small className="newsletter-card__date">
-                    {new Date(newsletter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                    {new Date(newsletter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' })}
                   </small>
                   <p>{newsletter["short-description"]}</p>
                 </div>
@@ -116,9 +116,10 @@ Newsletter.propTypes = {
   url: PropTypes.shape({}).isRequired,
   newsletters: PropTypes.array.isRequired
 };
-Newsletter.getInitialProps = async ({ url }) => {
+Newsletter.getInitialProps = async ({ url, store }) => {
+  const { language } = store.getState();
   const newsletters = await API
-    .get('newsletters')
+    .get('newsletters', { locale: language })
     .then((response) => JSONA.deserialize(response));
 
   return { url, newsletters };
