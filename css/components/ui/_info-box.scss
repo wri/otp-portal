@@ -1,0 +1,18 @@
+.c-info-box {
+  background: $color-gray-2;
+  padding: 20px;
+
+  @include breakpoint(medium) {
+    padding: 30px;
+  }
+
+  &.-center {
+    text-align: center;
+  }
+
+  p {
+    @include breakpoint(medium) {
+      font-size: $font-size-big;
+    }
+  }
+}

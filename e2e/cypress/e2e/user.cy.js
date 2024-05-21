@@ -49,7 +49,7 @@ describe('User', () => {
       cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
       cy.get('label[for=checkbox-agree-undefined]').click();
       cy.get('button').contains('Sign up').click();
-      cy.get('.c-form > p').should('have.text', 'Wait for approval.');
+      cy.get('.c-info-box').contains('you will receive an email to testoperator@example.com once your account is approved');
     });
 
     it('can create producer', function () {
