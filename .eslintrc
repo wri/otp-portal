@@ -2,20 +2,10 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true,
-    "mocha": true
+    "es6": true
   },
-  "extends": ["plugin:react/recommended", "airbnb", "prettier"],
+  "extends": ["next", "prettier"],
   "globals": {},
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 2018,
-    "sourceType": "module"
-  },
-  "plugins": ["react", "prettier", "react-hooks"],
   "settings": {
     "import/resolver": {
       "node": {
