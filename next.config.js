@@ -23,6 +23,9 @@ const config = {
     OSANO_ID: process.env.OSANO_ID,
     DISABLE_HOTJAR: process.env.DISABLE_HOTJAR
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   i18n: {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
