@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
@@ -8,7 +7,6 @@ import { getOperator } from 'modules/operators-detail';
 
 // Intl
 import { injectIntl } from 'react-intl';
-
 
 // Services
 import modal from 'services/modal';
@@ -18,10 +16,9 @@ import DocumentationService from 'services/documentationService';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import File from 'components/form/File';
-import Spinner from 'components/ui/spinner';
-import SubmitButton from '../form/SubmitButton';
-import { FormProvider } from '../form/Form';
-import CancelButton from '../form/CancelButton';
+import SubmitButton from 'components/form/SubmitButton';
+import Form, { FormProvider } from 'components/form/Form';
+import CancelButton from 'components/form/CancelButton';
 
 class DocModal extends React.Component {
   constructor(props) {

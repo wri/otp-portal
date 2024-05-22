@@ -6,11 +6,11 @@ export default function FAAttributions() {
   return (
     <div className="c-fa-attributions">
       {ATTRIBUTIONS.map(attr => (
-        <div className="attributions--item">
+        <div className="attributions--item" key={attr.name}>
           <h3>{attr.name}</h3>
           <ul>
             {attr.licenses.map(u => (
-              <li>
+              <li key={u.name}>
                 <a target="_blank" rel="noopener noreferrer" href={u.data}><h4>{u.name}</h4></a>
                 <div className="attributions--copyright">{u.copyright}</div>
               </li>

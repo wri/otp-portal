@@ -20,7 +20,6 @@ import { getOperators } from 'modules/operators';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
-import Osano from 'components/layout/osano';
 
 import { getCookie, setCookie, deleteCookie } from 'services/cookies';
 
@@ -157,7 +156,6 @@ class MyApp extends App {
       >
         <Provider store={store}>
           <>
-            <Osano />
             <GoogleTagManager />
             <PageViewTracking />
             <Component {...pageProps} language={language} />

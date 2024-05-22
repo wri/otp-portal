@@ -87,6 +87,7 @@ class AboutPage extends React.Component {
             {aboutPageEntries && aboutPageEntries.map((aboutEntry) => (
               <article
                 className="c-article"
+                key={aboutEntry.id}
               >
                 <div className="row l-row">
                   <div className="columns small-12">

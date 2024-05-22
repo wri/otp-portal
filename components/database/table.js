@@ -209,6 +209,7 @@ function DatabaseTable({
             attr.value.map((v) => (
               <a
                 href={v.attachment ? v.attachment.url : ''}
+                key={v.id}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="evidence-item"
