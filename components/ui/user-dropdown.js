@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Dropdown, { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 import { injectIntl } from 'react-intl';
 
 import { connect } from 'react-redux';
@@ -9,6 +8,7 @@ import { logout } from 'modules/user';
 
 import modal from 'services/modal';
 
+import { Dropdown, DropdownTrigger, DropdownContent } from 'components/ui/dropdown';
 import UserMenuList from 'components/ui/user-menu-list';
 import Login from 'components/ui/login';
 import Icon from 'components/ui/icon';

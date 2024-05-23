@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 
-import Dropdown, {
+import {
+  Dropdown,
   DropdownTrigger,
   DropdownContent,
-} from 'react-simple-dropdown';
-
+} from 'components/ui/dropdown';
 import Icon from 'components/ui/icon';
 
 import { LOCALES } from 'constants/locales';
