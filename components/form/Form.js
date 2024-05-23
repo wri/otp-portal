@@ -37,12 +37,16 @@ export const FormContext = React.createContext({
   register: () => { },
 })
 
-export const withFormContext = Component => props => {
-  return (
-    <FormContext.Consumer>
-      {context => <Component ref={context.register} {...props} formContext={context} />}
-    </FormContext.Consumer>
-  )
+export const withFormContext = Component => {
+  const FormContextConsumer = (props) => {
+    return (
+      <FormContext.Consumer>
+        {context => <Component ref={context.register} {...props} formContext={context} />}
+      </FormContext.Consumer>
+    )
+  }
+  FormContextConsumer.displayName = `withFormContext(${Component.displayName || Component.name})`;
+  return FormContextConsumer;
 }
 
 export const useForm = () => {
@@ -153,5 +157,6 @@ export const Form = React.forwardRef(({ children, ...restFormProps }, ref) => {
     </form>
   );
 })
+Form.displayName = 'Form';
 
 export default Form;

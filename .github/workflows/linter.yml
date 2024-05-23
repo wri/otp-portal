@@ -1,0 +1,64 @@
+name: Run linter
+
+on: push
+
+jobs:
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Portal
+        uses: actions/checkout@v4
+
+      - name: Read .nvmrc
+        id: nvm
+        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+
+      - name: Restore Portal Node Modules Cache
+        id: cache-portal-modules
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Portal Dependencies
+        run: yarn install --immutable
+
+      - name: Save Portal Node Modules Cache
+        uses: actions/cache/save@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install E2E Dependencies
+        working-directory: e2e
+        run: yarn install --immutable
+
+      - name: Set Portal ENV Variables
+        run: |
+          echo "
+          PORT=4000
+          NODE_ENV=production
+          SECRET=session_secret
+          OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
+          OTP_COUNTRIES_IDS='7,47,45,188,53'
+          APP_URL=http://localhost:4000
+          OTP_API=http://localhost:3000
+          OTP_API_KEY=Bearer some_api_key
+          DISABLE_HOTJAR=true
+          " > .env
+
+      - name: Restore Next.js Build Cache
+        id: cache-nextjs
+        uses: actions/cache/restore@v3
+        with:
+          path: .next/cache
+          key: nextjs-${{ hashFiles('yarn.lock') }}
+
+      - name: Run linter
+        run: yarn lint

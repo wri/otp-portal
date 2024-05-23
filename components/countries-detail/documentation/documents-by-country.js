@@ -93,7 +93,7 @@ function DocumentsByOperator(props) {
                   const docs = sortBy(groupedBySubCategory[subCategory], ['position', 'title'])
 
                   return (
-                    <div className="subcategory-item">
+                    <div key={subCategory} className="subcategory-item">
                       <div className="doc-gallery-item-header">
                         <div className="doc-by-category-desc">
                           <h4>{subCategory}</h4>

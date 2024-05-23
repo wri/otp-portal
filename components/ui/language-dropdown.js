@@ -29,6 +29,7 @@ const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
     </a>
   )
 });
+LanguageLink.displayName = 'LanguageLink';
 
 const LanguageDropdown = ({ showSelectedCode, className }) => {
   const { asPath, locale } = useRouter();
