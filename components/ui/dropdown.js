@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
+import useOutsideClick from 'hooks/use-outside-click';
 
 const DropdownContent = (props) => {
   const { children, className, ...dropdownContentProps } = props;
@@ -24,23 +26,7 @@ const DropdownTrigger = (props) => {
 const Dropdown = (props) => {
   const { children, className, disabled } = props;
   const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    window.addEventListener('click', onWindowClick);
-    window.addEventListener('touchstart', onWindowClick);
-
-    return () => {
-      window.removeEventListener('click', onWindowClick);
-      window.removeEventListener('touchstart', onWindowClick);
-    };
-  }, []);
-
-  const onWindowClick = (event) => {
-    const dropdownElement = event.target.closest('.dropdown');
-    if (dropdownElement && !dropdownElement.contains(event.target) && active) {
-      setActive(false);
-    }
-  };
+  const dropdownRef = useRef(null);
 
   const onToggleClick = (event) => {
     event.preventDefault();
@@ -50,6 +36,8 @@ const Dropdown = (props) => {
       setActive(true);
     }
   };
+
+  useOutsideClick(dropdownRef, () => setActive(false));
 
   const classList = classNames('dropdown', {
     'dropdown--active': active,
@@ -76,11 +64,9 @@ const Dropdown = (props) => {
 
   const cleanProps = { ...props };
   delete cleanProps.active;
-  delete cleanProps.onShow;
-  delete cleanProps.onHide;
 
   return (
-    <div {...cleanProps} className={classList}>
+    <div {...cleanProps} ref={dropdownRef} className={classList}>
       {boundChildren}
     </div>
   );
@@ -89,8 +75,6 @@ const Dropdown = (props) => {
 Dropdown.propTypes = {
   disabled: PropTypes.bool,
   active: PropTypes.bool,
-  onHide: PropTypes.func,
-  onShow: PropTypes.func,
   children: PropTypes.node,
   className: PropTypes.string,
   style: PropTypes.object
