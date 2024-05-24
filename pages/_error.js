@@ -54,7 +54,7 @@ class ErrorPage extends React.Component {
             {css}
             <h1>Page Not Found</h1>
             <p>The page <strong>{ this.props.url.asPath }</strong> does not exist.</p>
-            <p><Link href="/"><a>Home</a></Link></p>
+            <p><Link href="/">Home</Link></p>
           </div>
         );
         break;

@@ -28,11 +28,11 @@ export default function Card({ theme, letter, title, description, link, Componen
         {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="card-title">{title}</h2>
-        <p className="card-description">
+        <div className="card-description">
           <Truncate lines={6}>
             {renderHTML(description || '')}
           </Truncate>
-        </p>
+        </div>
 
         {!!Component && (
           <div className="card-component">
@@ -42,8 +42,11 @@ export default function Card({ theme, letter, title, description, link, Componen
       </div>
 
       {!!link && (
-        <Link {...omit(link, 'label')} prefetch={false}>
-          <a className="card-link c-button -primary -fullwidth">{link.label}</a>
+        <Link
+          {...omit(link, 'label')}
+          prefetch={false}
+          className="card-link c-button -primary -fullwidth">
+          {link.label}
         </Link>
       )}
     </div>

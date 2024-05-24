@@ -77,6 +77,17 @@ const cookieMigration = () => {
   }
 }
 
+const IGNORE_WARNINGS = [
+  /Support for defaultProps will be removed from function components in a future major release/
+];
+const consoleError = console.error;
+console.error = (...args) => {
+  const text = args[0];
+  if (IGNORE_WARNINGS.some(w => w.test(text))) return;
+  consoleError(...args);
+};
+console.error("Application is ignoring warnings:", IGNORE_WARNINGS);
+
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     const { asPath, pathname, query, isServer, req, res, store, locale, defaultLocale } = ctx;

@@ -103,9 +103,9 @@ function NavigationList({ footer, intl, url, className, countries }) {
                     {element.children.map((item) => (
                       <li key={item.href} className="header-dropdown-list-item">
                         <Link href={item.href} prefetch={false}>
-                          <a>
-                            {item.name}
-                          </a>
+
+                          {item.name}
+
                         </Link>
                       </li>
                     ))}
@@ -117,13 +117,16 @@ function NavigationList({ footer, intl, url, className, countries }) {
         }
         return (
           <li key={idx}>
-            <Link href={element.href} prefetch={false}>
-              <a className={setActive([element.href])}>
-                {element.name}
-              </a>
+            <Link
+              href={element.href}
+              prefetch={false}
+              className={setActive([element.href])}>
+
+              {element.name}
+
             </Link>
           </li>
-        )
+        );
       })}
     </ul>
   );

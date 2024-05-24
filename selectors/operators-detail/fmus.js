@@ -55,14 +55,14 @@ export const getActiveLayers = createSelector(
           ...layerConfig,
           ...settings,
 
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id: Number(operator_id), fmuNames })
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams, operator_id: Number(operator_id), fmuNames }),
             decodeFunction
-          }
+          })
         };
       }
 
@@ -200,7 +200,7 @@ export const getLegendLayers = createSelector(
       const analysisParams = {
         loading: _analysis.loading[i],
         error: _analysis.error[i],
-        ..._analysis.data[f] && { data: _analysis.data[f][id] }
+        ...(_analysis.data[f] && { data: _analysis.data[f][id] })
       };
 
       layerGroups.push({
@@ -217,41 +217,41 @@ export const getLegendLayers = createSelector(
           active: true,
           legendConfig: {
             ...legendConfig,
-            ...legendConfig.items && {
+            ...(legendConfig.items && {
               items: legendConfig.items.map(i => ({
                 ...i,
-                ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                ...i.items && {
+                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                ...(i.items && {
                   items: i.items.map(ii => ({
                     ...ii,
-                    ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                   }))
-                }
+                })
 
               }))
-            }
+            })
           },
           ...lSettings,
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params
-          },
+          }),
 
-          ...(!!sqlConfig) && {
+          ...(!!sqlConfig && {
             sqlParams
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams
-          },
+          }),
 
-          ...!!timelineConfig && {
+          ...(!!timelineConfig && {
             timelineParams: {
               ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
               ...getParams(paramsConfig, lSettings.params),
               ...getParams(decodeConfig, lSettings.decodeParams),
               ...lSettings.timelineParams
             }
-          }
+          })
         }],
         visibility: true,
         ...lSettings

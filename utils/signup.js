@@ -79,7 +79,7 @@ const HELPERS_REGISTER = {
     return {
       data: {
         type: 'operators',
-        ...!!id && { id },
+        ...(!!id && { id }),
         attributes: {
           name,
           details,
@@ -106,7 +106,7 @@ const HELPERS_REGISTER = {
   getBodyFmu(certification, id) {
     return {
       data: {
-        ...!!id && { id },
+        ...(!!id && { id }),
         type: 'fmus',
         attributes: {
           'certification-fsc': certification.includes('fsc'),

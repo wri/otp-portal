@@ -42,10 +42,10 @@ const ThankYouPage = ({ url }) => {
 
           <ul className="c-field-buttons">
             <li>
-              <Link href="/">
-                <a className="card-link c-button -primary -fullwidth">
-                  {intl.formatMessage({ id: 'Back to home page' })}
-                </a>
+              <Link href="/" className="card-link c-button -primary -fullwidth">
+
+                {intl.formatMessage({ id: 'Back to home page' })}
+
               </Link>
             </li>
           </ul>

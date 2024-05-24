@@ -81,8 +81,8 @@ const Login = () => {
 
           <div className="c-field-extra-actions">
             <p>{intl.formatMessage({ id: 'signin.forgot_password', defaultMessage: 'Did you forget your password?' })}  <button type="button" className="c-link-button" onClick={handleForgotPasswordClick}>{intl.formatMessage({ id: 'signin.reset_your_password', defaultMessage: 'Reset your password' })}</button></p>
-            <p>{intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_now' })}</a></Link></p>
-            <p>{intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operator/new"><a onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_producer' })}</a></Link></p>
+            <p>{intl.formatMessage({ id: 'signin.not_a_member' })} <Link href="/signup" onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_now' })}</Link></p>
+            <p>{intl.formatMessage({ id: 'signin.not_a_producer' })} <Link href="/operator/new" onClick={closeModal}>{intl.formatMessage({ id: 'signin.register_producer' })}</Link></p>
           </div>
 
           <ul className="c-field-buttons">

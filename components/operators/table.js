@@ -134,54 +134,58 @@ class OperatorsTable extends React.Component {
                   (fmuSearch && fmuSearch.length > 1) ||
                   expandedOperatorIds.includes(r.id);
 
-                return (
-                  <>
-                    <tr key={`${r.id}-ranking`}>
-                      <td
-                        id={`td-documentation-${r.id}`}
-                        className="td-documentation -ta-left"
+                return <>
+                  <tr key={`${r.id}-ranking`}>
+                    <td
+                      id={`td-documentation-${r.id}`}
+                      className="td-documentation -ta-left"
+                    >
+                      {r.documentation}%
+                    </td>
+
+                    <td className="-ta-left">
+                      <Link
+                        href={{
+                          pathname: '/operators/detail',
+                          query: { id: r.slug },
+                        }}
+                        as={`/operators/${r.slug}`}
                       >
-                        {r.documentation}%
-                      </td>
+                        {r.name}
+                      </Link>
+                    </td>
 
-                      <td className="-ta-left">
-                        <Link href={`/operators/${r.slug}/overview`}>
-                          <a>{r.name}</a>
-                        </Link>
-                      </td>
-
-                      <td className="-ta-left">{r.country}</td>
-                      <td className="-ta-center">
-                        {!!r.obsPerVisit && (
-                          <span>{r.obsPerVisit.toFixed(2)}</span>
-                        )}
-                        {!r.obsPerVisit && (
-                          <div className="stoplight-dot -state-0}" />
-                        )}
-                      </td>
-                      <td className="-ta-right">{r.fmusLenght}</td>
-                      <td className="-ta-right">{r.certification}</td>
-                      <td className="-ta-right">
-                        {r.fmusLenght > 0 && (
-                          <button
-                            className={`expand-row-btn${expanded ? ' -green' : ''
-                              }`}
-                            onClick={() => this.handleRowToggle(r.id)}
-                          >
-                            {expanded ? (
-                              <Icon name="icon-arrow-up" />
-                            ) : (
-                              <Icon name="icon-arrow-down" />
-                            )}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                    {expanded && (
-                      <TableExpandedRow operator={r} fmuSearch={fmuSearch} />
-                    )}
-                  </>
-                );
+                    <td className="-ta-left">{r.country}</td>
+                    <td className="-ta-center">
+                      {!!r.obsPerVisit && (
+                        <span>{r.obsPerVisit.toFixed(2)}</span>
+                      )}
+                      {!r.obsPerVisit && (
+                        <div className="stoplight-dot -state-0}" />
+                      )}
+                    </td>
+                    <td className="-ta-right">{r.fmusLenght}</td>
+                    <td className="-ta-right">{r.certification}</td>
+                    <td className="-ta-right">
+                      {r.fmusLenght > 0 && (
+                        <button
+                          className={`expand-row-btn${expanded ? ' -green' : ''
+                            }`}
+                          onClick={() => this.handleRowToggle(r.id)}
+                        >
+                          {expanded ? (
+                            <Icon name="icon-arrow-up" />
+                          ) : (
+                            <Icon name="icon-arrow-down" />
+                          )}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  {expanded && (
+                    <TableExpandedRow operator={r} fmuSearch={fmuSearch} />
+                  )}
+                </>;
               })}
             </tbody>
           </table>

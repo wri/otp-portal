@@ -31,9 +31,9 @@ const Header = ({ url }) => {
         <div className="header-container">
           <h1 className="header-logo">
             <Link href="/" prefetch={false}>
-              <a>
+              
                 Open Timber Portal
-              </a>
+              
             </Link>
             {process.env.ENV === 'staging' && (
               <span className="header-logo-staging">Staging</span>

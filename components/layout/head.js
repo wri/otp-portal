@@ -5,10 +5,11 @@ import { useRouter } from 'next/router';
 
 const Head = ({ title, description }) => {
   const { locales, asPath } = useRouter();
+  const fullTitle = `${title} | Open Timber Portal`;
 
   return (
     <HeadNext>
-      <title>{title} | Open Timber Portal</title>
+      <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="author" content="Vizzuality" />

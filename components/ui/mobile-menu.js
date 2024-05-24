@@ -84,9 +84,9 @@ function MobileMenu({ className, countries, user }) {
                 {element.children.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href} prefetch={false}>
-                      <a>
-                        {item.name}
-                      </a>
+
+                      {item.name}
+
                     </Link>
                   </li>
                 ))}
@@ -97,12 +97,12 @@ function MobileMenu({ className, countries, user }) {
         return (
           <li key={idx}>
             <Link href={element.href} prefetch={false}>
-              <a>
-                {element.name}
-              </a>
+
+              {element.name}
+
             </Link>
           </li>
-        )
+        );
       })}
       <li>
         <LanguageDropdown />
