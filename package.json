@@ -64,9 +64,7 @@
     "eslint": "^8",
     "eslint-config-next": "12.x",
     "eslint-config-prettier": "^8.4.0",
-    "extract-text-webpack-plugin": "^2.1.0",
-    "sass": "^1.54.4",
-    "xo": "^0.17.1"
+    "sass": "^1.54.4"
   },
   "scripts": {
     "dev": "NODE_ENV=development node index.js",
