@@ -53,7 +53,7 @@ const LanguageDropdown = ({ showSelectedCode, className }) => {
               key={l.code}
               className="language-dropdown-list-item"
             >
-              <Link href={fixedAsPath} passHref locale={l.code}>
+              <Link href={fixedAsPath} passHref locale={l.code} legacyBehavior>
                 <LanguageLink locale={l.code}>
                   {l.name}
                 </LanguageLink>
@@ -63,7 +63,7 @@ const LanguageDropdown = ({ showSelectedCode, className }) => {
         </ul>
       </DropdownContent>
     </Dropdown>
-  )
+  );
 }
 
 LanguageDropdown.propTypes = {

@@ -95,14 +95,14 @@ export const getActiveLayers = createSelector(
           ...l.config,
           ...settings,
 
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams, country_iso_codes: cIsoCodes })
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams }),
             decodeFunction
-          }
+          })
         };
       }
 
@@ -220,41 +220,41 @@ export const getLegendLayers = createSelector(
           active: true,
           legendConfig: {
             ...legendConfig,
-            ...legendConfig.items && {
+            ...(legendConfig.items && {
               items: sortBy(legendConfig.items.map(i => ({
                 ...i,
-                ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                ...i.items && {
+                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                ...(i.items && {
                   items: i.items.map(ii => ({
                     ...ii,
-                    ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                   }))
-                }
+                })
 
               })), 'name')
-            }
+            })
           },
           ...lSettings,
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params
-          },
+          }),
 
-          ...(!!sqlConfig) && {
+          ...(!!sqlConfig && {
             sqlParams
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams
-          },
+          }),
 
-          ...!!timelineConfig && {
+          ...(!!timelineConfig && {
             timelineParams: {
               ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
               ...getParams(paramsConfig, lSettings.params),
               ...getParams(decodeConfig, lSettings.decodeParams),
               ...lSettings.timelineParams
             }
-          }
+          })
         }],
         visibility: true,
         ...lSettings

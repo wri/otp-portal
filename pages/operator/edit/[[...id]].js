@@ -41,10 +41,8 @@ const OperatorsEdit = ({ url, userOperator, operatorId, getOperators, getUserOpe
         title={intl.formatMessage({ id: 'edit.operators' })}
         background="/static/images/static-header/bg-help.jpg"
         Component={
-          <Link href={`/operators/${userOperator.data.slug}/documentation`}>
-            <a className="c-button -secondary -small">
-              {intl.formatMessage({ id: 'documentation' })}
-            </a>
+          <Link href={`/operators/${userOperator.data.slug}/documentation`} className="c-button -secondary -small">
+            {intl.formatMessage({ id: 'documentation' })}
           </Link>
         }
       />

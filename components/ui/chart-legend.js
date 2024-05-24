@@ -26,7 +26,7 @@ function ChartLegend({ title, list, className, intl }) {
             as={'/help/how-otp-works?article=assessing-severity-of-observations'}
             prefetch={false}
           >
-            <a><Icon name="icon-info" className="-smaller" /></a>
+            <Icon name="icon-info" className="-smaller" />
           </Link>
 
           {intl.formatMessage({ id: 'legend.title' })}:
