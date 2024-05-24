@@ -311,7 +311,7 @@ export const getTable = createSelector(
 
     if (activeOperatorSearch) {
       const fuse = new Fuse(operatorsTable || _data, SEARCH_OPTIONS);
-      operatorsTable = fuse.search(activeOperatorSearch);
+      operatorsTable = fuse.search(activeOperatorSearch).map(r => r.item);
     }
 
     if (activeFMUSearch) {
@@ -321,7 +321,7 @@ export const getTable = createSelector(
         distance: 100,
         threshold: 0.15
       });
-      operatorsTable = fuse.search(activeFMUSearch);
+      operatorsTable = fuse.search(activeFMUSearch).map(r => r.item);
     }
 
     operatorsTable = (operatorsTable || _data).map(o => ({

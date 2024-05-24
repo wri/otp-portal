@@ -34,7 +34,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
       distance: 100,
       threshold: 0.15
     });
-    fmus = fuse.search(fmuSearch);
+    fmus = fuse.search(fmuSearch).map(r => r.item);
   }
 
   return (

@@ -45,13 +45,13 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
     const fuse = new Fuse(documents, {
       keys: ['title'],
       threshold: 0.4,
-      minMatchCharLength: 2,
+      minMatchCharLength: 1,
       ignoreLocation: true,
       findAllMatches: true
     });
 
     const exactSearchResults = searchText.length > 2 ? documents.filter(exactSearch) : [];
-    const fuseSearchResults = fuse.search(searchText);
+    const fuseSearchResults = fuse.search(searchText).map(r => r.item);
     return uniq([...exactSearchResults, ...fuseSearchResults]);
   }
 

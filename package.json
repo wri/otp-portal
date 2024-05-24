@@ -22,7 +22,7 @@
     "eventemitter3": "^5.0.1",
     "express": "^4.19.2",
     "foundation-sites": "^6.8.1",
-    "fuse.js": "^3.0.5",
+    "fuse.js": "^7.0.0",
     "globalthis": "^1.0.4",
     "html-react-parser": "^5.1.10",
     "jsona": "^1.12.1",
