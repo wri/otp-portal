@@ -58,7 +58,7 @@ const UserNewForm = (props) => {
     <>
       {intl.formatMessage({ id: 'signin.not_a_producer' })}
       {' '}
-      <Link href="/operator/new">
+      <Link href="/operators/new" legacyBehavior>
         {intl.formatMessage({ id: 'signin.register_producer' })}
       </Link>
     </>
@@ -270,10 +270,8 @@ const UserNewForm = (props) => {
                       <>
                         {intl.formatMessage({ id: 'signup.user.form.field.agree' })}
                         {' ('}
-                        <Link href="/terms" passHref>
-                          <a target="_blank" rel="noopener noreferrer">
-                            {intl.formatMessage({ id: 'Read here' })}
-                          </a>
+                        <Link href="/terms" target="_blank" rel="noopener noreferrer">
+                          {intl.formatMessage({ id: 'Read here' })}
                         </Link>
                         {')'}
                       </>

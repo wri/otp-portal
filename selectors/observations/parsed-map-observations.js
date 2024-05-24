@@ -61,7 +61,7 @@ const getObservationsLayers = createSelector(
               data: spider[key]
             },
             render: {
-              ...key === 'leaves' && {
+              ...(key === 'leaves' && {
                 layers: [
                   {
                     metadata: {
@@ -90,8 +90,8 @@ const getObservationsLayers = createSelector(
                     }
                   }
                 ]
-              },
-              ...key === 'legs' && {
+              }),
+              ...(key === 'legs' && {
                 layers: [
                   {
                     metadata: {
@@ -104,7 +104,7 @@ const getObservationsLayers = createSelector(
                     }
                   }
                 ]
-              }
+              })
             }
           };
         });
@@ -244,19 +244,19 @@ const getObservationsLegend = createSelector(
             name: _intl.formatMessage({ id: 'fmus' }),
             legendConfig: {
               ...legendConfig,
-              ...legendConfig.items && {
+              ...(legendConfig.items && {
                 items: sortBy(legendConfig.items.map(i => ({
                   ...i,
-                  ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                  ...i.items && {
+                  ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                  ...(i.items && {
                     items: i.items.map(ii => ({
                       ...ii,
-                      ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                      ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                     }))
-                  }
+                  })
 
                 })), 'name')
-              }
+              })
             }
           }
         ]
@@ -280,7 +280,7 @@ const getObservationsLegend = createSelector(
           }
         ]
       }
-    ]
+    ];
   }
 );
 

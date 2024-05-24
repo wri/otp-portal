@@ -87,7 +87,7 @@ class SawmillModal extends React.Component {
     const { sawmill } = this.props;
     return {
       data: {
-        ...!!sawmill && !!sawmill.id && { id: sawmill.id },
+        ...(!!sawmill && !!sawmill.id && { id: sawmill.id }),
         type: 'sawmills',
         attributes: {
           name: form.name,

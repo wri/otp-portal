@@ -19,7 +19,7 @@ const Footer = () => {
             <div className="footer-item">
               <h1 className="logo">
                 <Link href="/" prefetch={false}>
-                  <a>Open Timber Portal</a>
+                  Open Timber Portal
                 </Link>
               </h1>
             </div>
@@ -50,11 +50,11 @@ const Footer = () => {
               </p>
 
               <div className="footer-links">
-                <Link href="/terms" prefetch={false}>
+                <Link href="/terms" prefetch={false} legacyBehavior>
                   {intl.formatMessage({ id: 'terms.title' })}
                 </Link>
                 <span> | </span>
-                <Link href="/privacy-policy" prefetch={false}>
+                <Link href="/privacy-policy" prefetch={false} legacyBehavior>
                   {intl.formatMessage({ id: 'Privacy Policy' })}
                 </Link>
                 <span> | </span>
