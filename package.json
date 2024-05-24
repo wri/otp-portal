@@ -31,7 +31,6 @@
     "next-redux-wrapper": "^4.0.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.8.1",
-    "query-string": "6",
     "rc-tooltip": "6.2.0",
     "react": "17",
     "react-datepicker": "^4.11.0",

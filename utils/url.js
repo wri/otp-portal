@@ -1,21 +1,21 @@
 import Router from 'next/router';
-import qs from 'query-string';
 
 export function setUrlParam(param, value) {
   const location = {
     pathname: Router.router.pathname,
     query: Router.router.query
   };
-  const query = qs.parse(window.location.search);
+  const query = new URLSearchParams(window.location.search);
 
   if (value !== null && value !== undefined) {
-    query[param] = value;
+    query.set(param, value);
     location.query[param] = value;
   } else {
-    delete query[param];
+    query.delete(param);
     delete location.query[param];
   }
-  const as = qs.stringifyUrl({ url: window.location.pathname, query });
+  const queryString = query.toString();
+  const as = window.location.pathname + (queryString ? `?${queryString}` : '');
 
   Router.push(location, as, { shallow: true, scroll: false });
 }
