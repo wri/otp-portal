@@ -9,8 +9,6 @@ import isEmpty from 'lodash/isEmpty';
 import ReactMapGL, { FlyToInterpolator } from 'react-map-gl';
 import { fitBounds } from 'viewport-mercator-project';
 
-import { easeCubic } from 'd3-ease';
-
 const DEFAULT_VIEWPORT = {
   zoom: 2,
   latitude: 0,
@@ -415,7 +413,6 @@ class Map extends Component {
           // getCursor={getCursor}
 
           transitionInterpolator={new FlyToInterpolator()}
-          transitionEasing={easeCubic}
         >
           {loaded &&
             !!this.map &&
