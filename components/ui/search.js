@@ -171,7 +171,7 @@ class Search extends React.Component {
     this.setState({
       index: 0,
       value: searchText,
-      results: result.slice(0, 8),
+      results: result.map(r => r.item).slice(0, 8),
       active: searchText !== ''
     });
   }

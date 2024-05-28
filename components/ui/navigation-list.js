@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Link from 'next/link';
-import Dropdown, {
+import {
+  Dropdown,
   DropdownTrigger,
   DropdownContent,
-} from 'react-simple-dropdown';
-
+} from 'components/ui/dropdown';
 import LanguageDropdown from 'components/ui/language-dropdown';
 
 import { injectIntl } from 'react-intl';

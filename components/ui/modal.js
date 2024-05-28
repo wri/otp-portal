@@ -15,11 +15,21 @@ import { EE } from 'services/modal';
 
 class Modal extends React.Component {
 
-  componentDidMount() {
-    const { toggleModal, setModalOptions } = this.props;
+  onToogleModal = (e) => {
+    const { toggleModal } = this.props;
+    if (toggleModal) toggleModal(e.detail.opened, e.detail.opts);
+  }
 
-    EE.on('toggleModal', toggleModal);
-    EE.on('setModalOptions', setModalOptions);
+  onSetModalOptions = (e) => {
+    const { setModalOptions } = this.props;
+    if (setModalOptions) setModalOptions(e.detail.opts);
+  }
+
+  componentDidMount() {
+    const { setModalOptions } = this.props;
+
+    EE.addEventListener('toggleModal', this.onToogleModal);
+    EE.addEventListener('setModalOptions', this.onSetModalOptions);
 
     this.el.addEventListener('transitionend', () => {
       if (!this.props.modal.opened) {
@@ -41,8 +51,8 @@ class Modal extends React.Component {
   }
 
   componentWillUnmount() {
-    EE.removeListener('toggleModal');
-    EE.removeListener('setModalOptions');
+    EE.removeEventListener('toggleModal', this.onToogleModal);
+    EE.removeEventListener('setModalOptions', this.onSetModalOptions);
   }
 
   getContent() {

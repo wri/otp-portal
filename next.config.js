@@ -1,6 +1,6 @@
 const { withSentryConfig } = require('@sentry/nextjs');
 
-require('dotenv').load();
+require('dotenv').config();
 
 const config = {
   env: {

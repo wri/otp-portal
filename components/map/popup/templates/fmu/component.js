@@ -5,9 +5,6 @@ import Link from 'next/link';
 // Intl
 import { injectIntl } from 'react-intl';
 
-import { format } from 'd3-format';
-import dayjs from 'dayjs';
-
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
     layers: PropTypes.array.isRequired,
@@ -15,34 +12,14 @@ class FMUTemplatePopup extends PureComponent {
   };
 
   formatValue = (config, data) => {
-    const { column, format: format_str, prefix = '', suffix = '', type } = config;
+    const { column } = config;
     let value = data[column] || '-';
 
-    switch (type) {
-      case 'date': {
-        if (value && format_str) {
-          value = dayjs(value).format(format_str);
-        }
-
-        break;
-      }
-
-      case 'number': {
-        if (value && format_str) {
-          value = format(format_str)(value);
-        }
-
-        break;
-      }
-
-      default: {
-        if (!['fmu_name', 'company_na'].includes(column)) {
-          value = this.props.intl.formatMessage({ id: data[column] || '-' });
-        }
-      }
+    if (!['fmu_name', 'company_na'].includes(column)) {
+      value = this.props.intl.formatMessage({ id: data[column] || '-' });
     }
 
-    return `${prefix} ${value} ${suffix}`;
+    return value;
   }
 
   render() {

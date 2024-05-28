@@ -1,10 +1,8 @@
-import EventEmitter from 'eventemitter3';
-
-const emitter = new EventEmitter();
+const emitter = new EventTarget();
 
 const actions = {};
-actions.toggleModal = (opened, opts = {}) => emitter.emit('toggleModal', opened, opts);
-actions.setModalOptions = (opts = {}) => emitter.emit('setModalOptions', opts);
+actions.toggleModal = (opened, opts = {}) => emitter.dispatchEvent(new CustomEvent('toggleModal', { detail: { opened, opts }}));
+actions.setModalOptions = (opts = {}) => emitter.dispatchEvent(new CustomEvent('setModalOptions', { detail: { opts } }));
 
 export const EE = emitter;
 export default actions;
