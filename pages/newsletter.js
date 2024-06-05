@@ -45,7 +45,7 @@ const Newsletter = ({ url, newsletters }) => {
           <div className="newsletter-grid">
             {newsletters.map(newsletter => (
               // genereate newsletter card with image on top and title and description below
-              <div className="newsletter-card">
+              <div key={newsletter.id} className="newsletter-card">
                 <a href={newsletter.attachment.url}>
                   <div className="newsletter-card__image" style={{ backgroundImage: `url(${newsletter.image.thumbnail.url})` }} />
                 </a>
