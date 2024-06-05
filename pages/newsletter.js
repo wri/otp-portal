@@ -14,46 +14,6 @@ import API from 'services/api';
 
 const JSONA = new Jsona();
 
-// const data = [
-//   {
-//     title: 'Open Timber Portal: Redesigned map of observations, latest updates from Gabon, DRC and Cameroon',
-//     date: '2023-11-13',
-//     description: 'In this edition of the newsletter, we will share a new improvement that we have recently made on the portal, which now allows users to visualize and access observations from independent forest monitors directly on a map.',
-//     image: { url: '/static/images/home/bg-a.jpg' }
-//   },
-//   {
-//     title: 'OTP: Notifications of expiring documents, coordination workshop in Yaoundé',
-//     date: '2023-05-09',
-//     description: 'Last month, the OTP team was in Yaoundé to participate in a three-day workshop with CED, FLAG and FODER, in order to coordinate efforts and define priority sites for the next independent forest monitoring missions under the OTP-IM CAM project. A brief summary of this meeting is provided below.',
-//     image: { url: '/static/images/home/bg-c.jpg' }
-//   },
-
-//   {
-//     title: 'Newsletter 3 - Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-//     date: '2022-12-04',
-//     description: 'Description of newsletter 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-//     image: { url: '/static/images/home/bg-intro.jpg' }
-//   },
-//   {
-//     title: 'Newsletter 4 - Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-//     date: '2022-07-04',
-//     description: 'Description of newsletter 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-//     image: { url: '/static/images/static-header/bg-help.jpg' }
-//   },
-//   {
-//     title: 'Newsletter 5',
-//     date: '2022-04-04',
-//     description: 'Description of newsletter 5',
-//     image: { url: '/static/images/static-header/bg-about.jpg' }
-//   },
-//   {
-//     title: 'Newsletter 6',
-//     date: '2022-01-04',
-//     description: 'Description of newsletter 6',
-//     image: { url: '/static/images/static-header/bg-help.jpg' }
-//   }
-// ]
-
 const Newsletter = ({ url, newsletters }) => {
   const intl = useIntl();
 
