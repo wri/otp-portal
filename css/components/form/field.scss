@@ -12,6 +12,15 @@
     color: $color-text-1;
     background: none;
     font-weight: $font-weight-default;
+
+    a {
+      color: $color-text-1;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
   abbr {

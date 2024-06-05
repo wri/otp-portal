@@ -78,6 +78,17 @@ class Field extends React.Component {
     )
   }
 
+  renderLabel() {
+    const { properties } = this.props;
+    if (!properties.label) return null;
+
+    if (typeof properties.label === 'function') {
+      return properties.label();
+    }
+
+    return properties.label
+  }
+
   render() {
     const { properties, className } = this.props;
     const { valid, error } = this.state;
@@ -94,7 +105,7 @@ class Field extends React.Component {
       <div className={`c-field ${fieldClasses}`}>
         {properties.label &&
           <label htmlFor={`input-${properties.name}`} className="label">
-            {properties.label} {properties.required && <abbr title="required">*</abbr>}
+            {this.renderLabel()} {properties.required && <abbr title="required">*</abbr>}
           </label>
         }
 
