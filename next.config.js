@@ -26,6 +26,16 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: "/**"
+      },
+    ],
+  },
   i18n: {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'

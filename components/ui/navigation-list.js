@@ -57,7 +57,7 @@ function NavigationList({ footer, intl, url, className, countries }) {
       href: '/about',
       name: intl.formatMessage({ id: 'about' })
     },
-    footer && {
+    {
       href: '/newsletter',
       name: intl.formatMessage({ id: 'newsletter' })
     }

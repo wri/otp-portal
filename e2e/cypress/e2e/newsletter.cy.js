@@ -1,4 +1,21 @@
 describe('Newsletter', () => {
+  describe('Newsletter history page', () => {
+    beforeEach(() => {
+      cy.visit('/newsletter');
+    });
+
+    it('displays content', function () {
+      cy.contains('Showing 3 previous newsletters');
+      cy.contains('Open Timber Portal Newsletter 1');
+      cy.contains('Welcome to first edition of the Open Timber Portal newsletter!');
+      cy.contains('November 2018');
+    });
+
+    it('matches visually', function () {
+      cy.matchImage();
+    });
+  });
+
   describe('Newsletter form', () => {
     beforeEach(() => {
       cy.intercept('https://api.db-ip.com/v2/free/self', {
@@ -6,7 +23,7 @@ describe('Newsletter', () => {
           ipAddress: '85.34.21.23'
         }
       });
-      cy.visit('/newsletter');
+      cy.visit('/newsletter/sign-up');
     });
 
     it('displays content', function () {
