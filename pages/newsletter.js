@@ -16,6 +16,9 @@ const JSONA = new Jsona();
 
 const Newsletter = ({ url, newsletters, language }) => {
   const intl = useIntl();
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString(language, { year: 'numeric', month: 'long', timeZone: 'UTC' }).replace(/^./, str => str.toUpperCase());
+  }
 
   return (
     <Layout
@@ -56,7 +59,7 @@ const Newsletter = ({ url, newsletters, language }) => {
                     </a>
                   </h3>
                   <small className="newsletter-card__date">
-                    {new Date(newsletter.date).toLocaleDateString(language, { year: 'numeric', month: 'long', timeZone: 'UTC' })}
+                    {formatDate(newsletter.date)}
                   </small>
                   <p>{newsletter["short-description"]}</p>
                 </div>
