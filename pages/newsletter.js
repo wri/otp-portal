@@ -14,7 +14,7 @@ import API from 'services/api';
 
 const JSONA = new Jsona();
 
-const Newsletter = ({ url, newsletters }) => {
+const Newsletter = ({ url, newsletters, language }) => {
   const intl = useIntl();
 
   return (
@@ -47,7 +47,7 @@ const Newsletter = ({ url, newsletters }) => {
               // genereate newsletter card with image on top and title and description below
               <div key={newsletter.id} className="newsletter-card">
                 <a href={newsletter.attachment.url}>
-                  <div className="newsletter-card__image" style={{ backgroundImage: `url(${newsletter.image.thumbnail.url})` }} />
+                  <div className="newsletter-card__image" style={{ backgroundImage: `url(${newsletter.image.url})` }} />
                 </a>
                 <div className="newsletter-card__content">
                   <h3>
@@ -56,7 +56,7 @@ const Newsletter = ({ url, newsletters }) => {
                     </a>
                   </h3>
                   <small className="newsletter-card__date">
-                    {new Date(newsletter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' })}
+                    {new Date(newsletter.date).toLocaleDateString(language, { year: 'numeric', month: 'long', timeZone: 'UTC' })}
                   </small>
                   <p>{newsletter["short-description"]}</p>
                 </div>
@@ -77,7 +77,8 @@ const Newsletter = ({ url, newsletters }) => {
 
 Newsletter.propTypes = {
   url: PropTypes.shape({}).isRequired,
-  newsletters: PropTypes.array.isRequired
+  newsletters: PropTypes.array.isRequired,
+  language: PropTypes.string.isRequired
 };
 Newsletter.getInitialProps = async ({ url, store }) => {
   const { language } = store.getState();
@@ -85,7 +86,7 @@ Newsletter.getInitialProps = async ({ url, store }) => {
     .get('newsletters', { locale: language })
     .then((response) => JSONA.deserialize(response));
 
-  return { url, newsletters };
+  return { url, newsletters, language };
 }
 
 
