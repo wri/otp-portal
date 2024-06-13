@@ -44,7 +44,7 @@ const UserNewForm = (props) => {
     return props.saveUser({ body })
       .then(() => {
         logEvent('sign_up', { method: 'credentials' });
-        if (props.onSubmit) props.onSubmit();
+        if (props.onSubmit) props.onSubmit({ email: form.email });
       })
   }
 
@@ -74,189 +74,168 @@ const UserNewForm = (props) => {
     <div className="c-section">
       <div className="l-container">
         <FormProvider onSubmit={handleSubmit} initialValues={formInitialState}>
-          {({ form, submitted }) => (<>
-            {!submitted && (
-              <Form>
-                <fieldset className="c-field-container">
-                  {/* Permission request */}
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    options={[
-                      { label: intl.formatMessage({ id: 'operator' }), value: 'operator' },
-                      { label: intl.formatMessage({ id: 'government' }), value: 'government' }
-                    ]}
-                    hint={intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
-                    properties={{
-                      name: 'permissions_request',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.permissions_request' }),
-                      required: true,
-                    }}
-                  >
-                    {RadioGroup}
-                  </Field>
+          {({ form }) => (<>
+            <Form>
+              <fieldset className="c-field-container">
+                {/* Permission request */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={[
+                    { label: intl.formatMessage({ id: 'operator' }), value: 'operator' },
+                    { label: intl.formatMessage({ id: 'government' }), value: 'government' }
+                  ]}
+                  hint={intl.formatMessage({ id: 'signup.user.form.field.permissions_request.hint' })}
+                  properties={{
+                    name: 'permissions_request',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.permissions_request' }),
+                    required: true,
+                  }}
+                >
+                  {RadioGroup}
+                </Field>
 
-                  {/* Countries */}
+                {/* Countries */}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={HELPERS_REGISTER.mapToSelectOptions(countries.data)}
+                  properties={{
+                    name: 'country_id',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.country' }),
+                    required: true,
+                    instanceId: 'select.country_id',
+                    placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                  }}
+                >
+                  {Select}
+                </Field>
+
+                {/* Operators */}
+                {form.permissions_request === 'operator' && form.country_id && (
                   <Field
                     validations={['required']}
                     className="-fluid"
-                    options={HELPERS_REGISTER.mapToSelectOptions(countries.data)}
+                    hint={registerNewProducerHint}
+                    options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
                     properties={{
-                      name: 'country_id',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.country' }),
+                      name: 'operator_id',
+                      label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
                       required: true,
-                      instanceId: 'select.country_id',
+                      instanceId: 'select.operator_id',
                       placeholder: intl.formatMessage({ id: 'select.placeholder' })
                     }}
                   >
                     {Select}
                   </Field>
+                )}
 
-                  {/* Operators */}
-                  {form.permissions_request === 'operator' && form.country_id && (
-                    <Field
-                      validations={['required']}
-                      className="-fluid"
-                      hint={registerNewProducerHint}
-                      options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
-                      properties={{
-                        name: 'operator_id',
-                        label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
-                        required: true,
-                        instanceId: 'select.operator_id',
-                        placeholder: intl.formatMessage({ id: 'select.placeholder' })
-                      }}
-                    >
-                      {Select}
-                    </Field>
-                  )}
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'name',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
 
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'name',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
-                      required: true
-                    }}
-                  >
-                    {Input}
-                  </Field>
+                <Field
+                  validations={['required', 'email']}
+                  className="-fluid"
+                  properties={{
+                    name: 'email',
+                    autoComplete: 'email',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.email' }),
+                    required: true,
+                  }}
+                >
+                  {Input}
+                </Field>
 
-                  <Field
-                    validations={['required', 'email']}
-                    className="-fluid"
-                    properties={{
-                      name: 'email',
-                      autoComplete: 'email',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.email' }),
-                      required: true,
-                    }}
-                  >
-                    {Input}
-                  </Field>
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  options={LOCALES.map(l => ({ label: l.name, value: l.code }))}
+                  properties={{
+                    name: 'locale',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.preferred_language', defaultMessage: 'Preferred Language' }),
+                    required: true,
+                    instanceId: 'select.locale',
+                    placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                  }}
+                >
+                  {Select}
+                </Field>
 
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    options={LOCALES.map(l => ({ label: l.name, value: l.code }))}
-                    properties={{
-                      name: 'locale',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.preferred_language', defaultMessage: 'Preferred Language' }),
-                      required: true,
-                      instanceId: 'select.locale',
-                      placeholder: intl.formatMessage({ id: 'select.placeholder' })
-                    }}
-                  >
-                    {Select}
-                  </Field>
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'password',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.password' }),
+                    type: 'password',
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
 
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    properties={{
-                      name: 'password',
-                      autoComplete: 'new-password',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.password' }),
-                      type: 'password',
-                      required: true
-                    }}
-                  >
-                    {Input}
-                  </Field>
+                <Field
+                  validations={[
+                    'required',
+                    {
+                      type: 'isEqual',
+                      condition: form.password,
+                      message: intl.formatMessage({ id: 'The field should be equal to password' })
+                    }
+                  ]}
+                  className="-fluid"
+                  properties={{
+                    name: 'password_confirmation',
+                    autoComplete: 'new-password',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
+                    type: 'password',
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
 
-                  <Field
-                    validations={[
-                      'required',
-                      {
-                        type: 'isEqual',
-                        condition: form.password,
-                        message: intl.formatMessage({ id: 'The field should be equal to password' })
-                      }
-                    ]}
-                    className="-fluid"
-                    properties={{
-                      name: 'password_confirmation',
-                      autoComplete: 'new-password',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.password_confirmation' }),
-                      type: 'password',
-                      required: true
-                    }}
-                  >
-                    {Input}
-                  </Field>
+                <Field
+                  className="-fluid"
+                  validations={['required']}
+                  properties={{
+                    required: true,
+                    name: 'agree',
+                    label:
+                      <>
+                        {intl.formatMessage({ id: 'signup.user.form.field.agree' })}
+                        {' ('}
+                        <Link href="/terms" passHref>
+                          <a target="_blank" rel="noopener noreferrer">
+                            {intl.formatMessage({ id: 'Read here' })}
+                          </a>
+                        </Link>
+                        {')'}
+                      </>
+                  }}
+                >
+                  {Checkbox}
+                </Field>
+              </fieldset>
 
-                  <Field
-                    className="-fluid"
-                    validations={['required']}
-                    properties={{
-                      required: true,
-                      name: 'agree',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.agree' })
-                    }}
-                  >
-                    {Checkbox}
-                  </Field>
-                </fieldset>
-
-                <ul className="c-field-buttons">
-                  <li>
-                    <SubmitButton>
-                      {intl.formatMessage({ id: 'signup' })}
-                    </SubmitButton>
-                  </li>
-                </ul>
-              </Form>
-            )}
-
-            {submitted && (
-              <div className="c-form">
-                <h2 className="c-title">
-                  {intl.formatMessage({ id: 'thankyou' })}
-                </h2>
-
-                <p>
-                  {intl.formatMessage({ id: 'wait-for-approval' })}
-                </p>
-
-                <ul className="c-field-buttons">
-                  <li>
-                    <Link href="/operators">
-                      <a className="card-link c-button -primary -fullwidth">
-                        {intl.formatMessage({ id: 'operators' })}
-                      </a>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/observations">
-                      <a className="card-link c-button -primary -fullwidth">
-                        {intl.formatMessage({ id: 'observations' })}
-                      </a>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
+              <ul className="c-field-buttons">
+                <li>
+                  <SubmitButton>
+                    {intl.formatMessage({ id: 'signup' })}
+                  </SubmitButton>
+                </li>
+              </ul>
+            </Form>
           </>)}
         </FormProvider>
       </div>
