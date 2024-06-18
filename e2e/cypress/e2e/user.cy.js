@@ -26,7 +26,8 @@ describe('User', () => {
       cy.login('operator@example.com', 'password');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
-      cy.get('#input-name').should('have.value', 'Operator');
+      cy.get('#input-firstName').should('have.value', 'Operator');
+      cy.get('#input-lastName').should('have.value', 'User');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('Sign out').click();
       cy.get('a').contains('Sign in').should('exist')
@@ -40,7 +41,8 @@ describe('User', () => {
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
       cy.selectOption('[name=operator_id]', 'Si', 'SIFCO');
       cy.get('#select-locale .react-select__single-value').contains('English');
-      cy.get('#input-name').type('Test operator');
+      cy.get('#input-first_name').type('Test');
+      cy.get('#input-last_name').type('Operator');
       cy.get('#input-email').type('testoperator@example.com');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-password_confirmation').type('supersecret');
@@ -83,8 +85,10 @@ describe('User', () => {
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
 
-      cy.get('#input-name').clear();
-      cy.get('#input-name').type('New Test Operator');
+      cy.get('#input-firstName').clear();
+      cy.get('#input-firstName').type('New Test');
+      cy.get('#input-lastName').clear();
+      cy.get('#input-lastName').type('Operator 2');
       cy.selectOption('[name=locale]', 'Po', 'Português');
       cy.get('#input-password').type('supersecret');
       cy.get('#input-passwordConfirmation').type('supersecret');
@@ -94,6 +98,12 @@ describe('User', () => {
       cy.get('.rrt-text').should('have.text', 'Profile saved correctly');
       cy.get('#input-password').should('have.value', '');
       cy.get('#input-passwordConfirmation').should('have.value', '');
+
+      cy.reload();
+
+      cy.get('#input-firstName').should('have.value', 'New Test');
+      cy.get('#input-lastName').should('have.value', 'Operator 2');
+      cy.get('#select-locale .react-select__single-value').contains('Português');
 
       cy.resetDB();
     });

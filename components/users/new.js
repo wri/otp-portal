@@ -59,7 +59,8 @@ const UserNewForm = (props) => {
   );
 
   const formInitialState = {
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     operator_id: '',
     country_id: '',
@@ -134,8 +135,20 @@ const UserNewForm = (props) => {
                   validations={['required']}
                   className="-fluid"
                   properties={{
-                    name: 'name',
-                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
+                    name: 'first_name',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.first_name' }),
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'last_name',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.last_name' }),
                     required: true
                   }}
                 >
