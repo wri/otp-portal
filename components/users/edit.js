@@ -24,7 +24,8 @@ const UserEditForm = (props) => {
 
   const handleSubmit = ({ form, setFormValues }) => {
     const attributes = {
-      name: form.name,
+      'first-name': form.firstName,
+      'last-name': form.lastName,
       password: form.password,
       locale: form.locale,
       'password-confirmation': form.passwordConfirmation,
@@ -68,7 +69,7 @@ const UserEditForm = (props) => {
   return (
     <div className="c-section">
       <div className="l-container">
-        <FormProvider initialValues={{ name: userProfile.name, locale: userProfile.locale, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
+        <FormProvider initialValues={{ firstName: userProfile['first-name'], lastName: userProfile['last-name'], locale: userProfile.locale, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
@@ -76,8 +77,20 @@ const UserEditForm = (props) => {
                   validations={['required']}
                   className="-fluid"
                   properties={{
-                    name: 'name',
-                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
+                    name: 'firstName',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.first_name' }),
+                    required: true
+                  }}
+                >
+                  {Input}
+                </Field>
+
+                <Field
+                  validations={['required']}
+                  className="-fluid"
+                  properties={{
+                    name: 'lastName',
+                    label: intl.formatMessage({ id: 'signup.user.form.field.last_name' }),
                     required: true
                   }}
                 >
