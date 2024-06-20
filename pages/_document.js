@@ -1,9 +1,9 @@
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 import { Icons } from 'vizzuality-components';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
-import Osano from 'components/layout/osano';
 
 class MyDocument extends Document {
   static async getInitialProps(context) {
@@ -19,7 +19,7 @@ class MyDocument extends Document {
       <Html lang={this.props.language}>
         <Head />
         <body>
-          <Osano />
+          {process.env.OSANO_ID && <Script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} strategy="beforeInteractive" />}
           <GoogleTagManager noscript />
           <Main />
           <NextScript />
