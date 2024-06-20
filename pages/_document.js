@@ -10,6 +10,7 @@ class MyDocument extends Document {
     const initialProps = await Document.getInitialProps(context);
     const { locale } = context;
     const language = locale || 'en';
+
     return { ...initialProps, language };
   }
 
