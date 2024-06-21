@@ -1,5 +1,6 @@
 import React from 'react';
-import Geosuggest from 'react-geosuggest';
+// TODO: when bringing back the geosuggest, make sure to upgrade to newest version and upgrade this component as well
+// import Geosuggest from 'react-geosuggest';
 import PropTypes from 'prop-types';
 
 class LocationSearch extends React.Component {
@@ -24,12 +25,12 @@ class LocationSearch extends React.Component {
   render() {
     return (
       <div className="c-location-search">
-        <Geosuggest
+        {/* <Geosuggest
           ref={(node) => { this.geoSuggest = node; }}
           onSuggestSelect={this.onSuggestSelect}
           className="search-input"
           googleMaps={null}
-        />
+        /> */}
       </div>
     );
   }
