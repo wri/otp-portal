@@ -22,11 +22,9 @@ import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
 import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
-import LocationSearch from 'components/map/location-search';
 
 import { transformRequest } from 'utils/map';
 import CancelButton from '../form/CancelButton';
-import { set } from 'lodash';
 
 class SawmillModal extends React.Component {
   static propTypes = {
@@ -194,10 +192,6 @@ class SawmillModal extends React.Component {
 
                 <div className={'c-map-container -modal'}>
                   <Spinner isLoading={sawmillMap.loading} className="-light" />
-
-                  {process.env.GOOGLE_API_KEY && (
-                    <LocationSearch setMapLocation={this.props.setMapLocation} />
-                  )}
 
                   {/* Map */}
                   <Map

@@ -56,9 +56,6 @@ const Head = ({ title, description }) => {
       {/* TODO: use next/script for all scripts across app */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script src="https://cdn.polyfill.io/v3/polyfill.min.js?version=3.110.1" />
-      {process.env.GOOGLE_API_KEY && (
-        <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} defer />
-      )}
       {process.env.ENV === 'production' && !(process.env.DISABLE_HOTJAR === 'true') && (
         <script
           dangerouslySetInnerHTML={{
