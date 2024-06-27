@@ -33,7 +33,7 @@ function OperatorsDetailDocumentation({
     .sort((a, b) => a - b)
     .reverse()[0];
 
-  const filteredData = operatorDocumentation.filter(
+  const filteredData = (operatorDocumentation || []).filter(
     (d) => d.status !== 'doc_not_required'
   );
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
