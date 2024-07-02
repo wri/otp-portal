@@ -122,6 +122,7 @@ class MyApp extends App {
       } else {
         Router.replace(pageProps.redirectTo);
       }
+      return {};
     }
 
     return { pageProps, language, messages, defaultLocale };

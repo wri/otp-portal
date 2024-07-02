@@ -16,7 +16,7 @@ describe('Operator', function () {
       beforeEach(function () {
         cy.get('a').contains('My account').click();
         cy.get('a').contains('Producer profile').click();
-        cy.location('pathname', {timeout: 25000}).should('include', '/operators/edit');
+        cy.location('pathname', {timeout: 25000}).should('include', '/operator/edit');
       })
 
       it('can update profile info', function () {

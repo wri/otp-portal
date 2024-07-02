@@ -52,6 +52,11 @@ const config = {
         source: '/operators/:id',
         destination: '/operators/:id/overview',
         permanent: true
+      },
+      {
+        source: '/countries/:id',
+        destination: '/countries/:id/overview',
+        permanent: true
       }
     ]
   }

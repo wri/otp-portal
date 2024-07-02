@@ -33,17 +33,23 @@ const TABS_COUNTRIES_DETAIL = [
 
 class CountriesDetail extends React.Component {
   static async getInitialProps({ url, store }) {
-    if (!url.query.tab) {
+    const { id, tab } = url.query;
+
+    if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
+      return { redirectTo: '/' };
+    }
+
+    if (!tab) {
       return { redirectTo: `${url.asPath}/overview` };
     }
 
     const { countriesDetail } = store.getState();
     const requests = [];
 
-    if (countriesDetail.data.id !== url.query.id) {
-      requests.push(store.dispatch(getCountry(url.query.id)));
-      requests.push(store.dispatch(getCountryLinks(url.query.id)));
-      requests.push(store.dispatch(getCountryVPAs(url.query.id)));
+    if (countriesDetail.data.id !== id) {
+      requests.push(store.dispatch(getCountry(id)));
+      requests.push(store.dispatch(getCountryLinks(id)));
+      requests.push(store.dispatch(getCountryVPAs(id)));
     }
 
     await Promise.all(requests);

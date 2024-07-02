@@ -72,23 +72,6 @@ const localeParams = (req) => (
 app
   .prepare()
   .then(() => {
-    // COUNTRIES
-    server.get('/:locale?/countries/detail', notFound);
-    if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
-      server.get('/:locale?/countries/:id/:tab?', (req, res) => {
-        const { query } = parse(req.url, true);
-        return app.render(
-          req,
-          res,
-          '/countries/detail',
-          Object.assign(req.params, query, localeParams(req))
-        );
-      });
-    } else {
-      server.get('/:locale?/countries', homeRedirect);
-      server.get('/:locale?/countries/:id/:tab?', homeRedirect);
-    }
-
     // MAP only development
     if (process.env.FEATURE_MAP_PAGE !== 'true') {
       server.get('/:locale?/map', notFound);
@@ -98,33 +81,16 @@ app
     server.get('/:locale?/profile', onlyAuthenticated);
 
     // OPERATORS
-    server.get('/:locale?/operators/edit/:id?', (req, res) => {
+    server.get('/:locale?/operator/edit/:id?', (req, res) => {
       if (!req.session.user) return homeRedirect(req, res);
 
       return app.render(
         req,
         res,
-        '/operators/edit',
+        '/operator/edit',
         Object.assign(req.params, req.query, localeParams(req))
       );
     });
-    server.get('/:locale?/operators/new', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/operators/new',
-        Object.assign(req.params, req.query, localeParams(req))
-      )
-    );
-    // OBSERVATIONS
-    server.get('/:locale?/observations/:tab', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/observations',
-        Object.assign(req.params, req.query, localeParams(req))
-      )
-    );
 
     server.get('/:locale?/help/:tab', (req, res) => {
       return app.render(req, res, '/help', Object.assign(req.params, req.query, localeParams(req)));

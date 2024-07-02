@@ -74,7 +74,7 @@ class ObservationsPage extends React.Component {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'observations-list',
+      tab: 'observations-list',
       popup: null,
       page: 1,
     };

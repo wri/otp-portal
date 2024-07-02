@@ -31,7 +31,7 @@ function generateSiteMap(operators, countries) {
     '/help/faqs',
     '/help/tutorials',
     '/operators',
-    '/operators/new',
+    '/operator/new',
     ...operators.flatMap(({ slug }) => [
       `/operators/${slug}/overview`,
       `/operators/${slug}/documentation`,

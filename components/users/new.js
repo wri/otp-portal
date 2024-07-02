@@ -52,7 +52,7 @@ const UserNewForm = (props) => {
     <>
       {intl.formatMessage({ id: 'signin.not_a_producer' })}
       {' '}
-      <Link href="/operators/new">
+      <Link href="/operator/new">
         {intl.formatMessage({ id: 'signin.register_producer' })}
       </Link>
     </>

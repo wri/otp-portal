@@ -16,7 +16,7 @@ describe('Pages', () => {
 
   describe('Create producer page', () => {
     it('matches visually', function () {
-      cy.visit('/operators/new');
+      cy.visit('/operator/new');
       cy.matchImage();
     });
   })
