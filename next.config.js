@@ -57,7 +57,12 @@ const config = {
         source: '/countries/:id',
         destination: '/countries/:id/overview',
         permanent: true
-      }
+      },
+      {
+        source: '/help',
+        destination: '/help/overview',
+        permanent: true
+      },
     ]
   }
   /* productionBrowserSourceMaps: true, // for debugging prod build locally */
