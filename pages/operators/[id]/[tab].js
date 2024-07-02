@@ -61,33 +61,37 @@ class OperatorsDetail extends React.Component {
   static async getInitialProps({ url, res, store }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
     const requests = [];
+    const {id, tab} = url.query;
+
+    console.log('details', url);
 
     // we are going to redirect to slug if the id is a number
-    if (!isNaN(url.query.id)) {
-      await store.dispatch(getOperator(url.query.id));
+    if (!isNaN(id)) {
+      await store.dispatch(getOperator(id));
       const operator = store.getState().operatorsDetail.data;
 
       if (!operator || isEmpty(operator)) {
         return { errorCode: 404 };
       }
-      return { redirectTo: url.asPath.replace(`/${url.query.id}`, `/${operator.slug}`) }
+      return { redirectTo: url.asPath.replace(`/${id}`, `/${operator.slug}`) }
     }
 
-    if (!url.query.tab) {
+    if (!tab) {
       return { redirectTo: `${url.asPath}/overview` };
     }
-    if (!TABS.includes(url.query.tab)) {
-      return { redirectTo: `${url.asPath.replace(`/${url.query.tab}`, '/overview')}` };
+
+    if (!TABS.includes(tab)) {
+      return { redirectTo: `${url.asPath.replace(`/${tab}`, '/overview')}` };
     }
 
-    if (operatorsDetail.data.slug !== url.query.id) {
-      await store.dispatch(getOperatorBySlug(url.query.id));
+    if (operatorsDetail.data.slug !== id) {
+      await store.dispatch(getOperatorBySlug(id));
       const operator = store.getState().operatorsDetail.data;
 
       if (operator && !isEmpty(operator)) {
         requests.push(store.dispatch(getOperatorObservations(operator.id)));
 
-        if (isClient || url.query.tab === 'documentation') {
+        if (isClient || tab === 'documentation') {
           requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
           requests.push(store.dispatch(getOperatorDocumentationCurrent(operator.id)));
           requests.push(store.dispatch(getOperatorTimeline(operator.id)));
@@ -98,6 +102,8 @@ class OperatorsDetail extends React.Component {
     }
 
     await Promise.all(requests);
+
+    console.log('rendering');
 
     return { url };
   }

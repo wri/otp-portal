@@ -108,7 +108,6 @@ app
         Object.assign(req.params, req.query, localeParams(req))
       );
     });
-    server.get('/:locale?/operators/detail', notFound);
     server.get('/:locale?/operators/new', (req, res) =>
       app.render(
         req,
@@ -117,16 +116,6 @@ app
         Object.assign(req.params, req.query, localeParams(req))
       )
     );
-    server.get('/:locale?/operators/:id/:tab?', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/operators/detail',
-        Object.assign(req.params, query, localeParams(req))
-      );
-    });
-
     // OBSERVATIONS
     server.get('/:locale?/observations/:tab', (req, res) =>
       app.render(

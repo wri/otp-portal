@@ -115,6 +115,8 @@ class MyApp extends App {
       res.statusCode = pageProps.errorCode;
     }
     if (pageProps.redirectTo) {
+      console.log("redirect app.js", pageProps.redirectTo);
+
       if (isServer) {
         res.writeHead(301, { Location: pageProps.redirectTo });
         res.end();
