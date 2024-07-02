@@ -80,18 +80,6 @@ app
     // PROFILE
     server.get('/:locale?/profile', onlyAuthenticated);
 
-    // OPERATORS
-    server.get('/:locale?/operator/edit/:id?', (req, res) => {
-      if (!req.session.user) return homeRedirect(req, res);
-
-      return app.render(
-        req,
-        res,
-        '/operator/edit',
-        Object.assign(req.params, req.query, localeParams(req))
-      );
-    });
-
     // LOGIN
     server.post('/login', (req, res) => {
       fetch(`${process.env.OTP_API}/login`, {
