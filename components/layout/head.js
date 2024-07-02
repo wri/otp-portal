@@ -55,9 +55,9 @@ const Head = ({ title, description }) => {
       {/* Styles and scripts */}
       {/* TODO: use next/script for all scripts across app */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      {process.env.GOOGLE_API_KEY && (
+      {/* {process.env.GOOGLE_API_KEY && (
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} defer />
-      )}
+      )} */}
       {process.env.ENV === 'production' && !(process.env.DISABLE_HOTJAR === 'true') && (
         <script
           dangerouslySetInnerHTML={{
