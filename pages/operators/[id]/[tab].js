@@ -58,12 +58,10 @@ const TABS = [
 const isClient = typeof window !== 'undefined';
 
 class OperatorsDetail extends React.Component {
-  static async getInitialProps({ url, res, store }) {
+  static async getInitialProps({ url, res, store, ...rest }) {
     const { operatorsDetail, operatorsDetailFmus } = store.getState();
     const requests = [];
     const {id, tab} = url.query;
-
-    console.log('details', url);
 
     // we are going to redirect to slug if the id is a number
     if (!isNaN(id)) {
@@ -102,8 +100,6 @@ class OperatorsDetail extends React.Component {
     }
 
     await Promise.all(requests);
-
-    console.log('rendering');
 
     return { url };
   }

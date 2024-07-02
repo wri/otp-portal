@@ -115,10 +115,9 @@ class MyApp extends App {
       res.statusCode = pageProps.errorCode;
     }
     if (pageProps.redirectTo) {
-      console.log("redirect app.js", pageProps.redirectTo);
-
       if (isServer) {
-        res.writeHead(301, { Location: pageProps.redirectTo });
+        const localePrefix = locale === defaultLocale || pageProps.redirectTo.startsWith('/' + locale) ? '' : '/' + locale;
+        res.writeHead(301, { Location: localePrefix + pageProps.redirectTo });
         res.end();
       } else {
         Router.replace(pageProps.redirectTo);
