@@ -130,14 +130,8 @@ class Search extends React.Component {
 
     if (item) {
       const slug = item.dataset.slug;
-      const location = {
-        pathname: '/operators/detail',
-        query: { id: slug }
-      };
       this.onClose();
-      Router
-        .push(location, `/operators/${slug}`)
-          .then(() => window.scrollTo(0, 0));
+      Router.push(`/operators/${slug}/overview`).then(() => window.scrollTo(0, 0));
     }
   }
 

@@ -46,6 +46,25 @@ const config = {
       disableClientWebpackPlugin: true
     })
   },
+  async redirects() {
+    return [
+      {
+        source: '/operators/:id',
+        destination: '/operators/:id/overview',
+        permanent: true
+      },
+      {
+        source: '/countries/:id',
+        destination: '/countries/:id/overview',
+        permanent: true
+      },
+      {
+        source: '/help',
+        destination: '/help/overview',
+        permanent: true
+      },
+    ]
+  }
   /* productionBrowserSourceMaps: true, // for debugging prod build locally */
 };
 

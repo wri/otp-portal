@@ -86,8 +86,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card1.link.label',
               }),
-              href: `/operators/detail?tab=documentation&id=${url.query.id}`,
-              as: `/operators/${url.query.id}/documentation`,
+              href: `/operators/${url.query.id}/documentation`
             }}
           />
         </div>
@@ -106,8 +105,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card2.link.label',
               }),
-              href: `/operators/detail?tab=observations&id=${url.query.id}`,
-              as: `/operators/${url.query.id}/observations`,
+              href: `/operators/${url.query.id}/observations`,
             }}
           />
         </div>
@@ -128,8 +126,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card3.link.label',
               }),
-              href: `/operators/detail?tab=fmus&id=${url.query.id}`,
-              as: `/operators/${url.query.id}/fmus`,
+              href: `/operators/${url.query.id}/fmus`,
             }}
           />
         </div>

@@ -53,7 +53,7 @@ class HelpPage extends React.Component {
           href={{
             pathname: url.pathname,
             query: { },
-            as: url.pathname
+            as: '/help'
           }}
           options={[{
             label: this.props.intl.formatMessage({ id: 'overview' }),

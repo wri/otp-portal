@@ -40,7 +40,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
       {user.role === 'operator' && (
         <li className={listItemClassName}>
           <Link
-            href="/operators/edit"
+            href="/operator/edit"
             prefetch={false}
           >
             <a>{intl.formatMessage({ id: 'Producer profile' })}</a>
@@ -50,7 +50,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
       {user.role === 'holding' && userOperators.map(operator => (
         <li key={`dropodown-operator-profile-${operator.id}`} className={listItemClassName}>
           <Link
-            href={`/operators/edit/${operator.id}`}
+            href={`/operator/edit/${operator.id}`}
             prefetch={false}
           >
             <a>

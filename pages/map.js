@@ -40,57 +40,47 @@ const Layers = [
   },
 ];
 
-class MapPage extends React.Component {
-  static async getInitialProps({ url }) {
-    return { url };
+const MapPage = () => (
+  <div className="l-page c-page">
+    <Head title="Map page" />
+
+    <div className="l-main">
+      <StaticSection
+        map={
+          <Map
+            mapStyle="mapbox://styles/mapbox/light-v9"
+            viewport={{
+              zoom: 5,
+              latitude: 0,
+              longitude: 20
+            }}
+            customClass="c-map-fullscreen"
+            dragRotate={false}
+            transformRequest={transformRequest}
+          >
+            {map => (
+              <Fragment>
+                <LayerManager
+                  map={map}
+                  layers={Layers}
+                />
+              </Fragment>
+            )}
+          </Map>
+        }
+        position={{ top: true, right: true }}
+        column={5}
+      />
+    </div>
+  </div>
+);
+
+MapPage.getInitialProps = async () => {
+  if (process.env.FEATURE_MAP_PAGE !== 'true') {
+    return { errorCode: 404 };
   }
 
-  render() {
-    const { url } = this.props;
-
-    return (
-      <div className="l-page c-page">
-        <Head title="Map page" />
-
-        <div className="l-main">
-
-          <StaticSection
-            map={
-              <Map
-                mapStyle="mapbox://styles/mapbox/light-v9"
-                viewport={{
-                  zoom: 5,
-                  latitude: 0,
-                  longitude: 20
-                }}
-                customClass="c-map-fullscreen"
-                dragRotate={false}
-                transformRequest={transformRequest}
-              >
-                {map => (
-                  <Fragment>
-                    <LayerManager
-                      map={map}
-                      layers={Layers}
-                    />
-                  </Fragment>
-                )}
-              </Map>
-            }
-            position={{ top: true, right: true }}
-            column={5}
-          />
-        </div>
-      </div>
-
-    );
-  }
+  return {};
 }
 
-MapPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
-  intl: PropTypes.object.isRequired
-};
-
-
-export default injectIntl(MapPage);
+export default MapPage;
