@@ -6,8 +6,6 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const next = require('next');
-const { i18n } = require("./next.config");
-const { parse } = require('url');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -45,41 +43,9 @@ server.use(
   })
 );
 
-const homeRedirect = (req, res) => res.redirect(req.params.locale ? `/${req.params.locale}` : '/');
-const notFound = (req, res) => {
-  res.status(404);
-
-  return app.render(
-    req,
-    res,
-    '/_error',
-    Object.assign(req.params, req.query)
-  );
-}
-const onlyAuthenticated = (req, res) => {
-  if (!req.session.user) return homeRedirect(req, res);
-
-  return handle(req, res);
-}
-
-const localeParams = (req) => (
-  {
-    locale: undefined,
-    __nextLocale: req.params.locale || i18n.defaultLocale,
-    __nextDefaultLocale: i18n.defaultLocale
-  });
-
 app
   .prepare()
   .then(() => {
-    // MAP only development
-    if (process.env.FEATURE_MAP_PAGE !== 'true') {
-      server.get('/:locale?/map', notFound);
-    }
-
-    // PROFILE
-    server.get('/:locale?/profile', onlyAuthenticated);
-
     // LOGIN
     server.post('/login', (req, res) => {
       fetch(`${process.env.OTP_API}/login`, {

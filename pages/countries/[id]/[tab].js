@@ -36,7 +36,7 @@ class CountriesDetail extends React.Component {
     const { id, tab } = url.query;
 
     if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
-      return { redirectTo: '/' };
+      return { redirectTo: '/', redirectPermanent: false };
     }
 
     if (!tab) {

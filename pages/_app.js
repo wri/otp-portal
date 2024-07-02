@@ -117,7 +117,11 @@ class MyApp extends App {
     if (pageProps.redirectTo) {
       if (isServer) {
         const localePrefix = locale === defaultLocale || pageProps.redirectTo.startsWith('/' + locale) ? '' : '/' + locale;
-        res.writeHead(301, { Location: localePrefix + pageProps.redirectTo });
+        let redirectPermanent = true;
+        if (pageProps.redirectPermanent == false) {
+          redirectPermanent = false;
+        }
+        res.writeHead(redirectPermanent ? 301 : 302, { Location: localePrefix + pageProps.redirectTo });
         res.end();
       } else {
         Router.replace(pageProps.redirectTo);
