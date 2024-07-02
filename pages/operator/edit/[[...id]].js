@@ -55,6 +55,7 @@ const OperatorsEdit = ({ url, userOperator, operatorId, getOperators, getUserOpe
 
       {userOperator && !isEmpty(userOperator.data) &&
         <EditOperator
+          key={userOperator.data.id} // set key to rerender component whenever the data changes
           operator={userOperator.data}
           onSubmit={handleOperatorEditSubmit}
         />
