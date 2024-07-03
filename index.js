@@ -76,27 +76,8 @@ app
       res.json({});
     });
 
-    server.use(
-      '/static',
-      express.static(`${__dirname}/static`, {
-        maxAge: '365d',
-      })
-    );
-
-    server.get(/^\/_next\/static\/(fonts|images)\//, (_, res, nextHandler) => {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      nextHandler();
-    });
-
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));
-
-    // Set vary header (good practice)
-    // Note: This overrides any existing 'Vary' header but is okay in this app
-    server.use((req, res, _next) => {
-      res.setHeader('Vary', 'Accept-Encoding');
-      _next();
-    });
 
     server.listen(process.env.PORT, (err) => {
       if (err) {
