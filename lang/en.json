@@ -181,6 +181,8 @@
   "signup.user.form.field.permissions_request": "Do you represent a producer or a government entity?",
   "signup.user.form.field.permissions_request.hint": "Depending on your selection you will be able to upload documents for one country or one producer",
   "signup.user.form.field.name": "Name",
+  "signup.user.form.field.first_name": "First name",
+  "signup.user.form.field.last_name": "Last name",
   "signup.user.form.field.preferred_language": "Preferred language",
   "signup.user.form.field.email": "Email",
   "signup.user.form.field.password": "Password",

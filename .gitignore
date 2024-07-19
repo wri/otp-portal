@@ -4,6 +4,8 @@ node_modules/
 static/tiles
 /npm-debug.log
 .env
+.env.staging
+.env.production
 .DS_Store
 
 # vscode
