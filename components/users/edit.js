@@ -21,15 +21,18 @@ import { LOCALES } from 'constants/locales';
 const UserEditForm = (props) => {
   const intl = useIntl();
   const { userProfile } = props;
+  const isOrganizationAccount = userProfile['organization-account'] === true;
 
   const handleSubmit = ({ form, setFormValues }) => {
     const attributes = {
-      'first-name': form.firstName,
-      'last-name': form.lastName,
       password: form.password,
       locale: form.locale,
       'password-confirmation': form.passwordConfirmation,
       'current-password': form.password && form.password.length && form.currentPassword
+    }
+    if (!isOrganizationAccount) {
+      attributes['first-name'] = form.firstName;
+      attributes['last-name'] = form.lastName;
     }
 
     return props
@@ -73,29 +76,33 @@ const UserEditForm = (props) => {
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
-                <Field
-                  validations={['required']}
-                  className="-fluid"
-                  properties={{
-                    name: 'firstName',
-                    label: intl.formatMessage({ id: 'signup.user.form.field.first_name' }),
-                    required: true
-                  }}
-                >
-                  {Input}
-                </Field>
+                {!isOrganizationAccount && (
+                  <>
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'firstName',
+                        label: intl.formatMessage({ id: 'signup.user.form.field.first_name' }),
+                        required: true
+                      }}
+                    >
+                      {Input}
+                    </Field>
 
-                <Field
-                  validations={['required']}
-                  className="-fluid"
-                  properties={{
-                    name: 'lastName',
-                    label: intl.formatMessage({ id: 'signup.user.form.field.last_name' }),
-                    required: true
-                  }}
-                >
-                  {Input}
-                </Field>
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'lastName',
+                        label: intl.formatMessage({ id: 'signup.user.form.field.last_name' }),
+                        required: true
+                      }}
+                    >
+                      {Input}
+                    </Field>
+                  </>
+                )}
 
                 <Field
                   validations={['required']}
