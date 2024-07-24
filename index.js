@@ -6,8 +6,6 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const next = require('next');
-const { i18n } = require("./next.config");
-const { parse } = require('url');
 
 process.on('uncaughtException', (err) => {
   console.info(`Uncaught Exception: ${err}`);
@@ -45,102 +43,9 @@ server.use(
   })
 );
 
-const homeRedirect = (req, res) => res.redirect(req.params.locale ? `/${req.params.locale}` : '/');
-const notFound = (req, res) => {
-  res.status(404);
-
-  return app.render(
-    req,
-    res,
-    '/_error',
-    Object.assign(req.params, req.query)
-  );
-}
-const onlyAuthenticated = (req, res) => {
-  if (!req.session.user) return homeRedirect(req, res);
-
-  return handle(req, res);
-}
-
-const localeParams = (req) => (
-  {
-    locale: undefined,
-    __nextLocale: req.params.locale || i18n.defaultLocale,
-    __nextDefaultLocale: i18n.defaultLocale
-  });
-
 app
   .prepare()
   .then(() => {
-    // COUNTRIES
-    server.get('/:locale?/countries/detail', notFound);
-    if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
-      server.get('/:locale?/countries/:id/:tab?', (req, res) => {
-        const { query } = parse(req.url, true);
-        return app.render(
-          req,
-          res,
-          '/countries/detail',
-          Object.assign(req.params, query, localeParams(req))
-        );
-      });
-    } else {
-      server.get('/:locale?/countries', homeRedirect);
-      server.get('/:locale?/countries/:id/:tab?', homeRedirect);
-    }
-
-    // MAP only development
-    if (process.env.FEATURE_MAP_PAGE !== 'true') {
-      server.get('/:locale?/map', notFound);
-    }
-
-    // PROFILE
-    server.get('/:locale?/profile', onlyAuthenticated);
-
-    // OPERATORS
-    server.get('/:locale?/operators/edit/:id?', (req, res) => {
-      if (!req.session.user) return homeRedirect(req, res);
-
-      return app.render(
-        req,
-        res,
-        '/operators/edit',
-        Object.assign(req.params, req.query, localeParams(req))
-      );
-    });
-    server.get('/:locale?/operators/detail', notFound);
-    server.get('/:locale?/operators/new', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/operators/new',
-        Object.assign(req.params, req.query, localeParams(req))
-      )
-    );
-    server.get('/:locale?/operators/:id/:tab?', (req, res) => {
-      const { query } = parse(req.url, true);
-      return app.render(
-        req,
-        res,
-        '/operators/detail',
-        Object.assign(req.params, query, localeParams(req))
-      );
-    });
-
-    // OBSERVATIONS
-    server.get('/:locale?/observations/:tab', (req, res) =>
-      app.render(
-        req,
-        res,
-        '/observations',
-        Object.assign(req.params, req.query, localeParams(req))
-      )
-    );
-
-    server.get('/:locale?/help/:tab', (req, res) => {
-      return app.render(req, res, '/help', Object.assign(req.params, req.query, localeParams(req)));
-    });
-
     // LOGIN
     server.post('/login', (req, res) => {
       fetch(`${process.env.OTP_API}/login`, {
@@ -171,27 +76,8 @@ app
       res.json({});
     });
 
-    server.use(
-      '/static',
-      express.static(`${__dirname}/static`, {
-        maxAge: '365d',
-      })
-    );
-
-    server.get(/^\/_next\/static\/(fonts|images)\//, (_, res, nextHandler) => {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      nextHandler();
-    });
-
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res));
-
-    // Set vary header (good practice)
-    // Note: This overrides any existing 'Vary' header but is okay in this app
-    server.use((req, res, _next) => {
-      res.setHeader('Vary', 'Accept-Encoding');
-      _next();
-    });
 
     server.listen(process.env.PORT, (err) => {
       if (err) {
