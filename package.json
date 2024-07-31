@@ -28,6 +28,7 @@
     "mapbox-gl": "^1.8.1",
     "moveto": "^1.8.1",
     "next": "12",
+    "next-http-proxy-middleware": "^1.2.6",
     "next-redux-wrapper": "^4.0.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.8.1",
