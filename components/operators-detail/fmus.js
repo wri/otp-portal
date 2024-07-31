@@ -57,7 +57,6 @@ class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
     const { fmus, fmu, operatorsDetailFmus } = this.props;
 
-
     if (!operatorsDetailFmus.layersSettings['integrated-alerts']) {
       this.props.getIntegratedAlertsMetadata();
     }

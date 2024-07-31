@@ -228,7 +228,7 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
           gfw_integrated_alerts__date <= '${trimEndDate}'
     GROUP BY gfw_integrated_alerts__confidence
   `
-  const url = new URL(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest/query`);
+  const url = new URL(`${process.env.GFW_PROXY_API}/dataset/gfw_integrated_alerts/latest/query`);
 
   url.searchParams.set('geostore_id', geostoreId);
   url.searchParams.set('geostore_origin', 'rw');
@@ -283,7 +283,7 @@ const ANALYSIS = {
 }
 
 function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
-  const url = new URL(`${process.env.GFW_API}/analysis/zonal/${geostoreId}`);
+  const url = new URL(`${process.env.GFW_PROXY_API}/analysis/zonal/${geostoreId}`);
 
   url.searchParams.set('geostore_origin', 'rw');
   url.searchParams.set('start_date', startDate);
@@ -338,7 +338,9 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
         }
       });
     })
-    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+    .catch(error => {
+      dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } });
+    });
 }
 
 // GEOSTORE

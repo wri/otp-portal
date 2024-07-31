@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 
 export function fetchIntegratedAlertsMetadata() {
-  return fetch(`${process.env.GFW_API}/dataset/gfw_integrated_alerts/latest`, {
+  return fetch(`${process.env.GFW_PROXY_API}/dataset/gfw_integrated_alerts/latest`, {
     method: 'GET'
   })
     .then((response) => {
