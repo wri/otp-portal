@@ -3,12 +3,13 @@ const { withSentryConfig } = require('@sentry/nextjs');
 require('dotenv').config();
 
 const config = {
+  // only PUBLIC env variables here (accessible on the client side)
   env: {
     ENV: process.env.ENV,
     PORT: process.env.PORT,
     APP_URL: process.env.APP_URL,
     RW_API: process.env.RW_API,
-    GFW_API: process.env.GFW_API,
+    GFW_PROXY_API: process.env.APP_URL + "/gfw-data-api",
     OTP_API: process.env.OTP_API,
     OTP_API_KEY: process.env.OTP_API_KEY,
     OTP_COUNTRIES: process.env.OTP_COUNTRIES.split(','),
@@ -64,7 +65,15 @@ const config = {
         permanent: true
       },
     ]
-  }
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/gfw-data-api/:path*",
+        destination: "/api/gfw-data/:path*",
+      },
+    ];
+   },
   /* productionBrowserSourceMaps: true, // for debugging prod build locally */
 };
 
