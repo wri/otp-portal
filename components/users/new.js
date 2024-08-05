@@ -39,6 +39,12 @@ const UserNewForm = (props) => {
     if (form.permissions_request === 'government') {
       delete body.user.operator_id;
     }
+    body.user.organization_account = form.permissions_request === 'operator' && form.account_type === 'organization';
+    if (form.account_type === 'organization') {
+      delete body.user.first_name;
+      delete body.user.last_name;
+    }
+    delete body.user.account_type;
 
     // Save data
     return props.saveUser({ body })
@@ -59,13 +65,15 @@ const UserNewForm = (props) => {
   );
 
   const formInitialState = {
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     operator_id: '',
     country_id: '',
     password: '',
     password_confirmation: '',
     permissions_request: 'operator',
+    account_type: 'personal',
     agree: false,
     locale: intl.locale
   }
@@ -131,18 +139,6 @@ const UserNewForm = (props) => {
                 )}
 
                 <Field
-                  validations={['required']}
-                  className="-fluid"
-                  properties={{
-                    name: 'name',
-                    label: intl.formatMessage({ id: 'signup.user.form.field.name' }),
-                    required: true
-                  }}
-                >
-                  {Input}
-                </Field>
-
-                <Field
                   validations={['required', 'email']}
                   className="-fluid"
                   properties={{
@@ -154,6 +150,52 @@ const UserNewForm = (props) => {
                 >
                   {Input}
                 </Field>
+
+                {form.permissions_request === 'operator' && (
+                  <Field
+                    validations={['required']}
+                    className="-fluid"
+                    options={[
+                      { label: intl.formatMessage({ id: 'signup.user.form.personal_email', defaultMessage: 'A personal e-mail address' }), value: 'personal' },
+                      { label: intl.formatMessage({ id: 'signup.user.form.organization_email', defaultMessage: 'A generic organization e-mail address (for e.g., info@wri.org)' }), value: 'organization' }
+                    ]}
+                    properties={{
+                      name: 'account_type',
+                      label: intl.formatMessage({ id: 'signup.user.form.field.account_type', defaultMessage: 'Please specify if your email address is' }),
+                      required: true,
+                    }}
+                  >
+                    {RadioGroup}
+                  </Field>
+                )}
+
+                {(form.account_type === 'personal' || form.permissions_request === 'government') && (
+                  <>
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'first_name',
+                        label: intl.formatMessage({ id: 'signup.user.form.field.first_name' }),
+                        required: true
+                      }}
+                    >
+                      {Input}
+                    </Field>
+
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      properties={{
+                        name: 'last_name',
+                        label: intl.formatMessage({ id: 'signup.user.form.field.last_name' }),
+                        required: true
+                      }}
+                    >
+                      {Input}
+                    </Field>
+                  </>
+                )}
 
                 <Field
                   validations={['required']}
