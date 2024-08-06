@@ -59,7 +59,6 @@ class RadioGroup extends FormElement {
 }
 
 RadioGroup.propTypes = {
-  name: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   properties: PropTypes.object.isRequired,
   className: PropTypes.string,
