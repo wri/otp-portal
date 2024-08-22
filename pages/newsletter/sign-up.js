@@ -32,6 +32,9 @@ const NewsletterSignUp = ({ url }) => {
 NewsletterSignUp.propTypes = {
   url: PropTypes.shape({}).isRequired,
 };
-NewsletterSignUp.getInitialProps = ({ url }) => ({ url });
+NewsletterSignUp.getInitialProps = ({ url }) => {
+  return { redirectTo: '/newsletter', redirectPermanent: false };
+  // return { url };
+};
 
 export default NewsletterSignUp;
