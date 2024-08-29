@@ -121,6 +121,7 @@ const NewsletterForm = ({ language }) => {
                 properties={{
                   name: 'address',
                   tabIndex: -1,
+                  autoComplete: 'off',
                   label: intl.formatMessage({ id: 'Address' })
                 }}
               >
