@@ -29,6 +29,7 @@ function fetchCountries(lang) {
 const NewsletterForm = ({ language }) => {
   const intl = useIntl();
   const formRef = useRef(null);
+  const [loadTime, _setLoadTime] = useState(Date.now());
   const [countryOptions, setCountryOptions] = useState([]);
   const [ipAddress, setIPAddress] = useState('');
   useEffect(() => {
@@ -65,6 +66,7 @@ const NewsletterForm = ({ language }) => {
   }, []);
 
   const handleSubmit = () => {
+    formRef.current['ts-submit'].value = Date.now();
     formRef.current.submit();
     return Promise.resolve();
   }
@@ -75,6 +77,7 @@ const NewsletterForm = ({ language }) => {
     email: '',
     organization: '',
     country: '',
+    address: ''
   }
 
   return (
@@ -88,6 +91,8 @@ const NewsletterForm = ({ language }) => {
             <input type="hidden" name="interests" value="Forests" />
             <input type="hidden" name="preferred_language" value={language} />
             <input type="hidden" name="ip_addr" value={ipAddress} />
+            <input type="hidden" name="ts-load" value={loadTime} />
+            <input type="hidden" name="ts-submit" value="" />
             <fieldset className="c-field-container">
               <Field
                 validations={['required']}
@@ -107,6 +112,16 @@ const NewsletterForm = ({ language }) => {
                   name: 'last_name',
                   label: intl.formatMessage({ id: 'Last Name' }),
                   required: true,
+                }}
+              >
+                {Input}
+              </Field>
+              <Field
+                className="-fluid address-field"
+                properties={{
+                  name: 'address',
+                  tabIndex: -1,
+                  label: intl.formatMessage({ id: 'Address' })
                 }}
               >
                 {Input}
