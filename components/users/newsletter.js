@@ -66,7 +66,7 @@ const NewsletterForm = ({ language }) => {
   }, []);
 
   const handleSubmit = () => {
-    formRef.current['ts-submit'].value = Date.now();
+    formRef.current['ts_submit'].value = Date.now();
     formRef.current.submit();
     return Promise.resolve();
   }
@@ -91,8 +91,8 @@ const NewsletterForm = ({ language }) => {
             <input type="hidden" name="interests" value="Forests" />
             <input type="hidden" name="preferred_language" value={language} />
             <input type="hidden" name="ip_addr" value={ipAddress} />
-            <input type="hidden" name="ts-load" value={loadTime} />
-            <input type="hidden" name="ts-submit" value="" />
+            <input type="hidden" name="ts_load" value={loadTime} />
+            <input type="hidden" name="ts_submit" value="" />
             <fieldset className="c-field-container">
               <Field
                 validations={['required']}
