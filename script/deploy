@@ -5,6 +5,7 @@ echo "set project directory"
 cd "$(dirname "$(readlink -f "$0")")"
 cd ".."
 
+export PATH="$HOME/.local/bin:$PATH"
 export NVM_DIR="$HOME/.nvm"
 . $NVM_DIR/nvm.sh
 
@@ -22,10 +23,12 @@ yarn transifex:pull
 echo "--> Building assets"
 yarn build
 
-echo "--> Restarting server"
-
-if [ $1 = "staging" ]; then
-  pm2 restart otp-portal-staging --update-env
-else
+if pm2 describe otp-portal > /dev/null; then
+  echo "--> Restarting application"
   pm2 restart otp-portal --update-env
+else
+  echo "--> Setting up a new application"
+  pm2 start index.js --name otp-portal
+  sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/$(node -v)/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
+  pm2 save
 fi
