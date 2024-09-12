@@ -16,7 +16,7 @@
     "dayjs": "^1.11.11",
     "deck.gl": "7.3.6",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "foundation-sites": "^6.8.1",
     "fuse.js": "^7.0.0",
     "globalthis": "^1.0.4",
