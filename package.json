@@ -8,7 +8,7 @@
   "dependencies": {
     "@sentry/nextjs": "^7.51.2",
     "@turf/bbox": "^6.5.0",
-    "body-parser": "^1.20.2",
+    "body-parser": "^1.20.3",
     "classnames": "^2.5.1",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
