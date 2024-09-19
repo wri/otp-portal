@@ -42,7 +42,7 @@ const config = {
     defaultLocale: 'en'
   },
   sentry: {
-    hideSourceMaps: true,
+    hideSourceMaps: process.env.ENV === 'production',
     ...(process.env.SENTRY_DISABLE_RELEASE && {
       disableServerWebpackPlugin: true,
       disableClientWebpackPlugin: true
