@@ -42,6 +42,7 @@ const config = {
     defaultLocale: 'en'
   },
   sentry: {
+    hideSourceMaps: process.env.ENV === 'production',
     ...(process.env.SENTRY_DISABLE_RELEASE && {
       disableServerWebpackPlugin: true,
       disableClientWebpackPlugin: true
@@ -83,7 +84,9 @@ const sentryWebpackPluginOptions = {
   // recommended:
   //   release, url, org, project, authToken, configFile, stripPrefix,
   //   urlPrefix, include, ignore
-
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
