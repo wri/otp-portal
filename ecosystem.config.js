@@ -1,13 +1,13 @@
 module.exports = {
   apps : [{
     name: "otp-portal",
-    script: "next",
+    script: "yarn",
     args: "start",
     cwd: "/var/www/otp-portal",
     watch: false,
     env: {
       NODE_ENV: "production",
-      PORT: 5000
+      PORT: 6000
     }
   }]
 };

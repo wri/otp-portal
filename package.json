@@ -64,7 +64,7 @@
     "dev": "NODE_ENV=development PORT=4000 next dev",
     "dev:debug": "NODE_ENV=development NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "start": "NODE_ENV=production PORT=4000 next start",
+    "start": "NODE_ENV=${NODE_ENV:-production} PORT=${PORT:-4000} next start",
     "prod": "yarn build && yarn start",
     "lint": "next lint",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
