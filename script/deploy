@@ -28,7 +28,7 @@ if pm2 describe otp-portal > /dev/null; then
   pm2 restart otp-portal --update-env
 else
   echo "--> Setting up a new application"
-  pm2 start index.js --name otp-portal
+  pm2 start ecosystem.config.js
   sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/$(node -v)/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
   pm2 save
 fi
