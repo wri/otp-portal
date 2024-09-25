@@ -90,7 +90,7 @@ const APIClient = new API({
   }
 });
 const NEXTAPIClient = new API({
-  baseURL: process.env.APP_URL,
+  baseURL: process.env.APP_URL + "/portal-api",
   headers: {
     'Content-Type': 'application/json',
     'OTP-API-KEY': process.env.OTP_API_KEY
