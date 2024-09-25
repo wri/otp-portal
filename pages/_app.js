@@ -7,6 +7,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
 import { IntlProvider } from 'react-intl';
+import { getIronSession } from 'iron-session';
 
 import 'globalthis/auto';
 
@@ -84,7 +85,8 @@ class MyApp extends App {
     let language = locale || 'en';
 
     if (isServer) {
-      user = req.session ? req.session.user : {};
+      const session = await getIronSession(req, res, { password: process.env.SECRET, cookieName: "session" });
+      user = session.user;
     } else {
       user = state.user;
     }
