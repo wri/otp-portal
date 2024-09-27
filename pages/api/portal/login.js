@@ -1,7 +1,7 @@
-import { getIronSession } from 'iron-session';
+import { getSession } from 'services/session';
 
 export default async (req, res) => {
-  const session = await getIronSession(req, res, { password: process.env.SECRET, cookieName: "session" });
+  const session = await getSession(req, res);
 
   fetch(`${process.env.OTP_API}/login`, {
     method: 'POST',
