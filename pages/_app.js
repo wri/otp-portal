@@ -7,7 +7,6 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
 import { IntlProvider } from 'react-intl';
-import { getIronSession } from 'iron-session';
 
 import 'globalthis/auto';
 
@@ -23,6 +22,7 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
 
 import { getCookie, setCookie, deleteCookie } from 'services/cookies';
+import { getSession } from 'services/session';
 
 import 'dayjs/locale/fr';
 import 'dayjs/locale/pt';
@@ -85,7 +85,7 @@ class MyApp extends App {
     let language = locale || 'en';
 
     if (isServer) {
-      const session = await getIronSession(req, res, { password: process.env.SECRET, cookieName: "session" });
+      const session = await getSession(req, res);
       user = session.user;
     } else {
       user = state.user;
