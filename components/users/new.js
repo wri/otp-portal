@@ -213,7 +213,20 @@ const UserNewForm = (props) => {
                 </Field>
 
                 <Field
-                  validations={['required']}
+                  validations={[
+                    'required',
+                    'haveLowercaseLetter',
+                    'haveUppercaseLetter',
+                    'haveDigit',
+                    {
+                      type: 'minLength',
+                      condition: 10
+                    },
+                    {
+                      type: 'maxLength',
+                      condition: 128
+                    }
+                  ]}
                   className="-fluid"
                   properties={{
                     name: 'password',

@@ -20,6 +20,44 @@ class Validator {
         message: intl.formatMessage({ id: 'The field is required' })
       },
 
+      minLength: {
+        validate(value, condition) {
+          return value.length >= condition;
+        },
+        message: (condition) => intl.formatMessage({ id: 'validation.minLength', defaultMessage: 'The field should have at least {min} characters' }, { min: condition })
+      },
+
+      maxLength: {
+        validate(value, condition) {
+          return value.length <= condition;
+        },
+        message: (condition) => intl.formatMessage({ id: 'validation.maxLength', defaultMessage: 'The field should have at most {max} characters' }, { max: condition })
+      },
+
+      haveLowercaseLetter: {
+        validate(value) {
+          const regex = /(?=.*[a-z]).+/;
+          return regex.test(value || '');
+        },
+        message: intl.formatMessage({ id: 'validation.haveLowercaseLetter', defaultMessage: 'The field should have at least one lowercase letter' })
+      },
+
+      haveUppercaseLetter: {
+        validate(value) {
+          const regex = /(?=.*[A-Z]).+/;
+          return regex.test(value || '');
+        },
+        message: intl.formatMessage({ id: 'validation.haveUppercaseLetter', defaultMessage: 'The field should have at least one capital (uppercase) letter' })
+      },
+
+      haveDigit: {
+        validate(value) {
+          const regex = /(?=.*\d).+/;
+          return regex.test(value || '');
+        },
+        message: intl.formatMessage({ id: 'validation.haveDigit', defaultMessage: 'The field should have at least one digit' })
+      },
+
       email: {
         validate(value) {
           const regex = /\S+@\S+\.\S+/;
@@ -59,7 +97,7 @@ class Validator {
       if (typeof validation === 'object') {
         const validObj = this.validations[validation.type];
         valid = validObj.validate(value, validation.condition);
-        message = validation.message || validObj.message || '';
+        message = validation.message || ((validObj.message && typeof validObj.message === 'function') ? validObj.message(validation.condition) : validObj.message)  || '';
       }
 
       return {

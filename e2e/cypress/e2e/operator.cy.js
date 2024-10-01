@@ -9,7 +9,7 @@ describe('Operator', function () {
 
   context('when logged in as Operator', function () {
     beforeEach(function () {
-      cy.login('operator@example.com', 'password');
+      cy.login('operator@example.com', 'Supersecret1');
     });
 
     describe('updating operator profile', function () {
