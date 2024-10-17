@@ -22,6 +22,7 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
 
 import { getCookie, setCookie, deleteCookie } from 'services/cookies';
+import { getSession } from 'services/session';
 
 import 'dayjs/locale/fr';
 import 'dayjs/locale/pt';
@@ -84,7 +85,8 @@ class MyApp extends App {
     let language = locale || 'en';
 
     if (isServer) {
-      user = req.session ? req.session.user : {};
+      const session = await getSession(req, res);
+      user = session.user;
     } else {
       user = state.user;
     }
