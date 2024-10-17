@@ -125,8 +125,9 @@ jobs:
         run: |
           echo "
           PORT=4000
+          ENV=production
           NODE_ENV=production
-          SECRET=session_secret
+          SECRET=946bd4887fa5eea44256377ca06fc798f431359e1b1885e0d9ac570c1f24d8fe3e5863855d02d61e375729a330f5c7d84606ca1bf735b0676eb368321a119637
           OTP_COUNTRIES='COG,CMR,COD,CAF,GAB'
           OTP_COUNTRIES_IDS='7,47,45,188,53'
           APP_URL=http://localhost:4000
