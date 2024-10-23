@@ -19,10 +19,6 @@ class ErrorPage extends React.Component {
   }
 
   render() {
-    // If you're using a Nextjs version prior to 12.2.1, uncomment this to
-    // compensate for https://github.com/vercel/next.js/issues/8592
-    Sentry.captureUnderscoreErrorException(this.props);
-
     const css = (
       <Head>
         <style>{`

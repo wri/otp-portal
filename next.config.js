@@ -43,13 +43,6 @@ const config = {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
-  sentry: {
-    hideSourceMaps: process.env.ENV === 'production',
-    ...(process.env.SENTRY_DISABLE_RELEASE && {
-      disableServerWebpackPlugin: true,
-      disableClientWebpackPlugin: true
-    })
-  },
   async redirects() {
     return [
       {
@@ -94,6 +87,13 @@ const sentryWebpackPluginOptions = {
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
+  hideSourceMaps: process.env.ENV === 'production',
+  ...(process.env.SENTRY_DISABLE_RELEASE === 'true' && {
+    release: {
+      create: false,
+      finalize: false,
+    }
+  })
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
