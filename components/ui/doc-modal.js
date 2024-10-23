@@ -41,8 +41,8 @@ class DocModal extends React.Component {
         expireDate:
           endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
         file: {},
-        url,
-        reason
+        url: url || '',
+        reason: reason || ''
       }
     };
 
