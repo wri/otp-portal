@@ -38,11 +38,11 @@ export default function Tabs({ options, selected, href }) {
                   }}
                   as={`${href.as}/${option.value}`}
                   prefetch={false}
-                >
-                  <a className={`tabs-btn ${btnClasses}`}>
-                    <span className="title">{option.label}</span>
-                    {(!!option.number || option.number === 0) && <span className="number">{option.number}</span>}
-                  </a>
+                  className={`tabs-btn ${btnClasses}`}>
+
+                  <span className="title">{option.label}</span>
+                  {(!!option.number || option.number === 0) && <span className="number">{option.number}</span>}
+
                 </Link>
               </div>
             );

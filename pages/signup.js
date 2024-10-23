@@ -48,10 +48,8 @@ const SignUp = (props) => {
                 {intl.formatMessage({ id: "signup.user.thank_you.paragraph2", defaultMessage: "In the meantime, you can explore the platform and learn more about the data we have available." })}
               </p>
 
-              <Link href="/">
-                <a className="card-link c-button -primary">
-                  {intl.formatMessage({ id: 'Back to home page' })}
-                </a>
+              <Link href="/" className="card-link c-button -primary">
+                {intl.formatMessage({ id: 'Back to home page' })}
               </Link>
             </div>
           </div>

@@ -192,13 +192,15 @@ class Notifications extends React.Component {
           {intl.formatMessage({ id: 'Dismiss All' })}
         </button>
 
-        <Link href={`/operators/${user.operator_ids[0]}/documentation`}>
-          <a className="c-button -secondary">
-            {intl.formatMessage({ id: 'Update Now' })}
-          </a>
+        <Link
+          href={`/operators/${user.operator_ids[0]}/documentation`}
+          className="c-button -secondary">
+
+          {intl.formatMessage({ id: 'Update Now' })}
+
         </Link>
       </div>
-    )
+    );
   }
 
   render() {

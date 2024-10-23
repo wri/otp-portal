@@ -38,10 +38,8 @@ const Newsletter = ({ url, newsletters, language }) => {
               {intl.formatMessage({ id: 'newsletter.showing_results', defaultMessage: 'Showing {count} previous newsletters' }, { count: newsletters.length })}
             </h2>
 
-            <Link href="/newsletter/sign-up">
-              <a className="card-link c-button -secondary">
-                {intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}
-              </a>
+            <Link href="/newsletter/sign-up" className="card-link c-button -secondary">
+              {intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}
             </Link>
           </div>
 
@@ -69,7 +67,7 @@ const Newsletter = ({ url, newsletters, language }) => {
 
           <div className="newsletter-cta">
             {intl.formatMessage({ id: 'newsletter.want_to_receive', defaultMessage: 'Want to receive the latest updates from the Open Timber Portal?' })}
-            &nbsp;<Link href="/newsletter/sign-up"><a>{intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}</a></Link>.
+            &nbsp;<Link href="/newsletter/sign-up">{intl.formatMessage({ id: 'newsletter.subscribe_to', defaultMessage: 'Subscribe to our newsletter' })}</Link>.
           </div>
         </div>
       </div>

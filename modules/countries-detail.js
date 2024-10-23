@@ -103,7 +103,7 @@ export function getCountry(id) {
     ];
 
     const queryParams = {
-      ...!!includeFields.length && { include: includeFields.join(',') },
+      ...(!!includeFields.length && { include: includeFields.join(',') }),
       locale: language
     };
 
