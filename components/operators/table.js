@@ -134,8 +134,8 @@ class OperatorsTable extends React.Component {
                   (fmuSearch && fmuSearch.length > 1) ||
                   expandedOperatorIds.includes(r.id);
 
-                return <>
-                  <tr key={`${r.id}-ranking`}>
+                return <React.Fragment key={`${r.slug}-ranking`}>
+                  <tr>
                     <td
                       id={`td-documentation-${r.id}`}
                       className="td-documentation -ta-left"
@@ -185,7 +185,7 @@ class OperatorsTable extends React.Component {
                   {expanded && (
                     <TableExpandedRow operator={r} fmuSearch={fmuSearch} />
                   )}
-                </>;
+                </React.Fragment>;
               })}
             </tbody>
           </table>

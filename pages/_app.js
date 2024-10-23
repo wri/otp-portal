@@ -86,7 +86,9 @@ console.error = (...args) => {
   if (IGNORE_WARNINGS.some(w => w.test(text))) return;
   consoleError(...args);
 };
-console.error("Application is ignoring warnings:", IGNORE_WARNINGS);
+if (process.env.NODE_ENV !== 'production') {
+  console.error("Application is ignoring warnings:", IGNORE_WARNINGS);
+}
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
