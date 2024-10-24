@@ -69,10 +69,19 @@ const UserEditForm = (props) => {
       });
   };
 
+  const initialFormValues = {
+    firstName: userProfile['first-name'] || '',
+    lastName: userProfile['last-name'] || '',
+    locale: userProfile.locale || 'en',
+    password: '',
+    passwordConfirmation: '',
+    currentPassword: ''
+  }
+
   return (
     <div className="c-section">
       <div className="l-container">
-        <FormProvider initialValues={{ firstName: userProfile['first-name'], lastName: userProfile['last-name'], locale: userProfile.locale, password: '', passwordConfirmation: '', currentPassword: '' }} onSubmit={handleSubmit}>
+        <FormProvider initialValues={initialFormValues} Submit={handleSubmit}>
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
