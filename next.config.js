@@ -43,6 +43,14 @@ const config = {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
+  // custom webpack config
+  // webpack: (config, options) => {
+  //   config.infrastructureLogging = {
+  //     level: 'verbose',
+  //   }
+
+  //   return config
+  // },
   async redirects() {
     return [
       {
