@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import App from 'next/app';
-import Error from 'next/error';
 import Router from 'next/router';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
@@ -20,6 +19,8 @@ import { getOperators } from 'modules/operators';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
+
+import Error from 'pages/_error';
 
 import { getCookie, setCookie, deleteCookie } from 'services/cookies';
 import { getSession } from 'services/session';
@@ -145,7 +146,7 @@ class MyApp extends App {
       return {};
     }
 
-    return { pageProps, language, messages, defaultLocale };
+    return { pageProps, language, messages, defaultLocale, url };
   }
 
   componentDidMount() {
@@ -163,10 +164,10 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, store, defaultLocale, language, messages } = this.props;
+    const { Component, pageProps, store, defaultLocale, language, messages, url } = this.props;
 
     if (pageProps.errorCode) {
-      return <Error statusCode={pageProps.errorCode} />;
+      return <Error statusCode={pageProps.errorCode} url={url} />;
     }
 
     return (
