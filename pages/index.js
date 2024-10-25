@@ -70,6 +70,7 @@ class HomePage extends React.Component {
             description={this.props.intl.formatMessage({
               id: 'home.card.a.description'
             })}
+            descriptionTruncateLines={0}
             link={{
               label: this.props.intl.formatMessage({
                 id: 'home.card.a.link.label'
@@ -92,6 +93,7 @@ class HomePage extends React.Component {
             description={this.props.intl.formatMessage({
               id: 'home.card.b.description'
             })}
+            descriptionTruncateLines={0}
             link={false}
             Component={<Search theme="-theme-static" />}
           />
@@ -110,6 +112,7 @@ class HomePage extends React.Component {
             description={this.props.intl.formatMessage({
               id: 'home.card.c.description'
             })}
+            descriptionTruncateLines={0}
             link={{
               label: this.props.intl.formatMessage({
                 id: 'home.card.c.link.label'

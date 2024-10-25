@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+
 import classnames from 'classnames';
 import omit from 'lodash/omit';
 import renderHTML from 'html-react-parser';
 
-// Next components
-import Link from 'next/link';
-import Truncate from 'react-truncate';
+// import Truncate from 'react-truncate';
+
+const Truncate = dynamic(() => import('react-truncate'));
 
 function isNullOrUndefined(val) {
   return val === null || val === undefined;
 }
 
-export default function Card({ theme, letter, title, description, link, Component }) {
+export default function Card({ theme, letter, title, description, descriptionTruncateLines, link, Component }) {
   const classNames = classnames({
     [theme]: !!theme,
     '-nolink': !link
@@ -29,9 +33,12 @@ export default function Card({ theme, letter, title, description, link, Componen
 
         <h2 className="card-title">{title}</h2>
         <div className="card-description">
-          <Truncate lines={6}>
-            {renderHTML(description || '')}
-          </Truncate>
+          {descriptionTruncateLines == 0 && renderHTML(description || '')}
+          {descriptionTruncateLines > 0 && (
+            <Truncate lines={descriptionTruncateLines}>
+              {renderHTML(description || '')}
+            </Truncate>
+          )}
         </div>
 
         {!!Component && (
@@ -59,6 +66,11 @@ Card.propTypes = {
   letter: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   title: PropTypes.string,
   description: PropTypes.string,
+  descriptionTruncateLines: PropTypes.number,
   Component: PropTypes.any,
   link: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
+
+Card.defaultProps = {
+  descriptionTruncateLines: 6
+}
