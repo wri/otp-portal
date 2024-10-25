@@ -24,7 +24,7 @@
     "luma.gl": "7.3.2",
     "mapbox-gl": "^1.8.1",
     "moveto": "^1.8.1",
-    "next": "13",
+    "next": "14",
     "next-http-proxy-middleware": "^1.2.6",
     "next-redux-wrapper": "^4.0.1",
     "normalize.css": "^8.0.1",
@@ -55,7 +55,7 @@
     "@next/bundle-analyzer": "^13.4.5",
     "autoprefixer": "^10.4.19",
     "eslint": "^8",
-    "eslint-config-next": "13",
+    "eslint-config-next": "14",
     "eslint-config-prettier": "^8.4.0",
     "postcss-easy-import": "^4.0.0",
     "sass": "^1.54.4"

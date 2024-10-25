@@ -82,7 +82,9 @@ const config = {
       }
     ];
    },
-  /* productionBrowserSourceMaps: true, // for debugging prod build locally */
+   experimental: {
+    optimizePackageImports: ["modules"]
+   }
 };
 
 const sentryWebpackPluginOptions = {
