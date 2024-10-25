@@ -5,6 +5,7 @@ import orderBy from 'lodash/orderBy';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { injectIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
@@ -28,15 +29,8 @@ import StaticHeader from 'components/ui/static-header';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/observation-filters';
 import Spinner from 'components/ui/spinner';
-import MapSubComponent from 'components/ui/map-sub-component';
 import StaticTabs from 'components/ui/static-tabs';
 
-import Map from 'components/map';
-import LayerManager from 'components/map/layer-manager';
-import Legend from 'components/map/legend';
-import Popup from 'components/map/popup';
-import MapControls from 'components/map/map-controls';
-import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map/fa-attributions';
 
 import {
@@ -54,6 +48,14 @@ import {
   tableCheckboxes,
   getColumnHeaders,
 } from 'constants/observations-column-headers';
+
+const MapSubComponent = dynamic(() => import('components/ui/map-sub-component'), { ssr: false });
+const Map = dynamic(() => import('components/map'), { ssr: false });
+const Legend = dynamic(() => import('components/map/legend'), { ssr: false });
+const Popup = dynamic(() => import('components/map/popup'), { ssr: false });
+const MapControls = dynamic(() => import('components/map/map-controls'), { ssr: false });
+const ZoomControl = dynamic(() => import('components/map/controls/zoom-control'), { ssr: false });
+const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
 class ObservationsPage extends React.Component {
   static async getInitialProps({ url, store }) {

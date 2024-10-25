@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 
+import dynamic from 'next/dynamic';
+
 // Intl
 import { useIntl } from 'react-intl';
 
@@ -10,12 +12,13 @@ import { login } from 'modules/user';
 import modal from 'services/modal';
 
 // Components
-import ForgotPassword from 'components/ui/forgot-password';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Form, { FormProvider } from 'components/form/Form';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from 'components/form/CancelButton';
+
+const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { ssr: false });
 
 const Login = () => {
   const intl = useIntl();

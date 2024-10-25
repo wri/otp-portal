@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
 
 // Redux
 import { connect } from 'react-redux';
@@ -14,10 +15,11 @@ import SawmillsService from 'services/sawmillsService';
 // Components
 import Checkbox from 'components/form/Checkbox';
 import Icon from 'components/ui/icon';
-import SawmillModal from 'components/ui/sawmill-modal';
 import Spinner from 'components/ui/spinner';
 
 // Constants
+
+const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
 class SawmillsTable extends React.Component {
   static propTypes = {

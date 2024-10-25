@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -15,13 +16,14 @@ import { getOperatorObservations } from 'modules/operators-detail';
 
 // Components
 import StaticTabs from 'components/ui/static-tabs';
-import TotalObservationsByOperator from 'components/operators-detail/observations/total';
-import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
-import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import Checkbox from 'components/form/Checkbox';
 
 import { setUrlParam } from 'utils/url';
+
+const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
+const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'));
+const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
 
 const OperatorsDetailObservations = (props) => {
   const { intl } = props;

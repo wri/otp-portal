@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import dynamic from 'next/dynamic';
+
 import { injectIntl } from 'react-intl';
 
 import { connect } from 'react-redux';
@@ -10,8 +12,9 @@ import modal from 'services/modal';
 
 import { Dropdown, DropdownTrigger, DropdownContent } from 'components/ui/dropdown';
 import UserMenuList from 'components/ui/user-menu-list';
-import Login from 'components/ui/login';
 import Icon from 'components/ui/icon';
+
+const Login = dynamic(() => import('components/ui/login'), { ssr: false });
 
 const UserDropdown = ({ intl, user, displayIcon, theme }) => {
   if (!user.token) {
