@@ -19,7 +19,7 @@ class MyDocument extends Document {
       <Html lang={this.props.language}>
         <Head />
         <body>
-          {process.env.OSANO_ID && <Script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} strategy="beforeInteractive" />}
+          {process.env.OSANO_ID && <Script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} strategy="afterInteractive" />}
           <GoogleTagManager noscript />
           <Main />
           <NextScript />
