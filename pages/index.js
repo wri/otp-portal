@@ -14,26 +14,6 @@ class HomePage extends React.Component {
   static async getInitialProps({ url }) {
     return { url };
   }
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    // if (!Cookies.get('home.disclaimer')) {
-    //   toastr.info(
-    //     'Info',
-    //     this.props.intl.formatMessage({ id: 'home.disclaimer' }),
-    //     {
-    //       id: 'home.disclaimer',
-    //       className: '-disclaimer',
-    //       position: 'bottom-right',
-    //       timeOut: 0,
-    //       onCloseButtonClick: () => {
-    //         Cookies.set('home.disclaimer', true);
-    //       }
-    //     }
-    //   );
-    // }
-  }
 
   render() {
     const { url } = this.props;
