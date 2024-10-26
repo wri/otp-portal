@@ -8,8 +8,6 @@ import classnames from 'classnames';
 import omit from 'lodash/omit';
 import renderHTML from 'html-react-parser';
 
-// import Truncate from 'react-truncate';
-
 const Truncate = dynamic(() => import('react-truncate'));
 
 function isNullOrUndefined(val) {
