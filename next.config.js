@@ -1,4 +1,5 @@
 const { withSentryConfig } = require('@sentry/nextjs');
+const webpack = require('webpack');
 
 require('dotenv').config();
 
@@ -43,14 +44,22 @@ const config = {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
-  // custom webpack config
-  // webpack: (config, options) => {
-  //   config.infrastructureLogging = {
-  //     level: 'verbose',
-  //   }
+  webpack: (config, options) => {
+    // config.infrastructureLogging = {
+    //   level: 'verbose',
+    // }
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        __SENTRY_DEBUG__: false,
+        __SENTRY_TRACING__: false, // Tracing, we don't use it
+        __RRWEB_EXCLUDE_IFRAME__: true,  // Session Replay - we don't use it
+        __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
+        __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it
+      }),
+    );
 
-  //   return config
-  // },
+    return config
+  },
   async redirects() {
     return [
       {
