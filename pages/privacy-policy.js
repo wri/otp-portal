@@ -1,5 +1,4 @@
 import React from 'react';
-import { renderToString } from 'react-dom/server';
 import PropTypes from 'prop-types';
 import Jsona from 'jsona';
 
@@ -18,7 +17,7 @@ const JSONA = new Jsona();
 
 const PrivacyPolicyPage = ({ url, intl, page, cookies }) => {
   const placeholders = {
-    CookiesTable: renderToString(<CookiesTable cookies={cookies} />)
+    CookiesTable: <CookiesTable cookies={cookies} />
   }
 
   return (
