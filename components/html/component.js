@@ -30,7 +30,7 @@ const HTML = ({ html, linkify, placeholders, className }) => (
       {
         replace: (node) => {
           // TODO: works only for placeholders as separate text nodes
-          if (node.type === 'text') {
+          if (node.type === 'text' && placeholders) {
             const key = Object.keys(placeholders).find((key) => node.data.trim() === `{${key}}`);
 
             if (key) return placeholders[key];
