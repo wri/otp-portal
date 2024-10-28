@@ -12,7 +12,6 @@ import 'globalthis/auto';
 import * as reducers from 'modules';
 
 import { setUser } from 'modules/user';
-import { setRouter } from 'modules/router';
 import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
@@ -85,7 +84,6 @@ class MyApp extends App {
 
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
-    store.dispatch(setRouter(url));
 
     const requests = []
     if (!isServer) {
