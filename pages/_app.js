@@ -17,6 +17,7 @@ import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
 
+import HotJar from 'components/layout/hotjar';
 import GoogleTagManager from 'components/layout/google-tag-manager';
 import PageViewTracking from 'components/layout/pageview-tracking';
 
@@ -152,6 +153,7 @@ class MyApp extends App {
           <>
             <WebVitalsTracking />
             <GoogleTagManager />
+            <HotJar />
             <PageViewTracking />
             <Component {...pageProps} language={language} />
           </>
