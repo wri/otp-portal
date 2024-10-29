@@ -11,12 +11,14 @@ import { replace } from 'layer-manager';
 
 import { getParams } from '../utils';
 
+import { LAYERS } from 'constants/layers';
+
 const intl = (state, props) => props.intl;
 
 const operatorsDetail = state => state.operatorsDetail.data;
 
 const layersActive = state => state.operatorsDetailFmus.layersActive;
-const layers = state => state.operatorsDetailFmus.layers;
+const layers = () => LAYERS;
 const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 
 const interactions = state => state.operatorsDetailFmus.interactions;
