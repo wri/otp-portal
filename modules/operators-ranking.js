@@ -10,7 +10,6 @@ import dayjs from 'dayjs';
 import API from 'services/api';
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 
-import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
 
 /* Constants */
@@ -55,7 +54,6 @@ const initialState = {
   hoverInteractions: {},
 
   // LAYERS
-  layers: LAYERS,
   layersActive: [
     'gain',
     'loss',

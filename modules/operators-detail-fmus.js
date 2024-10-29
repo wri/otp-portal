@@ -1,4 +1,3 @@
-import { LAYERS } from 'constants/layers';
 import sumBy from 'lodash/sumBy';
 import uniq from 'lodash/uniq';
 import dayjs from 'dayjs';
@@ -34,7 +33,6 @@ const initialState = {
 
   hoverInteractions: {},
 
-  layers: LAYERS,
   layersActive: [
     'gain',
     'loss',

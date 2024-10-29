@@ -15,6 +15,7 @@ import Fuse from 'fuse.js';
 import { getParams } from '../utils';
 import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
+import { LAYERS } from 'constants/layers';
 
 import OperatorsCertificationsTd from 'components/operators/certificationsTd';
 
@@ -24,7 +25,7 @@ const data = state => state.operatorsRanking.data;
 const filters = state => state.operatorsRanking.filters;
 
 const layersActive = state => state.operatorsRanking.layersActive;
-const layers = state => state.operatorsRanking.layers;
+const layers = () => LAYERS;
 const layersSettings = state => state.operatorsRanking.layersSettings;
 
 const interactions = state => state.operatorsRanking.interactions;
