@@ -36,7 +36,7 @@
     "react-dropzone": "^14.2.3",
     "react-fast-compare": "^3.2.1",
     "react-geosuggest": "^2.7.0",
-    "react-intl": "^5",
+    "react-intl": "^6.8.4",
     "react-map-gl": "^5.2.1",
     "react-redux": "^7",
     "react-redux-toastr": "^7.6.4",
