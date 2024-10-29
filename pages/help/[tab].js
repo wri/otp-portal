@@ -26,10 +26,14 @@ class HelpPage extends React.Component {
 
     const { howtos, tools, faqs, tutorials } = store.getState().help;
 
-    if (!howtos.data.length) await store.dispatch(getHowtos());
-    if (!tools.data.length) await store.dispatch(getTools());
-    if (!faqs.data.length) await store.dispatch(getFAQs());
-    if (!tutorials.data.length) await store.dispatch(getTutorials());
+    const requests = [];
+
+    if (!howtos.data.length) requests.push(store.dispatch(getHowtos()));
+    if (!tools.data.length) requests.push(store.dispatch(getTools()));
+    if (!faqs.data.length) requests.push(store.dispatch(getFAQs()));
+    if (!tutorials.data.length) requests.push(store.dispatch(getTutorials()));
+
+    await Promise.all(requests);
 
     return { url };
   }
