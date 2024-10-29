@@ -13,14 +13,7 @@ const JSONA = new Jsona();
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    zoom: 5,
-    center: {
-      lat: 0,
-      lng: 18,
-    },
-  },
+  error: false
 };
 
 /* Reducer */
