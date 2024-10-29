@@ -2,14 +2,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import App from 'next/app';
 import Router from 'next/router';
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
 import { IntlProvider } from 'react-intl';
 
 import 'globalthis/auto';
-
-import * as reducers from 'modules';
 
 import { setUser } from 'modules/user';
 import { setLanguage } from 'modules/language';
@@ -23,6 +19,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 import Error from 'pages/_error';
 
 import { getSession } from 'services/session';
+import { makeStore } from 'store';
 
 import 'css/index.scss';
 import { WebVitalsTracking } from '~/components/layout/web-vitals-tracking';
@@ -37,23 +34,6 @@ const loadLocales = {
   vi: () => import('dayjs/locale/vi'),
   zh: () => import('dayjs/locale/zh-cn')
 }
-
-const reducer = combineReducers({
-  ...reducers
-});
-
-const makeStore = (initialState = {}) =>
-  createStore(
-    reducer,
-    initialState,
-    compose(
-      applyMiddleware(thunk),
-      /* Redux dev tool, install chrome extension in
-       * https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en */
-      typeof window === 'object' &&
-        typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
-    )
-  );
 
 const IGNORE_WARNINGS = [
   /Support for defaultProps will be removed from function components in a future major release/
@@ -87,6 +67,11 @@ class MyApp extends App {
     const messages = await import(`lang/${languageFile}.json`);
 
     await loadLocales[language]();
+
+    if (!isServer) {
+      const { reducer: toastrReducer } = await import('react-redux-toastr');
+      store.injectReducer('toastr', toastrReducer);
+    }
 
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));

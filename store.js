@@ -1,15 +1,17 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import * as reducers from 'modules';
+import * as staticReducers from 'modules';
 
+function createReducer(asyncReducers) {
+  return combineReducers({
+    ...staticReducers,
+    ...asyncReducers
+  });
+}
 
-const reducer = combineReducers({
-  ...reducers
-});
-
-const store = (initialState = {}) =>
-  createStore(
-    reducer,
+export const makeStore = (initialState = {}) => {
+  const store = createStore(
+    createReducer(),
     initialState,
     compose(
       applyMiddleware(thunk),
@@ -20,4 +22,12 @@ const store = (initialState = {}) =>
     )
   );
 
-export { store };
+  store.asyncReducers = {};
+  store.injectReducer = (key, asyncReducer) => {
+    store.asyncReducers[key] = asyncReducer;
+    store.replaceReducer(createReducer(store.asyncReducers));
+  }
+
+  return store;
+}
+
