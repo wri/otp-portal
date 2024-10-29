@@ -24,14 +24,18 @@ import Error from 'pages/_error';
 
 import { getSession } from 'services/session';
 
-import 'dayjs/locale/fr';
-import 'dayjs/locale/pt';
-import 'dayjs/locale/ja';
-import 'dayjs/locale/ko';
-import 'dayjs/locale/vi';
-import 'dayjs/locale/zh-cn';
-
 import 'css/index.scss';
+
+// workaround as import(`dayjs/locale/${locale}`) was not working
+const loadLocales = {
+  en: () => Promise.resolve(),
+  fr: () => import('dayjs/locale/fr'),
+  pt: () => import('dayjs/locale/pt'),
+  ja: () => import('dayjs/locale/ja'),
+  ko: () => import('dayjs/locale/ko'),
+  vi: () => import('dayjs/locale/vi'),
+  zh: () => import('dayjs/locale/zh-cn')
+}
 
 const reducer = combineReducers({
   ...reducers
@@ -80,6 +84,8 @@ class MyApp extends App {
 
     const languageFile = language === 'zh' ? 'zh_CN' : language;
     const messages = await import(`lang/${languageFile}.json`);
+
+    await loadLocales[language]();
 
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
