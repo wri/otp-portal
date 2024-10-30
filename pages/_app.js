@@ -64,10 +64,13 @@ class MyApp extends App {
     }
 
     const languageFile = language === 'zh' ? 'zh_CN' : language;
-    const messages = await import(`lang/${languageFile}.json`);
+    // for production env use precompiled language json files (see formatjs compile)
+    const languageFolder = process.env.NODE_ENV === "production" ? 'compiled/' : '';
+    const messages = await import(`lang/${languageFolder}${languageFile}.json`);
 
     await loadLocales[language]();
 
+    // TODO: maybe move this to dedicated component that would load toastr with its reducer
     if (!isServer) {
       const { reducer: toastrReducer } = await import('react-redux-toastr');
       store.injectReducer('toastr', toastrReducer);
