@@ -1,7 +1,6 @@
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
-import { Icons } from 'vizzuality-components';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
 
@@ -23,7 +22,6 @@ class MyDocument extends Document {
           <GoogleTagManager noscript />
           <Main />
           <NextScript />
-          <Icons />
         </body>
       </Html>
     );
