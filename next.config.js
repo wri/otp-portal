@@ -58,6 +58,13 @@ const config = {
       }),
     );
 
+    if (!options.dev) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@formatjs/icu-messageformat-parser': '@formatjs/icu-messageformat-parser/no-parser'
+      };
+    }
+
     return config
   },
   async redirects() {

@@ -52,6 +52,7 @@
     "vizzuality-components": "^3.0.3"
   },
   "devDependencies": {
+    "@formatjs/cli": "^6.3.5",
     "@next/bundle-analyzer": "14",
     "autoprefixer": "^10.4.19",
     "eslint": "^8",
@@ -63,12 +64,14 @@
   "scripts": {
     "dev": "NODE_ENV=development PORT=4000 next dev",
     "dev:debug": "NODE_ENV=development NODE_OPTIONS='--inspect' next dev",
+    "prebuild": "yarn lang-compile",
     "build": "next build",
     "start": "NODE_ENV=${NODE_ENV:-production} PORT=${PORT:-4000} next start",
     "prod": "yarn build && yarn start",
     "lint": "next lint",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
-    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js"
+    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js",
+    "lang-compile": "script/lang-compile"
   },
   "prettier": {
     "singleQuote": true

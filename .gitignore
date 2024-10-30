@@ -13,3 +13,6 @@ static/tiles
 
 # Sentry
 .sentryclirc
+
+# compiled languages
+lang/compiled
