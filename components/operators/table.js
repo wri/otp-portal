@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 // Next
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -16,7 +17,8 @@ import Tooltip from 'rc-tooltip';
 
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
-import TableExpandedRow from './table-expanded-row';
+
+const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false });
 
 class OperatorsTable extends React.Component {
   state = {
