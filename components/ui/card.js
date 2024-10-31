@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 import classnames from 'classnames';
 import omit from 'lodash/omit';
-import renderHTML from 'html-react-parser';
 
 const Truncate = dynamic(() => import('react-truncate'));
 
@@ -23,6 +22,7 @@ export default function Card({ theme, letter, title, description, descriptionTru
   const letterClassName = classnames({
     '-number': (!isNullOrUndefined(letter) && !isNaN(parseFloat(letter)))
   });
+  const shouldTruncate = descriptionTruncateLines > 0;
 
   return (
     <div className={`c-card ${classNames}`}>
@@ -30,14 +30,18 @@ export default function Card({ theme, letter, title, description, descriptionTru
         {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="card-title">{title}</h2>
-        <div className="card-description">
-          {descriptionTruncateLines == 0 && renderHTML(description || '')}
-          {descriptionTruncateLines > 0 && (
-            <Truncate lines={descriptionTruncateLines}>
-              {renderHTML(description || '')}
+        {!shouldTruncate && (
+          <div className="card-description" dangerouslySetInnerHTML={{ __html: description || '' }}>
+          </div>
+        )}
+        {shouldTruncate && (
+          <div className="card-description">
+            <Truncate lines={descriptionTruncateLines} >
+              <span dangerouslySetInnerHTML={{ __html: description || '' }}>
+              </span>
             </Truncate>
-          )}
-        </div>
+          </div>
+        )}
 
         {!!Component && (
           <div className="card-component">
