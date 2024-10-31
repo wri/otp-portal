@@ -11,7 +11,6 @@ import Router from 'next/router';
 import { injectIntl } from 'react-intl';
 
 // Other libraries
-import Fuse from 'fuse.js';
 import classnames from 'classnames';
 
 // Components
@@ -41,7 +40,7 @@ class Search extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!this.props.loading && prevProps.loading) {
+    if (!this.props.loading && prevProps.loading && this.state.value.length) {
       this.updateSearchResults(this.state.value);
     }
 
@@ -158,7 +157,8 @@ class Search extends React.Component {
     this.setState({ index });
   }
 
-  updateSearchResults(searchText) {
+  async updateSearchResults(searchText) {
+    const Fuse = (await import('fuse.js')).default;
     const fuse = new Fuse(this.props.list, this.props.options);
     const result = fuse.search(searchText);
 
