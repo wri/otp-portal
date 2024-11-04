@@ -8,4 +8,9 @@ export function middleware(req) {
       new URL(`/${locale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
     )
   }
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: '/reset-password',
 }
