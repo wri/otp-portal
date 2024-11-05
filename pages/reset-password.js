@@ -24,7 +24,20 @@ function ResetPassword({ url, intl }) {
   );
 }
 
-ResetPassword.getInitialProps = ({ url }) => ({ url });
+ResetPassword.getInitialProps = async ({ url, req, asPath, locale }) => {
+  if (req) {
+    const cookies = req.cookies;
+    const nextLocale = cookies['NEXT_LOCALE'] || 'en';
+    if (nextLocale !== 'en' && locale !== nextLocale) {
+      return {
+        redirectTo: `/${nextLocale}${asPath}`,
+        redirectPermanent: false
+      }
+    }
+  }
+
+  return { url };
+}
 
 ResetPassword.propTypes = {
   url: PropTypes.shape({}).isRequired,
