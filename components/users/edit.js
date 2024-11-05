@@ -81,7 +81,7 @@ const UserEditForm = (props) => {
   return (
     <div className="c-section">
       <div className="l-container">
-        <FormProvider initialValues={initialFormValues} Submit={handleSubmit}>
+        <FormProvider initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ form }) => (
             <Form>
               <fieldset className="c-field-container">
