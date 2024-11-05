@@ -70,12 +70,6 @@ class MyApp extends App {
 
     await loadLocales[language]();
 
-    // TODO: maybe move this to dedicated component that would load toastr with its reducer
-    if (!isServer) {
-      const { reducer: toastrReducer } = await import('react-redux-toastr');
-      store.injectReducer('toastr', toastrReducer);
-    }
-
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(user));
 
@@ -115,7 +109,7 @@ class MyApp extends App {
     return { pageProps, language, messages, defaultLocale, url };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { store } = this.props;
     const state = store.getState();
 
@@ -125,6 +119,10 @@ class MyApp extends App {
     if (!state.countries.data.length) {
       store.dispatch(getCountries());
     }
+
+    // TODO: maybe move this to dedicated component that would load toastr with its reducer
+    const { reducer: toastrReducer } = await import('react-redux-toastr');
+    store.injectReducer('toastr', toastrReducer);
   }
 
   render() {
