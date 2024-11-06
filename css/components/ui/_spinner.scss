@@ -8,8 +8,6 @@ $spinner-tiny-size: 20px;
   bottom: 0;
   left: 0;
   background: rgba($color-white, .75);
-  visibility: hidden;
-  opacity: 0;
   z-index: 1000;
 
   > .spinner-box {
@@ -56,12 +54,6 @@ $spinner-tiny-size: 20px;
         height: $spinner-tiny-size;
       }
     }
-  }
-
-  // State
-  &.-loading {
-    visibility: visible;
-    opacity: 1;
   }
 
   // Colors
