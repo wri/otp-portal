@@ -44,9 +44,9 @@ const initialState = {
   error: false,
   observations: {
     data: [],
-    timestamp: null,
     loading: false,
     error: false,
+    timestamp: null
   },
   documentation: {
     data: [],
@@ -264,10 +264,12 @@ export function getOperatorBySlug(slug, loadFMUS = false) {
 
     const includes = [
       'country',
-      'fmus'
+      'fmus',
+      'observations'
     ];
     const fields = {
       'fields[countries]': 'name,id,iso',
+      'fields[observations]': 'id,hidden'
     }
     if (!loadFMUS) {
       fields['fields[fmus]'] = 'name,id';
@@ -343,7 +345,7 @@ export function getOperatorDocumentation(id) {
   return (dispatch, getState) => {
     const { user, language, operatorsDetail } = getState();
     const date = operatorsDetail.date;
-    const metadata = { timestamp: new Date() };
+    const metadata = { timestamp: new Date(), operatorId: id };
 
     dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING, metadata });
 
@@ -400,8 +402,9 @@ export function getOperatorObservations(operatorId) {
     ];
 
     const timestamp = new Date();
+    const metadata = { timestamp, operatorId };
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata: { timestamp } });
+    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata });
 
     return API.get('observations', {
       locale: language,
@@ -416,7 +419,7 @@ export function getOperatorObservations(operatorId) {
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
           payload: dataParsed,
-          metadata: { timestamp }
+          metadata
         });
       })
       .catch((err) => {
@@ -424,7 +427,7 @@ export function getOperatorObservations(operatorId) {
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_ERROR,
           payload: err.message,
-          metadata: { timestamp }
+          metadata
         });
       });
   };
@@ -433,7 +436,7 @@ export function getOperatorObservations(operatorId) {
 export function getOperatorDocumentationCurrent(id) {
   return (dispatch, getState) => {
     const { user, language } = getState();
-    const metadata = { timestamp: new Date() };
+    const metadata = { timestamp: new Date(), operatorId: id };
 
     dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING, metadata });
 
