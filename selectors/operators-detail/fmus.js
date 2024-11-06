@@ -16,6 +16,7 @@ import { LAYERS } from 'constants/layers';
 const intl = (state, props) => props.intl;
 
 const operatorsDetail = state => state.operatorsDetail.data;
+const loadedFMUS = state => state.operatorsDetail.data.loadedFMUS;
 
 const layersActive = state => state.operatorsDetailFmus.layersActive;
 const layers = () => LAYERS;
@@ -298,9 +299,10 @@ export const getHoverPopup = createSelector(
 
 
 export const getFMUs = createSelector(
-  operatorsDetail,
-  (_operatorsDetail) => {
+  operatorsDetail, loadedFMUS,
+  (_operatorsDetail, _loadedFMUS) => {
     const { fmus } = _operatorsDetail;
+    if (!_loadedFMUS) return [];
     return sortBy(fmus, 'name') || [];
   }
 );
