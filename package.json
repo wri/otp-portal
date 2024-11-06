@@ -48,6 +48,7 @@
     "redux-thunk": "^2.1.0",
     "reselect": "^4.1.8",
     "slugify": "^1.4.0",
+    "spin-delay": "^2.0.1",
     "viewport-mercator-project": "6.1.1",
     "vizzuality-components": "^3.0.3"
   },
