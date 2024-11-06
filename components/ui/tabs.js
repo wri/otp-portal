@@ -22,6 +22,8 @@ export default function Tabs({ options, selected, href }) {
               '-active': option.value === selected,
               '-number': !!option.number || option.number === 0
             });
+            const linkHref = option.path ? option.path : { pathname: href.pathname, query: { ...href.query, tab: option.value } };
+            const linkAs = option.path ? undefined : `${href.as}/${option.value}`;
 
             return (
               <div
@@ -29,14 +31,8 @@ export default function Tabs({ options, selected, href }) {
                 className="column"
               >
                 <Link
-                  href={{
-                    pathname: href.pathname,
-                    query: {
-                      ...href.query,
-                      tab: option.value
-                    }
-                  }}
-                  as={`${href.as}/${option.value}`}
+                  href={linkHref}
+                  as={linkAs}
                   prefetch={false}
                   className={`tabs-btn ${btnClasses}`}>
 

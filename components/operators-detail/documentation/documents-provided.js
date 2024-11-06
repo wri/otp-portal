@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
+import { useRouter } from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
@@ -14,8 +15,9 @@ import ChartLegend from 'components/ui/chart-legend';
 import useDeviceInfo from 'hooks/use-device-info';
 
 function DocumentsProvided(props) {
-  const { data, user, router } = props;
+  const { data, user } = props;
   const { isMobile, isServer } = useDeviceInfo();
+  const router = useRouter();
   const filteredData = data.filter((d) => d.status !== 'doc_not_required');
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
@@ -84,11 +86,9 @@ DocumentsProvided.defaultProps = {
 
 DocumentsProvided.propTypes = {
   data: PropTypes.array,
-  user: PropTypes.object,
-  router: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default connect((state) => ({
-  user: state.user,
-  router: state.router,
+  user: state.user
 }))(DocumentsProvided);
