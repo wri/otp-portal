@@ -50,7 +50,7 @@ const COUNTRIES_FRENCH_FIX = {
 
 // shared getInitialProps for operator's detail pages
 export async function getInitialProps({ url, res, store, ...rest }) {
-  const { operatorsDetail } = store.getState();
+  let { operatorsDetail } = store.getState();
   const requests = [];
   const {id} = url.query;
   const tab = url.asPath.split('/').pop();
@@ -66,21 +66,24 @@ export async function getInitialProps({ url, res, store, ...rest }) {
     return { redirectTo: url.asPath.replace(`/${id}`, `/${operator.slug}`) }
   }
 
-  if (operatorsDetail.data.slug !== id) {
+  const operatorChanged = operatorsDetail.data.slug !== id;
+  if (operatorChanged) {
     await store.dispatch(getOperatorBySlug(id));
-    const operator = store.getState().operatorsDetail.data;
-
-    if (operator && !isEmpty(operator)) {
-      requests.push(store.dispatch(getOperatorObservations(operator.id)));
-
-      if (tab === 'documentation') {
-        requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
-        requests.push(store.dispatch(getOperatorDocumentationCurrent(operator.id)));
-        requests.push(store.dispatch(getOperatorTimeline(operator.id)));
-      }
-    } else {
-      return { errorCode: 404 };
+  }
+  operatorsDetail = store.getState().operatorsDetail;
+  const operator = operatorsDetail.data;
+  if (operator && !isEmpty(operator)) {
+    if (operatorsDetail.documentation.operatorId !== operator.id && tab === 'documentation') {
+      requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
+      requests.push(store.dispatch(getOperatorDocumentationCurrent(operator.id)));
+      requests.push(store.dispatch(getOperatorTimeline(operator.id)));
     }
+
+    if (operatorsDetail.observations.operatorId !== operator.id && (tab === 'observations' || tab === 'overview')) {
+      requests.push(store.dispatch(getOperatorObservations(operator.id)));
+    }
+  } else {
+    return { errorCode: 404 };
   }
 
   await Promise.all(requests);
@@ -95,9 +98,12 @@ class OperatorsDetailLayout extends React.Component {
     const operator = operatorsDetail.data;
 
     // eager load documentation tab as high probabilty user will switch to it
-    this.props.getOperatorDocumentation(operator.id);
-    this.props.getOperatorDocumentationCurrent(operator.id);
-    this.props.getOperatorTimeline(operator.id);
+    // only if not loaded
+    if (operatorsDetail.documentation.data.length === 0) {
+      this.props.getOperatorDocumentation(operator.id);
+      this.props.getOperatorDocumentationCurrent(operator.id);
+      this.props.getOperatorTimeline(operator.id);
+    }
   }
 
   /**
@@ -106,6 +112,7 @@ class OperatorsDetailLayout extends React.Component {
    */
   getTabOptions() {
     const operatorsDetail = this.props.operatorsDetail.data;
+    const observationsCount = operatorsDetail.observations ? operatorsDetail.observations.filter(o => !o.hidden).length : 0;
 
     return TABS_OPERATORS_DETAIL.map((tab) => {
       let number;
@@ -115,7 +122,7 @@ class OperatorsDetailLayout extends React.Component {
           break;
         }
         case 'observations': {
-          number = this.props.operatorObservations.filter(o => !o.hidden).length;
+          number = observationsCount;
           break;
         }
 
@@ -218,7 +225,7 @@ export default injectIntl(
   connect(
     (state) => ({
       user: state.user,
-      operatorsDetail: state.operatorsDetail,
+      operatorsDetail: state.operatorsDetail
     }),
     {
       getOperator,
