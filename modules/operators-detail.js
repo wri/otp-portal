@@ -256,20 +256,27 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function getOperatorBySlug(slug) {
+export function getOperatorBySlug(slug, loadFMUS = false) {
   return (dispatch, getState) => {
     const { user, language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
-    const includeFields = [
+    const includes = [
       'country',
-      'fmus',
+      'fmus'
     ];
+    const fields = {
+      'fields[countries]': 'name,id,iso',
+    }
+    if (!loadFMUS) {
+      fields['fields[fmus]'] = 'name,id';
+    }
 
     return API.get(`operators`, {
       locale: language,
-      include: includeFields.join(','),
+      include: includes.join(','),
+      ...fields,
       'filter[slug]': slug
     }, {
       token: user.token
@@ -279,6 +286,7 @@ export function getOperatorBySlug(slug) {
         const dataParsed = JSONA.deserialize(operators);
         const operator = dataParsed[0];
         if (!operator) throw new Error('Operator not found');
+        operator.loadedFMUS = loadFMUS;
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,
