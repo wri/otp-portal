@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import Jsona from 'jsona';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -11,8 +10,6 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
 import API from 'services/api';
-
-const JSONA = new Jsona();
 
 const Newsletter = ({ url, newsletters, language }) => {
   const intl = useIntl();
@@ -83,9 +80,8 @@ Newsletter.propTypes = {
 };
 Newsletter.getInitialProps = async ({ url, store }) => {
   const { language } = store.getState();
-  const newsletters = await API
+  const { data: newsletters } = await API
     .get('newsletters', { locale: language })
-    .then((response) => JSONA.deserialize(response));
 
   return { url, newsletters, language };
 }

@@ -1,4 +1,3 @@
-import Jsona from 'jsona';
 import isEmpty from 'lodash/isEmpty';
 
 import API from 'services/api';
@@ -48,8 +47,6 @@ const initialState = {
   },
   columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
 };
-
-const JSONA = new Jsona();
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -166,18 +163,16 @@ export function getDocumentsDatabase(options = { reload: false }) {
         }
       }, {})
     })
-      .then((documents) => {
-        const dataParsed = JSONA.deserialize(documents);
-
+      .then(({ data, response }) => {
         dispatch({
           type: GET_DOCUMENTS_DB_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
 
         dispatch({
           type: SET_PAGE_COUNT,
-          payload: documents.meta['page-count'],
+          payload: response.meta['page-count'],
           metadata
         })
       })
@@ -201,11 +196,11 @@ export function getFilters() {
 
     return API.get('operator_document_filters_tree', {
       locale: language
-    })
-      .then((filters) => {
+    }, { deserialize: false })
+      .then(({ data }) => {
         dispatch({
           type: GET_FILTERS_DOCUMENTS_DB_SUCCESS,
-          payload: parseObjectSelectOptions(filters),
+          payload: parseObjectSelectOptions(data),
         });
       })
       .catch((err) => {
