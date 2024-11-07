@@ -1,8 +1,7 @@
 import sortBy from 'lodash/sortBy';
-import groupBy from 'lodash/groupBy';
-import compact from 'lodash/compact';
 
 import API from 'services/api';
+import { groupBy } from 'utils/general';
 
 const HELPERS_REGISTER = {
   getCountries(lang) {
@@ -21,7 +20,7 @@ const HELPERS_REGISTER = {
   getFMUCertificationsValues(fmus) {
     const fmusGroups = groupBy(fmus, 'id');
     Object.keys(fmusGroups).forEach((id) => {
-      fmusGroups[id] = compact([
+      fmusGroups[id] = [
         !!fmusGroups[id][0]['certification-fsc'] && 'fsc',
         !!fmusGroups[id][0]['certification-fsc-cw'] && 'fsc-cw',
         !!fmusGroups[id][0]['certification-ls'] && 'ls',
@@ -29,7 +28,7 @@ const HELPERS_REGISTER = {
         !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
         !!fmusGroups[id][0]['certification-olb'] && 'olb',
         !!fmusGroups[id][0]['certification-tlv'] && 'tlv'
-      ]);
+      ].filter(x => !!x);
     });
 
     return fmusGroups;

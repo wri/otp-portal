@@ -1,9 +1,7 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 
-import compact from 'lodash/compact';
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 
@@ -40,7 +38,7 @@ const countryActive = state => state.operatorsRanking.filters.data.country;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
-    const cIsoCodes = compact(_countryOptions.map((c) => {
+    const cIsoCodes = _countryOptions.map((c) => {
       if (!_countryActive || !_countryActive.length) {
         return c.iso;
       }
@@ -49,7 +47,7 @@ export const getActiveLayers = createSelector(
         return c.iso;
       }
       return null;
-    }));
+    }).filter(x => !!x);
 
     // Country layers
     const cLayers = _countryOptions.map((c) => {
@@ -110,10 +108,10 @@ export const getActiveLayers = createSelector(
       return null;
     });
 
-    return compact([
+    return [
       ...cLayers,
       ...aLayers
-    ]);
+    ].filter(x => !!x);
   }
 );
 
@@ -140,7 +138,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       });
     };
 
-    return flatten(compact(_layersActive.map((kActive) => {
+    return _layersActive.map((kActive) => {
       const layer = _layers.find(l => l.id === kActive);
 
       if (!layer) {
@@ -162,7 +160,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       }
 
       return getIds(layer);
-    })));
+    }).filter(l => !!l).flat();
   }
 );
 
@@ -171,7 +169,7 @@ export const getActiveInteractiveLayers = createSelector(
   (_layers, _interactions) => {
     if (!_layers || isEmpty(_interactions)) return {};
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -180,7 +178,7 @@ export const getActiveInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_interactions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));

@@ -11,7 +11,6 @@ import { injectIntl } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { getNotifications, dismissAll } from 'modules/notifications';
-import { groupBy } from 'lodash';
 
 function isBeforeToday(date) {
   const today = new Date();

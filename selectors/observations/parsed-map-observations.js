@@ -1,13 +1,13 @@
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import { LAYERS } from 'constants/layers';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
-import omitBy from 'lodash/omitBy';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map/layer-manager/utils';
 
 import { parseObservation } from 'utils/observations';
+import { omitBy } from 'utils/general';
 
 const intl = (state, props) => props && props.intl;
 

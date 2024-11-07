@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import groupBy from 'lodash/groupBy';
-import uniq from 'lodash/uniq';
 import cx from 'classnames';
 import { injectIntl } from 'react-intl';
 import Fuse from 'fuse.js';
+
+import { groupBy } from 'utils/general';
 
 // Redux
 import { connect } from 'react-redux';
@@ -52,7 +52,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ..
 
     const exactSearchResults = searchText.length > 2 ? documents.filter(exactSearch) : [];
     const fuseSearchResults = fuse.search(searchText).map(r => r.item);
-    return uniq([...exactSearchResults, ...fuseSearchResults]);
+    return [...new Set([...exactSearchResults, ...fuseSearchResults])];
   }
 
   const results = Object.keys(groupedByCategory).map((category) => {

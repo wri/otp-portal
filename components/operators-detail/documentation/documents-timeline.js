@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { injectIntl } from 'react-intl';
 import dayjs from 'dayjs';
-import groupBy from 'lodash/groupBy';
 
 // Utils
 import { PALETTE } from 'utils/documentation';
+import { groupBy } from 'utils/general';
 
 function CustomTooltip({ active, payload, label: timestamp, intl }) {
   if (active) {
