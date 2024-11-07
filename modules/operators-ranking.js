@@ -1,4 +1,3 @@
-import Jsona from 'jsona';
 import Router from 'next/router';
 
 import groupBy from 'lodash/groupBy';
@@ -24,8 +23,6 @@ const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
 const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
 const SET_OPERATORS_SIDEBAR = 'SET_OPERATORS_SIDEBAR';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
-
-const JSONA = new Jsona();
 
 const COUNTRIES = [
   { label: 'Congo', value: 47, iso: 'COG' },
@@ -242,10 +239,8 @@ export function getOperatorsRanking() {
       'fields[countries]': fields.countries.join(','),
       'fields[operators]': fields.operators.join(','),
       'fields[observations]': fields.observations.join(','),
-    }).then((operatorsRanking) => {
-      const dataParsed = JSONA.deserialize(operatorsRanking);
-
-      const groupByDocPercentage = groupBy(dataParsed, (o) => {
+    }).then(({ data }) => {
+      const groupByDocPercentage = groupBy(data, (o) => {
         if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
 
         return o['percentage-valid-documents-all'];

@@ -1,8 +1,6 @@
-import Jsona from 'jsona';
 import API from 'services/api';
 import { LOCALES } from 'constants/locales';
 
-const JSONA = new Jsona();
 const URL = process.env.APP_URL;
 
 function generateSiteMap(operators, countries) {
@@ -55,9 +53,8 @@ function generateSiteMap(operators, countries) {
 }
 
 export async function getServerSideProps({ res }) {
-  const operators = await API
+  const { data: operators } = await API
     .get('operators', { locale: 'en', 'page[size]': 3000, 'fields[operator]': 'slug' })
-    .then((data) => JSONA.deserialize(data));
 
   let countries = [];
   if (process.env.FEATURE_COUNTRY_PAGES) {
@@ -68,8 +65,7 @@ export async function getServerSideProps({ res }) {
       'fields[required-gov-documents]': 'id',
       'page[size]': 2000
     })
-      .then((data) => JSONA.deserialize(data))
-      .then((data) => data.filter(c => (c['required-gov-documents'] || []).length));
+      .then(({ data }) => data.filter(c => (c['required-gov-documents'] || []).length));
   }
 
   const sitemap = generateSiteMap(operators, countries);

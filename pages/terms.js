@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Jsona from 'jsona';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -11,8 +10,6 @@ import StaticHeader from 'components/ui/static-header';
 import Html from 'components/html';
 
 import API from 'services/api';
-
-const JSONA = new Jsona();
 
 const TermsPage = ({ url, intl, page }) => {
   return (
@@ -44,7 +41,7 @@ const TermsPage = ({ url, intl, page }) => {
 TermsPage.getInitialProps = async ({ url }) => {
   const page = await API
     .get('pages', { 'filter[slug]': 'terms', locale: 'en' })
-    .then((response) => JSONA.deserialize(response)[0]);
+    .then(({ data }) => data[0]);
 
   return { url, page };
 }

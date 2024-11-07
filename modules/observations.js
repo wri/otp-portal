@@ -1,4 +1,3 @@
-import Jsona from 'jsona';
 import isEmpty from 'lodash/isEmpty';
 
 import API from 'services/api';
@@ -53,8 +52,6 @@ const initialState = {
   },
   columns: ['status', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
 };
-
-const JSONA = new Jsona();
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -144,12 +141,10 @@ export function getObservations() {
         }
       }, {})
     })
-      .then((observations) => {
-        const dataParsed = JSONA.deserialize(observations);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OBSERVATIONS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -171,8 +166,8 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_OBSERVATIONS_LOADING });
 
-    return API.get('observation_filters_tree', { locale: language })
-      .then((filters) => {
+    return API.get('observation_filters_tree', { locale: language }, { deserialize: false })
+      .then(({ data: filters }) => {
         // Fetch from server ok -> Dispatch observations
         dispatch({
           type: GET_FILTERS_OBSERVATIONS_SUCCESS,

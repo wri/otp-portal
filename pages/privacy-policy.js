@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Jsona from 'jsona';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -12,8 +11,6 @@ import Html from 'components/html';
 import CookiesTable from 'components/page/cookies-table';
 
 import API from 'services/api';
-
-const JSONA = new Jsona();
 
 const PrivacyPolicyPage = ({ url, intl, page, cookies }) => {
   const placeholders = {
@@ -49,7 +46,7 @@ const PrivacyPolicyPage = ({ url, intl, page, cookies }) => {
 PrivacyPolicyPage.getInitialProps = async ({ url }) => {
   const page = await API
     .get('pages', { 'filter[slug]': 'privacy-policy', locale: 'en' })
-    .then((response) => JSONA.deserialize(response)[0]);
+    .then(({ data }) => data[0]);
 
   let cookies = [];
   if (process.env.OSANO_ID) {

@@ -1,5 +1,3 @@
-import Jsona from 'jsona';
-
 import dayjs from 'dayjs';
 
 import API from 'services/api';
@@ -76,9 +74,6 @@ const initialState = {
     error: false,
   },
 };
-
-const JSONA = new Jsona();
-
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -287,10 +282,8 @@ export function getOperatorBySlug(slug, loadFMUS = false) {
     }, {
       token: user.token
     })
-      .then((operators) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operators);
-        const operator = dataParsed[0];
+      .then(({ data }) => {
+        const operator = data[0];
         if (!operator) throw new Error('Operator not found');
         operator.loadedFMUS = loadFMUS;
 
@@ -327,12 +320,10 @@ export function getOperator(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -369,12 +360,10 @@ export function getOperatorDocumentation(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -417,12 +406,10 @@ export function getOperatorObservations(operatorId) {
       'filter[operator]': operatorId,
       'filter[hidden]': 'all'
     })
-      .then((observations) => {
-        const dataParsed = JSONA.deserialize(observations);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -457,12 +444,10 @@ export function getOperatorDocumentationCurrent(id) {
     }, {
       token: user.token,
     })
-      .then((operator) => {
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -487,13 +472,10 @@ export function getOperatorTimeline(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_TIMELINE_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -515,13 +497,10 @@ export function getSawMillsByOperatorId(id) {
     return API.get('sawmills', {
       'filter[operator]': id
     })
-      .then((data) => {
-        // Fetch from server ok -> Dispatch geojson sawmill data
-        const dataParsed = JSONA.deserialize(data);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_SAWMILLS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -542,8 +521,8 @@ export function getSawMillsLocationByOperatorId(id) {
     return API.get('sawmills', {
       'filter[operator]': id,
       format: 'geojson'
-    })
-      .then((data) => {
+    }, { deserialize: false })
+      .then(({ data }) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         dispatch({
           type: GET_SAWMILLS_LOCATIONS_SUCCESS,

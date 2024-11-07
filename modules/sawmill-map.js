@@ -72,7 +72,7 @@ export function getSawMillLocationById(id) {
     dispatch({ type: GET_SAWMILL_LOCATION_LOADING });
 
     return API.get(`sawmills/${id}`)
-      .then((data) => {
+      .then(({ data }) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         dispatch({
           type: GET_SAWMILL_LOCATION_SUCCESS,

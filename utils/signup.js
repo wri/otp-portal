@@ -1,21 +1,14 @@
-import Jsona from 'jsona';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import compact from 'lodash/compact';
 
 import API from 'services/api';
 
-const JSONA = new Jsona();
-
 const HELPERS_REGISTER = {
   getCountries(lang) {
     return API.get('countries', {
       locale: lang,
-    })
-      .then((data) => {
-        const dataParsed = JSONA.deserialize(data);
-        return dataParsed.map(c => ({ label: c.name, value: c.id }));
-      });
+    }).then(({ data }) => data.map(c => ({ label: c.name, value: c.id })));
   },
 
   mapToSelectOptions(collection = []) {
@@ -58,9 +51,8 @@ const HELPERS_REGISTER = {
 
   getOperatorFmus(countryId, lang) {
     return API.get('fmus', { locale: lang, 'filter[country]': countryId, 'filter[free]': true })
-      .then((data) => {
-        const dataParsed = JSONA.deserialize(data);
-        return sortBy(dataParsed.map(f => ({ label: f.name, value: f.id })), 'label');
+      .then(({ data }) => {
+        return sortBy(data.map(f => ({ label: f.name, value: f.id })), 'label');
       });
   },
 

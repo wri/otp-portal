@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import Jsona from 'jsona';
 import groupBy from 'lodash/groupBy';
 
 // Intl
@@ -18,11 +17,9 @@ import Select from 'components/form/SelectInput';
 
 import SubmitButton from '../form/SubmitButton';
 
-const JSONA = new Jsona();
-
 function fetchCountries(lang) {
   return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
-    .then((data) => JSONA.deserialize(data))
+    .then(({ data }) => data)
     .catch((error) => console.error(error));
 }
 

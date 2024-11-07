@@ -1,13 +1,9 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 /* Constants */
 const GET_COUNTRIES_SUCCESS = 'GET_COUNTRIES_SUCCESS';
 const GET_COUNTRIES_ERROR = 'GET_COUNTRIES_ERROR';
 const GET_COUNTRIES_LOADING = 'GET_COUNTRIES_LOADING';
-
-const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
@@ -45,12 +41,10 @@ export function getCountries() {
     };
 
     return API.get('countries', params)
-      .then((countries) => {
-        const dataParsed = JSONA.deserialize(countries);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_COUNTRIES_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {

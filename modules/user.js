@@ -1,4 +1,3 @@
-import Jsona from 'jsona';
 import omitBy from 'lodash/omitBy';
 import isEmpty from 'lodash/isEmpty';
 
@@ -16,8 +15,6 @@ const GET_USER_PROFILE_LOADING = 'GET_USER_PROFILE_LOADING';
 const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
 const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
 const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
-
-const JSONA = new Jsona();
 
 // REDUCER
 const initialState = {};
@@ -124,13 +121,10 @@ export function getUserOperator(id) {
     return API.get(`operators/${id}`, {
       include: includeFields.join(','),
       'fields[fmus]': fields.fmus.join(',')
-    }).then((operator) => {
-      // Fetch from server ok -> Dispatch operator and deserialize the data
-      const dataParsed = JSONA.deserialize(operator);
-
+    }).then(({ data }) => {
       dispatch({
         type: GET_USER_OPERATOR_SUCCESS,
-        payload: dataParsed,
+        payload: data,
       });
     }).catch((err) => {
       // Fetch from server ko -> Dispatch error
@@ -160,7 +154,7 @@ export function resetPassword(attributes) {
     body: {
       password: attributes
     }
-  }).then((data) => JSONA.deserialize(data));
+  });
 }
 
 export function forgotPassword(email) {
@@ -174,13 +168,10 @@ export function getUserProfile() {
     dispatch({ type: GET_USER_PROFILE_LOADING });
 
     return API.get(`users/${user.user_id}`, null, { token: user.token })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_USER_PROFILE_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {

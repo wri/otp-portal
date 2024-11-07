@@ -1,13 +1,9 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 const GET_NOTIFICATIONS_SUCCESS = 'GET_NOTIFICATIONS_SUCCESS';
 const GET_NOTIFICATIONS_ERROR = 'GET_NOTIFICATIONS_ERROR';
 const GET_NOTIFICATIONS_LOADING = 'GET_NOTIFICATIONS_LOADING';
 const SET_NOTIFICATIONS = 'SET_NOTIFICATIONS';
-
-const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
@@ -41,12 +37,10 @@ export function getNotifications() {
     dispatch({ type: GET_NOTIFICATIONS_LOADING });
 
     return API.get('notifications', { locale: language }, { token: user.token })
-      .then((data) => {
-        const dataParsed = JSONA.deserialize(data);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_NOTIFICATIONS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
