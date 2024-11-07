@@ -15,7 +15,6 @@
     "dotenv": "^16.4.5",
     "foundation-sites": "^6.8.1",
     "fuse.js": "^7.0.0",
-    "globalthis": "^1.0.4",
     "html-react-parser": "^5.1.10",
     "iron-session": "^8.0.3",
     "jsona": "^1.12.1",

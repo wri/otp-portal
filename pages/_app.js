@@ -5,8 +5,6 @@ import Router from 'next/router';
 import withRedux from 'next-redux-wrapper'; // eslint-disable-line import/extensions
 import { IntlProvider } from 'react-intl';
 
-import 'globalthis/auto';
-
 import { setUser } from 'modules/user';
 import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
