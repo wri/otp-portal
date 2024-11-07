@@ -1,5 +1,4 @@
-import omitBy from 'lodash/omitBy';
-import isEmpty from 'lodash/isEmpty';
+import { omitBy, isEmpty } from 'utils/general';
 
 import API, { NEXTAPIClient } from 'services/api'
 

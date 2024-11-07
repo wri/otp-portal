@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
 
-import compact from 'lodash/compact';
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import slugify from 'slugify';
@@ -72,9 +70,7 @@ export const getActiveLayers = createSelector(
       return null;
     });
 
-    return compact([
-      ...aLayers
-    ]);
+    return aLayers.filter(x => !!x);
   }
 );
 
@@ -104,7 +100,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       });
     };
 
-    return flatten(compact(_layersActive.map((kActive) => {
+    return _layersActive.map((kActive) => {
       const layer = _layers.find(l => l.id === kActive);
 
       if (!layer || (layer.iso && layer.iso !== country.iso)) {
@@ -126,7 +122,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       }
 
       return getIds(layer);
-    })));
+    }).filter(x => !!x).flat();
   }
 );
 
@@ -135,7 +131,7 @@ export const getActiveInteractiveLayers = createSelector(
   (_layers, _interactions) => {
     if (!_layers || isEmpty(_interactions)) return [];
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -144,7 +140,7 @@ export const getActiveInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_interactions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
@@ -158,7 +154,7 @@ export const getActiveHoverInteractiveLayers = createSelector(
   (_layers, _hoverInteractions) => {
     if (!_layers || isEmpty(_hoverInteractions)) return [];
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -167,7 +163,7 @@ export const getActiveHoverInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_hoverInteractions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));

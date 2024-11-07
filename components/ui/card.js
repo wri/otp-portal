@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import classnames from 'classnames';
-import omit from 'lodash/omit';
+import { omit } from 'utils/general';
 
 const Truncate = dynamic(() => import('react-truncate'));
 

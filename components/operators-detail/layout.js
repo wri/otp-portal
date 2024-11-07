@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';

@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import groupBy from 'lodash/groupBy';
 
 // Intl
 import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import API from 'services/api';
+
+import { groupBy } from 'utils/general';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';

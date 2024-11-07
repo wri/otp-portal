@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
 
 class Filters extends React.Component {
   componentDidUpdate(prevProps) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import uniq from 'lodash/uniq';
 import { connect } from 'react-redux';
 
 // Next
@@ -43,9 +42,9 @@ class OperatorsTable extends React.Component {
       });
     } else {
       this.setState({
-        expandedOperatorIds: uniq(
+        expandedOperatorIds: [...new Set(
           [id, ...this.state.expandedOperatorIds].sort()
-        ),
+        )],
       });
     }
   };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
+import { isEmpty } from 'utils/general';
+import isEqual from 'react-fast-compare';
 
 // Redux
 import { connect } from 'react-redux';

@@ -1,8 +1,6 @@
-import get from 'lodash/get';
-
 export class APIError extends Error {
   constructor(response, responseJSON) {
-    const message = get(responseJSON, 'errors[0].title') || response.statusText || 'APIError';
+    const message = responseJSON?.errors?.[0]?.title || response.statusText || 'APIError';
     super(message);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)

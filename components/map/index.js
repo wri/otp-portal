@@ -3,8 +3,8 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as Sentry from "@sentry/nextjs";
 
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
+import isEqual from 'react-fast-compare';
+import { isEmpty } from 'utils/general';
 
 import ReactMapGL, { FlyToInterpolator } from 'react-map-gl';
 import { fitBounds } from 'viewport-mercator-project';

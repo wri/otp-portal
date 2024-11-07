@@ -1,9 +1,7 @@
-import isEmpty from 'lodash/isEmpty';
-
 import API from 'services/api';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 
 /* Constants */
