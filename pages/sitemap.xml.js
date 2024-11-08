@@ -54,7 +54,7 @@ function generateSiteMap(operators, countries) {
 
 export async function getServerSideProps({ res }) {
   const { data: operators } = await API
-    .get('operators', { locale: 'en', 'page[size]': 3000, 'fields[operator]': 'slug' })
+    .get('operators', { locale: 'en', 'page[size]': 3000, 'fields[operators]': 'slug' })
 
   let countries = [];
   if (process.env.FEATURE_COUNTRY_PAGES) {
