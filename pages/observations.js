@@ -77,8 +77,7 @@ class ObservationsPage extends React.Component {
 
     this.state = {
       tab: 'observations-list',
-      popup: null,
-      page: 1,
+      popup: null
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
@@ -119,17 +118,6 @@ class ObservationsPage extends React.Component {
         });
       }
     }
-  }
-
-  getPageSize() {
-    const { observations } = this.props;
-
-    if (observations.data && observations.data.length) {
-      // What if the page only have 5 results...
-      return observations.data.length > 50 ? 50 : observations.data.length;
-    }
-
-    return 1;
   }
 
   onCustomAttribute = (e) => {
@@ -391,7 +379,7 @@ class ObservationsPage extends React.Component {
                   columns: columnHeaders.filter((header) =>
                     observations.columns.includes(header.accessor)
                   ),
-                  pageSize: this.getPageSize(),
+                  pageSize: 50,
                   pagination: true,
                   previousText: '<',
                   nextText: '>',

@@ -34,18 +34,7 @@ const initialState = {
   },
   cluster: {},
   filters: {
-    data: {
-      observation_type: [],
-      country_id: [],
-      fmu_id: [],
-      years: [],
-      observer_id: [],
-      category_id: [],
-      subcategory_id: [],
-      severity_level: [],
-      validation_status: [],
-      hidden: []
-    },
+    data: {},
     options: {},
     loading: false,
     error: false
@@ -132,7 +121,14 @@ export function getObservations() {
       'page[size]': OBS_MAX_SIZE,
       include: includes.join(','),
       'fields[fmus]': 'name',
-      'fields[operator]': 'name',
+      'fields[operators]': 'name,operator-type',
+      'fields[severities]': 'details,level',
+      'fields[subcategories]': 'name,category',
+      'fields[categories]': 'name',
+      'fields[countries]': 'iso,name',
+      'fields[observers]': 'name,observer-type',
+      'fields[observation-reports]': 'attachment,title,publication-date',
+      'fields[observation-documents]': 'attachment,name',
       ...Object.keys(filters).reduce((acc, key) => {
         if (isEmpty(filters[key])) return acc;
         return {
