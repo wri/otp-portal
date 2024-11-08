@@ -33,6 +33,11 @@ const loadLocales = {
   zh: () => import('dayjs/locale/zh-cn')
 }
 
+import dayjs from 'dayjs';
+import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
+
+dayjs.extend(dayOfYearPlugin);
+
 const IGNORE_WARNINGS = [
   /Support for defaultProps will be removed from function components in a future major release/
 ];
