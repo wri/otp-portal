@@ -43,13 +43,27 @@ const ResetPasswordForm = ({ token }) => {
           <Form>
             <fieldset className="c-field-container">
               <Field
+                validations={[
+                  'required',
+                  'haveLowercaseLetter',
+                  'haveUppercaseLetter',
+                  'haveDigit',
+                  {
+                    type: 'minLength',
+                    condition: 10
+                  },
+                  {
+                    type: 'maxLength',
+                    condition: 128
+                  }
+                ]}
                 className="-fluid"
                 properties={{
                   name: 'password',
                   autoComplete: 'new-password',
                   label: intl.formatMessage({ id: 'New Password' }),
                   type: 'password',
-                  required: false
+                  required: true
                 }}
               >
                 {Input}
@@ -57,6 +71,7 @@ const ResetPasswordForm = ({ token }) => {
 
               <Field
                 validations={[
+                  'required',
                   {
                     type: 'isEqual',
                     condition: form.password,
@@ -69,7 +84,7 @@ const ResetPasswordForm = ({ token }) => {
                   autoComplete: 'new-password',
                   label: intl.formatMessage({ id: 'Confirm New Password' }),
                   type: 'password',
-                  required: false
+                  required: true
                 }}
               >
                 {Input}

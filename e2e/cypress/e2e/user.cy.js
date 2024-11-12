@@ -15,7 +15,7 @@ describe('User', () => {
       cy.get('#input-password').type('wrongpassword');
       cy.get('button').contains('Log in').click();
       cy.get('.rrt-text').should('have.text', 'Wrong email or password');
-      cy.get('#input-password').clear().type('password');
+      cy.get('#input-password').clear().type('Supersecret1');
       cy.get('button').contains('Log in').click();
       cy.contains('a', 'My account');
     });
@@ -23,7 +23,7 @@ describe('User', () => {
 
   context('Public user', () => {
     it('can log in and out', function () {
-      cy.login('operator@example.com', 'password');
+      cy.login('operator@example.com', 'Supersecret1');
       cy.get('a').contains('My account').click();
       cy.get('a').contains('My profile').click();
       cy.get('#input-firstName').should('have.value', 'Operator');
@@ -44,11 +44,17 @@ describe('User', () => {
       cy.get('#input-first_name').type('Test');
       cy.get('#input-last_name').type('Operator');
       cy.get('#input-email').type('testoperator@example.com');
-      cy.get('#input-password').type('supersecret');
-      cy.get('#input-password_confirmation').type('supersecret');
+      cy.get('#input-password').type('password');
+      cy.get('#input-password_confirmation').type('password2');
       cy.get('button').contains('Sign up').click();
-      cy.get('.error').should('have.text', 'The field is required');
+      cy.contains('.error', 'The field is required');
+      cy.contains('.error', 'The field should have at least one capital (uppercase) letter');
+      cy.contains('.error', 'The field should have at least one digit');
+      cy.contains('.error', 'The field should have at least 10 characters');
+      cy.contains('.error', 'The field should be equal to password');
       cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
+      cy.get('#input-password').clear().type('Superpassword1');
+      cy.get('#input-password_confirmation').clear().type('Superpassword1');
       cy.get('label[for=checkbox-agree-undefined]').click();
       cy.get('button').contains('Sign up').click();
       cy.get('.c-info-box').contains('you will receive an email to testoperator@example.com once your account is approved');
@@ -78,7 +84,7 @@ describe('User', () => {
 
   context('Logged in User', () => {
     beforeEach(() => {
-      cy.login('operator@example.com', 'password');
+      cy.login('operator@example.com', 'Supersecret1');
     });
 
     it('can update user profile', function () {
@@ -90,9 +96,9 @@ describe('User', () => {
       cy.get('#input-lastName').clear();
       cy.get('#input-lastName').type('Operator 2');
       cy.selectOption('[name=locale]', 'Po', 'Português');
-      cy.get('#input-password').type('supersecret');
-      cy.get('#input-passwordConfirmation').type('supersecret');
-      cy.get('#input-currentPassword').type('password');
+      cy.get('#input-password').type('GreatPassword1');
+      cy.get('#input-passwordConfirmation').type('GreatPassword1');
+      cy.get('#input-currentPassword').type('Supersecret1');
 
       cy.get('button').contains('Update').click();
       cy.get('.rrt-text').should('have.text', 'Profile saved correctly');

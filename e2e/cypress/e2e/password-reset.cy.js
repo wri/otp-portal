@@ -17,8 +17,8 @@ describe('Password Reset', () => {
     describe('errors', () => {
       it('shows error with invalid token', function () {
         cy.visit('/reset-password?reset_password_token=invalid');
-        cy.get('#input-password').type('newpassword');
-        cy.get('#input-passwordConfirmation').type('newpassword');
+        cy.get('#input-password').type('NewPassword1');
+        cy.get('#input-passwordConfirmation').type('NewPassword1');
         cy.get('button').contains('Change Password').click();
         cy.get('.rrt-text').should('have.text', 'reset_password_token is invalid');
       });
