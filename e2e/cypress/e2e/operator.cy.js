@@ -24,6 +24,12 @@ describe('Operator', function () {
         cy.get('#input-details').clear().type('Details about Interholco');
         cy.get('#input-website').clear().type('https://example.com');
         cy.get('#input-address').clear().type('Some address');
+        // clear old image if exists
+        cy.get(".file-button").then(($button) => {
+          if ($button.length) {
+            cy.wrap($button).click();
+          }
+        });
         cy.get('.file-dropzone').attachFile('acme-logo.png', { subjectType: 'drag-n-drop' });
         cy.get('button').contains('Update producer').click();
         cy.get('.rrt-text', {timeout: 35000}).should('have.text', 'Profile saved correctly');

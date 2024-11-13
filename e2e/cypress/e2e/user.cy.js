@@ -44,7 +44,7 @@ describe('User', () => {
       cy.get('#input-first_name').type('Test');
       cy.get('#input-last_name').type('Operator');
       cy.get('#input-email').type('testoperator@example.com');
-      cy.get('#input-password').type('password');
+      cy.get('#input-password').clear().type('password');
       cy.get('#input-password_confirmation').type('password2');
       cy.get('button').contains('Sign up').click();
       cy.contains('.error', 'The field is required');
