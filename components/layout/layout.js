@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
-import dynamic from 'next/dynamic';
 
 // Components
 import Header from 'components/layout/header';
@@ -10,12 +8,11 @@ import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
+import Toastr from 'components/ui/toastr';
 import Notifications from 'components/ui/notifications';
 import RouterSpinner from 'components/layout/router-spinner';
 
-const Toastr = dynamic(() => import('react-redux-toastr'), { ssr: false });
-
-const Layout = ({ title, description, url, children, className, footer, toastr }) => {
+const Layout = ({ title, description, url, children, className, footer }) => {
   const classNames = classnames({
     [className]: !!className
   });
@@ -40,12 +37,7 @@ const Layout = ({ title, description, url, children, className, footer, toastr }
       {footer !== false && <Footer />}
 
       <Modal />
-
-      {toastr && <Toastr
-        preventDuplicates
-        transitionIn="fadeIn"
-        transitionOut="fadeOut"
-      />}
+      <Toastr />
 
       <Notifications />
       <RouterSpinner />
@@ -59,8 +51,7 @@ Layout.propTypes = {
   children: PropTypes.any.isRequired,
   url: PropTypes.object.isRequired,
   className: PropTypes.string,
-  footer: PropTypes.bool,
-  toastr: PropTypes.object
+  footer: PropTypes.bool
 };
 
-export default connect((state) => ({ toastr: state.toastr }))(Layout);
+export default Layout;

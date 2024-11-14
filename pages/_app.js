@@ -53,7 +53,7 @@ const MyApp = ({ Component, ...rest }) => {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps, defaultLocale, language, messages, url } = props;
 
-  useEffect(async () => {
+  useEffect(() => {
     const state = store.getState();
 
     if (!state.operators.data.length) {
@@ -62,10 +62,6 @@ const MyApp = ({ Component, ...rest }) => {
     if (!state.countries.data.length) {
       store.dispatch(getCountries());
     }
-
-    // TODO: maybe move this to dedicated component that would load toastr with its reducer
-    const { reducer: toastrReducer } = await import('react-redux-toastr');
-    store.injectReducer('toastr', toastrReducer);
   }, []);
 
   if (pageProps.errorCode) {
