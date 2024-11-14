@@ -18,7 +18,6 @@ import Html from 'components/html';
 
 class AboutPage extends React.Component {
   static async getInitialProps({ url, store }) {
-
     await Promise.all([
       store.dispatch(getPartners()),
       store.dispatch(getDonors()),
