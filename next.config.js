@@ -114,6 +114,7 @@ const sentryWebpackPluginOptions = {
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
   hideSourceMaps: process.env.ENV === 'production',
+  widenClientFileUpload: true,
   ...(process.env.SENTRY_DISABLE_RELEASE === 'true' && {
     release: {
       create: false,

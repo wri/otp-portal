@@ -6,7 +6,7 @@
   "license": "ISC",
   "main": "index.js",
   "dependencies": {
-    "@sentry/nextjs": "^8.35.0",
+    "@sentry/nextjs": "^8.38.0",
     "@turf/bbox": "^6.5.0",
     "classnames": "^2.5.1",
     "date-fns": "^3.6.0",
