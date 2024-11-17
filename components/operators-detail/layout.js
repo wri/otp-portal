@@ -153,9 +153,10 @@ class OperatorsDetailLayout extends React.Component {
     const id = operatorsDetail.data.id;
     const slug = url.query.id;
     const tab = url.asPath.split("/").pop() || 'overview';
-    const logoPath = operatorsDetail.data.logo
-      ? operatorsDetail.data.logo.url
+    const logoPath = operatorsDetail.data.logo?.thumbnail
+      ? operatorsDetail.data.logo.thumbnail.url
       : '';
+    const logo = logoPath !== '/api/placeholder.png' ? logoPath : '';
     let subtitle = intl.formatMessage(
       { id: 'operator-detail.subtitle' },
       {
@@ -194,7 +195,7 @@ class OperatorsDetailLayout extends React.Component {
             )
           }
           tabs
-          logo={logoPath !== '/api/placeholder.png' ? logoPath : ''}
+          logo={logo}
         />
 
         <Tabs
