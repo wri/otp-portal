@@ -92,20 +92,6 @@ export async function getInitialProps({ url, res, store, ...rest }) {
 }
 
 class OperatorsDetailLayout extends React.Component {
-  // all operators detail pages will eager load documents and timeline
-  componentDidMount() {
-    const { operatorsDetail } = this.props;
-    const operator = operatorsDetail.data;
-
-    // eager load documentation tab as high probabilty user will switch to it
-    // only if not loaded
-    if (operatorsDetail.documentation.data.length === 0) {
-      this.props.getOperatorDocumentation(operator.id);
-      this.props.getOperatorDocumentationCurrent(operator.id);
-      this.props.getOperatorTimeline(operator.id);
-    }
-  }
-
   /**
    * HELPERS
    * - getTabOptions
