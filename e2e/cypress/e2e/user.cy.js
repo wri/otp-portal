@@ -10,33 +10,33 @@ describe('User', () => {
   context('Login form', () => {
     it('can log in', function () {
       cy.visit('/');
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
       cy.get('button').contains('Log in').click();
       cy.get('.rrt-text').should('have.text', 'Wrong email or password');
       cy.get('#input-password').clear().type('Supersecret1');
       cy.get('button').contains('Log in').click();
-      cy.contains('a', 'My account');
+      cy.contains('div[role=button]', 'My account');
     });
   })
 
   context('Public user', () => {
     it('can log in and out', function () {
       cy.login('operator@example.com', 'Supersecret1');
-      cy.get('a').contains('My account').click();
+      cy.get('div[role=button]').contains('My account').click();
       cy.get('a').contains('My profile').click();
       cy.get('#input-firstName').should('have.value', 'Operator');
       cy.get('#input-lastName').should('have.value', 'User');
-      cy.get('a').contains('My account').click();
+      cy.get('div[role=button]').contains('My account').click();
       cy.get('a').contains('Sign out').click();
-      cy.get('a').contains('Sign in').should('exist')
-      cy.get('a').contains('My account').should('not.exist')
+      cy.get('div[role=button]').contains('Sign in').should('exist')
+      cy.get('div[role=button]').contains('My account').should('not.exist')
     });
 
     it('can create account', function () {
       cy.visit('/');
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('a').contains('Register now').click();
       cy.selectOption('[name=country_id]', 'Co', 'Congo');
       cy.selectOption('[name=operator_id]', 'Si', 'SIFCO');
@@ -62,7 +62,7 @@ describe('User', () => {
 
     it('can create producer', function () {
       cy.visit('/');
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('a').contains('Register new producer').click();
 
       cy.get('#input-name').type('Super New Producer');
@@ -88,7 +88,7 @@ describe('User', () => {
     });
 
     it('can update user profile', function () {
-      cy.get('a').contains('My account').click();
+      cy.get('div[role=button]').contains('My account').click();
       cy.get('a').contains('My profile').click();
 
       cy.get('#input-firstName').clear();

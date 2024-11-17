@@ -14,7 +14,7 @@ describe('Operator', function () {
 
     describe('updating operator profile', function () {
       beforeEach(function () {
-        cy.get('a').contains('My account').click();
+        cy.get('div[role=button]').contains('My account').click();
         cy.get('a').contains('Producer profile').click();
         cy.location('pathname', {timeout: 25000}).should('include', '/operator/edit');
       })
@@ -50,7 +50,7 @@ describe('Operator', function () {
 
     describe('documentation', function () {
       beforeEach(function () {
-        cy.get('a').contains('My account').click();
+        cy.get('div[role=button]').contains('My account').click();
         cy.contains('a', 'IFO / Interholco').click();
         cy.location('pathname', {timeout: 25000}).should('include', '/documentation');
       })

@@ -31,9 +31,9 @@ const Header = ({ url }) => {
         <div className="header-container">
           <h1 className="header-logo">
             <Link href="/" prefetch={false}>
-              
+
                 Open Timber Portal
-              
+
             </Link>
             {process.env.ENV === 'staging' && (
               <span className="header-logo-staging">Staging</span>
@@ -47,7 +47,7 @@ const Header = ({ url }) => {
                 <Search theme={theme} />
               </li>
               <li>
-                <UserDropdown theme={theme} />
+                <UserDropdown theme={theme} className="header-nav-list-item" />
               </li>
               <li>
                 <LanguageDropdown className="header-nav-list-item" showSelectedCode />

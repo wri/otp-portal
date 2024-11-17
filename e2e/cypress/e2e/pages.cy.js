@@ -2,7 +2,7 @@ describe('Pages', () => {
   describe('Login page', () => {
     it('matches visually', function () {
       cy.visit('/');
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('.c-login').matchImage();
     });
   })
