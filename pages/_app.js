@@ -54,14 +54,8 @@ const MyApp = ({ Component, ...rest }) => {
   const { pageProps, defaultLocale, language, messages } = props;
 
   useEffect(() => {
-    const state = store.getState();
-
-    if (!state.operators.data.length) {
-      store.dispatch(getOperators());
-    }
-    if (!state.countries.data.length) {
-      store.dispatch(getCountries());
-    }
+    store.dispatch(getOperators());
+    store.dispatch(getCountries());
   }, []);
 
   if (pageProps.errorCode) {
@@ -111,17 +105,6 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
 
   store.dispatch(setLanguage(language));
   store.dispatch(setUser(user));
-
-  const requests = []
-  if (!isServer) {
-    if (!state.operators.data.length) {
-      requests.push(store.dispatch(getOperators()));
-    }
-    if (!state.countries.data.length) {
-      requests.push(store.dispatch(getCountries()));
-    }
-  }
-  await Promise.all(requests);
 
   const pageProps = Component.getInitialProps ?
     await Component.getInitialProps(ctx) :
