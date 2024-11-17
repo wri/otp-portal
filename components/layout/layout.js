@@ -12,7 +12,7 @@ import Toastr from 'components/ui/toastr';
 import Notifications from 'components/ui/notifications';
 import RouterSpinner from 'components/layout/router-spinner';
 
-const Layout = ({ title, description, url, children, className, footer }) => {
+const Layout = ({ title, description, children, className, footer }) => {
   const classNames = classnames({
     [className]: !!className
   });
@@ -26,9 +26,7 @@ const Layout = ({ title, description, url, children, className, footer }) => {
 
       <Icons />
 
-      <Header
-        url={url}
-      />
+      <Header />
 
       <div className={`l-main ${classNames}`}>
         {children}
@@ -49,7 +47,6 @@ Layout.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  url: PropTypes.object.isRequired,
   className: PropTypes.string,
   footer: PropTypes.bool
 };

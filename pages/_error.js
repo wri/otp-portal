@@ -2,6 +2,7 @@
  * Creating a page named _error.js lets you override HTTP error messages
  */
 import React from 'react';
+import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -10,12 +11,12 @@ import * as Sentry from '@sentry/nextjs';
 
 class ErrorPage extends React.Component {
   static async getInitialProps(contextData) {
-    const { res, xhr, url } = contextData;
+    const { res, xhr } = contextData;
     const statusCode = res ? res.statusCode : (xhr ? xhr.status : 0); // eslint-disable-line
 
     await Sentry.captureUnderscoreErrorException(contextData);
 
-    return { statusCode, url };
+    return { statusCode };
   }
 
   render() {
@@ -49,7 +50,7 @@ class ErrorPage extends React.Component {
           <div>
             {css}
             <h1>Page Not Found</h1>
-            <p>The page <strong>{ this.props.url.asPath }</strong> does not exist.</p>
+            <p>The page <strong>{ this.props.router.asPath }</strong> does not exist.</p>
             <p><Link href="/">Home</Link></p>
           </div>
         );
@@ -70,7 +71,7 @@ class ErrorPage extends React.Component {
             <h1>HTTP { this.props.statusCode } Error</h1>
             <p>
               An <strong>HTTP { this.props.statusCode }</strong> error occurred while
-              trying to access <strong>{ this.props.url.pathname }</strong>
+              trying to access <strong>{ this.props.router.pathname }</strong>
             </p>
           </div>
         );
@@ -83,7 +84,7 @@ class ErrorPage extends React.Component {
 
 ErrorPage.propTypes = {
   statusCode: PropTypes.number.isRequired,
-  url: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
 };
 
-export default ErrorPage;
+export default withRouter(ErrorPage);

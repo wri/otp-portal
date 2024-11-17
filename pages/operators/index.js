@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 import { injectIntl } from 'react-intl';
+import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import {
@@ -40,7 +41,7 @@ import OperatorsTable from 'components/operators/table';
 
 
 class OperatorsPage extends React.Component {
-  static async getInitialProps({ url, store }) {
+  static async getInitialProps({ store }) {
     const { operatorsRanking } = store.getState();
     const requests = [];
 
@@ -50,15 +51,15 @@ class OperatorsPage extends React.Component {
 
     await Promise.all(requests);
 
-    return { url };
+    return {};
   }
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operatorsRanking, deviceInfo } = this.props;
+    const { router, operatorsRanking, deviceInfo } = this.props;
 
     // Set location
-    this.props.setOperatorsMapLocation(getOperatorsUrl(url));
+    this.props.setOperatorsMapLocation(getOperatorsUrl(router));
     if (!operatorsRanking.layersSettings['integrated-alerts']) {
       this.props.getIntegratedAlertsMetadata();
     }
@@ -123,7 +124,6 @@ class OperatorsPage extends React.Component {
       <Layout
         title="Operators"
         description="Operators description..."
-        url={url}
         className="-fullscreen"
         footer={false}
       >
@@ -213,11 +213,12 @@ class OperatorsPage extends React.Component {
 }
 
 OperatorsPage.propTypes = {
+  router: PropTypes.object.isRequired,
   intl: PropTypes.object.isRequired,
   deviceInfo: PropTypes.object,
 };
 
-export default withDeviceInfo(injectIntl(connect(
+export default withRouter(withDeviceInfo(injectIntl(connect(
   (state, props) => ({
     language: state.language,
     operatorsRanking: state.operatorsRanking,
@@ -256,4 +257,4 @@ export default withDeviceInfo(injectIntl(connect(
       dispatch(setOperatorsSidebar(obj));
     }
   })
-)(OperatorsPage)));
+)(OperatorsPage))));

@@ -15,14 +15,13 @@ import StaticHeader from 'components/ui/static-header';
 import UserEditForm from 'components/users/edit';
 import Spinner from 'components/ui/spinner';
 
-const Profile = ({ url, userProfile }) => {
+const Profile = ({ userProfile }) => {
   const intl = useIntl();
 
   return (
     <Layout
       title={intl.formatMessage({ id: 'User profile' })}
       description={intl.formatMessage({ id: 'User profile' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'User profile' })}
@@ -41,18 +40,17 @@ const Profile = ({ url, userProfile }) => {
   );
 }
 
-Profile.getInitialProps = async ({ store, url }) => {
+Profile.getInitialProps = async ({ store }) => {
   const state = store.getState();
   if (!state.user || !state.user.token) {
     return { redirectTo: '/', redirectPermanent: false };
   }
 
   await store.dispatch(getUserProfile());
-  return { url };
+  return {};
 }
 
 Profile.propTypes = {
-  url: PropTypes.object.isRequired,
   user: PropTypes.object,
   userProfile: PropTypes.object
 };

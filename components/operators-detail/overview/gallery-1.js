@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
@@ -12,15 +13,15 @@ import { HELPERS_DOC } from 'utils/documentation';
 import Card from 'components/ui/card';
 
 function Gallery({
-  url,
   operatorsDetail,
   operatorObservations,
-  operatorDocumentation,
-  intl,
+  operatorDocumentation
 }) {
   const observations = operatorObservations.length || 0;
   const visits = HELPERS_OBS.getMonitorVisits(operatorObservations) || 0;
   const fmus = operatorsDetail.data?.fmus?.length || 0;
+  const router = useRouter();
+  const intl = useIntl();
 
   let fmuDescription;
   // French language does not work well with standard plural CLDR rules ¯\_(ツ)_/¯
@@ -86,7 +87,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card1.link.label',
               }),
-              href: `/operators/${url.query.id}/documentation`
+              href: `/operators/${router.query.id}/documentation`
             }}
           />
         </div>
@@ -105,7 +106,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card2.link.label',
               }),
-              href: `/operators/${url.query.id}/observations`,
+              href: `/operators/${router.query.id}/observations`,
             }}
           />
         </div>
@@ -126,7 +127,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card3.link.label',
               }),
-              href: `/operators/${url.query.id}/fmus`,
+              href: `/operators/${router.query.id}/fmus`,
             }}
           />
         </div>
@@ -136,11 +137,9 @@ function Gallery({
 }
 
 Gallery.propTypes = {
-  url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object.isRequired,
   operatorObservations: PropTypes.array,
-  operatorDocumentation: PropTypes.array,
-  intl: PropTypes.object.isRequired,
+  operatorDocumentation: PropTypes.array
 };
 
 Gallery.defaultProptypes = {
@@ -148,4 +147,4 @@ Gallery.defaultProptypes = {
   operatorDocumentation: [],
 };
 
-export default injectIntl(Gallery);
+export default Gallery;

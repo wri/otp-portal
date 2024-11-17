@@ -28,7 +28,7 @@ class OperatorsDetailDocumentationPage extends React.Component {
     const newDate = this.props?.operatorsDetail?.date?.toString();
 
     if (prevDate !== newDate) {
-      const { url, operatorsDetail } = this.props;
+      const { operatorsDetail } = this.props;
       const operator = operatorsDetail.data;
       this.props.getOperatorDocumentation(operator.id);
       this.props.getOperatorDocumentationCurrent(operator.id);
@@ -37,7 +37,6 @@ class OperatorsDetailDocumentationPage extends React.Component {
 
   render() {
     const {
-      url,
       operatorsDetail,
       operatorObservations,
       operatorDocumentation,
@@ -45,12 +44,11 @@ class OperatorsDetailDocumentationPage extends React.Component {
     } = this.props;
 
     return (
-      <Layout url={url} operatorObservations={operatorObservations}>
+      <Layout operatorObservations={operatorObservations}>
         <OperatorsDetailDocumentation
           operatorsDetail={operatorsDetail}
           operatorDocumentation={operatorDocumentation}
           operatorTimeline={operatorTimeline}
-          url={url}
         />
       </Layout>
     );
@@ -58,7 +56,6 @@ class OperatorsDetailDocumentationPage extends React.Component {
 }
 
 OperatorsDetailDocumentationPage.propTypes = {
-  url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   operatorDocumentation: PropTypes.array,

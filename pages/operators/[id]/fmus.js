@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
@@ -19,37 +20,35 @@ class OperatorsDetailFMUsPage extends React.Component {
   static getInitialProps = getInitialProps;
 
   componentDidMount() {
-    const { operatorsDetail, getOperatorBySlug, url } = this.props;
+    const { operatorsDetail, getOperatorBySlug, router } = this.props;
     if (!operatorsDetail.data.loadedFMUS) {
-      getOperatorBySlug(url.query.id, true);
+      getOperatorBySlug(router.query.id, true);
     }
   }
 
   render() {
     const {
-      url,
       operatorsDetail,
       operatorObservations,
     } = this.props;
 
     return (
-      <Layout url={url} operatorObservations={operatorObservations}>
-        <OperatorsDetailFMUs operatorsDetail={operatorsDetail} url={url} />
+      <Layout operatorObservations={operatorObservations}>
+        <OperatorsDetailFMUs operatorsDetail={operatorsDetail} />
       </Layout>
     );
   }
 }
 
 OperatorsDetailFMUsPage.propTypes = {
-  url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   getOperatorBySlug: PropTypes.func.isRequired
 };
 
-export default connect(
+export default withRouter(connect(
   (state) => ({
     operatorsDetail: state.operatorsDetail,
     operatorObservations: getParsedObservations(state)
   }), { getOperatorBySlug }
-)(OperatorsDetailFMUsPage);
+)(OperatorsDetailFMUsPage));

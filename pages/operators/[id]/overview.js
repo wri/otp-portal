@@ -19,19 +19,17 @@ export class OperatorsDetailOverviewPage extends React.Component {
 
   render() {
     const {
-      url,
       operatorsDetail,
       operatorObservations,
       operatorDocumentation,
     } = this.props;
 
     return (
-      <Layout url={url} operatorObservations={operatorObservations}>
+      <Layout operatorObservations={operatorObservations}>
         <OperatorsDetailOverview
           operatorsDetail={operatorsDetail}
           operatorDocumentation={operatorDocumentation}
           operatorObservations={operatorObservations.filter(o => !o.hidden)}
-          url={url}
         />
       </Layout>
     );
@@ -39,7 +37,6 @@ export class OperatorsDetailOverviewPage extends React.Component {
 }
 
 OperatorsDetailOverviewPage.propTypes = {
-  url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   operatorDocumentation: PropTypes.array,

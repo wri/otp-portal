@@ -32,24 +32,20 @@ import {
 } from 'modules/documents-database';
 
 class DocumentsDatabasePage extends React.Component {
-  static async getInitialProps({ url }) {
-    return { url };
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      tab: this.props.url.query.subtab || 'documentation-list'
+      tab: this.props.router.query.subtab || 'documentation-list'
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
   }
 
   componentDidMount() {
-    const { database, url } = this.props;
+    const { database, router } = this.props;
 
-    this.props.getDocumentsDatabaseUrl(url);
+    this.props.getDocumentsDatabaseUrl(router);
 
     if (isEmpty(database.filters.options)) {
       this.props.getFilters();
@@ -75,13 +71,12 @@ class DocumentsDatabasePage extends React.Component {
   }
 
   render() {
-    const { url, parsedFilters } = this.props;
+    const { parsedFilters } = this.props;
 
     return (
       <Layout
         title="Producers’ documents database"
         description="DocumentsDatabase description..."
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({
@@ -118,7 +113,6 @@ class DocumentsDatabasePage extends React.Component {
 
 DocumentsDatabasePage.propTypes = {
   router: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
   database: PropTypes.object,
   intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,

@@ -21,17 +21,17 @@ import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
 class OperatorsEdit extends React.Component {
-  static async getInitialProps({ store, url }) {
+  static async getInitialProps({ store, query }) {
     const { user } = store.getState();
 
-    if (url.query.id && !user.operator_ids.includes(Number(url.query.id))) {
+    if (query.id && !user.operator_ids.includes(Number(query.id))) {
       return { errorCode: 404 };
     }
-    const operatorId = Number(url.query.id) || user.operator_ids[0];
+    const operatorId = Number(query.id) || user.operator_ids[0];
     if (operatorId) {
       await store.dispatch(getUserOperator(operatorId));
     }
-    return { url, operatorId };
+    return { operatorId };
   }
 
   /**
@@ -63,7 +63,7 @@ class OperatorsEdit extends React.Component {
   }
 
   render() {
-    const { url, userOperator, operatorId, intl } = this.props;
+    const { userOperator, operatorId, intl } = this.props;
 
     if (!operatorId) {
       return null;
@@ -73,7 +73,6 @@ class OperatorsEdit extends React.Component {
       <Layout
         title={this.props.intl.formatMessage({ id: 'edit.operators' })}
         description={this.props.intl.formatMessage({ id: 'edit.operators.description' })}
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'edit.operators' })}
@@ -106,7 +105,6 @@ class OperatorsEdit extends React.Component {
 
 OperatorsEdit.propTypes = {
   intl: PropTypes.object.isRequired,
-  url: PropTypes.object,
   operatorId: PropTypes.number.isRequired,
   user: PropTypes.object,
   userOperator: PropTypes.object,

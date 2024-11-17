@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
+import { withRouter } from 'next/router';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -49,11 +50,11 @@ const COUNTRIES_FRENCH_FIX = {
 };
 
 // shared getInitialProps for operator's detail pages
-export async function getInitialProps({ url, res, store, ...rest }) {
+export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   let { operatorsDetail } = store.getState();
   const requests = [];
-  const {id} = url.query;
-  const tab = url.asPath.split('/').pop();
+  const {id} = query;
+  const tab = asPath.split('/').pop();
 
   // we are going to redirect to slug if the id is a number
   if (!isNaN(id)) {
@@ -63,7 +64,7 @@ export async function getInitialProps({ url, res, store, ...rest }) {
     if (!operator || isEmpty(operator)) {
       return { errorCode: 404 };
     }
-    return { redirectTo: url.asPath.replace(`/${id}`, `/${operator.slug}`) }
+    return { redirectTo: asPath.replace(`/${id}`, `/${operator.slug}`) }
   }
 
   const operatorChanged = operatorsDetail.data.slug !== id;
@@ -88,7 +89,7 @@ export async function getInitialProps({ url, res, store, ...rest }) {
 
   await Promise.all(requests);
 
-  return { url };
+  return {};
 }
 
 class OperatorsDetailLayout extends React.Component {
@@ -129,7 +130,7 @@ class OperatorsDetailLayout extends React.Component {
 
   render() {
     const {
-      url,
+      router,
       user,
       operatorsDetail,
       children,
@@ -137,8 +138,8 @@ class OperatorsDetailLayout extends React.Component {
     } = this.props;
 
     const id = operatorsDetail.data.id;
-    const slug = url.query.id;
-    const tab = url.asPath.split("/").pop() || 'overview';
+    const slug = router.query.id;
+    const tab = router.asPath.split("/").pop() || 'overview';
     const logoPath = operatorsDetail.data.logo?.thumbnail
       ? operatorsDetail.data.logo.thumbnail.url
       : '';
@@ -162,7 +163,6 @@ class OperatorsDetailLayout extends React.Component {
       <Layout
         title={operatorsDetail.data.name || '-'}
         description="Forest operator's name description..."
-        url={url}
       >
         <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
 
@@ -186,7 +186,7 @@ class OperatorsDetailLayout extends React.Component {
 
         <Tabs
           href={{
-            pathname: url.pathname,
+            pathname: router.pathname,
             query: { id: slug },
             as: `/operators/${slug}`,
           }}
@@ -202,13 +202,13 @@ class OperatorsDetailLayout extends React.Component {
 
 OperatorsDetailLayout.propTypes = {
   children: PropTypes.any.isRequired,
-  url: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object,
   user: PropTypes.shape({}),
   intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(
+export default withRouter(injectIntl(
   connect(
     (state) => ({
       user: state.user,
@@ -223,4 +223,4 @@ export default injectIntl(
       getIntegratedAlertsMetadata
     }
   )(OperatorsDetailLayout)
-);
+));

@@ -18,17 +18,15 @@ class OperatorsDetailObservationsPage extends React.Component {
 
   render() {
     const {
-      url,
       operatorsDetail,
       operatorObservations
     } = this.props;
 
     return (
-      <Layout url={url} operatorObservations={operatorObservations}>
+      <Layout operatorObservations={operatorObservations}>
         <OperatorsDetailObservations
           operatorsDetail={operatorsDetail}
           operatorObservations={operatorObservations}
-          url={url}
         />
       </Layout>
     );
@@ -36,7 +34,6 @@ class OperatorsDetailObservationsPage extends React.Component {
 }
 
 OperatorsDetailObservationsPage.propTypes = {
-  url: PropTypes.object.isRequired,
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
 };

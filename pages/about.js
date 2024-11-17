@@ -17,14 +17,14 @@ import PartnerCard from 'components/ui/partner-card';
 import Html from 'components/html';
 
 class AboutPage extends React.Component {
-  static async getInitialProps({ url, store }) {
+  static async getInitialProps({ store }) {
     await Promise.all([
       store.dispatch(getPartners()),
       store.dispatch(getDonors()),
       store.dispatch(getAbout())
     ]);
 
-    return { url };
+    return {};
   }
 
   renderDonors() {
@@ -67,14 +67,13 @@ class AboutPage extends React.Component {
   }
 
   render() {
-    const { about, url } = this.props;
+    const { about } = this.props;
     const aboutPageEntries = sortBy(about.data, 'position') || about.data;
 
     return (
       <Layout
         title="About"
         description="About description..."
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'about.title' })}
@@ -113,7 +112,6 @@ class AboutPage extends React.Component {
 }
 
 AboutPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
   about: PropTypes.shape({}).isRequired,
   partners: PropTypes.shape({}).isRequired,
   donors: PropTypes.shape({}).isRequired,

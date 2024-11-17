@@ -51,7 +51,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const MyApp = ({ Component, ...rest }) => {
   const { store, props } = wrapper.useWrappedStore(rest);
-  const { pageProps, defaultLocale, language, messages, url } = props;
+  const { pageProps, defaultLocale, language, messages } = props;
 
   useEffect(() => {
     const state = store.getState();
@@ -65,7 +65,7 @@ const MyApp = ({ Component, ...rest }) => {
   }, []);
 
   if (pageProps.errorCode) {
-    return <Error statusCode={pageProps.errorCode} url={url} />;
+    return <Error statusCode={pageProps.errorCode} />;
   }
 
   return (
@@ -89,10 +89,9 @@ const MyApp = ({ Component, ...rest }) => {
 }
 
 MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, ctx }) => {
-  const { asPath, pathname, query, req, res, locale, defaultLocale } = ctx;
+  const { req, res, locale, defaultLocale } = ctx;
   const isServer = !!req;
   const state = store.getState();
-  const url = { asPath, pathname, query };
   let user = null;
   let language = locale || 'en';
 
@@ -125,7 +124,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   await Promise.all(requests);
 
   const pageProps = Component.getInitialProps ?
-    await Component.getInitialProps({ ...ctx, url }) :
+    await Component.getInitialProps(ctx) :
     {};
 
   if (pageProps.errorCode && isServer) {
@@ -146,7 +145,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     return {};
   }
 
-  return { pageProps, language, messages, defaultLocale, url };
+  return { pageProps, language, messages, defaultLocale };
 });
 
 export default MyApp;

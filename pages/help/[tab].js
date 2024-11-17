@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
@@ -21,8 +22,8 @@ import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
 class HelpPage extends React.Component {
-  static async getInitialProps({ url, store }) {
-    if (!url.query.tab) return { redirectTo: `${url.asPath}/overview` };
+  static async getInitialProps({ query, asPath, store }) {
+    if (!query.tab) return { redirectTo: `${asPath}/overview` };
 
     const { howtos, tools, faqs, tutorials } = store.getState().help;
 
@@ -35,18 +36,17 @@ class HelpPage extends React.Component {
 
     await Promise.all(requests);
 
-    return { url };
+    return {};
   }
 
   render() {
-    const { url, howtos, tools, faqs, tutorials } = this.props;
-    const tab = url.query.tab || 'overview';
+    const { router, howtos, tools, faqs, tutorials } = this.props;
+    const tab = router.query.tab || 'overview';
 
     return (
       <Layout
         title={this.props.intl.formatMessage({ id: 'help.title' })}
         description="Help description..."
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'help.title' })}
@@ -55,7 +55,7 @@ class HelpPage extends React.Component {
 
         <Tabs
           href={{
-            pathname: url.pathname,
+            pathname: router.pathname,
             query: { },
             as: '/help'
           }}
@@ -88,31 +88,19 @@ class HelpPage extends React.Component {
         }
 
         {tab === 'how-otp-works' &&
-          <HelpHowOTPWorks
-            url={url}
-            howtos={howtos}
-          />
+          <HelpHowOTPWorks howtos={howtos} />
         }
 
         {tab === 'legislation-and-regulations' &&
-          <HelpLegislationAndRegulations
-            url={url}
-            tools={tools}
-          />
+          <HelpLegislationAndRegulations tools={tools} />
         }
 
         {tab === 'faqs' &&
-          <HelpFaqs
-            url={url}
-            faqs={faqs}
-          />
+          <HelpFaqs faqs={faqs} />
         }
 
         {tab === 'tutorials' &&
-          <HelpTutorials
-            url={url}
-            tutorials={tutorials}
-          />
+          <HelpTutorials tutorials={tutorials} />
         }
 
       </Layout>
@@ -122,7 +110,7 @@ class HelpPage extends React.Component {
 }
 
 HelpPage.propTypes = {
-  url: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   howtos: PropTypes.shape({}),
   tools: PropTypes.shape({}),
   faqs: PropTypes.shape({}),
@@ -130,8 +118,7 @@ HelpPage.propTypes = {
   intl: PropTypes.object.isRequired
 };
 
-export default injectIntl(connect(
-
+export default withRouter(injectIntl(connect(
   state => ({
     howtos: state.help.howtos,
     tools: state.help.tools,
@@ -139,4 +126,4 @@ export default injectIntl(connect(
     tutorials: state.help.tutorials
   }),
   { getHowtos, getTools, getFAQs, getTutorials }
-)(HelpPage));
+)(HelpPage)));

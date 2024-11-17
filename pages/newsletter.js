@@ -11,7 +11,7 @@ import StaticHeader from 'components/ui/static-header';
 
 import API from 'services/api';
 
-const Newsletter = ({ url, newsletters, language }) => {
+const Newsletter = ({ newsletters, language }) => {
   const intl = useIntl();
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString(language, { year: 'numeric', month: 'long', timeZone: 'UTC' }).replace(/^./, str => str.toUpperCase());
@@ -21,7 +21,6 @@ const Newsletter = ({ url, newsletters, language }) => {
     <Layout
       title={intl.formatMessage({ id: 'newsletter' })}
       description={intl.formatMessage({ id: 'newsletter' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'newsletter' })}
@@ -74,17 +73,15 @@ const Newsletter = ({ url, newsletters, language }) => {
 }
 
 Newsletter.propTypes = {
-  url: PropTypes.shape({}).isRequired,
   newsletters: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired
 };
-Newsletter.getInitialProps = async ({ url, store }) => {
+Newsletter.getInitialProps = async ({ store }) => {
   const { language } = store.getState();
   const { data: newsletters } = await API
     .get('newsletters', { locale: language })
 
-  return { url, newsletters, language };
+  return { newsletters, language };
 }
-
 
 export default Newsletter;

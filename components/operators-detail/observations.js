@@ -151,8 +151,7 @@ OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
   getOperatorObservations: PropTypes.func,
-  intl: PropTypes.object.isRequired,
-  url: PropTypes.object
+  intl: PropTypes.object.isRequired
 };
 
 export default injectIntl(

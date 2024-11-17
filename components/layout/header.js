@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // Components
 import NavigationList from 'components/ui/navigation-list';
@@ -14,8 +14,9 @@ import UserDropdown from 'components/ui/user-dropdown';
 
 import useDeviceInfo from 'hooks/use-device-info';
 
-const Header = ({ url }) => {
-  const isHomePage = url.pathname === '/';
+const Header = () => {
+  const router = useRouter();
+  const isHomePage = router.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const { isDesktop } = useDeviceInfo();
   const isMenuOpen = menuOpen && !isDesktop;
@@ -40,7 +41,7 @@ const Header = ({ url }) => {
             )}
           </h1>
           <nav className="header-nav -desktop">
-            <NavigationList url={url} className="header-nav-list" />
+            <NavigationList className="header-nav-list" />
 
             <ul className="header-nav-list c-navigation-list">
               <li className="search">
@@ -64,14 +65,10 @@ const Header = ({ url }) => {
         </div>
       </div>
       {isMenuOpen && (
-        <MobileMenu url={url} />
+        <MobileMenu />
       )}
     </header>
   );
 }
-
-Header.propTypes = {
-  url: PropTypes.object.isRequired
-};
 
 export default Header;

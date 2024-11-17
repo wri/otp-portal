@@ -11,12 +11,11 @@ import Html from 'components/html';
 
 import API from 'services/api';
 
-const TermsPage = ({ url, intl, page }) => {
+const TermsPage = ({ intl, page }) => {
   return (
     <Layout
       title={intl.formatMessage({ id: 'terms.title' })}
       description={intl.formatMessage({ id: 'terms.title' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'terms.title' })}
@@ -38,16 +37,15 @@ const TermsPage = ({ url, intl, page }) => {
   )
 }
 
-TermsPage.getInitialProps = async ({ url }) => {
+TermsPage.getInitialProps = async () => {
   const page = await API
     .get('pages', { 'filter[slug]': 'terms', locale: 'en' })
     .then(({ data }) => data[0]);
 
-  return { url, page };
+  return { page };
 }
 
 TermsPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
   intl: PropTypes.object.isRequired,
   page: PropTypes.object.isRequired
 };

@@ -58,20 +58,6 @@ const ZoomControl = dynamic(() => import('components/map/controls/zoom-control')
 const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
 class ObservationsPage extends React.Component {
-  static async getInitialProps({ url, store }) {
-    const { observations } = store.getState();
-
-    /* if (isEmpty(observations.data)) {
-     *   await store.dispatch(getObservations());
-     * } */
-
-    /* if (isEmpty(observations.filters.options)) {
-     *   await store.dispatch(getFilters());
-     * } */
-
-    return { url };
-  }
-
   constructor(props) {
     super(props);
 
@@ -84,10 +70,10 @@ class ObservationsPage extends React.Component {
   }
 
   componentDidMount() {
-    const { url } = this.props;
+    const { router } = this.props;
 
     this.props.getFilters();
-    this.props.getObservationsUrl(url);
+    this.props.getObservationsUrl(router);
     this.props.getObservations();
   }
 
@@ -264,7 +250,6 @@ class ObservationsPage extends React.Component {
 
   render() {
     const {
-      url,
       observations,
       getObservationsLayers,
       getObservationsLegend,
@@ -302,7 +287,6 @@ class ObservationsPage extends React.Component {
       <Layout
         title="Observations"
         description="Observations description..."
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'observations' })}
@@ -489,7 +473,6 @@ class ObservationsPage extends React.Component {
 
 ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,
-  url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
   intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,
