@@ -14,11 +14,14 @@ class MyDocument extends Document {
   }
 
   render() {
+    const { language } = this.props;
+
     return (
-      <Html lang={this.props.language}>
+      <Html lang={language}>
         <Head />
         <body>
           {process.env.OSANO_ID && <Script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} strategy="afterInteractive" />}
+          <Script src={`/${language === 'en' ? '' : language + '/'}translations.js`} strategy="beforeInteractive" />
           <GoogleTagManager noscript />
           <Main />
           <NextScript />

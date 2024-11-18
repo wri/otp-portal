@@ -20,6 +20,29 @@ import wrapper from 'store';
 import 'css/index.scss';
 import { WebVitalsTracking } from '~/components/layout/web-vitals-tracking';
 
+let translations;
+// Here is some magic to not pass translations in page props as that is significantly increasing the size of the initial page load of every page.
+// We also don't want to bundle all translation files in the client bundle
+// so the only way is to load all translations on the server side, and on the client we will
+// use the translations that are already loaded in the window TRANSLATIONS object in _document page.
+// NOT SURE IF THAT WORKS with server static generation but WE DON'T USE IT!
+// also doing:
+// const isServer = typeof window === 'undefined'
+// if (isServer) { ... }
+// DOES NOT WORK because required files ends up in the client bundle anyway. Dunno why
+if (typeof window === 'undefined') {
+  const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
+  translations = {
+    en: require(`lang/${langFolder}en.json`),
+    fr: require(`lang/${langFolder}fr.json`),
+    pt: require(`lang/${langFolder}pt.json`),
+    ja: require(`lang/${langFolder}ja.json`),
+    ko: require(`lang/${langFolder}ko.json`),
+    vi: require(`lang/${langFolder}vi.json`),
+    zh: require(`lang/${langFolder}zh_CN.json`)
+  }
+}
+
 // workaround as import(`dayjs/locale/${locale}`) was not working
 const loadLocales = {
   en: () => Promise.resolve(),
@@ -51,7 +74,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const MyApp = ({ Component, ...rest }) => {
   const { store, props } = wrapper.useWrappedStore(rest);
-  const { pageProps, defaultLocale, language, messages } = props;
+  const { pageProps, defaultLocale, language } = props;
+  // OTP_PORTAL_TRANSLATIONS is a global variable set in script loaded in _document.js
+  const messages = translations ? translations[language] : window.OTP_PORTAL_TRANSLATIONS;
+
+  if (!messages) { throw new Error(`No translations found for language ${language}`); }
 
   useEffect(() => {
     store.dispatch(getOperators());
@@ -96,11 +123,6 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     user = state.user;
   }
 
-  const languageFile = language === 'zh' ? 'zh_CN' : language;
-  // for production env use precompiled language json files (see formatjs compile)
-  const languageFolder = process.env.NODE_ENV === "production" ? 'compiled/' : '';
-  const messages = await import(`lang/${languageFolder}${languageFile}.json`);
-
   await loadLocales[language]();
 
   store.dispatch(setLanguage(language));
@@ -128,7 +150,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     return {};
   }
 
-  return { pageProps, language, messages, defaultLocale };
+  return { pageProps, language, defaultLocale };
 });
 
 export default MyApp;
