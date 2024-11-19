@@ -42,10 +42,16 @@ class StaticHeader extends React.Component {
     return (
       <div
         className={`c-static-header ${customClasses}`}
-        style={{
-          backgroundImage: `url(${background})`,
-        }}
       >
+        <div className="c-static-background">
+          <picture>
+            {/* make sure webp image is also available */}
+            <source type="image/webp" srcSet={background.replace('.jpg', '.webp')} />
+            <source type="image/jpeg" srcSet={background} />
+            <img src={background} alt="" />
+          </picture>
+        </div>
+
         {tabs ? (
           <div className="wrapper">
             <div className="container">
