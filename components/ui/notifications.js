@@ -10,6 +10,7 @@ import { injectIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
+import { groupBy } from 'utils/general';
 import { getNotifications, dismissAll } from 'modules/notifications';
 
 function isBeforeToday(date) {
@@ -20,8 +21,6 @@ function isBeforeToday(date) {
 
 class Notifications extends React.Component {
   handleDismiss = () => {
-    const { notifications } = this.props;
-
     this.props.dismissAll();
     modal.toggleModal(false);
   }
@@ -58,7 +57,7 @@ class Notifications extends React.Component {
   }
 
   renderSingleNotification(notification) {
-    const { language, intl } = this.props;
+    const { intl } = this.props;
     const expirationDate = new Date(notification['expiration-date']);
     const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(expirationDate);
 
