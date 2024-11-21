@@ -15,7 +15,7 @@ import {
   getOperator,
   getOperatorBySlug,
   getOperatorDocumentation,
-  getOperatorDocumentationCurrent,
+  getOperatorPublicationAuthorization,
   getOperatorTimeline,
   getOperatorObservations
 } from 'modules/operators-detail';
@@ -51,7 +51,7 @@ const COUNTRIES_FRENCH_FIX = {
 
 // shared getInitialProps for operator's detail pages
 export async function getInitialProps({ query, asPath, res, store, ...rest }) {
-  let { operatorsDetail } = store.getState();
+  let { operatorsDetail, user } = store.getState();
   const requests = [];
   const {id} = query;
   const tab = asPath.split('/').pop();
@@ -76,8 +76,10 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   if (operator && !isEmpty(operator)) {
     if (operatorsDetail.documentation.operatorId !== operator.id && tab === 'documentation') {
       requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
-      requests.push(store.dispatch(getOperatorDocumentationCurrent(operator.id)));
       requests.push(store.dispatch(getOperatorTimeline(operator.id)));
+      if (user.token && user.operator_ids && user.operator_ids.includes(+operator.id)) {
+        requests.push(store.dispatch(getOperatorPublicationAuthorization(operator.id)));
+      }
     }
 
     if (operatorsDetail.observations.operatorId !== operator.id && (tab === 'observations' || tab === 'overview')) {
@@ -217,7 +219,7 @@ export default withRouter(injectIntl(
     {
       getOperator,
       getOperatorDocumentation,
-      getOperatorDocumentationCurrent,
+      getOperatorPublicationAuthorization,
       getOperatorTimeline,
       getOperatorObservations,
       getIntegratedAlertsMetadata

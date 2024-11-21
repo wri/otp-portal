@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 import API from 'services/api';
+import { parseDocument } from 'utils/documents';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -15,9 +16,8 @@ const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
 const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
 const GET_OPERATOR_DOCUMENTATION_LOADING = 'GET_OPERATOR_DOCUMENTATION_LOADING';
 
-const GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS';
-const GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR = 'GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR';
-const GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING = 'GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING';
+const GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS';
+const GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR';
 
 const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
 const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
@@ -54,12 +54,7 @@ const initialState = {
     error: false,
     timestamp: null
   },
-  documentationCurrent: {
-    data: [],
-    loading: false,
-    error: false,
-    timestamp: null
-  },
+  publicationAuthorization: null,
   date: dayjs().format('YYYY-MM-DD'),
   fmu: null,
   timeline: [],
@@ -176,32 +171,11 @@ export default function reducer(state = initialState, action) {
       });
       return Object.assign({}, state, { observations });
     }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS: {
-      if (!isLatestAction(state.documentationCurrent, action)) return state;
-
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { documentationCurrent });
+    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS: {
+      return Object.assign({}, state, { publicationAuthorization: action.payload });
     }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR: {
-      if (!isLatestAction(state.documentationCurrent, action)) return state;
-
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { documentationCurrent });
-    }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING: {
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        loading: true,
-        error: false,
-        timestamp: action.metadata.timestamp
-      });
-      return Object.assign({}, state, { documentationCurrent });
+    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR: {
+      return Object.assign({}, state, { publicationAuthorization: null });
     }
     case GET_SAWMILLS_SUCCESS: {
       const sawmills = Object.assign({}, state.sawmills, {
@@ -424,12 +398,9 @@ export function getOperatorObservations(operatorId) {
   };
 }
 
-export function getOperatorDocumentationCurrent(id) {
+export function getOperatorPublicationAuthorization(id) {
   return (dispatch, getState) => {
     const { user, language } = getState();
-    const metadata = { timestamp: new Date(), operatorId: id };
-
-    dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING, metadata });
 
     const includeFields = [
       'required-operator-document',
@@ -439,23 +410,22 @@ export function getOperatorDocumentationCurrent(id) {
     return API.get('operator-documents', {
       locale: language,
       include: includeFields.join(','),
-      'page[size]': 1000,
       'filter[operator-id]': id,
+      'filter[contract-signature]': true,
     }, {
       token: user.token,
     })
       .then(({ data }) => {
+        const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
+
         dispatch({
-          type: GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS,
-          payload: data,
-          metadata
+          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS,
+          payload: parseDocument(doc)
         });
       })
-      .catch((err) => {
+      .catch((_err) => {
         dispatch({
-          type: GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR,
-          payload: err.message,
-          metadata
+          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR
         });
       });
   };

@@ -112,10 +112,7 @@ class DocCardUpload extends React.Component {
     const { deleteLoading } = this.state;
     const currentDate = dayjs(new Date());
     const selectedDate = dayjs(date);
-    const isEditable =
-      currentDate.year() === selectedDate.year() &&
-      currentDate.month() === selectedDate.month() &&
-      currentDate.dayOfYear() === selectedDate.dayOfYear();
+    const isEditable = selectedDate.isSame(currentDate, 'day');
     const btnTooltip = !isEditable
       ? 'Please select the most recent date on the filters to edit any document'
       : null;

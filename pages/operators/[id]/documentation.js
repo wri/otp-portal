@@ -10,8 +10,7 @@ import { getParsedTimeline } from 'selectors/operators-detail/timeline';
 import { connect } from 'react-redux';
 import {
   getOperator,
-  getOperatorDocumentation,
-  getOperatorDocumentationCurrent,
+  getOperatorDocumentation
 } from 'modules/operators-detail';
 
 // Components
@@ -31,7 +30,6 @@ class OperatorsDetailDocumentationPage extends React.Component {
       const { operatorsDetail } = this.props;
       const operator = operatorsDetail.data;
       this.props.getOperatorDocumentation(operator.id);
-      this.props.getOperatorDocumentationCurrent(operator.id);
     }
   }
 
@@ -72,7 +70,6 @@ export default connect(
   }),
   {
     getOperator,
-    getOperatorDocumentation,
-    getOperatorDocumentationCurrent,
+    getOperatorDocumentation
   }
 )(OperatorsDetailDocumentationPage);

@@ -40,7 +40,6 @@ export const PALETTE = {
   }
 };
 
-
 const HELPERS_DOC = {
   getMetadata() {
     return JSON.parse(JSON.stringify(PALETTE));
