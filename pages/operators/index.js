@@ -42,12 +42,15 @@ import OperatorsTable from 'components/operators/table';
 
 class OperatorsPage extends React.Component {
   static async getInitialProps({ store }) {
-    const { operatorsRanking } = store.getState();
+    const { operatorsRanking, user } = store.getState();
+    const { userAgent } = user;
+    const isMobile = userAgent.isMobile;
     const requests = [];
 
-    if (!operatorsRanking.data.length) {
+    if (!operatorsRanking.data.length && !isMobile) {
       requests.push(store.dispatch(getOperatorsRanking()));
     }
+    requests.push(store.dispatch(setOperatorsSidebar({ open: !userAgent.isMobile })));
 
     await Promise.all(requests);
 
@@ -56,7 +59,7 @@ class OperatorsPage extends React.Component {
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { router, operatorsRanking, deviceInfo } = this.props;
+    const { router, operatorsRanking, isMobile } = this.props;
 
     // Set location
     this.props.setOperatorsMapLocation(getOperatorsUrl(router));
@@ -64,8 +67,9 @@ class OperatorsPage extends React.Component {
       this.props.getIntegratedAlertsMetadata();
     }
 
-    if (!deviceInfo.isDesktop) {
-      this.props.setOperatorsSidebar({ open: false });
+    // lazy load on mobile
+    if (isMobile) {
+      this.props.getOperatorsRanking();
     }
   }
 
@@ -105,7 +109,6 @@ class OperatorsPage extends React.Component {
 
   render() {
     const {
-      url,
       language,
       operatorsRanking,
       activeLayers,
@@ -221,6 +224,7 @@ OperatorsPage.propTypes = {
 export default withRouter(withDeviceInfo(injectIntl(connect(
   (state, props) => ({
     language: state.language,
+    isMobile: state.user.userAgent.isMobile,
     operatorsRanking: state.operatorsRanking,
     map: state.operatorsRanking.map,
     sidebar: state.operatorsRanking.sidebar,

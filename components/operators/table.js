@@ -50,7 +50,7 @@ class OperatorsTable extends React.Component {
   };
 
   render() {
-    const { operators, operatorsTable, filters, intl } = this.props;
+    const { operators, operatorsTable, isLoading, filters, intl } = this.props;
     const { fmu: fmuSearch } = filters;
     const { sortColumn, sortDirection, expandedOperatorIds } = this.state;
 
@@ -58,6 +58,10 @@ class OperatorsTable extends React.Component {
       operatorsTable,
       (o) => sortDirection * o[sortColumn]
     );
+
+    if (isLoading) {
+      return <Spinner isLoading />;
+    }
 
     if (!operators.loading) {
       return (
@@ -207,6 +211,7 @@ OperatorsTable.propTypes = {
 
 export default connect((state) => ({
   operators: state.operatorsRanking.data,
+  isLoading: state.operatorsRanking.loading,
   operatorsTable: getTable(state),
   filters: state.operatorsRanking.filters.data,
 }))(injectIntl(OperatorsTable));

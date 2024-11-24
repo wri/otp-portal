@@ -59,7 +59,7 @@ const initialState = {
 
   // SIDEBAR
   sidebar: {
-    open: true,
+    open: false,
     width: 600
   },
 

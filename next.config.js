@@ -97,10 +97,10 @@ const config = {
         destination: "/api/portal/:path*",
       }
     ];
-   },
-   experimental: {
+  },
+  experimental: {
     optimizePackageImports: ["modules"]
-   }
+  }
 };
 
 const sentryWebpackPluginOptions = {

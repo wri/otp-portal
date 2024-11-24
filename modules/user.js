@@ -7,6 +7,7 @@ import { logEvent } from 'utils/analytics';
 // CONSTANTS
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
+const SET_USER_AGENT = 'SET_USER_AGENT';
 
 const GET_USER_PROFILE_SUCCESS = 'GET_USER_PROFILE_SUCCESS';
 const GET_USER_PROFILE_ERROR = 'GET_USER_PROFILE_ERROR';
@@ -22,6 +23,8 @@ export default function User(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return Object.assign({}, state, action.payload);
+    case SET_USER_AGENT:
+      return Object.assign({}, state, { userAgent: action.payload });
     case GET_USER_PROFILE_SUCCESS: {
       return {
         ...state,
@@ -94,6 +97,10 @@ export default function User(state = initialState, action) {
 // ACTIONS
 export function setUser(user) {
   return { type: SET_USER, payload: user };
+}
+
+export function setUserAgent(userAgent) {
+  return { type: SET_USER_AGENT, payload: userAgent };
 }
 
 /* Action creators */

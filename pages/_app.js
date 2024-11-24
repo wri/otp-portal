@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import Router from 'next/router';
 import { IntlProvider } from 'react-intl';
 
-import { setUser } from 'modules/user';
+import { setUser, setUserAgent } from 'modules/user';
 import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
@@ -119,6 +119,14 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   if (isServer) {
     const session = await getSession(req, res);
     user = session.user;
+
+    const UAParser = (await import('ua-parser-js')).UAParser;
+    const { ua, device } = UAParser(req.headers['user-agent']);
+    const userAgent = {
+      ua,
+      isMobile: device.is('mobile')
+    }
+    store.dispatch(setUserAgent(userAgent));
   } else {
     user = state.user;
   }
