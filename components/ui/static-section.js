@@ -24,7 +24,7 @@ export default class StaticSection extends React.Component {
   }
 
   render() {
-    const { children, background, column, className } = this.props;
+    const { children, background, backgroundProps, column, className } = this.props;
 
     return (
       <div
@@ -38,7 +38,7 @@ export default class StaticSection extends React.Component {
               <source type="image/jpeg" media="(max-width: 499px)" srcSet={background.replace('.jpg', '-small.jpg')} />
               <source type="image/webp" media="(min-width: 500px)" srcSet={background.replace('.jpg', '.webp')} />
               <source type="image/jpeg" media="(min-width: 500px)" srcSet={background} />
-              <img src={background} alt="" />
+              <img src={background} alt="" {...backgroundProps} />
             </picture>
           </div>
         )}
@@ -72,6 +72,7 @@ StaticSection.propTypes = {
   className: PropTypes.string,
   children: PropTypes.any.isRequired,
   background: PropTypes.string,
+  backgroundProps: PropTypes.object,
   map: PropTypes.any,
   position: PropTypes.object,
   column: PropTypes.number
