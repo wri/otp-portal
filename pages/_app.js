@@ -32,6 +32,7 @@ import 'dayjs/locale/vi';
 import 'dayjs/locale/zh-cn';
 
 import 'css/index.scss';
+import { WebVitalsTracking } from '~/components/layout/web-vitals-tracking';
 
 const reducer = combineReducers({
   ...reducers
@@ -164,6 +165,7 @@ class MyApp extends App {
       >
         <Provider store={store}>
           <>
+            <WebVitalsTracking />
             <GoogleTagManager />
             <PageViewTracking />
             <Component {...pageProps} language={language} />
