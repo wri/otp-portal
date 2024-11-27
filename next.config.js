@@ -1,5 +1,7 @@
+const zlib = require("zlib");
 const { withSentryConfig } = require('@sentry/nextjs');
 const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 require('dotenv').config();
 
@@ -44,6 +46,7 @@ const config = {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
+  compress: false, // NGINX will handle this with dynamic compression and better algorithms, static assets compressed with webpack plugin (not all)
   webpack: (config, options) => {
     // config.infrastructureLogging = {
     //   level: 'verbose',
@@ -56,6 +59,18 @@ const config = {
         __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
         __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it
       }),
+      new CompressionPlugin({
+        filename: "[path][base].br",
+        algorithm: "brotliCompress",
+        test: /\.(js|css|html|svg)$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        threshold: 5120,
+        minRatio: 0.8,
+      })
     );
 
     if (!options.dev) {
