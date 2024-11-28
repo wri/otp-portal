@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-for file in "lang/"*".json"; do
+shopt -s nullglob
+
+rm -rf lang/compiled
+mkdir -p lang/compiled
+
+for file in "lang/"*.json; do
   base_name=$(basename "$file")
   new_file="lang/compiled/${base_name}"
 
   echo "Compiling $file to $new_file with formatjs"
-  formatjs compile $file --ast --format simple --skip-errors --out-file "${new_file}"
+  formatjs compile $file --ast --format simple --skip-errors --out-file "${new_file}" &
 done
+
+wait
