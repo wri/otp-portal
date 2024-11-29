@@ -13,6 +13,7 @@
     "dayjs": "^1.11.11",
     "deck.gl": "7.3.6",
     "dotenv": "^16.4.5",
+    "dropcss": "^1.0.16",
     "foundation-sites": "^6.8.1",
     "fuse.js": "^7.0.0",
     "html-react-parser": "^5.1.10",
