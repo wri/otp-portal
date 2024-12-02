@@ -141,7 +141,7 @@ class OperatorsDetailLayout extends React.Component {
 
     const id = operatorsDetail.data.id;
     const slug = router.query.id;
-    const tab = router.asPath.split("/").pop() || 'overview';
+    const tab = router.pathname.split("/").pop() || 'overview';
     const logoPath = operatorsDetail.data.logo?.thumbnail
       ? operatorsDetail.data.logo.thumbnail.url
       : '';
