@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import classnames from 'classnames';
 import Tooltip from 'rc-tooltip';
 import { useIntl } from 'react-intl';
 
 import Icon from 'components/ui/icon';
-import Spinner from 'components/ui/spinner';
 
-export default function DocAnnex({ annex, isRemoving, showRemoveButton, onRemove }) {
+export default function DocAnnex({ annex, showRemoveButton, visible, onRemove }) {
   const intl = useIntl();
   const formatDate = (date) => intl.formatDate(date, {
     day: '2-digit',
@@ -18,12 +16,12 @@ export default function DocAnnex({ annex, isRemoving, showRemoveButton, onRemove
   return (
     <Tooltip
       placement="bottom"
+      visible={visible}
       align={{
         offset: [0, 10],
       }}
       overlay={
         <div>
-          <Spinner isLoading={isRemoving} className="-tiny -transparent" />
           <h4 className="c-title -default tooltip-title"><strong>{annex.name}</strong></h4>
           <dl className="tooltip-content">
             <dt><strong>{intl.formatMessage({ id: 'annex.start_date' })}:</strong></dt>
@@ -68,6 +66,5 @@ DocAnnex.defaultProps = {
 DocAnnex.propTypes = {
   annex: PropTypes.object.isRequired,
   showRemoveButton: PropTypes.bool,
-  isRemoving: PropTypes.bool,
   onRemove: PropTypes.func
 }

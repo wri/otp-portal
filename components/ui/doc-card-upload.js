@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
+import * as Sentry from '@sentry/nextjs';
 
 import { connect } from 'react-redux';
 
@@ -15,17 +16,12 @@ import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
 
 // Components
+import ConfirmModal from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
-import Spinner from 'components/ui/spinner';
 
 class DocCardUpload extends React.Component {
   constructor(props) {
     super(props);
-
-    // STATE
-    this.state = {
-      deleteLoading: false,
-    };
 
     // BINDINGS
     this.triggerAddFile = this.triggerAddFile.bind(this);
@@ -92,24 +88,43 @@ class DocCardUpload extends React.Component {
 
   triggerDeleteFile(e) {
     e && e.preventDefault();
-    const { docId } = this.props;
+    const { title, intl } = this.props;
 
-    this.setState({ deleteLoading: true });
+    modal.toggleModal(true, {
+      children: ConfirmModal,
+      childrenProps: {
+        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: title }),
+        text: intl.formatMessage(
+          { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
+        ),
+        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+        onConfirm: this.triggerConfirmedDeleteFile.bind(this),
+        onCancel: () => modal.toggleModal(false),
+      },
+      size: '-small'
+    });
+  }
+
+  triggerConfirmedDeleteFile({ onSuccess, onError } = {}) {
+    const { docId, intl } = this.props;
 
     this.documentationService.deleteDocument(docId)
       .then(() => {
-        this.setState({ deleteLoading: false });
+        modal.toggleModal(false);
+        onSuccess && onSuccess();
         this.props.onChange && this.props.onChange();
       })
       .catch((err) => {
-        this.setState({ deleteLoading: false });
+        onError && onError(
+          intl.formatMessage({ id: 'document.delete.error', defaultMessage: 'An error occurred while deleting the document.' })
+        );
+        Sentry.captureException(err);
         console.error(err);
       });
   }
 
   render() {
     const { status, buttons, date } = this.props;
-    const { deleteLoading } = this.state;
     const currentDate = dayjs(new Date());
     const selectedDate = dayjs(date);
     const isEditable =
@@ -153,10 +168,6 @@ class DocCardUpload extends React.Component {
                   className="c-button -small -primary"
                 >
                   {this.props.intl.formatMessage({ id: 'delete' })}
-                  <Spinner
-                    isLoading={deleteLoading}
-                    className="-tiny -transparent"
-                  />
                 </button>
               </li>
             )}
@@ -215,6 +226,7 @@ class DocCardUpload extends React.Component {
 
 DocCardUpload.propTypes = {
   status: PropTypes.string,
+  title: PropTypes.string,
   user: PropTypes.object,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,

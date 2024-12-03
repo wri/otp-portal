@@ -63,6 +63,7 @@ function DocumentsCertification(props) {
                   user.operator_ids.includes(+id))) && (
                     <DocCardUpload
                       {...doc}
+                      title={intl.formatMessage({ id: 'operator-detail.license' })}
                       properties={{
                         type: 'operator',
                         id,

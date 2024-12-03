@@ -1,0 +1,19 @@
+.c-confirm-modal {
+  padding: 20px;
+
+  p {
+    font-size: $font-size-big;
+  }
+
+  p.-error {
+    color: $color-error;
+    font-size: $font-size-default;
+  }
+
+  .actions {
+    display: flex;
+    margin-top: 30px;
+    gap: 20px;
+    justify-content: flex-end;
+  }
+}
