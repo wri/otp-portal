@@ -16,6 +16,7 @@ import useDeviceInfo from 'hooks/use-device-info';
 
 function DocumentsProvided(props) {
   const { data, user } = props;
+  const isMobileAgent = user.userAgent.isMobile;
   const { isMobile, isServer } = useDeviceInfo();
   const router = useRouter();
   const filteredData = data.filter((d) => d.status !== 'doc_not_required');
@@ -28,13 +29,13 @@ function DocumentsProvided(props) {
     legend[item.id].value = item.value;
   });
 
-  let chartHeight = isMobile ? 450 : 600;
-  const radius = isMobile ? 160 : 200;
-  if (isServer) chartHeight = null; // fixing some issue with setting height on server and then first change doesn't work
+  const smallChart = (isServer && isMobileAgent) || isMobile;
+  let chartHeight = smallChart ? 450 : 600;
+  const radius = smallChart ? 160 : 200;
 
   return (
     <div className="c-doc-provided c-chart">
-      <ResponsiveContainer height={chartHeight}>
+      <ResponsiveContainer height={chartHeight} initialDimension={{ height: chartHeight }}>
         <PieChart>
           <Pie
             data={groupedByStatusChart}
