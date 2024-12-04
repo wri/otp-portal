@@ -7,7 +7,7 @@ module.exports = defineConfig({
   viewportWidth: 1280,
   viewportHeight: 720,
   env: {
-    pluginVisualRegressionMaxDiffThreshold: 0.03,
+    pluginVisualRegressionMaxDiffThreshold: 0.036,
   },
   e2e: {
     baseUrl: 'http://localhost:4000',

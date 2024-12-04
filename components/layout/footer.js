@@ -48,20 +48,20 @@ const Footer = () => {
                 <span>Phone +1(202) 729-7600</span>
                 <span>Fax: +1 (202) 720 7610</span>
               </p>
+            </div>
 
-              <div className="footer-links">
-                <Link href="/terms" prefetch={false} legacyBehavior>
-                  {intl.formatMessage({ id: 'terms.title' })}
-                </Link>
-                <span> | </span>
-                <Link href="/privacy-policy" prefetch={false} legacyBehavior>
-                  {intl.formatMessage({ id: 'Privacy Policy' })}
-                </Link>
-                <span> | </span>
-                <button type="button" onClick={handleCookiePreferencesClick} className="c-link-button">
-                  {intl.formatMessage({ id: 'Cookie Preferences' })}
-                </button>
-              </div>
+            <div className="footer-links">
+              <Link href="/terms" prefetch={false} legacyBehavior>
+                {intl.formatMessage({ id: 'terms.title' })}
+              </Link>
+              <span> | </span>
+              <Link href="/privacy-policy" prefetch={false} legacyBehavior>
+                {intl.formatMessage({ id: 'Privacy Policy' })}
+              </Link>
+              <span> | </span>
+              <button type="button" onClick={handleCookiePreferencesClick} className="c-link-button">
+                {intl.formatMessage({ id: 'Cookie Preferences' })}
+              </button>
             </div>
           </div>
         </div>
