@@ -14,8 +14,9 @@ import modal from 'services/modal';
 import { Dropdown, DropdownTrigger, DropdownContent } from 'components/ui/dropdown';
 import UserMenuList from 'components/ui/user-menu-list';
 import Icon from 'components/ui/icon';
+import DynamicLoading from 'components/ui/dynamic-loading';
 
-const Login = dynamic(() => import('components/ui/login'), { ssr: false });
+const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
 
 const UserDropdown = ({ intl, user, displayIcon, className, theme }) => {
   if (!user.token) {

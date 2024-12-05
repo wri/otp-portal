@@ -17,8 +17,9 @@ import Input from 'components/form/Input';
 import Form, { FormProvider } from 'components/form/Form';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from 'components/form/CancelButton';
+import DynamicLoading from 'components/ui/dynamic-loading';
 
-const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { ssr: false });
+const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { ssr: false, loading: DynamicLoading });
 
 const Login = () => {
   const intl = useIntl();

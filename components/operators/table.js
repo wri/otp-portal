@@ -16,8 +16,9 @@ import Tooltip from 'rc-tooltip';
 
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
+import DynamicLoading from 'components/ui/dynamic-loading';
 
-const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false });
+const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false, loading: DynamicLoading });
 
 class OperatorsTable extends React.Component {
   state = {
