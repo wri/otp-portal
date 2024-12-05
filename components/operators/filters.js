@@ -92,15 +92,16 @@ class OperatorsFilters extends React.Component {
         <div key={f.key} className={`columns medium-${f.columns} small-12`}>
           <div className="field">
             <div className="c-select">
-              <h3 className="title">
+              <label className="title">
                 {this.props.intl.formatMessage({ id: f.name })}
-              </h3>
+              </label>
 
               {f.type === 'select' &&
                 <Select
                   isMulti
                   instanceId={f.key}
                   name={f.key}
+                  aria-label={this.props.intl.formatMessage({ id: f.name })}
                   options={sortedOptions}
                   className='react-select-container'
                   classNamePrefix='react-select'
@@ -114,6 +115,7 @@ class OperatorsFilters extends React.Component {
                 <div className="search">
                   <input
                     type="search"
+                    aria-label={this.props.intl.formatMessage({ id: f.name })}
                     placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
                     className="search-input"
                     data-test-id={`search-input-${f.key}`}
@@ -127,6 +129,7 @@ class OperatorsFilters extends React.Component {
                       onClick={() => {
                         this.setSearch('', f.key);
                       }}
+                      aria-label="Clear search"
                     >
                       <Icon name="icon-cross" className="-smaller" />
                     </button>
@@ -151,11 +154,12 @@ class OperatorsFilters extends React.Component {
       <aside className={`c-filters-operators ${classNames}`}>
         <div className="filters-container">
 
-          <h3 className="c-title -big -light">
+          <h1 className="c-title -big -light">
             {this.props.intl.formatMessage({ id: 'transparency_ranking' })}
 
             <button
               className="c-button -clean"
+              aria-label="Learn more about the ranking"
               onClick={() => {
                 modal.toggleModal(true, {
                   children: RankingModal
@@ -164,7 +168,7 @@ class OperatorsFilters extends React.Component {
             >
               <Icon name="icon-info" className="-small" />
             </button>
-          </h3>
+          </h1>
 
           <div className="filters-content">
             <div className="l-row row">

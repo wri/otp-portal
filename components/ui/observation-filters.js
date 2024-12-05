@@ -53,9 +53,9 @@ class ObservationFilters extends Filters {
     return (
       <div className="c-select">
         {title && (
-          <h3 className="title">
+          <label className="title">
             {title}
-          </h3>
+          </label>
         )}
         <Select
           instanceId={f.key}
@@ -65,6 +65,7 @@ class ObservationFilters extends Filters {
           className='react-select-container'
           classNamePrefix='react-select'
           value={value}
+          aria-label={title}
           placeholder={this.props.intl.formatMessage({
             id: `filter.${f.key}.placeholder`,
             defaultMessage: f.placeholder
@@ -84,9 +85,9 @@ class ObservationFilters extends Filters {
     return (
       <div className="filter-checkbox">
         {title && (
-          <h3 className="title">
+          <label className="title">
             {title}
-          </h3>
+          </label>
         )}
         <Checkbox
           properties={{ title: description, className: '-white' }}

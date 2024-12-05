@@ -43,7 +43,7 @@ const Newsletter = ({ newsletters, language }) => {
             {newsletters.map(newsletter => (
               // genereate newsletter card with image on top and title and description below
               <div key={newsletter.id} className="newsletter-card">
-                <a href={newsletter.attachment.url}>
+                <a href={newsletter.attachment.url} aria-label={newsletter.title}>
                   <div className="newsletter-card__image" style={{ backgroundImage: `url(${newsletter.image.url})` }} />
                 </a>
                 <div className="newsletter-card__content">

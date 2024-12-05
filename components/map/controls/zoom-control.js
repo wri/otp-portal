@@ -43,10 +43,10 @@ export default class ZoomControl extends React.Component {
 
     return (
       <div className="c-zoom-control">
-        <button className={zoomInClass} type="button" onClick={this.increaseZoom}>
+        <button className={zoomInClass} type="button" onClick={this.increaseZoom} aria-label="Zoom in">
           <Icon name="icon-plus" />
         </button>
-        <button className={zoomOutClass} type="button" onClick={this.decreaseZoom}>
+        <button className={zoomOutClass} type="button" onClick={this.decreaseZoom} aria-label="Zoom out">
           <Icon name="icon-minus" />
         </button>
       </div>

@@ -115,7 +115,7 @@ class OperatorsTable extends React.Component {
                     }
                     overlayClassName="c-tooltip no-pointer-events"
                   >
-                    <button className="c-button -icon -primary">
+                    <button className="c-button -icon -primary" aria-label="Show observation per visit explanation">
                       <Icon name="icon-info" className="-smaller" />
                     </button>
                   </Tooltip>
@@ -177,6 +177,7 @@ class OperatorsTable extends React.Component {
                         <button
                           className={`expand-row-btn${expanded ? ' -green' : ''
                             }`}
+                          aria-label="Expand row and show details"
                           onClick={() => this.handleRowToggle(r.id)}
                         >
                           {expanded ? (

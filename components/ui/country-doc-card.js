@@ -79,7 +79,7 @@ class CountryDocCard extends React.Component {
       <div className={`c-doc-card ${classNames} country`}>
         {explanation && (
           <div className="doc-card-info">
-            <button className="c-button -clean -icon" onClick={this.triggerDocInfo}>
+            <button className="c-button -clean -icon" aria-label="Show document information" onClick={this.triggerDocInfo}>
               <Icon
                 name="icon-info"
                 className="-smaller"

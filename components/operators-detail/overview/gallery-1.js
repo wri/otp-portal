@@ -127,6 +127,7 @@ function Gallery({
               label: intl.formatMessage({
                 id: 'operator-detail.overview.card3.link.label',
               }),
+              "aria-label": "Check operator FMUs",
               href: `/operators/${router.query.id}/fmus`,
             }}
           />

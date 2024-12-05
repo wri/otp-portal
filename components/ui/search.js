@@ -200,6 +200,7 @@ class Search extends React.Component {
           {!!active &&
             <button
               className="c-button -clean"
+              aria-label="Clear search"
               onClick={this.onClose}
             >
               <Icon name="icon-cross" />
