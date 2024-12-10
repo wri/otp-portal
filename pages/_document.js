@@ -84,12 +84,12 @@ CustomDocument.getInitialProps = async (ctx) => {
         </html>
       `;
       const label = `generating critical CSS for ${ctx.pathname}`;
-      console.time(label);
+      console.time(label); // eslint-disable-line
       criticalCss = dropcss({
         css,
         html
       }).css;
-      console.timeEnd(label);
+      console.timeEnd(label); // eslint-disable-line
     }
   }
 
