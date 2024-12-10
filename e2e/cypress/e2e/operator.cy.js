@@ -85,6 +85,10 @@ describe('Operator', function () {
           .siblings('.c-doc-card-upload')
           .contains('button', 'Delete')
           .click();
+
+        cy.contains('Are you sure you want to delete document').should('be.visible');
+        cy.get('[data-test-id=confirm-modal-confirm]').click();
+
         cy.wait('@documentsReload');
         cy.wait(1000);
 
@@ -129,6 +133,7 @@ describe('Operator', function () {
           .siblings('.c-doc-card-upload')
           .contains('button', 'Delete')
           .click();
+        cy.get('[data-test-id=confirm-modal-confirm]').click();
         cy.wait('@documentsReload');
         cy.wait(1000);
 
@@ -200,6 +205,9 @@ describe('Operator', function () {
 
           cy.get('[data-test-id=remove-annex-button]')
             .click();
+
+          cy.contains('Are you sure you want to delete document').should('be.visible');
+          cy.get('[data-test-id=confirm-modal-confirm]').click();
 
           cy.docGetProducerDocCard('Arrêté d’agrément du personnel du centre socio-sanitaire de l’entreprise')
             .find('.doc-card-annexes .doc-card-list-item')

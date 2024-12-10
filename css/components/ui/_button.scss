@@ -67,6 +67,18 @@
     }
   }
 
+  &.-dangerous {
+    border-color: $color-error;
+    color: $color-text-2;
+    fill: $color-error;
+    background: $color-error;
+
+    &:hover {
+      color: darken($color-text-2, 10%);
+      fill: darken($color-text-2, 10%);
+    }
+  }
+
   &.-tertiary {
     border-color: $color-tertiary;
     color: $color-text-1;
