@@ -133,6 +133,7 @@ describe('Operator', function () {
           .siblings('.c-doc-card-upload')
           .contains('button', 'Delete')
           .click();
+        cy.get('[data-test-id=confirm-modal-confirm]').click();
         cy.wait('@documentsReload');
         cy.wait(1000);
 
