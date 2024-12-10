@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import * as Sentry from '@sentry/nextjs';
 
 // Intl
 import { connect } from 'react-redux';
@@ -11,6 +12,7 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
+import ConfirmModal from 'components/ui/confirm-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
@@ -47,15 +49,14 @@ class DocCard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      annexTooltipVisible: undefined
+    };
+
     this.documentationService = new DocumentationService({
       authorization: props.user.token
     });
   }
-
-  state = {
-    deleteLoading: false
-  }
-
 
   triggerWhy = (e) => {
     e && e.preventDefault();
@@ -125,15 +126,46 @@ class DocCard extends React.Component {
   }
 
   triggerRemoveAnnex = (id) => {
-    this.setState({ deleteLoading: true });
+    const { annexes, title, intl } = this.props;
+    const annex = annexes.find(a => a.id === id);
 
-    this.documentationService.deleteAnnex(id)
+    // workaround to close tooltip before opening modal, but show it again when hovering
+    this.setState({ annexTooltipVisible: false });
+    setTimeout(() => {
+      this.setState({ annexTooltipVisible: undefined });
+    });
+
+    modal.toggleModal(true, {
+      children: ConfirmModal,
+      childrenProps: {
+        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: annex.name }),
+        text: intl.formatMessage(
+          { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: annex.name }
+        ),
+        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+        onConfirm: (options) => {
+          this.triggerConfirmedRemoveAnnex({ ...options, annexId: id });
+        },
+        onCancel: () => modal.toggleModal(false),
+      },
+      size: '-small'
+    });
+  }
+
+  triggerConfirmedRemoveAnnex({ annexId, onSuccess, onError } = {}) {
+    const { intl } = this.props;
+
+    this.documentationService.deleteAnnex(annexId)
       .then(() => {
-        this.setState({ deleteLoading: false });
+        modal.toggleModal(false);
+        onSuccess && onSuccess();
         this.props.onChange && this.props.onChange();
       })
       .catch((err) => {
-        this.setState({ deleteLoading: false });
+        onError && onError(
+          intl.formatMessage({ id: 'document.delete.error', defaultMessage: 'An error occurred while deleting the document.' })
+        );
+        Sentry.captureException(err);
         console.error(err);
       });
   }
@@ -141,7 +173,7 @@ class DocCard extends React.Component {
   render() {
     const { user, adminComment, public: publicState, startDate, endDate, status, source, sourceInfo, title, explanation, url, annexes, layout, properties } = this.props;
     const { id } = properties;
-    const { deleteLoading } = this.state;
+    const { annexTooltipVisible } = this.state;
     const isActiveUser = (user && user.role === 'admin') ||
       (user && (user.role === 'operator' || user.role === 'holding') && user.operator_ids && user.operator_ids.includes(+id)) ||
       (user && user.role === 'government' && user.country && user.country.toString() === id);
@@ -223,7 +255,7 @@ class DocCard extends React.Component {
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} isRemoving={deleteLoading} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} />
+                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
                       </li>
                     ))}
                     {isActiveUser &&
@@ -296,7 +328,7 @@ class DocCard extends React.Component {
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} isRemoving={deleteLoading} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} />
+                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
                       </li>
                     ))}
                     {isActiveUser &&
@@ -363,7 +395,7 @@ class DocCard extends React.Component {
                   <ul className="doc-card-list">
                     {approvedAnnexes.map(annex => (
                       <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} isRemoving={deleteLoading} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} />
+                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
                       </li>
                     ))}
 
