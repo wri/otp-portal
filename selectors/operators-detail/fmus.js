@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
 
-import compact from 'lodash/compact';
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import slugify from 'slugify';
@@ -11,12 +9,15 @@ import { replace } from 'layer-manager';
 
 import { getParams } from '../utils';
 
+import { LAYERS } from 'constants/layers';
+
 const intl = (state, props) => props.intl;
 
 const operatorsDetail = state => state.operatorsDetail.data;
+const loadedFMUS = state => state.operatorsDetail.data.loadedFMUS;
 
 const layersActive = state => state.operatorsDetailFmus.layersActive;
-const layers = state => state.operatorsDetailFmus.layers;
+const layers = () => LAYERS;
 const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 
 const interactions = state => state.operatorsDetailFmus.interactions;
@@ -55,23 +56,21 @@ export const getActiveLayers = createSelector(
           ...layerConfig,
           ...settings,
 
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params: getParams(paramsConfig, { ...settings.params, ...interactionParams, ...hoverInteractionParams, operator_id: Number(operator_id), fmuNames })
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams, operator_id: Number(operator_id), fmuNames }),
             decodeFunction
-          }
+          })
         };
       }
 
       return null;
     });
 
-    return compact([
-      ...aLayers
-    ]);
+    return aLayers.filter(x => !!x);
   }
 );
 
@@ -101,7 +100,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       });
     };
 
-    return flatten(compact(_layersActive.map((kActive) => {
+    return _layersActive.map((kActive) => {
       const layer = _layers.find(l => l.id === kActive);
 
       if (!layer || (layer.iso && layer.iso !== country.iso)) {
@@ -123,7 +122,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       }
 
       return getIds(layer);
-    })));
+    }).filter(x => !!x).flat();
   }
 );
 
@@ -132,7 +131,7 @@ export const getActiveInteractiveLayers = createSelector(
   (_layers, _interactions) => {
     if (!_layers || isEmpty(_interactions)) return [];
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -141,7 +140,7 @@ export const getActiveInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_interactions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
@@ -155,7 +154,7 @@ export const getActiveHoverInteractiveLayers = createSelector(
   (_layers, _hoverInteractions) => {
     if (!_layers || isEmpty(_hoverInteractions)) return [];
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -164,7 +163,7 @@ export const getActiveHoverInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_hoverInteractions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
@@ -200,7 +199,7 @@ export const getLegendLayers = createSelector(
       const analysisParams = {
         loading: _analysis.loading[i],
         error: _analysis.error[i],
-        ..._analysis.data[f] && { data: _analysis.data[f][id] }
+        ...(_analysis.data[f] && { data: _analysis.data[f][id] })
       };
 
       layerGroups.push({
@@ -217,41 +216,41 @@ export const getLegendLayers = createSelector(
           active: true,
           legendConfig: {
             ...legendConfig,
-            ...legendConfig.items && {
+            ...(legendConfig.items && {
               items: legendConfig.items.map(i => ({
                 ...i,
-                ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                ...i.items && {
+                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                ...(i.items && {
                   items: i.items.map(ii => ({
                     ...ii,
-                    ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                   }))
-                }
+                })
 
               }))
-            }
+            })
           },
           ...lSettings,
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params
-          },
+          }),
 
-          ...(!!sqlConfig) && {
+          ...(!!sqlConfig && {
             sqlParams
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams
-          },
+          }),
 
-          ...!!timelineConfig && {
+          ...(!!timelineConfig && {
             timelineParams: {
               ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
               ...getParams(paramsConfig, lSettings.params),
               ...getParams(decodeConfig, lSettings.decodeParams),
               ...lSettings.timelineParams
             }
-          }
+          })
         }],
         visibility: true,
         ...lSettings
@@ -296,9 +295,10 @@ export const getHoverPopup = createSelector(
 
 
 export const getFMUs = createSelector(
-  operatorsDetail,
-  (_operatorsDetail) => {
+  operatorsDetail, loadedFMUS,
+  (_operatorsDetail, _loadedFMUS) => {
     const { fmus } = _operatorsDetail;
+    if (!_loadedFMUS) return [];
     return sortBy(fmus, 'name') || [];
   }
 );

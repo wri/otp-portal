@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { LayerManager, Layer } from 'layer-manager/dist/components';
 import { PluginMapboxGl, fetch } from 'layer-manager';
 
-import omit from 'lodash/omit';
+import { omit } from 'utils/general';
+
 import slugify from 'slugify';
 
 class LayerManagerComponent extends PureComponent {

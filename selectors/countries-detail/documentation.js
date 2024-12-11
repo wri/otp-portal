@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import sortBy from 'lodash/sortBy';
-import compact from 'lodash/compact';
 
 // Get the datasets and filters from state
 const countriesDetail = state => state.countriesDetail;
@@ -60,7 +59,7 @@ const getAllParsedDocumentation = createSelector(
     const documentation = _countriesDetail.documentation.data;
 
     if (documentation && !!documentation.length) {
-      return compact(sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map((doc) => {
+      return sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map((doc) => {
         if (doc['required-country-document']) {
           return {
             id: doc.id,
@@ -76,7 +75,7 @@ const getAllParsedDocumentation = createSelector(
         }
 
         return null;
-      }), 'title'));
+      }), 'title').filter(x => !!x);
     }
 
     return [];

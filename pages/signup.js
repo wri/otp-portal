@@ -17,7 +17,6 @@ import UserNewForm from 'components/users/new';
 
 const SignUp = (props) => {
   const [submittedEmail, setSubmittedEmail] = useState(null);
-  const { url } = props;
   const intl = useIntl();
   const creatingNewAccountText = intl.formatMessage({ id: "signup.user.header", defaultMessage: "Creating a new account" });
   const title = submittedEmail
@@ -28,7 +27,6 @@ const SignUp = (props) => {
     <Layout
       title={creatingNewAccountText}
       description={creatingNewAccountText}
-      url={url}
     >
       <StaticHeader
         title={title}
@@ -48,10 +46,8 @@ const SignUp = (props) => {
                 {intl.formatMessage({ id: "signup.user.thank_you.paragraph2", defaultMessage: "In the meantime, you can explore the platform and learn more about the data we have available." })}
               </p>
 
-              <Link href="/">
-                <a className="card-link c-button -primary">
-                  {intl.formatMessage({ id: 'Back to home page' })}
-                </a>
+              <Link href="/" className="card-link c-button -primary">
+                {intl.formatMessage({ id: 'Back to home page' })}
               </Link>
             </div>
           </div>
@@ -61,15 +57,11 @@ const SignUp = (props) => {
   );
 }
 
-SignUp.getInitialProps = async ({ url, store }) => {
+SignUp.getInitialProps = async ({ store }) => {
   await store.dispatch(getCountries());
-
-  return { url };
+  return {};
 }
 
-SignUp.propTypes = {
-  url: PropTypes.shape({}).isRequired
-};
 
 export default connect(
   (state) => ({

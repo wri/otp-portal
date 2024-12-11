@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import uniq from 'lodash/uniq';
 import { connect } from 'react-redux';
 
 // Next
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -16,7 +16,9 @@ import Tooltip from 'rc-tooltip';
 
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
-import TableExpandedRow from './table-expanded-row';
+import DynamicLoading from 'components/ui/dynamic-loading';
+
+const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false, loading: DynamicLoading });
 
 class OperatorsTable extends React.Component {
   state = {
@@ -41,15 +43,15 @@ class OperatorsTable extends React.Component {
       });
     } else {
       this.setState({
-        expandedOperatorIds: uniq(
+        expandedOperatorIds: [...new Set(
           [id, ...this.state.expandedOperatorIds].sort()
-        ),
+        )],
       });
     }
   };
 
   render() {
-    const { operators, operatorsTable, filters, intl } = this.props;
+    const { operators, operatorsTable, isLoading, filters, intl } = this.props;
     const { fmu: fmuSearch } = filters;
     const { sortColumn, sortDirection, expandedOperatorIds } = this.state;
 
@@ -57,6 +59,10 @@ class OperatorsTable extends React.Component {
       operatorsTable,
       (o) => sortDirection * o[sortColumn]
     );
+
+    if (isLoading) {
+      return <Spinner isLoading />;
+    }
 
     if (!operators.loading) {
       return (
@@ -109,7 +115,7 @@ class OperatorsTable extends React.Component {
                     }
                     overlayClassName="c-tooltip no-pointer-events"
                   >
-                    <button className="c-button -icon -primary">
+                    <button className="c-button -icon -primary" aria-label="Show observation per visit explanation">
                       <Icon name="icon-info" className="-smaller" />
                     </button>
                   </Tooltip>
@@ -134,54 +140,59 @@ class OperatorsTable extends React.Component {
                   (fmuSearch && fmuSearch.length > 1) ||
                   expandedOperatorIds.includes(r.id);
 
-                return (
-                  <>
-                    <tr key={`${r.id}-ranking`}>
-                      <td
-                        id={`td-documentation-${r.id}`}
-                        className="td-documentation -ta-left"
+                return <React.Fragment key={`${r.slug}-ranking`}>
+                  <tr>
+                    <td
+                      id={`td-documentation-${r.id}`}
+                      className="td-documentation -ta-left"
+                    >
+                      {r.documentation}%
+                    </td>
+
+                    <td className="-ta-left">
+                      <Link
+                        href={{
+                          pathname: '/operators/detail',
+                          query: { id: r.slug },
+                        }}
+                        as={`/operators/${r.slug}`}
                       >
-                        {r.documentation}%
-                      </td>
+                        {r.name}
+                      </Link>
+                    </td>
 
-                      <td className="-ta-left">
-                        <Link href={`/operators/${r.slug}/overview`}>
-                          <a>{r.name}</a>
-                        </Link>
-                      </td>
-
-                      <td className="-ta-left">{r.country}</td>
-                      <td className="-ta-center">
-                        {!!r.obsPerVisit && (
-                          <span>{r.obsPerVisit.toFixed(2)}</span>
-                        )}
-                        {!r.obsPerVisit && (
-                          <div className="stoplight-dot -state-0}" />
-                        )}
-                      </td>
-                      <td className="-ta-right">{r.fmusLenght}</td>
-                      <td className="-ta-right">{r.certification}</td>
-                      <td className="-ta-right">
-                        {r.fmusLenght > 0 && (
-                          <button
-                            className={`expand-row-btn${expanded ? ' -green' : ''
-                              }`}
-                            onClick={() => this.handleRowToggle(r.id)}
-                          >
-                            {expanded ? (
-                              <Icon name="icon-arrow-up" />
-                            ) : (
-                              <Icon name="icon-arrow-down" />
-                            )}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                    {expanded && (
-                      <TableExpandedRow operator={r} fmuSearch={fmuSearch} />
-                    )}
-                  </>
-                );
+                    <td className="-ta-left">{r.country}</td>
+                    <td className="-ta-center">
+                      {!!r.obsPerVisit && (
+                        <span>{r.obsPerVisit.toFixed(2)}</span>
+                      )}
+                      {!r.obsPerVisit && (
+                        <div className="stoplight-dot -state-0}" />
+                      )}
+                    </td>
+                    <td className="-ta-right">{r.fmusLenght}</td>
+                    <td className="-ta-right">{r.certification}</td>
+                    <td className="-ta-right">
+                      {r.fmusLenght > 0 && (
+                        <button
+                          className={`expand-row-btn${expanded ? ' -green' : ''
+                            }`}
+                          aria-label="Expand row and show details"
+                          onClick={() => this.handleRowToggle(r.id)}
+                        >
+                          {expanded ? (
+                            <Icon name="icon-arrow-up" />
+                          ) : (
+                            <Icon name="icon-arrow-down" />
+                          )}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  {expanded && (
+                    <TableExpandedRow operator={r} fmuSearch={fmuSearch} />
+                  )}
+                </React.Fragment>;
               })}
             </tbody>
           </table>
@@ -202,6 +213,7 @@ OperatorsTable.propTypes = {
 
 export default connect((state) => ({
   operators: state.operatorsRanking.data,
+  isLoading: state.operatorsRanking.loading,
   operatorsTable: getTable(state),
   filters: state.operatorsRanking.filters.data,
 }))(injectIntl(OperatorsTable));

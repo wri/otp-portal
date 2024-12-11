@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import omit from 'lodash/omit';
+import { omit } from 'utils/general';
+import { useRouter } from 'next/router';
 
 // Redux
 import { connect } from 'react-redux';
@@ -14,8 +15,10 @@ import ChartLegend from 'components/ui/chart-legend';
 import useDeviceInfo from 'hooks/use-device-info';
 
 function DocumentsProvided(props) {
-  const { data, user, router } = props;
+  const { data, user } = props;
+  const isMobileAgent = user.userAgent.isMobile;
   const { isMobile, isServer } = useDeviceInfo();
+  const router = useRouter();
   const filteredData = data.filter((d) => d.status !== 'doc_not_required');
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
@@ -26,13 +29,13 @@ function DocumentsProvided(props) {
     legend[item.id].value = item.value;
   });
 
-  let chartHeight = isMobile ? 450 : 600;
-  const radius = isMobile ? 160 : 200;
-  if (isServer) chartHeight = null; // fixing some issue with setting height on server and then first change doesn't work
+  const smallChart = (isServer && isMobileAgent) || isMobile;
+  let chartHeight = smallChart ? 450 : 600;
+  const radius = smallChart ? 160 : 200;
 
   return (
     <div className="c-doc-provided c-chart">
-      <ResponsiveContainer height={chartHeight}>
+      <ResponsiveContainer height={chartHeight} initialDimension={{ height: chartHeight }}>
         <PieChart>
           <Pie
             data={groupedByStatusChart}
@@ -84,11 +87,9 @@ DocumentsProvided.defaultProps = {
 
 DocumentsProvided.propTypes = {
   data: PropTypes.array,
-  user: PropTypes.object,
-  router: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default connect((state) => ({
-  user: state.user,
-  router: state.router,
+  user: state.user
 }))(DocumentsProvided);

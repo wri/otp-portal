@@ -34,6 +34,7 @@ function Gallery1(props) {
                 description={tutorial.description}
                 link={{
                   label: props.intl.formatMessage({ id: 'Read more' }),
+                  "aria-label": tutorial.name,
                   href: `/help/how-otp-works?article=tutorial-article-${tutorial.id}`
                 }}
               />

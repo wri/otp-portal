@@ -5,10 +5,11 @@ import { useRouter } from 'next/router';
 
 const Head = ({ title, description }) => {
   const { locales, asPath } = useRouter();
+  const fullTitle = `${title} | Open Timber Portal`;
 
   return (
     <HeadNext>
-      <title>{title} | Open Timber Portal</title>
+      <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="author" content="Vizzuality" />
@@ -58,21 +59,6 @@ const Head = ({ title, description }) => {
       {/* {process.env.GOOGLE_API_KEY && (
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`} defer />
       )} */}
-      {process.env.ENV === 'production' && !(process.env.DISABLE_HOTJAR === 'true') && (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(h,o,t,j,a,r){
-              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-              h._hjSettings={hjid:3036814,hjsv:6};
-              a=o.getElementsByTagName('head')[0];
-              r=o.createElement('script');r.async=1;
-              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-              a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-          `}}
-        />
-      )}
     </HeadNext>
   );
 }

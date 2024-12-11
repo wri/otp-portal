@@ -5,7 +5,7 @@ describe('Password Reset', () => {
 
   describe('Forgot password form', () => {
     it('user can ask for password reset', function () {
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('button').contains('Reset your password').click();
       cy.get('#input-email').type('operator@example.com');
       cy.get('button').contains('Reset Password').click();

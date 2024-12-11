@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
 import orderBy from 'lodash/orderBy';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { injectIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
@@ -28,15 +29,8 @@ import StaticHeader from 'components/ui/static-header';
 import Table from 'components/ui/table';
 import Filters from 'components/ui/observation-filters';
 import Spinner from 'components/ui/spinner';
-import MapSubComponent from 'components/ui/map-sub-component';
 import StaticTabs from 'components/ui/static-tabs';
 
-import Map from 'components/map';
-import LayerManager from 'components/map/layer-manager';
-import Legend from 'components/map/legend';
-import Popup from 'components/map/popup';
-import MapControls from 'components/map/map-controls';
-import ZoomControl from 'components/map/controls/zoom-control';
 import FAAttributions from 'components/map/fa-attributions';
 
 import {
@@ -55,38 +49,31 @@ import {
   getColumnHeaders,
 } from 'constants/observations-column-headers';
 
+const MapSubComponent = dynamic(() => import('components/ui/map-sub-component'), { ssr: false });
+const Map = dynamic(() => import('components/map'), { ssr: false });
+const Legend = dynamic(() => import('components/map/legend'), { ssr: false });
+const Popup = dynamic(() => import('components/map/popup'), { ssr: false });
+const MapControls = dynamic(() => import('components/map/map-controls'), { ssr: false });
+const ZoomControl = dynamic(() => import('components/map/controls/zoom-control'), { ssr: false });
+const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
+
 class ObservationsPage extends React.Component {
-  static async getInitialProps({ url, store }) {
-    const { observations } = store.getState();
-
-    /* if (isEmpty(observations.data)) {
-     *   await store.dispatch(getObservations());
-     * } */
-
-    /* if (isEmpty(observations.filters.options)) {
-     *   await store.dispatch(getFilters());
-     * } */
-
-    return { url };
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
       tab: 'observations-list',
-      popup: null,
-      page: 1,
+      popup: null
     };
 
     this.triggerChangeTab = this.triggerChangeTab.bind(this);
   }
 
   componentDidMount() {
-    const { url } = this.props;
+    const { router } = this.props;
 
     this.props.getFilters();
-    this.props.getObservationsUrl(url);
+    this.props.getObservationsUrl(router);
     this.props.getObservations();
   }
 
@@ -117,17 +104,6 @@ class ObservationsPage extends React.Component {
         });
       }
     }
-  }
-
-  getPageSize() {
-    const { observations } = this.props;
-
-    if (observations.data && observations.data.length) {
-      // What if the page only have 5 results...
-      return observations.data.length > 50 ? 50 : observations.data.length;
-    }
-
-    return 1;
   }
 
   onCustomAttribute = (e) => {
@@ -274,7 +250,6 @@ class ObservationsPage extends React.Component {
 
   render() {
     const {
-      url,
       observations,
       getObservationsLayers,
       getObservationsLegend,
@@ -312,7 +287,6 @@ class ObservationsPage extends React.Component {
       <Layout
         title="Observations"
         description="Observations description..."
-        url={url}
       >
         <StaticHeader
           title={this.props.intl.formatMessage({ id: 'observations' })}
@@ -389,7 +363,7 @@ class ObservationsPage extends React.Component {
                   columns: columnHeaders.filter((header) =>
                     observations.columns.includes(header.accessor)
                   ),
-                  pageSize: this.getPageSize(),
+                  pageSize: 50,
                   pagination: true,
                   previousText: '<',
                   nextText: '>',
@@ -499,7 +473,6 @@ class ObservationsPage extends React.Component {
 
 ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,
-  url: PropTypes.shape({}).isRequired,
   observations: PropTypes.object,
   intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,

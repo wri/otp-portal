@@ -55,7 +55,7 @@ const RouterSpinner = () => {
     };
   }, []);
 
-  return <Spinner isLoading={isLoading} className="-fixed" />;
+  return <Spinner isLoading={isLoading} className="-fixed" spinDelay={0} />;
 }
 
 export default RouterSpinner;

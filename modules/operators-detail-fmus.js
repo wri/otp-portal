@@ -1,9 +1,7 @@
-import { LAYERS } from 'constants/layers';
-import sumBy from 'lodash/sumBy';
-import uniq from 'lodash/uniq';
 import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import { sumBy } from 'utils/general';
 
 const GET_FMU_ANALYSIS_SUCCESS = 'GET_FMU_ANALYSIS_SUCCESS';
 const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
@@ -34,7 +32,6 @@ const initialState = {
 
   hoverInteractions: {},
 
-  layers: LAYERS,
   layersActive: [
     'gain',
     'loss',
@@ -432,11 +429,11 @@ export function getIntegratedAlertsMetadata() {
       // put integrated-alerts before fmusdetail
       dispatch({
         type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
-        payload: uniq([
+        payload: [... new Set([
           ...activeLayers.slice(0, activeLayers.indexOf('fmusdetail')),
           'integrated-alerts',
           ...activeLayers.slice(activeLayers.indexOf('fmusdetail'))
-        ])
+        ])]
       });
     })
   };

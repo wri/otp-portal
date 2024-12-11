@@ -1,6 +1,4 @@
-import Jsona from 'jsona';
-import omitBy from 'lodash/omitBy';
-import isEmpty from 'lodash/isEmpty';
+import { omitBy, isEmpty } from 'utils/general';
 
 import API, { NEXTAPIClient } from 'services/api'
 
@@ -9,6 +7,7 @@ import { logEvent } from 'utils/analytics';
 // CONSTANTS
 const SET_USER = 'SET_USER';
 const REMOVE_USER = 'REMOVE_USER';
+const SET_USER_AGENT = 'SET_USER_AGENT';
 
 const GET_USER_PROFILE_SUCCESS = 'GET_USER_PROFILE_SUCCESS';
 const GET_USER_PROFILE_ERROR = 'GET_USER_PROFILE_ERROR';
@@ -17,8 +16,6 @@ const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
 const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
 const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
 
-const JSONA = new Jsona();
-
 // REDUCER
 const initialState = {};
 
@@ -26,6 +23,8 @@ export default function User(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return Object.assign({}, state, action.payload);
+    case SET_USER_AGENT:
+      return Object.assign({}, state, { userAgent: action.payload });
     case GET_USER_PROFILE_SUCCESS: {
       return {
         ...state,
@@ -100,6 +99,10 @@ export function setUser(user) {
   return { type: SET_USER, payload: user };
 }
 
+export function setUserAgent(userAgent) {
+  return { type: SET_USER_AGENT, payload: userAgent };
+}
+
 /* Action creators */
 export function getUserOperator(id) {
   return (dispatch) => {
@@ -124,13 +127,10 @@ export function getUserOperator(id) {
     return API.get(`operators/${id}`, {
       include: includeFields.join(','),
       'fields[fmus]': fields.fmus.join(',')
-    }).then((operator) => {
-      // Fetch from server ok -> Dispatch operator and deserialize the data
-      const dataParsed = JSONA.deserialize(operator);
-
+    }).then(({ data }) => {
       dispatch({
         type: GET_USER_OPERATOR_SUCCESS,
-        payload: dataParsed,
+        payload: data,
       });
     }).catch((err) => {
       // Fetch from server ko -> Dispatch error
@@ -160,7 +160,7 @@ export function resetPassword(attributes) {
     body: {
       password: attributes
     }
-  }).then((data) => JSONA.deserialize(data));
+  });
 }
 
 export function forgotPassword(email) {
@@ -174,13 +174,10 @@ export function getUserProfile() {
     dispatch({ type: GET_USER_PROFILE_LOADING });
 
     return API.get(`users/${user.user_id}`, null, { token: user.token })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_USER_PROFILE_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {

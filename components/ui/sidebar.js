@@ -6,6 +6,12 @@ import Icon from 'components/ui/icon';
 
 export default function Sidebar(props) {
   const { className, open, name, children, onToggle } = props;
+  const [render, setRender] = React.useState(false);
+
+  // keep rendering content after first open
+  React.useEffect(() => {
+    setRender(true);
+  }, [open]);
 
   const classNames = classnames({
     [props.className]: !!className,
@@ -34,7 +40,7 @@ export default function Sidebar(props) {
       }
 
       <div className="l-sidebar-content">
-        {children}
+        {render && children}
       </div>
     </aside>
   );

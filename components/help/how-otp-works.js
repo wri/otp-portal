@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Spinner from 'components/ui/spinner';
 import Html from 'components/html';
+import { withRouter } from 'next/router';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -19,17 +20,17 @@ class HelpHowOTPWorks extends React.Component {
       easing: 'easeOutQuart'
     });
 
-    if (this.props.url.query.article) {
+    if (this.props.router.query.article) {
       setTimeout(() => {
-        this.triggerScrollTo(`#${this.props.url.query.article}`);
+        this.triggerScrollTo(`#${this.props.router.query.article}`);
       }, 250);
     }
   }
 
   componentDidUpdate() {
-    if (this.props.url.query.article) {
+    if (this.props.router.query.article) {
       setTimeout(() => {
-        this.triggerScrollTo(`#${this.props.url.query.article}`);
+        this.triggerScrollTo(`#${this.props.router.query.article}`);
       }, 250);
     }
   }
@@ -98,8 +99,8 @@ class HelpHowOTPWorks extends React.Component {
 
 HelpHowOTPWorks.propTypes = {
   intl: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   howtos: PropTypes.object
 };
 
-export default injectIntl(HelpHowOTPWorks);
+export default injectIntl(withRouter(HelpHowOTPWorks));

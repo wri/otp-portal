@@ -1,16 +1,11 @@
-import Jsona from 'jsona';
 import Router from 'next/router';
-
-import groupBy from 'lodash/groupBy';
-import flatten from 'lodash/flatten';
-import uniq from 'lodash/uniq';
 
 import dayjs from 'dayjs';
 
 import API from 'services/api';
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import { groupBy } from 'utils/general';
 
-import { LAYERS } from 'constants/layers';
 import { CERTIFICATIONS } from 'constants/fmu';
 
 /* Constants */
@@ -25,8 +20,6 @@ const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
 const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
 const SET_OPERATORS_SIDEBAR = 'SET_OPERATORS_SIDEBAR';
 const SET_FILTERS_RANKING = 'SET_FILTERS_RANKING';
-
-const JSONA = new Jsona();
 
 const COUNTRIES = [
   { label: 'Congo', value: 47, iso: 'COG' },
@@ -55,7 +48,6 @@ const initialState = {
   hoverInteractions: {},
 
   // LAYERS
-  layers: LAYERS,
   layersActive: [
     'gain',
     'loss',
@@ -67,7 +59,7 @@ const initialState = {
 
   // SIDEBAR
   sidebar: {
-    open: true,
+    open: false,
     width: 600
   },
 
@@ -244,21 +236,19 @@ export function getOperatorsRanking() {
       'fields[countries]': fields.countries.join(','),
       'fields[operators]': fields.operators.join(','),
       'fields[observations]': fields.observations.join(','),
-    }).then((operatorsRanking) => {
-      const dataParsed = JSONA.deserialize(operatorsRanking);
-
-      const groupByDocPercentage = groupBy(dataParsed, (o) => {
+    }).then(({ data }) => {
+      const groupByDocPercentage = groupBy(data, (o) => {
         if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
 
         return o['percentage-valid-documents-all'];
       });
       const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
-      const rankedData = flatten(groupByDocPercentageKeys.map((k, i) => {
+      const rankedData = groupByDocPercentageKeys.map((k, i) => {
         return groupByDocPercentage[k].map(o => ({
           ...o,
           ranking: i
         }));
-      }));
+      }).flat();
 
       dispatch({
         type: GET_OPERATORS_RANKING_SUCCESS,
@@ -393,11 +383,11 @@ export function getIntegratedAlertsMetadata() {
       // put integrated-alerts before fmus
       dispatch({
         type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
-        payload: uniq([
+        payload: [...new Set([
           ...activeLayers.slice(0, activeLayers.indexOf('fmus')),
           'integrated-alerts',
           ...activeLayers.slice(activeLayers.indexOf('fmus'))
-        ])
+        ])]
       });
     })
   };

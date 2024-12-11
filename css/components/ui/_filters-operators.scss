@@ -37,9 +37,11 @@
     }
 
     .title {
+      display: block;
       font-family: $font-family-georgia;
       color: $color-white;
       text-transform: capitalize;
+      margin-top: 1em;
       margin-bottom: 2px;
       font-size: $font-size-default;
       line-height: 26px;

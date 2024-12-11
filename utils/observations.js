@@ -1,5 +1,4 @@
-import groupBy from 'lodash/groupBy';
-import flatten from 'lodash/flatten';
+import { groupBy } from 'utils/general';
 
 const HELPERS_OBS = {
   // Groups
@@ -49,14 +48,12 @@ const HELPERS_OBS = {
 
   // Values
   getMaxValue(data) {
-    const arr = flatten(
-      Object.keys(data || this.props.data).map((k) => {
-        const groupedBySeverity = groupBy(data[k], 'level');
-        return Object.keys(groupedBySeverity).map(
-          (s) => groupedBySeverity[s].length
-        );
-      })
-    );
+    const arr = Object.keys(data || this.props.data).map((k) => {
+      const groupedBySeverity = groupBy(data[k], 'level');
+      return Object.keys(groupedBySeverity).map(
+        (s) => groupedBySeverity[s].length
+      );
+    }).flat();
 
     return Math.max(...arr);
   },

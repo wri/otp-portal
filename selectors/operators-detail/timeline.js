@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
 
 const operator = state => state.operatorsDetail && state.operatorsDetail.data;

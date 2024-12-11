@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'next/router';
 
 // Intl
 import { injectIntl } from 'react-intl';
@@ -32,15 +33,15 @@ const TABS_COUNTRIES_DETAIL = [
 ];
 
 class CountriesDetail extends React.Component {
-  static async getInitialProps({ url, store }) {
-    const { id, tab } = url.query;
+  static async getInitialProps({ query, asPath, store }) {
+    const { id, tab } = query;
 
     if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
       return { redirectTo: '/', redirectPermanent: false };
     }
 
     if (!tab) {
-      return { redirectTo: `${url.asPath}/overview` };
+      return { redirectTo: `${asPath}/overview` };
     }
 
     const { countriesDetail } = store.getState();
@@ -54,14 +55,14 @@ class CountriesDetail extends React.Component {
 
     await Promise.all(requests);
 
-    return { url };
+    return {};
   }
 
   componentDidUpdate(prevProps) {
-    const { url } = prevProps;
-    const { url: nextUrl } = this.props;
+    const { router } = prevProps;
+    const { router: nextUrl } = this.props;
 
-    if (url.query.id !== nextUrl.query.id) {
+    if (router.query.id !== nextUrl.query.id) {
       this.props.getCountry(nextUrl.query.id);
     }
   }
@@ -80,15 +81,14 @@ class CountriesDetail extends React.Component {
   }
 
   render() {
-    const { url, countriesDetail, countryDocumentation } = this.props;
-    const id = url.query.id;
-    const tab = url.query.tab || 'overview';
+    const { router, countriesDetail, countryDocumentation } = this.props;
+    const id = router.query.id;
+    const tab = router.query.tab || 'overview';
 
     return (
       <Layout
         title={countriesDetail.data.name || '-'}
         description="Country description..."
-        url={url}
       >
         <Spinner isLoading={countriesDetail.loading} className="-fixed" />
 
@@ -99,7 +99,7 @@ class CountriesDetail extends React.Component {
 
         <Tabs
           href={{
-            pathname: url.pathname,
+            pathname: router.pathname,
             query: { id },
             as: `/countries/${id}`
           }}
@@ -108,16 +108,12 @@ class CountriesDetail extends React.Component {
         />
 
         {tab === 'overview' &&
-          <CountriesDetailOverview
-            countriesDetail={countriesDetail}
-            url={url}
-          />
+          <CountriesDetailOverview countriesDetail={countriesDetail} />
         }
         {tab === 'documentation' &&
           <CountriesDetailDocumentation
             vpaOverview={countriesDetail.data['vpa-overview']}
             countryDocumentation={countryDocumentation}
-            url={url}
           />
         }
       </Layout>
@@ -127,14 +123,14 @@ class CountriesDetail extends React.Component {
 }
 
 CountriesDetail.propTypes = {
-  url: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   countriesDetail: PropTypes.shape({}).isRequired,
   countryDocumentation: PropTypes.shape({}).isRequired,
   intl: PropTypes.object.isRequired,
   getCountry: PropTypes.func.isRequired
 };
 
-export default injectIntl(connect(
+export default withRouter(injectIntl(connect(
 
   state => ({
     user: state.user,
@@ -142,4 +138,4 @@ export default injectIntl(connect(
     countryDocumentation: getParsedDocumentation(state)
   }),
   { getCountry }
-)(CountriesDetail));
+)(CountriesDetail)));

@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 
 // Get the datasets and filters from state
@@ -20,15 +19,18 @@ const getParsedFilters = createSelector(
 
       newFilterOptions = {
         ...newFilterOptions,
-        operator: sortBy(flatten(activeCountries
-          .map(c => _filterOptions.operator.filter(o => c.operators.includes(o.id)))
-        ), 'name'),
-        observer_id: sortBy(flatten(activeCountries
-          .map(c => _filterOptions.observer_id.filter(o => c.observers.includes(o.id)))
-        ), 'name'),
-        fmu_id: sortBy(flatten(activeCountries
-          .map(c => _filterOptions.fmu_id.filter(f => c.fmus.includes(f.id)))
-        ), 'name')
+        operator: sortBy(
+          activeCountries.map(c => _filterOptions.operator.filter(o => c.operators.includes(o.id))).flat(),
+          'name'
+        ),
+        observer_id: sortBy(
+          activeCountries.map(c => _filterOptions.observer_id.filter(o => c.observers.includes(o.id))).flat(),
+          'name'
+        ),
+        fmu_id: sortBy(
+          activeCountries.map(c => _filterOptions.fmu_id.filter(f => c.fmus.includes(f.id))).flat(),
+          'name'
+        )
       };
     }
 
@@ -38,9 +40,10 @@ const getParsedFilters = createSelector(
 
       newFilterOptions = {
         ...newFilterOptions,
-        fmu_id: sortBy(flatten(activeOperators
-          .map(o => _filterOptions.fmu_id.filter(f => o.fmus.includes(f.id)))
-        ), 'name')
+        fmu_id: sortBy(
+          activeOperators.map(o => _filterOptions.fmu_id.filter(f => o.fmus.includes(f.id))).flat(),
+          'name'
+        )
       };
     }
 
@@ -50,9 +53,10 @@ const getParsedFilters = createSelector(
 
       newFilterOptions = {
         ...newFilterOptions,
-        subcategory_id: sortBy(flatten(activeCategories
-          .map(o => _filterOptions.subcategory_id.filter(f => o.subcategories.includes(f.id)))
-        ), 'name')
+        subcategory_id: sortBy(
+          activeCategories.map(o => _filterOptions.subcategory_id.filter(f => o.subcategories.includes(f.id))).flat(),
+          'name'
+        )
       };
     }
 

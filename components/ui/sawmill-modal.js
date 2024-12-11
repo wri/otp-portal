@@ -26,7 +26,6 @@ import LocationSearch from 'components/map/location-search';
 
 import { transformRequest } from 'utils/map';
 import CancelButton from '../form/CancelButton';
-import { set } from 'lodash';
 
 class SawmillModal extends React.Component {
   static propTypes = {
@@ -87,7 +86,7 @@ class SawmillModal extends React.Component {
     const { sawmill } = this.props;
     return {
       data: {
-        ...!!sawmill && !!sawmill.id && { id: sawmill.id },
+        ...(!!sawmill && !!sawmill.id && { id: sawmill.id }),
         type: 'sawmills',
         attributes: {
           name: form.name,

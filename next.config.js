@@ -1,4 +1,7 @@
+const zlib = require("zlib");
 const { withSentryConfig } = require('@sentry/nextjs');
+const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 require('dotenv').config();
 
@@ -43,12 +46,41 @@ const config = {
     locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
-  sentry: {
-    hideSourceMaps: process.env.ENV === 'production',
-    ...(process.env.SENTRY_DISABLE_RELEASE && {
-      disableServerWebpackPlugin: true,
-      disableClientWebpackPlugin: true
-    })
+  compress: false, // NGINX will handle this with dynamic compression and better algorithms, static assets compressed with webpack plugin (not all)
+  webpack: (config, options) => {
+    // config.infrastructureLogging = {
+    //   level: 'verbose',
+    // }
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        __SENTRY_DEBUG__: false,
+        __SENTRY_TRACING__: false, // Tracing, we don't use it
+        __RRWEB_EXCLUDE_IFRAME__: true,  // Session Replay - we don't use it
+        __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
+        __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it
+      }),
+      new CompressionPlugin({
+        filename: "[path][base].br",
+        algorithm: "brotliCompress",
+        test: /\.(js|css|html|svg)$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        threshold: 5120,
+        minRatio: 0.8,
+      })
+    );
+
+    if (!options.dev) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@formatjs/icu-messageformat-parser': '@formatjs/icu-messageformat-parser/no-parser'
+      };
+    }
+
+    return config
   },
   async redirects() {
     return [
@@ -80,8 +112,10 @@ const config = {
         destination: "/api/portal/:path*",
       }
     ];
-   },
-  /* productionBrowserSourceMaps: true, // for debugging prod build locally */
+  },
+  experimental: {
+    optimizePackageImports: ["modules"]
+  }
 };
 
 const sentryWebpackPluginOptions = {
@@ -94,6 +128,14 @@ const sentryWebpackPluginOptions = {
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
+  hideSourceMaps: process.env.ENV === 'production',
+  widenClientFileUpload: true,
+  ...(process.env.SENTRY_DISABLE_RELEASE === 'true' && {
+    release: {
+      create: false,
+      finalize: false,
+    }
+  })
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };

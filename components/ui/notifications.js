@@ -10,8 +10,8 @@ import { injectIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
+import { groupBy } from 'utils/general';
 import { getNotifications, dismissAll } from 'modules/notifications';
-import { groupBy } from 'lodash';
 
 function isBeforeToday(date) {
   const today = new Date();
@@ -21,8 +21,6 @@ function isBeforeToday(date) {
 
 class Notifications extends React.Component {
   handleDismiss = () => {
-    const { notifications } = this.props;
-
     this.props.dismissAll();
     modal.toggleModal(false);
   }
@@ -59,7 +57,7 @@ class Notifications extends React.Component {
   }
 
   renderSingleNotification(notification) {
-    const { language, intl } = this.props;
+    const { intl } = this.props;
     const expirationDate = new Date(notification['expiration-date']);
     const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(expirationDate);
 
@@ -192,13 +190,15 @@ class Notifications extends React.Component {
           {intl.formatMessage({ id: 'Dismiss All' })}
         </button>
 
-        <Link href={`/operators/${user.operator_ids[0]}/documentation`}>
-          <a className="c-button -secondary">
-            {intl.formatMessage({ id: 'Update Now' })}
-          </a>
+        <Link
+          href={`/operators/${user.operator_ids[0]}/documentation`}
+          className="c-button -secondary">
+
+          {intl.formatMessage({ id: 'Update Now' })}
+
         </Link>
       </div>
-    )
+    );
   }
 
   render() {

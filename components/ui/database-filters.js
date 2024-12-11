@@ -80,9 +80,9 @@ class DatabaseFilters extends Filters {
       return (
         <div key={f.key} className="field">
           <div className="c-select">
-            <h3 className="title">
+            <label className="title">
               {this.props.intl.formatMessage({ id: `filter.${f.key}` })}
-            </h3>
+            </label>
 
             <Select
               instanceId={f.key}
@@ -92,6 +92,7 @@ class DatabaseFilters extends Filters {
               className='react-select-container'
               classNamePrefix='react-select'
               value={value}
+              aria-label={this.props.intl.formatMessage({ id: `filter.${f.key}` })}
               placeholder={this.props.intl.formatMessage({
                 id: `filter.${f.key}.placeholder`,
               })}
@@ -124,6 +125,7 @@ class DatabaseFilters extends Filters {
                     className={`filters-toggle-btn${
                       this.state.open ? ' -green' : ''
                     }`}
+                    aria-label="Toggle filters"
                     onClick={() => this.setState({ open: !this.state.open })}
                   >
                     {this.state.open ? (

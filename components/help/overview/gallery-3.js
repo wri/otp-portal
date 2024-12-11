@@ -32,6 +32,7 @@ function Gallery3(props) {
                 description={faq.answer}
                 link={{
                   label: props.intl.formatMessage({ id: 'Read more' }),
+                  "aria-label": faq.question,
                   href: `/help/faqs?article=faq-article-${faq.id}`
                 }}
               />

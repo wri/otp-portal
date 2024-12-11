@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 // Intl
@@ -9,14 +8,13 @@ import { useIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
-const SubscriptionConfirmedPage = ({ url }) => {
+const SubscriptionConfirmedPage = () => {
   const intl = useIntl();
 
   return (
     <Layout
       title={intl.formatMessage({ id: 'newsletter' })}
       description={intl.formatMessage({ id: 'newsletter' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'newsletter' })}
@@ -36,10 +34,10 @@ const SubscriptionConfirmedPage = ({ url }) => {
 
           <ul className="c-field-buttons -center-content">
             <li>
-              <Link href="/">
-                <a className="card-link c-button -primary -fullwidth">
-                  {intl.formatMessage({ id: 'Back to home page' })}
-                </a>
+              <Link href="/" className="card-link c-button -primary -fullwidth">
+
+                {intl.formatMessage({ id: 'Back to home page' })}
+
               </Link>
             </li>
           </ul>
@@ -49,11 +47,5 @@ const SubscriptionConfirmedPage = ({ url }) => {
     </Layout>
   );
 }
-
-SubscriptionConfirmedPage.getInitialProps = ({ url }) => ({ url });
-
-SubscriptionConfirmedPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
-};
 
 export default SubscriptionConfirmedPage;

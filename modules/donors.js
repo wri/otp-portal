@@ -1,5 +1,3 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 /* Constants */
@@ -7,20 +5,11 @@ const GET_DONORS_SUCCESS = 'GET_DONORS_SUCCESS';
 const GET_DONORS_ERROR = 'GET_DONORS_ERROR';
 const GET_DONORS_LOADING = 'GET_DONORS_LOADING';
 
-const JSONA = new Jsona();
-
 /* Initial state */
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    zoom: 5,
-    center: {
-      lat: 0,
-      lng: 18
-    }
-  }
+  error: false
 };
 
 /* Reducer */
@@ -45,12 +34,10 @@ export function getDonors() {
     dispatch({ type: GET_DONORS_LOADING });
 
     return API.get('donors', { locale: language, 'page[size]': 2000 })
-      .then((donors) => {
-        const dataParsed = JSONA.deserialize(donors);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_DONORS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {

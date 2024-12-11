@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -11,14 +12,17 @@ import {
 } from 'components/ui/dropdown';
 import LanguageDropdown from 'components/ui/language-dropdown';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-function NavigationList({ footer, intl, url, className, countries }) {
+function NavigationList({ footer, className, countries }) {
+  const intl = useIntl();
+  const router = useRouter();
+
   const setActive = (pathname) => {
     if (footer) return '';
 
     return classnames({
-      '-active': pathname.includes(url.pathname),
+      '-active': pathname.includes(router.pathname),
     });
   }
   const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
@@ -103,9 +107,9 @@ function NavigationList({ footer, intl, url, className, countries }) {
                     {element.children.map((item) => (
                       <li key={item.href} className="header-dropdown-list-item">
                         <Link href={item.href} prefetch={false}>
-                          <a>
-                            {item.name}
-                          </a>
+
+                          {item.name}
+
                         </Link>
                       </li>
                     ))}
@@ -117,13 +121,16 @@ function NavigationList({ footer, intl, url, className, countries }) {
         }
         return (
           <li key={idx}>
-            <Link href={element.href} prefetch={false}>
-              <a className={setActive([element.href])}>
-                {element.name}
-              </a>
+            <Link
+              href={element.href}
+              prefetch={false}
+              className={setActive([element.href])}>
+
+              {element.name}
+
             </Link>
           </li>
-        )
+        );
       })}
     </ul>
   );
@@ -132,19 +139,15 @@ function NavigationList({ footer, intl, url, className, countries }) {
 NavigationList.propTypes = {
   className: PropTypes.string,
   countries: PropTypes.object,
-  footer: PropTypes.bool,
-  intl: PropTypes.object.isRequired,
-  url: PropTypes.object,
+  footer: PropTypes.bool
 };
 
 NavigationList.defaultProps = {
   footer: false
 }
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      countries: state.countries,
-    }),
-  )(NavigationList)
-);
+export default connect(
+  (state) => ({
+    countries: state.countries,
+  }),
+)(NavigationList);

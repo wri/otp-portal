@@ -15,11 +15,11 @@ Cypress.Commands.add('login', (username, password) => {
     [username, password],
     () => {
       cy.visit('/');
-      cy.get('a').contains('Sign in').click();
+      cy.get('div[role=button]').contains('Sign in').click();
       cy.get('#input-email').type(username);
       cy.get('#input-password').type(password);
       cy.get('button').contains('Log in').click();
-      cy.get('a').contains('My account').should('exist');
+      cy.get('div[role=button]').contains('My account').should('exist');
     },
     {
       cacheAcrossSpecs: true

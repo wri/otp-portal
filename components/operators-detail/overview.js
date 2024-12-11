@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import dynamic from 'next/dynamic';
 
 // Intl
 import { injectIntl } from 'react-intl';
 
 // Components
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
-import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
+
+const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'), { ssr: false });
 
 function OperatorsDetailOverview(props) {
   const { address, website, details } = props.operatorsDetail.data;

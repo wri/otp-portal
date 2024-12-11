@@ -1,8 +1,7 @@
-import Jsona from 'jsona';
-
 import dayjs from 'dayjs';
 
 import API from 'services/api';
+import { parseDocument } from 'utils/documents';
 
 /* Constants */
 const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
@@ -17,9 +16,8 @@ const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
 const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
 const GET_OPERATOR_DOCUMENTATION_LOADING = 'GET_OPERATOR_DOCUMENTATION_LOADING';
 
-const GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS';
-const GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR = 'GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR';
-const GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING = 'GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING';
+const GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS';
+const GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR';
 
 const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
 const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
@@ -43,23 +41,20 @@ const initialState = {
   loading: false,
   error: false,
   observations: {
+    operatorId: null,
     data: [],
-    timestamp: null,
     loading: false,
     error: false,
+    timestamp: null
   },
   documentation: {
+    operatorId: null,
     data: [],
     loading: false,
     error: false,
     timestamp: null
   },
-  documentationCurrent: {
-    data: [],
-    loading: false,
-    error: false,
-    timestamp: null
-  },
+  publicationAuthorization: null,
   date: dayjs().format('YYYY-MM-DD'),
   fmu: null,
   timeline: [],
@@ -74,9 +69,6 @@ const initialState = {
     error: false,
   },
 };
-
-const JSONA = new Jsona();
-
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -128,6 +120,7 @@ export default function reducer(state = initialState, action) {
 
       const documentation = Object.assign({}, state.documentation, {
         data: action.payload,
+        operatorId: action.metadata.operatorId,
         loading: false,
         error: false,
       });
@@ -163,6 +156,7 @@ export default function reducer(state = initialState, action) {
 
       const observations = Object.assign({}, state.observations, {
         data: action.payload,
+        operatorId: action.metadata.operatorId,
         loading: false,
         error: false,
       });
@@ -177,32 +171,11 @@ export default function reducer(state = initialState, action) {
       });
       return Object.assign({}, state, { observations });
     }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS: {
-      if (!isLatestAction(state.documentationCurrent, action)) return state;
-
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { documentationCurrent });
+    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS: {
+      return Object.assign({}, state, { publicationAuthorization: action.payload });
     }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR: {
-      if (!isLatestAction(state.documentationCurrent, action)) return state;
-
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { documentationCurrent });
-    }
-    case GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING: {
-      const documentationCurrent = Object.assign({}, state.documentationCurrent, {
-        loading: true,
-        error: false,
-        timestamp: action.metadata.timestamp
-      });
-      return Object.assign({}, state, { documentationCurrent });
+    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR: {
+      return Object.assign({}, state, { publicationAuthorization: null });
     }
     case GET_SAWMILLS_SUCCESS: {
       const sawmills = Object.assign({}, state.sawmills, {
@@ -256,29 +229,37 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function getOperatorBySlug(slug) {
+export function getOperatorBySlug(slug, loadFMUS = false) {
   return (dispatch, getState) => {
     const { user, language } = getState();
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_OPERATOR_LOADING });
 
-    const includeFields = [
+    const includes = [
       'country',
       'fmus',
+      'observations'
     ];
+    const fields = {
+      'fields[countries]': 'name,id,iso',
+      'fields[observations]': 'id,hidden'
+    }
+    if (!loadFMUS) {
+      fields['fields[fmus]'] = 'name,id';
+    }
 
     return API.get(`operators`, {
       locale: language,
-      include: includeFields.join(','),
+      include: includes.join(','),
+      ...fields,
       'filter[slug]': slug
     }, {
       token: user.token
     })
-      .then((operators) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operators);
-        const operator = dataParsed[0];
+      .then(({ data }) => {
+        const operator = data[0];
         if (!operator) throw new Error('Operator not found');
+        operator.loadedFMUS = loadFMUS;
 
         dispatch({
           type: GET_OPERATOR_SUCCESS,
@@ -313,12 +294,10 @@ export function getOperator(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -335,7 +314,7 @@ export function getOperatorDocumentation(id) {
   return (dispatch, getState) => {
     const { user, language, operatorsDetail } = getState();
     const date = operatorsDetail.date;
-    const metadata = { timestamp: new Date() };
+    const metadata = { timestamp: new Date(), operatorId: id };
 
     dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING, metadata });
 
@@ -355,12 +334,10 @@ export function getOperatorDocumentation(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_DOCUMENTATION_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -392,8 +369,9 @@ export function getOperatorObservations(operatorId) {
     ];
 
     const timestamp = new Date();
+    const metadata = { timestamp, operatorId };
     // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata: { timestamp } });
+    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata });
 
     return API.get('observations', {
       locale: language,
@@ -402,13 +380,11 @@ export function getOperatorObservations(operatorId) {
       'filter[operator]': operatorId,
       'filter[hidden]': 'all'
     })
-      .then((observations) => {
-        const dataParsed = JSONA.deserialize(observations);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
-          payload: dataParsed,
-          metadata: { timestamp }
+          payload: data,
+          metadata
         });
       })
       .catch((err) => {
@@ -416,18 +392,15 @@ export function getOperatorObservations(operatorId) {
         dispatch({
           type: GET_OPERATOR_OBSERVATIONS_ERROR,
           payload: err.message,
-          metadata: { timestamp }
+          metadata
         });
       });
   };
 }
 
-export function getOperatorDocumentationCurrent(id) {
+export function getOperatorPublicationAuthorization(id) {
   return (dispatch, getState) => {
     const { user, language } = getState();
-    const metadata = { timestamp: new Date() };
-
-    dispatch({ type: GET_OPERATOR_CURRENT_DOCUMENTATION_LOADING, metadata });
 
     const includeFields = [
       'required-operator-document',
@@ -437,25 +410,22 @@ export function getOperatorDocumentationCurrent(id) {
     return API.get('operator-documents', {
       locale: language,
       include: includeFields.join(','),
-      'page[size]': 1000,
       'filter[operator-id]': id,
+      'filter[contract-signature]': true,
     }, {
       token: user.token,
     })
-      .then((operator) => {
-        const dataParsed = JSONA.deserialize(operator);
+      .then(({ data }) => {
+        const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
 
         dispatch({
-          type: GET_OPERATOR_CURRENT_DOCUMENTATION_SUCCESS,
-          payload: dataParsed,
-          metadata
+          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS,
+          payload: parseDocument(doc)
         });
       })
-      .catch((err) => {
+      .catch((_err) => {
         dispatch({
-          type: GET_OPERATOR_CURRENT_DOCUMENTATION_ERROR,
-          payload: err.message,
-          metadata
+          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR
         });
       });
   };
@@ -472,13 +442,10 @@ export function getOperatorTimeline(id) {
     }, {
       token: user.token
     })
-      .then((operator) => {
-        // Fetch from server ok -> Dispatch operator and deserialize the data
-        const dataParsed = JSONA.deserialize(operator);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATOR_TIMELINE_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -500,13 +467,10 @@ export function getSawMillsByOperatorId(id) {
     return API.get('sawmills', {
       'filter[operator]': id
     })
-      .then((data) => {
-        // Fetch from server ok -> Dispatch geojson sawmill data
-        const dataParsed = JSONA.deserialize(data);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_SAWMILLS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {
@@ -527,8 +491,8 @@ export function getSawMillsLocationByOperatorId(id) {
     return API.get('sawmills', {
       'filter[operator]': id,
       format: 'geojson'
-    })
-      .then((data) => {
+    }, { deserialize: false })
+      .then(({ data }) => {
         // Fetch from server ok -> Dispatch geojson sawmill data
         dispatch({
           type: GET_SAWMILLS_LOCATIONS_SUCCESS,

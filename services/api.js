@@ -1,8 +1,6 @@
-import get from 'lodash/get';
-
 export class APIError extends Error {
   constructor(response, responseJSON) {
-    const message = get(responseJSON, 'errors[0].title') || response.statusText || 'APIError';
+    const message = responseJSON?.errors?.[0]?.title || response.statusText || 'APIError';
     super(message);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
@@ -20,6 +18,14 @@ class API {
   constructor(options = {}) {
     this.baseURL = options.baseURL;
     this.headers = options.headers || {};
+    this.deserialize = options.deserialize || false;
+  }
+
+  async initialize() {
+    if (this.JSONA) return;
+
+    const Jsona = await import('jsona');
+    this.JSONA = new Jsona.default();
   }
 
   get(endpoint, params = {}, options = {}) {
@@ -42,7 +48,7 @@ class API {
     return this._request(endpoint, 'DELETE', options);
   }
 
-  _request(endpoint, method, options = {}) {
+  async _request(endpoint, method, options = {}) {
     const url = new URL(`${this.baseURL}/${endpoint}`);
     if (options.queryParams && typeof options.queryParams === 'object' && Object.keys(options.queryParams).length > 0) {
       Object.keys(options.queryParams).forEach((key) => {
@@ -66,8 +72,19 @@ class API {
     if (options.body) {
       fetchParams.body = JSON.stringify(options.body);
     }
+    let deserialize = this.deserialize;
+    if (options.deserialize !== undefined && options.deserialize !== null) {
+      deserialize = options.deserialize;
+    }
 
-    return fetch(url.toString(), fetchParams).then(this._handleResponse)
+    await this.initialize();
+
+    return fetch(url.toString(), fetchParams).then(this._handleResponse).then((jsonResponse) => {
+      if (deserialize) {
+        return { data: this.JSONA.deserialize(jsonResponse), response: jsonResponse };
+      }
+      return { data: jsonResponse, response: jsonResponse };
+    })
   }
 
   async _handleResponse(response) {
@@ -87,7 +104,8 @@ const APIClient = new API({
   headers: {
     'Content-Type': 'application/vnd.api+json',
     'OTP-API-KEY': process.env.OTP_API_KEY
-  }
+  },
+  deserialize: true
 });
 const NEXTAPIClient = new API({
   baseURL: process.env.APP_URL + "/portal-api",

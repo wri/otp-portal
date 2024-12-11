@@ -1,5 +1,3 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 /* Constants */
@@ -7,20 +5,11 @@ const GET_PARTNERS_SUCCESS = 'GET_PARTNERS_SUCCESS';
 const GET_PARTNERS_ERROR = 'GET_PARTNERS_ERROR';
 const GET_PARTNERS_LOADING = 'GET_PARTNERS_LOADING';
 
-const JSONA = new Jsona();
-
 /* Initial state */
 const initialState = {
   data: [],
   loading: false,
-  error: false,
-  map: {
-    zoom: 5,
-    center: {
-      lat: 0,
-      lng: 18,
-    },
-  },
+  error: false
 };
 
 /* Reducer */
@@ -47,12 +36,10 @@ export function getPartners() {
     dispatch({ type: GET_PARTNERS_LOADING });
 
     return API.get('partners', { 'page[size]': 2000 })
-      .then((partners) => {
-        const dataParsed = JSONA.deserialize(partners);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_PARTNERS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {

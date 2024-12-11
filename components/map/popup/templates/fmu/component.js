@@ -52,26 +52,31 @@ class FMUTemplatePopup extends PureComponent {
         </table>
 
         {operatorId && operatorName && id &&
-          <Link href={`/operators/${operatorId}/documentation?fmuId=${id}`}>
-            <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              {intl.formatMessage({ id: 'documentation' })}
-            </a>
+          <Link
+            href={`/operators/${operatorId}/documentation?fmuId=${id}`}
+            className="c-button -tertiary -fullwidth -ellipsis -small">
+
+            {intl.formatMessage({ id: 'documentation' })}
+
           </Link>
         }
 
         {id &&
-          <Link href={`/operators/${operatorId}/observations?fmuId=${id}`}>
-            <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              {intl.formatMessage({ id: 'observations' })} ({fmuObservations})
-            </a>
+          <Link
+            href={`/operators/${operatorId}/observations?fmuId=${id}`}
+            className="c-button -tertiary -fullwidth -ellipsis -small">
+
+            {intl.formatMessage({ id: 'observations' })}({fmuObservations})
           </Link>
         }
 
         {operatorId &&
-          <Link href={`/operators/${operatorId}`}>
-            <a className="c-button -tertiary -fullwidth -ellipsis -small">
-              {operatorName}
-            </a>
+          <Link
+            href={`/operators/${operatorId}`}
+            className="c-button -tertiary -fullwidth -ellipsis -small">
+
+            {operatorName}
+
           </Link>
         }
       </div>

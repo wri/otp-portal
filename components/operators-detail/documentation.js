@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
@@ -19,10 +19,9 @@ import DocumentsHeaderFilter from 'components/operators-detail/documentation/doc
 function OperatorsDetailDocumentation({
   operatorDocumentation,
   operatorTimeline,
-  operatorsDetail,
-  url,
-  intl,
+  operatorsDetail
 }) {
+  const intl = useIntl();
   const operator = operatorsDetail.data;
   const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
     operatorDocumentation
@@ -120,9 +119,7 @@ function OperatorsDetailDocumentation({
 OperatorsDetailDocumentation.propTypes = {
   operatorsDetail: PropTypes.object,
   operatorDocumentation: PropTypes.array,
-  operatorTimeline: PropTypes.array,
-  url: PropTypes.object,
-  intl: PropTypes.object.isRequired,
+  operatorTimeline: PropTypes.array
 };
 
-export default injectIntl(OperatorsDetailDocumentation);
+export default OperatorsDetailDocumentation;

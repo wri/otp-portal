@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 
 // Get the datasets and filters from state
@@ -27,35 +26,27 @@ export const getParsedFilters = createSelector(
       newFilterOptions = {
         ...newFilterOptions,
         operator_id: sortBy(
-          flatten(
-            activeCountries.map((c) =>
-              newFilterOptions.operator_id.filter((o) => c.operators.includes(o.id))
-            )
-          ),
+          activeCountries.map((c) =>
+            newFilterOptions.operator_id.filter((o) => c.operators.includes(o.id))
+          ).flat(),
           'name'
         ),
         fmu_id: sortBy(
-          flatten(
-            activeCountries.map((c) =>
-              newFilterOptions.fmu_id.filter((f) => c.fmus.includes(f.id))
-            )
-          ),
+          activeCountries.map((c) =>
+            newFilterOptions.fmu_id.filter((f) => c.fmus.includes(f.id))
+          ).flat(),
           'name'
         ),
         required_operator_document_id: sortBy(
-          flatten(
-            activeCountries.map((c) =>
-              newFilterOptions.required_operator_document_id.filter((f) => c.required_operator_document_ids.includes(f.id))
-            )
-          ),
+          activeCountries.map((c) =>
+            newFilterOptions.required_operator_document_id.filter((f) => c.required_operator_document_ids.includes(f.id))
+          ).flat(),
           'name'
         ),
         forest_types: sortBy(
-          flatten(
-            activeCountries.map((c) =>
-              newFilterOptions.forest_types.filter((f) => c.forest_types.map(f1 => f1.id).includes(f.id))
-            )
-          ),
+          activeCountries.map((c) =>
+            newFilterOptions.forest_types.filter((f) => c.forest_types.map(f1 => f1.id).includes(f.id))
+          ).flat(),
           'name'
         ),
       };
@@ -69,19 +60,15 @@ export const getParsedFilters = createSelector(
       newFilterOptions = {
         ...newFilterOptions,
         fmu_id: sortBy(
-          flatten(
-            activeOperators.map((o) =>
-              newFilterOptions.fmu_id.filter((f) => o.fmus.includes(f.id))
-            )
-          ),
+          activeOperators.map((o) =>
+            newFilterOptions.fmu_id.filter((f) => o.fmus.includes(f.id))
+          ).flat(),
           'name'
         ),
         forest_types: sortBy(
-          flatten(
-            activeOperators.map((o) =>
-              newFilterOptions.forest_types.filter((f) => o.forest_types.map(f1 => f1.id).includes(f.id))
-            )
-          ),
+          activeOperators.map((o) =>
+            newFilterOptions.forest_types.filter((f) => o.forest_types.map(f1 => f1.id).includes(f.id))
+          ).flat(),
           'name'
         ),
 
@@ -96,11 +83,9 @@ export const getParsedFilters = createSelector(
       newFilterOptions = {
         ...newFilterOptions,
         required_operator_document_id: sortBy(
-          flatten(
-            activeLegalCategories.map((o) =>
-              newFilterOptions.required_operator_document_id.filter((f) => o.required_operator_document_ids.includes(f.id))
-            )
-          ),
+          activeLegalCategories.map((o) =>
+            newFilterOptions.required_operator_document_id.filter((f) => o.required_operator_document_ids.includes(f.id))
+          ).flat(),
           'name'
         ),
       };

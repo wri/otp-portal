@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -14,12 +14,13 @@ const DropdownContent = (props) => {
 }
 
 const DropdownTrigger = (props) => {
-  const { children, className, ...dropdownTriggerProps } = props;
+  const { children, ...dropdownTriggerProps } = props;
+  const className = classNames('dropdown__trigger', props.className);
 
   return (
-    <a {...dropdownTriggerProps} className={`dropdown__trigger ${className}`}>
+    <div role="button" {...dropdownTriggerProps} className={className}>
       {children}
-    </a>
+    </div>
   );
 }
 

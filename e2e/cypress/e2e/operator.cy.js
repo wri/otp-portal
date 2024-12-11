@@ -14,7 +14,7 @@ describe('Operator', function () {
 
     describe('updating operator profile', function () {
       beforeEach(function () {
-        cy.get('a').contains('My account').click();
+        cy.get('div[role=button]').contains('My account').click();
         cy.get('a').contains('Producer profile').click();
         cy.location('pathname', {timeout: 25000}).should('include', '/operator/edit');
       })
@@ -24,6 +24,12 @@ describe('Operator', function () {
         cy.get('#input-details').clear().type('Details about Interholco');
         cy.get('#input-website').clear().type('https://example.com');
         cy.get('#input-address').clear().type('Some address');
+        // clear old image if exists
+        cy.get(".file-button").then(($button) => {
+          if ($button.length) {
+            cy.wrap($button).click();
+          }
+        });
         cy.get('.file-dropzone').attachFile('acme-logo.png', { subjectType: 'drag-n-drop' });
         cy.get('button').contains('Update producer').click();
         cy.get('.rrt-text', {timeout: 35000}).should('have.text', 'Profile saved correctly');
@@ -44,7 +50,7 @@ describe('Operator', function () {
 
     describe('documentation', function () {
       beforeEach(function () {
-        cy.get('a').contains('My account').click();
+        cy.get('div[role=button]').contains('My account').click();
         cy.contains('a', 'IFO / Interholco').click();
         cy.location('pathname', {timeout: 25000}).should('include', '/documentation');
       })

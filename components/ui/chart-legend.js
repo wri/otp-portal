@@ -17,7 +17,7 @@ function ChartLegend({ title, list, className, intl }) {
   return (
     <div className={`c-chart-legend ${classNames}`}>
       {title &&
-        <h4 className="c-title -default -proximanova chart-legend-title">
+        <div className="c-title -default -proximanova chart-legend-title">
           <Link
             href={{
               pathname: '/help',
@@ -25,12 +25,13 @@ function ChartLegend({ title, list, className, intl }) {
             }}
             as={'/help/how-otp-works?article=assessing-severity-of-observations'}
             prefetch={false}
+            aria-label="Learn more about assessing the severity of observations"
           >
-            <a><Icon name="icon-info" className="-smaller" /></a>
+            <Icon name="icon-info" className="-smaller" />
           </Link>
 
           {intl.formatMessage({ id: 'legend.title' })}:
-        </h4>
+        </div>
       }
 
       <ul className="chart-legend-list">
