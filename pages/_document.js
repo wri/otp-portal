@@ -4,6 +4,7 @@ import Script from 'next/script';
 import path from 'path';
 import fs from 'fs';
 import dropcss from 'dropcss';
+import * as Sentry from '@sentry/nextjs';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
 
@@ -24,7 +25,8 @@ class CustomHead extends Head {
         link.props.media = 'print';
       });
       links.push(
-        <script dangerouslySetInnerHTML={{ __html:`
+        <script dangerouslySetInnerHTML={{
+          __html: `
               document.querySelectorAll('link[media="print"]').forEach(link => {
                 link.onload = function() { this.media = 'all'; }
               });
@@ -68,28 +70,33 @@ CustomDocument.getInitialProps = async (ctx) => {
   let criticalCss = null;
 
   if (isCriticalCssEnabled) {
-    const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
-    const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
+    try {
+      const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
+      const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
 
-    if (cssFiles.length > 0) {
-      // Get the first CSS file
-      const cssFilePath = path.join(cssDirPath, cssFiles[0]);
-      const css = fs.readFileSync(cssFilePath, 'utf8');
+      if (cssFiles.length > 0) {
+        // Get the first CSS file
+        const cssFilePath = path.join(cssDirPath, cssFiles[0]);
+        const css = fs.readFileSync(cssFilePath, 'utf8');
 
-      const html = `
+        const html = `
         <html>
           <body>
             ${initialProps.html}
           </body>
         </html>
       `;
-      const label = `generating critical CSS for ${ctx.pathname}`;
-      console.time(label); // eslint-disable-line
-      criticalCss = dropcss({
-        css,
-        html
-      }).css;
-      console.timeEnd(label); // eslint-disable-line
+        const label = `generating critical CSS for ${ctx.pathname}`;
+        console.time(label); // eslint-disable-line
+        criticalCss = dropcss({
+          css,
+          html
+        }).css;
+        console.timeEnd(label); // eslint-disable-line
+      }
+    } catch (e) {
+      console.error('Error generating critical CSS:', e); // eslint-disable-line
+      Sentry.captureException(e);
     }
   }
 
