@@ -43,7 +43,7 @@ class StaticHeader extends React.Component {
       <div
         className={`c-static-header ${customClasses}`}
         style={{
-          backgroundImage: `url(${background})`,
+          backgroundImage: `image-set(url(${background.replace('.jpg', '.webp')}) type('image/webp'), url(${background}) type('image/jpeg'))`,
         }}
       >
         {tabs ? (

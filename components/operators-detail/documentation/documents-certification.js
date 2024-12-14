@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 
 // Redux
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
-import { getOperator, getOperatorDocumentation, getOperatorDocumentationCurrent, getOperatorTimeline } from 'modules/operators-detail';
+import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -79,7 +79,7 @@ function DocumentsCertification(props) {
                         props.getOperator(id);
                         props.getOperatorDocumentation(id);
                         props.getOperatorTimeline(id);
-                        props.getOperatorDocumentationCurrent(id);
+                        props.getOperatorPublicationAuthorization(id);
                       }}
                     />
               )}
@@ -101,7 +101,7 @@ DocumentsCertification.propTypes = {
   getOperator: PropTypes.func,
   getOperatorDocumentation: PropTypes.func,
   getOperatorTimeline: PropTypes.func,
-  getOperatorDocumentationCurrent: PropTypes.func,
+  getOperatorPublicationAuthorization: PropTypes.func,
 };
 
 export default injectIntl(
@@ -110,6 +110,6 @@ export default injectIntl(
       user: state.user,
       doc: getContractSignatureDocumentation(state),
     }),
-    { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorDocumentationCurrent }
+    { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
   )(DocumentsCertification)
 );

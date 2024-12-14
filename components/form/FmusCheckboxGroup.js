@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
 import { injectIntl } from 'react-intl';
 
 // Utils

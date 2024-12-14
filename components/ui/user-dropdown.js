@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
+
+import dynamic from 'next/dynamic';
 
 import { injectIntl } from 'react-intl';
 
@@ -10,13 +13,17 @@ import modal from 'services/modal';
 
 import { Dropdown, DropdownTrigger, DropdownContent } from 'components/ui/dropdown';
 import UserMenuList from 'components/ui/user-menu-list';
-import Login from 'components/ui/login';
 import Icon from 'components/ui/icon';
+import DynamicLoading from 'components/ui/dynamic-loading';
 
-const UserDropdown = ({ intl, user, displayIcon, theme }) => {
+const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
+
+const UserDropdown = ({ intl, user, displayIcon, className, theme }) => {
   if (!user.token) {
     return (
-      <a
+      <div
+        className={className}
+        role="button"
         onClick={() => {
           modal.toggleModal(true, {
             children: Login
@@ -25,13 +32,13 @@ const UserDropdown = ({ intl, user, displayIcon, theme }) => {
       >
         {displayIcon && <Icon name="icon-user" />}
         <span>{intl.formatMessage({ id: 'signin' })}</span>
-      </a>
+      </div>
     )
   }
 
   return (
     <Dropdown
-      className={`c-account-dropdown ${theme}`}
+      className={cx('c-account-dropdown', theme, className)}
     >
       <DropdownTrigger>
         <div className="header-nav-list-item">

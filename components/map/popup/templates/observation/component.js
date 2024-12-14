@@ -38,11 +38,15 @@ export default function ObservationPopup({ data }) {
       label: intl.formatMessage({ id: 'operator' }),
       value: (
         data['operator-profile-id'] ? (
-          <Link href={`/operators/${data['operator-profile-id']}`} passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              {data.operator}
-            </a>
-          </Link>
+          (<Link
+            href={`/operators/${data['operator-profile-id']}`}
+            passHref
+            target="_blank"
+            rel="noopener noreferrer">
+
+            {data.operator}
+
+          </Link>)
         ) : data.operator
       )
     },

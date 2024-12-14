@@ -1,10 +1,7 @@
-import Jsona from 'jsona';
-import isEmpty from 'lodash/isEmpty';
-
 import API from 'services/api';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 
 /* Constants */
@@ -48,8 +45,6 @@ const initialState = {
   },
   columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
 };
-
-const JSONA = new Jsona();
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -157,7 +152,7 @@ export function getDocumentsDatabase(options = { reload: false }) {
       'page[size]': pageSize,
       include: includes.join(','),
       'fields[fmus]': 'name,forest-type',
-      'fields[operator]': 'name',
+      'fields[operators]': 'name',
       ...Object.keys(filters).reduce((acc, key) => {
         if (isEmpty(filters[key])) return acc;
         return {
@@ -166,18 +161,16 @@ export function getDocumentsDatabase(options = { reload: false }) {
         }
       }, {})
     })
-      .then((documents) => {
-        const dataParsed = JSONA.deserialize(documents);
-
+      .then(({ data, response }) => {
         dispatch({
           type: GET_DOCUMENTS_DB_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
 
         dispatch({
           type: SET_PAGE_COUNT,
-          payload: documents.meta['page-count'],
+          payload: response.meta['page-count'],
           metadata
         })
       })
@@ -201,11 +194,11 @@ export function getFilters() {
 
     return API.get('operator_document_filters_tree', {
       locale: language
-    })
-      .then((filters) => {
+    }, { deserialize: false })
+      .then(({ data }) => {
         dispatch({
           type: GET_FILTERS_DOCUMENTS_DB_SUCCESS,
-          payload: parseObjectSelectOptions(filters),
+          payload: parseObjectSelectOptions(data),
         });
       })
       .catch((err) => {

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 import { injectIntl } from 'react-intl';
+import { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 
 import {
@@ -40,31 +41,35 @@ import OperatorsTable from 'components/operators/table';
 
 
 class OperatorsPage extends React.Component {
-  static async getInitialProps({ url, store }) {
-    const { operatorsRanking } = store.getState();
+  static async getInitialProps({ store }) {
+    const { operatorsRanking, user } = store.getState();
+    const { userAgent } = user;
+    const isMobile = userAgent.isMobile;
     const requests = [];
 
-    if (!operatorsRanking.data.length) {
+    if (!operatorsRanking.data.length && !isMobile) {
       requests.push(store.dispatch(getOperatorsRanking()));
     }
+    requests.push(store.dispatch(setOperatorsSidebar({ open: !userAgent.isMobile })));
 
     await Promise.all(requests);
 
-    return { url };
+    return {};
   }
 
   /* Component Lifecycle */
   componentDidMount() {
-    const { url, operatorsRanking, deviceInfo } = this.props;
+    const { router, operatorsRanking, isMobile } = this.props;
 
     // Set location
-    this.props.setOperatorsMapLocation(getOperatorsUrl(url));
+    this.props.setOperatorsMapLocation(getOperatorsUrl(router));
     if (!operatorsRanking.layersSettings['integrated-alerts']) {
       this.props.getIntegratedAlertsMetadata();
     }
 
-    if (!deviceInfo.isDesktop) {
-      this.props.setOperatorsSidebar({ open: false });
+    // lazy load on mobile
+    if (isMobile) {
+      this.props.getOperatorsRanking();
     }
   }
 
@@ -104,7 +109,6 @@ class OperatorsPage extends React.Component {
 
   render() {
     const {
-      url,
       language,
       operatorsRanking,
       activeLayers,
@@ -123,7 +127,6 @@ class OperatorsPage extends React.Component {
       <Layout
         title="Operators"
         description="Operators description..."
-        url={url}
         className="-fullscreen"
         footer={false}
       >
@@ -213,13 +216,15 @@ class OperatorsPage extends React.Component {
 }
 
 OperatorsPage.propTypes = {
+  router: PropTypes.object.isRequired,
   intl: PropTypes.object.isRequired,
   deviceInfo: PropTypes.object,
 };
 
-export default withDeviceInfo(injectIntl(connect(
+export default withRouter(withDeviceInfo(injectIntl(connect(
   (state, props) => ({
     language: state.language,
+    isMobile: state.user.userAgent.isMobile,
     operatorsRanking: state.operatorsRanking,
     map: state.operatorsRanking.map,
     sidebar: state.operatorsRanking.sidebar,
@@ -256,4 +261,4 @@ export default withDeviceInfo(injectIntl(connect(
       dispatch(setOperatorsSidebar(obj));
     }
   })
-)(OperatorsPage)));
+)(OperatorsPage))));

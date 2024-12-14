@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 
 // Next
 import Link from 'next/link';
@@ -19,7 +19,7 @@ import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
-const OperatorsEdit = ({ url, userOperator, operatorId, getOperators, getUserOperator }) => {
+const OperatorsEdit = ({ userOperator, operatorId, getOperators, getUserOperator }) => {
   const intl = useIntl();
 
   if (!operatorId) {
@@ -35,16 +35,13 @@ const OperatorsEdit = ({ url, userOperator, operatorId, getOperators, getUserOpe
     <Layout
       title={intl.formatMessage({ id: 'edit.operators' })}
       description={intl.formatMessage({ id: 'edit.operators.description' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'edit.operators' })}
         background="/static/images/static-header/bg-help.jpg"
         Component={
-          <Link href={`/operators/${userOperator.data.slug}/documentation`}>
-            <a className="c-button -secondary -small">
-              {intl.formatMessage({ id: 'documentation' })}
-            </a>
+          <Link href={`/operators/${userOperator.data.slug}/documentation`} className="c-button -secondary -small">
+            {intl.formatMessage({ id: 'documentation' })}
           </Link>
         }
       />
@@ -64,25 +61,24 @@ const OperatorsEdit = ({ url, userOperator, operatorId, getOperators, getUserOpe
   );
 }
 
-OperatorsEdit.getInitialProps = async ({ store, url }) => {
+OperatorsEdit.getInitialProps = async ({ store, query }) => {
   const { user } = store.getState();
 
   if (!user.operator_ids) {
     return { errorCode: 404 };
   }
 
-  if (url.query.id && !user.operator_ids.includes(Number(url.query.id))) {
+  if (query.id && !user.operator_ids.includes(Number(query.id))) {
     return { errorCode: 404 };
   }
-  const operatorId = Number(url.query.id) || user.operator_ids[0];
+  const operatorId = Number(query.id) || user.operator_ids[0];
   if (operatorId) {
     await store.dispatch(getUserOperator(operatorId));
   }
-  return { url, operatorId };
+  return { operatorId };
 }
 
 OperatorsEdit.propTypes = {
-  url: PropTypes.object,
   operatorId: PropTypes.number.isRequired,
   user: PropTypes.object,
   userOperator: PropTypes.object,

@@ -8,11 +8,11 @@ import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
+import Toastr from 'components/ui/toastr';
 import Notifications from 'components/ui/notifications';
-import Toastr from 'react-redux-toastr';
 import RouterSpinner from 'components/layout/router-spinner';
 
-const Layout = ({ title, description, url, children, className, footer }) => {
+const Layout = ({ title, description, children, className, footer }) => {
   const classNames = classnames({
     [className]: !!className
   });
@@ -26,9 +26,7 @@ const Layout = ({ title, description, url, children, className, footer }) => {
 
       <Icons />
 
-      <Header
-        url={url}
-      />
+      <Header />
 
       <div className={`l-main ${classNames}`}>
         {children}
@@ -37,12 +35,7 @@ const Layout = ({ title, description, url, children, className, footer }) => {
       {footer !== false && <Footer />}
 
       <Modal />
-
-      <Toastr
-        preventDuplicates
-        transitionIn="fadeIn"
-        transitionOut="fadeOut"
-      />
+      <Toastr />
 
       <Notifications />
       <RouterSpinner />
@@ -54,7 +47,6 @@ Layout.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  url: PropTypes.object.isRequired,
   className: PropTypes.string,
   footer: PropTypes.bool
 };

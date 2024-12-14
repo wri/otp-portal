@@ -254,17 +254,17 @@ class NewOperator extends React.Component {
 
                   <ul className="c-field-buttons">
                     <li>
-                      <Link href="/operators">
-                        <a className="card-link c-button -primary -fullwidth">
-                          {intl.formatMessage({ id: 'operators' })}
-                        </a>
+                      <Link href="/operators" className="card-link c-button -primary -fullwidth">
+
+                        {intl.formatMessage({ id: 'operators' })}
+
                       </Link>
                     </li>
                     <li>
-                      <Link href="/observations">
-                        <a className="card-link c-button -primary -fullwidth">
-                          {intl.formatMessage({ id: 'observations' })}
-                        </a>
+                      <Link href="/observations" className="card-link c-button -primary -fullwidth">
+
+                        {intl.formatMessage({ id: 'observations' })}
+
                       </Link>
                     </li>
                   </ul>

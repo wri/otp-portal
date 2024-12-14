@@ -12,9 +12,11 @@ function linkifyProcess(content) {
 function preprocess(text, linkify, placeholders) {
   let processedText = text;
   if (linkify) processedText = linkifyProcess(processedText);
+  // TODO: react does not allow wrong html structure (p inside p, table inside p etc.)
+  // remove <p> tags from placeholders
   if (placeholders) {
     Object.keys(placeholders).forEach((key) => {
-      processedText = processedText.replace(`{${key}}`, placeholders[key]);
+      processedText = processedText.replace(`<p>{${key}}</p>`, `{${key}}`);
     });
   }
 
@@ -27,6 +29,13 @@ const HTML = ({ html, linkify, placeholders, className }) => (
       preprocess(html, linkify, placeholders) || '',
       {
         replace: (node) => {
+          // TODO: works only for placeholders as separate text nodes
+          if (node.type === 'text' && placeholders) {
+            const key = Object.keys(placeholders).find((key) => node.data.trim() === `{${key}}`);
+
+            if (key) return placeholders[key];
+          }
+
           if (node.name === 'a') {
             return (
               <a

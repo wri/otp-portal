@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
 
 import { injectIntl } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
 // Components
-import TotalObservationsByOperatorByCategory from 'components/operators-detail/observations/by-category';
+const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'), { ssr: false });
 
 function Overview({ loading, parsedObservations, intl, onShowMap, onShowObservations }) {
   const noData = !loading && parsedObservations && parsedObservations.length === 0;

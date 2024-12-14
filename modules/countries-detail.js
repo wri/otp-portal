@@ -1,5 +1,3 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 /* Constants */
@@ -36,8 +34,6 @@ const initialState = {
     error: false
   }
 };
-
-const JSONA = new Jsona();
 
 /* Reducer */
 export default function reducer(state = initialState, action) {
@@ -103,18 +99,15 @@ export function getCountry(id) {
     ];
 
     const queryParams = {
-      ...!!includeFields.length && { include: includeFields.join(',') },
+      ...(!!includeFields.length && { include: includeFields.join(',') }),
       locale: language
     };
 
     return API.get(`countries/${id}`, queryParams, { token: user.token })
-      .then((country) => {
-        // Fetch from server ok -> Dispatch country and deserialize the data
-        const dataParsed = JSONA.deserialize(country);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_COUNTRY_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
@@ -140,13 +133,10 @@ export function getCountryLinks(id) {
     };
 
     return API.get('country-links', queryParams, { token: user.token })
-      .then((links) => {
-        // Fetch from server ok -> Dispatch country and deserialize the data
-        const dataParsed = JSONA.deserialize(links);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_COUNTRY_LINKS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
@@ -172,13 +162,10 @@ export function getCountryVPAs(id) {
     };
 
     return API.get('country-vpas', queryParams, { token: user.token })
-      .then((links) => {
-        // Fetch from server ok -> Dispatch country and deserialize the data
-        const dataParsed = JSONA.deserialize(links);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_COUNTRY_VPAS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {

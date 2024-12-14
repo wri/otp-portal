@@ -74,14 +74,14 @@ class DocModal extends React.Component {
           ...(docType === 'file' && form.file.base64 && {
             attachment: form.file.base64,
           }),
-          ...docType === 'stats' && {
+          ...(docType === 'stats' && {
             value: form.value,
             units: form.units,
             link: form.link
-          },
-          ...docType === 'link' && {
+          }),
+          ...(docType === 'link' && {
             link: form.link
-          }
+          })
         }
       }
     };

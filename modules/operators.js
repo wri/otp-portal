@@ -1,13 +1,9 @@
-import Jsona from 'jsona';
-
 import API from 'services/api'
 
 /* Constants */
 const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
 const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
 const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
-
-const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
@@ -49,11 +45,10 @@ export function getOperators() {
       'fields[operators]': 'name,slug,country',
       'fields[countries]': 'name',
     })
-      .then((operators) => {
-        const dataParsed = JSONA.deserialize(operators);
+      .then(({ data }) => {
         dispatch({
           type: GET_OPERATORS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
         });
       })
       .catch((err) => {

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import Jsona from 'jsona';
-import groupBy from 'lodash/groupBy';
 
 // Intl
 import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import API from 'services/api';
+
+import { groupBy } from 'utils/general';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -18,11 +18,9 @@ import Select from 'components/form/SelectInput';
 
 import SubmitButton from '../form/SubmitButton';
 
-const JSONA = new Jsona();
-
 function fetchCountries(lang) {
   return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
-    .then((data) => JSONA.deserialize(data))
+    .then(({ data }) => data)
     .catch((error) => console.error(error));
 }
 

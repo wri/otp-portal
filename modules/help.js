@@ -1,5 +1,3 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 /* Constants */
@@ -18,8 +16,6 @@ const GET_FAQS_LOADING = 'GET_FAQS_LOADING';
 const GET_TUTORIALS_SUCCESS = 'GET_TUTORIALS_SUCCESS';
 const GET_TUTORIALS_ERROR = 'GET_TUTORIALS_ERROR';
 const GET_TUTORIALS_LOADING = 'GET_TUTORIALS_LOADING';
-
-const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
@@ -132,12 +128,10 @@ export function getHowtos() {
     dispatch({ type: GET_HOWTOS_LOADING });
 
     return API.get('how-tos', { locale: language })
-      .then((tutorials) => {
-        const dataParsed = JSONA.deserialize(tutorials);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_HOWTOS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
@@ -158,12 +152,10 @@ export function getTools() {
     dispatch({ type: GET_TOOLS_LOADING });
 
     return API.get('tools', { locale: language })
-      .then((tutorials) => {
-        const dataParsed = JSONA.deserialize(tutorials);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_TOOLS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
@@ -185,12 +177,10 @@ export function getFAQs() {
     dispatch({ type: GET_FAQS_LOADING });
 
     return API.get('faqs', { locale: language })
-      .then((faqs) => {
-        const dataParsed = JSONA.deserialize(faqs);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_FAQS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
@@ -212,12 +202,10 @@ export function getTutorials() {
     dispatch({ type: GET_TUTORIALS_LOADING });
 
     return API.get('tutorials', { locale: language })
-      .then((tutorials) => {
-        const dataParsed = JSONA.deserialize(tutorials);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_TUTORIALS_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {

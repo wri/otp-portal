@@ -25,9 +25,9 @@ class LegendTemplateAlerts extends PureComponent {
         decodeParams: {
           ...decodeParams,
           [who]: dayjs(value).format('YYYY-MM-DD'),
-          ...who === 'trimEndDate' && {
+          ...(who === 'trimEndDate' && {
             endDate: dayjs(value).format('YYYY-MM-DD')
-          }
+          })
         }
       }
     })

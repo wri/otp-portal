@@ -25,12 +25,14 @@ import FileImage from 'components/form/FileImage';
 import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
 import SawmillsTable from 'components/ui/sawmills-table';
-import SawmillModal from 'components/ui/sawmill-modal';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 import { HELPERS_FMU } from 'utils/fmu';
 import SubmitButton from '../form/SubmitButton';
+import dynamic from 'next/dynamic';
+
+const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
 const EditOperator = (props) => {
   // rewrite class component to functional component

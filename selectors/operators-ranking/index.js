@@ -1,9 +1,7 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 
-import compact from 'lodash/compact';
-import isEmpty from 'lodash/isEmpty';
-import flatten from 'lodash/flatten';
+import { isEmpty } from 'utils/general';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 
@@ -15,6 +13,7 @@ import Fuse from 'fuse.js';
 import { getParams } from '../utils';
 import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
+import { LAYERS } from 'constants/layers';
 
 import OperatorsCertificationsTd from 'components/operators/certificationsTd';
 
@@ -24,7 +23,7 @@ const data = state => state.operatorsRanking.data;
 const filters = state => state.operatorsRanking.filters;
 
 const layersActive = state => state.operatorsRanking.layersActive;
-const layers = state => state.operatorsRanking.layers;
+const layers = () => LAYERS;
 const layersSettings = state => state.operatorsRanking.layersSettings;
 
 const interactions = state => state.operatorsRanking.interactions;
@@ -39,7 +38,7 @@ const countryActive = state => state.operatorsRanking.filters.data.country;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
   (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
-    const cIsoCodes = compact(_countryOptions.map((c) => {
+    const cIsoCodes = _countryOptions.map((c) => {
       if (!_countryActive || !_countryActive.length) {
         return c.iso;
       }
@@ -48,7 +47,7 @@ export const getActiveLayers = createSelector(
         return c.iso;
       }
       return null;
-    }));
+    }).filter(x => !!x);
 
     // Country layers
     const cLayers = _countryOptions.map((c) => {
@@ -95,24 +94,24 @@ export const getActiveLayers = createSelector(
           ...l.config,
           ...settings,
 
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params: getParams(paramsConfig, { ...settings.params, ...hoverInteractionParams, country_iso_codes: cIsoCodes })
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams }),
             decodeFunction
-          }
+          })
         };
       }
 
       return null;
     });
 
-    return compact([
+    return [
       ...cLayers,
       ...aLayers
-    ]);
+    ].filter(x => !!x);
   }
 );
 
@@ -139,7 +138,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       });
     };
 
-    return flatten(compact(_layersActive.map((kActive) => {
+    return _layersActive.map((kActive) => {
       const layer = _layers.find(l => l.id === kActive);
 
       if (!layer) {
@@ -161,7 +160,7 @@ export const getActiveInteractiveLayersIds = createSelector(
       }
 
       return getIds(layer);
-    })));
+    }).filter(l => !!l).flat();
   }
 );
 
@@ -170,7 +169,7 @@ export const getActiveInteractiveLayers = createSelector(
   (_layers, _interactions) => {
     if (!_layers || isEmpty(_interactions)) return {};
 
-    const allLayers = uniqBy(flatten(_layers.map((l) => {
+    const allLayers = uniqBy(_layers.map((l) => {
       const { config, name } = l;
       const { type } = config;
 
@@ -179,7 +178,7 @@ export const getActiveInteractiveLayers = createSelector(
       }
 
       return l;
-    })), 'id');
+    }).flat(), 'id');
 
     const interactiveLayerKeys = Object.keys(_interactions);
     const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
@@ -220,41 +219,41 @@ export const getLegendLayers = createSelector(
           active: true,
           legendConfig: {
             ...legendConfig,
-            ...legendConfig.items && {
+            ...(legendConfig.items && {
               items: sortBy(legendConfig.items.map(i => ({
                 ...i,
-                ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                ...i.items && {
+                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                ...(i.items && {
                   items: i.items.map(ii => ({
                     ...ii,
-                    ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                   }))
-                }
+                })
 
               })), 'name')
-            }
+            })
           },
           ...lSettings,
-          ...(!!paramsConfig) && {
+          ...(!!paramsConfig && {
             params
-          },
+          }),
 
-          ...(!!sqlConfig) && {
+          ...(!!sqlConfig && {
             sqlParams
-          },
+          }),
 
-          ...(!!decodeConfig) && {
+          ...(!!decodeConfig && {
             decodeParams
-          },
+          }),
 
-          ...!!timelineConfig && {
+          ...(!!timelineConfig && {
             timelineParams: {
               ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
               ...getParams(paramsConfig, lSettings.params),
               ...getParams(decodeConfig, lSettings.decodeParams),
               ...lSettings.timelineParams
             }
-          }
+          })
         }],
         visibility: true,
         ...lSettings

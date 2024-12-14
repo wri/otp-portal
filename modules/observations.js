@@ -1,10 +1,7 @@
-import Jsona from 'jsona';
-import isEmpty from 'lodash/isEmpty';
-
 import API from 'services/api';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 
 /* Constants */
@@ -35,26 +32,13 @@ const initialState = {
   },
   cluster: {},
   filters: {
-    data: {
-      observation_type: [],
-      country_id: [],
-      fmu_id: [],
-      years: [],
-      observer_id: [],
-      category_id: [],
-      subcategory_id: [],
-      severity_level: [],
-      validation_status: [],
-      hidden: []
-    },
+    data: {},
     options: {},
     loading: false,
     error: false
   },
   columns: ['status', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
 };
-
-const JSONA = new Jsona();
 
 function isLatestAction(state, action) {
   return action.metadata.timestamp >= state.timestamp;
@@ -135,7 +119,14 @@ export function getObservations() {
       'page[size]': OBS_MAX_SIZE,
       include: includes.join(','),
       'fields[fmus]': 'name',
-      'fields[operator]': 'name',
+      'fields[operators]': 'name,operator-type',
+      'fields[severities]': 'details,level',
+      'fields[subcategories]': 'name,category',
+      'fields[categories]': 'name',
+      'fields[countries]': 'iso,name',
+      'fields[observers]': 'name,observer-type',
+      'fields[observation-reports]': 'attachment,title,publication-date',
+      'fields[observation-documents]': 'attachment,name',
       ...Object.keys(filters).reduce((acc, key) => {
         if (isEmpty(filters[key])) return acc;
         return {
@@ -144,12 +135,10 @@ export function getObservations() {
         }
       }, {})
     })
-      .then((observations) => {
-        const dataParsed = JSONA.deserialize(observations);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_OBSERVATIONS_SUCCESS,
-          payload: dataParsed,
+          payload: data,
           metadata
         });
       })
@@ -171,8 +160,8 @@ export function getFilters() {
     // Waiting for fetch from server -> Dispatch loading
     dispatch({ type: GET_FILTERS_OBSERVATIONS_LOADING });
 
-    return API.get('observation_filters_tree', { locale: language })
-      .then((filters) => {
+    return API.get('observation_filters_tree', { locale: language }, { deserialize: false })
+      .then(({ data: filters }) => {
         // Fetch from server ok -> Dispatch observations
         dispatch({
           type: GET_FILTERS_OBSERVATIONS_SUCCESS,

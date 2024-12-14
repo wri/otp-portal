@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
-import pick from 'lodash/pick';
+import isEqual from 'react-fast-compare';
 
 import Validator from './Validator';
 
@@ -30,10 +29,8 @@ class FormElement extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const prevPropsParsed = pick(prevProps, ['properties', 'validations']);
-    const currentPropsParsed = pick(this.props, ['properties', 'validations']);
-
-    if (!isEqual(prevPropsParsed, currentPropsParsed)) {
+    if (!isEqual(prevProps.properties, this.props.properties) ||
+        !isEqual(prevProps.validations, this.props.validations)) {
       this.triggerValidate();
     }
 

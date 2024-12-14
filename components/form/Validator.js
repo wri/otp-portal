@@ -1,4 +1,4 @@
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "utils/general";
 
 class Validator {
   constructor(intl) {

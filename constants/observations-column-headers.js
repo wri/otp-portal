@@ -60,7 +60,7 @@ export function getColumnHeaders(intl) {
               }
               overlayClassName="c-tooltip no-pointer-events"
             >
-              <button className="c-button -icon -primary">
+              <button className="c-button -icon -primary" aria-label="Show information about the status">
                 <Icon name="icon-info" className="-smaller" />
               </button>
             </Tooltip>

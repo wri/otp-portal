@@ -2,7 +2,6 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Link from 'next/link';
-import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 
 import Notifications from 'components/ui/notifications';
@@ -34,7 +33,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
           href="/profile"
           prefetch={false}
         >
-          <a>{intl.formatMessage({ id: 'My profile' })}</a>
+          {intl.formatMessage({ id: 'My profile' })}
         </Link>
       </li>
       {user.role === 'operator' && (
@@ -43,7 +42,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
             href="/operator/edit"
             prefetch={false}
           >
-            <a>{intl.formatMessage({ id: 'Producer profile' })}</a>
+            {intl.formatMessage({ id: 'Producer profile' })}
           </Link>
         </li>
       )}
@@ -53,9 +52,9 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
             href={`/operator/edit/${operator.id}`}
             prefetch={false}
           >
-            <a>
-              {intl.formatMessage({ id: 'company.profile', defaultMessage: `${operator.name} profile` }, { company: operator.name })}
-            </a>
+
+            {intl.formatMessage({ id: 'company.profile', defaultMessage: `${operator.name} profile` }, { company: operator.name })}
+
           </Link>
         </li>
       ))}
@@ -65,9 +64,9 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
             href={`/operators/${operator.slug}/documentation`}
             prefetch={false}
           >
-            <a>
-              {operator.name} {intl.formatMessage({ id: 'documentation' })}
-            </a>
+
+            {operator.name} {intl.formatMessage({ id: 'documentation' })}
+
           </Link>
         </li>
       ))}
@@ -86,7 +85,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
         </a>
       </li>
     </ul>
-  )
+  );
 };
 
 export default connect(

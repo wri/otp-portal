@@ -7,6 +7,7 @@
     color: $color-white;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   .footer-item {
@@ -105,6 +106,8 @@
     .footer-item {
       &.wri-contact-details {
         p {
+          margin-bottom: 0;
+
           @include breakpoint(small only) {
             font-size: $font-size-small;
 
@@ -139,6 +142,8 @@
     .footer-links {
       margin-top: $space-1 * 2;
       white-space: nowrap;
+      flex-basis: 100%;
+      text-align: right;
 
       a, .c-link-button {
         color: $white;

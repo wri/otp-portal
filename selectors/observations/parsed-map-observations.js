@@ -1,13 +1,13 @@
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import { LAYERS } from 'constants/layers';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
-import omitBy from 'lodash/omitBy';
 import { createSelector } from 'reselect';
 import { spiderifyCluster } from 'components/map/layer-manager/utils';
 
 import { parseObservation } from 'utils/observations';
+import { omitBy } from 'utils/general';
 
 const intl = (state, props) => props && props.intl;
 
@@ -61,7 +61,7 @@ const getObservationsLayers = createSelector(
               data: spider[key]
             },
             render: {
-              ...key === 'leaves' && {
+              ...(key === 'leaves' && {
                 layers: [
                   {
                     metadata: {
@@ -90,8 +90,8 @@ const getObservationsLayers = createSelector(
                     }
                   }
                 ]
-              },
-              ...key === 'legs' && {
+              }),
+              ...(key === 'legs' && {
                 layers: [
                   {
                     metadata: {
@@ -104,7 +104,7 @@ const getObservationsLayers = createSelector(
                     }
                   }
                 ]
-              }
+              })
             }
           };
         });
@@ -244,19 +244,19 @@ const getObservationsLegend = createSelector(
             name: _intl.formatMessage({ id: 'fmus' }),
             legendConfig: {
               ...legendConfig,
-              ...legendConfig.items && {
+              ...(legendConfig.items && {
                 items: sortBy(legendConfig.items.map(i => ({
                   ...i,
-                  ...i.name && { name: _intl.formatMessage({ id: i.name || '-' }) },
-                  ...i.items && {
+                  ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
+                  ...(i.items && {
                     items: i.items.map(ii => ({
                       ...ii,
-                      ...ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) }
+                      ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                     }))
-                  }
+                  })
 
                 })), 'name')
-              }
+              })
             }
           }
         ]
@@ -280,7 +280,7 @@ const getObservationsLegend = createSelector(
           }
         ]
       }
-    ]
+    ];
   }
 );
 

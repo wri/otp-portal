@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
 import debounce from 'lodash/debounce';
 
 import getBBox from '@turf/bbox';

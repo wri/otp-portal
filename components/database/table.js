@@ -115,6 +115,7 @@ function DatabaseTable({
               target="_blank"
               rel="noopener noreferrer"
               className="report-item"
+              aria-label="Download document"
             >
               <Icon className="" name="icon-file-empty" />
             </a>
@@ -213,6 +214,7 @@ function DatabaseTable({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="evidence-item"
+                aria-label="Download evidence document"
               >
                 <Icon className="" name="icon-file-empty" />
               </a>

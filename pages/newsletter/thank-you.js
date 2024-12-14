@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 // Intl
@@ -9,14 +8,13 @@ import { useIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
-const ThankYouPage = ({ url }) => {
+const ThankYouPage = () => {
   const intl = useIntl();
 
   return (
     <Layout
       title={intl.formatMessage({ id: 'newsletter' })}
       description={intl.formatMessage({ id: 'newsletter' })}
-      url={url}
     >
       <StaticHeader
         title={intl.formatMessage({ id: 'newsletter' })}
@@ -42,10 +40,10 @@ const ThankYouPage = ({ url }) => {
 
           <ul className="c-field-buttons">
             <li>
-              <Link href="/">
-                <a className="card-link c-button -primary -fullwidth">
-                  {intl.formatMessage({ id: 'Back to home page' })}
-                </a>
+              <Link href="/" className="card-link c-button -primary -fullwidth">
+
+                {intl.formatMessage({ id: 'Back to home page' })}
+
               </Link>
             </li>
           </ul>
@@ -55,11 +53,5 @@ const ThankYouPage = ({ url }) => {
     </Layout>
   );
 }
-
-ThankYouPage.getInitialProps = ({ url }) => ({ url });
-
-ThankYouPage.propTypes = {
-  url: PropTypes.shape({}).isRequired,
-};
 
 export default ThankYouPage;

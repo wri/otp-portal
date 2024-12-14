@@ -78,19 +78,19 @@ class LegendComponent extends PureComponent {
     setLayerSettings({
       id,
       settings: {
-        ...decodeConfig && {
+        ...(decodeConfig && {
           decodeParams: {
             startDate: dates[0],
             endDate: dates[1],
             trimEndDate: dates[2]
           }
-        },
-        ...!decodeConfig && {
+        }),
+        ...(!decodeConfig && {
           params: {
             startDate: dates[0],
             endDate: dates[1]
           }
-        }
+        })
       }
     });
   }

@@ -1,5 +1,4 @@
-import groupBy from 'lodash/groupBy';
-import flatten from 'lodash/flatten';
+import { groupBy } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
@@ -40,7 +39,6 @@ export const PALETTE = {
     stroke: PALETTE_COLOR_2[5].fill
   }
 };
-
 
 const HELPERS_DOC = {
   getMetadata() {
@@ -109,7 +107,7 @@ const HELPERS_DOC = {
       const length = data.length;
       const groupedByStatus = this.getGroupedByStatus(data);
 
-      return flatten(Object.keys(groupedByStatus).map(status => [
+      return Object.keys(groupedByStatus).map(status => [
         {
           id: status,
           label: PALETTE[status].label,
@@ -117,7 +115,7 @@ const HELPERS_DOC = {
           fill: PALETTE[status].fill,
           stroke: PALETTE[status].stroke
         }
-      ]));
+      ]).flat();
     }
 
     return [];

@@ -34,6 +34,7 @@ function Gallery2(props) {
                 description={tutorial.description}
                 link={{
                   label: props.intl.formatMessage({ id: 'Read more' }),
+                  "aria-label": tutorial.name,
                   href: `/help/legislation-and-regulations?article=tutorial-article-${tutorial.id}`
                 }}
               />

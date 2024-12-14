@@ -1,12 +1,8 @@
-import Jsona from 'jsona';
-
 import API from 'services/api';
 
 const GET_ABOUT_SUCCESS = 'GET_ABOUT_SUCCESS';
 const GET_ABOUT_ERROR = 'GET_ABOUT_ERROR';
 const GET_ABOUT_LOADING = 'GET_ABOUT_LOADING';
-
-const JSONA = new Jsona();
 
 /* Initial state */
 const initialState = {
@@ -39,12 +35,10 @@ export function getAbout() {
     dispatch({ type: GET_ABOUT_LOADING });
 
     return API.get('about-page-entries', { locale: language })
-      .then((about) => {
-        const dataParsed = JSONA.deserialize(about);
-
+      .then(({ data }) => {
         dispatch({
           type: GET_ABOUT_SUCCESS,
-          payload: dataParsed
+          payload: data
         });
       })
       .catch((err) => {
