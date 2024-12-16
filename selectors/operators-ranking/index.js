@@ -33,55 +33,23 @@ const latlng = state => state.operatorsRanking.latlng;
 const countryOptions = state => state.operatorsRanking.filters.options.country;
 const countryActive = state => state.operatorsRanking.filters.data.country;
 
+export const getActiveCountries = createSelector(countryOptions, countryActive, (_countryOptions, _countryActive) => {
+  return _countryOptions.map((c) => {
+    if (!_countryActive || !_countryActive.length) {
+      return c.iso;
+    }
+
+    if (_countryActive.includes(c.value)) {
+      return c.iso;
+    }
+    return null;
+  }).filter(x => !!x);
+});
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 export const getActiveLayers = createSelector(
-  layersActive, layers, layersSettings, interactions, hoverInteractions, countryOptions, countryActive,
-  (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, _countryOptions, _countryActive) => {
-    const cIsoCodes = _countryOptions.map((c) => {
-      if (!_countryActive || !_countryActive.length) {
-        return c.iso;
-      }
-
-      if (_countryActive.includes(c.value)) {
-        return c.iso;
-      }
-      return null;
-    }).filter(x => !!x);
-
-    // Country layers
-    const cLayers = _countryOptions.map((c) => {
-      let opacity = 1;
-
-      if (_countryActive && _countryActive.length) {
-        opacity = Number(_countryActive.includes(c.value));
-      }
-
-
-      return {
-        id: c.iso,
-        type: 'geojson',
-        opacity,
-        source: {
-          type: 'geojson',
-          provider: {
-            type: 'countries',
-            url: `https://api.resourcewatch.org/v2/geostore/admin/${c.iso}?simplify=0.0000001`
-          }
-        },
-        render: {
-          layers: [{
-            type: 'line',
-            paint: {
-              'line-color': '#333333',
-              'line-width': 2,
-              'line-opacity': 0.8
-            }
-          }]
-        }
-      };
-    });
-
+  layersActive, layers, layersSettings, interactions, hoverInteractions, getActiveCountries,
+  (_layersActive, _layers, _layersSettings, _interactions, _hoverInteractions, cIsoCodes) => {
     // Layers
     const aLayers = _layers.map((l) => {
       const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
@@ -108,10 +76,7 @@ export const getActiveLayers = createSelector(
       return null;
     });
 
-    return [
-      ...cLayers,
-      ...aLayers
-    ].filter(x => !!x);
+    return aLayers.filter(x => !!x);
   }
 );
 

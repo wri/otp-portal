@@ -35,6 +35,43 @@ const FMU_LEGEND = [
   }
 ];
 
+const ISO3_TO_ISO2 = {
+  CMR: 'CM',
+  CAF: 'CF',
+  COG: 'CG',
+  GAB: 'GA',
+  COD: 'CD'
+};
+
+export function getOtpCountriesLayerFilter(countriesIso3) {
+  const countriesIso2 = countriesIso3.map(iso3 => ISO3_TO_ISO2[iso3]);
+
+  return [
+    'all',
+    ['==', ['get', 'admin_level'], 2], // weird that not 0, but ok
+    // ['==', ['get', 'maritime'], 0],
+    ['==', ['get', 'disputed'], 0],
+    ['any',
+      ...countriesIso2.map(iso2 => [">=", ["index-of", iso2, ["get", "iso_3166_1"]], 0])
+    ]
+  ]
+}
+
+export const BASEMAP_LAYERS = [
+  {
+    id: 'otp_countries',
+    type: 'line',
+    source: 'composite',
+    'source-layer': 'admin',
+    paint: {
+      'line-color': '#333333',
+      'line-width': 2,
+      'line-opacity': 0.8
+    },
+    filter: getOtpCountriesLayerFilter(process.env.OTP_COUNTRIES)
+  }
+];
+
 export const LAYERS = [
   {
     id: 'integrated-alerts',
