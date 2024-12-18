@@ -8,8 +8,6 @@ import Spinner from 'components/ui/spinner';
 
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
-import { transformRequest } from 'utils/map';
-
 class MapSubComponent extends React.Component {
   static propTypes = {
     id: PropTypes.string,
@@ -38,7 +36,6 @@ class MapSubComponent extends React.Component {
 
             {/* Map */}
             <Map
-              mapStyle="mapbox://styles/mapbox/light-v9"
               language={this.props.language}
 
               // options
@@ -51,9 +48,6 @@ class MapSubComponent extends React.Component {
                 latitude: location.lat
               }}
               onViewportChange={this.setMapocation}
-
-              // Options
-              transformRequest={transformRequest}
             >
               {map => (
                 <Fragment>

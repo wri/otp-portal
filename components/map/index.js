@@ -6,14 +6,27 @@ import * as Sentry from "@sentry/nextjs";
 import isEqual from 'react-fast-compare';
 import { isEmpty } from 'utils/general';
 
-import ReactMapGL, { FlyToInterpolator } from 'react-map-gl';
-import { fitBounds } from 'viewport-mercator-project';
+import ReactMapGL from 'react-map-gl';
 
 const DEFAULT_VIEWPORT = {
   zoom: 2,
   latitude: 0,
   longitude: 0
 };
+
+function transformRequest(uri) {
+  if (uri.startsWith(process.env.OTP_API)) {
+    return {
+      url: uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY
+      }
+    };
+  }
+
+  return null;
+}
 
 class Map extends Component {
   HOVER = {};
@@ -73,9 +86,6 @@ class Map extends Component {
     /** A function that exposes mouseleave from features. */
     onMouseLeave: PropTypes.func,
 
-    /** A function that exposes the viewport */
-    getCursor: PropTypes.func,
-
     /** A string that defines the language for mapbox labels */
     language: PropTypes.string
   };
@@ -87,15 +97,7 @@ class Map extends Component {
     bounds: {},
     dragPan: true,
     dragRotate: true,
-
-    onViewportChange: () => {},
-    onLoad: () => {},
-    onReady: () => {},
-    getCursor: ({ isHovering, isDragging }) => {
-      if (isHovering) return 'pointer';
-      if (isDragging) return 'grabbing';
-      return 'grab';
-    }
+    scrollZoom: true,
   };
 
   state = {
@@ -140,21 +142,46 @@ class Map extends Component {
       this.fitBounds();
     }
 
+    if (!isEqual(viewport, prevViewport) && !this.isMoving) {
+      const newViewport = {
+        ...stateViewport,
+        ...viewport
+      };
 
-    if (!isEqual(viewport, prevViewport)) {
-      this.setState({
-        // eslint-disable-line
-        viewport: {
-          ...stateViewport,
-          ...viewport
-        }
-      });
+      if (this.map && viewport.transitionDuration) {
+        this.mapFlyTo({ ...newViewport, duration: viewport.transitionDuration });
+      } else {
+        this.setState({
+          viewport: newViewport
+        });
+      }
     }
   }
 
   componentWillUnmount() {
     const { onUnmount } = this.props;
+    if (this.deckInitializedInterval) clearInterval(this.deckInitializedInterval);
     if (onUnmount) onUnmount();
+  }
+
+  mapFlyTo(viewport) {
+    if (!this.map) return;
+
+    this.map.flyTo({
+      center: [viewport.longitude, viewport.latitude],
+      zoom: viewport.zoom,
+      duration: viewport.duration,
+      maxDuration: viewport.duration,
+      essential: true
+    });
+
+    this.setState({
+      flying: true
+    });
+
+    setTimeout(() => {
+      this.setState({ flying: false });
+    }, viewport.duration || 500);
   }
 
   onReady = () => {
@@ -167,7 +194,7 @@ class Map extends Component {
       }
     });
 
-    onReady({
+    onReady && onReady({
       map: this.map,
       mapContainer: this.mapContainer
     });
@@ -185,61 +212,30 @@ class Map extends Component {
     });
 
     this.setLocalizedLabels();
+    this.fixCursorChange();
 
-    onLoad({
+    if (!isEmpty(this.props.bounds)) {
+      this.fitBounds();
+    }
+
+    onLoad && onLoad({
       map: this.map,
       mapContainer: this.mapContainer
     });
   };
 
-  onViewportChange = (v, i) => {
-    const { onViewportChange } = this.props;
+  onInternalViewportChange = (v) => {
+    if (isEqual(v, this.state.viewport)) return;
 
     this.setState({ viewport: v });
-    onViewportChange(v);
   };
 
-  onResize = (v) => {
-    const { onViewportChange } = this.props;
-    const { viewport } = this.state;
-    const newViewport = {
-      ...viewport,
-      ...v
-    };
-
-    this.setState({ viewport: newViewport });
-    onViewportChange(newViewport);
-  };
-
-  onMoveEnd = () => {
-    const { onViewportChange } = this.props;
-    const { viewport } = this.state;
-
-    if (this.map) {
-      const bearing = this.map.getBearing();
-      const pitch = this.map.getPitch();
-      const zoom = this.map.getZoom();
-      const { lng, lat } = this.map.getCenter();
-
-      const newViewport = {
-        ...viewport,
-        bearing,
-        pitch,
-        zoom,
-        latitude: lat,
-        longitude: lng
-      };
-
-      // Publish new viewport and save it into the state
-      this.setState({ viewport: newViewport });
-      onViewportChange(newViewport);
-    }
-  };
-
-  onHover = e => {
+  onMouseMove = e => {
     const { onHover } = this.props;
     const { features } = e;
-    if (!!onHover && features && features.length) {
+
+    // hover state for the feature under the mouse on the map
+    if (!!features && features.length) {
       const { id, source, sourceLayer } = features[0];
 
       if (this.HOVER.id) {
@@ -270,8 +266,15 @@ class Map extends Component {
     !!onHover && onHover(e);
   };
 
+  onMouseEnter = e => {
+    this.map.getCanvas().style.cursor = "pointer";
+    this.isHovering = true;
+  }
+
   onMouseLeave = e => {
     const { onMouseLeave } = this.props;
+    this.isHovering = false;
+    this.map.getCanvas().style.cursor = "";
     if (this.HOVER.id) {
       this.map.setFeatureState(
         {
@@ -286,41 +289,34 @@ class Map extends Component {
     !!onMouseLeave && onMouseLeave(e);
   };
 
-  fitBounds = (transitionDuration = 2500) => {
-    const { bounds, onViewportChange } = this.props;
-    const { bbox, options } = bounds;
+  onMove = e => {
+    this.isMoving = true;
+    this.onInternalViewportChange(e.viewState);
+  }
+
+  onMoveEnd = e => {
+    this.isMoving = false;
+    this.onInternalViewportChange(e.viewState);
+    const { onViewportChange } = this.props;
+    onViewportChange && onViewportChange(e.viewState);
+  }
+
+  fitBounds = () => {
+    const { bounds } = this.props;
+    const { bbox, options } = bounds || {};
+
+    if (!this.map) return;
 
     try {
-      const { longitude, latitude, zoom } = fitBounds({
-        width: this.mapContainer.offsetWidth,
-        height: this.mapContainer.offsetHeight,
-        bounds: [
+      this.map.fitBounds(
+        [
           [bbox[0], bbox[1]],
-          [bbox[2], bbox[3]]
+          [bbox[2], bbox[3]],
         ],
-        ...options
-      });
-
-      // TODO: not sure why fitBounds maxZoom is not working, so fixing that manually
-      const useMaxZoom = options.maxZoom && zoom > options.maxZoom;
-      const newViewport = {
-        ...this.state.viewport,
-        longitude,
-        latitude,
-        zoom: useMaxZoom ? options.maxZoom : zoom,
-        transitionDuration
-      };
-
-      this.setState({
-        flying: true,
-        viewport: newViewport
-      });
-      onViewportChange(newViewport);
-
-      setTimeout(() => {
-        this.setState({ flying: false });
-      }, transitionDuration);
+        options
+      );
     } catch (err) {
+      console.error(err);
       Sentry.captureException(err);
     }
   };
@@ -361,20 +357,32 @@ class Map extends Component {
     }
   }
 
+  fixCursorChange = () => {
+    this.deckInitializedInterval = setInterval(() => {
+      if (this.map && this.map.__deck) {
+        this.map.__deck.props.getCursor = () => {
+          return this.isHovering ? 'pointer' : '';
+        }
+        clearInterval(this.deckInitializedInterval);
+      }
+    }, 100);
+  }
+
   render() {
     const {
       customClass,
+      bounds,
       children,
-      getCursor,
       dragPan,
       dragRotate,
       scrollZoom,
       touchZoom,
       touchRotate,
       doubleClickZoom,
+      onClick,
       ...mapboxProps
     } = this.props;
-    const { viewport, loaded, flying } = this.state;
+    const { loaded, flying, viewport } = this.state;
 
     return (
       <div
@@ -390,13 +398,15 @@ class Map extends Component {
           ref={(map) => {
             this.map = map && map.getMap();
           }}
-          mapboxApiAccessToken={process.env.MAPBOX_API_KEY}
+          mapLib={import('mapbox-gl')}
+          mapboxAccessToken={process.env.MAPBOX_API_KEY}
+          mapStyle="mapbox://styles/mapbox/light-v9"
           // CUSTOM PROPS FROM REACT MAPBOX API
           {...mapboxProps}
+
           // VIEWPORT
           {...viewport}
-          width="100%"
-          height="100%"
+          style={{ width: '100%', height: '100%' }}
           // INTERACTIVE
           dragPan={!flying && dragPan}
           dragRotate={!flying && dragRotate}
@@ -405,14 +415,14 @@ class Map extends Component {
           touchRotate={!flying && touchRotate}
           doubleClickZoom={!flying && doubleClickZoom}
           // DEFAULT FUNC IMPLEMENTATIONS
-          onViewportChange={this.onViewportChange}
-          onResize={this.onResize}
+          onClick={onClick}
           onLoad={this.onLoad}
-          onHover={this.onHover}
+          onMouseMove={this.onMouseMove}
+          onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
-          // getCursor={getCursor}
-
-          transitionInterpolator={new FlyToInterpolator()}
+          onMove={this.onMove}
+          onMoveEnd={this.onMoveEnd}
+          transformRequest={transformRequest}
         >
           {loaded &&
             !!this.map &&

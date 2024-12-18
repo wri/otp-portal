@@ -8,7 +8,6 @@ import StaticSection from 'components/ui/static-section';
 import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
 import { LAYERS } from 'constants/layers';
-import { transformRequest } from 'utils/map';
 
 const Layers = [
   {
@@ -48,7 +47,6 @@ const MapPage = () => (
       <StaticSection
         map={
           <Map
-            mapStyle="mapbox://styles/mapbox/light-v9"
             viewport={{
               zoom: 5,
               latitude: 0,
@@ -56,7 +54,6 @@ const MapPage = () => (
             }}
             customClass="c-map-fullscreen"
             dragRotate={false}
-            transformRequest={transformRequest}
           >
             {map => (
               <Fragment>

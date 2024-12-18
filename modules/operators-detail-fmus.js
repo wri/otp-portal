@@ -111,7 +111,7 @@ export default function reducer(state = initialState, action) {
     }
 
     case SET_OPERATORS_DETAIL_MAP_INTERACTIONS: {
-      const { features = [], lngLat = [] } = action.payload;
+      const { features = [], lngLat = {} } = action.payload;
 
       // could be more features for the same layer we reverse array
       // as the last one overrides the previous we will get the first on
@@ -129,15 +129,12 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
-        latlng: {
-          lat: lngLat[1],
-          lng: lngLat[0]
-        },
+        latlng: lngLat,
         interactions
       };
     }
     case SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS: {
-      const { features = [], lngLat = [] } = action.payload;
+      const { features = [], lngLat = {} } = action.payload;
       const hoverInteractions = features.slice().reverse().reduce(
         (obj, next) => ({
           ...obj,
@@ -152,10 +149,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
-        hoverLatLng: {
-          lat: lngLat[1],
-          lng: lngLat[0]
-        },
+        hoverLatLng: lngLat,
         hoverInteractions
       };
     }

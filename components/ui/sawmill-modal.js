@@ -24,7 +24,6 @@ import MapControls from 'components/map/map-controls';
 import ZoomControl from 'components/map/controls/zoom-control';
 import LocationSearch from 'components/map/location-search';
 
-import { transformRequest } from 'utils/map';
 import CancelButton from '../form/CancelButton';
 
 class SawmillModal extends React.Component {
@@ -200,7 +199,6 @@ class SawmillModal extends React.Component {
 
                   {/* Map */}
                   <Map
-                    mapStyle="mapbox://styles/mapbox/light-v9"
                     language={this.props.language}
 
                     // viewport
@@ -208,12 +206,13 @@ class SawmillModal extends React.Component {
                     onViewportChange={(location) => this.setMapLocation(location, setFormValues)}
 
                     onClick={this.onClick}
-
-                    // Options
-                    transformRequest={transformRequest}
                   >
                     {map => (
                       <Fragment>
+                        <MapControls>
+                          <ZoomControl />
+                        </MapControls>
+
                         {/* LAYER MANAGER */}
                         <LayerManager
                           map={map}
@@ -252,17 +251,7 @@ class SawmillModal extends React.Component {
                     )}
                   </Map>
 
-                  <MapControls>
-                    <ZoomControl
-                      zoom={sawmillMap.viewport.zoom}
-                      onZoomChange={(zoom) => {
-                        this.setMapLocation({
-                          zoom,
-                          transitionDuration: 500
-                        }, setFormValues);
-                      }}
-                    />
-                  </MapControls>
+
                 </div>
 
                 <div className="c-field-row">

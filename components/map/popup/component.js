@@ -26,16 +26,12 @@ class PopupComponent extends PureComponent {
     onClose: PropTypes.func
   };
 
-  componentDidUpdate(prevProps) {
-    const { popup } = this.props;
-    const { popup: prevPopup } = prevProps;
+  componentDidMount() {
+    window.addEventListener('click', this.onClickOutside);
+  }
 
-    if (!isEmpty(popup) && !isEqual(popup, prevPopup)) {
-      window.removeEventListener('click', this.onClickOutside);
-      window.addEventListener('click', this.onClickOutside);
-    } else {
-      window.removeEventListener('click', this.onClickOutside);
-    }
+  componentWillUnmount() {
+    window.removeEventListener('click', this.onClickOutside);
   }
 
   onClose = (e) => {
@@ -48,10 +44,10 @@ class PopupComponent extends PureComponent {
   onClickOutside = (e) => {
     if (!this.popup) return null;
 
-    const { _containerRef } = this.popup;
-    const { current } = _containerRef;
+    const clickedElement = e.target;
+    const popupContainer = this.popup._container;
 
-    if (!current.contains(e.target)) { this.onClose(); }
+    if (!clickedElement.classList.contains('mapboxgl-canvas') && !popupContainer.contains(clickedElement)) { this.onClose(); }
   }
 
   render() {
@@ -62,6 +58,7 @@ class PopupComponent extends PureComponent {
     return (
       <Popup
         {...popup}
+        maxWidth={null}
         ref={(r) => { this.popup = r; }}
         closeButton={false}
         closeOnClick={false}
