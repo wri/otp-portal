@@ -22,7 +22,7 @@ const HomePage = () => {
         background="/static/images/home/bg-intro.jpg"
         position={{ bottom: true, left: true }}
         column={9}
-        backgroundProps={{ fetchPriority: 'high' }}
+        backgroundProps={{ fetchpriority: 'high' }}
       >
         <div className="c-intro">
           <h2>
@@ -59,7 +59,7 @@ const HomePage = () => {
         position={{ top: true, right: true }}
         column={5}
         background="/static/images/home/bg-map.jpg"
-        backgroundProps={{ fetchPriority: 'low', loading: 'lazy' }}
+        backgroundProps={{ fetchpriority: 'low', loading: 'lazy' }}
       >
         <Card
           theme="-tertiary -theme-home"
@@ -79,7 +79,7 @@ const HomePage = () => {
         position={{ top: true, left: true }}
         column={5}
         background="/static/images/home/bg-c.jpg"
-        backgroundProps={{ fetchPriority: 'low', loading: 'lazy' }}
+        backgroundProps={{ fetchpriority: 'low', loading: 'lazy' }}
       >
         <Card
           theme="-secondary -theme-home"
