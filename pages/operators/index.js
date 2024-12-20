@@ -17,7 +17,7 @@ import {
   getOperatorsUrl,
   getIntegratedAlertsMetadata
 } from 'modules/operators-ranking';
-import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable } from 'selectors/operators-ranking';
+import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable, getActiveCountries } from 'selectors/operators-ranking';
 
 import modal from 'services/modal';
 
@@ -39,6 +39,7 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import OperatorsFilters from 'components/operators/filters';
 import OperatorsTable from 'components/operators/table';
 
+import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
 
 class OperatorsPage extends React.Component {
   static async getInitialProps({ store }) {
@@ -78,6 +79,12 @@ class OperatorsPage extends React.Component {
     document.getElementById('forest-atlas-attribution').removeEventListener('click', this.onCustomAttribute);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.activeCountries !== this.props.activeCountries && this.map) {
+      this.map.setFilter("otp_countries", getOtpCountriesLayerFilter(this.props.activeCountries));
+    }
+  }
+
   onClick = (e) => {
     if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
       const { features, lngLat } = e;
@@ -85,6 +92,15 @@ class OperatorsPage extends React.Component {
     } else {
       this.props.setOperatorsMapInteractions({});
     }
+  }
+
+  onLoad = (map) => {
+    const countriesLayer = BASEMAP_LAYERS.find(x => x.id === 'otp_countries');
+    if (countriesLayer) {
+      map.map.addLayer(countriesLayer);
+    }
+    this.map = map.map;
+    document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
   }
 
   onHover = (e) => {
@@ -156,12 +172,7 @@ class OperatorsPage extends React.Component {
               interactiveLayerIds={activeInteractiveLayersIds}
               onClick={this.onClick}
               onHover={this.onHover}
-
-              onLoad={() => {
-                // Attribution listener
-                document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
-              }}
-
+              onLoad={this.onLoad}
               mapOptions={{
                 customAttribution: '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
               }}
@@ -228,6 +239,7 @@ export default withRouter(withDeviceInfo(injectIntl(connect(
     operatorsRanking: state.operatorsRanking,
     map: state.operatorsRanking.map,
     sidebar: state.operatorsRanking.sidebar,
+    activeCountries: getActiveCountries(state, props),
     activeLayers: getActiveLayers(state, props),
     activeInteractiveLayers: getActiveInteractiveLayers(state, props),
     activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
