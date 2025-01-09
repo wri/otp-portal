@@ -7,6 +7,21 @@ describe('Operator', function () {
     cy.resetDB();
   });
 
+
+  context('when visiting as a guest', function () {
+    it('can see operator documentation grouped by FMUs', function () {
+      cy.visit('/operators/afriwood-industries/documentation');
+
+      cy.docExpandCategory('Forest management');
+
+      cy.docGetFMUDocCard('Cayo', `Compte-rendu du comité de suivi et d'évaluation du plan de gestion`)
+        .contains('div', 'Non applicable')
+
+      cy.docGetFMUDocCard('Nkola', `Compte-rendu du comité de suivi et d'évaluation du plan de gestion`)
+        .contains('div', 'Not provided')
+    })
+  });
+
   context('when logged in as Operator', function () {
     beforeEach(function () {
       cy.login('operator@example.com', 'Supersecret1');
@@ -119,6 +134,7 @@ describe('Operator', function () {
         cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
 
         cy.get('input[type=file]').attachFile('test_document.docx');
+        cy.wait(500); // not sure why but it's needed, decreases flakiness
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
