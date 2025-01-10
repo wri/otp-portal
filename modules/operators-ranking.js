@@ -75,7 +75,7 @@ const initialState = {
 
     options: {
       // TODO: refactor this eventually, remove COUNTRIES and OTP_COUNTRIES
-      country: process.env.OTP_COUNTRIES.map(iso =>
+      country: process.env.OTP_COUNTRIES.split(',').map(iso =>
         COUNTRIES.find(c => c.iso === iso)
       ),
       certification: CERTIFICATIONS
@@ -231,7 +231,7 @@ export function getOperatorsRanking() {
       'page[size]': 3000,
       include: includes.join(','),
       'filter[fa]': true,
-      'filter[country]': process.env.OTP_COUNTRIES_IDS.join(','),
+      'filter[country]': process.env.OTP_COUNTRIES_IDS,
       'fields[fmus]': fields.fmus.join(','),
       'fields[countries]': fields.countries.join(','),
       'fields[operators]': fields.operators.join(','),

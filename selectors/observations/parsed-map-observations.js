@@ -119,7 +119,7 @@ const getObservationsLayers = createSelector(
           ...FMUS_LAYER.config,
           opacity: _zoom/8 > 1 ? 1 : _zoom/4/8,
           params: {
-            country_iso_codes: process.env.OTP_COUNTRIES
+            country_iso_codes: process.env.OTP_COUNTRIES.split(',')
           }
         },
         {

@@ -40,7 +40,7 @@ export function getOperators() {
       locale: language,
       include: 'country',
       'page[size]': 3000,
-      'filter[country]': process.env.OTP_COUNTRIES_IDS.join(','),
+      'filter[country]': process.env.OTP_COUNTRIES_IDS,
       'filter[fa]': true,
       'fields[operators]': 'name,slug,country',
       'fields[countries]': 'name',

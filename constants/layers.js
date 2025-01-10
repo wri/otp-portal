@@ -43,6 +43,8 @@ const ISO3_TO_ISO2 = {
   COD: 'CD'
 };
 
+const OTP_COUNTRIES_ISO3 = process.env.OTP_COUNTRIES.split(',');
+
 export function getOtpCountriesLayerFilter(countriesIso3) {
   const countriesIso2 = countriesIso3.map(iso3 => ISO3_TO_ISO2[iso3]);
 
@@ -68,7 +70,7 @@ export const BASEMAP_LAYERS = [
       'line-width': 2,
       'line-opacity': 0.8
     },
-    filter: getOtpCountriesLayerFilter(process.env.OTP_COUNTRIES)
+    filter: getOtpCountriesLayerFilter(OTP_COUNTRIES_ISO3)
   }
 ];
 
@@ -614,12 +616,12 @@ export const LAYERS = [
       }
     },
     paramsConfig: [
-      { key: 'country_iso_codes', default: process.env.OTP_COUNTRIES, required: true }
+      { key: 'country_iso_codes', default: OTP_COUNTRIES_ISO3, required: true }
     ],
     legendConfig: {
       type: 'basic',
       color: '#e98300',
-      items: process.env.OTP_COUNTRIES.map(iso => FMU_LEGEND.find(i => i.iso === iso))
+      items: OTP_COUNTRIES_ISO3.map(iso => FMU_LEGEND.find(i => i.iso === iso))
     },
     interactionConfig: {
       enable: true,

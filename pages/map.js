@@ -28,14 +28,14 @@ const Layers = [
     id: 'fmus',
     ...LAYERS.find(l => l.id === 'fmus').config,
     params: {
-      country_iso_codes: process.env.OTP_COUNTRIES
+      country_iso_codes: process.env.OTP_COUNTRIES.split(',')
     }
   },
   {
     id: 'protected-areas',
     ...LAYERS.find(l => l.id === 'protected-areas').config,
     params: {
-      country_iso_codes: process.env.OTP_COUNTRIES
+      country_iso_codes: process.env.OTP_COUNTRIES.split(',')
     }
   },
 ];
