@@ -58,7 +58,10 @@ const config = {
         __RRWEB_EXCLUDE_IFRAME__: true,  // Session Replay - we don't use it
         __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
         __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it
-      }),
+      })
+    );
+
+    if (!options.dev) {
       new CompressionPlugin({
         filename: "[path][base].br",
         algorithm: "brotliCompress",
@@ -70,8 +73,8 @@ const config = {
         },
         threshold: 5120,
         minRatio: 0.8,
-      })
-    );
+      });
+    }
 
     // if (!options.dev) {
     //   config.resolve.alias = {
