@@ -118,7 +118,13 @@ const config = {
   },
   experimental: {
     optimizePackageImports: ["modules"]
-  }
+  },
+  onDemandEntries: {
+    // period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 10 * 60 * 1000, // 10 minutes
+    // number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 6
+  },
 };
 
 const sentryWebpackPluginOptions = {
