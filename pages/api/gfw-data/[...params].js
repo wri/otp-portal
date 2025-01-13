@@ -8,7 +8,7 @@ export const config = {
 };
 
 export default (req, res) => {
-  return httpProxyMiddleware(req, res, {
+  httpProxyMiddleware(req, res, {
     target: process.env.GFW_API,
     pathRewrite: [
       {
