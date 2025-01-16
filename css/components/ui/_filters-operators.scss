@@ -75,10 +75,11 @@
       line-height: 32px;
       font-weight: 700;
       font-size: $font-size-extrasmall;
-      width: 100%;
+      min-width: 100%; // width 100% with field-sizing was cutting of the text in operator's filter weird
       outline: 0;
       color: #FFF;
       text-transform: uppercase;
+      field-sizing: content;
 
       &::placeholder {
         color: rgba(255, 255, 255, 0.5);
