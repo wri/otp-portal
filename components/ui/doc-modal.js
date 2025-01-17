@@ -156,12 +156,12 @@ class DocModal extends React.Component {
                     <div className="l-row row">
                       <div className="columns small-12">
                         <Field
-                          validations={!url ? ['required'] : []}
+                          validations={['required']}
                           className="-fluid"
                           properties={{
                             name: 'file',
                             label: intl.formatMessage({ id: 'file' }),
-                            required: !url,
+                            required: true,
                             default: !url ? null : { name: url }
                           }}
                         >
