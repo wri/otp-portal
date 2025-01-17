@@ -81,8 +81,17 @@ class OperatorsDetailFMUs extends React.Component {
     const { fmus, fmu, interactions } = this.props;
 
     if (!isEqual(fmus, prevFmus)) {
-      this.props.setOperatorsDetailFmu(fmus[0].id);
-      this.getBBOX();
+      if (fmus.length) {
+        this.props.setOperatorsDetailFmu(fmus[0].id);
+        this.getBBOX();
+      } else {
+        this.props.setOperatorsDetailFmu(undefined);
+        this.props.setOperatorsDetailMapLocation({
+          zoom: 5,
+          latitude: 0,
+          longitude: 20,
+        });
+      }
     }
 
     if (fmu.id !== prevFmu.id) {
