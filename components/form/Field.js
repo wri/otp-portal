@@ -41,7 +41,7 @@ class Field extends React.Component {
     const { properties, onChange, formContext } = this.props;
 
     const defaultOnChange = (value) => {
-      if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, 'checked')) {
+      if (typeof value === "object" && value !== null && Object.prototype.hasOwnProperty.call(value, 'checked')) {
         formContext.setFormValues({ [properties.name]: value.checked });
       } else {
         formContext.setFormValues({ [properties.name]: value });

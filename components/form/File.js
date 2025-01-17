@@ -88,7 +88,7 @@ class File extends FormElement {
   triggerCancel() {
     this.setState({
       accepted: [],
-      value: null
+      value: ''
     }, () => {
       // Publish the new value to the form
       if (this.props.onChange) this.props.onChange(this.state.value);
@@ -159,7 +159,7 @@ class File extends FormElement {
               <input
                 {...omit(properties, 'authorization')}
                 className={`input ${inputClassName}`}
-                value={this.state.value?.name}
+                value={this.state.value?.name || ''}
                 placeholder={this.props.intl.formatMessage({ id: 'select-file' })}
                 readOnly={!changeableName}
                 id={`input-${properties.name}`}
