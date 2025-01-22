@@ -12,8 +12,6 @@ import getBBox from '@turf/bbox';
 
 import modal from 'services/modal';
 
-import { transformRequest } from 'utils/map';
-
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import {
@@ -135,8 +133,9 @@ class ObservationsPage extends React.Component {
 
   onClick = (e) => {
     const { cluster: clusterProp, map } = this.props.observations;
+    const element = e.originalEvent.target;
 
-    if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
+    if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) { // No better way to do this
       const { features, lngLat } = e;
       const feature = features[0];
 
@@ -148,8 +147,8 @@ class ObservationsPage extends React.Component {
           if (map.zoom < 12 && point_count > 16) {
             this.props.setObservationsMapLocation({
               ...map,
-              longitude: lngLat[0],
-              latitude: lngLat[1],
+              longitude: lngLat.lng,
+              latitude: lngLat.lat,
               zoom: map.zoom + 2
             });
             return;
@@ -187,8 +186,8 @@ class ObservationsPage extends React.Component {
         this.setState({
           popup: {
             props: {
-              longitude: lngLat[0],
-              latitude: lngLat[1],
+              longitude: lngLat.lng,
+              latitude: lngLat.lat,
             },
             template: 'observation',
             templateProps: {
@@ -240,13 +239,6 @@ class ObservationsPage extends React.Component {
       this.makeJumpToStaticHeader = false;
     }
   }
-
-  // onHover = (e) => {
-  //   const { features } = e;
-  //   if (features) {
-  //     console.log(features);
-  //   }
-  // }
 
   render() {
     const {
@@ -404,7 +396,6 @@ class ObservationsPage extends React.Component {
             <Spinner isLoading={observations.loading} />
             {/* Map */}
             <Map
-              mapStyle="mapbox://styles/mapbox/light-v9"
               language={this.props.language}
               // options
               scrollZoom={false}
@@ -420,11 +411,7 @@ class ObservationsPage extends React.Component {
               onLoad={this.onMapLoaded}
               onUnmount={() => (this.map = null)}
               // Options
-              transformRequest={transformRequest}
-              mapOptions={{
-                customAttribution:
-                  '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
-              }}
+              customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
             >
               {(map) => (
                 <Fragment>
@@ -438,6 +425,10 @@ class ObservationsPage extends React.Component {
                     />
                   )}
                   <LayerManager map={map} layers={getObservationsLayers} />
+
+                  <MapControls>
+                    <ZoomControl />
+                  </MapControls>
                 </Fragment>
               )}
             </Map>
@@ -450,20 +441,6 @@ class ObservationsPage extends React.Component {
               toolbar={<></>}
               setLayerSettings={() => { }}
             />
-
-            {/* MapControls */}
-            <MapControls>
-              <ZoomControl
-                zoom={observations.map.zoom}
-                onZoomChange={(zoom) => {
-                  this.props.setObservationsMapLocation({
-                    ...observations.map,
-                    zoom,
-                    transitionDuration: 500,
-                  });
-                }}
-              />
-            </MapControls>
           </div>
         )}
       </Layout>

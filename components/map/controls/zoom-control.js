@@ -1,68 +1,40 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import classnames from 'classnames';
 import Icon from 'components/ui/icon';
 
-export default class ZoomControl extends React.Component {
+import { useMap } from 'react-map-gl';
 
-  constructor(props) {
-    super(props);
+const ZoomControl = () => {
+  const { current: map } = useMap();
+  const minZoom = map.getMinZoom();
+  const maxZoom = map.getMaxZoom();
+  const zoom = map.getZoom();
 
-    // Bindings
-    this.increaseZoom = this.increaseZoom.bind(this);
-    this.decreaseZoom = this.decreaseZoom.bind(this);
-  }
+  const increaseZoom = useCallback(() => {
+    map.zoomIn();
+  }, [map]);
+  const decreaseZoom = useCallback(() => {
+    map.zoomOut();
+  }, [map]);
 
-  /* Component lifecycle */
-  shouldComponentUpdate(newProps) {
-    return this.props.zoom !== newProps.zoom;
-  }
+  const zoomInClass = classnames('zoom-control-btn', {
+    '-disabled': zoom === maxZoom
+  });
 
-  setZoom(zoom) {
-    this.props.onZoomChange && this.props.onZoomChange(zoom);
-  }
+  const zoomOutClass = classnames('zoom-control-btn', {
+    '-disabled': zoom === minZoom
+  });
 
-  increaseZoom() {
-    if (this.props.zoom === this.props.maxZoom) return;
-    this.setZoom(this.props.zoom + 1);
-  }
-
-  decreaseZoom() {
-    if (this.props.zoom === this.props.minZoom) return;
-    this.setZoom(this.props.zoom - 1);
-  }
-
-  render() {
-    const zoomInClass = classnames('zoom-control-btn', {
-      '-disabled': this.props.zoom === this.props.maxZoom
-    });
-
-    const zoomOutClass = classnames('zoom-control-btn', {
-      '-disabled': this.props.zoom === this.props.minZoom
-    });
-
-    return (
-      <div className="c-zoom-control">
-        <button className={zoomInClass} type="button" onClick={this.increaseZoom} aria-label="Zoom in">
-          <Icon name="icon-plus" />
-        </button>
-        <button className={zoomOutClass} type="button" onClick={this.decreaseZoom} aria-label="Zoom out">
-          <Icon name="icon-minus" />
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="c-zoom-control">
+      <button className={zoomInClass} type="button" onClick={increaseZoom} aria-label="Zoom in">
+        <Icon name="icon-plus" />
+      </button>
+      <button className={zoomOutClass} type="button" onClick={decreaseZoom} aria-label="Zoom out">
+        <Icon name="icon-minus" />
+      </button>
+    </div>
+  );
 }
 
-ZoomControl.propTypes = {
-  zoom: PropTypes.number,
-  maxZoom: PropTypes.number,
-  minZoom: PropTypes.number,
-  onZoomChange: PropTypes.func
-};
-
-ZoomControl.defaultProps = {
-  zoom: 3,
-  maxZoom: 20,
-  minZoom: 2
-};
+export default ZoomControl;

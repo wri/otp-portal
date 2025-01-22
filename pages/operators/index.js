@@ -23,8 +23,6 @@ import modal from 'services/modal';
 
 import { withDeviceInfo } from 'hooks/use-device-info';
 
-import { transformRequest } from 'utils/map';
-
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
 import Map from 'components/map';
@@ -83,10 +81,15 @@ class OperatorsPage extends React.Component {
     if (prevProps.activeCountries !== this.props.activeCountries && this.map) {
       this.map.setFilter("otp_countries", getOtpCountriesLayerFilter(this.props.activeCountries));
     }
+
+    if (prevProps.sidebar.open !== this.props.sidebar.open && this.map) {
+      this.map.resize();
+    }
   }
 
   onClick = (e) => {
-    if (e.features && e.features.length && !e.target.classList.contains('mapbox-prevent-click')) { // No better way to do this
+    const element = e.originalEvent.target;
+    if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) { // No better way to do this
       const { features, lngLat } = e;
       this.props.setOperatorsMapInteractions({ features, lngLat });
     } else {
@@ -94,12 +97,12 @@ class OperatorsPage extends React.Component {
     }
   }
 
-  onLoad = (map) => {
+  onLoad = ({ map }) => {
     const countriesLayer = BASEMAP_LAYERS.find(x => x.id === 'otp_countries');
     if (countriesLayer) {
-      map.map.addLayer(countriesLayer);
+      map.addLayer(countriesLayer);
     }
-    this.map = map.map;
+    this.map = map;
     document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
   }
 
@@ -114,7 +117,7 @@ class OperatorsPage extends React.Component {
 
   setMapLocation = debounce((mapLocation) => {
     this.props.setOperatorsMapLocation(mapLocation);
-  }, 500);
+  }, 700);
 
   onCustomAttribute = (e) => {
     e.preventDefault();
@@ -161,7 +164,6 @@ class OperatorsPage extends React.Component {
           <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 800 : 50}px)`, left: open ? 800 : 50 }}>
             {/* Map */}
             <Map
-              mapStyle="mapbox://styles/mapbox/light-v9"
               language={language}
 
               // viewport
@@ -173,15 +175,14 @@ class OperatorsPage extends React.Component {
               onClick={this.onClick}
               onHover={this.onHover}
               onLoad={this.onLoad}
-              mapOptions={{
-                customAttribution: '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
-              }}
-
-              // Options
-              transformRequest={transformRequest}
+              customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
             >
               {map => (
                 <Fragment>
+                  <MapControls>
+                    <ZoomControl />
+                  </MapControls>
+
                   <Popup
                     popup={popup}
                     template="fmus"
@@ -205,20 +206,6 @@ class OperatorsPage extends React.Component {
               expanded={false}
               setLayerSettings={this.props.setOperatorsMapLayersSettings}
             />
-
-            {/* MapControls */}
-            <MapControls>
-              <ZoomControl
-                zoom={map.zoom}
-                onZoomChange={(zoom) => {
-                  this.props.setOperatorsMapLocation({
-                    ...operatorsRanking.map,
-                    zoom,
-                    transitionDuration: 500
-                  });
-                }}
-              />
-            </MapControls>
           </div>
         </div>
       </Layout>

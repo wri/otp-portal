@@ -99,7 +99,7 @@ export default function reducer(state = initialState, action) {
     case SET_OPERATORS_MAP_LAYERS_ACTIVE:
       return Object.assign({}, state, { layersActive: action.payload });
     case SET_OPERATORS_MAP_INTERACTIONS: {
-      const { features = [], lngLat = [] } = action.payload;
+      const { features = [], lngLat = {} } = action.payload;
 
       // could be more features for the same layer we reverse array
       // as the last one overrides the previous we will get the first on
@@ -117,10 +117,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
-        latlng: {
-          lat: lngLat[1],
-          lng: lngLat[0]
-        },
+        latlng: lngLat,
         interactions
       };
     }
@@ -385,7 +382,7 @@ export function getIntegratedAlertsMetadata() {
         type: SET_OPERATORS_MAP_LAYERS_ACTIVE,
         payload: [...new Set([
           ...activeLayers.slice(0, activeLayers.indexOf('fmus')),
-          'integrated-alerts',
+         'integrated-alerts',
           ...activeLayers.slice(activeLayers.indexOf('fmus'))
         ])]
       });

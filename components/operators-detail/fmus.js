@@ -51,8 +51,6 @@ import { CERTIFICATIONS } from 'constants/fmu';
 
 import { withDeviceInfo } from 'hooks/use-device-info';
 
-import { transformRequest } from 'utils/map';
-
 class OperatorsDetailFMUs extends React.Component {
   componentDidMount() {
     const { fmus, fmu, operatorsDetailFmus } = this.props;
@@ -141,10 +139,12 @@ class OperatorsDetailFMUs extends React.Component {
   }
 
   onClick = (e) => {
+    const element = e.originalEvent.target;
+
     if (
       e.features &&
       e.features.length &&
-      !e.target.classList.contains('mapbox-prevent-click')
+      !element.classList?.contains('mapbox-prevent-click')
     ) {
       // No better way to do this
       const { features, lngLat } = e;
@@ -266,7 +266,6 @@ class OperatorsDetailFMUs extends React.Component {
         <div className="c-map-container -static">
           {/* Map */}
           <Map
-            mapStyle="mapbox://styles/mapbox/light-v9"
             language={this.props.language}
             bounds={fmu.bounds}
             // options
@@ -285,11 +284,7 @@ class OperatorsDetailFMUs extends React.Component {
                 .addEventListener('click', this.onCustomAttribute);
             }}
             // Options
-            transformRequest={transformRequest}
-            mapOptions={{
-              customAttribution:
-                '<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>',
-            }}
+            customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
           >
             {(map) => (
               <Fragment>
@@ -312,23 +307,13 @@ class OperatorsDetailFMUs extends React.Component {
                     layers: hoverActiveInteractiveLayers
                   }}
                 />
+
+                <MapControls>
+                  <ZoomControl />
+                </MapControls>
               </Fragment>
             )}
           </Map>
-
-          {/* MapControls */}
-          <MapControls>
-            <ZoomControl
-              zoom={operatorsDetailFmus.map.zoom}
-              onZoomChange={(zoom) => {
-                this.props.setOperatorsDetailMapLocation({
-                  ...operatorsDetailFmus.map,
-                  zoom,
-                  transitionDuration: 500,
-                });
-              }}
-            />
-          </MapControls>
         </div>
       </div>
     );
