@@ -44,19 +44,15 @@ if (typeof window === 'undefined') {
   }
 }
 
-// workaround as import(`dayjs/locale/${locale}`) was not working
-const loadLocales = {
-  en: () => Promise.resolve(),
-  fr: () => import('dayjs/locale/fr'),
-  pt: () => import('dayjs/locale/pt'),
-  ja: () => import('dayjs/locale/ja'),
-  ko: () => import('dayjs/locale/ko'),
-  vi: () => import('dayjs/locale/vi'),
-  zh: () => import('dayjs/locale/zh-cn')
-}
-
 import dayjs from 'dayjs';
 import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
+
+import 'dayjs/locale/fr';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/ja';
+import 'dayjs/locale/ko';
+import 'dayjs/locale/vi';
+import 'dayjs/locale/zh-cn';
 
 dayjs.extend(dayOfYearPlugin);
 
@@ -131,8 +127,6 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   } else {
     user = state.user;
   }
-
-  await loadLocales[language]();
 
   store.dispatch(setLanguage(language));
   store.dispatch(setUser(user));
