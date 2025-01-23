@@ -45,7 +45,6 @@ const TABS_OPERATORS_DETAIL = [{
 
 const COUNTRIES_FRENCH_FIX = {
   'CMR': 'au', // Cameroon
-  'COG': 'au', // Congo
   'GAB': 'au', // Gabon
 };
 
