@@ -358,18 +358,21 @@ export function getIntegratedAlertsMetadata() {
         return;
       }
 
+      const startDate = dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD');
+
       dispatch({
         type: SET_OPERATORS_MAP_LAYERS_SETTINGS,
         payload: {
           id: 'integrated-alerts',
           settings: {
             decodeParams: {
+              startDate,
               endDate: maxDataDate,
               trimEndDate: maxDataDate,
               maxDate: maxDataDate
             },
             timelineParams: {
-              minDate: dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD'),
+              minDate: startDate,
               maxDate: maxDataDate,
               minDataDate
             }

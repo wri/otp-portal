@@ -108,12 +108,10 @@ export const LAYERS = [
     },
     decodeConfig: [
       {
-        default: '2021-02-28',
         key: 'startDate',
         required: true
       },
       {
-        default: '2022-04-20',
         key: 'endDate',
         required: true
       },
