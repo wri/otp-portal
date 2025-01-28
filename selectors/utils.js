@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
+import { isEmpty } from 'utils/general';
 
 dayjs.extend(dayOfYear);
 
@@ -90,4 +91,46 @@ export const getParams = (config = [], params = {}) => {
     ...getDayRange(newParams)
   };
 }
-;
+  ;
+
+export function getLayerId(layer) {
+  const { id, config, interactionConfig } = layer;
+  if (isEmpty(config) || isEmpty(interactionConfig)) return null;
+
+  const { render = {} } = config;
+  const { layers } = render;
+  if (!layers) return null;
+
+  return layers.map((l, i) => {
+    const {
+      id: vectorLayerId,
+      type: vectorLayerType
+    } = l;
+
+    return vectorLayerId || `${id}-${vectorLayerType}-${i}`;
+  });
+}
+
+export function getActiveInteractiveLayersSelector(layers, interactions) {
+  if (!layers || isEmpty(interactions)) return [];
+
+  const allLayers = uniqBy(layers, 'id');
+
+  const interactiveLayerKeys = Object.keys(interactions);
+  const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
+
+  return interactiveLayers.map(l => ({ ...l, data: interactions[l.id] }));
+}
+
+export function getPopupSelector(latlng) {
+  if (isEmpty(latlng) || !latlng.lat || !latlng.lng) {
+    return {};
+  }
+
+  const popup = {
+    latitude: latlng.lat,
+    longitude: latlng.lng
+  };
+
+  return popup;
+}

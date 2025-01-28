@@ -745,30 +745,7 @@ export const LAYERS = [
               'fill-opacity': 0.9
             }
           },
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'operator_id', '{operator_id}']
-            ],
-            paint: {
-              'line-color': '#000000',
-              'line-opacity': 0.1
-            }
-          },
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{clickId}']
-            ],
-            paint: {
-              'line-opacity': 1,
-              'line-width': 2
-            }
-          },
+          // clicked features
           {
             type: 'fill',
             'source-layer': 'layer0',
@@ -780,34 +757,21 @@ export const LAYERS = [
               'fill-color': '#333'
             }
           },
-
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}'],
-              ['!=', 'id', '{clickId}']
-            ],
-            paint: {
-              'line-dasharray': [3, 1],
-              'line-opacity': 1,
-              'line-width': 2
-            }
-          },
+          // hovered features
           {
             type: 'fill',
             'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}'],
-              ['!=', 'id', '{clickId}']
-            ],
+            filter: ['!=', 'id', '{clickId}'], // Exclude clicked feature
             paint: {
-              'fill-color': '#333'
+              'fill-color': '#333',
+              'fill-opacity': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.8, // Hover opacity
+                0 // do not show
+              ]
             }
           }
-
         ]
       }
     },

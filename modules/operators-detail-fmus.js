@@ -12,7 +12,6 @@ const SET_OPERATORS_DETAIL_FMU_BOUNDS = 'SET_OPERATORS_DETAIL_FMU_BOUNDS';
 
 const SET_OPERATORS_DETAIL_MAP_LOCATION = 'SET_OPERATORS_DETAIL_MAP_LOCATION';
 const SET_OPERATORS_DETAIL_MAP_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_INTERACTIONS';
-const SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS';
 const SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS';
 const SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE';
 
@@ -26,11 +25,8 @@ const initialState = {
   },
 
   latlng: {},
-  hoverLatLng: {},
 
   interactions: {},
-
-  hoverInteractions: {},
 
   layersActive: [
     'gain',
@@ -131,26 +127,6 @@ export default function reducer(state = initialState, action) {
         ...state,
         latlng: lngLat,
         interactions
-      };
-    }
-    case SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS: {
-      const { features = [], lngLat = {} } = action.payload;
-      const hoverInteractions = features.slice().reverse().reduce(
-        (obj, next) => ({
-          ...obj,
-          [next.layer.source]: {
-            id: next.id,
-            data: next.properties,
-            geometry: next.geometry
-          }
-        }),
-        {}
-      );
-
-      return {
-        ...state,
-        hoverLatLng: lngLat,
-        hoverInteractions
       };
     }
     case SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS: {
@@ -377,13 +353,6 @@ export function setOperatorsDetailMapLayersSettings(payload) {
 export function setOperatorsDetailMapInteractions(payload) {
   return {
     type: SET_OPERATORS_DETAIL_MAP_INTERACTIONS,
-    payload
-  };
-}
-
-export function setOperatorsDetailMapHoverInteractions(payload) {
-  return {
-    type: SET_OPERATORS_DETAIL_MAP_HOVER_INTERACTIONS,
     payload
   };
 }

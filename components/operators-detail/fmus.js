@@ -16,18 +16,15 @@ import {
   setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
   setOperatorsDetailAnalysis,
-  setOperatorsDetailMapInteractions,
-  setOperatorsDetailMapHoverInteractions,
+  setOperatorsDetailMapInteractions
 } from 'modules/operators-detail-fmus';
 import {
   getActiveLayers,
-  getActiveHoverInteractiveLayers,
   getActiveInteractiveLayersIds,
   getLegendLayers,
   getFMUs,
   getFMU,
-  getPopup,
-  getHoverPopup,
+  getPopup
 } from 'selectors/operators-detail/fmus';
 
 // Intl
@@ -52,6 +49,15 @@ import { CERTIFICATIONS } from 'constants/fmu';
 import { withDeviceInfo } from 'hooks/use-device-info';
 
 class OperatorsDetailFMUs extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // Initial state
+    this.state = {
+      hoverPopup: null
+    };
+  }
+
   componentDidMount() {
     const { fmus, fmu, operatorsDetailFmus } = this.props;
 
@@ -157,9 +163,23 @@ class OperatorsDetailFMUs extends React.Component {
   onHover = (e) => {
     if (e.features && e.features.length) {
       const { features, lngLat } = e;
-      this.props.setOperatorsDetailMapHoverInteractions({ features, lngLat });
+      this.setState({
+        hoverPopup: {
+          longitude: lngLat.lng,
+          latitude: lngLat.lat,
+          layers: features.map((f) => {
+            const { source, properties } = f;
+            return {
+              id: source,
+              data: {
+                data: properties
+              }
+            };
+          })
+        }
+      })
     } else {
-      this.props.setOperatorsDetailMapHoverInteractions({});
+      this.setState({ hoverPopup: null });
     }
   }
 
@@ -190,16 +210,15 @@ class OperatorsDetailFMUs extends React.Component {
 
   render() {
     const {
-      hoverPopup,
       fmu,
       fmus,
       operatorsDetailFmus,
       activeLayers,
-      hoverActiveInteractiveLayers,
       activeInteractiveLayersIds,
       legendLayers,
       deviceInfo
     } = this.props;
+    const { hoverPopup } = this.state;
 
     const certifications = CERTIFICATIONS.filter(
       ({ value }) => fmu[`certification-${value}`]
@@ -304,7 +323,7 @@ class OperatorsDetailFMUs extends React.Component {
                   popup={hoverPopup}
                   template="fmus-detail"
                   templateProps={{
-                    layers: hoverActiveInteractiveLayers
+                    layers: hoverPopup?.layers
                   }}
                 />
 
@@ -328,8 +347,6 @@ OperatorsDetailFMUs.propTypes = {
   fmu: PropTypes.shape({}).isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
-  hoverPopup: PropTypes.shape({}).isRequired,
-  hoverActiveInteractiveLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
   language: PropTypes.string.isRequired,
@@ -340,8 +357,7 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailFmu: PropTypes.func,
   setOperatorsDetailFmuBounds: PropTypes.func,
   setOperatorsDetailAnalysis: PropTypes.func,
-  setOperatorsDetailMapInteractions: PropTypes.func,
-  setOperatorsDetailMapHoverInteractions: PropTypes.func,
+  setOperatorsDetailMapInteractions: PropTypes.func
 };
 
 export default withDeviceInfo(injectIntl(
@@ -350,16 +366,10 @@ export default withDeviceInfo(injectIntl(
       language: state.language,
       operatorsDetailFmus: state.operatorsDetailFmus,
       interactions: state.operatorsDetailFmus.interactions,
-      hoverInteractions: state.operatorsDetailFmus.hoverInteractions,
       fmus: getFMUs(state, props),
       fmu: getFMU(state, props),
       popup: getPopup(state, props),
-      hoverPopup: getHoverPopup(state, props),
       activeLayers: getActiveLayers(state, props),
-      hoverActiveInteractiveLayers: getActiveHoverInteractiveLayers(
-        state,
-        props
-      ),
       activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
       legendLayers: getLegendLayers(state, props),
     }),
@@ -370,8 +380,7 @@ export default withDeviceInfo(injectIntl(
       setOperatorsDetailFmu,
       setOperatorsDetailFmuBounds,
       setOperatorsDetailAnalysis,
-      setOperatorsDetailMapInteractions,
-      setOperatorsDetailMapHoverInteractions,
+      setOperatorsDetailMapInteractions
     }
   )(OperatorsDetailFMUs)
 ));

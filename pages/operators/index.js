@@ -9,7 +9,6 @@ import {
   getOperatorsRanking,
   setOperatorsMapLocation,
   setOperatorsMapInteractions,
-  setOperatorsMapHoverInteractions,
   setOperatorsMapLayersActive,
   setOperatorsMapLayersSettings,
   setOperatorsSidebar,
@@ -106,15 +105,6 @@ class OperatorsPage extends React.Component {
     document.getElementById('forest-atlas-attribution').addEventListener('click', this.onCustomAttribute);
   }
 
-  onHover = (e) => {
-    if (e.features && e.features.length) {
-      const { features, lngLat } = e;
-      this.props.setOperatorsMapHoverInteractions({ features, lngLat });
-    } else {
-      this.props.setOperatorsMapHoverInteractions({});
-    }
-  }
-
   setMapLocation = debounce((mapLocation) => {
     this.props.setOperatorsMapLocation(mapLocation);
   }, 700);
@@ -173,7 +163,6 @@ class OperatorsPage extends React.Component {
               // Interaction
               interactiveLayerIds={activeInteractiveLayersIds}
               onClick={this.onClick}
-              onHover={this.onHover}
               onLoad={this.onLoad}
               customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
             >
@@ -246,9 +235,6 @@ export default withRouter(withDeviceInfo(injectIntl(connect(
     },
     setOperatorsMapInteractions(obj) {
       dispatch(setOperatorsMapInteractions(obj));
-    },
-    setOperatorsMapHoverInteractions(obj) {
-      dispatch(setOperatorsMapHoverInteractions(obj));
     },
     setOperatorsMapLayersActive(obj) {
       dispatch(setOperatorsMapLayersActive(obj));

@@ -15,7 +15,6 @@ const GET_OPERATORS_RANKING_LOADING = 'GET_OPERATORS_RANKING_LOADING';
 
 const SET_OPERATORS_RANKING_MAP_LOCATION = 'SET_OPERATORS_RANKING_MAP_LOCATION';
 const SET_OPERATORS_MAP_INTERACTIONS = 'SET_OPERATORS_MAP_INTERACTIONS';
-const SET_OPERATORS_MAP_HOVER_INTERACTIONS = 'SET_OPERATORS_MAP_HOVER_INTERACTIONS';
 const SET_OPERATORS_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_MAP_LAYERS_ACTIVE';
 const SET_OPERATORS_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_MAP_LAYERS_SETTINGS';
 const SET_OPERATORS_SIDEBAR = 'SET_OPERATORS_SIDEBAR';
@@ -44,8 +43,6 @@ const initialState = {
   latlng: {},
 
   interactions: {},
-
-  hoverInteractions: {},
 
   // LAYERS
   layersActive: [
@@ -121,25 +118,7 @@ export default function reducer(state = initialState, action) {
         interactions
       };
     }
-    case SET_OPERATORS_MAP_HOVER_INTERACTIONS: {
-      const { features = [] } = action.payload;
-      const hoverInteractions = features.slice().reverse().reduce(
-        (obj, next) => ({
-          ...obj,
-          [next.layer.source]: {
-            id: next.id,
-            data: next.properties,
-            geometry: next.geometry
-          }
-        }),
-        {}
-      );
 
-      return {
-        ...state,
-        hoverInteractions
-      };
-    }
     case SET_OPERATORS_MAP_LAYERS_SETTINGS: {
       const { id, settings } = action.payload;
 
@@ -300,13 +279,6 @@ export function setOperatorsMapLocation(payload) {
 export function setOperatorsMapInteractions(payload) {
   return {
     type: SET_OPERATORS_MAP_INTERACTIONS,
-    payload
-  };
-}
-
-export function setOperatorsMapHoverInteractions(payload) {
-  return {
-    type: SET_OPERATORS_MAP_HOVER_INTERACTIONS,
     payload
   };
 }
