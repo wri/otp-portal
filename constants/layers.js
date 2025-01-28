@@ -180,8 +180,8 @@ export const LAYERS = [
       speed: 100,
       interval: 'days',
       dateFormat: 'YYYY-MM-DD',
-      trimEndDate: '{maxDate}', // updated after fetching layer metadata
-      maxDate: '{maxDate}', // updated after fetching layer metadata
+      // trimEndDate: '{maxDate}', // updated after fetching layer metadata
+      // maxDate: '{maxDate}', // updated after fetching layer metadata
       minDate: '2020-08-30', // timeline min date - updated after fetching layer metadata
       minDataDate: '2014-12-31', // layer data min date - updated after fetching layer metadata
       canPlay: true,

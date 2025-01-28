@@ -3,14 +3,11 @@ import { createSelector } from 'reselect';
 
 import { isEmpty } from 'utils/general';
 import uniqBy from 'lodash/uniqBy';
-import sortBy from 'lodash/sortBy';
-
-import { replace } from 'layer-manager';
 
 import Fuse from 'fuse.js';
 
 // Utils
-import { getLayerId, getParams, getPopupSelector } from '../utils';
+import { getLayerId, getParams, getPopupSelector, getLegendLayersSelector } from '../utils';
 import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
 import { LAYERS } from 'constants/layers';
@@ -107,80 +104,8 @@ export const getActiveInteractiveLayers = createSelector(
 );
 
 export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive, intl], (_layers, _layersSettings, _layersActive, _intl) => {
-    if (!_layers) return [];
-    const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
-
-    const layerGroups = [];
-
-    _layersActive.forEach((lid) => {
-      const layer = legendLayers.find(r => r.id === lid);
-      if (!layer) return false;
-
-      const { id, name, description, metadata, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
-
-      const lSettings = _layersSettings[id] || {};
-
-      const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
-      const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
-      const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
-
-      layerGroups.push({
-        id,
-        dataset: id,
-        name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
-        description,
-        metadata,
-        layers: [{
-          ...layer,
-          name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
-          opacity: 1,
-          active: true,
-          legendConfig: {
-            ...legendConfig,
-            ...(legendConfig.items && {
-              items: sortBy(legendConfig.items.map(i => ({
-                ...i,
-                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
-                ...(i.items && {
-                  items: i.items.map(ii => ({
-                    ...ii,
-                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
-                  }))
-                })
-
-              })), 'name')
-            })
-          },
-          ...lSettings,
-          ...(!!paramsConfig && {
-            params
-          }),
-
-          ...(!!sqlConfig && {
-            sqlParams
-          }),
-
-          ...(!!decodeConfig && {
-            decodeParams
-          }),
-
-          ...(!!timelineConfig && {
-            timelineParams: {
-              ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
-              ...getParams(paramsConfig, lSettings.params),
-              ...getParams(decodeConfig, lSettings.decodeParams),
-              ...lSettings.timelineParams
-            }
-          })
-        }],
-        visibility: true,
-        ...lSettings
-      });
-    });
-
-    return layerGroups;
-  }
+  [layers, layersSettings, layersActive, intl],
+  getLegendLayersSelector
 );
 
 export const getPopup = createSelector([latlng], getPopupSelector);

@@ -1,12 +1,9 @@
 import { createSelector } from 'reselect';
 
-import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 import slugify from 'slugify';
 
-import { replace } from 'layer-manager';
-
-import { getLayerId, getParams, getPopupSelector, getActiveInteractiveLayersSelector } from '../utils';
+import { getLayerId, getParams, getPopupSelector, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
 
 import { LAYERS } from 'constants/layers';
 
@@ -90,90 +87,19 @@ export const getActiveInteractiveLayersIds = createSelector(
 export const getActiveInteractiveLayers = createSelector([layers, interactions], getActiveInteractiveLayersSelector);
 
 export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive, analysis, fmu, intl, operatorsDetail], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl, _operatorsDetail) => {
-    if (!_layers) return [];
-    const legendLayers = _layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
-    const { country } = _operatorsDetail;
-
-    const layerGroups = [];
-
-    _layersActive.forEach((lid) => {
-      const layer = legendLayers.find(r => r.id === lid);
-      if (!layer || lid === 'fmus' || (layer.iso && layer.iso !== country.iso)) return false;
-
-      const { id, name, description, metadata, legendConfig, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = layer;
-
-
-      const lSettings = _layersSettings[id] || {};
-
-      const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
-      const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
-      const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
-
-      const f = _fmu;
-      const i = id === 'gain' ? 'loss' : id;
+  [layers, layersSettings, layersActive, analysis, fmu, intl], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl) => {
+    return getLegendLayersSelector(_layers, _layersSettings, _layersActive, _intl).map((layer) => {
+      const i = layer.id === 'gain' ? 'loss' : layer.id; // gain and loss share the same analysis loading and error state
       const analysisParams = {
         loading: _analysis.loading[i],
         error: _analysis.error[i],
-        ...(_analysis.data[f] && { data: _analysis.data[f][id] })
+        ...(_analysis.data[_fmu] && { data: _analysis.data[_fmu][layer.id] })
       };
-
-      layerGroups.push({
-        id,
-        dataset: id,
-        name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
-        description,
-        metadata,
-        analysis: analysisParams,
-        layers: [{
-          ...layer,
-          name: _intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
-          opacity: 1,
-          active: true,
-          legendConfig: {
-            ...legendConfig,
-            ...(legendConfig.items && {
-              items: legendConfig.items.map(i => ({
-                ...i,
-                ...(i.name && { name: _intl.formatMessage({ id: i.name || '-' }) }),
-                ...(i.items && {
-                  items: i.items.map(ii => ({
-                    ...ii,
-                    ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
-                  }))
-                })
-
-              }))
-            })
-          },
-          ...lSettings,
-          ...(!!paramsConfig && {
-            params
-          }),
-
-          ...(!!sqlConfig && {
-            sqlParams
-          }),
-
-          ...(!!decodeConfig && {
-            decodeParams
-          }),
-
-          ...(!!timelineConfig && {
-            timelineParams: {
-              ...JSON.parse(replace(JSON.stringify(timelineConfig), { ...params, ...decodeParams })),
-              ...getParams(paramsConfig, lSettings.params),
-              ...getParams(decodeConfig, lSettings.decodeParams),
-              ...lSettings.timelineParams
-            }
-          })
-        }],
-        visibility: true,
-        ...lSettings
-      });
-    });
-
-    return layerGroups;
+      return {
+        ...layer,
+        analysis: analysisParams
+      };
+    })
   }
 );
 
@@ -207,7 +133,6 @@ export const getFMU = createSelector(
     } else {
       FMU = _fmus.find(f => Number(f.id) === Number(_fmu));
     }
-
 
     return {
       ...FMU,

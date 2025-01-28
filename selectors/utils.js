@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
 import { isEmpty } from 'utils/general';
+import sortBy from 'lodash/sortBy';
 
 dayjs.extend(dayOfYear);
 
@@ -133,4 +134,67 @@ export function getPopupSelector(latlng) {
   };
 
   return popup;
+}
+
+export function getLegendLayersSelector(layers, layersSettings, layersActive, intl) {
+  if (!layers) return [];
+  const legendLayers = layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
+
+  const layerGroups = [];
+
+  layersActive.forEach((lid) => {
+    const layer = legendLayers.find(r => r.id === lid);
+    if (!layer) return false;
+
+    const { id, name, description, metadata, legendConfig, paramsConfig, decodeConfig, timelineConfig } = layer;
+
+    const lSettings = layersSettings[id] || {};
+
+    const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
+    const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
+
+    layerGroups.push({
+      id,
+      dataset: id,
+      name: intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
+      description,
+      metadata,
+      layers: [{
+        ...layer,
+        name: intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
+        opacity: 1,
+        active: true,
+        legendConfig: {
+          ...legendConfig,
+          ...(legendConfig.items && {
+            items: sortBy(legendConfig.items.map(i => ({
+              ...i,
+              ...(i.name && { name: intl.formatMessage({ id: i.name || '-' }) }),
+            })), 'name')
+          })
+        },
+        ...lSettings,
+        ...(!!paramsConfig && {
+          params
+        }),
+
+        ...(!!decodeConfig && {
+          decodeParams
+        }),
+
+        ...(!!timelineConfig && {
+          timelineParams: {
+            ...timelineConfig,
+            ...getParams(paramsConfig, lSettings.params),
+            ...getParams(decodeConfig, lSettings.decodeParams),
+            ...lSettings.timelineParams
+          }
+        })
+      }],
+      visibility: true,
+      ...lSettings
+    });
+  });
+
+  return layerGroups;
 }
