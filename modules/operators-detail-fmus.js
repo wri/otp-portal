@@ -32,9 +32,6 @@ const initialState = {
     'gain',
     'loss',
     // 'integrated-alerts', //activate when metadata is loaded
-    // 'aac-cog',
-    // 'aac-cod',
-    // 'aac-cmr',
     'fmusdetail'
   ],
   layersSettings: {},

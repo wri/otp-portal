@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { LayerManager, Layer } from 'layer-manager/dist/components';
 import { PluginMapboxGl, fetch } from 'layer-manager';
 
-// import fmuAccProvider from './providers/fmu-aac-provider';
 import countriesProvider from './providers/countries-provider';
 
 class LayerManagerComponent extends PureComponent {
@@ -21,10 +20,7 @@ class LayerManagerComponent extends PureComponent {
         map={map}
         plugin={PluginMapboxGl}
         providers={{
-          countries: countriesProvider,
-          // 'aac-cog': fmuAccProvider('num_con'),
-          // 'aac-cod': fmuAccProvider('num_ccf'),
-          // 'aac-cmr': fmuAccProvider('nom_ufe')
+          countries: countriesProvider
         }}
       >
         {!!layers && layers.map((l) => {
