@@ -180,8 +180,8 @@ export const LAYERS = [
       speed: 100,
       interval: 'days',
       dateFormat: 'YYYY-MM-DD',
-      trimEndDate: '{maxDate}', // updated after fetching layer metadata
-      maxDate: '{maxDate}', // updated after fetching layer metadata
+      // trimEndDate: '{maxDate}', // updated after fetching layer metadata
+      // maxDate: '{maxDate}', // updated after fetching layer metadata
       minDate: '2020-08-30', // timeline min date - updated after fetching layer metadata
       minDataDate: '2014-12-31', // layer data min date - updated after fetching layer metadata
       canPlay: true,
@@ -320,165 +320,6 @@ export const LAYERS = [
       source: 'layer.tree-cover-loss.metadata.source'
     }
   },
-  {
-    id: 'aac-cog',
-    name: 'aac',
-    iso: 'COG',
-    config: {
-      type: 'geojson',
-      source: {
-        type: 'geojson',
-        provider: {
-          type: 'aac-cog',
-          url: 'https://opendata.arcgis.com/datasets/0c31460808d84dfe806127a25fd0de62_29.geojson'
-        }
-      },
-      render: {
-        layers: [
-          {
-            type: 'fill',
-            paint: {
-              'fill-color': '#CCCCCC',
-              'fill-opacity': 0.5
-            },
-            filter: [
-              'all',
-              ['in', ['get', 'num_con'], ['literal', '{fmuNames}']]
-            ]
-          },
-          {
-            type: 'line',
-            paint: {
-              'line-color': '#CCCCCC',
-              'line-opacity': 0.5
-            },
-            filter: [
-              'all',
-              ['in', ['get', 'num_con'], ['literal', '{fmuNames}']]
-            ]
-          }
-        ]
-      }
-    },
-    paramsConfig: [
-      { key: 'fmuNames', default: [], required: true }
-    ],
-    legendConfig: {
-      type: 'basic',
-      items: [
-        { name: 'aac', color: '#CCCCCC' }
-      ]
-    },
-    interactionConfig: {
-      enabled: true
-    }
-  },
-  {
-    id: 'aac-cod',
-    name: 'aac',
-    iso: 'COD',
-    config: {
-      type: 'geojson',
-      source: {
-        type: 'geojson',
-        provider: {
-          type: 'aac-cod',
-          url: 'https://opendata.arcgis.com/datasets/c60d5bf9e01c45c5ad79208803819db1_30.geojson'
-        }
-      },
-      render: {
-        layers: [
-          {
-            type: 'fill',
-            paint: {
-              'fill-color': '#CCCCCC',
-              'fill-opacity': 0.5
-            },
-            filter: [
-              'all',
-              ['in', ['get', 'num_ccf'], ['literal', '{fmuNames}']]
-            ]
-          },
-          {
-            type: 'line',
-            paint: {
-              'line-color': '#CCCCCC',
-              'line-opacity': 0.5
-            },
-            filter: [
-              'all',
-              ['in', ['get', 'num_ccf'], ['literal', '{fmuNames}']]
-            ]
-          }
-        ]
-      }
-    },
-    paramsConfig: [
-      { key: 'fmuNames', default: [], required: true }
-    ],
-    legendConfig: {
-      type: 'basic',
-      items: [
-        { name: 'aac', color: '#CCCCCC' }
-      ]
-    },
-    interactionConfig: {
-      enabled: true
-    }
-  },
-  // {
-  //   id: 'aac-cmr',
-  //   name: 'aac',
-  //   iso: 'CMR',
-  //   config: {
-  //     type: 'geojson',
-  //     source: {
-  //       type: 'geojson',
-  //       provider: {
-  //         type: 'aac-cmr',
-  //         url: 'https://opendata.arcgis.com/datasets/951c6b559cc945afb96013361519305b_128.geojson'
-  //       }
-  //     },
-  //     render: {
-  //       layers: [
-  //         {
-  //           type: 'fill',
-  //           paint: {
-  //             'fill-color': '#CCCCCC',
-  //             'fill-opacity': 0.5
-  //           },
-  //           // filter: [
-  //           //   'all',
-  //           //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
-  //           // ]
-  //         },
-  //         {
-  //           type: 'line',
-  //           paint: {
-  //             'line-color': '#CCCCCC',
-  //             'line-opacity': 0.5
-  //           },
-  //           // filter: [
-  //           //   'all',
-  //           //   ['in', ['get', 'nom_ufe'], ['literal', '{fmuNames}']]
-  //           // ]
-  //         }
-  //       ]
-  //     }
-  //   },
-  //   paramsConfig: [
-  //     { key: 'fmuNames', default: [], required: true }
-  //   ],
-  //   legendConfig: {
-  //     type: 'basic',
-  //     items: [
-  //       { name: 'aac', color: '#CCCCCC' }
-  //     ]
-  //   },
-  //   interactionConfig: {
-  //     enabled: true
-  //   }
-  // },
   {
     id: 'fmus',
     name: 'Forest managment units',
@@ -745,30 +586,7 @@ export const LAYERS = [
               'fill-opacity': 0.9
             }
           },
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'operator_id', '{operator_id}']
-            ],
-            paint: {
-              'line-color': '#000000',
-              'line-opacity': 0.1
-            }
-          },
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{clickId}']
-            ],
-            paint: {
-              'line-opacity': 1,
-              'line-width': 2
-            }
-          },
+          // clicked features
           {
             type: 'fill',
             'source-layer': 'layer0',
@@ -780,34 +598,21 @@ export const LAYERS = [
               'fill-color': '#333'
             }
           },
-
-          {
-            type: 'line',
-            'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}'],
-              ['!=', 'id', '{clickId}']
-            ],
-            paint: {
-              'line-dasharray': [3, 1],
-              'line-opacity': 1,
-              'line-width': 2
-            }
-          },
+          // hovered features
           {
             type: 'fill',
             'source-layer': 'layer0',
-            filter: [
-              'all',
-              ['==', 'id', '{hoverId}'],
-              ['!=', 'id', '{clickId}']
-            ],
+            filter: ['!=', 'id', '{clickId}'], // Exclude clicked feature
             paint: {
-              'fill-color': '#333'
+              'fill-color': '#333',
+              'fill-opacity': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                0.8, // Hover opacity
+                0 // do not show
+              ]
             }
           }
-
         ]
       }
     },

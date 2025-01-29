@@ -254,7 +254,6 @@ const getObservationsLegend = createSelector(
                       ...(ii.name && { name: _intl.formatMessage({ id: ii.name || '-' }) })
                     }))
                   })
-
                 })), 'name')
               })
             }

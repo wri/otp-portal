@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
+import { isEmpty } from 'utils/general';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 dayjs.extend(dayOfYear);
 
@@ -90,4 +93,115 @@ export const getParams = (config = [], params = {}) => {
     ...getDayRange(newParams)
   };
 }
-;
+  ;
+
+export function getInteractiveLayersIds(layer) {
+  const { id, config, interactionConfig } = layer;
+  if (isEmpty(config) || isEmpty(interactionConfig)) return null;
+
+  const { render = {} } = config;
+  const { layers } = render;
+  if (!layers) return null;
+
+  return layers.map((l, i) => {
+    const {
+      id: vectorLayerId,
+      type: vectorLayerType
+    } = l;
+
+    return vectorLayerId || `${id}-${vectorLayerType}-${i}`;
+  });
+}
+
+export function getActiveInteractiveLayersSelector(layers, interactions) {
+  if (!layers || isEmpty(interactions)) return [];
+
+  const allLayers = uniqBy(layers, 'id');
+
+  const interactiveLayerKeys = Object.keys(interactions);
+  const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
+
+  return interactiveLayers.map(l => ({ ...l, data: interactions[l.id] }));
+}
+
+export function getPopupSelector(latlng) {
+  if (isEmpty(latlng) || !latlng.lat || !latlng.lng) {
+    return {};
+  }
+
+  const popup = {
+    latitude: latlng.lat,
+    longitude: latlng.lng
+  };
+
+  return popup;
+}
+
+export function getLegendLayersSelector(layers, layersSettings, layersActive, intl) {
+  if (!layers) return [];
+  const legendLayers = layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
+
+  const layerGroups = [];
+
+  layersActive.forEach((lid) => {
+    const layer = legendLayers.find(r => r.id === lid);
+    if (!layer) return false;
+
+    const { id, name, description, metadata, legendConfig, paramsConfig, decodeConfig, timelineConfig } = layer;
+
+    const lSettings = layersSettings[id] || {};
+
+    const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
+    const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
+
+    layerGroups.push({
+      id,
+      dataset: id,
+      name: intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
+      description,
+      metadata,
+      layers: [{
+        ...layer,
+        name: intl.formatMessage({ id: name || '-' }) + (metadata && metadata.dateOfContent ? ` (${metadata.dateOfContent})` : ''),
+        opacity: 1,
+        active: true,
+        legendConfig: {
+          ...legendConfig,
+          ...(legendConfig.items && {
+            items: sortBy(legendConfig.items.map(i => ({
+              ...i,
+              ...(i.name && { name: intl.formatMessage({ id: i.name || '-' }) }),
+              ...(i.items && {
+                items: i.items.map(ii => ({
+                  ...ii,
+                  ...(ii.name && { name: intl.formatMessage({ id: ii.name || '-' }) })
+                }))
+              })
+            })), 'name')
+          })
+        },
+        ...lSettings,
+        ...(!!paramsConfig && {
+          params
+        }),
+
+        ...(!!decodeConfig && {
+          decodeParams
+        }),
+
+        ...(!!timelineConfig && {
+          timelineParams: {
+            ...timelineConfig,
+            ...getParams(paramsConfig, lSettings.params),
+            ...getParams(decodeConfig, lSettings.decodeParams),
+            ...lSettings.timelineParams
+          }
+        })
+      }],
+      visibility: true,
+      ...lSettings
+    });
+  });
+
+  return layerGroups;
+}
