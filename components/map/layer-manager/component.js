@@ -2,9 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { LayerManager, Layer } from 'layer-manager/dist/components';
-import { PluginMapboxGl, fetch } from 'layer-manager';
-
-import countriesProvider from './providers/countries-provider';
+import { PluginMapboxGl } from 'layer-manager';
 
 class LayerManagerComponent extends PureComponent {
   static propTypes = {
@@ -19,9 +17,6 @@ class LayerManagerComponent extends PureComponent {
       <LayerManager
         map={map}
         plugin={PluginMapboxGl}
-        providers={{
-          countries: countriesProvider
-        }}
       >
         {!!layers && layers.map((l) => {
           return (
