@@ -131,9 +131,10 @@ class OperatorsDetailFMUs extends React.Component {
 
   componentWillUnmount() {
     // Attribution listener
-    document
-      .getElementById('forest-atlas-attribution')
-      .removeEventListener('click', this.onCustomAttribute);
+    const faElement = document.getElementById('forest-atlas-attribution');
+    if (faElement) {
+      faElement.removeEventListener('click', this.onCustomAttribute);
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -212,6 +213,7 @@ class OperatorsDetailFMUs extends React.Component {
     const {
       fmu,
       fmus,
+      operatorsDetail,
       operatorsDetailFmus,
       activeLayers,
       activeInteractiveLayersIds,
@@ -223,6 +225,24 @@ class OperatorsDetailFMUs extends React.Component {
     const certifications = CERTIFICATIONS.filter(
       ({ value }) => fmu[`certification-${value}`]
     ).map((ct) => ct.label);
+
+    // use loaded operator data to not have flickering message when more fmus data is still loading (fmus property)
+    const operatorHasNoFMUS = operatorsDetail.data && (!operatorsDetail.data.fmus || !operatorsDetail.data.fmus.length);
+
+    if (operatorHasNoFMUS) {
+      return (
+        <div className="c-section">
+          <div className="l-container">
+            <div className="c-no-data">
+              {this.props.intl.formatMessage({
+                id: 'operator-detail.overview.cardfmu.none',
+                defaultMessage: 'There are no FMUs managed by {company_name}.'
+              }, { company_name: operatorsDetail.data.name || '' })}
+            </div>
+          </div>
+        </div>
+      )
+    }
 
     return (
       <div className="c-section -map -sm-flex-column">
@@ -345,6 +365,7 @@ OperatorsDetailFMUs.propTypes = {
   interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,
+  operatorsDetail: PropTypes.object.isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
@@ -364,6 +385,7 @@ export default withDeviceInfo(injectIntl(
   connect(
     (state, props) => ({
       language: state.language,
+      operatorsDetail: state.operatorsDetail,
       operatorsDetailFmus: state.operatorsDetailFmus,
       interactions: state.operatorsDetailFmus.interactions,
       fmus: getFMUs(state, props),
