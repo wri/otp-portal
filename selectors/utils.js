@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
 import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 dayjs.extend(dayOfYear);
 
@@ -94,7 +95,7 @@ export const getParams = (config = [], params = {}) => {
 }
   ;
 
-export function getLayerId(layer) {
+export function getInteractiveLayersIds(layer) {
   const { id, config, interactionConfig } = layer;
   if (isEmpty(config) || isEmpty(interactionConfig)) return null;
 
@@ -170,6 +171,12 @@ export function getLegendLayersSelector(layers, layersSettings, layersActive, in
             items: sortBy(legendConfig.items.map(i => ({
               ...i,
               ...(i.name && { name: intl.formatMessage({ id: i.name || '-' }) }),
+              ...(i.items && {
+                items: i.items.map(ii => ({
+                  ...ii,
+                  ...(ii.name && { name: intl.formatMessage({ id: ii.name || '-' }) })
+                }))
+              })
             })), 'name')
           })
         },

@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import sortBy from 'lodash/sortBy';
 import slugify from 'slugify';
 
-import { getLayerId, getParams, getPopupSelector, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
+import { getInteractiveLayersIds, getParams, getPopupSelector, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
 
 import { LAYERS } from 'constants/layers';
 
@@ -27,18 +27,21 @@ const analysis = state => state.operatorsDetailFmus.analysis;
 export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, fmu, operatorsDetail,
   (_layersActive, _layers, _layersSettings, _interactions, _fmu, _operatorsDetail) => {
-    const { id: operator_id, fmus, country } = _operatorsDetail;
+    if (!_fmu) return [];
+
+    const { id: operator_id, fmus } = _operatorsDetail;
     const fmuNames = (fmus || []).map(f => slugify(f.name, { lower: true }));
 
-    // Layers
-    const aLayers = _layers.map((l) => {
-      const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
-      const settings = _layersSettings[id] || {};
-
-      if (_layersActive.includes(id) && _fmu && (!l.iso || l.iso === country.iso)) {
+    return _layersActive
+      .map((id) => _layers.find(l => l.id === id))
+      .filter(x => !!x)
+      .map(l => {
+        const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
+        const interactiveLayersIds = getInteractiveLayersIds(l);
+        const settings = _layersSettings[id] || {};
         const interactionParams = { clickId: Number(_fmu) };
+        const layerConfig = { ...l.config };
 
-        const layerConfig = {...l.config};
         // just fetch only tiles for operator's fmus
         if (id === 'fmusdetail') {
           layerConfig.source.tiles = [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}?operator_id=${operator_id}`];
@@ -46,6 +49,7 @@ export const getActiveLayers = createSelector(
 
         return {
           id,
+          interactiveLayersIds,
           ...layerConfig,
           ...settings,
 
@@ -58,32 +62,11 @@ export const getActiveLayers = createSelector(
             decodeFunction
           })
         };
-      }
-
-      return null;
-    });
-
-    return aLayers.filter(x => !!x);
+      })
   }
 );
 
-export const getActiveInteractiveLayersIds = createSelector(
-  [layers, layersSettings, layersActive, operatorsDetail],
-  (_layers, _layersSettings, _layersActive, _operatorsDetail) => {
-    if (!_layers) return [];
-
-    const { country } = _operatorsDetail;
-
-    return _layersActive.map((kActive) => {
-      const layer = _layers.find(l => l.id === kActive);
-      if (!layer) return null;
-      if (layer.iso && layer.iso !== country.iso) return null;
-
-      return getLayerId(layer);
-    }).filter(x => !!x).flat();
-  }
-);
-
+export const getActiveInteractiveLayersIds = createSelector([getActiveLayers], (layers) => layers.map(l => l.interactiveLayersIds).flat().filter(x => !!x));
 export const getActiveInteractiveLayers = createSelector([layers, interactions], getActiveInteractiveLayersSelector);
 
 export const getLegendLayers = createSelector(

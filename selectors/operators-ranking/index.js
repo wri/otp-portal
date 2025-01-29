@@ -1,13 +1,10 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 
-import { isEmpty } from 'utils/general';
-import uniqBy from 'lodash/uniqBy';
-
 import Fuse from 'fuse.js';
 
 // Utils
-import { getLayerId, getParams, getPopupSelector, getLegendLayersSelector } from '../utils';
+import { getInteractiveLayersIds, getActiveInteractiveLayersSelector, getParams, getPopupSelector, getLegendLayersSelector } from '../utils';
 import { HELPERS_DOC } from 'utils/documentation';
 import { SEARCH_OPTIONS } from 'constants/general';
 import { LAYERS } from 'constants/layers';
@@ -31,13 +28,9 @@ const countryActive = state => state.operatorsRanking.filters.data.country;
 
 export const getActiveCountries = createSelector(countryOptions, countryActive, (_countryOptions, _countryActive) => {
   return _countryOptions.map((c) => {
-    if (!_countryActive || !_countryActive.length) {
-      return c.iso;
-    }
+    if (!_countryActive || !_countryActive.length) return c.iso;
+    if (_countryActive.includes(c.value)) return c.iso;
 
-    if (_countryActive.includes(c.value)) {
-      return c.iso;
-    }
     return null;
   }).filter(x => !!x);
 });
@@ -47,13 +40,17 @@ export const getActiveLayers = createSelector(
   layersActive, layers, layersSettings, interactions, getActiveCountries,
   (_layersActive, _layers, _layersSettings, _interactions, cIsoCodes) => {
     // Layers
-    const aLayers = _layers.map((l) => {
-      const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
-      const settings = _layersSettings[id] || {};
+    return _layersActive
+      .map((id) => _layers.find(l => l.id === id))
+      .filter(x => !!x)
+      .map((l) => {
+        const { id, paramsConfig, decodeConfig, decodeFunction, timelineConfig } = l;
+        const interactiveLayersIds = getInteractiveLayersIds(l);
+        const settings = _layersSettings[id] || {};
 
-      if (_layersActive.includes(id)) {
         return {
           id,
+          interactiveLayersIds,
           ...l.config,
           ...settings,
 
@@ -66,47 +63,14 @@ export const getActiveLayers = createSelector(
             decodeFunction
           })
         };
-      }
-
-      return null;
-    });
-
-    return aLayers.filter(x => !!x);
+      });
   }
 );
 
-export const getActiveInteractiveLayersIds = createSelector(
-  [layers, layersSettings, layersActive],
-  (_layers, _layersSettings, _layersActive) => {
-    if (!_layers) return [];
+export const getActiveInteractiveLayersIds = createSelector([getActiveLayers], (layers) => layers.map(l => l.interactiveLayersIds).flat().filter(x => !!x));
+export const getActiveInteractiveLayers = createSelector([layers, interactions], getActiveInteractiveLayersSelector);
 
-    return _layersActive.map((layerId) => {
-      const layer = _layers.find(l => l.id === layerId);
-      if (!layer) return null;
-
-      return getLayerId(layer);
-    }).filter(l => !!l).flat();
-  }
-);
-
-export const getActiveInteractiveLayers = createSelector(
-  [layers, interactions],
-  (_layers, _interactions) => {
-    if (!_layers || isEmpty(_interactions)) return {};
-
-    const allLayers = uniqBy(_layers, 'id');
-
-    const interactiveLayerKeys = Object.keys(_interactions);
-    const interactiveLayers = allLayers.filter(l => interactiveLayerKeys.includes(l.id));
-
-    return interactiveLayers.map(l => ({ ...l, data: _interactions[l.id] }));
-  }
-);
-
-export const getLegendLayers = createSelector(
-  [layers, layersSettings, layersActive, intl],
-  getLegendLayersSelector
-);
+export const getLegendLayers = createSelector([layers, layersSettings, layersActive, intl], getLegendLayersSelector);
 
 export const getPopup = createSelector([latlng], getPopupSelector);
 
@@ -167,12 +131,6 @@ export const getTable = createSelector(
       fmusLenght: o.fmus ? o.fmus.length : 0,
       country: o.country.name
     }));
-
-
-
-    // Filter by producer name
-
-
 
     return operatorsTable;
   }
