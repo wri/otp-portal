@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'react-fast-compare';
 import orderBy from 'lodash/orderBy';
-import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -119,16 +118,12 @@ class ObservationsPage extends React.Component {
     this.setState({ tab });
   }
 
-  setMapLocation = debounce((mapLocation) => {
-    this.props.setObservationsMapLocation(mapLocation);
-  }, 500);
-
   onViewportChange = (mapLocation) => {
     // if zoom level changes (rounding as sometimes is like 4.999999...) then hide open cluster
     if (Math.round(this.props.observations.map.zoom) != Math.round(mapLocation.zoom)) {
       this.props.setObservationsMapCluster({});
     }
-    this.setMapLocation(mapLocation);
+    this.props.setObservationsMapLocation(mapLocation);
   };
 
   onClick = (e) => {
