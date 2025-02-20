@@ -6,6 +6,7 @@ import Fuse from 'fuse.js';
 // Utils
 import { getInteractiveLayersIds, getActiveInteractiveLayersSelector, getParams, getPopupSelector, getLegendLayersSelector } from '../utils';
 import { HELPERS_DOC } from 'utils/documentation';
+import searchFMUs from 'utils/search-fmus';
 import { SEARCH_OPTIONS } from 'constants/general';
 import { LAYERS } from 'constants/layers';
 
@@ -82,18 +83,18 @@ export const getTable = createSelector(
     const activeOperatorSearch = _filters.data.operator.length ? _filters.data.operator : null;
     const activeFMUSearch = _filters.data.fmu.length ? _filters.data.fmu : null;
 
-    let operatorsTable = null;
+    let operatorsTable = _data;
 
     // Filter by country
     if (activeCountries) {
-      operatorsTable = (operatorsTable || _data).filter(o => {
+      operatorsTable = operatorsTable.filter(o => {
         return activeCountries.indexOf(Number(o.country.id)) !== -1;
       });
     }
 
     // Filter by certification
     if (activeCertifications) {
-      operatorsTable = (operatorsTable || _data).filter(o => {
+      operatorsTable = operatorsTable.filter(o => {
         return o.fmus.some(f => {
           return activeCertifications.some(ac => {
             return f[`certification-${ac}`];
@@ -103,21 +104,15 @@ export const getTable = createSelector(
     }
 
     if (activeOperatorSearch) {
-      const fuse = new Fuse(operatorsTable || _data, SEARCH_OPTIONS);
+      const fuse = new Fuse(operatorsTable, SEARCH_OPTIONS);
       operatorsTable = fuse.search(activeOperatorSearch).map(r => r.item);
     }
 
     if (activeFMUSearch) {
-      const fuse = new Fuse(operatorsTable || _data, {
-        ...SEARCH_OPTIONS,
-        keys: ['fmus.name'],
-        distance: 100,
-        threshold: 0.15
-      });
-      operatorsTable = fuse.search(activeFMUSearch).map(r => r.item);
+      operatorsTable = searchFMUs(operatorsTable, activeFMUSearch, 'fmus.name');
     }
 
-    operatorsTable = (operatorsTable || _data).map(o => ({
+    operatorsTable = operatorsTable.map(o => ({
       id: o.id,
       name: o.name,
       slug: o.slug,
