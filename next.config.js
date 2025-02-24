@@ -8,6 +8,7 @@ require('dotenv').config();
 if (!process.env.SECRET) throw new Error('Missing session SECRET')
 
 const config = {
+  distDir: process.env.BUILD_DIR || '.next',
   // only PUBLIC env variables here (accessible on the client side)
   env: {
     ENV: process.env.ENV,

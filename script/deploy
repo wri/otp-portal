@@ -14,14 +14,22 @@ nvm use
 
 echo "--> Installing libraries"
 export NODE_ENV="development"
-yarn install
+yarn install || exit
 export NODE_ENV="production"
 
 echo "Fetching languages"
-yarn transifex:pull
+yarn transifex:pull || exit
 
 echo "--> Building assets"
-yarn build
+BUILD_DIR=temp_build yarn build || exit
+
+if [ ! -d "temp_build" ]; then
+  echo '\033[31m Temp build Directory not exists!\033[0m'
+  exit 1;
+fi
+
+rm -rf .next
+mv temp_build .next
 
 if pm2 describe otp-portal > /dev/null; then
   echo "--> Restarting application"
@@ -32,3 +40,7 @@ else
   sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/$(node -v)/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
   pm2 save
 fi
+
+pm2 reset all
+
+echo "Deploy done successfully"
