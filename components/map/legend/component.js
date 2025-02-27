@@ -108,23 +108,23 @@ class LegendComponent extends PureComponent {
   renderDisclaimer = ({ disclaimer, disclaimerTooltip }) => {
     const { intl } = this.props;
 
-    return renderHtml(intl.formatMessage({ id: disclaimer }), {
-      replace: (node) => {
-        if (node.attribs && node.attribs.class === 'highlight' && disclaimerTooltip) {
-          return (
-            <Tooltip
-              placement="bottom"
-              overlay={
-                <div style={{ maxWidth: 200 }}>
-                  {intl.formatMessage({ id: disclaimerTooltip })}
-                </div>
-              }
-              overlayClassName="c-tooltip no-pointer-events"
-            >
-              <span className="highlight">{node.children[0].data}</span>
-            </Tooltip>
-          );
-        }
+    return intl.formatMessage({ id: disclaimer }, {
+      highlight: chunks => {
+        if (!disclaimerTooltip) return <span className="highlight">{chunks}</span>;
+
+        return (
+          <Tooltip
+            placement="bottom"
+            overlay={
+              <div style={{ maxWidth: 200 }}>
+                {intl.formatMessage({ id: disclaimerTooltip })}
+              </div>
+            }
+            overlayClassName="c-tooltip no-pointer-events"
+          >
+            <span className="highlight">{chunks}</span>
+          </Tooltip>
+        )
       }
     });
   }
@@ -159,7 +159,7 @@ class LegendComponent extends PureComponent {
                     <LegendItemButtonVisibility />
                   </LegendItemToolbar>
                 )
-                }
+              }
               onChangeInfo={(l => this.onChangeInfo(true, layerGroup.id))}
               onChangeVisibility={((l, visibility) => this.onChangeVisibility(l, visibility, layerGroup.id))}
               onChangeOpacity={(l, opacity) => this.onChangeOpacity(l, opacity, layerGroup.id)}
@@ -199,7 +199,7 @@ class LegendComponent extends PureComponent {
                 </div>
               )}
             </LegendListItem>
-            ))}
+          ))}
         </Legend>
       </div>
     );

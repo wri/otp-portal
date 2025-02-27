@@ -37,7 +37,13 @@ function DocumentsCertification(props) {
             <h3 className="c-title -proximanova -extrabig -uppercase">
               {intl.formatMessage({ id: 'operator-detail.license' })}
             </h3>
-            <p dangerouslySetInnerHTML={{ __html: intl.formatMessage({ id: `operator-detail.license.${status}` }) }} />
+            <p>
+              {status !== 'doc_not_provided' && intl.formatMessage({ id: `operator-detail.license.${status}` })}
+              {status === 'doc_not_provided' && intl.formatMessage(
+                { id: `operator-detail.license.doc_not_provided` },
+                { a: (chunks) => <a href="https://opentimberportal.org/static/pdf/AUTORISATION-ENTREPRISES-FINALE.pdf" target="_blank">{chunks}</a> }
+              )}
+            </p>
           </header>
 
           <div className="row l-row -equal-heigth">
