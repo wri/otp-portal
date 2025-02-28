@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Fuse from 'fuse.js';
 
 import { injectIntl } from 'react-intl';
-
-import { SEARCH_OPTIONS } from 'constants/general';
+import searchFMUs from 'utils/search-fmus';
 
 // import Tooltip from 'rc-tooltip';
 // import Icon from 'components/ui/icon';
@@ -28,13 +26,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
 
   let fmus = operator.fmus;
   if (fmuSearch.length > 1) {
-    const fuse = new Fuse(fmus, {
-      ...SEARCH_OPTIONS,
-      keys: ['name'],
-      distance: 100,
-      threshold: 0.15
-    });
-    fmus = fuse.search(fmuSearch).map(r => r.item);
+    fmus = searchFMUs(fmus, fmuSearch);
   }
 
   return (

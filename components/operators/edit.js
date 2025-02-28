@@ -28,7 +28,7 @@ import SawmillsTable from 'components/ui/sawmills-table';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
-import { HELPERS_FMU } from 'utils/fmu';
+import { getFmusByOperatorId } from 'utils/fmu';
 import SubmitButton from '../form/SubmitButton';
 import dynamic from 'next/dynamic';
 
@@ -55,7 +55,7 @@ const EditOperator = (props) => {
 
   const fetchFmus = async () => {
     setFmusLoading(true);
-    const fmus = await HELPERS_FMU.getFmusByOperatorId(operator.id, language);
+    const fmus = await getFmusByOperatorId(operator.id, language);
     setFmusOptions(fmus);
     setFmusLoading(false);
   }
