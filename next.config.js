@@ -55,7 +55,7 @@ const config = {
     config.plugins.push(
       new webpack.DefinePlugin({
         __SENTRY_DEBUG__: false,
-        __SENTRY_TRACING__: false, // Tracing, we don't use it
+        // __SENTRY_TRACING__: false, // Tracing, we don't use it
         __RRWEB_EXCLUDE_IFRAME__: true,  // Session Replay - we don't use it
         __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
         __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it

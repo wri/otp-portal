@@ -13,7 +13,7 @@ if (SENTRY_DSN) {
     debug: false,
     dsn: SENTRY_DSN,
     integrations: [],
-    tracesSampleRate: 0,
+    tracesSampleRate: 0.2,
     environment: process.env.ENV,
     ignoreErrors: [
       'ResizeObserver loop limit exceeded',
