@@ -87,11 +87,13 @@ CustomDocument.getInitialProps = async (ctx) => {
         </html>
       `;
         const label = `generating critical CSS for ${ctx.pathname}`;
+        const span = Sentry.startSpan({ name: label });
         console.time(label); // eslint-disable-line
         criticalCss = dropcss({
           css,
           html
         }).css;
+        span.end();
         console.timeEnd(label); // eslint-disable-line
       }
     } catch (e) {
