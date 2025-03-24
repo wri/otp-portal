@@ -31,7 +31,8 @@ let translations;
 // if (isServer) { ... }
 // DOES NOT WORK because required files ends up in the client bundle anyway. Dunno why
 if (typeof window === 'undefined') {
-  const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
+  // const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
+  const langFolder = '';
   translations = {
     en: require(`lang/${langFolder}en.json`),
     fr: require(`lang/${langFolder}fr.json`),

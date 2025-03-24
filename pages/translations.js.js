@@ -1,4 +1,5 @@
-const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
+// const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
+const langFolder = '';
 const translations = {
   en: require(`lang/${langFolder}en.json`),
   fr: require(`lang/${langFolder}fr.json`),
