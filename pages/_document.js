@@ -64,43 +64,72 @@ export default function CustomDocument({ locale, criticalCss }) {
   );
 }
 
-CustomDocument.getInitialProps = async (ctx) => {
-  const initialProps = await Document.getInitialProps(ctx);
-
+function getCriticalCss(ctx, pageHtml) {
+  if (!isCriticalCssEnabled) return null;
   let criticalCss = null;
 
-  if (isCriticalCssEnabled) {
-    try {
-      const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
-      const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
+  try {
+    const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
+    const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
 
-      if (cssFiles.length > 0) {
-        // Get the first CSS file
-        const cssFilePath = path.join(cssDirPath, cssFiles[0]);
-        const css = fs.readFileSync(cssFilePath, 'utf8');
-
-        const html = `
-        <html>
-          <body>
-            ${initialProps.html}
-          </body>
-        </html>
-      `;
-        const label = `generating critical CSS for ${ctx.pathname}`;
-        const span = Sentry.startSpan({ name: label });
-        console.time(label); // eslint-disable-line
-        criticalCss = dropcss({
-          css,
-          html
-        }).css;
-        span.end();
-        console.timeEnd(label); // eslint-disable-line
-      }
-    } catch (e) {
-      console.error('Error generating critical CSS:', e); // eslint-disable-line
-      Sentry.captureException(e);
+    if (cssFiles.length === 0) {
+      console.warn('No CSS files found in the directory'); // eslint-disable-line
+      return null;
     }
+
+    // get cached critical css
+    const buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
+    const page = ctx.pathname === '/' ? 'index' : ctx.pathname.replace(/\//g, '_').replace(/^\_/, '');
+    const cacheDirPath = path.resolve(process.cwd(), `.next/cache/critical-css/${buildId}`);
+    const cacheFilePath = path.join(cacheDirPath, `${page}.css`);
+
+    // checking dropcss cached
+    if (!fs.existsSync(cacheDirPath)) {
+      fs.mkdirSync(cacheDirPath, { recursive: true });
+    }
+
+    if (fs.existsSync(cacheFilePath)) {
+      const label = `reading critical CSS for ${page} from cache`;
+      const span = Sentry.startInactiveSpan({ name: 'dropCSS-cached', description: label });
+      console.time(label); // eslint-disable-line
+      const cachedCriticalCss = fs.readFileSync(cacheFilePath, 'utf8');
+      console.timeEnd(label); // eslint-disable-line
+      span.end();
+      return cachedCriticalCss;
+    }
+
+    // Get the first CSS file
+    const cssFilePath = path.join(cssDirPath, cssFiles[0]);
+    const css = fs.readFileSync(cssFilePath, 'utf8');
+    const html = `
+      <html>
+        <body>
+          ${pageHtml}
+        </body>
+      </html>
+      `;
+    const label = `generating critical CSS for ${page}`;
+    const span = Sentry.startInactiveSpan({ name: 'dropCSS', description: label });
+    console.time(label); // eslint-disable-line
+    criticalCss = dropcss({
+      css,
+      html
+    }).css;
+    // saving critical css
+    fs.writeFileSync(cacheFilePath, criticalCss, 'utf8');
+    span.end();
+    console.timeEnd(label); // eslint-disable-line
+  } catch (e) {
+    console.error('Error generating critical CSS:', e); // eslint-disable-line
+    Sentry.captureException(e);
   }
+
+  return criticalCss;
+}
+
+CustomDocument.getInitialProps = async (ctx) => {
+  const initialProps = await Document.getInitialProps(ctx);
+  const criticalCss = getCriticalCss(ctx, initialProps.html);
 
   return { ...initialProps, criticalCss };
 };
