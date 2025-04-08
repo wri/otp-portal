@@ -152,7 +152,8 @@ export function getDocumentsDatabase(options = { reload: false }) {
       'page[size]': pageSize,
       include: includes.join(','),
       'fields[fmus]': 'name,forest-type',
-      'fields[operators]': 'name',
+      'fields[operators]': 'name,country',
+      'fields[countries]': 'name,iso',
       ...Object.keys(filters).reduce((acc, key) => {
         if (isEmpty(filters[key])) return acc;
         return {
