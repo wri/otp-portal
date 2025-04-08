@@ -147,6 +147,10 @@
         }
       }
 
+      &.observer-organizations {
+        white-space: normal;
+      }
+
       &.evidence {
         .evidence-item-wrapper {
           display: flex;
