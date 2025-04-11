@@ -18,7 +18,6 @@ class LegendItemButtonOpacity extends PureComponent {
     enabledStyle: PropTypes.shape({}),
     disabledStyle: PropTypes.shape({}),
     tooltipText: PropTypes.string,
-    scrolling: PropTypes.bool,
 
     onChangeOpacity: PropTypes.func,
     onTooltipVisibilityChange: PropTypes.func,
@@ -36,7 +35,6 @@ class LegendItemButtonOpacity extends PureComponent {
     disabledStyle: {},
     tooltipOpened: false,
     tooltipText: '',
-    scrolling: false,
 
     onChangeOpacity: () => {},
     onTooltipVisibilityChange: () => {},
@@ -46,14 +44,6 @@ class LegendItemButtonOpacity extends PureComponent {
     visibilityHover: false,
     visibilityClick: false,
   };
-
-  componentWillReceiveProps(nextProps) {
-    const { scrolling } = nextProps;
-
-    if (scrolling) {
-      this.onTooltipVisibilityChange(false);
-    }
-  }
 
   onTooltipVisibilityChange = (v) => {
     const { visibility, onTooltipVisibilityChange } = this.props;
@@ -89,7 +79,6 @@ class LegendItemButtonOpacity extends PureComponent {
       disabledStyle,
       focusStyle,
       tooltipText,
-      scrolling,
       onChangeOpacity,
       ...rest
     } = this.props;
@@ -134,7 +123,7 @@ class LegendItemButtonOpacity extends PureComponent {
         >
           <button
             type="button"
-            styleName={`c-legend-button opacity ${classnames({ '-disabled': !visibility })}`}
+            className={`vizzuality__c-legend-button vizzuality__opacity ${classnames({ 'vizzuality__-disabled': !visibility })}`}
             aria-label="Change opacity"
           >
             <Icon name={icon || 'icon-opacity'} className="-small" style={iconStyle} />

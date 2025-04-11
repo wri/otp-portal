@@ -1,4 +1,4 @@
-.c-legend-item {
+.vizzuality__c-legend-item {
   position: relative;
   z-index: 10;
   list-style: none;
@@ -16,12 +16,12 @@
     border-bottom: 0;
   }
 
-  .legend-item-container {
+  .vizzuality__legend-item-container {
     width: 100%;
     padding: 15px;
   }
 
-  .legend-info {
+  .vizzuality__legend-info {
     flex-grow: 1;
 
     > * {
@@ -30,7 +30,7 @@
     }
   }
 
-  .legend-item-header {
+  .vizzuality__legend-item-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;

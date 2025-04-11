@@ -57,13 +57,13 @@ class LegendOpacityTooltip extends PureComponent {
 
     return (
       <div
-        styleName="c-legend-item-button-opacity-tooltip"
+        className="vizzuality__c-legend-item-button-opacity-tooltip"
         ref={(node) => {
           this.el = node;
         }}
       >
         Opacity
-        <div styleName="slider-tooltip-container">
+        <div className="vizzuality__slider-tooltip-container">
           <Slider
             marks={{
               [min]: '0%',

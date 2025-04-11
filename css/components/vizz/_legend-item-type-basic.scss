@@ -1,10 +1,10 @@
-.c-legend-type-basic {
+.vizzuality__c-legend-type-basic {
   ul {
     margin: 0;
     padding: 0;
     list-style: none;
 
-    &.columns {
+    &.vizzuality__columns {
       display: flex;
       flex-wrap: wrap;
       margin: 10px 0 0;
@@ -16,7 +16,7 @@
       }
     }
 
-    &.horizontal {
+    &.vizzuality__horizontal {
       display: flex;
 
       li {
@@ -28,7 +28,7 @@
       }
     }
 
-    &.vertical {
+    &.vizzuality__vertical {
       li {
         margin-bottom: 5px;
 
@@ -39,7 +39,7 @@
     }
   }
 
-  .legend-basic-group {
+  .vizzuality__legend-basic-group {
     padding: 8px 0 0 10px;
   }
 

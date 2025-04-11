@@ -1,4 +1,4 @@
-.c-legend-map {
+.vizzuality__c-legend-map {
   position: relative;
   width: 100%;
   // max-width: 400px;
@@ -8,7 +8,7 @@
   border-radius: 4px;
   border-top-right-radius: 0;
 
-  .legend-title {
+  .vizzuality__legend-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -20,7 +20,7 @@
     font-size: 11px;
   }
 
-  .toggle-legend {
+  .vizzuality__toggle-legend {
     position: absolute;
     right: -1px;
     width: 40px;
@@ -45,7 +45,7 @@
   }
 
   // OPENED LEGEND
-  .open-legend {
+  .vizzuality__open-legend {
     display: flex;
     flex-flow: column;
     // max-height: 300px;
@@ -58,7 +58,7 @@
     // I've prefered to remove the animation than having
     // a legend too tall - Clément
 
-    &.-active {
+    &.vizzuality__-active {
       height: auto;
       opacity: 1;
       overflow: auto;
@@ -66,7 +66,7 @@
   }
 
   // CLOSED LEGEND
-  .close-legend {
+  .vizzuality__close-legend {
     display: none;
     width: 100%;
     border-color: transparent;
@@ -78,12 +78,12 @@
       outline: none;
     }
 
-    &.-active {
+    &.vizzuality__-active {
       display: inherit;
       cursor: pointer;
     }
 
-    .toggle-legend {
+    .vizzuality__toggle-legend {
       position: relative;
       top: auto;
       padding: 0;

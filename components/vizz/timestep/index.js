@@ -412,8 +412,8 @@ class Timestep extends PureComponent {
     return (
       <button
         type="button"
-        styleName="player-btn"
         className={classnames({
+          'vizzuality__player-btn': true,
           '-playing': statePlaying,
         })}
         onClick={this.handleTogglePlay}
@@ -442,11 +442,11 @@ class Timestep extends PureComponent {
     const { playing } = this.state;
 
     return (
-      <div styleName="c-timestep" className={customClass}>
+      <div className={`vizzuality__c-timestep ${customClass}`}>
         {canPlay && !PlayButton && this.renderPlay()}
         {canPlay && !!PlayButton && PlayButton}
 
-        <div styleName={classnames('timestep-slider', { 'can-play': canPlay })}>
+        <div className={classnames('vizzuality__timestep-slider', { 'vizzuality__can-play': canPlay })}>
           <Slider
             range={range}
             marks={marks}

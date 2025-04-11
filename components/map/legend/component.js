@@ -148,6 +148,7 @@ class LegendComponent extends PureComponent {
               index={i}
               key={layerGroup.id}
               layerGroup={layerGroup}
+              {...layerGroup}
               toolbar={
                 toolbar || (
                   <LegendItemToolbar>

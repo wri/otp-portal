@@ -13,8 +13,7 @@ class LegendItemButtonVisibility extends PureComponent {
     focusStyle: PropTypes.object,
     defaultStyle: PropTypes.object,
     tooltipOpened: PropTypes.bool,
-    tooltipText: PropTypes.string,
-    scrolling: PropTypes.bool,
+    tooltipText: PropTypes.string
   };
 
   static defaultProps = {
@@ -26,7 +25,6 @@ class LegendItemButtonVisibility extends PureComponent {
     defaultStyle: {},
     tooltipOpened: false,
     tooltipText: '',
-    scrolling: false,
 
     onChangeVisibility: () => {},
   };
@@ -34,14 +32,6 @@ class LegendItemButtonVisibility extends PureComponent {
   state = {
     visible: false,
   };
-
-  componentWillReceiveProps(nextProps) {
-    const { scrolling } = nextProps;
-
-    if (scrolling) {
-      this.setState({ visible: false });
-    }
-  }
 
   render() {
     const {
@@ -73,7 +63,7 @@ class LegendItemButtonVisibility extends PureComponent {
       >
         <button
           type="button"
-          styleName="c-legend-button toggle"
+          className="vizzuality__c-legend-button toggle"
           onClick={() => this.props.onChangeVisibility(activeLayer, !visibility)}
           aria-label="Toggle the visibility"
         >

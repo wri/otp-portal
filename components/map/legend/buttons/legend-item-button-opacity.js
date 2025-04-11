@@ -10,6 +10,7 @@ const CustomLegendItemButtonOpacity = (props) => {
   const { intl, ...rest } = props;
   const { visibility, activeLayer } = rest;
   const { opacity } = activeLayer;
+
   let tooltipText;
   if (!visibility) {
     tooltipText = intl.formatMessage({ id: 'Opacity (disabled)' });

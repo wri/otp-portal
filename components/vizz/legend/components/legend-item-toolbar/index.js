@@ -49,14 +49,15 @@ class LegendItemToolbar extends PureComponent {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, ...rest } = this.props;
+    const props = { ...rest };
 
     return (
-      <div styleName="c-legend-item-toolbar">
+      <div className="vizzuality__c-legend-item-toolbar">
         {!!React.Children.count(children) &&
           React.Children.map(children, (child) =>
             React.isValidElement(child) && typeof child.type !== 'string'
-              ? React.cloneElement(child, { ...this.props })
+              ? React.cloneElement(child, { ...props })
               : child
           )}
       </div>

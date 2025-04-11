@@ -90,7 +90,7 @@ class LegendItemTypes extends PureComponent {
     const shouldRender = !url || (url && !isEmpty(stateActiveLayer));
 
     return (
-      <div styleName="c-legend-item-types">
+      <div className="vizzuality__c-legend-item-types">
         {url && loading && (
           <Spinner
             position="relative"

@@ -117,9 +117,9 @@ export class TimestepContainer extends PureComponent {
 
     return (
       <div
-        styleName={classnames({
-          'c-legend-timestep': true,
-          '-can-play': canPlay,
+        className={classnames({
+          'vizzuality__c-legend-timestep': true,
+          'vizzuality__-can-play': canPlay,
         })}
       >
         <Timestep

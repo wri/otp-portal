@@ -60,14 +60,14 @@ class Legend extends PureComponent {
     }
 
     return (
-      <div styleName="c-legend-map" style={{ maxWidth }}>
+      <div className="vizzuality__c-legend-map" style={{ maxWidth }}>
         {/* LEGEND OPENED */}
-        <div styleName={`open-legend ${classnames({ '-active': expanded })}`} style={{ maxHeight }}>
+        <div className={`vizzuality__open-legend ${classnames({ 'vizzuality__-active': expanded })}`} style={{ maxHeight }}>
           {/* Toggle button */}
           {collapsable && (
             <button
               type="button"
-              styleName="toggle-legend"
+              className="vizzuality__toggle-legend"
               onClick={() => this.onToggleLegend(false)}
             >
               <Icon name="icon-arrow-down" className="-small" />
@@ -94,14 +94,14 @@ class Legend extends PureComponent {
         {/* LEGEND CLOSED */}
         <button
           type="button"
-          styleName={`close-legend ${classnames({ '-active': !expanded })}`}
+          className={`vizzuality__close-legend ${classnames({ 'vizzuality__-active': !expanded })}`}
           onClick={() => this.onToggleLegend(true)}
         >
-          <h1 styleName="legend-title">
+          <h1 className="vizzuality__legend-title">
             {title}
 
             {/* Toggle button */}
-            <div styleName="toggle-legend">
+            <div className="vizzuality__toggle-legend">
               <Icon name="icon-arrow-up" className="-small" />
             </div>
           </h1>

@@ -14,7 +14,7 @@ class LegendList extends PureComponent {
     const { children } = this.props;
 
     return (
-      <ul id="vizzuality-legend-list" styleName="c-legend-list">
+      <ul id="vizzuality-legend-list" className="vizzuality__c-legend-list">
         {React.Children.map(children, (child, index) =>
           React.cloneElement(child, {
             index,

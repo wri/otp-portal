@@ -25,17 +25,17 @@ class LegendListItem extends PureComponent {
 
     return (
       <li
-        styleName={classnames({
-          'c-legend-item': true
+        className={classnames({
+          'vizzuality__c-legend-item': true
         })}
       >
         <div
-          styleName={classnames({
-            'legend-item-container': true
+          className={classnames({
+            'vizzuality__legend-item-container': true
           })}
         >
-          <div styleName="legend-info">
-            <header styleName="legend-item-header">
+          <div className="vizzuality__legend-info">
+            <header className="vizzuality__legend-item-header">
               <h3>
                 {React.isValidElement(title) && typeof title.type !== 'string'
                   ? React.cloneElement(title, { ...props, layers, activeLayer })

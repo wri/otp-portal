@@ -11,7 +11,6 @@ class LegendItemButtonInfo extends PureComponent {
     defaultStyle: PropTypes.object,
     tooltipOpened: PropTypes.bool,
     tooltipText: PropTypes.string,
-    scrolling: PropTypes.bool,
 
     // ACTIONS
     onChangeInfo: PropTypes.func,
@@ -24,7 +23,6 @@ class LegendItemButtonInfo extends PureComponent {
     defaultStyle: {},
     tooltipOpened: false,
     tooltipText: '',
-    scrolling: false,
 
     onChangeInfo: () => {},
   };
@@ -32,14 +30,6 @@ class LegendItemButtonInfo extends PureComponent {
   state = {
     visible: false,
   };
-
-  componentWillReceiveProps(nextProps) {
-    const { scrolling } = nextProps;
-
-    if (scrolling) {
-      this.setState({ visible: false });
-    }
-  }
 
   render() {
     const { activeLayer, tooltipOpened, icon, focusStyle, defaultStyle, tooltipText } = this.props;
@@ -58,7 +48,7 @@ class LegendItemButtonInfo extends PureComponent {
       >
         <button
           type="button"
-          styleName="c-legend-button"
+          className="vizzuality__c-legend-button"
           aria-label="More information"
           onClick={() => this.props.onChangeInfo(activeLayer)}
         >

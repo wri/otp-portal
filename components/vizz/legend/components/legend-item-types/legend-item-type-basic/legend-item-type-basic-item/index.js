@@ -28,7 +28,7 @@ class LegendItem extends React.PureComponent {
     if (iconName === 'triangle') {
       return (
         <div
-          styleName={`icon-${icon}`}
+          className={`icon-${icon}`}
           style={{
             boderRightWidth: size / 2,
             boderLeftWidth: size / 2,
@@ -40,20 +40,20 @@ class LegendItem extends React.PureComponent {
     }
 
     if (iconName === 'line') {
-      return <div styleName={`icon-${icon}`} style={{ width: size, backgroundColor: color }} />;
+      return <div className={`icon-${icon}`} style={{ width: size, backgroundColor: color }} />;
     }
 
     if (iconName === 'square' || iconName === 'circle') {
       return (
         <div
-          styleName={`icon-${icon}`}
+          className={`icon-${icon}`}
           style={{ width: size, height: size, backgroundColor: color }}
         />
       );
     }
 
     return (
-      <div styleName="custom-icon">
+      <div className="custom-icon">
         <img src={icon} alt={name} />
       </div>
     );
@@ -63,10 +63,10 @@ class LegendItem extends React.PureComponent {
     const { name, icon } = this.props;
 
     return (
-      <div styleName="c-legend-item-basic">
+      <div className="c-legend-item-basic">
         {this.getIconHtml(icon)}
 
-        <span styleName="name">{name}</span>
+        <span className="name">{name}</span>
       </div>
     );
   }
