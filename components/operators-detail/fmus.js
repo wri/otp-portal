@@ -294,7 +294,6 @@ class OperatorsDetailFMUs extends React.Component {
             <Legend
               className="-relative"
               layerGroups={legendLayers}
-              sortable={false}
               collapsable={false}
               setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
             />
@@ -334,7 +333,6 @@ class OperatorsDetailFMUs extends React.Component {
                   <Legend
                     className="-relative"
                     layerGroups={legendLayers}
-                    sortable={false}
                     setLayerSettings={this.props.setOperatorsDetailMapLayersSettings}
                   />
                 )}

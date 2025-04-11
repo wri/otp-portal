@@ -14,7 +14,7 @@ import {
   LegendItemTypes,
   LegendItemToolbar,
   LegendItemTimeStep
-} from 'vizzuality-components';
+} from 'components/vizz';
 
 import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-button-info';
 import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
@@ -32,7 +32,6 @@ class LegendComponent extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
     layerGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    sortable: PropTypes.bool,
     collapsable: PropTypes.bool,
     expanded: PropTypes.bool,
     toolbar: PropTypes.node,
@@ -44,7 +43,6 @@ class LegendComponent extends PureComponent {
 
   static defaultProps = {
     className: '',
-    sortable: true,
     collapsable: true,
     expanded: true
   }
@@ -130,7 +128,7 @@ class LegendComponent extends PureComponent {
   }
 
   render() {
-    const { intl, className, sortable, collapsable, expanded, layerGroups, toolbar, setLayerSettings } = this.props;
+    const { intl, className, collapsable, expanded, layerGroups, toolbar, setLayerSettings } = this.props;
 
     return (
       <div
@@ -141,7 +139,6 @@ class LegendComponent extends PureComponent {
       >
         <Legend
           title={intl.formatMessage({ id: 'legend' })}
-          sortable={sortable}
           collapsable={collapsable}
           expanded={expanded}
           onChangeOrder={this.onChangeOrder}

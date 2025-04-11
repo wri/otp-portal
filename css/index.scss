@@ -10,8 +10,6 @@
 @include foundation-flex-grid;
 @include foundation-responsive-embed;
 
-@import '~vizzuality-components/dist/bundle';
-
 // Common
 @import 'base';
 @import 'fonts';
@@ -31,6 +29,22 @@
 @import 'components/page/static-section';
 @import 'components/page/static-box';
 @import 'components/page/static-tabs';
+
+// - vizz
+@import 'components/vizz/legend-button';
+@import 'components/vizz/legend-item-button-opacity-tooltip';
+@import 'components/vizz/legend-item-timestep';
+@import 'components/vizz/legend-item-toolbar';
+@import 'components/vizz/legend-item-type-basic-item';
+@import 'components/vizz/legend-item-type-basic';
+@import 'components/vizz/legend-item-types';
+@import 'components/vizz/legend-list-item';
+@import 'components/vizz/legend-list';
+@import 'components/vizz/legend';
+@import 'components/vizz/slider';
+@import 'components/vizz/spinner';
+@import 'components/vizz/timestep';
+@import 'components/vizz/tooltip';
 
 // - map
 @import '../node_modules/mapbox-gl/dist/mapbox-gl';
