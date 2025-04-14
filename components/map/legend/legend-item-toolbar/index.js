@@ -1,3 +1,5 @@
+// source https://github.com/Vizzuality/vizzuality-components
+
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
