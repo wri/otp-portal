@@ -3,8 +3,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
+import { isEmpty } from 'utils/general';
 
 import Spinner from 'components/ui/spinner';
 

@@ -2,7 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'react-fast-compare';
 import classnames from 'classnames';
 
 import Timestep from '~/components/ui/timestep';
