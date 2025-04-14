@@ -3,12 +3,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import RCSlider, { Range, Handle, SliderTooltip } from 'rc-slider';
+import Slider, { Handle, SliderTooltip } from 'rc-slider';
 import fill from 'lodash/fill';
 
 import { getStyledMarks } from './utils';
 
-export class Slider extends PureComponent {
+export class Slidera extends PureComponent {
   static propTypes = {
     customClass: PropTypes.string,
     settings: PropTypes.shape({}),
@@ -71,7 +71,6 @@ export class Slider extends PureComponent {
   render() {
     const { customClass, range, handleStyle, value, marks, ...rest } = this.props;
 
-    const Component = range ? Range : RCSlider;
     const handleNum = Array.isArray(value) ? value.length : 1;
     const handleStyles = fill(Array(handleNum), {
       width: '1px',
@@ -92,8 +91,9 @@ export class Slider extends PureComponent {
 
     return (
       <div className={externalClass}>
-        <Component
+        <Slider
           handle={this.renderHandle}
+          range={range}
           handleStyle={handleStyles}
           value={value}
           marks={marks ? getStyledMarks(marks) : marks}
@@ -104,4 +104,4 @@ export class Slider extends PureComponent {
   }
 }
 
-export default Slider;
+export default Slidera;
