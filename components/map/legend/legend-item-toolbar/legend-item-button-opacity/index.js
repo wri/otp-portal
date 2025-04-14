@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { injectIntl } from 'react-intl';
 import Icon from 'components/ui/icon';
 import Tooltip from 'rc-tooltip';
 import LegendOpacityTooltip from './legend-item-button-opacity-tooltip';
@@ -61,9 +62,11 @@ class LegendItemButtonOpacity extends PureComponent {
   setHoverText = (tooltipText, opacity, visibility) => {
     if (tooltipText) return tooltipText;
 
-    if (!visibility) return 'Opacity (disabled)';
+    const { intl } = this.props;
 
-    return `Opacity ${typeof opacity !== 'undefined' ? `(${Math.round(opacity * 100)}%)` : ''}`;
+    if (!visibility) return intl.formatMessage({ id: 'Opacity (disabled)' });
+
+    return `${intl.formatMessage({ id: 'Opacity' })} ${typeof opacity !== 'undefined' ? `(${Math.round(opacity * 100)}%)` : ''}`;
   };
 
   render() {
@@ -134,4 +137,4 @@ class LegendItemButtonOpacity extends PureComponent {
   }
 }
 
-export default LegendItemButtonOpacity;
+export default injectIntl(LegendItemButtonOpacity);

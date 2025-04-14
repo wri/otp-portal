@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import Icon from 'components/ui/icon';
 import Tooltip from 'rc-tooltip';
 
@@ -43,16 +44,18 @@ class LegendItemButtonVisibility extends PureComponent {
       focusStyle,
       defaultStyle,
       tooltipText,
+      intl
     } = this.props;
     const { visible } = this.state;
 
     const showIcon = iconShow || 'icon-show';
     const hideIcon = iconHide || 'icon-hide';
     const activeIcon = visibility ? hideIcon : showIcon;
+    const defaultTooltipText = intl.formatMessage({ id: visibility ? 'Hide layer' : 'Show layer' });
 
     return (
       <Tooltip
-        overlay={tooltipText || (visibility ? 'Hide layer' : 'Show layer')}
+        overlay={tooltipText || defaultTooltipText}
         overlayClassName="c-rc-tooltip -default"
         placement="top"
         trigger={tooltipOpened ? '' : 'hover'}
@@ -74,4 +77,4 @@ class LegendItemButtonVisibility extends PureComponent {
   }
 }
 
-export default LegendItemButtonVisibility;
+export default injectIntl(LegendItemButtonVisibility);

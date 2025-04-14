@@ -76,8 +76,11 @@ class LegendOpacityTooltip extends PureComponent {
             formatValue={(perc) => `${Math.round(perc * 100)}%`}
             onChange={(value) => this.setState({ opacity: value })}
             onAfterChange={this.onChange}
+            handleStyle={{
+              background: '#FFCC00'
+            }}
             trackStyle={{
-              backgroundColor: '#c32d7b',
+              backgroundColor: '#FFCC00',
               borderRadius: '0px',
             }}
             {...rest}

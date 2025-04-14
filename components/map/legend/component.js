@@ -15,9 +15,9 @@ import {
   LegendItemTimeStep
 } from '~/components/map/legend';
 
-import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-button-info';
-import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
-import LegendItemButtonVisibility from 'components/map/legend/buttons/legend-item-button-visibility';
+import LegendItemButtonInfo from 'components/map/legend/legend-item-toolbar/legend-item-button-info';
+import LegendItemButtonOpacity from 'components/map/legend/legend-item-toolbar/legend-item-button-opacity';
+import LegendItemButtonVisibility from 'components/map/legend/legend-item-toolbar/legend-item-button-visibility';
 
 import Icon from 'components/ui/icon';
 import Tooltip from 'rc-tooltip';
