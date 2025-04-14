@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 import {
   LegendItemButtonInfo,
-} from 'components/vizz';
+} from '~/components/map/legend';
 
 const CustomLegendItemButtonInfo = (props) => {
   const { intl, ...rest } = props;

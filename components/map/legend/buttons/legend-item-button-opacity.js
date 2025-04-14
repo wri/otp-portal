@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 import {
   LegendItemButtonOpacity,
-} from 'components/vizz';
+} from '~/components/map/legend';
 
 const CustomLegendItemButtonOpacity = (props) => {
   const { intl, ...rest } = props;
