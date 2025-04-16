@@ -41,6 +41,9 @@ class LegendItemButtonInfo extends PureComponent {
         overlay={tooltipText || intl.formatMessage({ id: 'Layer info' })}
         overlayClassName="c-rc-tooltip -default"
         placement="top"
+        align={{
+          offset: [0, -8],
+        }}
         trigger={tooltipOpened ? '' : 'hover'}
         mouseLeaveDelay={0}
         destroyTooltipOnHide

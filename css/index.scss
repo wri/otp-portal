@@ -30,6 +30,8 @@
 @import 'components/page/static-box';
 @import 'components/page/static-tabs';
 
+@import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
+
 // - map
 @import '../node_modules/mapbox-gl/dist/mapbox-gl';
 @import 'components/map/map';
@@ -54,7 +56,6 @@
 // - ui
 @import '../node_modules/react-table/react-table';
 @import '../node_modules/react-redux-toastr/src/styles/index';
-@import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
 @import 'components/ui/accordion';
 @import 'components/ui/account-dropdown';
 @import 'components/ui/article';

@@ -111,6 +111,9 @@ class LegendItemButtonOpacity extends PureComponent {
           className || ''
         }`}
         placement="top"
+        align={{
+          offset: [0, -8],
+        }}
         trigger={['click']}
         onVisibleChange={this.onTooltipVisibilityChange}
         destroyTooltipOnHide
@@ -120,6 +123,9 @@ class LegendItemButtonOpacity extends PureComponent {
           overlay={this.setHoverText(tooltipText, opacity, visibility)}
           overlayClassName="c-rc-tooltip -default"
           placement="top"
+          align={{
+            offset: [0, -8],
+          }}
           trigger={tooltipOpened ? '' : 'hover'}
           onVisibleChange={(v) => this.setState({ visibilityHover: v })}
           destroyTooltipOnHide
