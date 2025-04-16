@@ -56,12 +56,10 @@
   "devDependencies": {
     "@formatjs/cli": "^6.3.5",
     "@next/bundle-analyzer": "14",
-    "autoprefixer": "^10.4.19",
     "compression-webpack-plugin": "^11.1.0",
     "eslint": "^8",
     "eslint-config-next": "14",
     "eslint-config-prettier": "^8.4.0",
-    "postcss-easy-import": "^4.0.0",
     "sass": "^1.54.4"
   },
   "scripts": {
