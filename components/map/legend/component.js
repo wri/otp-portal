@@ -9,17 +9,17 @@ import { injectIntl } from 'react-intl';
 import renderHtml from 'html-react-parser';
 
 import {
-  Legend,
   LegendListItem,
   LegendItemTypes,
   LegendItemToolbar,
   LegendItemTimeStep
-} from 'vizzuality-components';
+} from '~/components/map/legend';
 
-import LegendItemButtonInfo from 'components/map/legend/buttons/legend-item-button-info';
-import LegendItemButtonOpacity from 'components/map/legend/buttons/legend-item-button-opacity';
-import LegendItemButtonVisibility from 'components/map/legend/buttons/legend-item-button-visibility';
+import LegendItemButtonInfo from 'components/map/legend/legend-item-toolbar/legend-item-button-info';
+import LegendItemButtonOpacity from 'components/map/legend/legend-item-toolbar/legend-item-button-opacity';
+import LegendItemButtonVisibility from 'components/map/legend/legend-item-toolbar/legend-item-button-visibility';
 
+import Icon from 'components/ui/icon';
 import Tooltip from 'rc-tooltip';
 
 import TEMPLATES from './templates';
@@ -32,7 +32,6 @@ class LegendComponent extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
     layerGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-    sortable: PropTypes.bool,
     collapsable: PropTypes.bool,
     expanded: PropTypes.bool,
     toolbar: PropTypes.node,
@@ -44,9 +43,14 @@ class LegendComponent extends PureComponent {
 
   static defaultProps = {
     className: '',
-    sortable: true,
     collapsable: true,
     expanded: true
+  }
+
+  constructor(props) {
+    super(props);
+    const { expanded } = props;
+    this.state = { expanded };
   }
 
   onChangeInfo = (info, id) => {
@@ -95,15 +99,14 @@ class LegendComponent extends PureComponent {
     });
   }
 
-  onChangeOrder = (datasetIds) => {
-    const { setLayerOrder } = this.props;
-    setLayerOrder({ datasetIds });
-  }
-
   onRemoveLayer = (layer) => {
     const { toggleLayer } = this.props;
     toggleLayer(layer);
   }
+
+  onToggleLegend = (bool) => {
+    this.setState({ expanded: bool });
+  };
 
   renderDisclaimer = ({ disclaimer, disclaimerTooltip }) => {
     const { intl } = this.props;
@@ -130,77 +133,107 @@ class LegendComponent extends PureComponent {
   }
 
   render() {
-    const { intl, className, sortable, collapsable, expanded, layerGroups, toolbar, setLayerSettings } = this.props;
+    const { intl, className, collapsable, layerGroups, toolbar, setLayerSettings } = this.props;
+    const { expanded } = this.state;
 
     return (
       <div
         className={classnames({
-          'c-legend': true,
+          'c-legend-container': true,
           [className]: !!className
         })}
       >
-        <Legend
-          title={intl.formatMessage({ id: 'legend' })}
-          sortable={sortable}
-          collapsable={collapsable}
-          expanded={expanded}
-          onChangeOrder={this.onChangeOrder}
-        >
-          {layerGroups.map((layerGroup, i) => (
-            <LegendListItem
-              index={i}
-              key={layerGroup.id}
-              layerGroup={layerGroup}
-              toolbar={
-                toolbar || (
-                  <LegendItemToolbar>
-                    {layerGroup.metadata && <LegendItemButtonInfo />}
-                    <LegendItemButtonOpacity />
-                    <LegendItemButtonVisibility />
-                  </LegendItemToolbar>
-                )
-              }
-              onChangeInfo={(l => this.onChangeInfo(true, layerGroup.id))}
-              onChangeVisibility={((l, visibility) => this.onChangeVisibility(l, visibility, layerGroup.id))}
-              onChangeOpacity={(l, opacity) => this.onChangeOpacity(l, opacity, layerGroup.id)}
-              onRemoveLayer={(l) => { this.onRemoveLayer(l); }}
-            >
-              {!!TEMPLATES[layerGroup.id] &&
-                React.createElement(TEMPLATES[layerGroup.id], {
-                  setLayerSettings
-                })
-              }
+        <div className="c-legend">
+          {/* LEGEND OPENED */}
+          <div className={`open-legend ${classnames({ '-active': expanded })}`}>
+            {/* Toggle button */}
+            {collapsable && (
+              <button
+                type="button"
+                className="toggle-legend"
+                onClick={() => this.onToggleLegend(false)}
+              >
+                <Icon name="icon-arrow-down" className="-small" />
+              </button>
+            )}
 
-              <LegendItemTypes />
+            {expanded && (
+              <ul className="c-legend-list">
+                {layerGroups.map((layerGroup, i) => (
+                  <LegendListItem
+                    index={i}
+                    key={layerGroup.id}
+                    layerGroup={layerGroup}
+                    {...layerGroup}
+                    toolbar={
+                      toolbar || (
+                        <LegendItemToolbar>
+                          {layerGroup.metadata && <LegendItemButtonInfo />}
+                          <LegendItemButtonOpacity />
+                          <LegendItemButtonVisibility />
+                        </LegendItemToolbar>
+                      )
+                    }
+                    onChangeInfo={(l => this.onChangeInfo(true, layerGroup.id))}
+                    onChangeVisibility={((l, visibility) => this.onChangeVisibility(l, visibility, layerGroup.id))}
+                    onChangeOpacity={(l, opacity) => this.onChangeOpacity(l, opacity, layerGroup.id)}
+                    onRemoveLayer={(l) => { this.onRemoveLayer(l); }}
+                  >
+                    {!!TEMPLATES[layerGroup.id] &&
+                      React.createElement(TEMPLATES[layerGroup.id], {
+                        setLayerSettings
+                      })
+                    }
 
-              <LegendItemTimeStep
-                defaultStyles={{
-                  handleStyle: {
-                    backgroundColor: 'white',
-                    borderRadius: '50%',
-                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.29)',
-                    border: '0px',
-                    zIndex: 2
-                  },
-                  railStyle: { backgroundColor: '#d6d6d9' },
-                  dotStyle: { visibility: 'hidden', border: '0px' }
-                }}
-                handleChange={this.onChangeLayerDate}
-              />
+                    <LegendItemTypes />
 
-              {!!layerGroup.analysis && ANALYSIS[layerGroup.id] &&
-                React.createElement(ANALYSIS[layerGroup.id], {
-                  analysis: layerGroup.analysis
-                })
-              }
-              {layerGroup.metadata && layerGroup.metadata.disclaimer && (
-                <div className="legend-item-disclaimer">
-                  {this.renderDisclaimer(layerGroup.metadata)}
-                </div>
-              )}
-            </LegendListItem>
-          ))}
-        </Legend>
+                    <LegendItemTimeStep
+                      defaultStyles={{
+                        handleStyle: {
+                          backgroundColor: 'white',
+                          borderRadius: '50%',
+                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.29)',
+                          border: '0px',
+                          zIndex: 2
+                        },
+                        railStyle: { backgroundColor: '#d6d6d9' },
+                        dotStyle: { visibility: 'hidden', border: '0px' }
+                      }}
+                      handleChange={this.onChangeLayerDate}
+                    />
+
+                    {!!layerGroup.analysis && ANALYSIS[layerGroup.id] &&
+                      React.createElement(ANALYSIS[layerGroup.id], {
+                        analysis: layerGroup.analysis
+                      })
+                    }
+                    {layerGroup.metadata && layerGroup.metadata.disclaimer && (
+                      <div className="legend-item-disclaimer">
+                        {this.renderDisclaimer(layerGroup.metadata)}
+                      </div>
+                    )}
+                  </LegendListItem>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* LEGEND CLOSED */}
+          <button
+            type="button"
+            className={`close-legend ${classnames({ '-active': !expanded })}`}
+            onClick={() => this.onToggleLegend(true)}
+          >
+            <h1 className="legend-title">
+              {intl.formatMessage({ id: 'legend' })}
+
+              {/* Toggle button */}
+              <div className="toggle-legend">
+                <Icon name="icon-arrow-up" className="-small" />
+              </div>
+            </h1>
+          </button>
+        </div>
       </div>
     );
   }

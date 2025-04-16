@@ -10,8 +10,6 @@
 @include foundation-flex-grid;
 @include foundation-responsive-embed;
 
-@import '~vizzuality-components/dist/bundle';
-
 // Common
 @import 'base';
 @import 'fonts';
@@ -32,21 +30,32 @@
 @import 'components/page/static-box';
 @import 'components/page/static-tabs';
 
+@import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
+
 // - map
 @import '../node_modules/mapbox-gl/dist/mapbox-gl';
 @import 'components/map/map';
+@import 'components/map/legend-button';
+@import 'components/map/legend-item-button-opacity-tooltip';
+@import 'components/map/legend-item-timestep';
+@import 'components/map/legend-item-toolbar';
+@import 'components/map/legend-item-type-basic-item';
+@import 'components/map/legend-item-type-basic';
+@import 'components/map/legend-item-types';
+@import 'components/map/legend-list-item';
+@import 'components/map/legend-list';
 @import 'components/map/legend';
 @import 'components/map/legend-templates/alerts';
 @import 'components/map/legend-analysis/index';
 @import 'components/map/legend-analysis/alerts';
 @import 'components/map/map-controls';
 @import 'components/map/popup';
+@import 'components/map/tooltip';
 @import 'components/map/layer-info';
 
 // - ui
 @import '../node_modules/react-table/react-table';
 @import '../node_modules/react-redux-toastr/src/styles/index';
-@import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
 @import 'components/ui/accordion';
 @import 'components/ui/account-dropdown';
 @import 'components/ui/article';
@@ -95,9 +104,11 @@
 @import 'components/ui/ranking';
 @import 'components/ui/ranking-modal';
 @import 'components/ui/sidebar';
+@import 'components/ui/slider';
 @import 'components/ui/spinner';
 @import 'components/ui/table';
 @import 'components/ui/tabs';
+@import 'components/ui/timestep';
 @import 'components/ui/title';
 @import 'components/ui/toastr';
 @import 'components/ui/tooltip';

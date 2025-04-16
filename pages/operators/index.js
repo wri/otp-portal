@@ -191,7 +191,6 @@ class OperatorsPage extends React.Component {
 
             <Legend
               layerGroups={legendLayers}
-              sortable={false}
               expanded={false}
               setLayerSettings={this.props.setOperatorsMapLayersSettings}
             />
