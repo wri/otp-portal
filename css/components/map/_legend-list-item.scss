@@ -41,7 +41,7 @@
 
     > h3 {
       margin: 6px 0 0;
-      color: $color-dark-1;
+      color: $color-gray-1;
       font-weight: $font-weight-bold;
       font-size: $font-size-extrasmall;
       letter-spacing: 1px;
@@ -53,11 +53,11 @@
 
   h3 {
     font-size: $font-size-default;
-    color: $color-dark-1;
+    color: $color-gray-1;
     margin: 0;
     margin-bottom: 3px;
 
-    &.-dark { color: $color-dark-1; }
+    &.-dark { color: $color-gray-1; }
 
     .category {
       font-weight: 400;
