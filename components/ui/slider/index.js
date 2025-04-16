@@ -3,12 +3,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Slider, { Handle, SliderTooltip } from 'rc-slider';
+import RCSlider, { Handle, SliderTooltip } from 'rc-slider';
 import fill from 'lodash/fill';
 
 import { getStyledMarks } from './utils';
 
-export class Slidera extends PureComponent {
+export class Slider extends PureComponent {
   static propTypes = {
     customClass: PropTypes.string,
     settings: PropTypes.shape({}),
@@ -87,11 +87,11 @@ export class Slidera extends PureComponent {
     handleStyles[0] = handleStyle;
     handleStyles[handleNum - 1] = handleStyle;
 
-    const externalClass = classnames('vizzuality-slider', { [customClass]: !!customClass });
+    const externalClass = classnames({[customClass]: !!customClass });
 
     return (
       <div className={externalClass}>
-        <Slider
+        <RCSlider
           handle={this.renderHandle}
           range={range}
           handleStyle={handleStyles}
@@ -104,4 +104,4 @@ export class Slidera extends PureComponent {
   }
 }
 
-export default Slidera;
+export default Slider;
