@@ -6,6 +6,10 @@
   overflow-y: auto;
   overflow-x: hidden;
 
+  &__loading {
+    height: 150px;
+  }
+
   @include breakpoint(medium) {
     max-height: calc(100vh - 130px);
   }
