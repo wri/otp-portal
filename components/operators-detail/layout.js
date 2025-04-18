@@ -76,9 +76,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
     if (operatorsDetail.documentation.operatorId !== operator.id && tab === 'documentation') {
       requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
       requests.push(store.dispatch(getOperatorTimeline(operator.id)));
-      if (user.token && user.operator_ids && user.operator_ids.includes(+operator.id)) {
-        requests.push(store.dispatch(getOperatorPublicationAuthorization(operator.id)));
-      }
+      requests.push(store.dispatch(getOperatorPublicationAuthorization(operator.id)));
     }
 
     if (operatorsDetail.observations.operatorId !== operator.id && (tab === 'observations' || tab === 'overview')) {
