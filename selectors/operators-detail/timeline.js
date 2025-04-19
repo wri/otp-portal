@@ -1,6 +1,4 @@
 import { createSelector } from 'reselect';
-import { isEmpty } from 'utils/general';
-import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
 
 const operator = state => state.operatorsDetail && state.operatorsDetail.data;
 const timeline = state => state.operatorsDetail && state.operatorsDetail.timeline;
@@ -10,15 +8,13 @@ const getParsedTimeline = createSelector(
   operator,
   user,
   timeline,
-  getContractSignatureDocumentation,
-  (_operator, _user, _timeline, _contract) => {
-    const u = _user && (_user.role === 'admin' || (_user.role === 'operator' && _user.operator_ids.includes(_operator.id)))
+  (_operator, _user, _timeline) => {
+    const contractSigned = _operator && _operator.approved;
+    if (contractSigned) return _timeline;
+    if (_user && user.role === 'admin') return _timeline;
+    if (_user && _user.role === 'operator' && _user.operator_ids.includes(_operator.id)) return _timeline;
 
-    if (!u) {
-      if (isEmpty(_contract)) return [];
-    }
-
-    return _timeline;
+    return [];
   }
 );
 
