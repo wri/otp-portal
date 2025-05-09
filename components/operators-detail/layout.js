@@ -53,7 +53,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   let { operatorsDetail, user } = store.getState();
   const requests = [];
   const {id} = query;
-  const tab = asPath.split('/').pop();
+  const tab = asPath.split('/').pop().split('?')[0];
 
   // we are going to redirect to slug if the id is a number
   if (!isNaN(id)) {
@@ -72,6 +72,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   }
   operatorsDetail = store.getState().operatorsDetail;
   const operator = operatorsDetail.data;
+
   if (operator && !isEmpty(operator)) {
     if (operatorsDetail.documentation.operatorId !== operator.id && tab === 'documentation') {
       requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
