@@ -3,7 +3,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import RCSlider, { Range, Handle, SliderTooltip } from 'rc-slider';
+import RCSlider from 'rc-slider';
+import Tooltip from 'rc-tooltip';
 import fill from 'lodash/fill';
 
 import { getStyledMarks } from './utils';
@@ -46,32 +47,32 @@ export class Slider extends PureComponent {
     pushable: true,
   };
 
-  renderHandle = (props) => {
+  renderHandle = (node, handleProps) => {
     const { formatValue, showTooltip } = this.props;
-    const { value, dragging, index, ...restProps } = props;
+    const { value, index, dragging } = handleProps;
     const formattedValue = formatValue ? formatValue(value) : value;
     const tooltipVisible = showTooltip ? showTooltip(index) : false;
 
     return (
-      <SliderTooltip
+      <Tooltip
         key={index}
         overlay={formattedValue}
         overlayClassName="c-rc-tooltip -default"
         overlayStyle={{ color: '#fff' }}
+        overlayInnerStyle={{ minHeight: "auto" }}
         placement="top"
         mouseLeaveDelay={0}
         destroyTooltipOnHide
         visible={!!dragging || !!tooltipVisible}
       >
-        <Handle className="drag-handle" value={value} {...restProps} />
-      </SliderTooltip>
+        {node}
+      </Tooltip>
     );
   };
 
   render() {
-    const { customClass, range, handleStyle, value, marks, ...rest } = this.props;
+    const { customClass, range, handleStyle, formatValue, showTooltip, value, marks, ...rest } = this.props;
 
-    const Component = range ? Range : RCSlider;
     const handleNum = Array.isArray(value) ? value.length : 1;
     const handleStyles = fill(Array(handleNum), {
       width: '1px',
@@ -88,15 +89,16 @@ export class Slider extends PureComponent {
     handleStyles[0] = handleStyle;
     handleStyles[handleNum - 1] = handleStyle;
 
-    const externalClass = classnames({[customClass]: !!customClass });
+    const externalClass = classnames({ [customClass]: !!customClass });
 
     return (
       <div className={externalClass}>
-        <Component
-          handle={this.renderHandle}
+        <RCSlider
+          handleRender={this.renderHandle}
           handleStyle={handleStyles}
           value={value}
           marks={marks ? getStyledMarks(marks) : marks}
+          range
           {...rest}
         />
       </div>
