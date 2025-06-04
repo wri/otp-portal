@@ -35,6 +35,7 @@ if (typeof window === 'undefined') {
   const langFolder = '';
   translations = {
     en: require(`lang/${langFolder}en.json`),
+    es: require(`lang/${langFolder}es.json`),
     fr: require(`lang/${langFolder}fr.json`),
     pt: require(`lang/${langFolder}pt.json`),
     ja: require(`lang/${langFolder}ja.json`),
@@ -47,6 +48,7 @@ if (typeof window === 'undefined') {
 import dayjs from 'dayjs';
 import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
 
+import 'dayjs/locale/es';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/pt';
 import 'dayjs/locale/ja';

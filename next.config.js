@@ -44,7 +44,7 @@ const config = {
     ],
   },
   i18n: {
-    locales: ['en', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
+    locales: ['en', 'es', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
   compress: false, // NGINX will handle this with dynamic compression and better algorithms, static assets compressed with webpack plugin (not all)
