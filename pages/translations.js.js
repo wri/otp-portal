@@ -2,6 +2,7 @@
 const langFolder = '';
 const translations = {
   en: require(`lang/${langFolder}en.json`),
+  es: require(`lang/${langFolder}es.json`),
   fr: require(`lang/${langFolder}fr.json`),
   pt: require(`lang/${langFolder}pt.json`),
   ja: require(`lang/${langFolder}ja.json`),
