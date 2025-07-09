@@ -39,7 +39,6 @@ const HomePage = () => {
       >
         <Card
           theme="-secondary -theme-home"
-          letter="A"
           title={intl.formatMessage({ id: 'home.card.a.title' })}
           description={intl.formatMessage({
             id: 'home.card.a.description'
@@ -63,7 +62,6 @@ const HomePage = () => {
       >
         <Card
           theme="-tertiary -theme-home"
-          letter="B"
           title={intl.formatMessage({ id: 'home.card.b.title' })}
           description={intl.formatMessage({
             id: 'home.card.b.description'
@@ -83,7 +81,6 @@ const HomePage = () => {
       >
         <Card
           theme="-secondary -theme-home"
-          letter="C"
           title={intl.formatMessage({ id: 'home.card.c.title' })}
           description={intl.formatMessage({
             id: 'home.card.c.description'
