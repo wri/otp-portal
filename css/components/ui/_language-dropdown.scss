@@ -20,7 +20,7 @@
     &:after {
       content: "";
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       left: 50%;
       width: $space-1 * 2;
       height: $space-1 * 2;

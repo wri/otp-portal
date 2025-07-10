@@ -7,7 +7,7 @@ import useOutsideClick from 'hooks/use-outside-click';
 const DropdownContent = (props) => {
   const { children, className, ...dropdownContentProps } = props;
   return (
-    <div {...dropdownContentProps} className={`dropdown__content ${className}`}>
+    <div {...dropdownContentProps} className={classNames('dropdown__content', className)}>
       {children}
     </div>
   );
