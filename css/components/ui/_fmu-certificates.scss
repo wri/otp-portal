@@ -1,5 +1,5 @@
-.c-fmus-checkbox {
-  .fmus-checkbox-table {
+.c-fmu-certificates {
+  .fmu-certificates-table {
     border-collapse: collapse;
 
     tbody {
@@ -19,13 +19,6 @@
 
     .td-certifications {
       padding-left: $space-1 * 4;
-    }
-
-    .c-checkbox {
-      label {
-        padding-top: 2px;
-        padding-bottom: 2px;
-      }
     }
   }
 }

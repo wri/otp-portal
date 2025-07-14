@@ -22,7 +22,6 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
 import SawmillsTable from 'components/ui/sawmills-table';
 
@@ -31,6 +30,7 @@ import { HELPERS_REGISTER } from 'utils/signup';
 import { getFmusByOperatorId } from 'utils/fmu';
 import SubmitButton from '../form/SubmitButton';
 import dynamic from 'next/dynamic';
+import { CERTIFICATIONS } from 'constants/fmu';
 
 const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
@@ -38,10 +38,10 @@ const EditOperator = (props) => {
   // rewrite class component to functional component
   const { operator, language, sawmills } = props;
   const intl = useIntl();
-  const [certifications, setCertifications] = useState(HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus));
   const [fmusOptions, setFmusOptions] = useState([]);
   const [fmusLoading, setFmusLoading] = useState(true);
   const [countryOptions, setCountryOptions] = useState([]);
+  const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const fetchSawmills = () => {
     props.getSawMillsByOperatorId(operator.id);
@@ -66,33 +66,12 @@ const EditOperator = (props) => {
     fetchFmus(); // fetching operator fmus to have them in chosen language
   }, [operator.id]);
 
-  const onChangeCertifications = (value) => {
-    setCertifications(Object.assign({}, certifications, value))
-  }
-
   const handleSubmit = ({ form }) => {
     return props.updateOperator({
       body: HELPERS_REGISTER.getBody(form, operator.id),
       type: 'PATCH',
       id: operator.id,
       authorization: props.user.token
-    }).then(() => {
-      const promises = [];
-
-      if (Object.keys(certifications).length) {
-        Object.keys(certifications).forEach((k) => {
-          promises.push(props.updateFmu({
-            id: k,
-            body: HELPERS_REGISTER.getBodyFmu(
-              certifications[k],
-              k
-            ),
-            authorization: props.user.token
-          }));
-        });
-
-        return Promise.all(promises);
-      }
     }).then(() => {
       toastr.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -232,18 +211,32 @@ const EditOperator = (props) => {
 
                 {/* FMUs */}
                 {!!fmusOptions.length && (
-                  <Field
-                    name="fmus"
-                    onChangeCertifications={value => onChangeCertifications(value)}
-                    className="-fluid"
-                    options={fmusOptions}
-                    certifications={certifications}
-                    properties={{
-                      name: 'fmus'
-                    }}
-                  >
-                    {FmusCheckboxGroup}
-                  </Field>
+                  <div className={`c-fmu-certificates`}>
+                    <table className="fmu-certificates-table">
+                      <thead>
+                        <tr>
+                          <th>
+                            <h3 className="c-title -default">{intl.formatMessage({ id: 'fmu' })}</h3>
+                          </th>
+                          <th className="td-certifications">
+                            <h3 className="c-title -default">{intl.formatMessage({ id: 'certifications' })}</h3>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {fmusOptions.map(option => (
+                          <tr key={option.value}>
+                            <td>
+                              {option.label}
+                            </td>
+                            <td className="td-certifications">
+                              {(certifications[option.value] || []).map((value) => CERTIFICATIONS.find(c => c.value === value)?.label).filter(x=>x).join(', ')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </fieldset>
@@ -284,7 +277,6 @@ EditOperator.propTypes = {
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
-  updateFmu: PropTypes.func,
   onSubmit: PropTypes.func,
   sawmills: PropTypes.object,
   getSawMillsByOperatorId: PropTypes.func,
@@ -299,7 +291,6 @@ export default connect(
   }),
   {
     updateOperator,
-    updateFmu,
     getSawMillsByOperatorId,
     getSawMillsLocationByOperatorId
   }
