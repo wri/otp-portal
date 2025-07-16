@@ -86,9 +86,11 @@ const HELPERS_REGISTER = {
               id: country
             }
           },
-          fmus: {
-            data: fmus.map(f => ({ type: 'fmus', id: f }))
-          }
+          ...((fmus && fmus.length > 0) && {
+            fmus: {
+              data: fmus.map(f => ({ type: 'fmus', id: f }))
+            }
+          })
         }
       }
     };

@@ -1,6 +1,17 @@
 .c-fmu-certificates {
   .fmu-certificates-table {
     border-collapse: collapse;
+    width: 100%;
+    margin-top: $space-1;
+
+    thead {
+      tr {
+        border-bottom: 1px solid $border-color-2;
+        font-size: $font-size-default;
+        font-weight: $font-weight-bold;
+        font-family: $font-family-proximanova;
+      }
+    }
 
     tbody {
       tr:not(:last-of-type) {
