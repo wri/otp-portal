@@ -18,7 +18,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
     if (fmu['certification-fsc-cw']) certifications.push('FSC-CW');
     if (fmu['certification-tlv']) certifications.push('TLV');
     if (fmu['certification-ls']) certifications.push('LS');
-
+    if (fmu['certification-pbn']) certifications.push('PbN');
     if (!certifications.length) return '';
 
     return `${certifications.join(', ')}`;

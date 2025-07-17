@@ -16,11 +16,12 @@ class CertificationsTd extends React.Component {
     const olb = fmus.filter(f => f['certification-olb']).length;
     const pefc = fmus.filter(f => f['certification-pefc']).length;
     const pafc = fmus.filter(f => f['certification-pafc']).length;
+    const pbn = fmus.filter(f => f['certification-pbn']).length;
     const fsccw = fmus.filter(f => f['certification-fsc-cw']).length;
     const tlv = fmus.filter(f => f['certification-tlv']).length;
     const ls = fmus.filter(f => f['certification-ls']).length;
 
-    if (!fsc && !olb && !pefc && pafc && fsccw && tlv && ls) {
+    if (!fsc && !olb && !pefc && !pafc && !fsccw && !tlv && !ls && !pbn) {
       return (
         <div className="certifications-td">
           <p>-</p>
@@ -34,6 +35,7 @@ class CertificationsTd extends React.Component {
         {!!olb && <p>OLB ({olb})</p>}
         {!!pefc && <p>PEFC ({pefc})</p>}
         {!!pafc && <p>PAFC ({pafc})</p>}
+        {!!pbn && <p>PbN ({pbn})</p>}
         {!!fsccw && <p>FSC-CW ({fsccw})</p>}
         {!!tlv && <p>TLV ({tlv})</p>}
         {!!ls && <p>LS ({ls})</p>}
