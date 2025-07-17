@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import dynamic from 'next/dynamic';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -8,14 +7,7 @@ import { useIntl } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { updateOperator } from 'modules/user';
-import {
-  getSawMillsByOperatorId,
-  getSawMillsLocationByOperatorId
-} from 'modules/operators-detail';
 import { toastr } from 'react-redux-toastr';
-
-// Services
-import modal from 'services/modal';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -24,7 +16,6 @@ import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
 import Select from 'components/form/SelectInput';
-import SawmillsTable from 'components/ui/sawmills-table';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
@@ -32,22 +23,11 @@ import SubmitButton from '../form/SubmitButton';
 
 import { CERTIFICATIONS } from 'constants/fmu';
 
-const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
-
 const EditOperator = (props) => {
   // rewrite class component to functional component
-  const { operator, sawmills } = props;
+  const { operator } = props;
   const intl = useIntl();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
-
-  const fetchSawmills = () => {
-    props.getSawMillsByOperatorId(operator.id);
-    props.getSawMillsLocationByOperatorId(operator.id);
-  }
-
-  useEffect(() => {
-    fetchSawmills();
-  }, [operator.id]);
 
   const handleSubmit = ({ form }) => {
     return props.updateOperator({
@@ -73,18 +53,6 @@ const EditOperator = (props) => {
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
         intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
       );
-    });
-  }
-
-  const handleAddSawmill = (e) => {
-    e && e.preventDefault();
-
-    modal.toggleModal(true, {
-      children: SawmillModal,
-      childrenProps: {
-        ...props,
-        onChange: fetchSawmills
-      }
     });
   }
 
@@ -230,23 +198,6 @@ const EditOperator = (props) => {
               </Field>
             </fieldset>
 
-            <fieldset className="c-field-container">
-              <h2 className="c-title">
-                {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
-              </h2>
-
-              <SawmillsTable
-                sawmills={sawmills.data}
-                onChange={fetchSawmills}
-              />
-
-              <button
-                onClick={handleAddSawmill} className="c-button -small -secondary"
-              >
-                {intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
-              </button>
-            </fieldset>
-
             <ul className="c-field-buttons">
               <li>
                 <SubmitButton>
@@ -266,21 +217,15 @@ EditOperator.propTypes = {
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
-  onSubmit: PropTypes.func,
-  sawmills: PropTypes.object,
-  getSawMillsByOperatorId: PropTypes.func,
-  getSawMillsLocationByOperatorId: PropTypes.func
+  onSubmit: PropTypes.func
 };
 
 export default connect(
   state => ({
     user: state.user,
-    sawmills: state.operatorsDetail.sawmills,
     language: state.language
   }),
   {
-    updateOperator,
-    getSawMillsByOperatorId,
-    getSawMillsLocationByOperatorId
+    updateOperator
   }
 )(EditOperator);

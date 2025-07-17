@@ -49,18 +49,6 @@ describe('Operator', function () {
         cy.get('button').contains('Update producer').click();
         cy.get('.rrt-text', {timeout: 35000}).should('have.text', 'Profile saved correctly');
       });
-
-      it('can add new sawmill', function () {
-        // cy.get('.c-options-table').should('contains.text', 'No sawmills');
-        cy.get('button').contains('Add sawmill').click();
-
-        cy.get('[data-test-id=sawmill-name]').type('Sawmill Example');
-        cy.get('[data-test-id=sawmill-isactive]').click({force: true});
-        cy.get('[data-test-id=sawmill-latitude]').type('78.4')
-        cy.get('[data-test-id=sawmill-longitude]').type('23.4')
-        cy.get('button').contains('Submit').click();
-        cy.get('td').should('contains.text', 'Sawmill Example');
-      });
     });
 
     describe('documentation', function () {
