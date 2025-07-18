@@ -65,7 +65,7 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
   const { user } = store.getState();
 
   if (!user.operator_ids) {
-    return { errorCode: 404 };
+    return { redirectTo: '/' };
   }
 
   if (query.id && !user.operator_ids.includes(Number(query.id))) {

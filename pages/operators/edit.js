@@ -25,7 +25,7 @@ class OperatorsEdit extends React.Component {
     const { user } = store.getState();
 
     if (query.id && !user.operator_ids.includes(Number(query.id))) {
-      return { errorCode: 404 };
+      return { redirectTo: '/' };
     }
     const operatorId = Number(query.id) || user.operator_ids[0];
     if (operatorId) {
