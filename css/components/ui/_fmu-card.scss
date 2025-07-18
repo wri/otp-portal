@@ -47,6 +47,14 @@
 
     .fmu-certifications-list {
       margin-top: $space-1;
+      margin-bottom: 0;
+      padding-left: 15px;
+      font-size: $font-size-small;
+      font-family: $font-family-proximanova;
+
+      li {
+        margin-top: 2px;
+      }
     }
   }
 }
