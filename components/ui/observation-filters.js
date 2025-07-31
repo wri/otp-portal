@@ -79,8 +79,10 @@ class ObservationFilters extends Filters {
   }
 
   renderFilterCheckbox = (f) => {
+    const { options, filters } = this.props;
     const title = f.name && this.props.intl.formatMessage({ id: `filter.${f.key}`, defaultMessage: f.name });
     const description = this.props.intl.formatMessage({ id: `filter.${f.key}.description`, defaultMessage: f.description });
+    const value = options[f.key]?.some((opt) => filters[f.key]?.includes(opt.value));
 
     return (
       <div className="filter-checkbox">
@@ -90,7 +92,7 @@ class ObservationFilters extends Filters {
           </label>
         )}
         <Checkbox
-          properties={{ title: description, className: '-white' }}
+          properties={{ title: description, className: '-white', checked: value, value }}
           onChange={({ checked }) => this.setFilter(f.valueTransform ? f.valueTransform(checked) : checked, f.key) }
         />
       </div>

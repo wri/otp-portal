@@ -18,6 +18,9 @@ const SET_OBSERVATIONS_MAP_LOCATION = 'SET_OBSERVATIONS_MAP_LOCATION';
 const SET_OBSERVATIONS_MAP_CLUSTER = 'SET_OBSERVATIONS_MAP_CLUSTER';
 
 const OBS_MAX_SIZE = 3000;
+const FRONTEND_FILTERS = {
+  hidden: [{ id: 'all', name: 'all' }]
+}
 
 /* Initial state */
 const initialState = {
@@ -163,9 +166,10 @@ export function getFilters() {
     return API.get('observation_filters_tree', { locale: language }, { deserialize: false })
       .then(({ data: filters }) => {
         // Fetch from server ok -> Dispatch observations
+        const allFilters  = { ...filters, ...FRONTEND_FILTERS };
         dispatch({
           type: GET_FILTERS_OBSERVATIONS_SUCCESS,
-          payload: parseObjectSelectOptions(filters)
+          payload: parseObjectSelectOptions(allFilters)
         });
       })
       .catch((err) => {
