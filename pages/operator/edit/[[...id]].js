@@ -69,7 +69,7 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
   }
 
   if (query.id && !user.operator_ids.includes(Number(query.id))) {
-    return { errorCode: 404 };
+    return { statusCode: 404 };
   }
   const operatorId = Number(query.id) || user.operator_ids[0];
   if (operatorId) {

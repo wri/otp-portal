@@ -61,7 +61,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
     const operator = store.getState().operatorsDetail.data;
 
     if (!operator || isEmpty(operator)) {
-      return { errorCode: 404 };
+      return { statusCode: 404 };
     }
     return { redirectTo: asPath.replace(`/${id}`, `/${operator.slug}`) }
   }
@@ -86,7 +86,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
       requests.push(store.dispatch(getOperatorObservations(operator.id)));
     }
   } else {
-    return { errorCode: 404 };
+    return { statusCode: 404 };
   }
 
   await Promise.all(requests);
