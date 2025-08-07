@@ -80,12 +80,14 @@ const MyApp = ({ Component, ...rest }) => {
   if (!messages) { throw new Error(`No translations found for language ${language}`); }
 
   useEffect(() => {
-    store.dispatch(getOperators());
-    store.dispatch(getCountries());
-  }, []);
+    if (!pageProps.statusCode) {
+      store.dispatch(getOperators());
+      store.dispatch(getCountries());
+    }
+  }, [pageProps.statusCode]);
 
-  if (pageProps.errorCode) {
-    return <Error statusCode={pageProps.errorCode} />;
+  if (pageProps.statusCode) {
+    return <Error statusCode={pageProps.statusCode} />;
   }
 
   return (
@@ -137,8 +139,8 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     await Component.getInitialProps(ctx) :
     {};
 
-  if (pageProps.errorCode && isServer) {
-    res.statusCode = pageProps.errorCode;
+  if (pageProps.statusCode && isServer) {
+    res.statusCode = pageProps.statusCode;
   }
   if (pageProps.redirectTo) {
     if (isServer) {

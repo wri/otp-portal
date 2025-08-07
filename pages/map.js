@@ -74,7 +74,7 @@ const MapPage = () => (
 
 MapPage.getInitialProps = async () => {
   if (process.env.FEATURE_MAP_PAGE !== 'true') {
-    return { errorCode: 404 };
+    return { statusCode: 404 };
   }
 
   return {};
