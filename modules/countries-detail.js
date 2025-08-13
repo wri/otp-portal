@@ -1,179 +1,133 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from 'services/api';
 
-/* Constants */
-const GET_COUNTRY_SUCCESS = 'GET_COUNTRY_SUCCESS';
-const GET_COUNTRY_ERROR = 'GET_COUNTRY_ERROR';
-const GET_COUNTRY_LOADING = 'GET_COUNTRY_LOADING';
+export const getCountry = createAsyncThunk(
+  'countriesDetail/getCountry',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const includeFields = [
+        'governments',
+        'required-gov-documents',
+        'required-gov-documents.required-gov-document-group',
+        'required-gov-documents.required-gov-document-group.parent',
+        'required-gov-documents.gov-documents'
+      ];
 
-const GET_COUNTRY_LINKS_SUCCESS = 'GET_COUNTRY_LINKS_SUCCESS';
-const GET_COUNTRY_LINKS_ERROR = 'GET_COUNTRY_LINKS_ERROR';
-const GET_COUNTRY_LINKS_LOADING = 'GET_COUNTRY_LINKS_LOADING';
+      const queryParams = {
+        ...(!!includeFields.length && { include: includeFields.join(',') }),
+        locale: language
+      };
 
-const GET_COUNTRY_VPAS_SUCCESS = 'GET_COUNTRY_VPAS_SUCCESS';
-const GET_COUNTRY_VPAS_ERROR = 'GET_COUNTRY_VPAS_ERROR';
-const GET_COUNTRY_VPAS_LOADING = 'GET_COUNTRY_VPAS_LOADING';
+      const { data } = await API.get(`countries/${id}`, queryParams, { token: user.token });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-/* Initial state */
-const initialState = {
-  data: {},
-  loading: false,
-  error: false,
-  documentation: {
+export const getCountryLinks = createAsyncThunk(
+  'countriesDetail/getCountryLinks',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const queryParams = {
+        country: id,
+        locale: language
+      };
+
+      const { data } = await API.get('country-links', queryParams, { token: user.token });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getCountryVPAs = createAsyncThunk(
+  'countriesDetail/getCountryVPAs',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const queryParams = {
+        country: id,
+        locale: language
+      };
+
+      const { data } = await API.get('country-vpas', queryParams, { token: user.token });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+const countriesDetailSlice = createSlice({
+  name: 'countriesDetail',
+  initialState: {
     data: {},
     loading: false,
-    error: false
+    error: false,
+    documentation: {
+      data: {},
+      loading: false,
+      error: false
+    },
+    links: {
+      data: [],
+      loading: false,
+      error: false
+    },
+    vpas: {
+      data: [],
+      loading: false,
+      error: false
+    }
   },
-  links: {
-    data: [],
-    loading: false,
-    error: false
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCountry.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getCountry.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getCountry.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
+      })
+      .addCase(getCountryLinks.pending, (state) => {
+        state.links.loading = true;
+        state.links.error = false;
+      })
+      .addCase(getCountryLinks.fulfilled, (state, action) => {
+        state.links.data = action.payload;
+        state.links.loading = false;
+        state.links.error = false;
+      })
+      .addCase(getCountryLinks.rejected, (state) => {
+        state.links.error = true;
+        state.links.loading = false;
+      })
+      .addCase(getCountryVPAs.pending, (state) => {
+        state.vpas.loading = true;
+        state.vpas.error = false;
+      })
+      .addCase(getCountryVPAs.fulfilled, (state, action) => {
+        state.vpas.data = action.payload;
+        state.vpas.loading = false;
+        state.vpas.error = false;
+      })
+      .addCase(getCountryVPAs.rejected, (state) => {
+        state.vpas.error = true;
+        state.vpas.loading = false;
+      });
   },
-  vpas: {
-    data: [],
-    loading: false,
-    error: false
-  }
-};
+});
 
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_COUNTRY_SUCCESS: {
-      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
-    }
-    case GET_COUNTRY_ERROR: {
-      return Object.assign({}, state, { error: true, loading: false });
-    }
-    case GET_COUNTRY_LOADING: {
-      return Object.assign({}, state, { loading: true, error: false });
-    }
-    case GET_COUNTRY_LINKS_SUCCESS: {
-      const links = Object.assign({}, state.links, {
-        data: action.payload, loading: false, error: false
-      });
-      return Object.assign({}, state, { links });
-    }
-    case GET_COUNTRY_LINKS_ERROR: {
-      const links = Object.assign({}, state.links, { error: true, loading: false });
-      return Object.assign({}, state, { links });
-    }
-    case GET_COUNTRY_LINKS_LOADING: {
-      const links = Object.assign({}, state.links, { loading: true, error: false });
-      return Object.assign({}, state, { links });
-    }
-
-    case GET_COUNTRY_VPAS_SUCCESS: {
-      const vpas = Object.assign({}, state.vpas, {
-        data: action.payload, loading: false, error: false
-      });
-      return Object.assign({}, state, { vpas });
-    }
-    case GET_COUNTRY_VPAS_ERROR: {
-      const vpas = Object.assign({}, state.vpas, { error: true, loading: false });
-      return Object.assign({}, state, { vpas });
-    }
-    case GET_COUNTRY_VPAS_LOADING: {
-      const vpas = Object.assign({}, state.vpas, { loading: true, error: false });
-      return Object.assign({}, state, { vpas });
-    }
-
-    default:
-      return state;
-  }
-}
-
-/* Action creators */
-export function getCountry(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_COUNTRY_LOADING });
-
-    const includeFields = [
-      'governments',
-      'required-gov-documents',
-      'required-gov-documents.required-gov-document-group',
-      'required-gov-documents.required-gov-document-group.parent',
-      'required-gov-documents.gov-documents'
-    ];
-
-    const queryParams = {
-      ...(!!includeFields.length && { include: includeFields.join(',') }),
-      locale: language
-    };
-
-    return API.get(`countries/${id}`, queryParams, { token: user.token })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_COUNTRY_SUCCESS,
-          payload: data
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_COUNTRY_ERROR,
-          payload: err.message
-        });
-      });
-  };
-}
-
-export function getCountryLinks(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_COUNTRY_LINKS_LOADING });
-
-    const queryParams = {
-      country: id,
-      locale: language
-    };
-
-    return API.get('country-links', queryParams, { token: user.token })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_COUNTRY_LINKS_SUCCESS,
-          payload: data
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_COUNTRY_LINKS_ERROR,
-          payload: err.message
-        });
-      });
-  };
-}
-
-export function getCountryVPAs(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_COUNTRY_VPAS_LOADING });
-
-    const queryParams = {
-      country: id,
-      locale: language
-    };
-
-    return API.get('country-vpas', queryParams, { token: user.token })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_COUNTRY_VPAS_SUCCESS,
-          payload: data
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_COUNTRY_VPAS_ERROR,
-          payload: err.message
-        });
-      });
-  };
-}
+export default countriesDetailSlice.reducer;

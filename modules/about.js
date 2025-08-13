@@ -1,53 +1,44 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from 'services/api';
 
-const GET_ABOUT_SUCCESS = 'GET_ABOUT_SUCCESS';
-const GET_ABOUT_ERROR = 'GET_ABOUT_ERROR';
-const GET_ABOUT_LOADING = 'GET_ABOUT_LOADING';
-
-/* Initial state */
-const initialState = {
-  data: [],
-  loading: false,
-  error: false
-};
-
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_ABOUT_SUCCESS: {
-      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
+export const getAbout = createAsyncThunk(
+  'about/getAbout',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { language } = getState();
+      const { data } = await API.get('about-page-entries', { locale: language });
+      return data;
+    } catch (err) {
+      console.error(err);
+      return rejectWithValue(err.message);
     }
-    case GET_ABOUT_ERROR: {
-      return Object.assign({}, state, { error: true, loading: false });
-    }
-    case GET_ABOUT_LOADING: {
-      return Object.assign({}, state, { loading: true, error: false });
-    }
-    default:
-      return state;
   }
-}
+);
 
-export function getAbout() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_ABOUT_LOADING });
-
-    return API.get('about-page-entries', { locale: language })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_ABOUT_SUCCESS,
-          payload: data
-        });
+const aboutSlice = createSlice({
+  name: 'about',
+  initialState: {
+    data: [],
+    loading: false,
+    error: false
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAbout.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        console.error(err);
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_ABOUT_ERROR,
-          payload: err.message
-        });
+      .addCase(getAbout.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getAbout.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       });
-  };
-}
+  },
+});
+
+export default aboutSlice.reducer;

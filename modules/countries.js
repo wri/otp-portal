@@ -1,59 +1,52 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from 'services/api';
 
-/* Constants */
-const GET_COUNTRIES_SUCCESS = 'GET_COUNTRIES_SUCCESS';
-const GET_COUNTRIES_ERROR = 'GET_COUNTRIES_ERROR';
-const GET_COUNTRIES_LOADING = 'GET_COUNTRIES_LOADING';
+export const getCountries = createAsyncThunk(
+  'countries/getCountries',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { language } = getState();
+      const params = {
+        locale: language,
+        include: 'required-gov-documents',
+        'fields[required-gov-documents]': 'id',
+        'page[size]': 2000,
+        sort: 'name'
+      };
 
-/* Initial state */
-const initialState = {
-  data: [],
-  loading: false,
-  error: false
-};
-
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_COUNTRIES_SUCCESS:
-      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
-    case GET_COUNTRIES_ERROR:
-      return Object.assign({}, state, { error: true, loading: false });
-    case GET_COUNTRIES_LOADING:
-      return Object.assign({}, state, { loading: true, error: false });
-    default:
-      return state;
+      const { data } = await API.get('countries', params);
+      return data;
+    } catch (err) {
+      console.error(err);
+      return rejectWithValue(err.message);
+    }
   }
-}
+);
 
-export function getCountries() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_COUNTRIES_LOADING });
-    const params = {
-      locale: language,
-      include: 'required-gov-documents',
-      'fields[required-gov-documents]': 'id',
-      'page[size]': 2000,
-      sort: 'name'
-    };
-
-    return API.get('countries', params)
-      .then(({ data }) => {
-        dispatch({
-          type: GET_COUNTRIES_SUCCESS,
-          payload: data
-        });
+const countriesSlice = createSlice({
+  name: 'countries',
+  initialState: {
+    data: [],
+    loading: false,
+    error: false
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCountries.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        console.error(err);
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_COUNTRIES_ERROR,
-          payload: err.message
-        });
+      .addCase(getCountries.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getCountries.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       });
-  };
-}
+  },
+});
+
+export default countriesSlice.reducer;

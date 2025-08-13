@@ -1,528 +1,366 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 
 import API from 'services/api';
 import { parseDocument } from 'utils/documents';
 
-/* Constants */
-const GET_OPERATOR_SUCCESS = 'GET_OPERATOR_SUCCESS';
-const GET_OPERATOR_ERROR = 'GET_OPERATOR_ERROR';
-const GET_OPERATOR_LOADING = 'GET_OPERATOR_LOADING';
+export const getOperatorBySlug = createAsyncThunk(
+  'operatorsDetail/getOperatorBySlug',
+  async ({ slug, loadFMUS = false }, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const includes = ['country', 'fmus', 'observations'];
+      const fields = {
+        'fields[countries]': 'name,id,iso',
+        'fields[observations]': 'id,hidden'
+      };
+      if (!loadFMUS) {
+        fields['fields[fmus]'] = 'name,id';
+      }
 
-const GET_OPERATOR_OBSERVATIONS_SUCCESS = 'GET_OPERATOR_OBSERVATIONS_SUCCESS';
-const GET_OPERATOR_OBSERVATIONS_ERROR = 'GET_OPERATOR_OBSERVATIONS_ERROR';
-const GET_OPERATOR_OBSERVATIONS_LOADING = 'GET_OPERATOR_OBSERVATIONS_LOADING';
+      const { data } = await API.get('operators', {
+        locale: language,
+        include: includes.join(','),
+        ...fields,
+        'filter[slug]': slug
+      }, {
+        token: user.token
+      });
+      
+      const operator = data[0];
+      if (!operator) throw new Error('Operator not found');
+      operator.loadedFMUS = loadFMUS;
+      
+      return operator;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-const GET_OPERATOR_DOCUMENTATION_SUCCESS = 'GET_OPERATOR_DOCUMENTATION_SUCCESS';
-const GET_OPERATOR_DOCUMENTATION_ERROR = 'GET_OPERATOR_DOCUMENTATION_ERROR';
-const GET_OPERATOR_DOCUMENTATION_LOADING = 'GET_OPERATOR_DOCUMENTATION_LOADING';
+export const getOperator = createAsyncThunk(
+  'operatorsDetail/getOperator',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const includeFields = ['country', 'fmus'];
 
-const GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS';
-const GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR = 'GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR';
+      const { data } = await API.get(`operators/${id}`, {
+        locale: language,
+        include: includeFields.join(','),
+      }, {
+        token: user.token
+      });
+      
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-const GET_OPERATOR_TIMELINE_SUCCESS = 'GET_OPERATOR_TIMELINE_SUCCESS';
-const GET_OPERATOR_TIMELINE_ERROR = 'GET_OPERATOR_TIMELINE_ERROR';
-const GET_OPERATOR_TIMELINE_LOADING = 'GET_OPERATOR_TIMELINE_LOADING';
+export const getOperatorDocumentation = createAsyncThunk(
+  'operatorsDetail/getOperatorDocumentation',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language, operatorsDetail } = getState();
+      const date = operatorsDetail.date;
+      const metadata = { timestamp: new Date(), operatorId: id };
 
-const SET_OPERATOR_DOCUMENTATION_DATE = 'SET_OPERATOR_DOCUMENTATION_DATE';
-const SET_OPERATOR_DOCUMENTATION_FMU = 'SET_OPERATOR_DOCUMENTATION_FMU';
+      const includeFields = [
+        'required-operator-document',
+        'required-operator-document.required-operator-document-group',
+        'operator-document-annexes',
+        'fmu',
+      ];
 
-/* Constants sawmills */
-const GET_SAWMILLS_SUCCESS = 'GET_SAWMILLS_SUCCESS';
-const GET_SAWMILLS_ERROR = 'GET_SAWMILLS_ERROR';
-const GET_SAWMILLS_LOADING = 'GET_SAWMILLS_LOADING';
+      const { data } = await API.get('operator-document-histories', {
+        locale: language,
+        include: includeFields.join(','),
+        'fields[fmus]': 'name',
+        'filter[operator-id]': id,
+        'filter[date]': date,
+      }, {
+        token: user.token
+      });
+      
+      return { data, metadata };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-const GET_SAWMILLS_LOCATIONS_SUCCESS = 'GET_SAWMILLS_LOCATION_SUCCESS';
-const GET_SAWMILLS_LOCATIONS_LOADING = 'GET_SAWMILLS_LOCATION_LOADING';
-const GET_SAWMILLS_LOCATIONS_ERROR = 'GET_SAWMILLS_LOCATION_ERROR';
+export const getOperatorObservations = createAsyncThunk(
+  'operatorsDetail/getOperatorObservations',
+  async (operatorId, { getState, rejectWithValue }) => {
+    try {
+      const { language } = getState();
+      const includes = [
+        'country', 'fmu', 'observers', 'severity', 'subcategory',
+        'subcategory.category', 'observation-report', 'observation-documents',
+        'relevant-operators', 'operator',
+      ];
 
-/* Initial state */
-const initialState = {
-  data: {},
-  loading: false,
-  error: false,
-  observations: {
-    operatorId: null,
-    data: [],
-    loading: false,
-    error: false,
-    timestamp: null
-  },
-  documentation: {
-    operatorId: null,
-    data: [],
-    loading: false,
-    error: false,
-    timestamp: null
-  },
-  publicationAuthorization: null,
-  date: dayjs().format('YYYY-MM-DD'),
-  fmu: null,
-  timeline: [],
-  sawmills: {
-    data: [],
-    loading: false,
-    error: false,
-  },
-  sawmillsLocations: {
-    data: [],
-    loading: false,
-    error: false,
-  },
-};
+      const metadata = { timestamp: new Date(), operatorId };
+
+      const { data } = await API.get('observations', {
+        locale: language,
+        include: includes.join(','),
+        'fields[fmus]': 'name',
+        'filter[operator]': operatorId,
+        'filter[hidden]': 'all'
+      });
+      
+      return { data, metadata };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getOperatorPublicationAuthorization = createAsyncThunk(
+  'operatorsDetail/getOperatorPublicationAuthorization',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const includeFields = [
+        'required-operator-document',
+        'required-operator-document.required-operator-document-group',
+      ];
+
+      const { data } = await API.get('operator-documents', {
+        locale: language,
+        include: includeFields.join(','),
+        'filter[operator-id]': id,
+        'filter[contract-signature]': true,
+      }, {
+        token: user.token,
+      });
+      
+      const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
+      return parseDocument(doc);
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getOperatorTimeline = createAsyncThunk(
+  'operatorsDetail/getOperatorTimeline',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { user, language } = getState();
+      const { data } = await API.get('score-operator-documents', {
+        locale: language,
+        'filter[operator]': id,
+      }, {
+        token: user.token
+      });
+      
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getSawMillsByOperatorId = createAsyncThunk(
+  'operatorsDetail/getSawMillsByOperatorId',
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await API.get('sawmills', {
+        'filter[operator]': id
+      });
+      
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getSawMillsLocationByOperatorId = createAsyncThunk(
+  'operatorsDetail/getSawMillsLocationByOperatorId',
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await API.get('sawmills', {
+        'filter[operator]': id,
+        format: 'geojson'
+      }, { deserialize: false });
+      
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 function isLatestAction(state, action) {
-  return action.metadata.timestamp >= state.timestamp;
+  return action.payload?.metadata?.timestamp >= state.timestamp;
 }
 
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_OPERATOR_SUCCESS: {
-      return Object.assign({}, state, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-    }
-    case GET_OPERATOR_ERROR: {
-      return Object.assign({}, state, { error: true, loading: false });
-    }
-    case GET_OPERATOR_LOADING: {
-      return Object.assign({}, state, { loading: true, error: false });
-    }
-    case SET_OPERATOR_DOCUMENTATION_DATE: {
-      const documentation = Object.assign({}, state, {
-        date: action.payload,
-      });
-      return Object.assign({}, state, documentation);
-    }
-    case SET_OPERATOR_DOCUMENTATION_FMU: {
-      const documentation = Object.assign({}, state, {
-        fmu: action.payload,
-      });
-      return Object.assign({}, state, documentation);
-    }
-    case GET_OPERATOR_TIMELINE_SUCCESS: {
-      return Object.assign({}, state, {
-        timeline: action.payload,
-        loading: false,
-        error: false,
-      });
-    }
-    case GET_OPERATOR_TIMELINE_ERROR: {
-      return Object.assign({}, state, { error: true, loading: false });
-    }
-    case GET_OPERATOR_TIMELINE_LOADING: {
-      return Object.assign({}, state, { loading: true, error: false });
-    }
-    case GET_OPERATOR_DOCUMENTATION_SUCCESS: {
-      if (!isLatestAction(state.documentation, action)) return state;
-
-      const documentation = Object.assign({}, state.documentation, {
-        data: action.payload,
-        operatorId: action.metadata.operatorId,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { documentation });
-    }
-    case GET_OPERATOR_DOCUMENTATION_ERROR: {
-      if (!isLatestAction(state.documentation, action)) return state;
-
-      const documentation = Object.assign({}, state.documentation, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { documentation });
-    }
-    case GET_OPERATOR_DOCUMENTATION_LOADING: {
-      const documentation = Object.assign({}, state.documentation, {
-        loading: true,
-        error: false,
-        timestamp: action.metadata.timestamp
-      });
-      return Object.assign({}, state, { documentation });
-    }
-    case GET_OPERATOR_OBSERVATIONS_LOADING: {
-      const observations = Object.assign({}, state.observations, {
-        timestamp: action.metadata.timestamp,
-        loading: true,
-        error: false,
-      });
-      return Object.assign({}, state, { observations });
-    }
-    case GET_OPERATOR_OBSERVATIONS_SUCCESS: {
-      if (!isLatestAction(state.observations, action)) return state;
-
-      const observations = Object.assign({}, state.observations, {
-        data: action.payload,
-        operatorId: action.metadata.operatorId,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { observations });
-    }
-    case GET_OPERATOR_OBSERVATIONS_ERROR: {
-      if (!isLatestAction(state.observations, action)) return state;
-
-      const observations = Object.assign({}, state.observations, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { observations });
-    }
-    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS: {
-      return Object.assign({}, state, { publicationAuthorization: action.payload });
-    }
-    case GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR: {
-      return Object.assign({}, state, { publicationAuthorization: null });
-    }
-    case GET_SAWMILLS_SUCCESS: {
-      const sawmills = Object.assign({}, state.sawmills, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { sawmills });
-    }
-    case GET_SAWMILLS_ERROR: {
-      const sawmills = Object.assign({}, state.sawmills, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { sawmills });
-    }
-    case GET_SAWMILLS_LOADING: {
-      const sawmills = Object.assign({}, state.sawmills, {
-        loading: true,
-        error: false,
-      });
-      return Object.assign({}, state, { sawmills });
-    }
-
-      // Get all sawmills geojson by Operator ID
-    case GET_SAWMILLS_LOCATIONS_SUCCESS: {
-      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
-        data: action.payload.features,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { sawmillsLocations });
-    }
-    case GET_SAWMILLS_LOCATIONS_LOADING: {
-      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
-        loading: true,
-        error: false,
-      });
-      return Object.assign({}, state, { sawmillsLocations });
-    }
-    case GET_SAWMILLS_LOCATIONS_ERROR: {
-      const sawmillsLocations = Object.assign({}, state.sawmillsLocations, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { sawmillsLocations });
-    }
-
-    default:
-      return state;
-  }
-}
-
-export function getOperatorBySlug(slug, loadFMUS = false) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_LOADING });
-
-    const includes = [
-      'country',
-      'fmus',
-      'observations'
-    ];
-    const fields = {
-      'fields[countries]': 'name,id,iso',
-      'fields[observations]': 'id,hidden'
-    }
-    if (!loadFMUS) {
-      fields['fields[fmus]'] = 'name,id';
-    }
-
-    return API.get(`operators`, {
-      locale: language,
-      include: includes.join(','),
-      ...fields,
-      'filter[slug]': slug
-    }, {
-      token: user.token
-    })
-      .then(({ data }) => {
-        const operator = data[0];
-        if (!operator) throw new Error('Operator not found');
-        operator.loadedFMUS = loadFMUS;
-
-        dispatch({
-          type: GET_OPERATOR_SUCCESS,
-          payload: operator,
-        });
+const operatorsDetailSlice = createSlice({
+  name: 'operatorsDetail',
+  initialState: {
+    data: {},
+    loading: false,
+    error: false,
+    observations: {
+      operatorId: null,
+      data: [],
+      loading: false,
+      error: false,
+      timestamp: null
+    },
+    documentation: {
+      operatorId: null,
+      data: [],
+      loading: false,
+      error: false,
+      timestamp: null
+    },
+    publicationAuthorization: null,
+    date: dayjs().format('YYYY-MM-DD'),
+    fmu: null,
+    timeline: [],
+    sawmills: {
+      data: [],
+      loading: false,
+      error: false,
+    },
+    sawmillsLocations: {
+      data: [],
+      loading: false,
+      error: false,
+    },
+  },
+  reducers: {
+    setOperatorDocumentationDate: (state, action) => {
+      state.date = action.payload;
+    },
+    setOperatorDocumentationFMU: (state, action) => {
+      state.fmu = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // getOperator
+      .addCase(getOperator.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATOR_ERROR,
-          payload: err.message,
-        });
-      });
-  };
-}
-
-/* Action creators */
-export function getOperator(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_LOADING });
-
-    const includeFields = [
-      'country',
-      'fmus',
-    ];
-
-    return API.get(`operators/${id}`, {
-      locale: language,
-      include: includeFields.join(','),
-    }, {
-      token: user.token
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_OPERATOR_SUCCESS,
-          payload: data,
-        });
+      .addCase(getOperator.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATOR_ERROR,
-          payload: err.message,
-        });
-      });
-  };
-}
-
-export function getOperatorDocumentation(id) {
-  return (dispatch, getState) => {
-    const { user, language, operatorsDetail } = getState();
-    const date = operatorsDetail.date;
-    const metadata = { timestamp: new Date(), operatorId: id };
-
-    dispatch({ type: GET_OPERATOR_DOCUMENTATION_LOADING, metadata });
-
-    const includeFields = [
-      'required-operator-document',
-      'required-operator-document.required-operator-document-group',
-      'operator-document-annexes',
-      'fmu',
-    ];
-
-    return API.get('operator-document-histories', {
-      locale: language,
-      include: includeFields.join(','),
-      'fields[fmus]': 'name',
-      'filter[operator-id]': id,
-      'filter[date]': date,
-    }, {
-      token: user.token
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_OPERATOR_DOCUMENTATION_SUCCESS,
-          payload: data,
-          metadata
-        });
+      .addCase(getOperator.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       })
-      .catch((err) => {
-        dispatch({
-          type: GET_OPERATOR_DOCUMENTATION_ERROR,
-          payload: err.message,
-          metadata
-        });
-      });
-  };
-}
-
-export function getOperatorObservations(operatorId) {
-  return (dispatch, getState) => {
-    const { language } = getState();
-
-    const includes = [
-      'country',
-      'fmu',
-      'observers',
-      'severity',
-      'subcategory',
-      'subcategory.category',
-      'observation-report',
-      'observation-documents',
-      'relevant-operators',
-      'operator',
-    ];
-
-    const timestamp = new Date();
-    const metadata = { timestamp, operatorId };
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATOR_OBSERVATIONS_LOADING, metadata });
-
-    return API.get('observations', {
-      locale: language,
-      include: includes.join(','),
-      'fields[fmus]': 'name',
-      'filter[operator]': operatorId,
-      'filter[hidden]': 'all'
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_OPERATOR_OBSERVATIONS_SUCCESS,
-          payload: data,
-          metadata
-        });
+      // getOperatorBySlug
+      .addCase(getOperatorBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATOR_OBSERVATIONS_ERROR,
-          payload: err.message,
-          metadata
-        });
-      });
-  };
-}
-
-export function getOperatorPublicationAuthorization(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-
-    const includeFields = [
-      'required-operator-document',
-      'required-operator-document.required-operator-document-group',
-    ];
-
-    return API.get('operator-documents', {
-      locale: language,
-      include: includeFields.join(','),
-      'filter[operator-id]': id,
-      'filter[contract-signature]': true,
-    }, {
-      token: user.token,
-    })
-      .then(({ data }) => {
-        const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
-
-        dispatch({
-          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_SUCCESS,
-          payload: parseDocument(doc)
-        });
+      .addCase(getOperatorBySlug.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
       })
-      .catch((_err) => {
-        dispatch({
-          type: GET_OPERATOR_PUBLICATION_AUTHORIZATION_ERROR
-        });
-      });
-  };
-}
-
-export function getOperatorTimeline(id) {
-  return (dispatch, getState) => {
-    const { user, language } = getState();
-    dispatch({ type: GET_OPERATOR_TIMELINE_LOADING });
-
-    return API.get('score-operator-documents', {
-      locale: language,
-      'filter[operator]': id,
-    }, {
-      token: user.token
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_OPERATOR_TIMELINE_SUCCESS,
-          payload: data,
-        });
+      .addCase(getOperatorBySlug.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATOR_TIMELINE_ERROR,
-          payload: err.message,
-        });
-      });
-  };
-}
-
-/* Action creators */
-export function getSawMillsByOperatorId(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_SAWMILLS_LOADING });
-
-    return API.get('sawmills', {
-      'filter[operator]': id
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_SAWMILLS_SUCCESS,
-          payload: data,
-        });
+      // getOperatorDocumentation
+      .addCase(getOperatorDocumentation.pending, (state, action) => {
+        state.documentation.loading = true;
+        state.documentation.error = false;
+        state.documentation.timestamp = action.payload?.metadata?.timestamp || Date.now();
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_SAWMILLS_ERROR,
-          payload: err.message,
-        });
-      });
-  };
-}
-
-export function getSawMillsLocationByOperatorId(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_SAWMILLS_LOCATIONS_LOADING });
-
-    return API.get('sawmills', {
-      'filter[operator]': id,
-      format: 'geojson'
-    }, { deserialize: false })
-      .then(({ data }) => {
-        // Fetch from server ok -> Dispatch geojson sawmill data
-        dispatch({
-          type: GET_SAWMILLS_LOCATIONS_SUCCESS,
-          payload: data,
-        });
+      .addCase(getOperatorDocumentation.fulfilled, (state, action) => {
+        if (!isLatestAction(state.documentation, action)) return;
+        state.documentation.data = action.payload.data;
+        state.documentation.operatorId = action.payload.metadata.operatorId;
+        state.documentation.loading = false;
+        state.documentation.error = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_SAWMILLS_LOCATIONS_ERROR,
-          payload: err.message,
-        });
+      .addCase(getOperatorDocumentation.rejected, (state, action) => {
+        if (!isLatestAction(state.documentation, action)) return;
+        state.documentation.error = true;
+        state.documentation.loading = false;
+      })
+      // getOperatorObservations
+      .addCase(getOperatorObservations.pending, (state, action) => {
+        state.observations.loading = true;
+        state.observations.error = false;
+        state.observations.timestamp = action.payload?.metadata?.timestamp || Date.now();
+      })
+      .addCase(getOperatorObservations.fulfilled, (state, action) => {
+        if (!isLatestAction(state.observations, action)) return;
+        state.observations.data = action.payload.data;
+        state.observations.operatorId = action.payload.metadata.operatorId;
+        state.observations.loading = false;
+        state.observations.error = false;
+      })
+      .addCase(getOperatorObservations.rejected, (state, action) => {
+        if (!isLatestAction(state.observations, action)) return;
+        state.observations.error = true;
+        state.observations.loading = false;
+      })
+      // getOperatorPublicationAuthorization
+      .addCase(getOperatorPublicationAuthorization.fulfilled, (state, action) => {
+        state.publicationAuthorization = action.payload;
+      })
+      .addCase(getOperatorPublicationAuthorization.rejected, (state) => {
+        state.publicationAuthorization = null;
+      })
+      // getOperatorTimeline
+      .addCase(getOperatorTimeline.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getOperatorTimeline.fulfilled, (state, action) => {
+        state.timeline = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getOperatorTimeline.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
+      })
+      // getSawMillsByOperatorId
+      .addCase(getSawMillsByOperatorId.pending, (state) => {
+        state.sawmills.loading = true;
+        state.sawmills.error = false;
+      })
+      .addCase(getSawMillsByOperatorId.fulfilled, (state, action) => {
+        state.sawmills.data = action.payload;
+        state.sawmills.loading = false;
+        state.sawmills.error = false;
+      })
+      .addCase(getSawMillsByOperatorId.rejected, (state) => {
+        state.sawmills.error = true;
+        state.sawmills.loading = false;
+      })
+      // getSawMillsLocationByOperatorId
+      .addCase(getSawMillsLocationByOperatorId.pending, (state) => {
+        state.sawmillsLocations.loading = true;
+        state.sawmillsLocations.error = false;
+      })
+      .addCase(getSawMillsLocationByOperatorId.fulfilled, (state, action) => {
+        state.sawmillsLocations.data = action.payload.features;
+        state.sawmillsLocations.loading = false;
+        state.sawmillsLocations.error = false;
+      })
+      .addCase(getSawMillsLocationByOperatorId.rejected, (state) => {
+        state.sawmillsLocations.error = true;
+        state.sawmillsLocations.loading = false;
       });
-  };
-}
+  },
+});
 
-export function setOperatorDocumentationDate(date) {
-  return (dispatch) => {
-    dispatch({
-      type: SET_OPERATOR_DOCUMENTATION_DATE,
-      payload: date,
-    });
-  };
-}
+export const { setOperatorDocumentationDate, setOperatorDocumentationFMU } = operatorsDetailSlice.actions;
 
-export function setOperatorDocumentationFMU(fmu) {
-  return (dispatch) => {
-    dispatch({
-      type: SET_OPERATOR_DOCUMENTATION_FMU,
-      payload: fmu,
-    });
-  };
-}
+export default operatorsDetailSlice.reducer;

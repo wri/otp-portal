@@ -1,111 +1,129 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { sumBy } from 'utils/general';
 
-const GET_FMU_ANALYSIS_SUCCESS = 'GET_FMU_ANALYSIS_SUCCESS';
-const GET_FMU_ANALYSIS_LOADING = 'GET_FMU_ANALYSIS_LOADING';
-const GET_FMU_ANALYSIS_ERROR = 'GET_FMU_ANALYSIS_ERROR';
+export const setOperatorsDetailAnalysis = createAsyncThunk(
+  'operatorsDetailFmus/setOperatorsDetailAnalysis',
+  async ({ fmu, type }, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const { operatorsDetailFmus } = getState();
+      const { analysis } = operatorsDetailFmus;
+      const { data: analysisData } = analysis;
 
-const SET_OPERATORS_DETAIL_FMU_SELECTED = 'SET_OPERATORS_DETAIL_FMU_SELECTED';
-const SET_OPERATORS_DETAIL_FMU_BOUNDS = 'SET_OPERATORS_DETAIL_FMU_BOUNDS';
+      if (!fmu.geojson) {
+        return null;
+      }
 
-const SET_OPERATORS_DETAIL_MAP_LOCATION = 'SET_OPERATORS_DETAIL_MAP_LOCATION';
-const SET_OPERATORS_DETAIL_MAP_INTERACTIONS = 'SET_OPERATORS_DETAIL_MAP_INTERACTIONS';
-const SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS = 'SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS';
-const SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE = 'SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE';
+      if (analysisData && analysisData[fmu.id] && analysisData[fmu.id].geostore) {
+        return await fetchAnalysis(dispatch, getState, { id: analysisData[fmu.id].geostore }, fmu, type);
+      }
 
-/* Initial state */
-const initialState = {
-  map: {
-    zoom: 5,
-    latitude: 0,
-    longitude: 20,
-    scrollZoom: false
-  },
+      const response = await fetch(`${process.env.RW_API}/geostore`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ geojson: fmu.geojson })
+      });
 
-  latlng: {},
+      if (!response.ok) throw new Error(response.statusText);
 
-  interactions: {},
-
-  layersActive: [
-    'gain',
-    'loss',
-    // 'integrated-alerts', //activate when metadata is loaded
-    'fmusdetail'
-  ],
-  layersSettings: {},
-
-  fmu: undefined,
-  fmusBounds: undefined,
-  analysis: {
-    data: {},
-    loading: false,
-    error: false
+      const { data } = await response.json();
+      return await fetchAnalysis(dispatch, getState, data, fmu, type);
+    } catch (err) {
+      return rejectWithValue({ type, error: err.message });
+    }
   }
-};
+);
 
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_FMU_ANALYSIS_SUCCESS: {
-      const analysis = {
-        data: { ...state.analysis.data, ...action.payload.data },
-        loading: {
-          ...state.analysis.loading,
-          [action.payload.type]: false
+export const getIntegratedAlertsMetadata = createAsyncThunk(
+  'operatorsDetailFmus/getIntegratedAlertsMetadata',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { minDataDate, maxDataDate } = await fetchIntegratedAlertsMetadata();
+      const { operatorsDetailFmus } = getState();
+      const activeLayers = operatorsDetailFmus.layersActive;
+
+      if (!minDataDate || !maxDataDate) {
+        return {
+          type: 'no-metadata',
+          layersActive: activeLayers.filter(l => l !== 'integrated-alerts')
+        };
+      }
+
+      const startDate = dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD');
+
+      return {
+        type: 'success',
+        layersSettings: {
+          id: 'integrated-alerts',
+          settings: {
+            decodeParams: {
+              startDate,
+              endDate: maxDataDate,
+              trimEndDate: maxDataDate,
+              maxDate: maxDataDate
+            },
+            timelineParams: {
+              minDate: startDate,
+              maxDate: maxDataDate,
+              minDataDate
+            }
+          }
         },
-        error: {
-          ...state.analysis.error,
-          [action.payload.type]: false
-        }
+        layersActive: [... new Set([
+          ...activeLayers.slice(0, activeLayers.indexOf('fmusdetail')),
+          'integrated-alerts',
+          ...activeLayers.slice(activeLayers.indexOf('fmusdetail'))
+        ])]
       };
-      return Object.assign({}, state, { analysis });
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
-    case GET_FMU_ANALYSIS_ERROR: {
-      const analysis = {
-        ...state.analysis,
-        loading: {
-          ...state.analysis.loading,
-          [action.payload.type]: false
-        },
-        error: {
-          ...state.analysis.error,
-          [action.payload.type]: true
-        }
-      };
-      return Object.assign({}, state, { analysis });
-    }
-    case GET_FMU_ANALYSIS_LOADING: {
-      const analysis = {
-        ...state.analysis,
-        loading: {
-          ...state.analysis.loading,
-          [action.payload.type]: true
-        },
-        error: {
-          ...state.analysis.error,
-          [action.payload.type]: false
-        }
-      };
-      return Object.assign({}, state, { analysis });
-    }
-    case SET_OPERATORS_DETAIL_MAP_LOCATION: {
-      const map = Object.assign({}, state.map, action.payload);
-      return Object.assign({}, state, { map });
-    }
+  }
+);
 
-    case SET_OPERATORS_DETAIL_FMU_SELECTED: {
-      return Object.assign({}, state, { fmu: action.payload });
+const operatorsDetailFmusSlice = createSlice({
+  name: 'operatorsDetailFmus',
+  initialState: {
+    map: {
+      zoom: 5,
+      latitude: 0,
+      longitude: 20,
+      scrollZoom: false
+    },
+    latlng: {},
+    interactions: {},
+    layersActive: [
+      'gain',
+      'loss',
+      // 'integrated-alerts', //activate when metadata is loaded
+      'fmusdetail'
+    ],
+    layersSettings: {},
+    fmu: undefined,
+    fmusBounds: undefined,
+    analysis: {
+      data: {},
+      loading: false,
+      error: false
     }
-
-    case SET_OPERATORS_DETAIL_FMU_BOUNDS: {
-      return Object.assign({}, state, { fmuBounds: action.payload });
-    }
-
-    case SET_OPERATORS_DETAIL_MAP_INTERACTIONS: {
+  },
+  reducers: {
+    setOperatorsDetailMapLocation: (state, action) => {
+      state.map = { ...state.map, ...action.payload };
+    },
+    setOperatorsDetailFmu: (state, action) => {
+      state.fmu = action.payload;
+    },
+    setOperatorsDetailFmuBounds: (state, action) => {
+      state.fmuBounds = action.payload;
+    },
+    setOperatorsDetailMapInteractions: (state, action) => {
       const { features = [], lngLat = {} } = action.payload;
-
+      
       // could be more features for the same layer we reverse array
       // as the last one overrides the previous we will get the first on
       const interactions = features.slice().reverse().reduce(
@@ -120,63 +138,134 @@ export default function reducer(state = initialState, action) {
         {}
       );
 
-      return {
-        ...state,
-        latlng: lngLat,
-        interactions
-      };
-    }
-    case SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS: {
+      state.latlng = lngLat;
+      state.interactions = interactions;
+    },
+    setOperatorsDetailMapLayersSettings: (state, action) => {
       const { id, settings } = action.payload;
-
-      const layersSettings = {
+      state.layersSettings = {
         ...state.layersSettings,
         [id]: {
           ...state.layersSettings[id],
           ...settings
         }
       };
-
-      return {
-        ...state,
-        layersSettings
+    },
+    setOperatorsDetailMapLayersActive: (state, action) => {
+      state.layersActive = action.payload;
+    },
+    fmuAnalysisSuccess: (state, action) => {
+      const { type, data } = action.payload;
+      state.analysis = {
+        data: { ...state.analysis.data, ...data },
+        loading: {
+          ...state.analysis.loading,
+          [type]: false
+        },
+        error: {
+          ...state.analysis.error,
+          [type]: false
+        }
       };
-    }
-    case SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE: {
-      return {
-        ...state,
-        layersActive: action.payload
+    },
+    fmuAnalysisLoading: (state, action) => {
+      const { type } = action.payload;
+      state.analysis = {
+        ...state.analysis,
+        loading: {
+          ...state.analysis.loading,
+          [type]: true
+        },
+        error: {
+          ...state.analysis.error,
+          [type]: false
+        }
       };
-    }
-    default:
-      return state;
-  }
-}
+    },
+    fmuAnalysisError: (state, action) => {
+      const { type } = action.payload;
+      state.analysis = {
+        ...state.analysis,
+        loading: {
+          ...state.analysis.loading,
+          [type]: false
+        },
+        error: {
+          ...state.analysis.error,
+          [type]: true
+        }
+      };
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(setOperatorsDetailAnalysis.pending, (state, action) => {
+        const { type } = action.meta.arg;
+        state.analysis = {
+          ...state.analysis,
+          loading: {
+            ...state.analysis.loading,
+            [type]: true
+          },
+          error: {
+            ...state.analysis.error,
+            [type]: false
+          }
+        };
+      })
+      .addCase(setOperatorsDetailAnalysis.fulfilled, (state, action) => {
+        // Analysis results are handled by the async functions themselves
+        // through the fmuAnalysisSuccess action
+      })
+      .addCase(setOperatorsDetailAnalysis.rejected, (state, action) => {
+        const { type } = action.payload || {};
+        if (type) {
+          state.analysis = {
+            ...state.analysis,
+            loading: {
+              ...state.analysis.loading,
+              [type]: false
+            },
+            error: {
+              ...state.analysis.error,
+              [type]: true
+            }
+          };
+        }
+      })
+      .addCase(getIntegratedAlertsMetadata.fulfilled, (state, action) => {
+        const { type, layersActive, layersSettings } = action.payload;
+        
+        if (type === 'no-metadata') {
+          state.layersActive = layersActive;
+        } else {
+          const { id, settings } = layersSettings;
+          state.layersSettings = {
+            ...state.layersSettings,
+            [id]: {
+              ...state.layersSettings[id],
+              ...settings
+            }
+          };
+          state.layersActive = layersActive;
+        }
+      });
+  },
+});
 
-// SETTERS
-// - setMapLocation
-// - setFmuSelected
-// - setAnalysis
-export function setOperatorsDetailMapLocation(mapLocation) {
-  return {
-    type: SET_OPERATORS_DETAIL_MAP_LOCATION,
-    payload: mapLocation
-  };
-}
+export const {
+  setOperatorsDetailMapLocation,
+  setOperatorsDetailFmu,
+  setOperatorsDetailFmuBounds,
+  setOperatorsDetailMapInteractions,
+  setOperatorsDetailMapLayersSettings,
+  setOperatorsDetailMapLayersActive,
+  fmuAnalysisSuccess,
+  fmuAnalysisLoading,
+  fmuAnalysisError,
+} = operatorsDetailFmusSlice.actions;
 
-export function setOperatorsDetailFmu(fmu) {
-  return {
-    type: SET_OPERATORS_DETAIL_FMU_SELECTED,
-    payload: fmu
-  };
-}
 
-export function setOperatorsDetailFmuBounds(payload) {
-  return {
-    type: SET_OPERATORS_DETAIL_FMU_BOUNDS,
-    payload
-  };
-}
 
 function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
   const geostoreId = data.id;
@@ -216,21 +305,18 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
       // response data array element example
       // { gfw_integrated_alerts__confidence: 'high', count: 1232, area__ha: 15.151760000000001 }
 
-      dispatch({
-        type: GET_FMU_ANALYSIS_SUCCESS,
-        payload: {
-          type,
-          data: {
-            [fmu.id]: {
-              geostore: data.id,
-              ...analysisData[fmu.id],
-              'integrated-alerts': response && response.data
-            }
+      dispatch(fmuAnalysisSuccess({
+        type,
+        data: {
+          [fmu.id]: {
+            geostore: data.id,
+            ...analysisData[fmu.id],
+            'integrated-alerts': response && response.data
           }
         }
-      });
+      }));
     })
-    .catch(error => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
+    .catch(error => dispatch(fmuAnalysisError({ type })));
 }
 
 const ANALYSIS = {
@@ -268,7 +354,7 @@ function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
 }
 
 function fetchAnalysis(dispatch, getState, data, fmu, type) {
-  dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
+  dispatch(fmuAnalysisLoading({ type }));
 
   if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
 
@@ -287,117 +373,22 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
       const { analysis } = operatorsDetailFmus;
       const { data: analysisData } = analysis;
 
-      dispatch({
-        type: GET_FMU_ANALYSIS_SUCCESS,
-        payload: {
-          type,
-          data: {
-            [fmu.id]: {
-              geostore: data.id,
-              ...analysisData[fmu.id],
-              loss: { loss },
-              gain: { gain }
-            }
+      dispatch(fmuAnalysisSuccess({
+        type,
+        data: {
+          [fmu.id]: {
+            geostore: data.id,
+            ...analysisData[fmu.id],
+            loss: { loss },
+            gain: { gain }
           }
         }
-      });
+      }));
     })
     .catch(error => {
-      dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } });
+      dispatch(fmuAnalysisError({ type }));
     });
 }
 
-// GEOSTORE
-export function setOperatorsDetailAnalysis(fmu, type) {
-  return (dispatch, getState) => {
-    const { operatorsDetailFmus } = getState();
-    const { analysis } = operatorsDetailFmus;
-    const { data: analysisData } = analysis;
 
-    if (!fmu.geojson) {
-      return null;
-    }
-
-    if (analysisData && analysisData[fmu.id] && analysisData[fmu.id].geostore) {
-      return fetchAnalysis(dispatch, getState, { id: analysisData[fmu.id].geostore }, fmu, type);
-    }
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_FMU_ANALYSIS_LOADING, payload: { type } });
-
-    fetch(`${process.env.RW_API}/geostore`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ geojson: fmu.geojson })
-    }).then((response) => {
-      if (response.ok) return response.json();
-      throw new Error(response.statusText);
-    }).then(({ data }) => {
-      return fetchAnalysis(dispatch, getState, data, fmu, type);
-    }).catch((error) => dispatch({ type: GET_FMU_ANALYSIS_ERROR, payload: { type } }));
-  };
-}
-
-export function setOperatorsDetailMapLayersSettings(payload) {
-  return {
-    type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-    payload
-  };
-}
-
-export function setOperatorsDetailMapInteractions(payload) {
-  return {
-    type: SET_OPERATORS_DETAIL_MAP_INTERACTIONS,
-    payload
-  };
-}
-
-export function getIntegratedAlertsMetadata() {
-  return (dispatch, state) => {
-    return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate }) => {
-      const activeLayers = state().operatorsDetailFmus.layersActive;
-
-      if (!minDataDate || !maxDataDate) {
-        dispatch({
-          type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
-          payload: activeLayers.filter(l => l !== 'integrated-alerts')
-        });
-        return;
-      }
-
-      const startDate = dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD');
-
-      dispatch({
-        type: SET_OPERATORS_DETAIL_MAP_LAYERS_SETTINGS,
-        payload: {
-          id: 'integrated-alerts',
-          settings: {
-            decodeParams: {
-              startDate,
-              endDate: maxDataDate,
-              trimEndDate: maxDataDate,
-              maxDate: maxDataDate
-            },
-            timelineParams: {
-              minDate: startDate,
-              maxDate: maxDataDate,
-              minDataDate
-            }
-          }
-        }
-      });
-
-      // put integrated-alerts before fmusdetail
-      dispatch({
-        type: SET_OPERATORS_DETAIL_MAP_LAYERS_ACTIVE,
-        payload: [... new Set([
-          ...activeLayers.slice(0, activeLayers.indexOf('fmusdetail')),
-          'integrated-alerts',
-          ...activeLayers.slice(activeLayers.indexOf('fmusdetail'))
-        ])]
-      });
-    })
-  };
-}
+export default operatorsDetailFmusSlice.reducer;

@@ -1,147 +1,113 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { omitBy, isEmpty } from 'utils/general';
-
 import API, { NEXTAPIClient } from 'services/api'
-
 import { logEvent } from 'utils/analytics';
 
-// CONSTANTS
-const SET_USER = 'SET_USER';
-const REMOVE_USER = 'REMOVE_USER';
-const SET_USER_AGENT = 'SET_USER_AGENT';
+export const getUserOperator = createAsyncThunk(
+  'user/getUserOperator',
+  async (id, { rejectWithValue }) => {
+    try {
+      const includeFields = ['country', 'fmus'];
+      const fields = {
+        fmus: [
+          'name',
+          'certification-fsc',
+          'certification-olb',
+          'certification-pefc',
+          'certification-pafc',
+          'certification-fsc-cw',
+          'certification-tlv',
+          'certification-ls',
+        ],
+      };
 
-const GET_USER_PROFILE_SUCCESS = 'GET_USER_PROFILE_SUCCESS';
-const GET_USER_PROFILE_ERROR = 'GET_USER_PROFILE_ERROR';
-const GET_USER_PROFILE_LOADING = 'GET_USER_PROFILE_LOADING';
-const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
-const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
-const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
+      const { data } = await API.get(`operators/${id}`, {
+        include: includeFields.join(','),
+        'fields[fmus]': fields.fmus.join(',')
+      });
 
-// REDUCER
-const initialState = {};
-
-export default function User(state = initialState, action) {
-  switch (action.type) {
-    case SET_USER:
-      return Object.assign({}, state, action.payload);
-    case SET_USER_AGENT:
-      return Object.assign({}, state, { userAgent: action.payload });
-    case GET_USER_PROFILE_SUCCESS: {
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          data: action.payload,
-          loading: false,
-          error: false,
-        }
-      }
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
-    case GET_USER_PROFILE_ERROR: {
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          error: true,
-          loading: false,
-        }
-      }
-    }
-    case GET_USER_PROFILE_LOADING: {
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          loading: true,
-          error: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_SUCCESS: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          data: action.payload,
-          loading: false,
-          error: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_ERROR: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          error: true,
-          loading: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_LOADING: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          loading: true,
-          error: false,
-        }
-      }
-    }
-    case REMOVE_USER:
-      return {};
-    default:
-      return state;
   }
-}
+);
 
-// ACTIONS
-export function setUser(user) {
-  return { type: SET_USER, payload: user };
-}
+export const getUserProfile = createAsyncThunk(
+  'user/getUserProfile',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { user } = getState();
+      const { data } = await API.get(`users/${user.user_id}`, null, { token: user.token });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-export function setUserAgent(userAgent) {
-  return { type: SET_USER_AGENT, payload: userAgent };
-}
-
-/* Action creators */
-export function getUserOperator(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_USER_OPERATOR_LOADING });
-
-    const includeFields = ['country', 'fmus'];
-    // Fields
-    const fields = {
-      fmus: [
-        'name',
-        'certification-fsc',
-        'certification-olb',
-        'certification-pefc',
-        'certification-pafc',
-        'certification-pbn',
-        'certification-fsc-cw',
-        'certification-tlv',
-        'certification-ls',
-      ],
-    };
-
-    return API.get(`operators/${id}`, {
-      include: includeFields.join(','),
-      'fields[fmus]': fields.fmus.join(',')
-    }).then(({ data }) => {
-      dispatch({
-        type: GET_USER_OPERATOR_SUCCESS,
-        payload: data,
+const userSlice = createSlice({
+  name: 'user',
+  initialState: {},
+  reducers: {
+    setUser: (state, action) => {
+      return { ...state, ...action.payload };
+    },
+    setUserAgent: (state, action) => {
+      state.userAgent = action.payload;
+    },
+    removeUser: () => ({}),
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUserProfile.pending, (state) => {
+        state.userProfile = {
+          ...state.userProfile,
+          loading: true,
+          error: false,
+        };
+      })
+      .addCase(getUserProfile.fulfilled, (state, action) => {
+        state.userProfile = {
+          ...state.userProfile,
+          data: action.payload,
+          loading: false,
+          error: false,
+        };
+      })
+      .addCase(getUserProfile.rejected, (state) => {
+        state.userProfile = {
+          ...state.userProfile,
+          error: true,
+          loading: false,
+        };
+      })
+      .addCase(getUserOperator.pending, (state) => {
+        state.userOperator = {
+          ...state.userOperator,
+          loading: true,
+          error: false,
+        };
+      })
+      .addCase(getUserOperator.fulfilled, (state, action) => {
+        state.userOperator = {
+          ...state.userOperator,
+          data: action.payload,
+          loading: false,
+          error: false,
+        };
+      })
+      .addCase(getUserOperator.rejected, (state) => {
+        state.userOperator = {
+          ...state.userOperator,
+          error: true,
+          loading: false,
+        };
       });
-    }).catch((err) => {
-      // Fetch from server ko -> Dispatch error
-      dispatch({
-        type: GET_USER_OPERATOR_ERROR,
-        payload: err.message,
-      });
-    });
-  };
-}
+  },
+});
+
+export const { setUser, setUserAgent, removeUser } = userSlice.actions;
 
 export function login({ body }) {
   return NEXTAPIClient.post('login', { body }).then(() => {
@@ -166,29 +132,6 @@ export function resetPassword(attributes) {
 
 export function forgotPassword(email) {
   return API.post('reset-password', { body: { password: { email } } });
-}
-
-export function getUserProfile() {
-  return (dispatch, getState) => {
-    const { user } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_USER_PROFILE_LOADING });
-
-    return API.get(`users/${user.user_id}`, null, { token: user.token })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_USER_PROFILE_SUCCESS,
-          payload: data,
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_USER_PROFILE_ERROR,
-          payload: err.message,
-        });
-      });
-  };
 }
 
 export function saveUser({ body }) {
@@ -219,3 +162,9 @@ export function saveOperator({ body }) {
 export function updateOperator({ body, id, authorization }) {
   return () => API.patch(`operators/${id}`, { body, token: authorization });
 }
+
+export function updateFmu({ id, body, authorization }) {
+  return () => API.patch(`fmus/${id}`, { body, token: authorization });
+}
+
+export default userSlice.reducer;

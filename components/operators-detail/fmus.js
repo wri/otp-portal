@@ -71,8 +71,8 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (fmu) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
   }
 
@@ -99,8 +99,8 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (fmu.id !== prevFmu.id) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
 
     if (!isEqual(interactions, prevInteractions)) {
@@ -116,7 +116,7 @@ class OperatorsDetailFMUs extends React.Component {
       (fmu.loss.startDate !== prevFmu.loss.startDate ||
         fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
     }
 
     if (
@@ -125,7 +125,7 @@ class OperatorsDetailFMUs extends React.Component {
       (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
         fmu['integrated-alerts'].trimEndDate !== prevFmu['integrated-alerts'].trimEndDate)
     ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
   }
 

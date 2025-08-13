@@ -1,63 +1,52 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from 'services/api'
 
-/* Constants */
-const GET_OPERATORS_SUCCESS = 'GET_OPERATORS_SUCCESS';
-const GET_OPERATORS_ERROR = 'GET_OPERATORS_ERROR';
-const GET_OPERATORS_LOADING = 'GET_OPERATORS_LOADING';
-
-/* Initial state */
-const initialState = {
-  data: [],
-  loading: false,
-  error: false,
-};
-
-/* Reducer */
-export default function Operators(state = initialState, action) {
-  switch (action.type) {
-    case GET_OPERATORS_SUCCESS:
-      return Object.assign({}, state, {
-        data: action.payload,
-        loading: false,
-        error: false,
+export const getOperators = createAsyncThunk(
+  'operators/getOperators',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { language } = getState();
+      const { data } = await API.get('operators', {
+        locale: language,
+        include: 'country',
+        'page[size]': 3000,
+        'filter[country]': process.env.OTP_COUNTRIES_IDS,
+        'filter[fa]': true,
+        'fields[operators]': 'name,slug,country',
+        'fields[countries]': 'name',
       });
-    case GET_OPERATORS_ERROR:
-      return Object.assign({}, state, { error: true, loading: false });
-    case GET_OPERATORS_LOADING:
-      return Object.assign({}, state, { loading: true, error: false });
-    default:
-      return state;
+      return data;
+    } catch (err) {
+      console.error(err);
+      return rejectWithValue(err.message);
+    }
   }
-}
+);
 
-export function getOperators() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_OPERATORS_LOADING });
-
-    return API.get('operators', {
-      locale: language,
-      include: 'country',
-      'page[size]': 3000,
-      'filter[country]': process.env.OTP_COUNTRIES_IDS,
-      'filter[fa]': true,
-      'fields[operators]': 'name,slug,country',
-      'fields[countries]': 'name',
-    })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_OPERATORS_SUCCESS,
-          payload: data,
-        });
+const operatorsSlice = createSlice({
+  name: 'operators',
+  initialState: {
+    data: [],
+    loading: false,
+    error: false,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getOperators.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        console.error(err);
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_OPERATORS_ERROR,
-          payload: err.message,
-        });
+      .addCase(getOperators.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getOperators.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       });
-  };
-}
+  },
+});
+
+export default operatorsSlice.reducer;
