@@ -144,17 +144,50 @@ class NewOperator extends React.Component {
                       {Select}
                     </Field>
 
-                    {/* Website */}
+                    {/* Country */}
                     <Field
-                      validations={['url']}
+                      onChange={(value) => {
+                        setFormValues({
+                          country: value,
+                          fmus: []
+                        });
+                        this.getFmus(value);
+                      }}
+                      validations={['required']}
                       className="-fluid"
+                      options={this.state.countryOptions}
                       properties={{
-                        name: 'website',
-                        label: intl.formatMessage({ id: 'signup.operators.form.field.website' }),
+                        name: 'country',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
+                        required: true,
+                        instanceId: 'select.country',
+                        placeholder: ''
                       }}
                     >
-                      {Input}
+                      {Select}
                     </Field>
+
+                    {!!form.country && (
+                      <Spinner isLoading={this.state.fmusLoading} />
+                    )}
+
+                    {/* FMUs */}
+                    {!!this.state.fmusOptions.length && (
+                      <Field
+                        className="-fluid"
+                        options={this.state.fmusOptions}
+                        properties={{
+                          name: 'fmus',
+                          label: 'FMUs',
+                          instanceId: 'select.fmus',
+                          isMulti: true,
+                          value: form.fmus,
+                          placeholder: ''
+                        }}
+                      >
+                        {Select}
+                      </Field>
+                    )}
 
                     {/* Address */}
                     <Field
@@ -162,6 +195,18 @@ class NewOperator extends React.Component {
                       properties={{
                         name: 'address',
                         label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
+                      }}
+                    >
+                      {Input}
+                    </Field>
+
+                    {/* Website */}
+                    <Field
+                      validations={['url']}
+                      className="-fluid"
+                      properties={{
+                        name: 'website',
+                        label: intl.formatMessage({ id: 'signup.operators.form.field.website' }),
                       }}
                     >
                       {Input}
@@ -177,59 +222,6 @@ class NewOperator extends React.Component {
                     >
                       {FileImage}
                     </Field>
-                  </fieldset>
-
-                  <fieldset className="c-field-container">
-                    <h2 className="c-title">
-                      {intl.formatMessage({ id: 'forest-management-units' })}
-                    </h2>
-
-                    <div className="c-field-row">
-                      {/* Country */}
-                      <Field
-                        onChange={(value) => {
-                          setFormValues({
-                            country: value,
-                            fmus: []
-                          });
-                          this.getFmus(value);
-                        }}
-                        validations={['required']}
-                        className="-fluid"
-                        options={this.state.countryOptions}
-                        properties={{
-                          name: 'country',
-                          label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
-                          required: true,
-                          instanceId: 'select.country',
-                          placeholder: ''
-                        }}
-                      >
-                        {Select}
-                      </Field>
-
-                      {!!form.country && (
-                        <Spinner isLoading={this.state.fmusLoading} />
-                      )}
-
-                      {/* FMUs */}
-                      {!!this.state.fmusOptions.length && (
-                        <Field
-                          className="-fluid"
-                          options={this.state.fmusOptions}
-                          properties={{
-                            name: 'fmus',
-                            label: 'FMUs',
-                            instanceId: 'select.fmus',
-                            isMulti: true,
-                            value: form.fmus,
-                            placeholder: ''
-                          }}
-                        >
-                          {Select}
-                        </Field>
-                      )}
-                    </div>
                   </fieldset>
 
                   <ul className="c-field-buttons">

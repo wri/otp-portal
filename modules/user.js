@@ -218,7 +218,3 @@ export function saveOperator({ body }) {
 export function updateOperator({ body, id, authorization }) {
   return () => API.patch(`operators/${id}`, { body, token: authorization });
 }
-
-export function updateFmu({ id, body, authorization }) {
-  return () => API.patch(`fmus/${id}`, { body, token: authorization });
-}

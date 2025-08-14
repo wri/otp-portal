@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
@@ -6,15 +6,8 @@ import { useIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { updateOperator, updateFmu } from 'modules/user';
-import {
-  getSawMillsByOperatorId,
-  getSawMillsLocationByOperatorId
-} from 'modules/operators-detail';
+import { updateOperator } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
-
-// Services
-import modal from 'services/modal';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -22,94 +15,44 @@ import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
 import FileImage from 'components/form/FileImage';
-import FmusCheckboxGroup from 'components/form/FmusCheckboxGroup';
 import Select from 'components/form/SelectInput';
-import SawmillsTable from 'components/ui/sawmills-table';
 
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
-import { getFmusByOperatorId } from 'utils/fmu';
 import SubmitButton from '../form/SubmitButton';
-import dynamic from 'next/dynamic';
 
-const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
+import { CERTIFICATIONS } from 'constants/fmu';
 
 const EditOperator = (props) => {
   // rewrite class component to functional component
-  const { operator, language, sawmills } = props;
+  const { operator } = props;
   const intl = useIntl();
-  const [certifications, setCertifications] = useState(HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus));
-  const [fmusOptions, setFmusOptions] = useState([]);
-  const [fmusLoading, setFmusLoading] = useState(true);
-  const [countryOptions, setCountryOptions] = useState([]);
-
-  const fetchSawmills = () => {
-    props.getSawMillsByOperatorId(operator.id);
-    props.getSawMillsLocationByOperatorId(operator.id);
-  }
-
-  const getCountries = async () => {
-    const countries = await HELPERS_REGISTER.getCountries(language);
-    setCountryOptions(countries);
-  }
-
-  const fetchFmus = async () => {
-    setFmusLoading(true);
-    const fmus = await getFmusByOperatorId(operator.id, language);
-    setFmusOptions(fmus);
-    setFmusLoading(false);
-  }
-
-  useEffect(() => {
-    getCountries();
-    fetchSawmills();
-    fetchFmus(); // fetching operator fmus to have them in chosen language
-  }, [operator.id]);
-
-  const onChangeCertifications = (value) => {
-    setCertifications(Object.assign({}, certifications, value))
-  }
+  const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const handleSubmit = ({ form }) => {
     return props.updateOperator({
-      body: HELPERS_REGISTER.getBody(form, operator.id),
+      body: {
+        data: {
+          type: 'operators',
+          id: operator.id,
+          attributes: {
+            name: form.name,
+            details: form.details,
+            'operator-type': form.operator_type,
+            website: form.website,
+            logo: form.logo,
+            address: form.address
+          },
+        }
+      },
       type: 'PATCH',
       id: operator.id,
       authorization: props.user.token
-    }).then(() => {
-      const promises = [];
-
-      if (Object.keys(certifications).length) {
-        Object.keys(certifications).forEach((k) => {
-          promises.push(props.updateFmu({
-            id: k,
-            body: HELPERS_REGISTER.getBodyFmu(
-              certifications[k],
-              k
-            ),
-            authorization: props.user.token
-          }));
-        });
-
-        return Promise.all(promises);
-      }
     }).then(() => {
       toastr.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
         intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
       );
-    });
-  }
-
-  const handleAddSawmill = (e) => {
-    e && e.preventDefault();
-
-    modal.toggleModal(true, {
-      children: SawmillModal,
-      childrenProps: {
-        ...props,
-        onChange: fetchSawmills
-      }
     });
   }
 
@@ -119,9 +62,7 @@ const EditOperator = (props) => {
     operator_type: operator['operator-type'],
     logo: operator.logo && operator.logo.url,
     address: operator.address || '',
-    website: operator.website || '',
-    country: operator.country.id,
-    fmus: operator.fmus.map(f => f.id)
+    website: operator.website || ''
   };
 
   return (
@@ -172,17 +113,55 @@ const EditOperator = (props) => {
                 {Select}
               </Field>
 
-              {/* Website */}
-              <Field
-                validations={['url']}
-                className="-fluid"
-                properties={{
-                  name: 'website',
-                  label: intl.formatMessage({ id: 'signup.operators.form.field.website' })
-                }}
-              >
-                {Input}
-              </Field>
+              {/* Country */}
+              <div className="c-field -fluid">
+                <label className="label">
+                  {intl.formatMessage({ id: 'signup.operators.form.field.country' })}
+                </label>
+
+                <div className="input">
+                  {operator.country.name}
+                </div>
+              </div>
+
+              <div className="c-field -fluid">
+                <label className="label">
+                  {intl.formatMessage({ id: 'forest-management-units' })}
+                </label>
+
+                <div className="c-field-row">
+                  {/* FMUs */}
+                  {!!operator.fmus.length && (
+                    <div className={`c-fmu-certificates`}>
+                      <table className="fmu-certificates-table">
+                        <thead>
+                          <tr>
+                            <th>
+                              {intl.formatMessage({ id: 'fmu' })}
+                            </th>
+                            <th className="td-certifications">
+                              {intl.formatMessage({ id: 'certifications' })}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {operator.fmus.map(fmu => (
+                            <tr key={fmu.id}>
+                              <td>
+                                {fmu.name}
+                              </td>
+                              <td className="td-certifications">
+                                {(certifications[fmu.id] || []).length === 0 && "None"}
+                                {(certifications[fmu.id] || []).map((value) => CERTIFICATIONS.find(c => c.value === value)?.label).filter(x => x).join(', ')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Address */}
               <Field
@@ -190,6 +169,18 @@ const EditOperator = (props) => {
                 properties={{
                   name: 'address',
                   label: intl.formatMessage({ id: 'signup.operators.form.field.address' })
+                }}
+              >
+                {Input}
+              </Field>
+
+              {/* Website */}
+              <Field
+                validations={['url']}
+                className="-fluid"
+                properties={{
+                  name: 'website',
+                  label: intl.formatMessage({ id: 'signup.operators.form.field.website' })
                 }}
               >
                 {Input}
@@ -205,64 +196,6 @@ const EditOperator = (props) => {
               >
                 {FileImage}
               </Field>
-
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title">
-                {intl.formatMessage({ id: 'forest-management-units' })}
-              </h2>
-
-              <div className="c-field-row">
-                {/* Country */}
-                <Field
-                  validations={['required']}
-                  className="-fluid"
-                  options={countryOptions}
-                  properties={{
-                    name: 'country',
-                    label: intl.formatMessage({ id: 'signup.operators.form.field.country' }),
-                    required: true,
-                    disabled: true,
-                    instanceId: 'select.country'
-                  }}
-                >
-                  {Select}
-                </Field>
-
-                {/* FMUs */}
-                {!!fmusOptions.length && (
-                  <Field
-                    name="fmus"
-                    onChangeCertifications={value => onChangeCertifications(value)}
-                    className="-fluid"
-                    options={fmusOptions}
-                    certifications={certifications}
-                    properties={{
-                      name: 'fmus'
-                    }}
-                  >
-                    {FmusCheckboxGroup}
-                  </Field>
-                )}
-              </div>
-            </fieldset>
-
-            <fieldset className="c-field-container">
-              <h2 className="c-title">
-                {intl.formatMessage({ id: 'edit.operators.sawmills.title' })}
-              </h2>
-
-              <SawmillsTable
-                sawmills={sawmills.data}
-                onChange={fetchSawmills}
-              />
-
-              <button
-                onClick={handleAddSawmill} className="c-button -small -secondary"
-              >
-                {intl.formatMessage({ id: 'edit.operators.sawmills.add' })}
-              </button>
             </fieldset>
 
             <ul className="c-field-buttons">
@@ -284,23 +217,15 @@ EditOperator.propTypes = {
   user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
-  updateFmu: PropTypes.func,
-  onSubmit: PropTypes.func,
-  sawmills: PropTypes.object,
-  getSawMillsByOperatorId: PropTypes.func,
-  getSawMillsLocationByOperatorId: PropTypes.func
+  onSubmit: PropTypes.func
 };
 
 export default connect(
   state => ({
     user: state.user,
-    sawmills: state.operatorsDetail.sawmills,
     language: state.language
   }),
   {
-    updateOperator,
-    updateFmu,
-    getSawMillsByOperatorId,
-    getSawMillsLocationByOperatorId
+    updateOperator
   }
 )(EditOperator);
