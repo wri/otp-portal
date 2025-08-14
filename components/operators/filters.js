@@ -13,9 +13,28 @@ import { setFilters } from 'modules/operators-ranking';
 import { injectIntl } from 'react-intl';
 
 // Components
-import Select from 'react-select';
+import Select, { components } from 'react-select';
+import Tooltip from 'rc-tooltip';
 import Icon from 'components/ui/icon';
 import RankingModal from 'components/ui/ranking-modal';
+
+const MultiValueLabel = ({ data, ...rest }) => {
+  return <components.MultiValueLabel {...rest}>
+    <Tooltip
+      placement="top"
+      overlay={
+        <div>
+          {data.label}
+        </div>
+      }
+      overlayClassName="c-rc-tooltip -default"
+    >
+      <div>
+        {data.abbr}
+      </div>
+    </Tooltip>
+  </components.MultiValueLabel>
+};
 
 const FILTERS_REFS = [
   {
@@ -24,14 +43,19 @@ const FILTERS_REFS = [
     type: 'select',
     placeholder: 'filter.country.placeholder',
     translate: true,
-    columns: 4
+    columns: 3
   },
   {
     key: 'certification',
     name: 'filter.certification',
     type: 'select',
     placeholder: 'filter.certification.placeholder',
-    columns: 3
+    properties: {
+      components: {
+        MultiValueLabel
+      }
+    },
+    columns: 4
   },
   {
     key: 'operator',
@@ -108,6 +132,7 @@ class OperatorsFilters extends React.Component {
                   value={value}
                   placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
                   onChange={opts => this.setSelect(opts, f.key)}
+                  {...(f.properties || {})}
                 />
               }
 

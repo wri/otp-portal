@@ -118,6 +118,7 @@ export function getUserOperator(id) {
         'certification-olb',
         'certification-pefc',
         'certification-pafc',
+        'certification-pbn',
         'certification-fsc-cw',
         'certification-tlv',
         'certification-ls',

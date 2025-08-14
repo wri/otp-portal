@@ -282,9 +282,11 @@ class OperatorsDetailFMUs extends React.Component {
                   <div className="fmu-certifications-title">
                     {this.props.intl.formatMessage({ id: 'certifications' })}:
                   </div>
-                  <div className="fmu-certifications-list">
-                    {certifications.join(', ')}
-                  </div>
+                  <ul className="fmu-certifications-list">
+                    {certifications.map((certification, index) => (
+                      <li key={index}>{certification}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>

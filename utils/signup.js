@@ -26,6 +26,7 @@ const HELPERS_REGISTER = {
         !!fmusGroups[id][0]['certification-ls'] && 'ls',
         !!fmusGroups[id][0]['certification-pafc'] && 'pafc',
         !!fmusGroups[id][0]['certification-pefc'] && 'pefc',
+        !!fmusGroups[id][0]['certification-pbn'] && 'pbn',
         !!fmusGroups[id][0]['certification-olb'] && 'olb',
         !!fmusGroups[id][0]['certification-tlv'] && 'tlv'
       ].filter(x => !!x);
@@ -107,6 +108,7 @@ const HELPERS_REGISTER = {
           'certification-ls': certification.includes('ls'),
           'certification-pafc': certification.includes('pafc'),
           'certification-pefc': certification.includes('pefc'),
+          'certification-pbn': certification.includes('pbn'),
           'certification-olb': certification.includes('olb'),
           'certification-tlv': certification.includes('tlv')
         }
