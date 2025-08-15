@@ -1,51 +1,23 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api'
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 
-export const getOperators = createAsyncThunk(
-  'operators/getOperators',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language } = getState();
-      const { data } = await API.get('operators', {
-        locale: language,
-        include: 'country',
-        'page[size]': 3000,
-        'filter[country]': process.env.OTP_COUNTRIES_IDS,
-        'filter[fa]': true,
-        'fields[operators]': 'name,slug,country',
-        'fields[countries]': 'name',
-      });
-      return data;
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue(err.message);
-    }
+export const getOperators = createApiThunk('operators/getOperators', 'operators', {
+  params: {
+    include: 'country',
+    'page[size]': 3000,
+    'filter[country]': process.env.OTP_COUNTRIES_IDS,
+    'filter[fa]': true,
+    'fields[operators]': 'name,slug,country',
+    'fields[countries]': 'name',
   }
-);
+});
 
 const operatorsSlice = createSlice({
   name: 'operators',
-  initialState: {
-    data: [],
-    loading: false,
-    error: false,
-  },
+  initialState: createApiInitialState([]),
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getOperators.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getOperators.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getOperators.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      });
+    addApiCases(getOperators)(builder);
   },
 });
 

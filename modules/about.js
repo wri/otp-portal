@@ -1,43 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 
-export const getAbout = createAsyncThunk(
-  'about/getAbout',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language } = getState();
-      const { data } = await API.get('about-page-entries', { locale: language });
-      return data;
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue(err.message);
-    }
-  }
-);
+export const getAbout = createApiThunk('about/getAbout', 'about-page-entries');
 
 const aboutSlice = createSlice({
   name: 'about',
-  initialState: {
-    data: [],
-    loading: false,
-    error: false
-  },
+  initialState: createApiInitialState([]),
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getAbout.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getAbout.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getAbout.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      });
+    addApiCases(getAbout)(builder);
   },
 });
 

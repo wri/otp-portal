@@ -1,42 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 
-export const getPartners = createAsyncThunk(
-  'partners/getPartners',
-  async (_, { rejectWithValue }) => {
-    try {
-      const { data } = await API.get('partners', { 'page[size]': 2000 });
-      return data;
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue(err.message);
-    }
-  }
-);
+export const getPartners = createApiThunk('partners/getPartners', 'partners', {
+  useLanguage: false,
+  params: { 'page[size]': 2000 }
+});
 
 const partnersSlice = createSlice({
   name: 'partners',
-  initialState: {
-    data: [],
-    loading: false,
-    error: false
-  },
+  initialState: createApiInitialState([]),
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getPartners.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getPartners.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getPartners.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      });
+    addApiCases(getPartners)(builder);
   },
 });
 

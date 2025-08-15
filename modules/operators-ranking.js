@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import Router from 'next/router';
 import dayjs from 'dayjs';
 
-import API from 'services/api';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { groupBy } from 'utils/general';
 import { CERTIFICATIONS } from 'constants/fmu';
@@ -16,9 +16,7 @@ const COUNTRIES = [
 ];
 
 const initialState = {
-  data: [],
-  loading: false,
-  error: false,
+  ...createApiInitialState([]),
   map: {
     zoom: 4,
     latitude: 0,
@@ -56,76 +54,34 @@ const initialState = {
   }
 };
 
-export const getOperatorsRanking = createAsyncThunk(
-  'operatorsRanking/getOperatorsRanking',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language } = getState();
+export const getOperatorsRanking = createApiThunk('operatorsRanking/getOperatorsRanking', 'operators', {
+  params: {
+    'page[size]': 3000,
+    include: 'observations,fmus,country',
+    'filter[fa]': true,
+    'filter[country]': process.env.OTP_COUNTRIES_IDS,
+    'fields[fmus]': 'name,forest-type,certification-fsc,certification-olb,certification-pefc,certification-pbn,certification-pafc,certification-fsc-cw,certification-tlv,certification-ls',
+    'fields[countries]': 'name',
+    'fields[operators]': 'name,slug,obs-per-visit,percentage-valid-documents-all,score,country,fmus,observations',
+    'fields[observations]': 'country-id,fmu-id',
+  },
+  transformResponse: (data) => {
+    const groupByDocPercentage = groupBy(data, (o) => {
+      if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
+      return o['percentage-valid-documents-all'];
+    });
 
-      const includes = [
-        'observations',
-        'fmus',
-        'country'
-      ];
-      const fields = {
-        fmus: [
-          'name',
-          'forest-type',
-          'certification-fsc',
-          'certification-olb',
-          'certification-pefc',
-          'certification-pafc',
-          'certification-pbn',
-          'certification-fsc-cw',
-          'certification-tlv',
-          'certification-ls'
-        ],
-        operators: [
-          'name',
-          'slug',
-          'obs-per-visit',
-          'percentage-valid-documents-all',
-          'score',
-          'country',
-          'fmus',
-          'observations'
-        ],
-        countries: ['name'],
-        observations: ['country-id', 'fmu-id']
-      };
+    const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
+    const rankedData = groupByDocPercentageKeys.map((k, i) => {
+      return groupByDocPercentage[k].map(o => ({
+        ...o,
+        ranking: i
+      }));
+    }).flat();
 
-      const { data } = await API.get('operators', {
-        locale: language,
-        'page[size]': 3000,
-        include: includes.join(','),
-        'filter[fa]': true,
-        'filter[country]': process.env.OTP_COUNTRIES_IDS,
-        'fields[fmus]': fields.fmus.join(','),
-        'fields[countries]': fields.countries.join(','),
-        'fields[operators]': fields.operators.join(','),
-        'fields[observations]': fields.observations.join(','),
-      });
-
-      const groupByDocPercentage = groupBy(data, (o) => {
-        if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
-        return o['percentage-valid-documents-all'];
-      });
-
-      const groupByDocPercentageKeys = Object.keys(groupByDocPercentage).sort().reverse();
-      const rankedData = groupByDocPercentageKeys.map((k, i) => {
-        return groupByDocPercentage[k].map(o => ({
-          ...o,
-          ranking: i
-        }));
-      }).flat();
-
-      return rankedData;
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue(err.message);
-    }
+    return rankedData;
   }
-);
+});
 
 const operatorsRankingSlice = createSlice({
   name: 'operatorsRanking',
@@ -160,20 +116,7 @@ const operatorsRankingSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getOperatorsRanking.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getOperatorsRanking.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getOperatorsRanking.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      });
+    addApiCases(getOperatorsRanking)(builder);
   },
 });
 

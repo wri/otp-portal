@@ -1,27 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 import API from 'services/api';
 
-export const getNotifications = createAsyncThunk(
-  'notifications/getNotifications',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language, user } = getState();
-      const { data } = await API.get('notifications', { locale: language }, { token: user.token });
-      return data;
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue(err.message);
-    }
-  }
-);
+export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications', {
+  useUserToken: true
+});
 
 const notificationsSlice = createSlice({
   name: 'notifications',
-  initialState: {
-    data: [],
-    loading: false,
-    error: false
-  },
+  initialState: createApiInitialState([]),
   reducers: {
     setNotifications: (state, action) => {
       state.data = action.payload;
@@ -30,20 +17,7 @@ const notificationsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getNotifications.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getNotifications.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getNotifications.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      });
+    addApiCases(getNotifications)(builder);
   },
 });
 

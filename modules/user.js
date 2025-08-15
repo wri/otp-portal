@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { addApiCases } from 'utils/redux-helpers';
 import { omitBy, isEmpty } from 'utils/general';
 import API, { NEXTAPIClient } from 'services/api'
 import { logEvent } from 'utils/analytics';
@@ -59,51 +60,8 @@ const userSlice = createSlice({
     removeUser: () => ({}),
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getUserProfile.pending, (state) => {
-        state.userProfile = {
-          ...state.userProfile,
-          loading: true,
-          error: false,
-        };
-      })
-      .addCase(getUserProfile.fulfilled, (state, action) => {
-        state.userProfile = {
-          ...state.userProfile,
-          data: action.payload,
-          loading: false,
-          error: false,
-        };
-      })
-      .addCase(getUserProfile.rejected, (state) => {
-        state.userProfile = {
-          ...state.userProfile,
-          error: true,
-          loading: false,
-        };
-      })
-      .addCase(getUserOperator.pending, (state) => {
-        state.userOperator = {
-          ...state.userOperator,
-          loading: true,
-          error: false,
-        };
-      })
-      .addCase(getUserOperator.fulfilled, (state, action) => {
-        state.userOperator = {
-          ...state.userOperator,
-          data: action.payload,
-          loading: false,
-          error: false,
-        };
-      })
-      .addCase(getUserOperator.rejected, (state) => {
-        state.userOperator = {
-          ...state.userOperator,
-          error: true,
-          loading: false,
-        };
-      });
+    addApiCases(getUserProfile, 'userProfile')(builder);
+    addApiCases(getUserOperator, 'userOperator')(builder);
   },
 });
 

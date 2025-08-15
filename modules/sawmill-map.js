@@ -1,16 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
-export const getSawMillLocationById = createAsyncThunk(
-  'sawmillMap/getSawMillLocationById',
-  async (id, { rejectWithValue }) => {
-    try {
-      const { data } = await API.get(`sawmills/${id}`);
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  }
+export const getSawMillLocationById = createApiThunk(
+  'sawmillMap/getSawMillLocationById', 
+  (id) => `sawmills/${id}`, 
+  { useLanguage: false }
 );
 
 const sawmillMapSlice = createSlice({
