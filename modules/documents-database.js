@@ -40,7 +40,7 @@ export const getDocumentsDatabase = createAsyncThunk(
         }, {})
       });
 
-      return { data, pageCount: response.meta['page-count'], metadata, reload: options.reload };
+      return { data, pageCount: response.meta['page-count'], metadata };
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -86,14 +86,6 @@ const databaseSlice = createSlice({
     columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
   },
   reducers: {
-    reloadDocuments: (state) => {
-      state.data = [];
-      state.loading = false;
-      state.error = false;
-      state.timestamp = null;
-      state.pageCount = -1;
-      state.page = 0;
-    },
     setFiltersDocuments: (state, action) => {
       state.filters.data = action.payload;
     },
@@ -109,9 +101,10 @@ const databaseSlice = createSlice({
       .addCase(getDocumentsDatabase.pending, (state, action) => {
         if (action.meta.arg?.reload) {
           state.data = [];
-          state.pageCount = -1;
           state.page = 0;
+          state.pageCount = -1;
         }
+
         state.loading = true;
         state.error = false;
         state.timestamp = action.payload?.metadata?.timestamp || Date.now();
@@ -144,7 +137,7 @@ const databaseSlice = createSlice({
   },
 });
 
-export const { reloadDocuments, setFiltersDocuments, setActiveColumnsDocuments, setPage } = databaseSlice.actions;
+export const { setFiltersDocuments, setActiveColumnsDocuments, setPage } = databaseSlice.actions;
 
 
 export function setActiveColumns(activeColumns) {
@@ -169,8 +162,6 @@ export function setFilters(filter) {
     Object.keys(filter).forEach((key) => {
       newFilters[key] = filter[key];
     });
-
-    dispatch(setFiltersDocuments(newFilters));
     setUrlFilters(newFilters);
   };
 }

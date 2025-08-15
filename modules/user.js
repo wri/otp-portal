@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { addApiCases } from 'utils/redux-helpers';
+import { addApiCases, createNestedApiInitialState } from 'utils/redux-helpers';
 import { omitBy, isEmpty } from 'utils/general';
 import API, { NEXTAPIClient } from 'services/api'
 import { logEvent } from 'utils/analytics';
@@ -16,6 +16,7 @@ export const getUserOperator = createAsyncThunk(
           'certification-olb',
           'certification-pefc',
           'certification-pafc',
+          'certification-pbn',
           'certification-fsc-cw',
           'certification-tlv',
           'certification-ls',
@@ -49,7 +50,7 @@ export const getUserProfile = createAsyncThunk(
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: {},
+  initialState: createNestedApiInitialState(['userProfile', 'userOperator'], {}),
   reducers: {
     setUser: (state, action) => {
       return { ...state, ...action.payload };

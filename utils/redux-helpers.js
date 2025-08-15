@@ -11,8 +11,16 @@ import API from 'services/api';
  */
 export function addApiCases(action, stateKey = null) {
   return (builder) => {
-    const setState = stateKey ? (state, key, value) => { state[stateKey][key] = value; }
-                              : (state, key, value) => { state[key] = value; };
+    const setState = (state, key, value) => {
+      if (stateKey) {
+        if (!state[stateKey]) {
+          state[stateKey] = {};
+        }
+        state[stateKey][key] = value;
+      } else {
+        state[key] = value;
+      }
+    }
 
     builder
       .addCase(action.pending, (state) => {
