@@ -26,11 +26,11 @@ export const getOperatorBySlug = createAsyncThunk(
       }, {
         token: user.token
       });
-      
+
       const operator = data[0];
       if (!operator) throw new Error('Operator not found');
       operator.loadedFMUS = loadFMUS;
-      
+
       return operator;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -51,7 +51,7 @@ export const getOperator = createAsyncThunk(
       }, {
         token: user.token
       });
-      
+
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -65,7 +65,7 @@ export const getOperatorDocumentation = createAsyncThunk(
     try {
       const { user, language, operatorsDetail } = getState();
       const date = operatorsDetail.date;
-      const metadata = { timestamp: new Date(), operatorId: id };
+      const metadata = { timestamp: new Date().getTime(), operatorId: id };
 
       const includeFields = [
         'required-operator-document',
@@ -83,7 +83,7 @@ export const getOperatorDocumentation = createAsyncThunk(
       }, {
         token: user.token
       });
-      
+
       return { data, metadata };
     } catch (err) {
       return rejectWithValue(err.message);
@@ -102,7 +102,7 @@ export const getOperatorObservations = createAsyncThunk(
         'relevant-operators', 'operator',
       ];
 
-      const metadata = { timestamp: new Date(), operatorId };
+      const metadata = { timestamp: new Date().getTime(), operatorId };
 
       const { data } = await API.get('observations', {
         locale: language,
@@ -111,7 +111,7 @@ export const getOperatorObservations = createAsyncThunk(
         'filter[operator]': operatorId,
         'filter[hidden]': 'all'
       });
-      
+
       return { data, metadata };
     } catch (err) {
       return rejectWithValue(err.message);
@@ -137,7 +137,7 @@ export const getOperatorPublicationAuthorization = createAsyncThunk(
       }, {
         token: user.token,
       });
-      
+
       const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
       return parseDocument(doc);
     } catch (err) {
@@ -157,7 +157,7 @@ export const getOperatorTimeline = createAsyncThunk(
       }, {
         token: user.token
       });
-      
+
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -172,7 +172,7 @@ export const getSawMillsByOperatorId = createAsyncThunk(
       const { data } = await API.get('sawmills', {
         'filter[operator]': id
       });
-      
+
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -188,7 +188,7 @@ export const getSawMillsLocationByOperatorId = createAsyncThunk(
         'filter[operator]': id,
         format: 'geojson'
       }, { deserialize: false });
-      
+
       return data;
     } catch (err) {
       return rejectWithValue(err.message);

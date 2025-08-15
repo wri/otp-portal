@@ -21,7 +21,7 @@ export const getDocumentsDatabase = createAsyncThunk(
         'required-operator-document',
         'required-operator-document.required-operator-document-group',
       ];
-      const metadata = { timestamp: new Date() };
+      const metadata = { timestamp: new Date().getTime() };
 
       const { data, response } = await API.get('operator-documents', {
         locale: language,
