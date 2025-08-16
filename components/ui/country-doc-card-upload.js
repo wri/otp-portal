@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -13,102 +13,78 @@ import modal from 'services/modal';
 import CountryDocModal from 'components/ui/country-doc-modal';
 import Spinner from 'components/ui/spinner';
 
-class CountryDocCardUpload extends React.Component {
+const CountryDocCardUpload = (props) => {
+  const { status, docType, user, id, onChange, intl } = props;
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  constructor(props) {
-    super(props);
+  const documentationService = useMemo(() => new DocumentationService({
+    authorization: user.token
+  }), [user.token]);
 
-    // STATE
-    this.state = {
-      deleteLoading: false
-    };
-
-    // BINDINGS
-    this.triggerAddFile = this.triggerAddFile.bind(this);
-    this.triggerDeleteFile = this.triggerDeleteFile.bind(this);
-
-    // SERVICE
-    this.documentationService = new DocumentationService({
-      authorization: props.user.token
-    });
-  }
-
-  /**
-   * UI EVENTS
-   * - triggerAddFile
-   * - triggerDeleteFile
-   * - triggerChangeFile
-  */
-  triggerAddFile(e) {
+  const triggerAddFile = (e) => {
     e && e.preventDefault();
 
     modal.toggleModal(true, {
       children: CountryDocModal,
       childrenProps: {
-        ...this.props,
+        ...props,
         onChange: () => {
-          this.props.onChange && this.props.onChange();
+          onChange && onChange();
         }
       }
     });
-  }
+  };
 
-  triggerDeleteFile(e) {
+  const triggerDeleteFile = (e) => {
     e && e.preventDefault();
-    const { id } = this.props;
 
-    this.setState({ deleteLoading: true });
+    setDeleteLoading(true);
 
-    this.documentationService.deleteDocument(id, 'gov-documents')
+    documentationService.deleteDocument(id, 'gov-documents')
       .then(() => {
-        this.setState({ deleteLoading: false });
-        this.props.onChange && this.props.onChange();
+        setDeleteLoading(false);
+        onChange && onChange();
       })
       .catch((err) => {
-        this.setState({ deleteLoading: false });
+        setDeleteLoading(false);
         console.error(err);
       });
-  }
+  };
 
-  render() {
-    const { status, docType } = this.props;
-    const { deleteLoading } = this.state;
+  const classNames = classnames({
+    [`-${status}`]: !!status
+  });
 
-    const classNames = classnames({
-      [`-${status}`]: !!status
-    });
+  return (
+    <div className={`c-doc-card-upload ${classNames}`}>
+      {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending' || status === 'doc_expired') &&
+        <ul>
+          <li>
+            <button onClick={triggerAddFile} className="c-button -small -primary">
+              {intl.formatMessage({ id: `update-${docType}` })}
+            </button>
+          </li>
 
-    return (
-      <div className={`c-doc-card-upload ${classNames}`}>
-        {(status === 'doc_valid' || status === 'doc_invalid' || status === 'doc_pending' || status === 'doc_expired') &&
-          <ul>
-            <li>
-              <button onClick={this.triggerAddFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: `update-${docType}` })}
-              </button>
-            </li>
-
-            <li>
-              <button onClick={this.triggerDeleteFile} className="c-button -small -primary">
-                {this.props.intl.formatMessage({ id: 'delete' })}
-                <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
-              </button>
-            </li>
-          </ul>
-        }
-        {status === 'doc_not_provided' &&
-          <ul>
-            <li>
-              <button onClick={this.triggerAddFile} className="c-button -small -secondary">
-                {this.props.intl.formatMessage({ id: `add-${docType}` })}
-              </button>
-            </li>
-          </ul>
-        }
-      </div>
-    );
-  }
-}
+          <li>
+            <button onClick={triggerDeleteFile} className="c-button -small -primary">
+              {intl.formatMessage({ id: 'delete' })}
+              <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
+            </button>
+          </li>
+        </ul>
+      }
+      {status === 'doc_not_provided' &&
+        <ul>
+          <li>
+            <button onClick={triggerAddFile} className="c-button -small -secondary">
+              {intl.formatMessage({ id: `add-${docType}` })}
+            </button>
+          </li>
+        </ul>
+      }
+    </div>
+  );
+};
 
 CountryDocCardUpload.propTypes = {
   status: PropTypes.string,

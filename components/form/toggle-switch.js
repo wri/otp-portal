@@ -1,42 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+const ToggleSwitch = ({ id, activeColor, active, handleChange }) => {
+  const [checked, setChecked] = useState(active);
 
-class ToggleSwitch extends React.Component {
-  state = {
-    checked: this.props.active
-  }
+  const handleChangeLocal = (e) => {
+    const { checked: isChecked } = e.target;
+    
+    handleChange(id, isChecked);
+    setChecked(isChecked);
+  };
 
-  handleChange = (e) => {
-    const { id, handleChange } = this.props;
-    const { checked } = e.target;
-
-    handleChange(id, checked);
-
-    this.setState({ checked });
-  }
-
-  render() {
-    const { id, activeColor } = this.props;
-    const { checked } = this.state;
-
-    return (
-      <label
-        htmlFor={`toggle-${id}`}
-        className="c-toggle-switch"
-        style={{ backgroundColor: checked && activeColor }}
-      >
-        <input
-          type="checkbox"
-          id={`toggle-${id}`}
-          checked={checked}
-          onChange={this.handleChange}
-        />
-        <span className="toggle-slider" />
-      </label>
-    );
-  }
-}
+  return (
+    <label
+      htmlFor={`toggle-${id}`}
+      className="c-toggle-switch"
+      style={{ backgroundColor: checked && activeColor }}
+    >
+      <input
+        type="checkbox"
+        id={`toggle-${id}`}
+        checked={checked}
+        onChange={handleChangeLocal}
+      />
+      <span className="toggle-slider" />
+    </label>
+  );
+};
 
 ToggleSwitch.propTypes = {
   handleChange: PropTypes.func,

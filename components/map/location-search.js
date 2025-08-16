@@ -1,39 +1,39 @@
-import React from 'react';
+import React, { useRef } from 'react';
 // TODO: when bringing back the geosuggest, make sure to upgrade to newest version and upgrade this component as well
 // import Geosuggest from 'react-geosuggest';
 import PropTypes from 'prop-types';
 
-class LocationSearch extends React.Component {
-  static propTypes = {
-    setMapLocation: PropTypes.func,
-    setMarkerLocation: PropTypes.func
-  };
+const LocationSearch = ({ setMapLocation, setMarkerLocation }) => {
+  const geoSuggestRef = useRef(null);
 
-  onSuggestSelect = (e) => {
+  const onSuggestSelect = (e) => {
     if (!e) return;
 
     const { lat, lng } = e.location;
-    this.props.setMapLocation({
+    setMapLocation({
       center: {
         lat, lng
       }
     });
-    this.props.setMarkerLocation({ lat, lng });
-    this.geoSuggest.clear();
-  }
+    setMarkerLocation({ lat, lng });
+    geoSuggestRef.current?.clear();
+  };
 
-  render() {
-    return (
-      <div className="c-location-search">
-        {/* <Geosuggest
-          ref={(node) => { this.geoSuggest = node; }}
-          onSuggestSelect={this.onSuggestSelect}
-          className="search-input"
-          googleMaps={null}
-        /> */}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="c-location-search">
+      {/* <Geosuggest
+        ref={geoSuggestRef}
+        onSuggestSelect={onSuggestSelect}
+        className="search-input"
+        googleMaps={null}
+      /> */}
+    </div>
+  );
+};
+
+LocationSearch.propTypes = {
+  setMapLocation: PropTypes.func,
+  setMarkerLocation: PropTypes.func
+};
 
 export default LocationSearch;

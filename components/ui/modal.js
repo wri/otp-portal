@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -13,90 +13,97 @@ import * as actions from 'modules/modal';
 // Services
 import { EE } from 'services/modal';
 
-class Modal extends React.Component {
+const Modal = ({ modal, toggleModal, setModalOptions }) => {
+  const elRef = useRef(null);
 
-  onToogleModal = (e) => {
-    const { toggleModal } = this.props;
+  const onToogleModal = useCallback((e) => {
     if (toggleModal) toggleModal(e.detail.opened, e.detail.opts);
-  }
+  }, [toggleModal]);
 
-  onSetModalOptions = (e) => {
-    const { setModalOptions } = this.props;
+  const onSetModalOptions = useCallback((e) => {
     if (setModalOptions) setModalOptions(e.detail.opts);
-  }
+  }, [setModalOptions]);
 
-  componentDidMount() {
-    const { setModalOptions } = this.props;
+  useEffect(() => {
+    EE.addEventListener('toggleModal', onToogleModal);
+    EE.addEventListener('setModalOptions', onSetModalOptions);
 
-    EE.addEventListener('toggleModal', this.onToogleModal);
-    EE.addEventListener('setModalOptions', this.onSetModalOptions);
-
-    this.el.addEventListener('transitionend', () => {
-      if (!this.props.modal.opened) {
+    const handleTransitionEnd = () => {
+      if (!modal.opened) {
         setModalOptions({ children: null });
       }
-    });
-  }
+    };
 
-  componentDidUpdate({ modal }) {
-    function escKeyDownListener(e) {
+    if (elRef.current) {
+      elRef.current.addEventListener('transitionend', handleTransitionEnd);
+    }
+
+    return () => {
+      EE.removeEventListener('toggleModal', onToogleModal);
+      EE.removeEventListener('setModalOptions', onSetModalOptions);
+      if (elRef.current) {
+        elRef.current.removeEventListener('transitionend', handleTransitionEnd);
+      }
+    };
+  }, [onToogleModal, onSetModalOptions, modal.opened, setModalOptions]);
+
+  useEffect(() => {
+    const escKeyDownListener = (e) => {
+      if (e.keyCode === 27) {
+        toggleModal(false);
+        document.removeEventListener('keydown', escKeyDownListener);
+      }
+    };
+
+    if (modal.opened) {
+      document.addEventListener('keydown', escKeyDownListener);
+    }
+
+    return () => {
       document.removeEventListener('keydown', escKeyDownListener);
-      return e.keyCode === 27 && this.props.toggleModal(false);
-    }
+    };
+  }, [modal.opened, toggleModal]);
 
-    // if opened property has changed
-    if (this.props.modal.opened !== modal.opened) {
-      document[this.props.modal.opened ? 'addEventListener' : 'removeEventListener']('keydown', escKeyDownListener.bind(this));
-    }
-  }
+  const getContent = () => {
+    return modal.options.children ?
+      <modal.options.children {...modal.options.childrenProps} /> : null;
+  };
 
-  componentWillUnmount() {
-    EE.removeEventListener('toggleModal', this.onToogleModal);
-    EE.removeEventListener('setModalOptions', this.onSetModalOptions);
-  }
+  const { opened, options, loading } = modal;
 
-  getContent() {
-    return this.props.modal.options.children ?
-      <this.props.modal.options.children {...this.props.modal.options.childrenProps} /> : null;
-  }
+  const classNames = classnames({
+    '-hidden': !opened,
+    [options.size]: !!options.size
+  });
 
-  render() {
-    const { opened, options, loading } = this.props.modal;
-
-    const classNames = classnames({
-      '-hidden': !opened,
-      [options.size]: !!options.size
-    });
-
-    return (
-      <section
-        ref={(node) => { this.el = node; }}
-        className={`c-modal ${classNames}`}
-      >
-        {(loading || this.props.modal.options.children) && (
-          <>
-            <div className="modal-container">
-              <button
-                className="modal-close"
-                onClick={() => this.props.toggleModal(false)}
-              >
-                <Icon name="icon-cross" className="-big" />
-              </button>
-              <div className="modal-content">
-                {loading ? <Spinner isLoading /> : this.getContent()}
-              </div>
+  return (
+    <section
+      ref={elRef}
+      className={`c-modal ${classNames}`}
+    >
+      {(loading || modal.options.children) && (
+        <>
+          <div className="modal-container">
+            <button
+              className="modal-close"
+              onClick={() => toggleModal(false)}
+            >
+              <Icon name="icon-cross" className="-big" />
+            </button>
+            <div className="modal-content">
+              {loading ? <Spinner isLoading /> : getContent()}
             </div>
+          </div>
 
-            <area
-              className="modal-backdrop"
-              onClick={() => this.props.toggleModal(false)}
-            />
-          </>
-        )}
-      </section>
-    );
-  }
-}
+          <area
+            className="modal-backdrop"
+            onClick={() => toggleModal(false)}
+          />
+        </>
+      )}
+    </section>
+  );
+};
 
 Modal.propTypes = {
   // STORE

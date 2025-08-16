@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Map from 'components/map';
@@ -8,95 +8,89 @@ import Spinner from 'components/ui/spinner';
 
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
-class MapSubComponent extends React.Component {
-  static propTypes = {
-    id: PropTypes.string,
-    location: PropTypes.object,
-    level: PropTypes.number,
-    language: PropTypes.string
-  };
+const MapSubComponent = ({ id, location, level, language }) => {
+  const [loading, setLoading] = useState(true);
+  const mapContainerRef = useRef(null);
 
-  state = {
-    loading: true
-  }
+  const color = PALETTE_COLOR_1[level] ? `${PALETTE_COLOR_1[level].fill}` : '#000';
 
-  render() {
-    const { id, location, level } = this.props;
+  return (
+    <div className="c-map-sub-component" key={`subcomponent-${id}`}>
+      { !!location &&
+        <div
+          className="c-map-container -table"
+          ref={mapContainerRef}
+        >
+          <Spinner isLoading={loading} className="-light" />
 
-    const color = PALETTE_COLOR_1[level] ? `${PALETTE_COLOR_1[level].fill}` : '#000';
+          {/* Map */}
+          <Map
+            language={language}
 
-    return (
-      <div className="c-map-sub-component" key={`subcomponent-${id}`}>
-        { !!location &&
-          <div
-            className="c-map-container -table"
-            ref={(map) => { this.mapContainer = map; }}
+            // options
+            scrollZoom={false}
+
+            // viewport
+            viewport={{
+              zoom: 3,
+              longitude: location.lng,
+              latitude: location.lat
+            }}
           >
-            <Spinner isLoading={this.state.loading} className="-light" />
-
-            {/* Map */}
-            <Map
-              language={this.props.language}
-
-              // options
-              scrollZoom={false}
-
-              // viewport
-              viewport={{
-                zoom: 3,
-                longitude: location.lng,
-                latitude: location.lat
-              }}
-              onViewportChange={this.setMapocation}
-            >
-              {map => (
-                <Fragment>
-                  {/* LAYER MANAGER */}
-                  <LayerManager
-                    map={map}
-                    layers={[
-                      {
-                        id: 'observation',
+            {map => (
+              <Fragment>
+                {/* LAYER MANAGER */}
+                <LayerManager
+                  map={map}
+                  layers={[
+                    {
+                      id: 'observation',
+                      type: 'geojson',
+                      source: {
                         type: 'geojson',
-                        source: {
-                          type: 'geojson',
-                          data: {
-                            type: 'FeatureCollection',
-                            features: [
-                              {
-                                type: 'Feature',
-                                geometry: {
-                                  type: 'Point',
-                                  coordinates: [location.lng, location.lat]
-                                }
+                        data: {
+                          type: 'FeatureCollection',
+                          features: [
+                            {
+                              type: 'Feature',
+                              geometry: {
+                                type: 'Point',
+                                coordinates: [location.lng, location.lat]
                               }
-                            ]
-                          }
-                        },
-                        render: {
-                          layers: [{
-                            type: 'circle',
-                            paint: {
-                              'circle-color': color,
-                              'circle-radius': 10
                             }
-                          }]
+                          ]
                         }
+                      },
+                      render: {
+                        layers: [{
+                          type: 'circle',
+                          paint: {
+                            'circle-color': color,
+                            'circle-radius': 10
+                          }
+                        }]
                       }
-                    ]}
-                  />
-                </Fragment>
-              )}
-            </Map>
-          </div>
-        }
-        { !location &&
-          <p>This observation has no location.</p>
-        }
-      </div>
-    );
-  }
-}
+                    }
+                  ]}
+                />
+              </Fragment>
+            )}
+          </Map>
+        </div>
+      }
+      { !location &&
+        <p>This observation has no location.</p>
+      }
+    </div>
+  );
+};
+
+MapSubComponent.propTypes = {
+  id: PropTypes.string,
+  location: PropTypes.object,
+  level: PropTypes.number,
+  language: PropTypes.string
+};
 
 
 export default MapSubComponent;

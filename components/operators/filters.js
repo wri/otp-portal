@@ -73,40 +73,25 @@ const FILTERS_REFS = [
   }
 ];
 
-class OperatorsFilters extends React.Component {
-  static defaultProps = {
-    className: ''
-  };
-
-  static propTypes = {
-    intl: PropTypes.object.isRequired,
-    filters: PropTypes.object,
-    options: PropTypes.object,
-    className: PropTypes.string,
-    setFilters: PropTypes.func
-  };
-
-  setSelect(opts, key) {
+const OperatorsFilters = ({ intl, filters, options, className = '', setFilters }) => {
+  const setSelect = (opts, key) => {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
-    this.props.setFilters(filter);
-  }
+    setFilters(filter);
+  };
 
-  setSearch(value, key) {
+  const setSearch = (value, key) => {
     const filter = {};
     filter[key] = value;
+    setFilters(filter);
+  };
 
-    this.props.setFilters(filter);
-  }
-
-  renderFiltersSelects() {
-    const { options, filters } = this.props;
-
+  const renderFiltersSelects = () => {
     return FILTERS_REFS.map((f) => {
       const sortedOptions = orderBy(
         (options[f.key] || []).map(o => ({
           ...o,
-          label: f.translate ? this.props.intl.formatMessage({ id: o.label }) : o.label
+          label: f.translate ? intl.formatMessage({ id: o.label }) : o.label
         })),
         (o) => o.label.toLowerCase()
       );
@@ -117,7 +102,7 @@ class OperatorsFilters extends React.Component {
           <div className="field">
             <div className="c-select">
               <label className="title">
-                {this.props.intl.formatMessage({ id: f.name })}
+                {intl.formatMessage({ id: f.name })}
               </label>
 
               {f.type === 'select' &&
@@ -125,13 +110,13 @@ class OperatorsFilters extends React.Component {
                   isMulti
                   instanceId={f.key}
                   name={f.key}
-                  aria-label={this.props.intl.formatMessage({ id: f.name })}
+                  aria-label={intl.formatMessage({ id: f.name })}
                   options={sortedOptions}
                   className='react-select-container'
                   classNamePrefix='react-select'
                   value={value}
-                  placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
-                  onChange={opts => this.setSelect(opts, f.key)}
+                  placeholder={intl.formatMessage({ id: f.placeholder })}
+                  onChange={opts => setSelect(opts, f.key)}
                   {...(f.properties || {})}
                 />
               }
@@ -140,19 +125,19 @@ class OperatorsFilters extends React.Component {
                 <div className="search">
                   <input
                     type="search"
-                    aria-label={this.props.intl.formatMessage({ id: f.name })}
-                    placeholder={this.props.intl.formatMessage({ id: f.placeholder })}
+                    aria-label={intl.formatMessage({ id: f.name })}
+                    placeholder={intl.formatMessage({ id: f.placeholder })}
                     className="search-input"
                     data-test-id={`search-input-${f.key}`}
                     value={filters[f.key]}
-                    onChange={e => this.setSearch(e.currentTarget.value, f.key)}
+                    onChange={e => setSearch(e.currentTarget.value, f.key)}
                   />
 
                   {!!filters[f.key] &&
                     <button
                       className="search-remove"
                       onClick={() => {
-                        this.setSearch('', f.key);
+                        setSearch('', f.key);
                       }}
                       aria-label="Clear search"
                     >
@@ -166,46 +151,49 @@ class OperatorsFilters extends React.Component {
         </div>
       );
     });
-  }
+  };
 
-  render() {
-    const { className } = this.props;
+  const classNames = classnames({
+    [className]: !!className
+  });
 
-    const classNames = classnames({
-      [className]: !!className
-    });
+  return (
+    <aside className={`c-filters-operators ${classNames}`}>
+      <div className="filters-container">
 
-    return (
-      <aside className={`c-filters-operators ${classNames}`}>
-        <div className="filters-container">
+        <h1 className="c-title -big -light">
+          {intl.formatMessage({ id: 'transparency_ranking' })}
 
-          <h1 className="c-title -big -light">
-            {this.props.intl.formatMessage({ id: 'transparency_ranking' })}
+          <button
+            className="c-button -clean"
+            aria-label="Learn more about the ranking"
+            onClick={() => {
+              modal.toggleModal(true, {
+                children: RankingModal
+              });
+            }}
+          >
+            <Icon name="icon-info" className="-small" />
+          </button>
+        </h1>
 
-            <button
-              className="c-button -clean"
-              aria-label="Learn more about the ranking"
-              onClick={() => {
-                modal.toggleModal(true, {
-                  children: RankingModal
-                });
-              }}
-            >
-              <Icon name="icon-info" className="-small" />
-            </button>
-          </h1>
-
-          <div className="filters-content">
-            <div className="l-row row">
-              {this.renderFiltersSelects()}
-            </div>
+        <div className="filters-content">
+          <div className="l-row row">
+            {renderFiltersSelects()}
           </div>
         </div>
-      </aside>
-    );
-  }
-}
+      </div>
+    </aside>
+  );
+};
 
+OperatorsFilters.propTypes = {
+  intl: PropTypes.object.isRequired,
+  filters: PropTypes.object,
+  options: PropTypes.object,
+  className: PropTypes.string,
+  setFilters: PropTypes.func
+};
 
 export default connect(
   state => ({
