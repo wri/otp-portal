@@ -1,11 +1,13 @@
 import React from 'react';
 
-class OperatorsDetail extends React.Component {
-  static async getInitialProps({ query, asPath }) {
-    const { tab } = query;
+const OperatorsDetail = () => {
+  return null;
+};
 
-    return { redirectTo: `${asPath.replace(`/${tab}`, '/overview')}` };
-  }
-}
+OperatorsDetail.getInitialProps = async ({ query, asPath }) => {
+  const { tab } = query;
+
+  return { redirectTo: `${asPath.replace(`/${tab}`, '/overview')}` };
+};
 
 export default OperatorsDetail;

@@ -14,27 +14,23 @@ import Layout, { getInitialProps } from 'components/operators-detail/layout';
 // Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
 
-export class OperatorsDetailOverviewPage extends React.Component {
-  static getInitialProps = getInitialProps;
+export const OperatorsDetailOverviewPage = ({
+  operatorsDetail,
+  operatorObservations,
+  operatorDocumentation,
+}) => {
+  return (
+    <Layout operatorObservations={operatorObservations}>
+      <OperatorsDetailOverview
+        operatorsDetail={operatorsDetail}
+        operatorDocumentation={operatorDocumentation}
+        operatorObservations={operatorObservations.filter(o => !o.hidden)}
+      />
+    </Layout>
+  );
+};
 
-  render() {
-    const {
-      operatorsDetail,
-      operatorObservations,
-      operatorDocumentation,
-    } = this.props;
-
-    return (
-      <Layout operatorObservations={operatorObservations}>
-        <OperatorsDetailOverview
-          operatorsDetail={operatorsDetail}
-          operatorDocumentation={operatorDocumentation}
-          operatorObservations={operatorObservations.filter(o => !o.hidden)}
-        />
-      </Layout>
-    );
-  }
-}
+OperatorsDetailOverviewPage.getInitialProps = getInitialProps;
 
 OperatorsDetailOverviewPage.propTypes = {
   operatorsDetail: PropTypes.object,

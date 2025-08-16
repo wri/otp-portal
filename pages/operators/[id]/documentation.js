@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Selectors
@@ -19,39 +19,38 @@ import Layout, { getInitialProps } from 'components/operators-detail/layout';
 // Operator Details Tabs
 import OperatorsDetailDocumentation from 'components/operators-detail/documentation';
 
-class OperatorsDetailDocumentationPage extends React.Component {
-  static getInitialProps = getInitialProps;
+const OperatorsDetailDocumentationPage = ({
+  operatorsDetail,
+  operatorObservations,
+  operatorDocumentation,
+  operatorTimeline,
+  getOperatorDocumentation
+}) => {
+  const prevDateRef = useRef();
 
-  componentDidUpdate(prevProps) {
-    const prevDate = prevProps?.operatorsDetail?.date?.toString();
-    const newDate = this.props?.operatorsDetail?.date?.toString();
-
-    if (prevDate !== newDate) {
-      const { operatorsDetail } = this.props;
+  useEffect(() => {
+    const currentDate = operatorsDetail?.date?.toString();
+    
+    if (prevDateRef.current && prevDateRef.current !== currentDate) {
       const operator = operatorsDetail.data;
-      this.props.getOperatorDocumentation(operator.id);
+      getOperatorDocumentation(operator.id);
     }
-  }
+    
+    prevDateRef.current = currentDate;
+  }, [operatorsDetail?.date, operatorsDetail.data, getOperatorDocumentation]);
 
-  render() {
-    const {
-      operatorsDetail,
-      operatorObservations,
-      operatorDocumentation,
-      operatorTimeline,
-    } = this.props;
+  return (
+    <Layout operatorObservations={operatorObservations}>
+      <OperatorsDetailDocumentation
+        operatorsDetail={operatorsDetail}
+        operatorDocumentation={operatorDocumentation}
+        operatorTimeline={operatorTimeline}
+      />
+    </Layout>
+  );
+};
 
-    return (
-      <Layout operatorObservations={operatorObservations}>
-        <OperatorsDetailDocumentation
-          operatorsDetail={operatorsDetail}
-          operatorDocumentation={operatorDocumentation}
-          operatorTimeline={operatorTimeline}
-        />
-      </Layout>
-    );
-  }
-}
+OperatorsDetailDocumentationPage.getInitialProps = getInitialProps;
 
 OperatorsDetailDocumentationPage.propTypes = {
   operatorsDetail: PropTypes.object,
