@@ -127,7 +127,7 @@ export function getObservations() {
       'fields[subcategories]': 'name,category',
       'fields[categories]': 'name',
       'fields[countries]': 'iso,name',
-      'fields[observers]': 'name,observer-type',
+      'fields[observers]': 'name,observer-type,public-info,address,information-email,information-name,information-phone,data-email,data-name,data-phone',
       'fields[observation-reports]': 'attachment,title,publication-date',
       'fields[observation-documents]': 'attachment,name',
       ...Object.keys(filters).reduce((acc, key) => {
