@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 
@@ -32,95 +32,84 @@ const TABS_COUNTRIES_DETAIL = [
   }
 ];
 
-class CountriesDetail extends React.Component {
-  static async getInitialProps({ query, asPath, store }) {
-    const { id, tab } = query;
+function CountriesDetail({ router, countriesDetail, countryDocumentation, intl, getCountry }) {
+  const id = router.query.id;
+  const tab = router.query.tab || 'overview';
 
-    if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
-      return { redirectTo: '/', redirectPermanent: false };
+  useEffect(() => {
+    if (id) {
+      getCountry(id);
     }
+  }, [id, getCountry]);
 
-    if (!tab) {
-      return { redirectTo: `${asPath}/overview` };
-    }
-
-    const { countriesDetail } = store.getState();
-    const requests = [];
-
-    if (countriesDetail.data.id !== id) {
-      requests.push(store.dispatch(getCountry(id)));
-      requests.push(store.dispatch(getCountryLinks(id)));
-      requests.push(store.dispatch(getCountryVPAs(id)));
-    }
-
-    await Promise.all(requests);
-
-    return {};
-  }
-
-  componentDidUpdate(prevProps) {
-    const { router } = prevProps;
-    const { router: nextUrl } = this.props;
-
-    if (router.query.id !== nextUrl.query.id) {
-      this.props.getCountry(nextUrl.query.id);
-    }
-  }
-
-  /**
-   * HELPERS
-   * - getTabOptions
-  */
-  getTabOptions() {
+  const getTabOptions = () => {
     return TABS_COUNTRIES_DETAIL.map((tab) => {
       return {
         ...tab,
-        label: this.props.intl.formatMessage({ id: tab.label })
+        label: intl.formatMessage({ id: tab.label })
       };
     });
-  }
+  };
 
-  render() {
-    const { router, countriesDetail, countryDocumentation } = this.props;
-    const id = router.query.id;
-    const tab = router.query.tab || 'overview';
+  return (
+    <Layout
+      title={countriesDetail.data.name || '-'}
+      description="Country description..."
+    >
+      <Spinner isLoading={countriesDetail.loading} className="-fixed" />
 
-    return (
-      <Layout
+      <StaticHeader
         title={countriesDetail.data.name || '-'}
-        description="Country description..."
-      >
-        <Spinner isLoading={countriesDetail.loading} className="-fixed" />
+        background="/static/images/static-header/bg-operator-detail.jpg"
+      />
 
-        <StaticHeader
-          title={countriesDetail.data.name || '-'}
-          background="/static/images/static-header/bg-operator-detail.jpg"
+      <Tabs
+        href={{
+          pathname: router.pathname,
+          query: { id },
+          as: `/countries/${id}`
+        }}
+        options={getTabOptions()}
+        selected={tab}
+      />
+
+      {tab === 'overview' &&
+        <CountriesDetailOverview countriesDetail={countriesDetail} />
+      }
+      {tab === 'documentation' &&
+        <CountriesDetailDocumentation
+          vpaOverview={countriesDetail.data['vpa-overview']}
+          countryDocumentation={countryDocumentation}
         />
+      }
+    </Layout>
+  );
+}
 
-        <Tabs
-          href={{
-            pathname: router.pathname,
-            query: { id },
-            as: `/countries/${id}`
-          }}
-          options={this.getTabOptions()}
-          selected={tab}
-        />
+CountriesDetail.getInitialProps = async ({ query, asPath, store }) => {
+  const { id, tab } = query;
 
-        {tab === 'overview' &&
-          <CountriesDetailOverview countriesDetail={countriesDetail} />
-        }
-        {tab === 'documentation' &&
-          <CountriesDetailDocumentation
-            vpaOverview={countriesDetail.data['vpa-overview']}
-            countryDocumentation={countryDocumentation}
-          />
-        }
-      </Layout>
-    );
+  if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
+    return { redirectTo: '/', redirectPermanent: false };
   }
 
-}
+  if (!tab) {
+    return { redirectTo: `${asPath}/overview` };
+  }
+
+  const { countriesDetail } = store.getState();
+  const requests = [];
+
+  if (countriesDetail.data.id !== id) {
+    requests.push(store.dispatch(getCountry(id)));
+    requests.push(store.dispatch(getCountryLinks(id)));
+    requests.push(store.dispatch(getCountryVPAs(id)));
+  }
+
+  await Promise.all(requests);
+
+  return {};
+};
 
 CountriesDetail.propTypes = {
   router: PropTypes.object.isRequired,
