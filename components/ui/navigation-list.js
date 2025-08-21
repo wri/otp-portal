@@ -54,7 +54,7 @@ function NavigationList({ footer, className, countries }) {
       name: intl.formatMessage({ id: 'observations' })
     },
     {
-      href: '/help',
+      href: '/help/overview',
       name: intl.formatMessage({ id: 'help' })
     },
     {
