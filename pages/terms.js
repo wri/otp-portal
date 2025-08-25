@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -11,7 +11,8 @@ import Html from 'components/html';
 
 import API from 'services/api';
 
-const TermsPage = ({ intl, page }) => {
+const TermsPage = ({ page }) => {
+  const intl = useIntl();
   return (
     <Layout
       title={intl.formatMessage({ id: 'terms.title' })}
@@ -46,8 +47,7 @@ TermsPage.getInitialProps = async () => {
 }
 
 TermsPage.propTypes = {
-  intl: PropTypes.object.isRequired,
   page: PropTypes.object.isRequired
 };
 
-export default injectIntl(TermsPage);
+export default TermsPage;

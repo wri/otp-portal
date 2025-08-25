@@ -12,7 +12,7 @@ import { getUserOperator } from 'modules/user';
 import { getOperators } from 'modules/operators';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -20,7 +20,8 @@ import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
-function OperatorsEdit({ user, userOperator, operatorId, intl, getOperators, getUserOperator }) {
+function OperatorsEdit({ user, userOperator, operatorId, getOperators, getUserOperator }) {
+  const intl = useIntl();
   useEffect(() => {
     if (!user.operator_ids) {
       const location = {
@@ -86,7 +87,6 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
 };
 
 OperatorsEdit.propTypes = {
-  intl: PropTypes.object.isRequired,
   operatorId: PropTypes.number.isRequired,
   user: PropTypes.object,
   userOperator: PropTypes.object,
@@ -94,10 +94,10 @@ OperatorsEdit.propTypes = {
   getUserOperator: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user,
     userOperator: state.user.userOperator
   }),
   { getUserOperator, getOperators }
-)(OperatorsEdit));
+)(OperatorsEdit);

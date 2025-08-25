@@ -10,7 +10,7 @@ import Icon from 'components/ui/icon';
 // Redux and HOC
 import { connect } from 'react-redux';
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
 import { getDocumentsDatabase, setActiveColumns, setPage } from 'modules/documents-database';
@@ -21,8 +21,8 @@ function DatabaseTable({
   setActiveColumns: _setActiveColumns,
   setPage: _setPage,
   getDocumentsDatabase: _getDocumentsDatabase,
-  intl,
 }) {
+  const intl = useIntl();
   const inputs = [
     'country',
     'operator',
@@ -288,19 +288,16 @@ function DatabaseTable({
 
 DatabaseTable.propTypes = {
   database: PropTypes.object,
-  intl: PropTypes.object.isRequired,
   parsedTableDocuments: PropTypes.array,
   getDocumentsDatabase: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func,
   setPage: PropTypes.func
 };
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      database: state.database,
-      parsedTableDocuments: getParsedTableDocuments(state),
-    }),
-    { setActiveColumns, setPage, getDocumentsDatabase }
-  )(DatabaseTable)
-);
+export default connect(
+  (state) => ({
+    database: state.database,
+    parsedTableDocuments: getParsedTableDocuments(state),
+  }),
+  { setActiveColumns, setPage, getDocumentsDatabase }
+)(DatabaseTable);

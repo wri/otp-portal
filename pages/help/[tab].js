@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -21,7 +21,8 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-const HelpPage = ({ router, howtos, tools, faqs, tutorials, intl }) => {
+const HelpPage = ({ router, howtos, tools, faqs, tutorials }) => {
+  const intl = useIntl();
   const tab = router.query.tab || 'overview';
 
   return (
@@ -110,11 +111,10 @@ HelpPage.propTypes = {
   howtos: PropTypes.shape({}),
   tools: PropTypes.shape({}),
   faqs: PropTypes.shape({}),
-  tutorials: PropTypes.shape({}),
-  intl: PropTypes.object.isRequired
+  tutorials: PropTypes.shape({})
 };
 
-export default withRouter(injectIntl(connect(
+export default withRouter(connect(
   state => ({
     howtos: state.help.howtos,
     tools: state.help.tools,
@@ -122,4 +122,4 @@ export default withRouter(injectIntl(connect(
     tutorials: state.help.tutorials
   }),
   { getHowtos, getTools, getFAQs, getTutorials }
-)(HelpPage)));
+)(HelpPage));

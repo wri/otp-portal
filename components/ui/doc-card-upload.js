@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import DocumentationService from 'services/documentationService';
@@ -20,7 +20,8 @@ import ConfirmModal from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
 
 const DocCardUpload = (props) => {
-  const { status, buttons, date, user, title, docId, onChange, intl, reason } = props;
+  const { status, buttons, date, user, title, docId, onChange, reason } = props;
+  const intl = useIntl();
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token,
   }), [user.token]);
@@ -206,7 +207,6 @@ DocCardUpload.propTypes = {
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
   date: PropTypes.string,
-  intl: PropTypes.object.isRequired,
   reason: PropTypes.string,
 };
 
@@ -219,16 +219,6 @@ DocCardUpload.defaultProps = {
   },
 };
 
-DocCardUpload.propTypes = {
-  status: PropTypes.string,
-  title: PropTypes.string,
-  user: PropTypes.object,
-  docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onChange: PropTypes.func,
-  buttons: PropTypes.shape({}),
-  date: PropTypes.string,
-  intl: PropTypes.object.isRequired,
-};
 
 DocCardUpload.defaultProps = {
   buttons: {
@@ -239,11 +229,9 @@ DocCardUpload.defaultProps = {
   },
 };
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      date: getOperatorDocumentationDate(state),
-    }),
-    {}
-  )(DocCardUpload)
-);
+export default connect(
+  (state) => ({
+    date: getOperatorDocumentationDate(state),
+  }),
+  {}
+)(DocCardUpload);

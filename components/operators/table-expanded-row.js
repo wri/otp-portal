@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import searchFMUs from 'utils/search-fmus';
 
 // import Tooltip from 'rc-tooltip';
 // import Icon from 'components/ui/icon';
 
-const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
+const TableExpandedRow = ({ operator, fmuSearch }) => {
+  const intl = useIntl();
   const formatCertifications = (fmu) => {
     const certifications = [];
 
@@ -72,8 +73,7 @@ const TableExpandedRow = ({ operator, fmuSearch, intl }) => {
 
 TableExpandedRow.propTypes = {
   operator: PropTypes.object.isRequired,
-  intl: PropTypes.object.isRequired,
   fmuSearch: PropTypes.string
 }
 
-export default injectIntl(TableExpandedRow);
+export default TableExpandedRow;

@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
@@ -15,7 +15,8 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import Select from 'react-select';
 import ChartLegend from 'components/ui/chart-legend';
 
-const TotalObservationsByOperatorByFMU = ({ data, intl }) => {
+const TotalObservationsByOperatorByFMU = ({ data }) => {
+  const intl = useIntl();
   const fmuIds = Object.keys(data);
   const [fmu, setFmu] = useState(fmuIds[0]);
 
@@ -101,8 +102,7 @@ const TotalObservationsByOperatorByFMU = ({ data, intl }) => {
 };
 
 TotalObservationsByOperatorByFMU.propTypes = {
-  data: PropTypes.array,
-  intl: PropTypes.object.isRequired
+  data: PropTypes.array
 };
 
-export default injectIntl(TotalObservationsByOperatorByFMU);
+export default TotalObservationsByOperatorByFMU;

@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 const ObserverInfoModal = ({
-  intl,
   name,
   'information-email': informationEmail,
   'information-name': informationName,
@@ -14,6 +13,7 @@ const ObserverInfoModal = ({
   'data-name': dataName,
   'data-phone': dataPhone
 }) => {
+  const intl = useIntl();
   return (
     <div className="c-observer-info-modal">
       <h3>{name}</h3>
@@ -65,9 +65,8 @@ ObserverInfoModal.propTypes = {
   'information-phone': PropTypes.string,
   'data-email': PropTypes.string,
   'data-name': PropTypes.string,
-  'data-phone': PropTypes.string,
-  intl: PropTypes.object.isRequired
+  'data-phone': PropTypes.string
 };
 
 
-export default injectIntl(ObserverInfoModal);
+export default ObserverInfoModal;

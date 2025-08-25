@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import NewOperator from 'components/operators/new';
 
-const OperatorsNew = ({ intl }) => {
+const OperatorsNew = () => {
+  const intl = useIntl();
   return (
     <Layout
       title={intl.formatMessage({ id: 'new.operators' })}
@@ -25,8 +26,6 @@ const OperatorsNew = ({ intl }) => {
   );
 };
 
-OperatorsNew.propTypes = {
-  intl: PropTypes.object.isRequired
-};
+OperatorsNew.propTypes = {};
 
-export default injectIntl(OperatorsNew);
+export default OperatorsNew;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Selectors
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
@@ -32,7 +32,8 @@ const TABS_COUNTRIES_DETAIL = [
   }
 ];
 
-function CountriesDetail({ router, countriesDetail, countryDocumentation, intl, getCountry }) {
+function CountriesDetail({ router, countriesDetail, countryDocumentation, getCountry }) {
+  const intl = useIntl();
   const id = router.query.id;
   const tab = router.query.tab || 'overview';
 
@@ -115,16 +116,14 @@ CountriesDetail.propTypes = {
   router: PropTypes.object.isRequired,
   countriesDetail: PropTypes.shape({}).isRequired,
   countryDocumentation: PropTypes.shape({}).isRequired,
-  intl: PropTypes.object.isRequired,
   getCountry: PropTypes.func.isRequired
 };
 
-export default withRouter(injectIntl(connect(
-
+export default withRouter(connect(
   state => ({
     user: state.user,
     countriesDetail: state.countriesDetail,
     countryDocumentation: getParsedDocumentation(state)
   }),
   { getCountry }
-)(CountriesDetail)));
+)(CountriesDetail));

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import DocumentationService from 'services/documentationService';
@@ -14,7 +14,8 @@ import CountryDocModal from 'components/ui/country-doc-modal';
 import Spinner from 'components/ui/spinner';
 
 const CountryDocCardUpload = (props) => {
-  const { status, docType, user, id, onChange, intl } = props;
+  const { status, docType, user, id, onChange } = props;
+  const intl = useIntl();
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const documentationService = useMemo(() => new DocumentationService({
@@ -91,8 +92,7 @@ CountryDocCardUpload.propTypes = {
   docType: PropTypes.string,
   user: PropTypes.object,
   id: PropTypes.string,
-  onChange: PropTypes.func,
-  intl: PropTypes.object.isRequired
+  onChange: PropTypes.func
 };
 
-export default injectIntl(CountryDocCardUpload);
+export default CountryDocCardUpload;

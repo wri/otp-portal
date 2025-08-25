@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -27,7 +27,8 @@ const TYPES = {
   'operator-document-fmu-histories': 'operator-document-fmus',
 };
 
-const DocModal = ({ startDate, endDate, url, reason, user, type, docId, requiredDocId, properties, fmu, onChange, intl, title, notRequired }) => {
+const DocModal = ({ startDate, endDate, url, reason, user, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
+  const intl = useIntl();
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -208,7 +209,6 @@ DocModal.propTypes = {
   fmu: PropTypes.object,
   user: PropTypes.object,
   onChange: PropTypes.func,
-  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(connect(null, { getOperator })(DocModal));
+export default connect(null, { getOperator })(DocModal);

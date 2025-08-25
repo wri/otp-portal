@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -26,7 +26,8 @@ function formatStatValue(value) {
   return new Intl.NumberFormat().format(value);
 }
 
-const CountryDocCard = ({ docType, status, title, explanation, startDate, endDate, intl, units, value, url }) => {
+const CountryDocCard = ({ docType, status, title, explanation, startDate, endDate, units, value, url }) => {
+  const intl = useIntl();
   const triggerDocInfo = () => {
     modal.toggleModal(true, {
       children: () => (
@@ -137,10 +138,9 @@ CountryDocCard.propTypes = {
   explanation: PropTypes.string,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
-  intl: PropTypes.object.isRequired,
   units: PropTypes.string,
   value: PropTypes.number,
   url: PropTypes.string
 };
 
-export default injectIntl(CountryDocCard);
+export default CountryDocCard;

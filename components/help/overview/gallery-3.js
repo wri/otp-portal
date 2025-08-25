@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -12,11 +12,12 @@ import Card from 'components/ui/card';
 
 function Gallery3(props) {
   const { data, loading, error } = props.faqs;
+  const intl = useIntl();
 
   return (
     <div className="c-gallery">
       <h2 className="c-title">
-        {props.intl.formatMessage({ id: 'help.tabs.faqs' })}
+        {intl.formatMessage({ id: 'help.tabs.faqs' })}
       </h2>
       <div className="gallery-content">
         <div className="row l-row">
@@ -31,7 +32,7 @@ function Gallery3(props) {
                 title={faq.question}
                 description={faq.answer}
                 link={{
-                  label: props.intl.formatMessage({ id: 'Read more' }),
+                  label: intl.formatMessage({ id: 'Read more' }),
                   "aria-label": faq.question,
                   href: `/help/faqs?article=faq-article-${faq.id}`
                 }}
@@ -41,7 +42,7 @@ function Gallery3(props) {
         </div>
         {data.length === 0 &&
           <p>
-            {props.intl.formatMessage({ id: 'help.tabs.faqs.overview.no_faqs' }) }
+            {intl.formatMessage({ id: 'help.tabs.faqs.overview.no_faqs' }) }
           </p>
         }
       </div>
@@ -50,8 +51,7 @@ function Gallery3(props) {
 }
 
 Gallery3.propTypes = {
-  intl: PropTypes.object.isRequired,
   faqs: PropTypes.object
 };
 
-export default injectIntl(Gallery3);
+export default Gallery3;

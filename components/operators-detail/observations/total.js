@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Constants
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
@@ -14,7 +14,8 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 // Components
 import ChartLegend from 'components/ui/chart-legend';
 
-function TotalObservationsByOperator({ data, intl }) {
+function TotalObservationsByOperator({ data }) {
+  const intl = useIntl();
   const groupedByYear = HELPERS_OBS.getGroupedByYear(data);
   const max = HELPERS_OBS.getMaxLength(groupedByYear);
 
@@ -95,7 +96,6 @@ function TotalObservationsByOperator({ data, intl }) {
 
 TotalObservationsByOperator.propTypes = {
   data: PropTypes.array,
-  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(TotalObservationsByOperator);
+export default TotalObservationsByOperator;

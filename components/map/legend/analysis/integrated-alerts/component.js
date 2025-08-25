@@ -8,12 +8,13 @@ import dayjs from 'dayjs';
 
 import Spinner from 'components/ui/spinner';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 dayjs.extend(advancedFormat)
 
 const LegendAnalysisIntegratedAlerts = (props) => {
-  const { activeLayer, analysis, intl, language } = props;
+  const { activeLayer, analysis, language } = props;
+  const intl = useIntl();
   const { decodeParams } = activeLayer;
   const { startDate, trimEndDate } = decodeParams;
   const { data, loading, error } = analysis;
@@ -78,15 +79,12 @@ const LegendAnalysisIntegratedAlerts = (props) => {
 LegendAnalysisIntegratedAlerts.propTypes = {
   language: PropTypes.string,
   activeLayer: PropTypes.shape({}).isRequired,
-  analysis: PropTypes.shape({}).isRequired,
-  intl: PropTypes.object
+  analysis: PropTypes.shape({}).isRequired
 }
 
-export default injectIntl(
-  connect(
-    state => ({
-      language: state.language,
-    }),
-    null
-  )(LegendAnalysisIntegratedAlerts)
-);
+export default connect(
+  state => ({
+    language: state.language,
+  }),
+  null
+)(LegendAnalysisIntegratedAlerts);

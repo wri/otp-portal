@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -16,7 +16,8 @@ import StaticHeader from 'components/ui/static-header';
 import PartnerCard from 'components/ui/partner-card';
 import Html from 'components/html';
 
-const AboutPage = ({ about, partners, donors, intl }) => {
+const AboutPage = ({ about, partners, donors }) => {
+  const intl = useIntl();
   const renderDonors = () => {
     const prioritisedDonors = sortBy(donors.data, 'priority') || donors.data;
 
@@ -108,15 +109,14 @@ AboutPage.getInitialProps = async ({ store }) => {
 AboutPage.propTypes = {
   about: PropTypes.shape({}).isRequired,
   partners: PropTypes.shape({}).isRequired,
-  donors: PropTypes.shape({}).isRequired,
-  intl: PropTypes.object.isRequired
+  donors: PropTypes.shape({}).isRequired
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     about: state.about,
     partners: state.partners,
     donors: state.donors
   }),
   { getPartners, getDonors, getAbout }
-)(AboutPage));
+)(AboutPage);

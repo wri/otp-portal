@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -20,7 +20,8 @@ import File from 'components/form/File';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
 
-const DocAnnexesModal = ({ title, intl, user, docId, onChange }) => {
+const DocAnnexesModal = ({ title, user, docId, onChange }) => {
+  const intl = useIntl();
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
   }), [user.token]);
@@ -150,15 +151,14 @@ const DocAnnexesModal = ({ title, intl, user, docId, onChange }) => {
 
 DocAnnexesModal.propTypes = {
   title: PropTypes.string,
-  intl: PropTypes.object.isRequired,
   user: PropTypes.object,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user
   }),
   { getOperator }
-)(DocAnnexesModal));
+)(DocAnnexesModal);

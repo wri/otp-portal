@@ -212,11 +212,10 @@ OperatorsPage.getInitialProps = async ({ store }) => {
 
 OperatorsPage.propTypes = {
   router: PropTypes.object.isRequired,
-  intl: PropTypes.object.isRequired,
   deviceInfo: PropTypes.object,
 };
 
-export default withRouter(withDeviceInfo(injectIntl(connect(
+export default injectIntl(withRouter(withDeviceInfo(connect(
   (state, props) => ({
     language: state.language,
     isMobile: state.user.userAgent.isMobile,

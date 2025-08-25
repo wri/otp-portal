@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { setFilters } from 'modules/operators-ranking';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Select, { components } from 'react-select';
@@ -73,7 +73,8 @@ const FILTERS_REFS = [
   }
 ];
 
-const OperatorsFilters = ({ intl, filters, options, className = '', setFilters }) => {
+const OperatorsFilters = ({ filters, options, className = '', setFilters }) => {
+  const intl = useIntl();
   const setSelect = (opts, key) => {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
@@ -188,7 +189,6 @@ const OperatorsFilters = ({ intl, filters, options, className = '', setFilters }
 };
 
 OperatorsFilters.propTypes = {
-  intl: PropTypes.object.isRequired,
   filters: PropTypes.object,
   options: PropTypes.object,
   className: PropTypes.string,
@@ -203,4 +203,4 @@ export default connect(
   {
     setFilters
   }
-)(injectIntl(OperatorsFilters));
+)(OperatorsFilters);

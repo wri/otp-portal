@@ -4,7 +4,7 @@ import { isEmpty } from 'utils/general';
 
 // Redux
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
 
@@ -15,7 +15,8 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
 
 function DocumentsCertification(props) {
-  const { intl, doc, user, id } = props;
+  const { doc, user, id } = props;
+  const intl = useIntl();
   const { status } = doc;
 
   const isLogged =
@@ -103,19 +104,16 @@ DocumentsCertification.propTypes = {
   doc: PropTypes.shape({}),
   id: PropTypes.string,
   user: PropTypes.object,
-  intl: PropTypes.object.isRequired,
   getOperator: PropTypes.func,
   getOperatorDocumentation: PropTypes.func,
   getOperatorTimeline: PropTypes.func,
   getOperatorPublicationAuthorization: PropTypes.func,
 };
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      user: state.user,
-      doc: getContractSignatureDocumentation(state),
-    }),
-    { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
-  )(DocumentsCertification)
-);
+export default connect(
+  (state) => ({
+    user: state.user,
+    doc: getContractSignatureDocumentation(state),
+  }),
+  { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
+)(DocumentsCertification);

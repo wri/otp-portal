@@ -8,7 +8,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { getTable } from 'selectors/operators-ranking';
 
@@ -20,7 +20,8 @@ import DynamicLoading from 'components/ui/dynamic-loading';
 
 const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false, loading: DynamicLoading });
 
-const OperatorsTable = ({ operators, operatorsTable, isLoading, filters, intl }) => {
+const OperatorsTable = ({ operators, operatorsTable, isLoading, filters }) => {
+  const intl = useIntl();
   const [sortColumn, setSortColumn] = useState('documentation');
   const [sortDirection, setSortDirection] = useState(-1);
   const [expandedOperatorIds, setExpandedOperatorIds] = useState([]);
@@ -191,8 +192,7 @@ OperatorsTable.propTypes = {
   operators: PropTypes.array.isRequired,
   operatorsTable: PropTypes.array.isRequired,
   filters: PropTypes.object.isRequired,
-  fmuSearch: PropTypes.string,
-  intl: PropTypes.object.isRequired
+  fmuSearch: PropTypes.string
 };
 
 export default connect((state) => ({
@@ -200,4 +200,4 @@ export default connect((state) => ({
   isLoading: state.operatorsRanking.loading,
   operatorsTable: getTable(state),
   filters: state.operatorsRanking.filters.data,
-}))(injectIntl(OperatorsTable));
+}))(OperatorsTable);

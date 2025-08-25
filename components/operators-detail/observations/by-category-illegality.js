@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
@@ -21,7 +21,8 @@ import {
 
 const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
-const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year, intl }) => {
+const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year }) => {
+  const intl = useIntl();
   const [selected, setSelected] = useState({});
   const [indexPagination, setIndexPagination] = useState(0);
   const [columns, setColumns] = useState([
@@ -229,7 +230,6 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year, intl })
 TotalObservationsByOperatorByCategorybyIlegallity.propTypes = {
   data: PropTypes.array,
   year: PropTypes.number,
-  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(TotalObservationsByOperatorByCategorybyIlegallity);
+export default TotalObservationsByOperatorByCategorybyIlegallity;

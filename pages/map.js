@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import { injectIntl } from 'react-intl';
 
 import Head from 'components/layout/head';
 import StaticSection from 'components/ui/static-section';

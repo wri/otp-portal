@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import dynamic from 'next/dynamic';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { connect } from 'react-redux';
 import { logout } from 'modules/user';
@@ -18,7 +18,8 @@ import DynamicLoading from 'components/ui/dynamic-loading';
 
 const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
 
-const UserDropdown = ({ intl, user, displayIcon, className, theme }) => {
+const UserDropdown = ({ user, displayIcon, className, theme }) => {
+  const intl = useIntl();
   if (!user.token) {
     return (
       <div
@@ -57,17 +58,16 @@ const UserDropdown = ({ intl, user, displayIcon, className, theme }) => {
 UserDropdown.propTypes = {
   displayIcon: PropTypes.bool,
   theme: PropTypes.string,
-  user: PropTypes.object,
-  intl: PropTypes.object.isRequired
+  user: PropTypes.object
 }
 
 UserDropdown.defaultProps = {
   displayIcon: true
 }
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user
   }),
   { logout }
-)(UserDropdown));
+)(UserDropdown);

@@ -7,7 +7,7 @@ import {
   unmountMap
 } from 'modules/sawmill-map';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import modal from 'services/modal';
 import SawmillsService from 'services/sawmillsService';
@@ -26,7 +26,8 @@ import LocationSearch from 'components/map/location-search';
 
 import CancelButton from '../form/CancelButton';
 
-const SawmillModal = ({ user, language, sawmill, intl, sawmillMap, onChange, setMapLocation, unmountMap }) => {
+const SawmillModal = ({ user, language, sawmill, sawmillMap, onChange, setMapLocation, unmountMap }) => {
+  const intl = useIntl();
   const sawmillsService = useMemo(() => new SawmillsService({
     authorization: user.token
   }), [user.token]);
@@ -280,14 +281,13 @@ SawmillModal.propTypes = {
   user: PropTypes.object,
   language: PropTypes.string,
   sawmill: PropTypes.object,
-  intl: PropTypes.object.isRequired,
   sawmillMap: PropTypes.object,
   onChange: PropTypes.func,
   setMapLocation: PropTypes.func,
   unmountMap: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user,
     language: state.language,
@@ -297,4 +297,4 @@ export default injectIntl(connect(
   setMapLocation,
   unmountMap
 }
-)(SawmillModal));
+)(SawmillModal);
