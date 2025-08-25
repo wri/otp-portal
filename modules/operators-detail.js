@@ -3,58 +3,36 @@ import dayjs from 'dayjs';
 
 import API from 'services/api';
 import { parseDocument } from 'utils/documents';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
-export const getOperatorBySlug = createAsyncThunk(
+export const getOperatorBySlug = createApiThunk(
   'operatorsDetail/getOperatorBySlug',
-  async ({ slug, loadFMUS = false }, { getState, rejectWithValue }) => {
-    try {
-      const { user, language } = getState();
-      const includes = ['country', 'fmus', 'observations'];
-      const fields = {
-        'fields[countries]': 'name,id,iso',
-        'fields[observations]': 'id,hidden'
-      };
-      if (!loadFMUS) {
-        fields['fields[fmus]'] = 'name,id';
-      }
-
-      const { data } = await API.get('operators', {
-        locale: language,
-        include: includes.join(','),
-        ...fields,
-        'filter[slug]': slug
-      }, {
-        token: user.token
-      });
-
+  'operators',
+  {
+    useUserToken: true,
+    params: ({ slug, loadFMUS = false }) => ({
+      include: ['country', 'fmus', 'observations'].join(','),
+      'fields[countries]': 'name,id,iso',
+      'fields[observations]': 'id,hidden',
+      ...(loadFMUS ? {} : { 'fields[fmus]': 'name,id' }),
+      'filter[slug]': slug
+    }),
+    transformResponse: (data, { slug, loadFMUS = false }) => {
       const operator = data[0];
       if (!operator) throw new Error('Operator not found');
       operator.loadedFMUS = loadFMUS;
-
       return operator;
-    } catch (err) {
-      return rejectWithValue(err.message);
     }
   }
 );
 
-export const getOperator = createAsyncThunk(
+export const getOperator = createApiThunk(
   'operatorsDetail/getOperator',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { user, language } = getState();
-      const includeFields = ['country', 'fmus'];
-
-      const { data } = await API.get(`operators/${id}`, {
-        locale: language,
-        include: includeFields.join(','),
-      }, {
-        token: user.token
-      });
-
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
+  (id) => `operators/${id}`,
+  {
+    useUserToken: true,
+    params: {
+      include: ['country', 'fmus'].join(',')
     }
   }
 );
@@ -119,80 +97,34 @@ export const getOperatorObservations = createAsyncThunk(
   }
 );
 
-export const getOperatorPublicationAuthorization = createAsyncThunk(
+export const getOperatorPublicationAuthorization = createApiThunk(
   'operatorsDetail/getOperatorPublicationAuthorization',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { user, language } = getState();
-      const includeFields = [
+  'operator-documents',
+  {
+    useUserToken: true,
+    params: (id) => ({
+      include: [
         'required-operator-document',
         'required-operator-document.required-operator-document-group',
-      ];
-
-      const { data } = await API.get('operator-documents', {
-        locale: language,
-        include: includeFields.join(','),
-        'filter[operator-id]': id,
-        'filter[contract-signature]': true,
-      }, {
-        token: user.token,
-      });
-
+      ].join(','),
+      'filter[operator-id]': id,
+      'filter[contract-signature]': true,
+    }),
+    transformResponse: (data) => {
       const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
       return parseDocument(doc);
-    } catch (err) {
-      return rejectWithValue(err.message);
     }
   }
 );
 
-export const getOperatorTimeline = createAsyncThunk(
+export const getOperatorTimeline = createApiThunk(
   'operatorsDetail/getOperatorTimeline',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { user, language } = getState();
-      const { data } = await API.get('score-operator-documents', {
-        locale: language,
-        'filter[operator]': id,
-      }, {
-        token: user.token
-      });
-
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  }
-);
-
-export const getSawMillsByOperatorId = createAsyncThunk(
-  'operatorsDetail/getSawMillsByOperatorId',
-  async (id, { rejectWithValue }) => {
-    try {
-      const { data } = await API.get('sawmills', {
-        'filter[operator]': id
-      });
-
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  }
-);
-
-export const getSawMillsLocationByOperatorId = createAsyncThunk(
-  'operatorsDetail/getSawMillsLocationByOperatorId',
-  async (id, { rejectWithValue }) => {
-    try {
-      const { data } = await API.get('sawmills', {
-        'filter[operator]': id,
-        format: 'geojson'
-      }, { deserialize: false });
-
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+  'score-operator-documents',
+  {
+    useUserToken: true,
+    params: (id) => ({
+      'filter[operator]': id
+    })
   }
 );
 
@@ -223,17 +155,7 @@ const operatorsDetailSlice = createSlice({
     publicationAuthorization: null,
     date: dayjs().format('YYYY-MM-DD'),
     fmu: null,
-    timeline: [],
-    sawmills: {
-      data: [],
-      loading: false,
-      error: false,
-    },
-    sawmillsLocations: {
-      data: [],
-      loading: false,
-      error: false,
-    },
+    timeline: []
   },
   reducers: {
     setOperatorDocumentationDate: (state, action) => {
@@ -244,35 +166,9 @@ const operatorsDetailSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    addApiCases(getOperator)(builder);
+    addApiCases(getOperatorBySlug)(builder);
     builder
-      // getOperator
-      .addCase(getOperator.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getOperator.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getOperator.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      })
-      // getOperatorBySlug
-      .addCase(getOperatorBySlug.pending, (state) => {
-        state.loading = true;
-        state.error = false;
-      })
-      .addCase(getOperatorBySlug.fulfilled, (state, action) => {
-        state.data = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getOperatorBySlug.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
-      })
       // getOperatorDocumentation
       .addCase(getOperatorDocumentation.pending, (state, action) => {
         state.documentation.loading = true;
@@ -330,34 +226,6 @@ const operatorsDetailSlice = createSlice({
         state.error = true;
         state.loading = false;
       })
-      // getSawMillsByOperatorId
-      .addCase(getSawMillsByOperatorId.pending, (state) => {
-        state.sawmills.loading = true;
-        state.sawmills.error = false;
-      })
-      .addCase(getSawMillsByOperatorId.fulfilled, (state, action) => {
-        state.sawmills.data = action.payload;
-        state.sawmills.loading = false;
-        state.sawmills.error = false;
-      })
-      .addCase(getSawMillsByOperatorId.rejected, (state) => {
-        state.sawmills.error = true;
-        state.sawmills.loading = false;
-      })
-      // getSawMillsLocationByOperatorId
-      .addCase(getSawMillsLocationByOperatorId.pending, (state) => {
-        state.sawmillsLocations.loading = true;
-        state.sawmillsLocations.error = false;
-      })
-      .addCase(getSawMillsLocationByOperatorId.fulfilled, (state, action) => {
-        state.sawmillsLocations.data = action.payload.features;
-        state.sawmillsLocations.loading = false;
-        state.sawmillsLocations.error = false;
-      })
-      .addCase(getSawMillsLocationByOperatorId.rejected, (state) => {
-        state.sawmillsLocations.error = true;
-        state.sawmillsLocations.loading = false;
-      });
   },
 });
 

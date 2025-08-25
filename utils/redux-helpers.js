@@ -62,7 +62,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
     useLanguage = true,
     useUserToken = false,
     params = {},
-    transformResponse = (data) => data
+    transformResponse = (data, _arg) => data
   } = options;
 
   return createAsyncThunk(
@@ -84,7 +84,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
         }
 
         const { data } = await API.get(finalEndpoint, apiParams, apiOptions);
-        return transformResponse(data);
+        return transformResponse(data, arg);
       } catch (err) {
         console.error(err);
         return rejectWithValue(err.message);
