@@ -5,7 +5,7 @@ import orderBy from 'lodash/orderBy';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
 
@@ -55,6 +55,7 @@ const ZoomControl = dynamic(() => import('components/map/controls/zoom-control')
 const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
 const ObservationsPage = (props) => {
+  const intl = useIntl();
   const [tab, setTab] = useState('observations-list');
   const [popup, setPopup] = useState(null);
   const [bounds, setBounds] = useState(null);
@@ -237,13 +238,13 @@ const ObservationsPage = (props) => {
     observation: 'detail',
   };
 
-  const columnHeaders = getColumnHeaders(props.intl);
+  const columnHeaders = getColumnHeaders(intl);
   const inputs = tableCheckboxes;
 
   const tableOptions = inputs.map((column) => ({
     label: Object.keys(changeOfLabelLookup).includes(column)
-      ? props.intl.formatMessage({ id: changeOfLabelLookup[column] })
-      : props.intl.formatMessage({ id: column }),
+      ? intl.formatMessage({ id: changeOfLabelLookup[column] })
+      : intl.formatMessage({ id: column }),
     value: column,
   }));
 
@@ -262,7 +263,7 @@ const ObservationsPage = (props) => {
       description="Observations description..."
     >
       <StaticHeader
-        title={props.intl.formatMessage({ id: 'observations' })}
+        title={intl.formatMessage({ id: 'observations' })}
         background="/static/images/static-header/bg-observations.jpg"
       />
 
@@ -295,13 +296,13 @@ const ObservationsPage = (props) => {
       <StaticTabs
         options={[
           {
-            label: props.intl.formatMessage({
+            label: intl.formatMessage({
               id: 'observations.tab.observations-list',
             }),
             value: 'observations-list',
           },
           {
-            label: props.intl.formatMessage({
+            label: intl.formatMessage({
               id: 'observations.tab.map',
             }),
             value: 'map-view',
@@ -340,7 +341,7 @@ const ObservationsPage = (props) => {
                 pagination: true,
                 previousText: '<',
                 nextText: '>',
-                noDataText: props.intl.formatMessage({
+                noDataText: intl.formatMessage({
                   id: 'observations.no-data',
                   defaultMessage: 'There are no observations that match your selected criteria'
                 }),
@@ -430,7 +431,6 @@ const ObservationsPage = (props) => {
 ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,
   observations: PropTypes.object,
-  intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,
   getObservationsLayers: PropTypes.array,
   parsedChartObservations: PropTypes.array,
@@ -446,26 +446,24 @@ ObservationsPage.propTypes = {
 };
 
 export default withRouter(
-  injectIntl(
-    connect(
-      (state, props) => ({
-        language: state.language,
-        observations: state.observations,
-        parsedFilters: getParsedFilters(state),
-        parsedTableObservations: getParsedTableObservations(state),
-        parsedChartObservations: getParsedChartObservations(state),
-        getObservationsLayers: getObservationsLayers(state),
-        getObservationsLegend: getObservationsLegend(state, props),
-      }),
-      {
-        getObservations,
-        getFilters,
-        getObservationsUrl,
-        setObservationsMapLocation,
-        setObservationsMapCluster,
-        setFilters,
-        setActiveColumns,
-      }
-    )(ObservationsPage)
-  )
+  connect(
+    (state, props) => ({
+      language: state.language,
+      observations: state.observations,
+      parsedFilters: getParsedFilters(state),
+      parsedTableObservations: getParsedTableObservations(state),
+      parsedChartObservations: getParsedChartObservations(state),
+      getObservationsLayers: getObservationsLayers(state),
+      getObservationsLegend: getObservationsLegend(state, props),
+    }),
+    {
+      getObservations,
+      getFilters,
+      getObservationsUrl,
+      setObservationsMapLocation,
+      setObservationsMapCluster,
+      setFilters,
+      setActiveColumns,
+    }
+  )(ObservationsPage)
 );

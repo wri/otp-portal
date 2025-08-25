@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
 // Components
 const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'), { ssr: false });
 
-function Overview({ loading, parsedObservations, intl, onShowMap, onShowObservations }) {
+function Overview({ loading, parsedObservations, onShowMap, onShowObservations }) {
+  const intl = useIntl();
   const noData = !loading && parsedObservations && parsedObservations.length === 0;
 
   return (
@@ -56,7 +57,6 @@ Overview.propTypes = {
   loading: PropTypes.bool,
   onShowObservations: PropTypes.func,
   onShowMap: PropTypes.func,
-  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(Overview);
+export default Overview;

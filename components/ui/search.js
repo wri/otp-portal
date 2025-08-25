@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Router from 'next/router';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Other libraries
 import classnames from 'classnames';
@@ -19,7 +19,8 @@ import Icon from 'components/ui/icon';
 // Constants
 import { SEARCH_OPTIONS } from 'constants/general';
 
-const Search = ({ list, loading, intl, theme, options }) => {
+const Search = ({ list, loading, theme, options }) => {
+  const intl = useIntl();
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
   const [active, setActive] = useState(false);
@@ -225,7 +226,6 @@ Search.propTypes = {
   theme: PropTypes.string,
   list: PropTypes.array,
   loading: PropTypes.bool,
-  intl: PropTypes.object.isRequired,
   options: PropTypes.object
 };
 
@@ -240,4 +240,4 @@ export default connect(
     list: state.operators.data,
     loading: state.operators.loading
   })
-)(injectIntl(Search));
+)(Search);

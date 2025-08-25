@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Gallery1 from 'components/operators-detail/overview/gallery-1';
@@ -14,6 +14,7 @@ const TotalObservationsByOperatorByCategory = dynamic(() => import('components/o
 function OperatorsDetailOverview(props) {
   const { address, website, details } = props.operatorsDetail.data;
   const showOverview = address || website || details;
+  const intl = useIntl();
 
   return (
     <div
@@ -26,7 +27,7 @@ function OperatorsDetailOverview(props) {
           <article className="c-article">
             <header>
               <h2 className="c-title">
-                {props.intl.formatMessage({ id: 'overview' })}
+                {intl.formatMessage({ id: 'overview' })}
               </h2>
             </header>
             <div className="content">
@@ -43,14 +44,14 @@ function OperatorsDetailOverview(props) {
                       {address &&
                         <li key="address" className="">
                           <span>
-                            <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.address' })}:</strong>
+                            <strong>{intl.formatMessage({ id: 'signup.operators.form.field.address' })}:</strong>
                             <address>{address}</address>
                           </span>
                         </li>
                       }
                       {website &&
                         <li key="website" className="">
-                          <strong>{props.intl.formatMessage({ id: 'signup.operators.form.field.website' })}:</strong>
+                          <strong>{intl.formatMessage({ id: 'signup.operators.form.field.website' })}:</strong>
                           <a href={website} target="_blank" rel="noopener noreferrer">{website}</a>
                         </li>
                       }
@@ -67,7 +68,7 @@ function OperatorsDetailOverview(props) {
           <article className="c-article">
             <header>
               <h2 className="c-title">
-                {props.intl.formatMessage({ id: 'observations_by_category' })}
+                {intl.formatMessage({ id: 'observations_by_category' })}
               </h2>
             </header>
 
@@ -83,9 +84,8 @@ function OperatorsDetailOverview(props) {
 
 OperatorsDetailOverview.propTypes = {
   operatorsDetail: PropTypes.object,
-  operatorObservations: PropTypes.array,
-  intl: PropTypes.object.isRequired
+  operatorObservations: PropTypes.array
 };
 
 
-export default injectIntl(OperatorsDetailOverview);
+export default OperatorsDetailOverview;

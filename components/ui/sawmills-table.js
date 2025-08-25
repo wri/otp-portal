@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -21,7 +21,8 @@ import Spinner from 'components/ui/spinner';
 
 const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
-const SawmillsTable = ({ user, sawmills, onChange, intl }) => {
+const SawmillsTable = ({ user, sawmills, onChange }) => {
+  const intl = useIntl();
   const [loading, setLoading] = useState(false);
   
   const sawmillsService = useMemo(() => new SawmillsService({
@@ -116,12 +117,11 @@ const SawmillsTable = ({ user, sawmills, onChange, intl }) => {
 SawmillsTable.propTypes = {
   user: PropTypes.object,
   sawmills: PropTypes.array,
-  onChange: PropTypes.func,
-  intl: PropTypes.object.isRequired
+  onChange: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user
   })
-)(SawmillsTable));
+)(SawmillsTable);

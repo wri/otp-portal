@@ -6,9 +6,10 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-const RankingModal = ({ intl }) => {
+const RankingModal = () => {
+  const intl = useIntl();
   return (
     <div className="c-ranking-modal">
       <p>
@@ -18,12 +19,10 @@ const RankingModal = ({ intl }) => {
   );
 };
 
-RankingModal.propTypes = {
-  intl: PropTypes.object.isRequired
-};
+RankingModal.propTypes = {};
 
 
-export default injectIntl(connect(
+export default connect(
   null,
   { getOperator }
-)(RankingModal));
+)(RankingModal);

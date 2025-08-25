@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -32,6 +32,7 @@ import {
 } from 'modules/documents-database';
 
 const DocumentsDatabasePage = (props) => {
+  const intl = useIntl();
   const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const DocumentsDatabasePage = (props) => {
       description="DocumentsDatabase description..."
     >
       <StaticHeader
-        title={props.intl.formatMessage({
+        title={intl.formatMessage({
           id: 'producers_documents_database',
         })}
         background="/static/images/static-header/bg-observations.jpg"
@@ -84,7 +85,7 @@ const DocumentsDatabasePage = (props) => {
       <StaticTabs
         options={[
           {
-            label: props.intl.formatMessage({
+            label: intl.formatMessage({
               id: 'documentation.tab.documentation-list',
             }),
             value: 'documentation-list',
@@ -102,7 +103,6 @@ const DocumentsDatabasePage = (props) => {
 DocumentsDatabasePage.propTypes = {
   router: PropTypes.object.isRequired,
   database: PropTypes.object,
-  intl: PropTypes.object.isRequired,
   parsedFilters: PropTypes.object,
 
   getFilters: PropTypes.func.isRequired,
@@ -113,19 +113,17 @@ DocumentsDatabasePage.propTypes = {
 };
 
 export default withRouter(
-  injectIntl(
-    connect(
-      (state) => ({
-        database: state.database,
-        parsedFilters: getParsedFilters(state),
-      }),
-      {
-        getDocumentsDatabase,
-        getFilters,
-        getDocumentsDatabaseUrl,
-        setFilters,
-        setActiveColumns,
-      }
-    )(DocumentsDatabasePage)
-  )
+  connect(
+    (state) => ({
+      database: state.database,
+      parsedFilters: getParsedFilters(state),
+    }),
+    {
+      getDocumentsDatabase,
+      getFilters,
+      getDocumentsDatabaseUrl,
+      setFilters,
+      setActiveColumns,
+    }
+  )(DocumentsDatabasePage)
 );

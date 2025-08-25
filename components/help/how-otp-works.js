@@ -5,9 +5,10 @@ import Html from 'components/html';
 import { withRouter } from 'next/router';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-const HelpHowOTPWorks = ({ intl, router, howtos }) => {
+const HelpHowOTPWorks = ({ router, howtos }) => {
+  const intl = useIntl();
   const moveToRef = useRef(null);
 
   useEffect(() => {
@@ -96,9 +97,8 @@ const HelpHowOTPWorks = ({ intl, router, howtos }) => {
 };
 
 HelpHowOTPWorks.propTypes = {
-  intl: PropTypes.object.isRequired,
   router: PropTypes.object.isRequired,
   howtos: PropTypes.object
 };
 
-export default injectIntl(withRouter(HelpHowOTPWorks));
+export default withRouter(HelpHowOTPWorks);

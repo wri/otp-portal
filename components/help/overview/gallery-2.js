@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Spinner from 'components/ui/spinner';
@@ -12,11 +12,12 @@ import Card from 'components/ui/card';
 
 function Gallery2(props) {
   const { data, loading, error } = props.tools;
+  const intl = useIntl();
 
   return (
     <div className="c-gallery">
       <h2 className="c-title">
-        {props.intl.formatMessage({ id: 'help.tabs.legislation' })}
+        {intl.formatMessage({ id: 'help.tabs.legislation' })}
       </h2>
 
       <div className="gallery-content">
@@ -33,7 +34,7 @@ function Gallery2(props) {
                 title={tutorial.name}
                 description={tutorial.description}
                 link={{
-                  label: props.intl.formatMessage({ id: 'Read more' }),
+                  label: intl.formatMessage({ id: 'Read more' }),
                   "aria-label": tutorial.name,
                   href: `/help/legislation-and-regulations?article=tutorial-article-${tutorial.id}`
                 }}
@@ -45,7 +46,7 @@ function Gallery2(props) {
 
         {data.length === 0 &&
           <p>
-            {props.intl.formatMessage({ id: 'help.tabs.howto.overview.no_data' }) }
+            {intl.formatMessage({ id: 'help.tabs.howto.overview.no_data' }) }
           </p>
         }
       </div>
@@ -54,8 +55,7 @@ function Gallery2(props) {
 }
 
 Gallery2.propTypes = {
-  intl: PropTypes.object.isRequired,
   tools: PropTypes.object
 };
 
-export default injectIntl(Gallery2);
+export default Gallery2;

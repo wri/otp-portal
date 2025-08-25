@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
 import { getOperatorDocumentationFMU } from 'selectors/operators-detail/documentation';
@@ -26,7 +26,7 @@ const TotalObservationsByOperatorByCategory = dynamic(() => import('components/o
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
 
 const OperatorsDetailObservations = (props) => {
-  const { intl } = props;
+  const intl = useIntl();
   const router = useRouter();
 
   const [year, setYear] = useState(HELPERS_OBS.getMaxYear(props.operatorObservations));
@@ -150,17 +150,14 @@ const OperatorsDetailObservations = (props) => {
 OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
-  getOperatorObservations: PropTypes.func,
-  intl: PropTypes.object.isRequired
+  getOperatorObservations: PropTypes.func
 };
 
-export default injectIntl(
-  connect(
-    (state) => ({
-      FMU: getOperatorDocumentationFMU(state),
-    }),
-    {
-      getOperatorObservations
-    }
-  )(OperatorsDetailObservations)
-);
+export default connect(
+  (state) => ({
+    FMU: getOperatorDocumentationFMU(state),
+  }),
+  {
+    getOperatorObservations
+  }
+)(OperatorsDetailObservations);

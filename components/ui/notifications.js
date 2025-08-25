@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 // Redux
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
@@ -19,7 +19,8 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-const Notifications = ({ user, notifications, render, getNotifications, dismissAll, intl }) => {
+const Notifications = ({ user, notifications, render, getNotifications, dismissAll }) => {
+  const intl = useIntl();
   const handleDismiss = () => {
     dismissAll();
     modal.toggleModal(false);
@@ -206,23 +207,20 @@ Notifications.propTypes = {
   notifications: PropTypes.object,
   getNotifications: PropTypes.func,
   dismissAll: PropTypes.func,
-  language: PropTypes.string,
-  intl: PropTypes.object.isRequired
+  language: PropTypes.string
 };
 
 Notifications.defaultProps = {
   render: false
 };
 
-const ConnectedNotifications = injectIntl(
-  connect(
-    state => ({
-      user: state.user,
-      notifications: state.notifications,
-      language: state.language
-    }),
-    { getNotifications, dismissAll }
-  )(Notifications)
-);
+const ConnectedNotifications = connect(
+  state => ({
+    user: state.user,
+    notifications: state.notifications,
+    language: state.language
+  }),
+  { getNotifications, dismissAll }
+)(Notifications);
 
 export default ConnectedNotifications;

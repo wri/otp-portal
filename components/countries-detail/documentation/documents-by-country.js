@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 // Redux
 import { connect } from "react-redux";
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { getCountry } from "modules/countries-detail";
 
@@ -17,7 +17,8 @@ import CountryDocCard from "components/ui/country-doc-card";
 import CountryDocCardUpload from "components/ui/country-doc-card-upload";
 
 function DocumentsByOperator(props) {
-  const { data, user, id, intl } = props;
+  const { data, user, id } = props;
+  const intl = useIntl();
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
 
@@ -124,15 +125,12 @@ DocumentsByOperator.defaultProps = {
 DocumentsByOperator.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
-  user: PropTypes.object,
-  intl: PropTypes.object
+  user: PropTypes.object
 };
 
-export default injectIntl(
-  connect(
-    state => ({
-      user: state.user
-    }),
-    { getCountry }
-  )(DocumentsByOperator)
-);
+export default connect(
+  state => ({
+    user: state.user
+  }),
+  { getCountry }
+)(DocumentsByOperator);

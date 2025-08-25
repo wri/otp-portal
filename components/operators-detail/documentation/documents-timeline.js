@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import dayjs from 'dayjs';
 
 // Utils
 import { PALETTE } from 'utils/documentation';
 import { groupBy } from 'utils/general';
 
-function CustomTooltip({ active, payload, label: timestamp, intl }) {
+function CustomTooltip({ active, payload, label: timestamp }) {
+  const intl = useIntl();
   if (active) {
     const validDocs = payload.find((p) => p.dataKey === 'doc_valid');
 
@@ -61,10 +62,10 @@ CustomTooltip.propTypes = {
   active: PropTypes.bool,
   payload: PropTypes.array,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  intl: PropTypes.object.isRequired,
 };
 
-function DocumentsTimeline({ timelineData = [], intl }) {
+function DocumentsTimeline({ timelineData = [] }) {
+  const intl = useIntl();
 
   const chartData = timelineData
     .map((docsByDate) => {
@@ -133,7 +134,7 @@ function DocumentsTimeline({ timelineData = [], intl }) {
               ))}
 
           <Tooltip
-            content={(props) => <CustomTooltip intl={intl} {...props} />}
+            content={(props) => <CustomTooltip {...props} />}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -143,7 +144,6 @@ function DocumentsTimeline({ timelineData = [], intl }) {
 
 DocumentsTimeline.propTypes = {
   timelineData: PropTypes.array,
-  intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(DocumentsTimeline);
+export default DocumentsTimeline;

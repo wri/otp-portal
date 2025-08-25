@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -12,7 +12,8 @@ import CookiesTable from 'components/page/cookies-table';
 
 import API from 'services/api';
 
-const PrivacyPolicyPage = ({ intl, page, cookies }) => {
+const PrivacyPolicyPage = ({ page, cookies }) => {
+  const intl = useIntl();
   const placeholders = {
     CookiesTable: <CookiesTable cookies={cookies} />
   }
@@ -58,9 +59,8 @@ PrivacyPolicyPage.getInitialProps = async () => {
 }
 
 PrivacyPolicyPage.propTypes = {
-  intl: PropTypes.object.isRequired,
   page: PropTypes.object.isRequired,
   cookies: PropTypes.array.isRequired
 };
 
-export default injectIntl(PrivacyPolicyPage);
+export default PrivacyPolicyPage;

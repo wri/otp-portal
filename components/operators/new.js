@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
@@ -24,7 +24,8 @@ import SubmitButton from 'components/form/SubmitButton';
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 
-const NewOperator = ({ intl, language, saveOperator, onSubmit }) => {
+const NewOperator = ({ language, saveOperator, onSubmit }) => {
+  const intl = useIntl();
   const [formInitialState] = useState({
     name: '',
     details: '',
@@ -247,13 +248,14 @@ const NewOperator = ({ intl, language, saveOperator, onSubmit }) => {
 };
 
 NewOperator.propTypes = {
+  language: PropTypes.string,
   saveOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     language: state.language
   }),
   { saveOperator }
-)(NewOperator));
+)(NewOperator);

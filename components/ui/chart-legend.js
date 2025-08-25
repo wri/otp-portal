@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Components
 import Link from 'next/link';
 import Icon from 'components/ui/icon';
 
-function ChartLegend({ title, list, className, intl }) {
+function ChartLegend({ title, list, className }) {
+  const intl = useIntl();
   const classNames = classnames({
     [className]: !!className
   });
@@ -52,8 +53,7 @@ function ChartLegend({ title, list, className, intl }) {
 ChartLegend.propTypes = {
   title: PropTypes.string,
   list: PropTypes.array,
-  className: PropTypes.string,
-  intl: PropTypes.object.isRequired
+  className: PropTypes.string
 };
 
-export default injectIntl(ChartLegend);
+export default ChartLegend;

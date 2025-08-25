@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/nextjs';
 
 // Intl
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -18,8 +18,9 @@ import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
 
 const DocCard = (props) => {
+  const intl = useIntl();
   const [annexTooltipVisible, setAnnexTooltipVisible] = useState(undefined);
-  const { user, url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, intl, onChange } = props;
+  const { user, url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
 
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
@@ -394,7 +395,6 @@ DocCard.propTypes = {
   properties: PropTypes.object,
   annexes: PropTypes.array,
   layout: PropTypes.shape({}),
-  intl: PropTypes.object.isRequired,
   onChange: PropTypes.func
 };
 
@@ -406,8 +406,8 @@ DocCard.defaultProps = {
   }
 };
 
-export default injectIntl(connect(
+export default connect(
   state => ({
     user: state.user
   })
-)(DocCard));
+)(DocCard);

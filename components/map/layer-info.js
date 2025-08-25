@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import Html from 'components/html';
 
-const LayerInfo = ({ metadata, intl }) => {
+const LayerInfo = ({ metadata }) => {
+  const intl = useIntl();
   const intlWithHTML = (id) =>
     intl.formatMessage({ id }, {
       h4: chunks => `<h4>${chunks}</h4>`,
@@ -31,8 +32,7 @@ const LayerInfo = ({ metadata, intl }) => {
 }
 
 LayerInfo.propTypes = {
-  intl: PropTypes.object.isRequired,
   metadata: PropTypes.object.isRequired
 }
 
-export default injectIntl(LayerInfo);
+export default LayerInfo;

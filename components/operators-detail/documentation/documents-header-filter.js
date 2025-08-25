@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 import Icon from 'components/ui/icon';
@@ -25,8 +25,8 @@ function DocumentsHeaderFilter({
   setFMU,
   searchText,
   setSearchText,
-  intl
 }) {
+  const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
 
@@ -119,11 +119,10 @@ DocumentsHeaderFilter.propTypes = {
   setFMU: PropTypes.func,
   fmus: PropTypes.array,
   searchText: PropTypes.string,
-  setSearchText: PropTypes.func,
-  intl: PropTypes.object
+  setSearchText: PropTypes.func
 };
 
-export default injectIntl(connect(
+export default connect(
   (state) => ({
     date: getOperatorDocumentationDate(state),
     FMU: getOperatorDocumentationFMU(state),
@@ -133,4 +132,4 @@ export default injectIntl(connect(
     setDate: setOperatorDocumentationDate,
     setFMU: setOperatorDocumentationFMU,
   }
-)(DocumentsHeaderFilter));
+)(DocumentsHeaderFilter);

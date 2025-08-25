@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import cx from 'classnames';
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import Fuse from 'fuse.js';
 
 import { groupBy } from 'utils/general';
@@ -18,7 +18,8 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
 
-function DocumentsByOperator({ groupedByCategory, searchText, user, id, intl, ...props }) {
+function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props }) {
+  const intl = useIntl();
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(groupedByCategory)
     .map((categoryDocs) => categoryDocs.length)
@@ -183,13 +184,12 @@ DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,
   searchText: PropTypes.string,
   id: PropTypes.string,
-  user: PropTypes.object,
-  intl: PropTypes.object
+  user: PropTypes.object
 };
 
-export default injectIntl(connect(
+export default connect(
   (state) => ({
     user: state.user,
   }),
   { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline }
-)(DocumentsByOperator));
+)(DocumentsByOperator);

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { getOperator } from 'modules/operators-detail';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
@@ -20,7 +20,8 @@ import SubmitButton from 'components/form/SubmitButton';
 import Form, { FormProvider } from 'components/form/Form';
 import CancelButton from 'components/form/CancelButton';
 
-const DocModal = ({ startDate, endDate, link, value, units, user, docId, type, docType, title, url, onChange, intl }) => {
+const DocModal = ({ startDate, endDate, link, value, units, user, docId, type, docType, title, url, onChange }) => {
+  const intl = useIntl();
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -231,12 +232,11 @@ DocModal.propTypes = {
   docType: PropTypes.string,
   type: PropTypes.string,
   user: PropTypes.object,
-  onChange: PropTypes.func,
-  intl: PropTypes.object.isRequired
+  onChange: PropTypes.func
 };
 
 
-export default injectIntl(connect(
+export default connect(
   null,
   { getOperator }
-)(DocModal));
+)(DocModal);
