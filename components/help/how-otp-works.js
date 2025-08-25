@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Spinner from 'components/ui/spinner';
 import Html from 'components/html';
@@ -7,39 +7,12 @@ import { withRouter } from 'next/router';
 // Intl
 import { useIntl } from 'react-intl';
 
+// Hooks
+import useMoveTo from 'hooks/use-move-to';
+
 const HelpHowOTPWorks = ({ router, howtos }) => {
   const intl = useIntl();
-  const moveToRef = useRef(null);
-
-  useEffect(() => {
-    const MoveTo = require('moveto'); //eslint-disable-line
-    moveToRef.current = new MoveTo({
-      tolerance: 50,
-      duration: 500,
-      easing: 'easeOutQuart'
-    });
-
-    if (router.query.article) {
-      setTimeout(() => {
-        triggerScrollTo(`#${router.query.article}`);
-      }, 250);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (router.query.article) {
-      setTimeout(() => {
-        triggerScrollTo(`#${router.query.article}`);
-      }, 250);
-    }
-  }, [router.query.article]);
-
-  const triggerScrollTo = (id) => {
-    const target = document.querySelector(id);
-    if (moveToRef.current && target) {
-      moveToRef.current.move(target);
-    }
-  };
+  const triggerScrollTo = useMoveTo(router.query.article);
 
   const { data, loading, error } = howtos;
 
