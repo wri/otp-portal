@@ -232,7 +232,6 @@ export function getColumnHeaders(intl) {
               <a
                 href={v.attachment.url}
                 target="_blank"
-                rel="noopener noreferrer"
                 className="evidence-item"
                 key={v.attachment.url}
                 title={v.name}
@@ -309,7 +308,6 @@ export function getColumnHeaders(intl) {
             <a
               href={attr.value}
               target="_blank"
-              rel="noopener noreferrer"
               className="report-item"
               title={attr.original['report-title']}
             >

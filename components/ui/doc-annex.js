@@ -31,7 +31,7 @@ export default function DocAnnex({ annex, showRemoveButton, visible, onRemove })
           </dl>
           <div className="tooltip-footer">
             {annex.attachment &&
-              <a href={annex.attachment.url} target="_blank" rel="noopener noreferrer" className="c-button -small -tooltip">{intl.formatMessage({ id: 'file' })}</a>
+              <a href={annex.attachment.url} target="_blank" className="c-button -small -tooltip">{intl.formatMessage({ id: 'file' })}</a>
             }
             {showRemoveButton &&
               <button

@@ -86,7 +86,7 @@ const CountryDocCard = ({ docType, status, title, explanation, startDate, endDat
           </header>
           <div className="doc-card-content">
             {url ? (
-              <a href={url} target="_blank" rel="noopener noreferrer">
+              <a href={url} target="_blank">
                 <h3 className="doc-card-title c-title -big">
                   {title}
                 </h3>
@@ -105,7 +105,7 @@ const CountryDocCard = ({ docType, status, title, explanation, startDate, endDat
               </div>
               <div className="doc-card-source">
                 {url && (
-                  <a href={url} target="_blank" rel="noopener noreferrer">
+                  <a href={url} target="_blank">
                     <span>{intl.formatMessage({ id: 'source' })}</span>
                   </a>
                 )}

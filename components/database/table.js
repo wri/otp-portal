@@ -113,7 +113,6 @@ function DatabaseTable({
             <a
               href={attr.value.url}
               target="_blank"
-              rel="noopener noreferrer"
               className="report-item"
               aria-label="Download document"
             >
@@ -212,7 +211,6 @@ function DatabaseTable({
                 href={v.attachment ? v.attachment.url : ''}
                 key={v.id}
                 target="_blank"
-                rel="noopener noreferrer"
                 className="evidence-item"
                 aria-label="Download evidence document"
               >
