@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 // Redux
@@ -27,51 +27,24 @@ const TYPES = {
   'operator-document-fmu-histories': 'operator-document-fmus',
 };
 
-class DocModal extends React.Component {
-  constructor(props) {
-    super(props);
-    const { startDate, endDate, url, reason } = props;
+const DocModal = ({ startDate, endDate, url, reason, user, type, docId, requiredDocId, properties, fmu, onChange, intl, title, notRequired }) => {
+  const formInitialState = useMemo(() => ({
+    startDate:
+      startDate &&
+      startDate !== '1970/01/01' &&
+      startDate.replace(/\//g, '-'),
+    expireDate:
+      endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
+    file: {},
+    url: url || '',
+    reason: reason || ''
+  }), [startDate, endDate, url, reason]);
 
-    this.state = {
-      formInitialState: {
-        startDate:
-          startDate &&
-          startDate !== '1970/01/01' &&
-          startDate.replace(/\//g, '-'),
-        expireDate:
-          endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
-        file: {},
-        url: url || '',
-        reason: reason || ''
-      }
-    };
+  const documentationService = useMemo(() => new DocumentationService({
+    authorization: user.token,
+  }), [user.token]);
 
-    // Services
-    this.documentationService = new DocumentationService({
-      authorization: props.user.token,
-    });
-  }
-
-  handleSubmit = ({ form }) => {
-    const { type, docId, onChange } = this.props;
-
-    return this.documentationService
-      .saveDocument({
-        url: `${TYPES[type]}/${docId}`,
-        body: this.getBody(form, 'patch'),
-      })
-      .then(() => {
-        onChange && onChange();
-        modal.toggleModal(false);
-      });
-  }
-
-  /**
-   * HELPERS
-   * - getBody
-   */
-  getBody(form, request) {
-    const { type, docId, requiredDocId, properties, fmu } = this.props;
+  const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;
 
     return {
@@ -100,116 +73,124 @@ class DocModal extends React.Component {
         },
       },
     };
-  }
+  };
 
-  render() {
-    const { intl, title, url, notRequired } = this.props;
+  const handleSubmit = ({ form }) => {
+    return documentationService
+      .saveDocument({
+        url: `${TYPES[type]}/${docId}`,
+        body: getBody(form, 'patch'),
+      })
+      .then(() => {
+        onChange && onChange();
+        modal.toggleModal(false);
+      });
+  };
 
-    return (
-      <div className="c-login">
-        <h2 className="c-title -extrabig">{title}</h2>
+  return (
+    <div className="c-login">
+      <h2 className="c-title -extrabig">{title}</h2>
 
-        <FormProvider initialValues={this.state.formInitialState} onSubmit={this.handleSubmit}>
-          {({ form }) => (
-            <Form>
-              <fieldset className="c-field-container">
-                <div className="l-row row">
-                  <div className="columns medium-6 small-12">
-                    {/* DATE */}
-                    <Field
-                      validations={['required']}
-                      className="-fluid"
-                      properties={{
-                        name: 'startDate',
-                        label: notRequired
-                          ? intl.formatMessage({ id: 'start_date' })
-                          : intl.formatMessage({ id: 'doc.start_date' }),
-                        type: 'date',
-                        required: true
-                      }}
-                    >
-                      {Input}
-                    </Field>
-                  </div>
-                  <div className="columns medium-6 small-12">
-                    {/* DATE */}
-                    <Field
-                      className="-fluid"
-                      properties={{
-                        name: 'expireDate',
-                        label: notRequired
-                          ? intl.formatMessage({ id: 'expire_date' })
-                          : intl.formatMessage({
-                            id: 'doc.expiry_date',
-                          }),
-                        type: 'date'
-                      }}
-                    >
-                      {Input}
-                    </Field>
-                  </div>
+      <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
+        {({ form }) => (
+          <Form>
+            <fieldset className="c-field-container">
+              <div className="l-row row">
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    validations={['required']}
+                    className="-fluid"
+                    properties={{
+                      name: 'startDate',
+                      label: notRequired
+                        ? intl.formatMessage({ id: 'start_date' })
+                        : intl.formatMessage({ id: 'doc.start_date' }),
+                      type: 'date',
+                      required: true
+                    }}
+                  >
+                    {Input}
+                  </Field>
                 </div>
+                <div className="columns medium-6 small-12">
+                  {/* DATE */}
+                  <Field
+                    className="-fluid"
+                    properties={{
+                      name: 'expireDate',
+                      label: notRequired
+                        ? intl.formatMessage({ id: 'expire_date' })
+                        : intl.formatMessage({
+                          id: 'doc.expiry_date',
+                        }),
+                      type: 'date'
+                    }}
+                  >
+                    {Input}
+                  </Field>
+                </div>
+              </div>
 
-                {/* DOCUMENT */}
-                {(!notRequired ||
-                  (form.file.base64 && !form.reason)) && (
-                    <div className="l-row row">
-                      <div className="columns small-12">
-                        <Field
-                          validations={['required']}
-                          className="-fluid"
-                          properties={{
-                            name: 'file',
-                            label: intl.formatMessage({ id: 'file' }),
-                            required: true,
-                            default: !url ? null : { name: url }
-                          }}
-                        >
-                          {File}
-                        </Field>
-                      </div>
+              {/* DOCUMENT */}
+              {(!notRequired ||
+                (form.file.base64 && !form.reason)) && (
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <Field
+                        validations={['required']}
+                        className="-fluid"
+                        properties={{
+                          name: 'file',
+                          label: intl.formatMessage({ id: 'file' }),
+                          required: true,
+                          default: !url ? null : { name: url }
+                        }}
+                      >
+                        {File}
+                      </Field>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                {/* REASON */}
-                {(notRequired ||
-                  (form.reason && !form.file.base64)) && (
-                    <div className="l-row row">
-                      <div className="columns small-12">
-                        <Field
-                          className="-fluid"
-                          validations={['required']}
-                          properties={{
-                            name: 'reason',
-                            label: intl.formatMessage({
-                              id: 'why-is-it-not-required',
-                            }),
-                            required: true,
-                            rows: '6'
-                          }}
-                        >
-                          {Textarea}
-                        </Field>
-                      </div>
+              {/* REASON */}
+              {(notRequired ||
+                (form.reason && !form.file.base64)) && (
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <Field
+                        className="-fluid"
+                        validations={['required']}
+                        properties={{
+                          name: 'reason',
+                          label: intl.formatMessage({
+                            id: 'why-is-it-not-required',
+                          }),
+                          required: true,
+                          rows: '6'
+                        }}
+                      >
+                        {Textarea}
+                      </Field>
                     </div>
-                  )}
-              </fieldset>
+                  </div>
+                )}
+            </fieldset>
 
-              <ul className="c-field-buttons">
-                <li>
-                  <CancelButton onClick={() => modal.toggleModal(false)} />
-                </li>
-                <li>
-                  <SubmitButton />
-                </li>
-              </ul>
-            </Form>
-          )}
-        </FormProvider>
-      </div>
-    );
-  }
-}
+            <ul className="c-field-buttons">
+              <li>
+                <CancelButton onClick={() => modal.toggleModal(false)} />
+              </li>
+              <li>
+                <SubmitButton />
+              </li>
+            </ul>
+          </Form>
+        )}
+      </FormProvider>
+    </div>
+  );
+};
 
 DocModal.propTypes = {
   id: PropTypes.string,

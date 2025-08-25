@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
@@ -19,27 +19,23 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-class Notifications extends React.Component {
-  handleDismiss = () => {
-    this.props.dismissAll();
+const Notifications = ({ user, notifications, render, getNotifications, dismissAll, intl }) => {
+  const handleDismiss = () => {
+    dismissAll();
     modal.toggleModal(false);
-  }
+  };
 
-  closeModal = () => {
+  const closeModal = () => {
     modal.toggleModal(false);
-  }
+  };
 
-  componentDidMount() {
-    const { user, render } = this.props;
-
+  useEffect(() => {
     if (user.token && !render) {
-      this.props.getNotifications();
+      getNotifications();
     }
-  }
+  }, [user.token, render, getNotifications]);
 
-  componentDidUpdate() {
-    const { user, render, notifications } = this.props;
-
+  useEffect(() => {
     if (!render
       && user.token
       && notifications.data.length
@@ -54,10 +50,9 @@ class Notifications extends React.Component {
       });
       localStorage.setItem('notificationsShown', true);
     }
-  }
+  }, [render, user.token, notifications.data.length]);
 
-  renderSingleNotification(notification) {
-    const { intl } = this.props;
+  const renderSingleNotification = (notification) => {
     const expirationDate = new Date(notification['expiration-date']);
     const date = new Intl.DateTimeFormat('default', { timeZone: 'UTC' }).format(expirationDate);
 
@@ -67,46 +62,10 @@ class Notifications extends React.Component {
       <>
         {notification['operator-document-name']} {notification['fmu-name'] ? `(${notification['fmu-name']})` : ''} {intl.formatMessage({ id: expiredText })} <span className="notification-date">{date}</span>
       </>
-    )
-  }
+    );
+  };
 
-  renderNotifications() {
-    const { notifications, intl } = this.props;
-
-    if (!notifications.data.length && notifications.loading) {
-      return (
-        <div className="notifications-message" style={{ width: 300 }}>
-          <Spinner className="-transparent -small" isLoading />
-        </div>
-      )
-    }
-
-    if (!notifications.data.length) {
-      return (
-        <div className="notifications-message">
-          <p>
-            {intl.formatMessage({ id: 'There are no new notifications.' })}
-          </p>
-        </div>
-      );
-    }
-
-    const groupedByCompany = groupBy(notifications.data, 'operator-id');
-
-    return Object.keys(groupedByCompany).map((operatorId) => {
-      const companyNotifications = groupedByCompany[operatorId];
-
-      return (
-        <div key={operatorId}>
-          {this.renderCompanyNotifications(companyNotifications)}
-        </div>
-      )
-    });
-  }
-
-  renderCompanyNotifications(notifications) {
-    const { intl } = this.props;
-
+  const renderCompanyNotifications = (notifications) => {
     // if there are two notifications for the same document just show one, as expiration date will be the same
     const expiringSoon = uniqBy(
       notifications.filter(x => !isBeforeToday(new Date(x['expiration-date']))),
@@ -128,7 +87,7 @@ class Notifications extends React.Component {
 
             {sortBy(expired, ['fmu-name', 'expiration-date']).map((notification) => (
               <p key={notification.id}>
-                {this.renderSingleNotification(notification)}
+                {renderSingleNotification(notification)}
               </p>
             ))}
           </>
@@ -142,18 +101,48 @@ class Notifications extends React.Component {
 
             {sortBy(expiringSoon, ['fmu-name', 'expiration-date']).map((notification) => (
               <p key={notification.id}>
-                {this.renderSingleNotification(notification)}
+                {renderSingleNotification(notification)}
               </p>
             ))}
           </>
         )}
       </div>
-    )
-  }
+    );
+  };
 
-  renderNotificationsActions() {
-    const { notifications, user, intl } = this.props;
+  const renderNotifications = () => {
+    if (!notifications.data.length && notifications.loading) {
+      return (
+        <div className="notifications-message" style={{ width: 300 }}>
+          <Spinner className="-transparent -small" isLoading />
+        </div>
+      );
+    }
 
+    if (!notifications.data.length) {
+      return (
+        <div className="notifications-message">
+          <p>
+            {intl.formatMessage({ id: 'There are no new notifications.' })}
+          </p>
+        </div>
+      );
+    }
+
+    const groupedByCompany = groupBy(notifications.data, 'operator-id');
+
+    return Object.keys(groupedByCompany).map((operatorId) => {
+      const companyNotifications = groupedByCompany[operatorId];
+
+      return (
+        <div key={operatorId}>
+          {renderCompanyNotifications(companyNotifications)}
+        </div>
+      );
+    });
+  };
+
+  const renderNotificationsActions = () => {
     if (!notifications.data.length && notifications.loading) {
       return null;
     }
@@ -164,7 +153,7 @@ class Notifications extends React.Component {
           <button
             type="button"
             className="c-button -secondary"
-            onClick={this.closeModal}
+            onClick={closeModal}
           >
             {intl.formatMessage({ id: 'Close' })}
           </button>
@@ -177,7 +166,7 @@ class Notifications extends React.Component {
         <button
           type="button"
           className="c-button -primary"
-          onClick={this.closeModal}
+          onClick={closeModal}
         >
           {intl.formatMessage({ id: 'Remind me later' })}
         </button>
@@ -185,7 +174,7 @@ class Notifications extends React.Component {
         <button
           type="button"
           className="c-button -primary"
-          onClick={this.handleDismiss}
+          onClick={handleDismiss}
         >
           {intl.formatMessage({ id: 'Dismiss All' })}
         </button>
@@ -199,20 +188,17 @@ class Notifications extends React.Component {
         </Link>
       </div>
     );
-  }
+  };
 
-  render() {
-    const { notifications, render } = this.props;
-    if (!render) return null;
+  if (!render) return null;
 
-    return (
-      <div className="c-notifications">
-        {this.renderNotifications()}
-        {this.renderNotificationsActions()}
-      </div>
-    )
-  }
-}
+  return (
+    <div className="c-notifications">
+      {renderNotifications()}
+      {renderNotificationsActions()}
+    </div>
+  );
+};
 
 Notifications.propTypes = {
   render: PropTypes.bool,

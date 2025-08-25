@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 
@@ -21,112 +21,104 @@ import Spinner from 'components/ui/spinner';
 
 const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
-class SawmillsTable extends React.Component {
-  static propTypes = {
-    user: PropTypes.object,
-    sawmills: PropTypes.array,
-    onChange: PropTypes.func,
-    intl: PropTypes.object.isRequired
-  };
+const SawmillsTable = ({ user, sawmills, onChange, intl }) => {
+  const [loading, setLoading] = useState(false);
+  
+  const sawmillsService = useMemo(() => new SawmillsService({
+    authorization: user.token
+  }), [user.token]);
 
-  constructor(props) {
-    super(props);
-    this.sawmillsService = new SawmillsService({
-      authorization: props.user.token
-    });
-  }
+  const handleSawmillActiveDelete = (id) => {
+    setLoading(true);
 
-  state = {
-    loading: false
-  };
-
-  handleSawmillActiveDelete(id) {
-    this.setState({ loading: true });
-
-    this.sawmillsService.deleteSawmill(id)
+    sawmillsService.deleteSawmill(id)
       .then(() => {
-        this.setState({ loading: false });
-        this.props.onChange && this.props.onChange();
+        setLoading(false);
+        onChange && onChange();
       })
       .catch((err) => {
-        this.setState({ loading: false });
+        setLoading(false);
         console.error(err);
       });
-  }
+  };
 
-  handleEditSawmill(sawmill) {
+  const handleEditSawmill = (sawmill) => {
     modal.toggleModal(true, {
       children: SawmillModal,
       childrenProps: {
-        ...this.props,
+        user,
+        sawmills,
+        onChange,
+        intl,
         sawmill,
         onChange: () => {
-          this.props.onChange && this.props.onChange();
+          onChange && onChange();
         }
       }
     });
-  }
+  };
 
-  render() {
-    const { sawmills } = this.props;
-    const { loading } = this.state;
-
-    return (
-      <div className="c-options-table -fluid -valid c-field">
-        <Spinner isLoading={loading} className="-tiny -transparent" />
-        <table>
-          <thead>
-            <tr>
-              <th>{this.props.intl.formatMessage({ id: 'sawmills.table.name' })}</th>
-              <th className="option-header-center">{this.props.intl.formatMessage({ id: 'sawmills.table.active' })}</th>
-              <th />
+  return (
+    <div className="c-options-table -fluid -valid c-field">
+      <Spinner isLoading={loading} className="-tiny -transparent" />
+      <table>
+        <thead>
+          <tr>
+            <th>{intl.formatMessage({ id: 'sawmills.table.name' })}</th>
+            <th className="option-header-center">{intl.formatMessage({ id: 'sawmills.table.active' })}</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {sawmills.length > 0 && sawmills.map(sawmill => (
+            <tr key={`sawmill-row-${sawmill.id}`}>
+              <td>
+                <span>{sawmill.name}</span>
+              </td>
+              <td className="options-checkbox-column">
+                <Checkbox
+                  properties={{
+                    className: 'options-checkbox',
+                    name: sawmill.id,
+                    checked: sawmill['is-active'],
+                    value: sawmill.id,
+                    disabled: true
+                  }}
+                />
+              </td>
+              <td>
+                <button
+                  className="c-button -primary options-button"
+                  type="button"
+                  onClick={() => handleEditSawmill(sawmill)}
+                >
+                  <Icon name="icon-pencil" />
+                </button>
+                <button
+                  className="c-button -secondary options-button"
+                  type="button"
+                  onClick={() => handleSawmillActiveDelete(sawmill.id)}
+                >
+                  <Icon name="icon-bin" />
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {sawmills.length > 0 && sawmills.map(sawmill => (
-              <tr key={`sawmill-row-${sawmill.id}`}>
-                <td>
-                  <span>{sawmill.name}</span>
-                </td>
-                <td className="options-checkbox-column">
-                  <Checkbox
-                    properties={{
-                      className: 'options-checkbox',
-                      name: sawmill.id,
-                      checked: sawmill['is-active'],
-                      value: sawmill.id,
-                      disabled: true
-                    }}
-                  />
-                </td>
-                <td>
-                  <button
-                    className="c-button -primary options-button"
-                    type="button"
-                    onClick={() => this.handleEditSawmill(sawmill)}
-                  >
-                    <Icon name="icon-pencil" />
-                  </button>
-                  <button
-                    className="c-button -secondary options-button"
-                    type="button"
-                    onClick={() => this.handleSawmillActiveDelete(sawmill.id)}
-                  >
-                    <Icon name="icon-bin" />
-                  </button>
-                </td>
-              </tr>
-          ))}
-          </tbody>
-        </table>
-        {!sawmills.length > 0 &&
-          <p>{this.props.intl.formatMessage({ id: 'edit.operators.sawmills.empty' })}</p>
-        }
-      </div>
-    );
-  }
+        ))}
+        </tbody>
+      </table>
+      {!sawmills.length > 0 &&
+        <p>{intl.formatMessage({ id: 'edit.operators.sawmills.empty' })}</p>
+      }
+    </div>
+  );
+};
 
-}
+SawmillsTable.propTypes = {
+  user: PropTypes.object,
+  sawmills: PropTypes.array,
+  onChange: PropTypes.func,
+  intl: PropTypes.object.isRequired
+};
 
 export default injectIntl(connect(
   state => ({

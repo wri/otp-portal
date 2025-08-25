@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -26,26 +26,12 @@ import LocationSearch from 'components/map/location-search';
 
 import CancelButton from '../form/CancelButton';
 
-class SawmillModal extends React.Component {
-  static propTypes = {
-    user: PropTypes.object,
-    language: PropTypes.string,
-    sawmill: PropTypes.object,
-    intl: PropTypes.object.isRequired,
-    sawmillMap: PropTypes.object,
-    onChange: PropTypes.func,
-    setMapLocation: PropTypes.func,
-    unmountMap: PropTypes.func
-  };
+const SawmillModal = ({ user, language, sawmill, intl, sawmillMap, onChange, setMapLocation, unmountMap }) => {
+  const sawmillsService = useMemo(() => new SawmillsService({
+    authorization: user.token
+  }), [user.token]);
 
-  constructor(props) {
-    super(props);
-
-    this.sawmillsService = new SawmillsService({
-      authorization: props.user.token
-    });
-
-    const { sawmill } = this.props;
+  const initialFormState = useMemo(() => {
     const emptyFormState = {
       name: '',
       lat: 0,
@@ -55,34 +41,30 @@ class SawmillModal extends React.Component {
 
     const formState = sawmill || emptyFormState;
 
-    this.state = {
-      initialFormState: {
-        ...formState
-      },
-      hasMapLayer: false
+    return {
+      ...formState
     };
-  }
+  }, [sawmill]);
 
-  componentDidMount() {
-    const { sawmill, sawmillMap } = this.props;
+  useEffect(() => {
     if (sawmill) {
       const { viewport } = sawmillMap;
 
-      this.props.setMapLocation({
+      setMapLocation({
         ...viewport,
         latitude: sawmill.lat,
         longitude: sawmill.lng
       });
     }
-  }
+  }, [sawmill, sawmillMap, setMapLocation]);
 
-  componentWillUnmount() {
-    this.props.unmountMap();
-  }
+  useEffect(() => {
+    return () => {
+      unmountMap();
+    };
+  }, [unmountMap]);
 
-  // HELPERS
-  getBody(form) {
-    const { sawmill } = this.props;
+  const getBody = (form) => {
     return {
       data: {
         ...(!!sawmill && !!sawmill.id && { id: sawmill.id }),
@@ -95,40 +77,35 @@ class SawmillModal extends React.Component {
         }
       }
     };
-  }
+  };
 
-  // UI EVENTS
-  handleSubmit = ({ form }) => {
-    const { sawmill, onChange } = this.props;
-
-    return this.sawmillsService.saveSawmill({
+  const handleSubmit = ({ form }) => {
+    return sawmillsService.saveSawmill({
       id: sawmill && sawmill.id,
-      body: this.getBody(form)
+      body: getBody(form)
     }).then(() => {
       onChange && onChange();
       modal.toggleModal(false);
     });
-  }
+  };
 
-  handleChange = (value, formContext) => {
-    const { sawmillMap } = this.props;
+  const handleChange = (value, formContext) => {
     const { viewport } = sawmillMap;
     const { form, setFormValues } = formContext;
 
     setFormValues(value);
 
-    this.props.setMapLocation({
+    setMapLocation({
       ...viewport,
       latitude: form.lat,
       longitude: form.lng
     });
-  }
+  };
 
-  setMapLocation = (location, setFormValues) => {
-    const { sawmillMap } = this.props;
+  const setMapLocationHandler = (location, setFormValues) => {
     const { viewport } = sawmillMap;
 
-    this.props.setMapLocation({
+    setMapLocation({
       ...viewport,
       ...location
     });
@@ -137,178 +114,178 @@ class SawmillModal extends React.Component {
       lat: viewport.latitude,
       lng: viewport.longitude
     });
-  }
+  };
 
-  render() {
-    const {
-      intl,
-      sawmill,
-      sawmillMap
-    } = this.props;
-
-    return (
-      <div className="c-login">
-        <h2 className="c-title -extrabig">
-          {
-            sawmill ? intl.formatMessage({ id: 'sawmills.modal.title.edit' }) :
-              intl.formatMessage({ id: 'sawmills.modal.title' })
-          }
-        </h2>
-        <FormProvider initialValues={this.state.initialFormState} onSubmit={this.handleSubmit}>
-          {({ form, setFormValues }) => (
-            <Form>
-              <fieldset className="c-field-container" name="add-sawmill">
-                <div className="c-field-row">
-                  <div className="l-row row -equal-heigth">
-                    <div className="columns medium-8 small-12">
-                      <Field
-                        className="-fluid"
-                        validations={['required']}
-                        properties={{
-                          name: 'name',
-                          label: intl.formatMessage({ id: 'sawmills.modal.name' }),
-                          required: true,
-                          type: 'text',
-                          'data-test-id': 'sawmill-name'
-                        }}
-                      >
-                        {Input}
-                      </Field>
-                    </div>
-                    <div className="columns medium-4 small-12">
-                      <Field
-                        className="-fluid"
-                        properties={{
-                          name: 'is-active',
-                          label: intl.formatMessage({ id: 'sawmills.modal.active' }),
-                          'data-test-id': 'sawmill-isactive'
-                        }}
-                      >
-                        {Checkbox}
-                      </Field>
-                    </div>
+  return (
+    <div className="c-login">
+      <h2 className="c-title -extrabig">
+        {
+          sawmill ? intl.formatMessage({ id: 'sawmills.modal.title.edit' }) :
+            intl.formatMessage({ id: 'sawmills.modal.title' })
+        }
+      </h2>
+      <FormProvider initialValues={initialFormState} onSubmit={handleSubmit}>
+        {({ form, setFormValues }) => (
+          <Form>
+            <fieldset className="c-field-container" name="add-sawmill">
+              <div className="c-field-row">
+                <div className="l-row row -equal-heigth">
+                  <div className="columns medium-8 small-12">
+                    <Field
+                      className="-fluid"
+                      validations={['required']}
+                      properties={{
+                        name: 'name',
+                        label: intl.formatMessage({ id: 'sawmills.modal.name' }),
+                        required: true,
+                        type: 'text',
+                        'data-test-id': 'sawmill-name'
+                      }}
+                    >
+                      {Input}
+                    </Field>
+                  </div>
+                  <div className="columns medium-4 small-12">
+                    <Field
+                      className="-fluid"
+                      properties={{
+                        name: 'is-active',
+                        label: intl.formatMessage({ id: 'sawmills.modal.active' }),
+                        'data-test-id': 'sawmill-isactive'
+                      }}
+                    >
+                      {Checkbox}
+                    </Field>
                   </div>
                 </div>
+              </div>
 
-                <div className={'c-map-container -modal'}>
-                  <Spinner isLoading={sawmillMap.loading} className="-light" />
+              <div className={'c-map-container -modal'}>
+                <Spinner isLoading={sawmillMap.loading} className="-light" />
 
-                  {process.env.GOOGLE_API_KEY && (
-                    <LocationSearch setMapLocation={this.props.setMapLocation} />
-                  )}
+                {process.env.GOOGLE_API_KEY && (
+                  <LocationSearch setMapLocation={setMapLocation} />
+                )}
 
-                  {/* Map */}
-                  <Map
-                    language={this.props.language}
+                {/* Map */}
+                <Map
+                  language={language}
 
-                    // viewport
-                    viewport={sawmillMap.viewport}
-                    onViewportChange={(location) => this.setMapLocation(location, setFormValues)}
+                  // viewport
+                  viewport={sawmillMap.viewport}
+                  onViewportChange={(location) => setMapLocationHandler(location, setFormValues)}
+                >
+                  {map => (
+                    <Fragment>
+                      <MapControls>
+                        <ZoomControl />
+                      </MapControls>
 
-                    onClick={this.onClick}
-                  >
-                    {map => (
-                      <Fragment>
-                        <MapControls>
-                          <ZoomControl />
-                        </MapControls>
-
-                        {/* LAYER MANAGER */}
-                        <LayerManager
-                          map={map}
-                          layers={[
-                            {
-                              id: 'observation',
+                      {/* LAYER MANAGER */}
+                      <LayerManager
+                        map={map}
+                        layers={[
+                          {
+                            id: 'observation',
+                            type: 'geojson',
+                            source: {
                               type: 'geojson',
-                              source: {
-                                type: 'geojson',
-                                data: {
-                                  type: 'FeatureCollection',
-                                  features: [
-                                    {
-                                      type: 'Feature',
-                                      geometry: {
-                                        type: 'Point',
-                                        coordinates: [sawmillMap.viewport.longitude, sawmillMap.viewport.latitude]
-                                      }
+                              data: {
+                                type: 'FeatureCollection',
+                                features: [
+                                  {
+                                    type: 'Feature',
+                                    geometry: {
+                                      type: 'Point',
+                                      coordinates: [sawmillMap.viewport.longitude, sawmillMap.viewport.latitude]
                                     }
-                                  ]
-                                }
-                              },
-                              render: {
-                                layers: [{
-                                  type: 'circle',
-                                  paint: {
-                                    'circle-color': '#e98300',
-                                    'circle-radius': 10
                                   }
-                                }]
+                                ]
                               }
+                            },
+                            render: {
+                              layers: [{
+                                type: 'circle',
+                                paint: {
+                                  'circle-color': '#e98300',
+                                  'circle-radius': 10
+                                }
+                              }]
                             }
-                          ]}
-                        />
-                      </Fragment>
-                    )}
-                  </Map>
+                          }
+                        ]}
+                      />
+                    </Fragment>
+                  )}
+                </Map>
 
+              </div>
 
-                </div>
-
-                <div className="c-field-row">
-                  <div className="l-row row -equal-heigth">
-                    <div className="columns medium-6 small-12">
-                      <Field
-                        onChange={value => this.handleChange({ lat: +value }, { form, setFormValues })}
-                        className="-fluid"
-                        properties={{
-                          name: 'lat',
-                          label: intl.formatMessage({ id: 'sawmills.modal.lat' }),
-                          type: 'number',
-                          default: form.lat.toFixed(2),
-                          value: form.lat.toFixed(2),
-                          'data-test-id': 'sawmill-latitude'
-                        }}
-                      >
-                        {Input}
-                      </Field>
-                    </div>
-                    <div className="columns medium-6 small-12">
-                      <Field
-                        onChange={value => this.handleChange({ lng: +value }, { form, setFormValues })}
-                        className="-fluid"
-                        properties={{
-                          name: 'lng',
-                          label: intl.formatMessage({ id: 'sawmills.modal.lng' }),
-                          type: 'number',
-                          default: form.lng.toFixed(2),
-                          value: form.lng.toFixed(2),
-                          'data-test-id': 'sawmill-longitude'
-                        }}
-                      >
-                        {Input}
-                      </Field>
-                    </div>
+              <div className="c-field-row">
+                <div className="l-row row -equal-heigth">
+                  <div className="columns medium-6 small-12">
+                    <Field
+                      onChange={value => handleChange({ lat: +value }, { form, setFormValues })}
+                      className="-fluid"
+                      properties={{
+                        name: 'lat',
+                        label: intl.formatMessage({ id: 'sawmills.modal.lat' }),
+                        type: 'number',
+                        default: form.lat.toFixed(2),
+                        value: form.lat.toFixed(2),
+                        'data-test-id': 'sawmill-latitude'
+                      }}
+                    >
+                      {Input}
+                    </Field>
+                  </div>
+                  <div className="columns medium-6 small-12">
+                    <Field
+                      onChange={value => handleChange({ lng: +value }, { form, setFormValues })}
+                      className="-fluid"
+                      properties={{
+                        name: 'lng',
+                        label: intl.formatMessage({ id: 'sawmills.modal.lng' }),
+                        type: 'number',
+                        default: form.lng.toFixed(2),
+                        value: form.lng.toFixed(2),
+                        'data-test-id': 'sawmill-longitude'
+                      }}
+                    >
+                      {Input}
+                    </Field>
                   </div>
                 </div>
-              </fieldset>
+              </div>
+            </fieldset>
 
-              <ul className="c-field-buttons">
-                <li>
-                  <CancelButton onClick={() => modal.toggleModal(false)} />
-                </li>
-                <li>
-                  <SubmitButton>
-                    {intl.formatMessage({ id: 'submit' })}
-                  </SubmitButton>
-                </li>
-              </ul>
-            </Form>
-          )}
-        </FormProvider>
-      </div>
-    );
-  }
-}
+            <ul className="c-field-buttons">
+              <li>
+                <CancelButton onClick={() => modal.toggleModal(false)} />
+              </li>
+              <li>
+                <SubmitButton>
+                  {intl.formatMessage({ id: 'submit' })}
+                </SubmitButton>
+              </li>
+            </ul>
+          </Form>
+        )}
+      </FormProvider>
+    </div>
+  );
+};
+
+SawmillModal.propTypes = {
+  user: PropTypes.object,
+  language: PropTypes.string,
+  sawmill: PropTypes.object,
+  intl: PropTypes.object.isRequired,
+  sawmillMap: PropTypes.object,
+  onChange: PropTypes.func,
+  setMapLocation: PropTypes.func,
+  unmountMap: PropTypes.func
+};
 
 export default injectIntl(connect(
   state => ({

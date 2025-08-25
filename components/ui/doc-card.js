@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as Sentry from '@sentry/nextjs';
@@ -17,50 +17,16 @@ import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
 
-class DocCard extends React.Component {
-  static propTypes = {
-    user: PropTypes.object,
-    url: PropTypes.string,
-    status: PropTypes.string,
-    public: PropTypes.bool,
-    title: PropTypes.string,
-    reason: PropTypes.string,
-    source: PropTypes.string,
-    sourceInfo: PropTypes.string,
-    explanation: PropTypes.string,
-    adminComment: PropTypes.string,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    properties: PropTypes.object,
-    annexes: PropTypes.array,
-    layout: PropTypes.shape({}),
-    intl: PropTypes.object.isRequired,
-    onChange: PropTypes.func
-  };
+const DocCard = (props) => {
+  const [annexTooltipVisible, setAnnexTooltipVisible] = useState(undefined);
+  const { user, url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, intl, onChange } = props;
 
-  static defaultProps = {
-    annexes: [],
-    layout: {
-      info: true,
-      annexes: true
-    }
-  }
+  const documentationService = useMemo(() => new DocumentationService({
+    authorization: user.token
+  }), [user.token]);
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      annexTooltipVisible: undefined
-    };
-
-    this.documentationService = new DocumentationService({
-      authorization: props.user.token
-    });
-  }
-
-  triggerWhy = (e) => {
+  const triggerWhy = (e) => {
     e && e.preventDefault();
-    const { title, reason } = this.props;
 
     modal.toggleModal(true, {
       children: () => (
@@ -72,11 +38,10 @@ class DocCard extends React.Component {
         </div>
       )
     });
-  }
+  };
 
-  triggerDocInvalidExplanation = (e) => {
+  const triggerDocInvalidExplanation = (e) => {
     e && e.preventDefault();
-    const { intl, adminComment } = this.props;
 
     modal.toggleModal(true, {
       children: () => (
@@ -94,11 +59,10 @@ class DocCard extends React.Component {
         </div>
       )
     });
-  }
+  };
 
-  triggerDocInfo = (e) => {
+  const triggerDocInfo = (e) => {
     e && e.preventDefault();
-    const { title, explanation } = this.props;
 
     modal.toggleModal(true, {
       children: () => (
@@ -110,29 +74,27 @@ class DocCard extends React.Component {
         </div>
       )
     });
-  }
+  };
 
-  triggerAddAnnexModal = () => {
+  const triggerAddAnnexModal = () => {
     modal.toggleModal(true, {
       children: DocAnnexesModal,
       childrenProps: {
-        ...this.props,
+        ...props,
         onChange: () => {
-          this.props.onChange && this.props.onChange();
+          onChange && onChange();
         }
       }
-
     });
-  }
+  };
 
-  triggerRemoveAnnex = (id) => {
-    const { annexes, title, intl } = this.props;
+  const triggerRemoveAnnex = (id) => {
     const annex = annexes.find(a => a.id === id);
 
     // workaround to close tooltip before opening modal, but show it again when hovering
-    this.setState({ annexTooltipVisible: false });
+    setAnnexTooltipVisible(false);
     setTimeout(() => {
-      this.setState({ annexTooltipVisible: undefined });
+      setAnnexTooltipVisible(undefined);
     });
 
     modal.toggleModal(true, {
@@ -144,22 +106,20 @@ class DocCard extends React.Component {
         ),
         confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
         onConfirm: (options) => {
-          this.triggerConfirmedRemoveAnnex({ ...options, annexId: id });
+          triggerConfirmedRemoveAnnex({ ...options, annexId: id });
         },
         onCancel: () => modal.toggleModal(false),
       },
       size: '-small'
     });
-  }
+  };
 
-  triggerConfirmedRemoveAnnex({ annexId, onSuccess, onError } = {}) {
-    const { intl } = this.props;
-
-    this.documentationService.deleteAnnex(annexId)
+  const triggerConfirmedRemoveAnnex = ({ annexId, onSuccess, onError } = {}) => {
+    documentationService.deleteAnnex(annexId)
       .then(() => {
         modal.toggleModal(false);
         onSuccess && onSuccess();
-        this.props.onChange && this.props.onChange();
+        onChange && onChange();
       })
       .catch((err) => {
         onError && onError(
@@ -168,259 +128,283 @@ class DocCard extends React.Component {
         Sentry.captureException(err);
         console.error(err);
       });
-  }
+  };
 
-  render() {
-    const { user, adminComment, public: publicState, startDate, endDate, status, source, sourceInfo, title, explanation, url, annexes, layout, properties } = this.props;
-    const { id } = properties;
-    const { annexTooltipVisible } = this.state;
-    const isActiveUser = (user && user.role === 'admin') ||
-      (user && (user.role === 'operator' || user.role === 'holding') && user.operator_ids && user.operator_ids.includes(+id)) ||
-      (user && user.role === 'government' && user.country && user.country.toString() === id);
+  const { id } = properties;
+  const isActiveUser = (user && user.role === 'admin') ||
+    (user && (user.role === 'operator' || user.role === 'holding') && user.operator_ids && user.operator_ids.includes(+id)) ||
+    (user && user.role === 'government' && user.country && user.country.toString() === id);
 
-    const approvedAnnexes = annexes.filter(a => a.name);
+  const approvedAnnexes = annexes.filter(a => a.name);
 
-    const classNames = classnames({
-      [`-${status}`]: !!status
-    });
+  const classNames = classnames({
+    [`-${status}`]: !!status
+  });
 
-    return (
-      <div className={`c-doc-card ${classNames}`}>
-        {!publicState && isActiveUser &&
-          <div className="doc-card-private">
-            {this.props.intl.formatMessage({ id: 'private' })}
-          </div>
-        }
+  return (
+    <div className={`c-doc-card ${classNames}`}>
+      {!publicState && isActiveUser &&
+        <div className="doc-card-private">
+          {intl.formatMessage({ id: 'private' })}
+        </div>
+      }
 
-        {layout.info &&
-          <div className="doc-card-info">
-            <button className="c-button -clean -icon" aria-label="Show document information" onClick={this.triggerDocInfo}>
-              <Icon
-                name="icon-info"
-                className="-smaller"
-              />
-            </button>
-          </div>
-        }
+      {layout.info &&
+        <div className="doc-card-info">
+          <button className="c-button -clean -icon" aria-label="Show document information" onClick={triggerDocInfo}>
+            <Icon
+              name="icon-info"
+              className="-smaller"
+            />
+          </button>
+        </div>
+      }
 
-        {!!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
-          <div className="doc-card-content-container">
-            <header className="doc-card-header">
-              {startDate !== endDate &&
-                <div className="doc-card-date">
-                  <span>
-                    {this.props.intl.formatMessage({ id: 'expiration' })}:
-                  </span>
-                  <span className="-date">
-                    {this.props.intl.formatDate(endDate, {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-              }
-              {(status !== 'doc_invalid' || !adminComment) && (
-                <div className="doc-card-status">
-                  {this.props.intl.formatMessage({ id: status })}
-                </div>
-              )}
-              {status === 'doc_invalid' && adminComment && (
-                <div className="doc-card-status -why" onClick={this.triggerDocInvalidExplanation}>
-                  {this.props.intl.formatMessage({ id: status })} <br />
-                  See why
-                </div>
-              )}
-            </header>
-            <div className="doc-card-content">
-              <a rel="noopener noreferrer" target="_blank" href={url}>
-                <h3 className="doc-card-title c-title -big">
-                  {title}
-                </h3>
-              </a>
-            </div>
-            <div className="doc-card-footer">
-              {source && (
-                <div className="doc-card-source -with-separator">
-                  <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
-                  {' '}
-                  <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>
-                </div>
-              )}
-
-              {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
-                <div className="doc-card-annexes">
-                  <div className="doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</div>
-
-                  <ul className="doc-card-list">
-                    {approvedAnnexes.map(annex => (
-                      <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
-                      </li>
-                    ))}
-                    {isActiveUser &&
-                      <li className="doc-card-list-button" key="add-annex">
-                        <button
-                          className="c-button -small -secondary"
-                          type="button"
-                          data-test-id="add-annex-button"
-                          onClick={this.triggerAddAnnexModal}
-                        >
-                          <span className="doc-card-hidden-button-text">Add an annex</span>
-                          <Icon className="" name="icon-plus" />
-                        </button>
-                      </li>
-                    }
-                  </ul>
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        {!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
-          <div>
-            <header className="doc-card-header">
-              {startDate !== endDate &&
-                <div className="doc-card-date">
-                  <span>
-                    {this.props.intl.formatMessage({ id: 'expiration' })}:
-                  </span>
-                  <span className="-date">
-                    {this.props.intl.formatDate(endDate, {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-              }
-              {(status !== 'doc_invalid' || !adminComment) && (
-                <div className="doc-card-status">
-                  {this.props.intl.formatMessage({ id: status })}
-                </div>
-              )}
-              {status === 'doc_invalid' && adminComment && (
-                <div className="doc-card-status -why" onClick={this.triggerDocInvalidExplanation}>
-                  {this.props.intl.formatMessage({ id: status })} <br />
-                  See why
-                </div>
-              )}
-            </header>
-            <div className="doc-card-content">
-              <h3 className="doc-card-title c-title -big">
-                {title}
-              </h3>
-            </div>
-            <div className="doc-card-footer">
-              {source && (
-                <div className="doc-card-source">
-                  <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
-                  {' '}
-                  <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>
-                </div>
-              )}
-
-              {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
-                <div className="doc-card-annexes">
-                  <div className="doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</div>
-
-                  <ul className="doc-card-list">
-                    {approvedAnnexes.map(annex => (
-                      <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
-                      </li>
-                    ))}
-                    {isActiveUser &&
-                      <li className="doc-card-list-button" key="add-annex">
-                        <button
-                          className="c-button -small -secondary"
-                          type="button"
-                          onClick={this.triggerAddAnnexModal}
-                        >
-                          <span className="doc-card-hidden-button-text">Add an annex</span>
-                          <Icon className="" name="icon-plus" />
-                        </button>
-                      </li>
-                    }
-                  </ul>
-                </div>
-              }
-
-            </div>
-          </div>
-        }
-
-        {status === 'doc_not_provided' &&
-          <div>
-            <header className="doc-card-header">
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
-            </header>
-            <div className="doc-card-content">
-              <h3 className="doc-card-title c-title -big">
-                {title}
-              </h3>
-            </div>
-          </div>
-        }
-
-        {status === 'doc_not_required' &&
-          <div className="doc-card-content-container">
-            <header className="doc-card-header">
-              <div className="doc-card-status">{this.props.intl.formatMessage({ id: status })}</div>
-              <div className="doc-card-status -why">
-                <div onClick={this.triggerWhy}>
-                  {this.props.intl.formatMessage({ id: 'why' })}
-                </div>
+      {!!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
+        <div className="doc-card-content-container">
+          <header className="doc-card-header">
+            {startDate !== endDate &&
+              <div className="doc-card-date">
+                <span>
+                  {intl.formatMessage({ id: 'expiration' })}:
+                </span>
+                <span className="-date">
+                  {intl.formatDate(endDate, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
+                </span>
               </div>
-            </header>
-            <div className="doc-card-content">
+            }
+            {(status !== 'doc_invalid' || !adminComment) && (
+              <div className="doc-card-status">
+                {intl.formatMessage({ id: status })}
+              </div>
+            )}
+            {status === 'doc_invalid' && adminComment && (
+              <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
+                {intl.formatMessage({ id: status })} <br />
+                See why
+              </div>
+            )}
+          </header>
+          <div className="doc-card-content">
+            <a rel="noopener noreferrer" target="_blank" href={url}>
               <h3 className="doc-card-title c-title -big">
                 {title}
               </h3>
-            </div>
-            <div className="doc-card-footer">
-              {source && (
-                <div className="doc-card-source">
-                  <span>{this.props.intl.formatMessage({ id: 'source' })}:</span>
-                  {' '}
-                  <span className="-source">{source !== 'other_source' ? this.props.intl.formatMessage({ id: source }) : sourceInfo}</span>
-                </div>
-              )}
-
-              {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
-                <div className="doc-card-annexes">
-                  <div className="doc-card-annexes-title">{this.props.intl.formatMessage({ id: 'annexes' })}:</div>
-
-                  <ul className="doc-card-list">
-                    {approvedAnnexes.map(annex => (
-                      <li className="doc-card-list-item" key={annex.id}>
-                        <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={this.triggerRemoveAnnex} visible={annexTooltipVisible} />
-                      </li>
-                    ))}
-
-                    {isActiveUser &&
-                      <li className="doc-card-list-button" key="add-annex">
-                        <button
-                          className="c-button -small -secondary"
-                          type="button"
-                          onClick={this.triggerAddAnnexModal}
-                        >
-                          <span className="doc-card-hidden-button-text">Add an annex</span>
-                          <Icon className="" name="icon-plus" />
-                        </button>
-                      </li>
-                    }
-                  </ul>
-                </div>
-              }
-            </div>
+            </a>
           </div>
-        }
-      </div>
-    );
+          <div className="doc-card-footer">
+            {source && (
+              <div className="doc-card-source -with-separator">
+                <span>{intl.formatMessage({ id: 'source' })}:</span>
+                {' '}
+                <span className="-source">{source !== 'other_source' ? intl.formatMessage({ id: source }) : sourceInfo}</span>
+              </div>
+            )}
+
+            {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
+              <div className="doc-card-annexes">
+                <div className="doc-card-annexes-title">{intl.formatMessage({ id: 'annexes' })}:</div>
+
+                <ul className="doc-card-list">
+                  {approvedAnnexes.map(annex => (
+                    <li className="doc-card-list-item" key={annex.id}>
+                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                    </li>
+                  ))}
+                  {isActiveUser &&
+                    <li className="doc-card-list-button" key="add-annex">
+                      <button
+                        className="c-button -small -secondary"
+                        type="button"
+                        data-test-id="add-annex-button"
+                        onClick={triggerAddAnnexModal}
+                      >
+                        <span className="doc-card-hidden-button-text">Add an annex</span>
+                        <Icon className="" name="icon-plus" />
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      {!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
+        <div>
+          <header className="doc-card-header">
+            {startDate !== endDate &&
+              <div className="doc-card-date">
+                <span>
+                  {intl.formatMessage({ id: 'expiration' })}:
+                </span>
+                <span className="-date">
+                  {intl.formatDate(endDate, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
+                </span>
+              </div>
+            }
+            {(status !== 'doc_invalid' || !adminComment) && (
+              <div className="doc-card-status">
+                {intl.formatMessage({ id: status })}
+              </div>
+            )}
+            {status === 'doc_invalid' && adminComment && (
+              <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
+                {intl.formatMessage({ id: status })} <br />
+                See why
+              </div>
+            )}
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+          <div className="doc-card-footer">
+            {source && (
+              <div className="doc-card-source">
+                <span>{intl.formatMessage({ id: 'source' })}:</span>
+                {' '}
+                <span className="-source">{source !== 'other_source' ? intl.formatMessage({ id: source }) : sourceInfo}</span>
+              </div>
+            )}
+
+            {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
+              <div className="doc-card-annexes">
+                <div className="doc-card-annexes-title">{intl.formatMessage({ id: 'annexes' })}:</div>
+
+                <ul className="doc-card-list">
+                  {approvedAnnexes.map(annex => (
+                    <li className="doc-card-list-item" key={annex.id}>
+                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                    </li>
+                  ))}
+                  {isActiveUser &&
+                    <li className="doc-card-list-button" key="add-annex">
+                      <button
+                        className="c-button -small -secondary"
+                        type="button"
+                        onClick={triggerAddAnnexModal}
+                      >
+                        <span className="doc-card-hidden-button-text">Add an annex</span>
+                        <Icon className="" name="icon-plus" />
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
+          </div>
+        </div>
+      }
+
+      {status === 'doc_not_provided' &&
+        <div>
+          <header className="doc-card-header">
+            <div className="doc-card-status">{intl.formatMessage({ id: status })}</div>
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+        </div>
+      }
+
+      {status === 'doc_not_required' &&
+        <div className="doc-card-content-container">
+          <header className="doc-card-header">
+            <div className="doc-card-status">{intl.formatMessage({ id: status })}</div>
+            <div className="doc-card-status -why">
+              <div onClick={triggerWhy}>
+                {intl.formatMessage({ id: 'why' })}
+              </div>
+            </div>
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+          <div className="doc-card-footer">
+            {source && (
+              <div className="doc-card-source">
+                <span>{intl.formatMessage({ id: 'source' })}:</span>
+                {' '}
+                <span className="-source">{source !== 'other_source' ? intl.formatMessage({ id: source }) : sourceInfo}</span>
+              </div>
+            )}
+
+            {layout.annexes && (isActiveUser || (!isActiveUser && !!approvedAnnexes.length)) &&
+              <div className="doc-card-annexes">
+                <div className="doc-card-annexes-title">{intl.formatMessage({ id: 'annexes' })}:</div>
+
+                <ul className="doc-card-list">
+                  {approvedAnnexes.map(annex => (
+                    <li className="doc-card-list-item" key={annex.id}>
+                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                    </li>
+                  ))}
+
+                  {isActiveUser &&
+                    <li className="doc-card-list-button" key="add-annex">
+                      <button
+                        className="c-button -small -secondary"
+                        type="button"
+                        onClick={triggerAddAnnexModal}
+                      >
+                        <span className="doc-card-hidden-button-text">Add an annex</span>
+                        <Icon className="" name="icon-plus" />
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  );
+};
+
+DocCard.propTypes = {
+  user: PropTypes.object,
+  url: PropTypes.string,
+  status: PropTypes.string,
+  public: PropTypes.bool,
+  title: PropTypes.string,
+  reason: PropTypes.string,
+  source: PropTypes.string,
+  sourceInfo: PropTypes.string,
+  explanation: PropTypes.string,
+  adminComment: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  properties: PropTypes.object,
+  annexes: PropTypes.array,
+  layout: PropTypes.shape({}),
+  intl: PropTypes.object.isRequired,
+  onChange: PropTypes.func
+};
+
+DocCard.defaultProps = {
+  annexes: [],
+  layout: {
+    info: true,
+    annexes: true
   }
-}
+};
 
 export default injectIntl(connect(
   state => ({

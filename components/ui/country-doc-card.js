@@ -26,29 +26,8 @@ function formatStatValue(value) {
   return new Intl.NumberFormat().format(value);
 }
 
-class CountryDocCard extends React.Component {
-  static propTypes = {
-    docType: PropTypes.string,
-    status: PropTypes.string,
-    title: PropTypes.string,
-    explanation: PropTypes.string,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    intl: PropTypes.object.isRequired,
-    units: PropTypes.string,
-    value: PropTypes.number,
-    url: PropTypes.string
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.documentationService = new DocumentationService();
-  }
-
-  triggerDocInfo = () => {
-    const { title, explanation } = this.props;
-
+const CountryDocCard = ({ docType, status, title, explanation, startDate, endDate, intl, units, value, url }) => {
+  const triggerDocInfo = () => {
     modal.toggleModal(true, {
       children: () => (
         <div className="c-doc-info-modal">
@@ -59,100 +38,109 @@ class CountryDocCard extends React.Component {
         </div>
       )
     });
+  };
+
+  const classNames = classnames({
+    [`-${status}`]: !!status
+  });
+
+  let statusText = intl.formatMessage({ id: status });
+  if (status === 'doc_valid') {
+    statusText = intl.formatMessage({ id: 'gov_doc_valid', defaultMessage: 'Published' });
+  } else if (status === 'doc_pending') {
+    statusText = intl.formatMessage({ id: 'gov_doc_pending', defaultMessage: 'Pending' });
   }
 
-  render() {
-    const { startDate, endDate, status, title, explanation, docType, units, value, url, intl } = this.props;
+  return (
+    <div className={`c-doc-card ${classNames} country`}>
+      {explanation && (
+        <div className="doc-card-info">
+          <button className="c-button -clean -icon" aria-label="Show document information" onClick={triggerDocInfo}>
+            <Icon
+              name="icon-info"
+              className="-smaller"
+            />
+          </button>
+        </div>
+      )}
 
-    const classNames = classnames({
-      [`-${status}`]: !!status
-    });
-
-    let statusText = intl.formatMessage({ id: status });
-    if (status === 'doc_valid') {
-      statusText = intl.formatMessage({ id: 'gov_doc_valid', defaultMessage: 'Published' });
-    } else if (status === 'doc_pending') {
-      statusText = intl.formatMessage({ id: 'gov_doc_pending', defaultMessage: 'Pending' });
-    }
-
-    return (
-      <div className={`c-doc-card ${classNames} country`}>
-        {explanation && (
-          <div className="doc-card-info">
-            <button className="c-button -clean -icon" aria-label="Show document information" onClick={this.triggerDocInfo}>
-              <Icon
-                name="icon-info"
-                className="-smaller"
-              />
-            </button>
-          </div>
-        )}
-
-        {status !== 'doc_not_provided' &&
-          <div>
-            <header className="doc-card-header">
-              {endDate && startDate !== endDate &&
-                <div className="doc-card-date">
-                  <span>
-                    {this.props.intl.formatMessage({ id: 'expiration' })}:
-                  </span>
-                  <span className="-date">
-                    {this.props.intl.formatDate(endDate, {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-              }
-              <div className="doc-card-status">{statusText}</div>
-            </header>
-            <div className="doc-card-content">
-              {url ? (
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  <h3 className="doc-card-title c-title -big">
-                    {title}
-                  </h3>
-                </a>
-              ) : (
+      {status !== 'doc_not_provided' &&
+        <div>
+          <header className="doc-card-header">
+            {endDate && startDate !== endDate &&
+              <div className="doc-card-date">
+                <span>
+                  {intl.formatMessage({ id: 'expiration' })}:
+                </span>
+                <span className="-date">
+                  {intl.formatDate(endDate, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
+                </span>
+              </div>
+            }
+            <div className="doc-card-status">{statusText}</div>
+          </header>
+          <div className="doc-card-content">
+            {url ? (
+              <a href={url} target="_blank" rel="noopener noreferrer">
                 <h3 className="doc-card-title c-title -big">
                   {title}
                 </h3>
-              )}
-            </div>
-
-            {docType === 'stats' &&
-              <div className="doc-card-stats">
-                <div>
-                  {formatStatValue(value)} {formatStatUnit(units)}
-                </div>
-                <div className="doc-card-source">
-                  {url && (
-                    <a href={url} target="_blank" rel="noopener noreferrer">
-                      <span>{this.props.intl.formatMessage({ id: 'source' })}</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            }
-          </div>
-        }
-
-        {status === 'doc_not_provided' &&
-          <div>
-            <header className="doc-card-header">
-              <div className="doc-card-status">{statusText}</div>
-            </header>
-            <div className="doc-card-content">
+              </a>
+            ) : (
               <h3 className="doc-card-title c-title -big">
                 {title}
               </h3>
-            </div>
+            )}
           </div>
-        }
-      </div>
-    );
-  }
-}
+
+          {docType === 'stats' &&
+            <div className="doc-card-stats">
+              <div>
+                {formatStatValue(value)} {formatStatUnit(units)}
+              </div>
+              <div className="doc-card-source">
+                {url && (
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    <span>{intl.formatMessage({ id: 'source' })}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      {status === 'doc_not_provided' &&
+        <div>
+          <header className="doc-card-header">
+            <div className="doc-card-status">{statusText}</div>
+          </header>
+          <div className="doc-card-content">
+            <h3 className="doc-card-title c-title -big">
+              {title}
+            </h3>
+          </div>
+        </div>
+      }
+    </div>
+  );
+};
+
+CountryDocCard.propTypes = {
+  docType: PropTypes.string,
+  status: PropTypes.string,
+  title: PropTypes.string,
+  explanation: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  intl: PropTypes.object.isRequired,
+  units: PropTypes.string,
+  value: PropTypes.number,
+  url: PropTypes.string
+};
 
 export default injectIntl(CountryDocCard);
