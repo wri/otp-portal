@@ -191,7 +191,7 @@ const DocCard = (props) => {
             )}
           </header>
           <div className="doc-card-content">
-            <a rel="noopener noreferrer" target="_blank" href={url}>
+            <a target="_blank" href={url}>
               <h3 className="doc-card-title c-title -big">
                 {title}
               </h3>

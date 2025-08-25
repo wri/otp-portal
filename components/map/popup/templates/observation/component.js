@@ -41,8 +41,7 @@ export default function ObservationPopup({ data }) {
           (<Link
             href={`/operators/${data['operator-profile-id']}`}
             passHref
-            target="_blank"
-            rel="noopener noreferrer">
+            target="_blank">
 
             {data.operator}
 
@@ -82,7 +81,6 @@ export default function ObservationPopup({ data }) {
               <a
                 href={v.attachment.url}
                 target="_blank"
-                rel="noopener noreferrer"
                 className="evidence-item"
                 key={v.attachment.url}
                 title={v.name}
@@ -103,7 +101,6 @@ export default function ObservationPopup({ data }) {
         <a
           href={data.report}
           target="_blank"
-          rel="noopener noreferrer"
           className="report-item"
           title={data['report-title']}
         >

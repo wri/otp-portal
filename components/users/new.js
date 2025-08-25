@@ -270,7 +270,7 @@ const UserNewForm = (props) => {
                       <>
                         {intl.formatMessage({ id: 'signup.user.form.field.agree' })}
                         {' ('}
-                        <Link href="/terms" target="_blank" rel="noopener noreferrer">
+                        <Link href="/terms" target="_blank">
                           {intl.formatMessage({ id: 'Read here' })}
                         </Link>
                         {')'}
