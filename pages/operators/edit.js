@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
@@ -20,88 +20,70 @@ import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 
-class OperatorsEdit extends React.Component {
-  static async getInitialProps({ store, query }) {
-    const { user } = store.getState();
-
-    if (query.id && !user.operator_ids.includes(Number(query.id))) {
-      return { redirectTo: '/' };
-    }
-    const operatorId = Number(query.id) || user.operator_ids[0];
-    if (operatorId) {
-      await store.dispatch(getUserOperator(operatorId));
-    }
-    return { operatorId };
-  }
-
-  /**
-   * COMPONENT LIFECYCLE
-  */
-  componentDidMount() {
-    const { user } = this.props;
-
+function OperatorsEdit({ user, userOperator, operatorId, intl, getOperators, getUserOperator }) {
+  useEffect(() => {
     if (!user.operator_ids) {
       const location = {
         pathname: '/'
       };
       Router.push(location, '/');
     }
+  }, [user.operator_ids]);
+
+  const handleOperatorEditSubmit = () => {
+    getOperators();
+    getUserOperator(operatorId);
+  };
+
+  if (!operatorId) {
+    return null;
   }
 
-  componentDidUpdate(/* prevProps */) {
-    if (!this.props.user.operator_ids) {
-      const location = {
-        pathname: '/'
-      };
-      Router.push(location, '/');
-    }
-  }
+  return (
+    <Layout
+      title={intl.formatMessage({ id: 'edit.operators' })}
+      description={intl.formatMessage({ id: 'edit.operators.description' })}
+    >
+      <StaticHeader
+        title={intl.formatMessage({ id: 'edit.operators' })}
+        background="/static/images/static-header/bg-help.jpg"
+        Component={
+          <Link
+            href={`/operators/${userOperator.data.slug}/documentation`}
+            className="c-button -secondary -small">
 
-  handleOperatorEditSubmit = () => {
-    this.props.getOperators();
-    this.props.getUserOperator(this.props.operatorId);
-  }
+            {intl.formatMessage({ id: 'documentation' })}
 
-  render() {
-    const { userOperator, operatorId, intl } = this.props;
+          </Link>
+        }
+      />
 
-    if (!operatorId) {
-      return null;
-    }
+      {userOperator && userOperator.loading &&
+        <Spinner isLoading={userOperator.loading} className="-light -fixed" />
+      }
 
-    return (
-      <Layout
-        title={this.props.intl.formatMessage({ id: 'edit.operators' })}
-        description={this.props.intl.formatMessage({ id: 'edit.operators.description' })}
-      >
-        <StaticHeader
-          title={this.props.intl.formatMessage({ id: 'edit.operators' })}
-          background="/static/images/static-header/bg-help.jpg"
-          Component={
-            <Link
-              href={`/operators/${userOperator.data.slug}/documentation`}
-              className="c-button -secondary -small">
-
-              {intl.formatMessage({ id: 'documentation' })}
-
-            </Link>
-          }
+      {userOperator && !isEmpty(userOperator.data) &&
+        <EditOperator
+          operator={userOperator.data}
+          onSubmit={handleOperatorEditSubmit}
         />
-
-        {userOperator && userOperator.loading &&
-          <Spinner isLoading={userOperator.loading} className="-light -fixed" />
-        }
-
-        {userOperator && !isEmpty(userOperator.data) &&
-          <EditOperator
-            operator={userOperator.data}
-            onSubmit={this.handleOperatorEditSubmit}
-          />
-        }
-      </Layout>
-    );
-  }
+      }
+    </Layout>
+  );
 }
+
+OperatorsEdit.getInitialProps = async ({ store, query }) => {
+  const { user } = store.getState();
+
+  if (query.id && !user.operator_ids.includes(Number(query.id))) {
+    return { redirectTo: '/' };
+  }
+  const operatorId = Number(query.id) || user.operator_ids[0];
+  if (operatorId) {
+    await store.dispatch(getUserOperator(operatorId));
+  }
+  return { operatorId };
+};
 
 OperatorsEdit.propTypes = {
   intl: PropTypes.object.isRequired,

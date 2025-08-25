@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 
@@ -16,29 +16,26 @@ import { getParsedObservations } from 'selectors/operators-detail/observations';
 
 import { getOperatorBySlug } from 'modules/operators-detail';
 
-class OperatorsDetailFMUsPage extends React.Component {
-  static getInitialProps = getInitialProps;
-
-  componentDidMount() {
-    const { operatorsDetail, getOperatorBySlug, router } = this.props;
+const OperatorsDetailFMUsPage = ({
+  operatorsDetail,
+  operatorObservations,
+  getOperatorBySlug,
+  router
+}) => {
+  useEffect(() => {
     if (!operatorsDetail.data.loadedFMUS) {
       getOperatorBySlug(router.query.id, true);
     }
-  }
+  }, []);
 
-  render() {
-    const {
-      operatorsDetail,
-      operatorObservations,
-    } = this.props;
+  return (
+    <Layout operatorObservations={operatorObservations}>
+      <OperatorsDetailFMUs operatorsDetail={operatorsDetail} />
+    </Layout>
+  );
+};
 
-    return (
-      <Layout operatorObservations={operatorObservations}>
-        <OperatorsDetailFMUs operatorsDetail={operatorsDetail} />
-      </Layout>
-    );
-  }
-}
+OperatorsDetailFMUsPage.getInitialProps = getInitialProps;
 
 OperatorsDetailFMUsPage.propTypes = {
   operatorsDetail: PropTypes.object,

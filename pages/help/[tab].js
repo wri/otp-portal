@@ -21,93 +21,89 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-class HelpPage extends React.Component {
-  static async getInitialProps({ query, asPath, store }) {
-    if (!query.tab) return { redirectTo: `${asPath}/overview` };
+const HelpPage = ({ router, howtos, tools, faqs, tutorials, intl }) => {
+  const tab = router.query.tab || 'overview';
 
-    const { howtos, tools, faqs, tutorials } = store.getState().help;
+  return (
+    <Layout
+      title={intl.formatMessage({ id: 'help.title' })}
+      description="Help description..."
+    >
+      <StaticHeader
+        title={intl.formatMessage({ id: 'help.title' })}
+        background="/static/images/static-header/bg-help.jpg"
+      />
 
-    const requests = [];
+      <Tabs
+        href={{
+          pathname: router.pathname,
+          query: { },
+          as: '/help'
+        }}
+        options={[{
+          label: intl.formatMessage({ id: 'overview' }),
+          value: 'overview'
+        }, {
+          label: intl.formatMessage({ id: 'help.tabs.howto' }),
+          value: 'how-otp-works'
+        }, {
+          label: intl.formatMessage({ id: 'help.tabs.legislation' }),
+          value: 'legislation-and-regulations'
+        }, {
+          label: intl.formatMessage({ id: 'help.tabs.faqs' }),
+          value: 'faqs'
+        }, {
+          label: intl.formatMessage({ id: 'help.tabs.tutorials' }),
+          value: 'tutorials'
+        }]}
+        selected={tab}
+      />
 
-    if (!howtos.data.length) requests.push(store.dispatch(getHowtos()));
-    if (!tools.data.length) requests.push(store.dispatch(getTools()));
-    if (!faqs.data.length) requests.push(store.dispatch(getFAQs()));
-    if (!tutorials.data.length) requests.push(store.dispatch(getTutorials()));
-
-    await Promise.all(requests);
-
-    return {};
-  }
-
-  render() {
-    const { router, howtos, tools, faqs, tutorials } = this.props;
-    const tab = router.query.tab || 'overview';
-
-    return (
-      <Layout
-        title={this.props.intl.formatMessage({ id: 'help.title' })}
-        description="Help description..."
-      >
-        <StaticHeader
-          title={this.props.intl.formatMessage({ id: 'help.title' })}
-          background="/static/images/static-header/bg-help.jpg"
+      {tab === 'overview' &&
+        <HelpOverview
+          howtos={howtos}
+          tools={tools}
+          faqs={faqs}
+          tutorials={tutorials}
         />
+      }
 
-        <Tabs
-          href={{
-            pathname: router.pathname,
-            query: { },
-            as: '/help'
-          }}
-          options={[{
-            label: this.props.intl.formatMessage({ id: 'overview' }),
-            value: 'overview'
-          }, {
-            label: this.props.intl.formatMessage({ id: 'help.tabs.howto' }),
-            value: 'how-otp-works'
-          }, {
-            label: this.props.intl.formatMessage({ id: 'help.tabs.legislation' }),
-            value: 'legislation-and-regulations'
-          }, {
-            label: this.props.intl.formatMessage({ id: 'help.tabs.faqs' }),
-            value: 'faqs'
-          }, {
-            label: this.props.intl.formatMessage({ id: 'help.tabs.tutorials' }),
-            value: 'tutorials'
-          }]}
-          selected={tab}
-        />
+      {tab === 'how-otp-works' &&
+        <HelpHowOTPWorks howtos={howtos} />
+      }
 
-        {tab === 'overview' &&
-          <HelpOverview
-            howtos={howtos}
-            tools={tools}
-            faqs={faqs}
-            tutorials={tutorials}
-          />
-        }
+      {tab === 'legislation-and-regulations' &&
+        <HelpLegislationAndRegulations tools={tools} />
+      }
 
-        {tab === 'how-otp-works' &&
-          <HelpHowOTPWorks howtos={howtos} />
-        }
+      {tab === 'faqs' &&
+        <HelpFaqs faqs={faqs} />
+      }
 
-        {tab === 'legislation-and-regulations' &&
-          <HelpLegislationAndRegulations tools={tools} />
-        }
+      {tab === 'tutorials' &&
+        <HelpTutorials tutorials={tutorials} />
+      }
 
-        {tab === 'faqs' &&
-          <HelpFaqs faqs={faqs} />
-        }
+    </Layout>
+  );
+};
 
-        {tab === 'tutorials' &&
-          <HelpTutorials tutorials={tutorials} />
-        }
+HelpPage.getInitialProps = async ({ query, asPath, store }) => {
+  if (!query.tab) return { redirectTo: `${asPath}/overview` };
 
-      </Layout>
-    );
-  }
+  const { howtos, tools, faqs, tutorials } = store.getState().help;
 
-}
+  const requests = [];
+
+  if (!howtos.data.length) requests.push(store.dispatch(getHowtos()));
+  if (!tools.data.length) requests.push(store.dispatch(getTools()));
+  if (!faqs.data.length) requests.push(store.dispatch(getFAQs()));
+  if (!tutorials.data.length) requests.push(store.dispatch(getTutorials()));
+
+  await Promise.all(requests);
+
+  return {};
+};
 
 HelpPage.propTypes = {
   router: PropTypes.object.isRequired,

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'react-fast-compare';
 import orderBy from 'lodash/orderBy';
@@ -54,80 +54,70 @@ const MapControls = dynamic(() => import('components/map/map-controls'), { ssr: 
 const ZoomControl = dynamic(() => import('components/map/controls/zoom-control'), { ssr: false });
 const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
-class ObservationsPage extends React.Component {
-  constructor(props) {
-    super(props);
+const ObservationsPage = (props) => {
+  const [tab, setTab] = useState('observations-list');
+  const [popup, setPopup] = useState(null);
+  const [bounds, setBounds] = useState(null);
+  const mapRef = useRef(null);
+  const makeJumpToStaticHeaderRef = useRef(false);
 
-    this.state = {
-      tab: 'observations-list',
-      popup: null
-    };
+  useEffect(() => {
+    const { router } = props;
 
-    this.triggerChangeTab = this.triggerChangeTab.bind(this);
-  }
+    props.getFilters();
+    props.getObservationsUrl(router);
+    props.getObservations();
+  }, []);
 
-  componentDidMount() {
-    const { router } = this.props;
+  useEffect(() => {
+    props.getObservations();
+    props.setObservationsMapCluster({});
+    setPopup(null);
+  }, [props.parsedFilters.data]);
 
-    this.props.getFilters();
-    this.props.getObservationsUrl(router);
-    this.props.getObservations();
-  }
+  useEffect(() => {
+    props.getObservationsUrl(props.router);
+  }, [props.router.query]);
 
-  componentDidUpdate(prevProps) {
-    if (!isEqual(this.props.parsedFilters.data, prevProps.parsedFilters.data)) {
-      this.props.getObservations();
-      this.props.setObservationsMapCluster({});
-      this.setState({ popup: null });
+  useEffect(() => {
+    const obsLayer = props.getObservationsLayers.find((l) => l.id === 'observations');
+    if (obsLayer) {
+      const bbox = getBBox(obsLayer.source.data);
+      setBounds({
+        bbox,
+        options: {
+          padding: 50,
+          maxZoom: 6
+        },
+      });
     }
+  }, [props.observations.data]);
 
-    if (!isEqual(this.props.router.query, prevProps.router.query)) {
-      this.props.getObservationsUrl(this.props.router);
-    }
-
-    // when the data is loaded fitBounds to selected observations
-    if (!isEqual(this.props.observations.data, prevProps.observations.data)) {
-      const obsLayer = this.props.getObservationsLayers.find((l) => l.id === 'observations');
-      if (obsLayer) {
-        const bbox = getBBox(obsLayer.source.data);
-        this.setState({
-          bounds: {
-            bbox,
-            options: {
-              padding: 50,
-              maxZoom: 6
-            },
-          }
-        });
-      }
-    }
-  }
-
-  onCustomAttribute = (e) => {
+  const onCustomAttribute = (e) => {
     e.preventDefault();
     modal.toggleModal(true, {
       children: FAAttributions,
     });
   };
 
-  setActiveColumns(value) {
-    this.props.setActiveColumns(value);
-  }
-
-  triggerChangeTab(tab) {
-    this.setState({ tab });
-  }
-
-  onViewportChange = (mapLocation) => {
-    // if zoom level changes (rounding as sometimes is like 4.999999...) then hide open cluster
-    if (Math.round(this.props.observations.map.zoom) != Math.round(mapLocation.zoom)) {
-      this.props.setObservationsMapCluster({});
-    }
-    this.props.setObservationsMapLocation(mapLocation);
+  const setActiveColumns = (value) => {
+    props.setActiveColumns(value);
   };
 
-  onClick = (e) => {
-    const { cluster: clusterProp, map } = this.props.observations;
+  const triggerChangeTab = (tabValue) => {
+    setTab(tabValue);
+  };
+
+  const onViewportChange = (mapLocation) => {
+    // if zoom level changes (rounding as sometimes is like 4.999999...) then hide open cluster
+    if (Math.round(props.observations.map.zoom) != Math.round(mapLocation.zoom)) {
+      props.setObservationsMapCluster({});
+    }
+    props.setObservationsMapLocation(mapLocation);
+  };
+
+  const onClick = (e) => {
+    const { cluster: clusterProp, map } = props.observations;
     const element = e.originalEvent.target;
 
     if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) { // No better way to do this
@@ -140,7 +130,7 @@ class ObservationsPage extends React.Component {
       if (cluster) {
         if (+clusterId !== +clusterProp.id) {
           if (map.zoom < 12 && point_count > 16) {
-            this.props.setObservationsMapLocation({
+            props.setObservationsMapLocation({
               ...map,
               longitude: lngLat.lng,
               latitude: lngLat.lat,
@@ -149,19 +139,19 @@ class ObservationsPage extends React.Component {
             return;
           }
 
-          const layers = this.map
+          const layers = mapRef.current
             .getStyle()
             .layers.filter((l) => l.source === source);
 
-          this.map
+          mapRef.current
             .getSource(source)
             .getClusterLeaves(clusterId, point_count, 0, (error, fts) => {
               if (error) {
-                this.props.setObservationsMapCluster({});
+                props.setObservationsMapCluster({});
                 return true;
               }
 
-              this.props.setObservationsMapCluster({
+              props.setObservationsMapCluster({
                 id: clusterId,
                 coordinates: geometry.coordinates,
                 features: orderBy(fts, 'properties.level'),
@@ -171,276 +161,271 @@ class ObservationsPage extends React.Component {
               return fts;
             });
         } else {
-          this.props.setObservationsMapCluster({});
+          props.setObservationsMapCluster({});
         }
 
-        if (this.state.popup) {
-          this.setState({ popup: null });
+        if (popup) {
+          setPopup(null);
         }
       } else {
-        this.setState({
-          popup: {
-            props: {
-              longitude: lngLat.lng,
-              latitude: lngLat.lat,
-            },
-            template: 'observation',
-            templateProps: {
-              data: feature.properties
-            }
+        setPopup({
+          props: {
+            longitude: lngLat.lng,
+            latitude: lngLat.lat,
+          },
+          template: 'observation',
+          templateProps: {
+            data: feature.properties
           }
         });
         if (feature.layer.id !== 'observations-leaves') {
-          this.props.setObservationsMapCluster({});
+          props.setObservationsMapCluster({});
         }
       }
     }
-  }
+  };
 
-  jumpToStaticHeader() {
+  const jumpToStaticHeader = () => {
     const element = document.querySelector('header.c-static-tabs');
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  };
 
-  onShowObservations = () => {
+  const onShowObservations = () => {
     let delay = 0;
-    if (this.state.tab !== 'observations-list') {
-      this.setState({ tab: 'observations-list' });
+    if (tab !== 'observations-list') {
+      setTab('observations-list');
       delay = 100;
     }
 
-    setTimeout(this.jumpToStaticHeader, delay);
-  }
+    setTimeout(jumpToStaticHeader, delay);
+  };
 
-  onShowMap = () => {
-    if (this.state.tab !== 'map-view') {
-      this.setState({ tab: 'map-view' });
-      this.makeJumpToStaticHeader = true;
+  const onShowMap = () => {
+    if (tab !== 'map-view') {
+      setTab('map-view');
+      makeJumpToStaticHeaderRef.current = true;
     } else {
-      this.jumpToStaticHeader();
+      jumpToStaticHeader();
     }
-  }
+  };
 
-  onMapLoaded = ({ map }) => {
-    this.map = map;
+  const onMapLoaded = ({ map }) => {
+    mapRef.current = map;
 
     // Attribution listener
     document
       .getElementById('forest-atlas-attribution')
-      .addEventListener('click', this.onCustomAttribute);
+      .addEventListener('click', onCustomAttribute);
 
-    if (this.makeJumpToStaticHeader) {
-      this.jumpToStaticHeader();
-      this.makeJumpToStaticHeader = false;
+    if (makeJumpToStaticHeaderRef.current) {
+      jumpToStaticHeader();
+      makeJumpToStaticHeaderRef.current = false;
     }
+  };
+
+  const {
+    observations,
+    getObservationsLayers,
+    getObservationsLegend,
+    parsedFilters,
+    parsedTableObservations,
+    parsedChartObservations,
+  } = props;
+
+  const changeOfLabelLookup = {
+    level: 'severity',
+    observation: 'detail',
+  };
+
+  const columnHeaders = getColumnHeaders(props.intl);
+  const inputs = tableCheckboxes;
+
+  const tableOptions = inputs.map((column) => ({
+    label: Object.keys(changeOfLabelLookup).includes(column)
+      ? props.intl.formatMessage({ id: changeOfLabelLookup[column] })
+      : props.intl.formatMessage({ id: column }),
+    value: column,
+  }));
+
+  const interactiveLayerIds = [
+    'observations-circle-0',
+    'observations-symbol-1',
+    'observations-circle-2'
+  ]
+  if (props.observations.cluster.id) {
+    interactiveLayerIds.push('observations-leaves');
   }
 
-  render() {
-    const {
-      observations,
-      getObservationsLayers,
-      getObservationsLegend,
-      parsedFilters,
-      parsedTableObservations,
-      parsedChartObservations,
-    } = this.props;
-    const { popup } = this.state;
+  return (
+    <Layout
+      title="Observations"
+      description="Observations description..."
+    >
+      <StaticHeader
+        title={props.intl.formatMessage({ id: 'observations' })}
+        background="/static/images/static-header/bg-observations.jpg"
+      />
 
-    const changeOfLabelLookup = {
-      level: 'severity',
-      observation: 'detail',
-    };
+      <div className="c-section">
+        <div className="l-container">
+          <div className="row l-row">
+            <div className="columns small-12 medium-4">
+              <Filters
+                options={parsedFilters.options}
+                filters={parsedFilters.data}
+                setFilters={props.setFilters}
+                loading={observations.filters.loading}
+                filtersRefs={FILTERS_REFS}
+              />
+            </div>
 
-    const columnHeaders = getColumnHeaders(this.props.intl);
-    const inputs = tableCheckboxes;
-
-    const tableOptions = inputs.map((column) => ({
-      label: Object.keys(changeOfLabelLookup).includes(column)
-        ? this.props.intl.formatMessage({ id: changeOfLabelLookup[column] })
-        : this.props.intl.formatMessage({ id: column }),
-      value: column,
-    }));
-
-    const interactiveLayerIds = [
-      'observations-circle-0',
-      'observations-symbol-1',
-      'observations-circle-2'
-    ]
-    if (this.props.observations.cluster.id) {
-      interactiveLayerIds.push('observations-leaves');
-    }
-
-    return (
-      <Layout
-        title="Observations"
-        description="Observations description..."
-      >
-        <StaticHeader
-          title={this.props.intl.formatMessage({ id: 'observations' })}
-          background="/static/images/static-header/bg-observations.jpg"
-        />
-
-        <div className="c-section">
-          <div className="l-container">
-            <div className="row l-row">
-              <div className="columns small-12 medium-4">
-                <Filters
-                  options={parsedFilters.options}
-                  filters={parsedFilters.data}
-                  setFilters={this.props.setFilters}
-                  loading={observations.filters.loading}
-                  filtersRefs={FILTERS_REFS}
-                />
-              </div>
-
-              <div className="columns small-12 medium-6 medium-offset-1">
-                {/* Overview by category graphs */}
-                <Overview
-                  parsedObservations={parsedChartObservations}
-                  loading={observations.loading}
-                  onShowObservations={this.onShowObservations}
-                  onShowMap={this.onShowMap}
-                />
-              </div>
+            <div className="columns small-12 medium-6 medium-offset-1">
+              {/* Overview by category graphs */}
+              <Overview
+                parsedObservations={parsedChartObservations}
+                loading={observations.loading}
+                onShowObservations={onShowObservations}
+                onShowMap={onShowMap}
+              />
             </div>
           </div>
         </div>
+      </div>
 
-        <StaticTabs
-          options={[
-            {
-              label: this.props.intl.formatMessage({
-                id: 'observations.tab.observations-list',
-              }),
-              value: 'observations-list',
-            },
-            {
-              label: this.props.intl.formatMessage({
-                id: 'observations.tab.map',
-              }),
-              value: 'map-view',
-            },
-          ]}
-          selected={this.state.tab}
-          onChange={this.triggerChangeTab}
-        />
+      <StaticTabs
+        options={[
+          {
+            label: props.intl.formatMessage({
+              id: 'observations.tab.observations-list',
+            }),
+            value: 'observations-list',
+          },
+          {
+            label: props.intl.formatMessage({
+              id: 'observations.tab.map',
+            }),
+            value: 'map-view',
+          },
+        ]}
+        selected={tab}
+        onChange={triggerChangeTab}
+      />
 
-        {this.state.tab === 'observations-list' && (
-          <section className="c-section -relative">
-            <div className="l-container">
-              <Spinner isLoading={observations.loading} />
-              <div className="c-field -fluid -valid">
-                <CheckboxGroup
-                  className="-single-row -small -secondary"
-                  name="observations-columns"
-                  onChange={(value) => this.setActiveColumns(value)}
-                  properties={{
-                    default: observations.columns,
-                    name: 'observations-columns',
-                  }}
-                  options={tableOptions}
-                />
-              </div>
-
-              <Table
-                className="-fit-to-page"
-                sortable
-                data={parsedTableObservations}
-                options={{
-                  columns: columnHeaders.filter((header) =>
-                    observations.columns.includes(header.accessor)
-                  ),
-                  pageSize: 50,
-                  pagination: true,
-                  previousText: '<',
-                  nextText: '>',
-                  noDataText: this.props.intl.formatMessage({
-                    id: 'observations.no-data',
-                    defaultMessage: 'There are no observations that match your selected criteria'
-                  }),
-                  showPageSizeOptions: false,
-                  loading: observations.loading,
-                  // Api pagination & sort
-                  // pages: observations.totalSize,
-                  // page: this.state.page - 1,
-                  // manual: true
-                  defaultSorted: [
-                    {
-                      id: 'date',
-                      desc: true,
-                    },
-                  ],
-                  showSubComponent: observations.columns.includes('location'),
-                  subComponent: (row) =>
-                    observations.columns.includes('location') && (
-                      <MapSubComponent
-                        id={row.original.id}
-                        language={this.props.language}
-                        location={row.original.location}
-                        level={row.original.level}
-                      />
-                    ),
+      {tab === 'observations-list' && (
+        <section className="c-section -relative">
+          <div className="l-container">
+            <Spinner isLoading={observations.loading} />
+            <div className="c-field -fluid -valid">
+              <CheckboxGroup
+                className="-single-row -small -secondary"
+                name="observations-columns"
+                onChange={(value) => setActiveColumns(value)}
+                properties={{
+                  default: observations.columns,
+                  name: 'observations-columns',
                 }}
+                options={tableOptions}
               />
             </div>
-          </section>
-        )}
 
-        {this.state.tab === 'map-view' && (
-          <div className="c-map-container -static">
-            <Spinner isLoading={observations.loading} />
-            {/* Map */}
-            <Map
-              language={this.props.language}
-              // options
-              scrollZoom={false}
-              // viewport
-              viewport={observations.map}
-              onViewportChange={this.onViewportChange}
-              // Bounds
-              bounds={this.state.bounds}
-              // Interaction
-              interactiveLayerIds={interactiveLayerIds}
-              onClick={this.onClick}
-              onHover={this.onHover}
-              onLoad={this.onMapLoaded}
-              onUnmount={() => (this.map = null)}
-              // Options
-              customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
-            >
-              {(map) => (
-                <Fragment>
-                  {/* LAYER MANAGER */}
-                  {popup && (
-                    <Popup
-                      popup={popup.props}
-                      template={popup.template}
-                      templateProps={popup.templateProps}
-                      onClose={() => this.setState({ popup: null })}
+            <Table
+              className="-fit-to-page"
+              sortable
+              data={parsedTableObservations}
+              options={{
+                columns: columnHeaders.filter((header) =>
+                  observations.columns.includes(header.accessor)
+                ),
+                pageSize: 50,
+                pagination: true,
+                previousText: '<',
+                nextText: '>',
+                noDataText: props.intl.formatMessage({
+                  id: 'observations.no-data',
+                  defaultMessage: 'There are no observations that match your selected criteria'
+                }),
+                showPageSizeOptions: false,
+                loading: observations.loading,
+                // Api pagination & sort
+                // pages: observations.totalSize,
+                // page: this.state.page - 1,
+                // manual: true
+                defaultSorted: [
+                  {
+                    id: 'date',
+                    desc: true,
+                  },
+                ],
+                showSubComponent: observations.columns.includes('location'),
+                subComponent: (row) =>
+                  observations.columns.includes('location') && (
+                    <MapSubComponent
+                      id={row.original.id}
+                      language={props.language}
+                      location={row.original.location}
+                      level={row.original.level}
                     />
-                  )}
-                  <LayerManager map={map} layers={getObservationsLayers} />
-
-                  <MapControls>
-                    <ZoomControl />
-                  </MapControls>
-                </Fragment>
-              )}
-            </Map>
-
-            {/* LEGEND */}
-            <Legend
-              layerGroups={getObservationsLegend}
-              expanded={false}
-              toolbar={<></>}
-              setLayerSettings={() => { }}
+                  ),
+              }}
             />
           </div>
-        )}
-      </Layout>
-    );
-  }
-}
+        </section>
+      )}
+
+      {tab === 'map-view' && (
+        <div className="c-map-container -static">
+          <Spinner isLoading={observations.loading} />
+          {/* Map */}
+          <Map
+            language={props.language}
+            // options
+            scrollZoom={false}
+            // viewport
+            viewport={observations.map}
+            onViewportChange={onViewportChange}
+            // Bounds
+            bounds={bounds}
+            // Interaction
+            interactiveLayerIds={interactiveLayerIds}
+            onClick={onClick}
+            onHover={props.onHover}
+            onLoad={onMapLoaded}
+            onUnmount={() => (mapRef.current = null)}
+            // Options
+            customAttribution='<a id="forest-atlas-attribution" href="http://cod.forest-atlas.org/?l=en" rel="noopener noreferrer" target="_blank">Forest Atlas</a>'
+          >
+            {(map) => (
+              <Fragment>
+                {/* LAYER MANAGER */}
+                {popup && (
+                  <Popup
+                    popup={popup.props}
+                    template={popup.template}
+                    templateProps={popup.templateProps}
+                    onClose={() => setPopup(null)}
+                  />
+                )}
+                <LayerManager map={map} layers={getObservationsLayers} />
+
+                <MapControls>
+                  <ZoomControl />
+                </MapControls>
+              </Fragment>
+            )}
+          </Map>
+
+          {/* LEGEND */}
+          <Legend
+            layerGroups={getObservationsLegend}
+            expanded={false}
+            toolbar={<></>}
+            setLayerSettings={() => { }}
+          />
+        </div>
+      )}
+    </Layout>
+  );
+};
 
 ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,

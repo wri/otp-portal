@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 import isEqual from 'react-fast-compare';
@@ -31,85 +31,73 @@ import {
   setActiveColumns,
 } from 'modules/documents-database';
 
-class DocumentsDatabasePage extends React.Component {
-  constructor(props) {
-    super(props);
+const DocumentsDatabasePage = (props) => {
+  const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
 
-    this.state = {
-      tab: this.props.router.query.subtab || 'documentation-list'
-    };
+  useEffect(() => {
+    const { database, router } = props;
 
-    this.triggerChangeTab = this.triggerChangeTab.bind(this);
-  }
-
-  componentDidMount() {
-    const { database, router } = this.props;
-
-    this.props.getDocumentsDatabaseUrl(router);
+    props.getDocumentsDatabaseUrl(router);
 
     if (isEmpty(database.filters.options)) {
-      this.props.getFilters();
+      props.getFilters();
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (!isEqual(this.props.parsedFilters.data, prevProps.parsedFilters.data)) {
-      this.props.getDocumentsDatabase({ reload: true });
-    }
+  useEffect(() => {
+    props.getDocumentsDatabase({ reload: true });
+  }, [props.parsedFilters.data]);
 
-    if (!isEqual(this.props.router.query, prevProps.router.query)) {
-      this.props.getDocumentsDatabaseUrl(this.props.router);
-    }
-  }
+  useEffect(() => {
+    props.getDocumentsDatabaseUrl(props.router);
+  }, [props.router.query]);
 
-  setActiveColumns(value) {
-    this.props.setActiveColumns(value);
-  }
+  const setActiveColumns = (value) => {
+    props.setActiveColumns(value);
+  };
 
-  triggerChangeTab(tab) {
-    this.setState({ tab });
-  }
+  const triggerChangeTab = (tabValue) => {
+    setTab(tabValue);
+  };
 
-  render() {
-    const { parsedFilters } = this.props;
+  const { parsedFilters } = props;
 
-    return (
-      <Layout
-        title="Producers’ documents database"
-        description="DocumentsDatabase description..."
-      >
-        <StaticHeader
-          title={this.props.intl.formatMessage({
-            id: 'producers_documents_database',
-          })}
-          background="/static/images/static-header/bg-observations.jpg"
-        />
-        <Filters
-          options={parsedFilters.options}
-          filters={parsedFilters.data}
-          setFilters={this.props.setFilters}
-          loading={this.props.database.filters.loading}
-          filtersRefs={FILTERS_REFS}
-        />
+  return (
+    <Layout
+      title="Producers' documents database"
+      description="DocumentsDatabase description..."
+    >
+      <StaticHeader
+        title={props.intl.formatMessage({
+          id: 'producers_documents_database',
+        })}
+        background="/static/images/static-header/bg-observations.jpg"
+      />
+      <Filters
+        options={parsedFilters.options}
+        filters={parsedFilters.data}
+        setFilters={props.setFilters}
+        loading={props.database.filters.loading}
+        filtersRefs={FILTERS_REFS}
+      />
 
-        <StaticTabs
-          options={[
-            {
-              label: this.props.intl.formatMessage({
-                id: 'documentation.tab.documentation-list',
-              }),
-              value: 'documentation-list',
-            },
-          ]}
-          defaultSelected={this.state.tab}
-          onChange={this.triggerChangeTab}
-        />
+      <StaticTabs
+        options={[
+          {
+            label: props.intl.formatMessage({
+              id: 'documentation.tab.documentation-list',
+            }),
+            value: 'documentation-list',
+          },
+        ]}
+        defaultSelected={tab}
+        onChange={triggerChangeTab}
+      />
 
-        <DatabaseTable />
-      </Layout>
-    );
-  }
-}
+      <DatabaseTable />
+    </Layout>
+  );
+};
 
 DocumentsDatabasePage.propTypes = {
   router: PropTypes.object.isRequired,

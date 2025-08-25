@@ -16,19 +16,8 @@ import StaticHeader from 'components/ui/static-header';
 import PartnerCard from 'components/ui/partner-card';
 import Html from 'components/html';
 
-class AboutPage extends React.Component {
-  static async getInitialProps({ store }) {
-    await Promise.all([
-      store.dispatch(getPartners()),
-      store.dispatch(getDonors()),
-      store.dispatch(getAbout())
-    ]);
-
-    return {};
-  }
-
-  renderDonors() {
-    const { donors } = this.props;
+const AboutPage = ({ about, partners, donors, intl }) => {
+  const renderDonors = () => {
     const prioritisedDonors = sortBy(donors.data, 'priority') || donors.data;
 
     return (
@@ -45,11 +34,9 @@ class AboutPage extends React.Component {
         ))}
       </div>
     );
-  }
+  };
 
-  renderPartners() {
-    const { partners } = this.props;
-
+  const renderPartners = () => {
     return (
       <div className="row l-row -equal-heigth">
         {partners.data.map(p => (
@@ -64,52 +51,59 @@ class AboutPage extends React.Component {
         ))}
       </div>
     );
-  }
+  };
 
-  render() {
-    const { about } = this.props;
-    const aboutPageEntries = sortBy(about.data, 'position') || about.data;
+  const aboutPageEntries = sortBy(about.data, 'position') || about.data;
 
-    return (
-      <Layout
-        title="About"
-        description="About description..."
-      >
-        <StaticHeader
-          title={this.props.intl.formatMessage({ id: 'about.title' })}
-          background="/static/images/static-header/bg-about.jpg"
-        />
+  return (
+    <Layout
+      title="About"
+      description="About description..."
+    >
+      <StaticHeader
+        title={intl.formatMessage({ id: 'about.title' })}
+        background="/static/images/static-header/bg-about.jpg"
+      />
 
-        <div className="c-section">
-          <div className="l-container">
-            {aboutPageEntries && aboutPageEntries.map((aboutEntry) => (
-              <article
-                className="c-article"
-                key={aboutEntry.id}
-              >
-                <div className="row l-row">
-                  <div className="columns small-12">
-                    <header>
-                      <h2 className="c-title">{aboutEntry.title}</h2>
-                    </header>
-                    <div className="content">
-                      <div className="description">
-                        <Html html={aboutEntry.body} className="bigger georgia" />
-                      </div>
-
-                      {aboutEntry.code === 'donors' && this.renderDonors()}
-                      {aboutEntry.code === 'partners' && this.renderPartners()}
+      <div className="c-section">
+        <div className="l-container">
+          {aboutPageEntries && aboutPageEntries.map((aboutEntry) => (
+            <article
+              className="c-article"
+              key={aboutEntry.id}
+            >
+              <div className="row l-row">
+                <div className="columns small-12">
+                  <header>
+                    <h2 className="c-title">{aboutEntry.title}</h2>
+                  </header>
+                  <div className="content">
+                    <div className="description">
+                      <Html html={aboutEntry.body} className="bigger georgia" />
                     </div>
+
+                    {aboutEntry.code === 'donors' && renderDonors()}
+                    {aboutEntry.code === 'partners' && renderPartners()}
                   </div>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
         </div>
-      </Layout>
-    );
-  }
-}
+      </div>
+    </Layout>
+  );
+};
+
+AboutPage.getInitialProps = async ({ store }) => {
+  await Promise.all([
+    store.dispatch(getPartners()),
+    store.dispatch(getDonors()),
+    store.dispatch(getAbout())
+  ]);
+
+  return {};
+};
 
 AboutPage.propTypes = {
   about: PropTypes.shape({}).isRequired,
