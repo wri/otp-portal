@@ -10,7 +10,7 @@ import API from 'services/api';
  * @param {string} stateKey - Optional nested state key (e.g., 'filters' for state.filters.data)
  * @param {string} dataKey - Optional data key (e.g., 'data' for state.data)
  */
-export function addApiCases(action, stateKey = null, dataKey = 'data', ) {
+export function addApiCases(action, stateKey = null, dataKey = 'data') {
   return (builder) => {
     const setState = (state, key, value) => {
       if (stateKey) {
@@ -22,22 +22,38 @@ export function addApiCases(action, stateKey = null, dataKey = 'data', ) {
         state[key] = value;
       }
     }
+    const getState = (state, key) => {
+      if (stateKey) return state[stateKey][key];
+      return state[key]
+    }
 
     builder
-      .addCase(action.pending, (state) => {
+      .addCase(action.pending, (state, action) => {
         setState(state, 'loading', true);
         setState(state, 'error', false);
+        setState(state, 'requestId', action.meta.requestId)
       })
-      .addCase(action.fulfilled, (state, actionPayload) => {
-        setState(state, dataKey, actionPayload.payload);
+      .addCase(action.fulfilled, (state, action) => {
+        if (notLatestAction(getState(state, 'requestId'), action)) return;
+        setState(state, dataKey, action.payload.data);
         setState(state, 'loading', false);
         setState(state, 'error', false);
       })
-      .addCase(action.rejected, (state) => {
+      .addCase(action.rejected, (state, action) => {
+        if (notLatestAction(getState(state, 'requestId'), action)) return;
         setState(state, 'error', true);
         setState(state, 'loading', false);
       });
   };
+}
+
+export function notLatestAction(stateRequestId, action) {
+  if (stateRequestId !== action.meta.requestId) {
+    console.warn('Not latest action: skipping', { type: action.type, meta: action.meta });
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -64,7 +80,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
     useUserToken = false,
     requestOptions = {},
     params = {},
-    transformResponse = (data, _arg) => data
+    transformResponse = (data, _response, _arg) => ({ data })
   } = options;
 
   return createAsyncThunk(
@@ -72,8 +88,8 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
     async (arg, { getState, rejectWithValue }) => {
       try {
         const state = getState();
-        const finalEndpoint = typeof endpoint === 'function' ? endpoint(arg) : endpoint;
-        const finalParams = typeof params === 'function' ? params(arg) : params;
+        const finalEndpoint = typeof endpoint === 'function' ? endpoint(arg, state) : endpoint;
+        const finalParams = typeof params === 'function' ? params(arg, state) : params;
 
         const apiParams = {
           ...(useLanguage && { locale: state.language }),
@@ -85,13 +101,13 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
           apiOptions.token = state.user.token;
         }
 
-        const { data } = await API.get(finalEndpoint, apiParams, apiOptions);
-        return transformResponse(data, arg);
+        const { data, response } = await API.get(finalEndpoint, apiParams, apiOptions);
+        return transformResponse(data, response, arg);
       } catch (err) {
         console.error(err);
         return rejectWithValue(err.message);
       }
-    }
+    },
   );
 }
 

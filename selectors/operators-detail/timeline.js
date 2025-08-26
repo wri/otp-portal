@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 const operator = state => state.operatorsDetail && state.operatorsDetail.data;
-const timeline = state => state.operatorsDetail && state.operatorsDetail.timeline;
+const timeline = state => state.operatorsDetail && state.operatorsDetail.timeline.data;
 const user = state => state.user && state.user;
 
 const getParsedTimeline = createSelector(

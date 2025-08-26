@@ -64,12 +64,24 @@ export function sumBy(arr, funcOrKey) {
 }
 
 export function groupBy(arr, criteria) {
-	return arr.reduce((obj, item) => {
+  return arr.reduce((obj, item) => {
     const key = typeof criteria === 'function' ? criteria(item) : item[criteria];
-		if (!obj.hasOwnProperty(key)) {
-			obj[key] = [];
-		}
-		obj[key].push(item);
-		return obj;
-	}, {});
+    if (!obj.hasOwnProperty(key)) {
+      obj[key] = [];
+    }
+    obj[key].push(item);
+    return obj;
+  }, {});
+}
+
+export function getApiFiltersParams(filters) {
+  return {
+    ...Object.keys(filters).reduce((acc, key) => {
+      if (isEmpty(filters[key])) return acc;
+      return {
+        ...acc,
+        [`filter[${key}]`]: filters[key].join(',')
+      }
+    }, {})
+  }
 }

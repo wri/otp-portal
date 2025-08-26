@@ -1,9 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, isFulfilled } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 
-import API from 'services/api';
 import { parseDocument } from 'utils/documents';
-import { addApiCases, createApiThunk } from 'utils/redux-helpers';
+import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState, notLatestAction } from 'utils/redux-helpers';
 
 export const getOperatorBySlug = createApiThunk(
   'operatorsDetail/getOperatorBySlug',
@@ -17,11 +16,11 @@ export const getOperatorBySlug = createApiThunk(
       ...(loadFMUS ? {} : { 'fields[fmus]': 'name,id' }),
       'filter[slug]': slug
     }),
-    transformResponse: (data, { slug, loadFMUS = false }) => {
+    transformResponse: (data, _response, { slug, loadFMUS = false }) => {
       const operator = data[0];
       if (!operator) throw new Error('Operator not found');
       operator.loadedFMUS = loadFMUS;
-      return operator;
+      return { data: operator };
     }
   }
 );
@@ -37,14 +36,13 @@ export const getOperator = createApiThunk(
   }
 );
 
-export const getOperatorDocumentation = createAsyncThunk(
+export const getOperatorDocumentation = createApiThunk(
   'operatorsDetail/getOperatorDocumentation',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { user, language, operatorsDetail } = getState();
-      const date = operatorsDetail.date;
-      const metadata = { timestamp: new Date().getTime(), operatorId: id };
-
+  'operator-document-histories',
+  {
+    useUserToken: true,
+    params: (operatorId, { operatorsDetail }) => {
+      const { date } = operatorsDetail;
       const includeFields = [
         'required-operator-document',
         'required-operator-document.required-operator-document-group',
@@ -52,50 +50,42 @@ export const getOperatorDocumentation = createAsyncThunk(
         'fmu',
       ];
 
-      const { data } = await API.get('operator-document-histories', {
-        locale: language,
+      return {
         include: includeFields.join(','),
         'fields[fmus]': 'name',
-        'filter[operator-id]': id,
+        'filter[operator-id]': operatorId,
         'filter[date]': date,
-      }, {
-        token: user.token
-      });
-
-      return { data, metadata };
-    } catch (err) {
-      return rejectWithValue(err.message);
+      }
+    },
+    transformResponse: (data, _response, operatorId) => {
+      return { data, operatorId };
     }
   }
-);
+)
 
-export const getOperatorObservations = createAsyncThunk(
+export const getOperatorObservations = createApiThunk(
   'operatorsDetail/getOperatorObservations',
-  async (operatorId, { getState, rejectWithValue }) => {
-    try {
-      const { language } = getState();
+  'observations',
+  {
+    params: (operatorId) => {
       const includes = [
         'country', 'fmu', 'observers', 'severity', 'subcategory',
         'subcategory.category', 'observation-report', 'observation-documents',
         'relevant-operators', 'operator',
       ];
 
-      const metadata = { timestamp: new Date().getTime(), operatorId };
-
-      const { data } = await API.get('observations', {
-        locale: language,
+      return {
         include: includes.join(','),
         'fields[fmus]': 'name',
         'filter[operator]': operatorId,
         'filter[hidden]': 'all'
-      });
-
-      return { data, metadata };
-    } catch (err) {
-      return rejectWithValue(err.message);
+      }
+    },
+    transformResponse: (data, _response, operatorId) => {
+      return { data, operatorId };
     }
   }
-);
+)
 
 export const getOperatorPublicationAuthorization = createApiThunk(
   'operatorsDetail/getOperatorPublicationAuthorization',
@@ -112,7 +102,7 @@ export const getOperatorPublicationAuthorization = createApiThunk(
     }),
     transformResponse: (data) => {
       const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
-      return parseDocument(doc);
+      return { data: parseDocument(doc) };
     }
   }
 );
@@ -128,34 +118,14 @@ export const getOperatorTimeline = createApiThunk(
   }
 );
 
-function isLatestAction(state, action) {
-  return action.payload?.metadata?.timestamp >= state.timestamp;
-}
-
 const operatorsDetailSlice = createSlice({
   name: 'operatorsDetail',
   initialState: {
-    data: {},
-    loading: false,
-    error: false,
-    observations: {
-      operatorId: null,
-      data: [],
-      loading: false,
-      error: false,
-      timestamp: null
-    },
-    documentation: {
-      operatorId: null,
-      data: [],
-      loading: false,
-      error: false,
-      timestamp: null
-    },
+    ...createApiInitialState({}),
+    ...createNestedApiInitialState(['observations', 'documentation', 'timeline']),
     publicationAuthorization: null,
     date: dayjs().format('YYYY-MM-DD'),
-    fmu: null,
-    timeline: []
+    fmu: null
   },
   reducers: {
     setOperatorDocumentationDate: (state, action) => {
@@ -168,63 +138,25 @@ const operatorsDetailSlice = createSlice({
   extraReducers: (builder) => {
     addApiCases(getOperator)(builder);
     addApiCases(getOperatorBySlug)(builder);
+    addApiCases(getOperatorTimeline, 'timeline')(builder);
+    addApiCases(getOperatorDocumentation, 'documentation')(builder)
+    addApiCases(getOperatorObservations, 'observations')(builder)
+
     builder
-      // getOperatorDocumentation
-      .addCase(getOperatorDocumentation.pending, (state, action) => {
-        state.documentation.loading = true;
-        state.documentation.error = false;
-        state.documentation.timestamp = action.payload?.metadata?.timestamp || Date.now();
-      })
-      .addCase(getOperatorDocumentation.fulfilled, (state, action) => {
-        if (!isLatestAction(state.documentation, action)) return;
-        state.documentation.data = action.payload.data;
-        state.documentation.operatorId = action.payload.metadata.operatorId;
-        state.documentation.loading = false;
-        state.documentation.error = false;
-      })
-      .addCase(getOperatorDocumentation.rejected, (state, action) => {
-        if (!isLatestAction(state.documentation, action)) return;
-        state.documentation.error = true;
-        state.documentation.loading = false;
-      })
-      // getOperatorObservations
-      .addCase(getOperatorObservations.pending, (state, action) => {
-        state.observations.loading = true;
-        state.observations.error = false;
-        state.observations.timestamp = action.payload?.metadata?.timestamp || Date.now();
-      })
-      .addCase(getOperatorObservations.fulfilled, (state, action) => {
-        if (!isLatestAction(state.observations, action)) return;
-        state.observations.data = action.payload.data;
-        state.observations.operatorId = action.payload.metadata.operatorId;
-        state.observations.loading = false;
-        state.observations.error = false;
-      })
-      .addCase(getOperatorObservations.rejected, (state, action) => {
-        if (!isLatestAction(state.observations, action)) return;
-        state.observations.error = true;
-        state.observations.loading = false;
-      })
       // getOperatorPublicationAuthorization
       .addCase(getOperatorPublicationAuthorization.fulfilled, (state, action) => {
-        state.publicationAuthorization = action.payload;
+        state.publicationAuthorization = action.payload.data;
       })
       .addCase(getOperatorPublicationAuthorization.rejected, (state) => {
         state.publicationAuthorization = null;
       })
-      // getOperatorTimeline
-      .addCase(getOperatorTimeline.pending, (state) => {
-        state.loading = true;
-        state.error = false;
+      .addMatcher(isFulfilled(getOperatorDocumentation), (state, action) => {
+        if (notLatestAction(state.documentation.requestId, action)) return;
+        state.documentation.operatorId = action.payload.operatorId;
       })
-      .addCase(getOperatorTimeline.fulfilled, (state, action) => {
-        state.timeline = action.payload;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getOperatorTimeline.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
+      .addMatcher(isFulfilled(getOperatorObservations), (state, action) => {
+        if (notLatestAction(state.observations.requestId, action)) return;
+        state.observations.operatorId = action.payload.operatorId;
       })
   },
 });

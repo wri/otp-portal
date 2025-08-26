@@ -79,7 +79,7 @@ export const getOperatorsRanking = createApiThunk('operatorsRanking/getOperators
       }));
     }).flat();
 
-    return rankedData;
+    return { data: rankedData };
   }
 });
 

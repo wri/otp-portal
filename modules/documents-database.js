@@ -1,20 +1,16 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { createSlice, isPending, isFulfilled } from '@reduxjs/toolkit';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
-import { addApiCases, createApiThunk } from 'utils/redux-helpers';
+import { addApiCases, createApiThunk, notLatestAction } from 'utils/redux-helpers';
 
-export const getDocumentsDatabase = createAsyncThunk(
+export const getDocumentsDatabase = createApiThunk(
   'database/getDocumentsDatabase',
-  async (options = { reload: false }, { getState, dispatch, rejectWithValue }) => {
-    try {
-      const { language, database } = getState();
-      const filters = database.filters.data;
-      const { page, pageSize } = database;
-
-      const includes = [
+  'operator-documents',
+  {
+    params: (_arg, { database }) => {
+       const includes = [
         'operator',
         'operator.country',
         'fmu',
@@ -22,46 +18,34 @@ export const getDocumentsDatabase = createAsyncThunk(
         'required-operator-document',
         'required-operator-document.required-operator-document-group',
       ];
-      const metadata = { timestamp: new Date().getTime() };
+      const filters = database.filters.data;
+      const { page, pageSize } = database;
 
-      const { data, response } = await API.get('operator-documents', {
-        locale: language,
+      return {
         'page[number]': page + 1,
         'page[size]': pageSize,
         include: includes.join(','),
         'fields[fmus]': 'name,forest-type',
         'fields[operators]': 'name,country',
         'fields[countries]': 'name,iso',
-        ...Object.keys(filters).reduce((acc, key) => {
-          if (isEmpty(filters[key])) return acc;
-          return {
-            ...acc,
-            [`filter[${key}]`]: filters[key].join(',')
-          }
-        }, {})
-      });
-
-      return { data, pageCount: response.meta['page-count'], metadata };
-    } catch (err) {
-      return rejectWithValue(err.message);
+        ...getApiFiltersParams(filters)
+      }
+    },
+    transformResponse: (data, response) => {
+      return { data, pageCount: response.meta['page-count'] }
     }
   }
-);
+)
 
 export const getFilters = createApiThunk('database/getFilters', 'operator_document_filters_tree', {
   requestOptions: { deserialize: false },
-  transformResponse: (data) => parseObjectSelectOptions(data)
+  transformResponse: (data) => ({ data: parseObjectSelectOptions(data) })
 });
-
-function isLatestAction(state, action) {
-  return action.payload?.metadata?.timestamp >= state.timestamp;
-}
 
 const databaseSlice = createSlice({
   name: 'database',
   initialState: {
     data: [],
-    timestamp: null,
     page: 0,
     pageSize: 30,
     pageCount: -1, // react-table needs -1 by default
@@ -88,36 +72,24 @@ const databaseSlice = createSlice({
   },
   extraReducers: (builder) => {
     addApiCases(getFilters, 'filters', 'options')(builder);
+    addApiCases(getDocumentsDatabase)(builder);
 
     builder
-      .addCase(getDocumentsDatabase.pending, (state, action) => {
+      .addMatcher(isPending(getDocumentsDatabase), (state, action) => {
         if (action.meta.arg?.reload) {
           state.data = [];
           state.page = 0;
           state.pageCount = -1;
         }
-
-        state.loading = true;
-        state.error = false;
-        state.timestamp = action.payload?.metadata?.timestamp || Date.now();
       })
-      .addCase(getDocumentsDatabase.fulfilled, (state, action) => {
-        if (!isLatestAction(state, action)) return;
-        state.data = action.payload.data;
+      .addMatcher(isFulfilled(getDocumentsDatabase), (state, action) => {
+        if (notLatestAction(state.requestId, action)) return;
         state.pageCount = action.payload.pageCount;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getDocumentsDatabase.rejected, (state, action) => {
-        if (!isLatestAction(state, action)) return;
-        state.error = true;
-        state.loading = false;
       })
   },
 });
 
 export const { setFiltersDocuments, setActiveColumnsDocuments, setPage } = databaseSlice.actions;
-
 
 export function setActiveColumns(activeColumns) {
   return (dispatch) => {

@@ -1,8 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
@@ -11,15 +10,12 @@ const FRONTEND_FILTERS = {
   hidden: [{ id: 'all', name: 'all' }]
 }
 
-export const getObservations = createAsyncThunk(
+export const getObservations = createApiThunk(
   'observations/getObservations',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language, observations } = getState();
+  'observations',
+  {
+    params: (_arg, { observations }) => {
       const filters = observations.filters.data;
-      const metadata = {
-        timestamp: new Date()
-      };
       const includes = [
         'country',
         'subcategory',
@@ -33,8 +29,7 @@ export const getObservations = createAsyncThunk(
         'relevant-operators'
       ];
 
-      const params = {
-        locale: language,
+      return {
         'page[size]': OBS_MAX_SIZE,
         include: includes.join(','),
         'fields[fmus]': 'name',
@@ -46,41 +41,25 @@ export const getObservations = createAsyncThunk(
         'fields[observers]': 'name,observer-type,public-info,address,information-email,information-name,information-phone,data-email,data-name,data-phone',
         'fields[observation-reports]': 'attachment,title,publication-date',
         'fields[observation-documents]': 'attachment,name',
-        ...Object.keys(filters).reduce((acc, key) => {
-          if (isEmpty(filters[key])) return acc;
-          return {
-            ...acc,
-            [`filter[${key}]`]: filters[key].join(',')
-          }
-        }, {})
+        ...getApiFiltersParams(filters)
       };
-
-      const { data } = await API.get('observations', params);
-      return { data, metadata };
-    } catch (err) {
-      return rejectWithValue(err.message);
     }
   }
-);
+)
 
 export const getFilters = createApiThunk(
   'observations/getFilters',
   'observation_filters_tree',
   {
     requestOptions: { deserialize: false },
-    transformResponse: (data) => parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS })
+    transformResponse: (data) => ({ data: parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS }) })
   }
 );
-
-function isLatestAction(state, action) {
-  return action.payload?.metadata?.timestamp >= state.timestamp;
-}
 
 const observationsSlice = createSlice({
   name: 'observations',
   initialState: {
     data: [],
-    timestamp: null,
     loading: false,
     error: false,
     map: {
@@ -113,24 +92,7 @@ const observationsSlice = createSlice({
   },
   extraReducers: (builder) => {
     addApiCases(getFilters, 'filters', 'options')(builder);
-
-    builder
-      .addCase(getObservations.pending, (state, action) => {
-        state.loading = true;
-        state.error = false;
-        state.timestamp = action.payload?.metadata?.timestamp || Date.now();
-      })
-      .addCase(getObservations.fulfilled, (state, action) => {
-        if (!isLatestAction(state, action)) return;
-        state.data = action.payload.data;
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(getObservations.rejected, (state, action) => {
-        if (!isLatestAction(state, action)) return;
-        state.error = true;
-        state.loading = false;
-      })
+    addApiCases(getObservations)(builder);
   },
 });
 

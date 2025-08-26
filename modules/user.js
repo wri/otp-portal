@@ -1,13 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { addApiCases, createNestedApiInitialState } from 'utils/redux-helpers';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 import { omitBy, isEmpty } from 'utils/general';
 import API, { NEXTAPIClient } from 'services/api'
 import { logEvent } from 'utils/analytics';
 
-export const getUserOperator = createAsyncThunk(
+export const getUserOperator = createApiThunk(
   'user/getUserOperator',
-  async (id, { rejectWithValue }) => {
-    try {
+  (id) => `operators/${id}`,
+  {
+    params: () => {
       const includeFields = ['country', 'fmus'];
       const fields = {
         fmus: [
@@ -23,30 +24,22 @@ export const getUserOperator = createAsyncThunk(
         ],
       };
 
-      const { data } = await API.get(`operators/${id}`, {
+      return {
         include: includeFields.join(','),
         'fields[fmus]': fields.fmus.join(',')
-      });
-
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
+      }
     }
   }
-);
+)
 
-export const getUserProfile = createAsyncThunk(
+export const getUserProfile = createApiThunk(
   'user/getUserProfile',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { user } = getState();
-      const { data } = await API.get(`users/${user.user_id}`, null, { token: user.token });
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+  (_arg, { user }) => `users/${user.user_id}`,
+  {
+    useLanguage: false,
+    useUserToken: true
   }
-);
+)
 
 const userSlice = createSlice({
   name: 'user',
@@ -79,7 +72,7 @@ export function logout() {
   return () => NEXTAPIClient.delete('logout').then(() => {
     window.location.reload();
   })
- }
+}
 
 export function resetPassword(attributes) {
   return API.post('users/password', {
