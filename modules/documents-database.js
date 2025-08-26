@@ -28,17 +28,7 @@ const initialState = {
   loading: false,
   error: false,
   filters: {
-    data: {
-      forest_types: [],
-      type: [],
-      status: [],
-      country_ids: [],
-      operator_id: [],
-      fmu_id: [],
-      required_operator_document_id: [],
-      source: [],
-      legal_categories: []
-    },
+    data: {},
     options: {},
     loading: false,
     error: false,

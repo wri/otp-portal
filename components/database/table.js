@@ -19,8 +19,7 @@ function DatabaseTable({
   database,
   parsedTableDocuments,
   setActiveColumns: _setActiveColumns,
-  setPage: _setPage,
-  getDocumentsDatabase: _getDocumentsDatabase,
+  setPage: _setPage
 }) {
   const intl = useIntl();
   const inputs = [
@@ -268,7 +267,6 @@ function DatabaseTable({
             loading: database.loading,
             onFetchData: ((state) => {
               _setPage(state.page);
-              _getDocumentsDatabase();
             }),
             previousText: '<',
             nextText: '>',
@@ -287,7 +285,6 @@ function DatabaseTable({
 DatabaseTable.propTypes = {
   database: PropTypes.object,
   parsedTableDocuments: PropTypes.array,
-  getDocumentsDatabase: PropTypes.func.isRequired,
   setActiveColumns: PropTypes.func,
   setPage: PropTypes.func
 };
@@ -297,5 +294,5 @@ export default connect(
     database: state.database,
     parsedTableDocuments: getParsedTableDocuments(state),
   }),
-  { setActiveColumns, setPage, getDocumentsDatabase }
+  { setActiveColumns, setPage }
 )(DatabaseTable);
