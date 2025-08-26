@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
-import isEqual from 'react-fast-compare';
 
 // Redux
 import { connect } from 'react-redux';
@@ -19,6 +18,9 @@ import Filters from 'components/ui/database-filters';
 import DatabaseTable from 'components/database/table';
 import StaticTabs from 'components/ui/static-tabs';
 
+import useDeepCompareEffect from 'hooks/use-deep-compare-effect';
+import usePrevious from 'hooks/use-previous';
+
 // Selectors
 import { getParsedFilters } from 'selectors/database/filters';
 
@@ -28,34 +30,29 @@ import {
   getFilters,
   setFilters,
   getDocumentsDatabaseUrl,
-  setActiveColumns,
 } from 'modules/documents-database';
 
 const DocumentsDatabasePage = (props) => {
   const intl = useIntl();
   const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
+  const { page } = props.database;
+  const previousPage = usePrevious(page);
 
   useEffect(() => {
-    const { database, router } = props;
-
-    props.getDocumentsDatabaseUrl(router);
+    const { database } = props;
 
     if (isEmpty(database.filters.options)) {
       props.getFilters();
     }
   }, []);
 
-  useEffect(() => {
-    props.getDocumentsDatabase({ reload: true });
-  }, [props.parsedFilters.data]);
+  useDeepCompareEffect(() => {
+    props.getDocumentsDatabase({ reload: page === previousPage }); // reloading if changing filters, page is the same
+  }, [props.parsedFilters.data, page]);
 
   useEffect(() => {
     props.getDocumentsDatabaseUrl(props.router);
-  }, [props.router.query]);
-
-  const setActiveColumns = (value) => {
-    props.setActiveColumns(value);
-  };
+  }, [props.router.asPath]);
 
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
@@ -108,9 +105,13 @@ DocumentsDatabasePage.propTypes = {
   getFilters: PropTypes.func.isRequired,
   getDocumentsDatabase: PropTypes.func.isRequired,
   getDocumentsDatabaseUrl: PropTypes.func.isRequired,
-  setActiveColumns: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
 };
+
+DocumentsDatabasePage.getInitialProps = async ({ store, query }) => {
+  store.dispatch(getDocumentsDatabaseUrl({ query }));
+  return {};
+}
 
 export default withRouter(
   connect(
@@ -122,8 +123,7 @@ export default withRouter(
       getDocumentsDatabase,
       getFilters,
       getDocumentsDatabaseUrl,
-      setFilters,
-      setActiveColumns,
+      setFilters
     }
   )(DocumentsDatabasePage)
 );

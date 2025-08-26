@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { isEmpty } from 'utils/general';
-import isEqual from 'react-fast-compare';
 
 import { Popup } from 'react-map-gl';
 import Icon from 'components/ui/icon';

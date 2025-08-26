@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'react-fast-compare';
 import orderBy from 'lodash/orderBy';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
@@ -10,6 +9,7 @@ import { useIntl } from 'react-intl';
 import getBBox from '@turf/bbox';
 
 import modal from 'services/modal';
+import useDeepCompareEffect from 'hooks/use-deep-compare-effect';
 
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
@@ -63,14 +63,10 @@ const ObservationsPage = (props) => {
   const makeJumpToStaticHeaderRef = useRef(false);
 
   useEffect(() => {
-    const { router } = props;
-
     props.getFilters();
-    props.getObservationsUrl(router);
-    props.getObservations();
   }, []);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     props.getObservations();
     props.setObservationsMapCluster({});
     setPopup(null);
@@ -78,9 +74,9 @@ const ObservationsPage = (props) => {
 
   useEffect(() => {
     props.getObservationsUrl(props.router);
-  }, [props.router.query]);
+  }, [props.router.asPath]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const obsLayer = props.getObservationsLayers.find((l) => l.id === 'observations');
     if (obsLayer) {
       const bbox = getBBox(obsLayer.source.data);
@@ -444,6 +440,11 @@ ObservationsPage.propTypes = {
   setObservationsMapLocation: PropTypes.func.isRequired,
   setObservationsMapCluster: PropTypes.func.isRequired,
 };
+
+ObservationsPage.getInitialProps = async ({ store, query }) => {
+  store.dispatch(getObservationsUrl({ query }));
+  return {};
+}
 
 export default withRouter(
   connect(
