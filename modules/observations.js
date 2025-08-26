@@ -4,6 +4,7 @@ import API from 'services/api';
 // Utils
 import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
 import { setUrlParam } from 'utils/url';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
 const OBS_MAX_SIZE = 3000;
 const FRONTEND_FILTERS = {
@@ -62,17 +63,12 @@ export const getObservations = createAsyncThunk(
   }
 );
 
-export const getFilters = createAsyncThunk(
+export const getFilters = createApiThunk(
   'observations/getFilters',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { language } = getState();
-      const { data: filters } = await API.get('observation_filters_tree', { locale: language }, { deserialize: false });
-      const allFilters = { ...filters, ...FRONTEND_FILTERS };
-      return parseObjectSelectOptions(allFilters);
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+  'observation_filters_tree',
+  {
+    requestOptions: { deserialize: false },
+    transformResponse: (data) => parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS })
   }
 );
 
@@ -116,6 +112,8 @@ const observationsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    addApiCases(getFilters, 'filters', 'options')(builder);
+
     builder
       .addCase(getObservations.pending, (state, action) => {
         state.loading = true;
@@ -133,19 +131,6 @@ const observationsSlice = createSlice({
         state.error = true;
         state.loading = false;
       })
-      .addCase(getFilters.pending, (state) => {
-        state.filters.loading = true;
-        state.filters.error = false;
-      })
-      .addCase(getFilters.fulfilled, (state, action) => {
-        state.filters.options = action.payload;
-        state.filters.loading = false;
-        state.filters.error = false;
-      })
-      .addCase(getFilters.rejected, (state) => {
-        state.filters.error = true;
-        state.filters.loading = false;
-      });
   },
 });
 

@@ -8,8 +8,9 @@ import API from 'services/api';
  * Creates standard API extra reducers for fetch operations
  * @param {Object} action - The async thunk action
  * @param {string} stateKey - Optional nested state key (e.g., 'filters' for state.filters.data)
+ * @param {string} dataKey - Optional data key (e.g., 'data' for state.data)
  */
-export function addApiCases(action, stateKey = null) {
+export function addApiCases(action, stateKey = null, dataKey = 'data', ) {
   return (builder) => {
     const setState = (state, key, value) => {
       if (stateKey) {
@@ -28,7 +29,7 @@ export function addApiCases(action, stateKey = null) {
         setState(state, 'error', false);
       })
       .addCase(action.fulfilled, (state, actionPayload) => {
-        setState(state, 'data', actionPayload.payload);
+        setState(state, dataKey, actionPayload.payload);
         setState(state, 'loading', false);
         setState(state, 'error', false);
       })
@@ -61,6 +62,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
   const {
     useLanguage = true,
     useUserToken = false,
+    requestOptions = {},
     params = {},
     transformResponse = (data, _arg) => data
   } = options;
@@ -78,7 +80,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
           ...finalParams
         };
 
-        const apiOptions = {};
+        const apiOptions = { ...requestOptions };
         if (useUserToken) {
           apiOptions.token = state.user.token;
         }
@@ -98,7 +100,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
  * @param {Array} keys - Array of state keys (e.g., ['howtos', 'tools', 'faqs'])
  * @param {*} initialData - Initial data value (default: [])
  */
-export function createNestedApiInitialState(keys, initialData = []) {
+export function createNestedApiInitialState(keys, initialData = [], dataKey = 'data') {
   const state = {};
   keys.forEach(key => {
     state[key] = createApiInitialState(initialData)
@@ -106,9 +108,9 @@ export function createNestedApiInitialState(keys, initialData = []) {
   return state;
 }
 
-export function createApiInitialState(initialData = []) {
+export function createApiInitialState(initialData = [], dataKey = 'data') {
   return {
-    data: initialData,
+    [dataKey]: initialData,
     loading: false,
     error: false
   }
