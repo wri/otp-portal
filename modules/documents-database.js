@@ -1,9 +1,9 @@
-import { createSlice, isPending, isFulfilled } from '@reduxjs/toolkit';
+import { createSlice, isPending } from '@reduxjs/toolkit';
 
 // Utils
 import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
-import { addApiCases, createApiThunk, notLatestAction } from 'utils/redux-helpers';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
 export const getDocumentsDatabase = createApiThunk(
   'database/getDocumentsDatabase',
@@ -39,7 +39,7 @@ export const getDocumentsDatabase = createApiThunk(
 
 export const getFilters = createApiThunk('database/getFilters', 'operator_document_filters_tree', {
   requestOptions: { deserialize: false },
-  transformResponse: (data) => ({ data: parseObjectSelectOptions(data) })
+  transformResponse: (data) => ({ options: parseObjectSelectOptions(data) })
 });
 
 const databaseSlice = createSlice({
@@ -71,7 +71,7 @@ const databaseSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    addApiCases(getFilters, 'filters', 'options')(builder);
+    addApiCases(getFilters, 'filters')(builder);
     addApiCases(getDocumentsDatabase)(builder);
 
     builder
@@ -81,10 +81,6 @@ const databaseSlice = createSlice({
           state.page = 0;
           state.pageCount = -1;
         }
-      })
-      .addMatcher(isFulfilled(getDocumentsDatabase), (state, action) => {
-        if (notLatestAction(state.requestId, action)) return;
-        state.pageCount = action.payload.pageCount;
       })
   },
 });

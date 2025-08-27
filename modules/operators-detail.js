@@ -1,8 +1,8 @@
-import { createSlice, isFulfilled } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 
 import { parseDocument } from 'utils/documents';
-import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState, notLatestAction } from 'utils/redux-helpers';
+import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 
 export const getOperatorBySlug = createApiThunk(
   'operatorsDetail/getOperatorBySlug',
@@ -149,14 +149,6 @@ const operatorsDetailSlice = createSlice({
       })
       .addCase(getOperatorPublicationAuthorization.rejected, (state) => {
         state.publicationAuthorization = null;
-      })
-      .addMatcher(isFulfilled(getOperatorDocumentation), (state, action) => {
-        if (notLatestAction(state.documentation.requestId, action)) return;
-        state.documentation.operatorId = action.payload.operatorId;
-      })
-      .addMatcher(isFulfilled(getOperatorObservations), (state, action) => {
-        if (notLatestAction(state.observations.requestId, action)) return;
-        state.observations.operatorId = action.payload.operatorId;
       })
   },
 });

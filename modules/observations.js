@@ -52,7 +52,7 @@ export const getFilters = createApiThunk(
   'observation_filters_tree',
   {
     requestOptions: { deserialize: false },
-    transformResponse: (data) => ({ data: parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS }) })
+    transformResponse: (data) => ({ options: parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS }) })
   }
 );
 
@@ -91,7 +91,7 @@ const observationsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    addApiCases(getFilters, 'filters', 'options')(builder);
+    addApiCases(getFilters, 'filters')(builder);
     addApiCases(getObservations)(builder);
   },
 });

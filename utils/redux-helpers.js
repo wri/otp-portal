@@ -8,9 +8,8 @@ import API from 'services/api';
  * Creates standard API extra reducers for fetch operations
  * @param {Object} action - The async thunk action
  * @param {string} stateKey - Optional nested state key (e.g., 'filters' for state.filters.data)
- * @param {string} dataKey - Optional data key (e.g., 'data' for state.data)
  */
-export function addApiCases(action, stateKey = null, dataKey = 'data') {
+export function addApiCases(action, stateKey = null) {
   return (builder) => {
     const setState = (state, key, value) => {
       if (stateKey) {
@@ -35,7 +34,7 @@ export function addApiCases(action, stateKey = null, dataKey = 'data') {
       })
       .addCase(action.fulfilled, (state, action) => {
         if (notLatestAction(getState(state, 'requestId'), action)) return;
-        setState(state, dataKey, action.payload.data);
+        Object.assign(stateKey ? state[stateKey] : state, action.payload) // assign whole payload
         setState(state, 'loading', false);
         setState(state, 'error', false);
       })
