@@ -48,7 +48,9 @@ export function addApiCases(action, stateKey = null) {
 
 export function notLatestAction(stateRequestId, action) {
   if (stateRequestId !== action.meta.requestId) {
-    console.warn('Not latest action: skipping', { type: action.type, meta: action.meta });
+    if (process.env.ENV !== 'production') {
+      console.warn('Not latest action: skipping', { type: action.type, meta: action.meta });
+    }
     return true;
   }
 
