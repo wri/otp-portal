@@ -120,8 +120,6 @@ export function setFilters(filter) {
     Object.keys(filter).forEach((key) => {
       newFilters[key] = filter[key];
     });
-
-    dispatch(setFiltersObservations(newFilters));
     setUrlFilters(newFilters);
   };
 }
