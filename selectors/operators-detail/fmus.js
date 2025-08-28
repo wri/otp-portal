@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import sortBy from 'lodash/sortBy';
 import slugify from 'slugify';
 
-import { getInteractiveLayersIds, getParams, getPopupSelector, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
+import { getInteractiveLayersIds, getParams, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
 
 import { LAYERS } from 'constants/layers';
 
@@ -16,17 +16,14 @@ const layersActive = state => state.operatorsDetailFmus.layersActive;
 const layers = () => LAYERS;
 const layersSettings = state => state.operatorsDetailFmus.layersSettings;
 
-const interactions = state => state.operatorsDetailFmus.interactions;
-const latlng = state => state.operatorsDetailFmus.latlng;
-
 const fmu = state => state.operatorsDetailFmus.fmu;
 const fmuBounds = state => state.operatorsDetailFmus.fmuBounds;
 const analysis = state => state.operatorsDetailFmus.analysis;
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 export const getActiveLayers = createSelector(
-  layersActive, layers, layersSettings, interactions, fmu, operatorsDetail,
-  (_layersActive, _layers, _layersSettings, _interactions, _fmu, _operatorsDetail) => {
+  layersActive, layers, layersSettings, fmu, operatorsDetail,
+  (_layersActive, _layers, _layersSettings, _fmu, _operatorsDetail) => {
     if (!_fmu) return [];
 
     const { id: operator_id, fmus } = _operatorsDetail;
@@ -67,7 +64,6 @@ export const getActiveLayers = createSelector(
 );
 
 export const getActiveInteractiveLayersIds = createSelector([getActiveLayers], (layers) => layers.map(l => l.interactiveLayersIds).flat().filter(x => !!x));
-export const getActiveInteractiveLayers = createSelector([layers, interactions], getActiveInteractiveLayersSelector);
 
 export const getLegendLayers = createSelector(
   [layers, layersSettings, layersActive, analysis, fmu, intl], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl) => {
@@ -85,8 +81,6 @@ export const getLegendLayers = createSelector(
     })
   }
 );
-
-export const getPopup = createSelector([latlng], getPopupSelector);
 
 export const getFMUs = createSelector(
   operatorsDetail, loadedFMUS,

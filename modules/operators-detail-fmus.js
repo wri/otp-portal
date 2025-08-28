@@ -94,8 +94,6 @@ const operatorsDetailFmusSlice = createSlice({
       longitude: 20,
       scrollZoom: false
     },
-    latlng: {},
-    interactions: {},
     layersActive: [
       'gain',
       'loss',
@@ -120,26 +118,6 @@ const operatorsDetailFmusSlice = createSlice({
     },
     setOperatorsDetailFmuBounds: (state, action) => {
       state.fmuBounds = action.payload;
-    },
-    setOperatorsDetailMapInteractions: (state, action) => {
-      const { features = [], lngLat = {} } = action.payload;
-      
-      // could be more features for the same layer we reverse array
-      // as the last one overrides the previous we will get the first on
-      const interactions = features.slice().reverse().reduce(
-        (obj, next) => ({
-          ...obj,
-          [next.layer.source]: {
-            id: next.id,
-            data: next.properties,
-            geometry: next.geometry
-          }
-        }),
-        {}
-      );
-
-      state.latlng = lngLat;
-      state.interactions = interactions;
     },
     setOperatorsDetailMapLayersSettings: (state, action) => {
       const { id, settings } = action.payload;
@@ -235,7 +213,7 @@ const operatorsDetailFmusSlice = createSlice({
       })
       .addCase(getIntegratedAlertsMetadata.fulfilled, (state, action) => {
         const { type, layersActive, layersSettings } = action.payload;
-        
+
         if (type === 'no-metadata') {
           state.layersActive = layersActive;
         } else {
@@ -257,7 +235,6 @@ export const {
   setOperatorsDetailMapLocation,
   setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
-  setOperatorsDetailMapInteractions,
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailMapLayersActive,
   fmuAnalysisSuccess,
