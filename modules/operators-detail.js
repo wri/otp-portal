@@ -9,17 +9,17 @@ export const getOperatorBySlug = createApiThunk(
   'operators',
   {
     useUserToken: true,
-    params: ({ slug, loadFMUS = false }) => ({
+    params: ({ slug, loadFmus = false }) => ({
       include: ['country', 'fmus', 'observations'].join(','),
       'fields[countries]': 'name,id,iso',
       'fields[observations]': 'id,hidden',
-      ...(loadFMUS ? {} : { 'fields[fmus]': 'name,id' }),
+      ...(loadFmus ? {} : { 'fields[fmus]': 'name,id' }),
       'filter[slug]': slug
     }),
-    transformResponse: (data, _response, { slug, loadFMUS = false }) => {
+    transformResponse: (data, _response, { loadFmus = false }) => {
       const operator = data[0];
       if (!operator) throw new Error('Operator not found');
-      operator.loadedFMUS = loadFMUS;
+      operator.loadedFMUS = loadFmus;
       return { data: operator };
     }
   }

@@ -259,6 +259,7 @@ class OperatorsDetailFMUs extends React.Component {
               <div className="fmu-select">
                 <select
                   value={fmu.id}
+                  data-test-id="fmu-select"
                   onChange={(e) => {
                     this.props.setOperatorsDetailFmu(
                       fmus.find(

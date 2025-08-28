@@ -116,11 +116,12 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
  * Creates initial state for nested API resources
  * @param {Array} keys - Array of state keys (e.g., ['howtos', 'tools', 'faqs'])
  * @param {*} initialData - Initial data value (default: [])
+ * @param {*} dataKey - Data key (default: data)
  */
 export function createNestedApiInitialState(keys, initialData = [], dataKey = 'data') {
   const state = {};
   keys.forEach(key => {
-    state[key] = createApiInitialState(initialData)
+    state[key] = createApiInitialState(initialData, dataKey)
   });
   return state;
 }
