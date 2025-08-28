@@ -92,10 +92,21 @@ const operatorsRankingSlice = createSlice({
     },
     setOperatorsMapInteractions: (state, action) => {
       const { features = [], lngLat = {} } = action.payload;
-      state.interactions = {
-        features,
-        latlng: lngLat
-      };
+      // could be more features for the same layer we reverse array
+      // as the last one overrides the previous we will get the first on
+      const interactions = features.slice().reverse().reduce(
+        (obj, next) => ({
+          ...obj,
+          [next.layer.source]: {
+            id: next.id,
+            data: next.properties,
+            geometry: next.geometry
+          }
+        }),
+        {}
+      );
+      state.interactions = interactions;
+      state.latlng = lngLat;
     },
     setOperatorsMapLayersActive: (state, action) => {
       state.layersActive = action.payload;

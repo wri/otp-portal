@@ -97,7 +97,8 @@ function OperatorsPage({
   const onClick = (e) => {
     const element = e.originalEvent.target;
     if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) {
-      const { features, lngLat } = e;
+      const features = JSON.parse(JSON.stringify(e.features));
+      const lngLat = JSON.parse(JSON.stringify(e.lngLat));
       setOperatorsMapInteractions({ features, lngLat });
     } else {
       setOperatorsMapInteractions({});
