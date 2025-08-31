@@ -68,7 +68,7 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
 
   const operatorChanged = operatorsDetail.data.slug !== id;
   if (operatorChanged) {
-    await store.dispatch(getOperatorBySlug(id));
+    await store.dispatch(getOperatorBySlug({ slug: id }));
   }
   operatorsDetail = store.getState().operatorsDetail;
   const operator = operatorsDetail.data;

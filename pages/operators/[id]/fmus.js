@@ -24,7 +24,7 @@ const OperatorsDetailFMUsPage = ({
 }) => {
   useEffect(() => {
     if (!operatorsDetail.data.loadedFMUS) {
-      getOperatorBySlug(router.query.id, true);
+      getOperatorBySlug({ slug: router.query.id, loadFmus: true});
     }
   }, []);
 

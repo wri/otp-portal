@@ -1,43 +1,39 @@
-// CONSTANTS
-const MODAL_TOGGLE = 'MODAL_TOGGLE';
-const MODAL_TOGGLE_LOADING = 'MODAL_TOGGLE_LOADING';
-const MODAL_SET_OPTIONS = 'MODAL_SET_OPTIONS';
+import { createSlice } from '@reduxjs/toolkit';
 
-// REDUCER
-const initialState = {
-  opened: false,
-  options: {
-    children: null,
-    childrenProps: null,
-    size: ''
+const modalSlice = createSlice({
+  name: 'modal',
+  initialState: {
+    opened: false,
+    options: {
+      children: null,
+      childrenProps: null,
+      size: ''
+    },
+    loading: false
   },
-  loading: false
-};
+  reducers: {
+    toggleModal: (state, action) => {
+      state.opened = action.payload;
+    },
+    setModalOptions: (state, action) => {
+      state.options = action.payload;
+    },
+    toggleModalLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+  },
+});
 
-export default function modalReducer(state = initialState, action) {
-  switch (action.type) {
-    case MODAL_TOGGLE:
-      return Object.assign({}, state, { opened: action.payload });
-    case MODAL_SET_OPTIONS:
-      return Object.assign({}, state, { options: action.payload });
-    case MODAL_TOGGLE_LOADING:
-      return Object.assign({}, state, { loading: action.payload });
-    default:
-      return state;
-  }
-}
+export const { setModalOptions, toggleModalLoading } = modalSlice.actions;
 
-
-// ACTIONS
 export function toggleModal(opened, opts = {}) {
   return (dispatch) => {
     if (opened && opts) {
-      dispatch({ type: MODAL_SET_OPTIONS, payload: opts });
+      dispatch(setModalOptions(opts));
     }
-    dispatch({ type: MODAL_TOGGLE, payload: opened });
+
+    dispatch(modalSlice.actions.toggleModal(opened));
   };
 }
 
-export function setModalOptions(opts = {}) {
-  return dispatch => dispatch({ type: MODAL_SET_OPTIONS, payload: opts });
-}
+export default modalSlice.reducer;

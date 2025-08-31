@@ -1,222 +1,95 @@
-import API from 'services/api';
+import { createSlice, isPending } from '@reduxjs/toolkit';
 
 // Utils
-import { encode, decode, parseObjectSelectOptions, isEmpty } from 'utils/general';
+import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
-/* Constants */
-const GET_DOCUMENTS_DB_SUCCESS = 'GET_DOCUMENTS_DB_SUCCESS';
-const GET_DOCUMENTS_DB_ERROR = 'GET_DOCUMENTS_DB_ERROR';
-const GET_DOCUMENTS_DB_LOADING = 'GET_DOCUMENTS_DB_LOADING';
+export const getDocumentsDatabase = createApiThunk(
+  'database/getDocumentsDatabase',
+  'operator-documents',
+  {
+    params: (_arg, { database }) => {
+       const includes = [
+        'operator',
+        'operator.country',
+        'fmu',
+        'operator-document-annexes',
+        'required-operator-document',
+        'required-operator-document.required-operator-document-group',
+      ];
+      const filters = database.filters.data;
+      const { page, pageSize } = database;
 
-const GET_FILTERS_DOCUMENTS_DB_SUCCESS = 'GET_FILTERS_DOCUMENTS_DB_SUCCESS';
-const GET_FILTERS_DOCUMENTS_DB_ERROR = 'GET_FILTERS_DOCUMENTS_DB_ERROR';
-const GET_FILTERS_DOCUMENTS_DB_LOADING = 'GET_FILTERS_DOCUMENTS_DB_LOADING';
-const SET_FILTERS_DOCUMENTS_DB = 'SET_FILTERS_DOCUMENTS_DB';
-const SET_ACTIVE_COLUMNS_DOCUMENTS_DB = 'SET_ACTIVE_COLUMNS_DOCUMENTS_DB';
-const SET_PAGE_COUNT = 'SET_PAGE_COUNT';
-const SET_PAGE = 'SET_PAGE';
-const RELOAD_DOCUMENTS = 'RELOAD_DOCUMENTS';
+      return {
+        'page[number]': page + 1,
+        'page[size]': pageSize,
+        include: includes.join(','),
+        'fields[fmus]': 'name,forest-type',
+        'fields[operators]': 'name,country',
+        'fields[countries]': 'name,iso',
+        ...getApiFiltersParams(filters)
+      }
+    },
+    transformResponse: (data, response) => {
+      return { data, pageCount: response.meta['page-count'] }
+    }
+  }
+)
 
-/* Initial state */
-const initialState = {
-  data: [],
-  timestamp: null,
-  page: 0,
-  pageSize: 30,
-  pageCount: -1, // react-table needs -1 by default
-  loading: false,
-  error: false,
-  filters: {
-    data: {},
-    options: {},
+export const getFilters = createApiThunk('database/getFilters', 'operator_document_filters_tree', {
+  requestOptions: { deserialize: false },
+  transformResponse: (data) => ({ options: parseObjectSelectOptions(data) })
+});
+
+const databaseSlice = createSlice({
+  name: 'database',
+  initialState: {
+    data: [],
+    page: 0,
+    pageSize: 30,
+    pageCount: -1, // react-table needs -1 by default
     loading: false,
     error: false,
+    filters: {
+      data: {},
+      options: {},
+      loading: false,
+      error: false,
+    },
+    columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
   },
-  columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
-};
+  reducers: {
+    setFiltersDocuments: (state, action) => {
+      state.filters.data = action.payload;
+    },
+    setActiveColumnsDocuments: (state, action) => {
+      state.columns = action.payload;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    addApiCases(getFilters, 'filters')(builder);
+    addApiCases(getDocumentsDatabase)(builder);
 
-function isLatestAction(state, action) {
-  return action.metadata.timestamp >= state.timestamp;
-}
-
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case RELOAD_DOCUMENTS:
-      return Object.assign({}, state, {
-        data: [],
-        loading: false,
-        error: false,
-        timestamp: null,
-        pageCount: -1,
-        page: 0
-      });
-    case GET_DOCUMENTS_DB_SUCCESS:
-      if (!isLatestAction(state, action)) return state;
-
-      return Object.assign({}, state, {
-        data: action.payload,
-        loading: false,
-        error: false,
-      });
-    case GET_DOCUMENTS_DB_ERROR:
-      if (!isLatestAction(state, action)) return state;
-
-      return Object.assign({}, state, { error: true, loading: false });
-    case GET_DOCUMENTS_DB_LOADING:
-      return Object.assign({}, state, { loading: true, error: false, timestamp: action.metadata.timestamp });
-    // Filters
-    case GET_FILTERS_DOCUMENTS_DB_SUCCESS: {
-      const newFilters = Object.assign({}, state.filters, {
-        options: action.payload,
-        loading: false,
-        error: false,
-      });
-      return Object.assign({}, state, { filters: newFilters });
-    }
-    case GET_FILTERS_DOCUMENTS_DB_ERROR: {
-      const newFilters = Object.assign({}, state.filters, {
-        error: true,
-        loading: false,
-      });
-      return Object.assign({}, state, { filters: newFilters });
-    }
-    case GET_FILTERS_DOCUMENTS_DB_LOADING: {
-      const newFilters = Object.assign({}, state.filters, {
-        loading: true,
-        error: false,
-      });
-      return Object.assign({}, state, { filters: newFilters });
-    }
-    case SET_FILTERS_DOCUMENTS_DB: {
-      const newFilters = Object.assign({}, state.filters, {
-        data: action.payload,
-      });
-      return Object.assign({}, state, { filters: newFilters });
-    }
-    case SET_ACTIVE_COLUMNS_DOCUMENTS_DB: {
-      return Object.assign({}, state, { columns: action.payload });
-    }
-    case SET_PAGE: {
-      return Object.assign({}, state, { page: action.payload });
-    }
-    case SET_PAGE_COUNT:
-      if (!isLatestAction(state, action)) return state;
-
-      return Object.assign({}, state, { pageCount: action.payload });
-    default:
-      return state;
-  }
-}
-
-/* Action creators */
-export function getDocumentsDatabase(options = { reload: false }) {
-  return (dispatch, getState) => {
-    if (options.reload) {
-      dispatch({
-        type: RELOAD_DOCUMENTS
-      });
-    }
-
-    const { language } = getState();
-    const filters = getState().database.filters.data;
-    const { page, pageSize } = getState().database;
-
-    const includes = [
-      'operator',
-      'operator.country',
-      'fmu',
-      'operator-document-annexes',
-      'required-operator-document',
-      'required-operator-document.required-operator-document-group',
-    ];
-    const metadata = { timestamp: new Date() };
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_DOCUMENTS_DB_LOADING, metadata });
-
-    return API.get('operator-documents', {
-      locale: language,
-      'page[number]': page + 1,
-      'page[size]': pageSize,
-      include: includes.join(','),
-      'fields[fmus]': 'name,forest-type',
-      'fields[operators]': 'name,country',
-      'fields[countries]': 'name,iso',
-      ...Object.keys(filters).reduce((acc, key) => {
-        if (isEmpty(filters[key])) return acc;
-        return {
-          ...acc,
-          [`filter[${key}]`]: filters[key].join(',')
+    builder
+      .addMatcher(isPending(getDocumentsDatabase), (state, action) => {
+        if (action.meta.arg?.reload) {
+          state.data = [];
+          state.page = 0;
+          state.pageCount = -1;
         }
-      }, {})
-    })
-      .then(({ data, response }) => {
-        dispatch({
-          type: GET_DOCUMENTS_DB_SUCCESS,
-          payload: data,
-          metadata
-        });
-
-        dispatch({
-          type: SET_PAGE_COUNT,
-          payload: response.meta['page-count'],
-          metadata
-        })
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_DOCUMENTS_DB_ERROR,
-          payload: err.message,
-          metadata
-        });
-      });
-  };
-}
+  },
+});
 
-export function getFilters() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_FILTERS_DOCUMENTS_DB_LOADING });
-
-    return API.get('operator_document_filters_tree', {
-      locale: language
-    }, { deserialize: false })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_FILTERS_DOCUMENTS_DB_SUCCESS,
-          payload: parseObjectSelectOptions(data),
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_FILTERS_DOCUMENTS_DB_ERROR,
-          payload: err.message,
-        });
-      });
-  };
-}
+export const { setFiltersDocuments, setActiveColumnsDocuments, setPage } = databaseSlice.actions;
 
 export function setActiveColumns(activeColumns) {
   return (dispatch) => {
-    dispatch({
-      type: SET_ACTIVE_COLUMNS_DOCUMENTS_DB,
-      payload: activeColumns,
-    });
-  };
-}
-
-export function setPage(page) {
-  return (dispatch) => {
-    dispatch({
-      type: SET_PAGE,
-      payload: page,
-    });
+    dispatch(setActiveColumnsDocuments(activeColumns));
   };
 }
 
@@ -231,11 +104,11 @@ function setUrlFilters(filters) {
 }
 
 export function setFilters(filter) {
-  return (dispatch, state) => {
-    const newFilters = Object.assign({}, state().database.filters.data);
+  return (dispatch, getState) => {
+    const newFilters = { ...getState().database.filters.data };
     Object.keys(filter).forEach((key) => {
       newFilters[key] = filter[key];
-    })
+    });
     setUrlFilters(newFilters);
   };
 }
@@ -249,9 +122,8 @@ export function getDocumentsDatabaseUrl(url) {
         ...decode(url.query.filters),
       };
     }
-    dispatch({
-      type: SET_FILTERS_DOCUMENTS_DB,
-      payload,
-    });
+    dispatch(setFiltersDocuments(payload));
   };
 }
+
+export default databaseSlice.reducer;

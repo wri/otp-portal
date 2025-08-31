@@ -1,52 +1,17 @@
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 
-/* Constants */
-const GET_DONORS_SUCCESS = 'GET_DONORS_SUCCESS';
-const GET_DONORS_ERROR = 'GET_DONORS_ERROR';
-const GET_DONORS_LOADING = 'GET_DONORS_LOADING';
+export const getDonors = createApiThunk('donors/getDonors', 'donors', {
+  params: { 'page[size]': 2000 }
+});
 
-/* Initial state */
-const initialState = {
-  data: [],
-  loading: false,
-  error: false
-};
+const donorsSlice = createSlice({
+  name: 'donors',
+  initialState: createApiInitialState([]),
+  reducers: {},
+  extraReducers: (builder) => {
+    addApiCases(getDonors)(builder);
+  },
+});
 
-/* Reducer */
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_DONORS_SUCCESS:
-      return Object.assign({}, state, { data: action.payload, loading: false, error: false });
-    case GET_DONORS_ERROR:
-      return Object.assign({}, state, { error: true, loading: false });
-    case GET_DONORS_LOADING:
-      return Object.assign({}, state, { loading: true, error: false });
-    default:
-      return state;
-  }
-}
-
-export function getDonors() {
-  return (dispatch, getState) => {
-    const { language } = getState();
-
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_DONORS_LOADING });
-
-    return API.get('donors', { locale: language, 'page[size]': 2000 })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_DONORS_SUCCESS,
-          payload: data
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_DONORS_ERROR,
-          payload: err.message
-        });
-      });
-  };
-}
+export default donorsSlice.reducer;

@@ -1,147 +1,65 @@
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 import { omitBy, isEmpty } from 'utils/general';
-
 import API, { NEXTAPIClient } from 'services/api'
-
 import { logEvent } from 'utils/analytics';
 
-// CONSTANTS
-const SET_USER = 'SET_USER';
-const REMOVE_USER = 'REMOVE_USER';
-const SET_USER_AGENT = 'SET_USER_AGENT';
+export const getUserOperator = createApiThunk(
+  'user/getUserOperator',
+  (id) => `operators/${id}`,
+  {
+    params: () => {
+      const includeFields = ['country', 'fmus'];
+      const fields = {
+        fmus: [
+          'name',
+          'certification-fsc',
+          'certification-olb',
+          'certification-pefc',
+          'certification-pafc',
+          'certification-pbn',
+          'certification-fsc-cw',
+          'certification-tlv',
+          'certification-ls',
+        ],
+      };
 
-const GET_USER_PROFILE_SUCCESS = 'GET_USER_PROFILE_SUCCESS';
-const GET_USER_PROFILE_ERROR = 'GET_USER_PROFILE_ERROR';
-const GET_USER_PROFILE_LOADING = 'GET_USER_PROFILE_LOADING';
-const GET_USER_OPERATOR_SUCCESS = 'GET_USER_OPERATOR_SUCCESS';
-const GET_USER_OPERATOR_ERROR = 'GET_USER_OPERATOR_ERROR';
-const GET_USER_OPERATOR_LOADING = 'GET_USER_OPERATOR_LOADING';
-
-// REDUCER
-const initialState = {};
-
-export default function User(state = initialState, action) {
-  switch (action.type) {
-    case SET_USER:
-      return Object.assign({}, state, action.payload);
-    case SET_USER_AGENT:
-      return Object.assign({}, state, { userAgent: action.payload });
-    case GET_USER_PROFILE_SUCCESS: {
       return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          data: action.payload,
-          loading: false,
-          error: false,
-        }
+        include: includeFields.join(','),
+        'fields[fmus]': fields.fmus.join(',')
       }
     }
-    case GET_USER_PROFILE_ERROR: {
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          error: true,
-          loading: false,
-        }
-      }
-    }
-    case GET_USER_PROFILE_LOADING: {
-      return {
-        ...state,
-        userProfile: {
-          ...state.userProfile,
-          loading: true,
-          error: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_SUCCESS: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          data: action.payload,
-          loading: false,
-          error: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_ERROR: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          error: true,
-          loading: false,
-        }
-      }
-    }
-    case GET_USER_OPERATOR_LOADING: {
-      return {
-        ...state,
-        userOperator: {
-          ...state.userOperator,
-          loading: true,
-          error: false,
-        }
-      }
-    }
-    case REMOVE_USER:
-      return {};
-    default:
-      return state;
   }
-}
+)
 
-// ACTIONS
-export function setUser(user) {
-  return { type: SET_USER, payload: user };
-}
+export const getUserProfile = createApiThunk(
+  'user/getUserProfile',
+  (_arg, { user }) => `users/${user.user_id}`,
+  {
+    useLanguage: false,
+    useUserToken: true
+  }
+)
 
-export function setUserAgent(userAgent) {
-  return { type: SET_USER_AGENT, payload: userAgent };
-}
+const userSlice = createSlice({
+  name: 'user',
+  initialState: createNestedApiInitialState(['userProfile', 'userOperator'], {}),
+  reducers: {
+    setUser: (state, action) => {
+      return { ...state, ...action.payload };
+    },
+    setUserAgent: (state, action) => {
+      state.userAgent = action.payload;
+    },
+    removeUser: () => ({}),
+  },
+  extraReducers: (builder) => {
+    addApiCases(getUserProfile, 'userProfile')(builder);
+    addApiCases(getUserOperator, 'userOperator')(builder);
+  },
+});
 
-/* Action creators */
-export function getUserOperator(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_USER_OPERATOR_LOADING });
-
-    const includeFields = ['country', 'fmus'];
-    // Fields
-    const fields = {
-      fmus: [
-        'name',
-        'certification-fsc',
-        'certification-olb',
-        'certification-pefc',
-        'certification-pafc',
-        'certification-pbn',
-        'certification-fsc-cw',
-        'certification-tlv',
-        'certification-ls',
-      ],
-    };
-
-    return API.get(`operators/${id}`, {
-      include: includeFields.join(','),
-      'fields[fmus]': fields.fmus.join(',')
-    }).then(({ data }) => {
-      dispatch({
-        type: GET_USER_OPERATOR_SUCCESS,
-        payload: data,
-      });
-    }).catch((err) => {
-      // Fetch from server ko -> Dispatch error
-      dispatch({
-        type: GET_USER_OPERATOR_ERROR,
-        payload: err.message,
-      });
-    });
-  };
-}
+export const { setUser, setUserAgent, removeUser } = userSlice.actions;
 
 export function login({ body }) {
   return NEXTAPIClient.post('login', { body }).then(() => {
@@ -154,7 +72,7 @@ export function logout() {
   return () => NEXTAPIClient.delete('logout').then(() => {
     window.location.reload();
   })
- }
+}
 
 export function resetPassword(attributes) {
   return API.post('users/password', {
@@ -166,29 +84,6 @@ export function resetPassword(attributes) {
 
 export function forgotPassword(email) {
   return API.post('reset-password', { body: { password: { email } } });
-}
-
-export function getUserProfile() {
-  return (dispatch, getState) => {
-    const { user } = getState();
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_USER_PROFILE_LOADING });
-
-    return API.get(`users/${user.user_id}`, null, { token: user.token })
-      .then(({ data }) => {
-        dispatch({
-          type: GET_USER_PROFILE_SUCCESS,
-          payload: data,
-        });
-      })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_USER_PROFILE_ERROR,
-          payload: err.message,
-        });
-      });
-  };
 }
 
 export function saveUser({ body }) {
@@ -219,3 +114,9 @@ export function saveOperator({ body }) {
 export function updateOperator({ body, id, authorization }) {
   return () => API.patch(`operators/${id}`, { body, token: authorization });
 }
+
+export function updateFmu({ id, body, authorization }) {
+  return () => API.patch(`fmus/${id}`, { body, token: authorization });
+}
+
+export default userSlice.reducer;

@@ -1,5 +1,4 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import * as staticReducers from 'modules';
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
@@ -26,17 +25,10 @@ function createReducer(asyncReducers) {
 }
 
 const makeStore = (context) => {
-  const store = createStore(
-    createReducer(),
-    {},
-    compose(
-      applyMiddleware(thunk),
-      /* Redux dev tool, install chrome extension in
-       * https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en */
-      typeof window === 'object' &&
-        typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
-    )
-  );
+  const store = configureStore({
+    reducer: createReducer(),
+    devTools: process.env.NODE_ENV !== 'production',
+  });
 
   store.asyncReducers = {};
   store.injectReducer = (key, asyncReducer) => {

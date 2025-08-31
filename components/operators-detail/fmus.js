@@ -15,16 +15,14 @@ import {
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
-  setOperatorsDetailAnalysis,
-  setOperatorsDetailMapInteractions
+  setOperatorsDetailAnalysis
 } from 'modules/operators-detail-fmus';
 import {
   getActiveLayers,
   getActiveInteractiveLayersIds,
   getLegendLayers,
   getFMUs,
-  getFMU,
-  getPopup
+  getFMU
 } from 'selectors/operators-detail/fmus';
 
 // Intl
@@ -71,18 +69,17 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (fmu) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
   }
 
   componentDidUpdate(prevProps) {
     const {
       fmus: prevFmus,
-      fmu: prevFmu,
-      interactions: prevInteractions,
+      fmu: prevFmu
     } = prevProps;
-    const { fmus, fmu, interactions } = this.props;
+    const { fmus, fmu } = this.props;
 
     if (!isEqual(fmus, prevFmus)) {
       if (fmus.length) {
@@ -99,15 +96,8 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (fmu.id !== prevFmu.id) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
-    }
-
-    if (!isEqual(interactions, prevInteractions)) {
-      const { fmusdetail: interactionsFmus } = interactions;
-      if (interactionsFmus) {
-        this.props.setOperatorsDetailFmu(interactionsFmus.data.id);
-      }
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
 
     if (
@@ -116,7 +106,7 @@ class OperatorsDetailFMUs extends React.Component {
       (fmu.loss.startDate !== prevFmu.loss.startDate ||
         fmu.loss.trimEndDate !== prevFmu.loss.trimEndDate)
     ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'loss');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
     }
 
     if (
@@ -125,7 +115,7 @@ class OperatorsDetailFMUs extends React.Component {
       (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
         fmu['integrated-alerts'].trimEndDate !== prevFmu['integrated-alerts'].trimEndDate)
     ) {
-      this.props.setOperatorsDetailAnalysis(fmu, 'integrated-alerts');
+      this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
   }
 
@@ -153,11 +143,10 @@ class OperatorsDetailFMUs extends React.Component {
       e.features.length &&
       !element.classList?.contains('mapbox-prevent-click')
     ) {
-      // No better way to do this
-      const { features, lngLat } = e;
-      this.props.setOperatorsDetailMapInteractions({ features, lngLat });
-    } else {
-      this.props.setOperatorsDetailMapInteractions({});
+      const clickedFmu = e.features.find(f => f.source === 'fmusdetail')?.properties;
+      if (clickedFmu) {
+        this.props.setOperatorsDetailFmu(clickedFmu.id);
+      }
     }
   }
 
@@ -259,6 +248,7 @@ class OperatorsDetailFMUs extends React.Component {
               <div className="fmu-select">
                 <select
                   value={fmu.id}
+                  data-test-id="fmu-select"
                   onChange={(e) => {
                     this.props.setOperatorsDetailFmu(
                       fmus.find(
@@ -362,7 +352,6 @@ class OperatorsDetailFMUs extends React.Component {
 OperatorsDetailFMUs.propTypes = {
   deviceInfo: PropTypes.object,
   intl: PropTypes.object.isRequired,
-  interactions: PropTypes.shape({}).isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,
   operatorsDetail: PropTypes.object.isRequired,
@@ -377,8 +366,7 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailMapLayersSettings: PropTypes.func,
   setOperatorsDetailFmu: PropTypes.func,
   setOperatorsDetailFmuBounds: PropTypes.func,
-  setOperatorsDetailAnalysis: PropTypes.func,
-  setOperatorsDetailMapInteractions: PropTypes.func
+  setOperatorsDetailAnalysis: PropTypes.func
 };
 
 export default withDeviceInfo(injectIntl(
@@ -387,10 +375,8 @@ export default withDeviceInfo(injectIntl(
       language: state.language,
       operatorsDetail: state.operatorsDetail,
       operatorsDetailFmus: state.operatorsDetailFmus,
-      interactions: state.operatorsDetailFmus.interactions,
       fmus: getFMUs(state, props),
       fmu: getFMU(state, props),
-      popup: getPopup(state, props),
       activeLayers: getActiveLayers(state, props),
       activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
       legendLayers: getLegendLayers(state, props),
@@ -401,8 +387,7 @@ export default withDeviceInfo(injectIntl(
       setOperatorsDetailMapLayersSettings,
       setOperatorsDetailFmu,
       setOperatorsDetailFmuBounds,
-      setOperatorsDetailAnalysis,
-      setOperatorsDetailMapInteractions
+      setOperatorsDetailAnalysis
     }
   )(OperatorsDetailFMUs)
 ));

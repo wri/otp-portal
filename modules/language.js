@@ -1,19 +1,12 @@
-// CONSTANTS
-const SET_LANGUAGE = 'SET_LANGUAGE';
+import { createSlice } from '@reduxjs/toolkit';
 
-// REDUCER
-const initialState = 'en';
+const languageSlice = createSlice({
+  name: 'language',
+  initialState: 'en',
+  reducers: {
+    setLanguage: (state, action) => action.payload,
+  },
+});
 
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case SET_LANGUAGE:
-      return action.payload;
-    default:
-      return state;
-  }
-}
-
-// ACTIONS
-export function setLanguage(lang) {
-  return { type: SET_LANGUAGE, payload: lang };
-}
+export const { setLanguage } = languageSlice.actions;
+export default languageSlice.reducer;

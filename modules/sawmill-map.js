@@ -1,98 +1,58 @@
-import API from 'services/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 
-const SAWMILL_MAP_LOCATION = 'SAWMILL_MAP_LOCATION';
-const SAWMILL_UNMOUNT_MAP = 'SAWMILL_UNMOUNT_MAP';
+export const getSawMillLocationById = createApiThunk(
+  'sawmillMap/getSawMillLocationById', 
+  (id) => `sawmills/${id}`, 
+  { useLanguage: false }
+);
 
-const GET_SAWMILL_LOCATION_SUCCESS = 'GET_SAWMILL_LOCATION_SUCCESS';
-const GET_SAWMILL_LOCATION_LOADING = 'GET_SAWMILL_LOCATION_LOADING';
-const GET_SAWMILL_LOCATION_ERROR = 'GET_SAWMILL_LOCATION_ERROR';
-
-const initialState = {
-  viewport: {
-    // TODO : transfer zoom and center
-    zoom: 5,
-    latitude: 0,
-    longitude: 18,
+const sawmillMapSlice = createSlice({
+  name: 'sawmillMap',
+  initialState: {
+    viewport: {
+      zoom: 5,
+      latitude: 0,
+      longitude: 18,
+    },
+    loading: false,
+    error: false,
+    sawmill: {},
   },
-  loading: false,
-  error: false,
-  sawmill: {},
-};
-
-/* Reducer */
-export default function Sawmill(state = initialState, action) {
-  switch (action.type) {
-    case SAWMILL_MAP_LOCATION: {
-      return Object.assign({}, state, {
-        viewport: { ...state.viewport, ...action.payload },
-      });
-    }
-
-    case SAWMILL_UNMOUNT_MAP: {
-      return Object.assign({}, state, { ...initialState });
-    }
-
-    case GET_SAWMILL_LOCATION_SUCCESS: {
-      return Object.assign({}, state, {
-        sawmill: action.payload,
+  reducers: {
+    setMapLocation: (state, action) => {
+      state.viewport = { ...state.viewport, ...action.payload };
+    },
+    unmountMap: (state) => {
+      return {
+        viewport: {
+          zoom: 5,
+          latitude: 0,
+          longitude: 18,
+        },
         loading: false,
         error: false,
-      });
-    }
-
-    case GET_SAWMILL_LOCATION_LOADING: {
-      return Object.assign({}, state, {
-        loading: true,
-        error: false,
-      });
-    }
-
-    case GET_SAWMILL_LOCATION_ERROR: {
-      return Object.assign({}, state, {
-        error: true,
-        loading: false,
-      });
-    }
-
-    default:
-      return state;
-  }
-}
-
-export function setMapLocation(mapLocation) {
-  return {
-    type: SAWMILL_MAP_LOCATION,
-    payload: mapLocation,
-  };
-}
-
-export function getSawMillLocationById(id) {
-  return (dispatch) => {
-    // Waiting for fetch from server -> Dispatch loading
-    dispatch({ type: GET_SAWMILL_LOCATION_LOADING });
-
-    return API.get(`sawmills/${id}`)
-      .then(({ data }) => {
-        // Fetch from server ok -> Dispatch geojson sawmill data
-        dispatch({
-          type: GET_SAWMILL_LOCATION_SUCCESS,
-          payload: data,
-        });
+        sawmill: {},
+      };
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getSawMillLocationById.pending, (state) => {
+        state.loading = true;
+        state.error = false;
       })
-      .catch((err) => {
-        // Fetch from server ko -> Dispatch error
-        dispatch({
-          type: GET_SAWMILL_LOCATION_ERROR,
-          payload: err.message,
-        });
+      .addCase(getSawMillLocationById.fulfilled, (state, action) => {
+        state.sawmill = action.payload;
+        state.loading = false;
+        state.error = false;
+      })
+      .addCase(getSawMillLocationById.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
       });
-  };
-}
+  },
+});
 
-export function unmountMap() {
-  return (dispatch) => {
-    dispatch({
-      type: SAWMILL_UNMOUNT_MAP,
-    });
-  };
-}
+export const { setMapLocation, unmountMap } = sawmillMapSlice.actions;
+export default sawmillMapSlice.reducer;
