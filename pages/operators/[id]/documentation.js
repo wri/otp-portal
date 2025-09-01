@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Selectors
@@ -17,8 +17,10 @@ import Layout, { getInitialProps } from 'components/operators-detail/layout';
 
 // Operator Details Tabs
 import OperatorsDetailDocumentation from 'components/operators-detail/documentation';
+import { useDownloadSession } from 'hooks/use-download-session';
 
 import usePrevious from 'hooks/use-previous';
+import useUser from 'hooks/use-user';
 
 const OperatorsDetailDocumentationPage = ({
   operatorsDetail,
@@ -26,8 +28,10 @@ const OperatorsDetailDocumentationPage = ({
   operatorDocumentation,
   getOperatorDocumentation
 }) => {
+  const user = useUser();
   const date = operatorsDetail?.date?.toString();
   const previousDate = usePrevious(date);
+  useDownloadSession(user.token);
 
   useEffect(() => {
     if (previousDate && previousDate !== date) {

@@ -13,6 +13,10 @@ export default async (req, res) => {
   })
     .then((response) => {
       if (response.ok) {
+        // if backend clears or sets some cookies let's pass that to the app
+        if (response.headers.get('set-cookie')) {
+          res.setHeader('set-cookie', response.headers.get('set-cookie'));
+        }
         return response.json();
       }
       throw new Error(response.statusText);

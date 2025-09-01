@@ -112,6 +112,10 @@ const config = {
         destination: "/api/gfw-data/:path*",
       },
       {
+        source: "/portal-api/sessions/download-session",
+        destination: process.env.OTP_API + "/sessions/download-session"
+      },
+      {
         source: "/portal-api/:path*",
         destination: "/api/portal/:path*",
       }

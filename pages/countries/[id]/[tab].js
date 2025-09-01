@@ -20,6 +20,8 @@ import Spinner from 'components/ui/spinner';
 
 import CountriesDetailOverview from 'components/countries-detail/overview';
 import CountriesDetailDocumentation from 'components/countries-detail/documentation';
+import { useDownloadSession } from 'hooks/use-download-session';
+import useUser from 'hooks/use-user';
 
 const TABS_COUNTRIES_DETAIL = [
   {
@@ -36,6 +38,8 @@ function CountriesDetail({ router, countriesDetail, countryDocumentation, getCou
   const intl = useIntl();
   const id = router.query.id;
   const tab = router.query.tab || 'overview';
+  const user = useUser();
+  useDownloadSession(user.token);
 
   useEffect(() => {
     if (id) {
