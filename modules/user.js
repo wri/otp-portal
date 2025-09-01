@@ -87,7 +87,11 @@ export function forgotPassword(email) {
 }
 
 export function saveUser({ body }) {
-  return () => API.post('register', { body })
+  return () => API.post('register', { body });
+}
+
+export function setDownloadCookie(userToken) {
+  return NEXTAPIClient.post('sessions/download-session', { token: userToken });
 }
 
 export function updateUserProfile({ attributes }) {
