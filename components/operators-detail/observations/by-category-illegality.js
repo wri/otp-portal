@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
-import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 // components
 import Table from 'components/ui/table';
@@ -19,48 +18,32 @@ import {
   getColumnHeaders,
 } from 'constants/observations-column-headers';
 
-const MAX_ROWS_TABLE_ILLEGALITIES = 10;
+// const MAX_ROWS_TABLE_ILLEGALITIES = 10;
 
-const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year }) => {
+const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
   const intl = useIntl();
-  const [selected, setSelected] = useState({});
-  const [indexPagination, setIndexPagination] = useState(0);
+  const [expanded, setExpanded] = useState([]);
   const [columns, setColumns] = useState([
     'status',
     'date',
     'country',
     'operator',
-    'category',
+    'observer-organizations',
     'observation',
     'level',
     'fmu',
     'report',
   ]);
 
-  const triggerSelectedIllegality = ({ category, illegality, year }) => {
-    // Toggle selected
-    if (
-      selected.category === category &&
-      selected.illegality === illegality &&
-      selected.year === year
-    ) {
-      resetSelected();
+  const triggerSelectedIllegality = ({ category, illegality }) => {
+    if (expanded.includes(illegality)) {
+      setExpanded(expanded.filter(x => x !== illegality));
     } else {
-      setIndexPagination(0);
-      setSelected({
-        category,
-        illegality,
-        year,
-      });
+      setExpanded([...expanded, illegality]);
     }
   };
 
-  const resetSelected = () => {
-    setIndexPagination(0);
-    setSelected({});
-  };
-
-  const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
+  const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data);
 
   const changeOfLabelLookup = {
     level: 'severity',
@@ -89,132 +72,69 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year }) => {
           return (
             <li key={category} className="obi-category-list-item">
               <div className="l-container">
-                <h3 className="c-title -default -proximanova -uppercase obi-category-title">
+                <h3 className="c-title -proximanova -uppercase -bold obi-category-title">
                   {category}
                 </h3>
               </div>
 
               <ul className="obi-illegality-list">
                 {Object.keys(groupedByIllegality).map((illegality) => {
-                  const legalities = groupedByIllegality[illegality].length;
-                  const paginatedItems =
-                    MAX_ROWS_TABLE_ILLEGALITIES * indexPagination;
-
-                  const pageSize =
-                    legalities - paginatedItems > MAX_ROWS_TABLE_ILLEGALITIES
-                      ? MAX_ROWS_TABLE_ILLEGALITIES
-                      : legalities - paginatedItems;
-
-                  const isSelected =
-                    selected.category === category &&
-                    selected.illegality === illegality &&
-                    selected.year === year;
-
-                  const listItemClassNames = classnames({
-                    '-selected': isSelected,
-                  });
+                  const isSelected = expanded.includes(illegality);
+                  const illegalityInfoClassName = classnames("obi-illegality-info", { '-expanded': isSelected });
 
                   return (
                     <li key={category + illegality}>
-                      <div className="l-container">
-                        <div
-                          className={`obi-illegality-list-item ${listItemClassNames}`}
-                        >
-                          {/* Severity list */}
-                          <ul className="obi-severity-list">
-                            {groupedByIllegality[illegality].map(
-                              ({ level, id }) => {
-                                if (level === 'null' || level === null)
-                                  return null;
-
-                                return (
-                                  <li
-                                    key={id}
-                                    className={`obi-severity-list-item -severity-${level}`}
-                                    style={{
-                                      background: PALETTE_COLOR_1[level].fill,
-                                    }}
-                                  />
-                                );
-                              }
-                            )}
-                          </ul>
-
-                          {/* Illegality total */}
-                          <div
-                            className={`obi-illegality-total ${listItemClassNames}`}
-                          >
-                            {legalities}
-                          </div>
-
-                          {/* Illegality title */}
-                          <h4
-                            className="c-title -default obi-illegality-title"
+                      {/* Category */}
+                      <div className={illegalityInfoClassName}>
+                        <div className="l-container">
+                          <h3 className="c-title -big -proximanova obi-illegality-info-title"
                             onClick={() =>
                               triggerSelectedIllegality({
                                 category,
-                                illegality,
-                                year,
+                                illegality
                               })
-                            }
-                          >
+                            }>
+                            <span>
                             {illegality}
-                          </h4>
+                            {` (${groupedByIllegality[illegality].length})`}
+                            </span>
+                            {isSelected ? (
+                                <Icon name="icon-arrow-up" />
+                              ) : (
+                                <Icon name="icon-arrow-down" />
+                              )}
+                          </h3>
+                          {groupedByIllegality[illegality].length > 0 && isSelected && (
+                            <Fragment>
+                              {/* <CheckboxGroup
+                                className="-inline -light"
+                                name="observations-columns"
+                                onChange={(value) => setColumns(value)}
+                                properties={{
+                                  default: columns,
+                                  name: 'observations-columns',
+                                }}
+                                options={tableOptions}
+                              />
+                              <br /> */}
+                              <Table
+                                sortable
+                                className="-light"
+                                data={groupedByIllegality[illegality]}
+                                options={{
+                                  showPagination: false,
+                                  showPageSizeOptions: false,
+                                  columns: columnHeaders.filter((header) =>
+                                    columns.includes(
+                                      header.accessor
+                                    )
+                                  )
+                                }}
+                              />
+                            </Fragment>
+                          )}
                         </div>
                       </div>
-
-                      {/* Category */}
-                      {isSelected && (
-                        <div className="obi-illegality-info">
-                          <div className="l-container">
-                            <button
-                              className="obi-illegality-info-close"
-                              onClick={resetSelected}
-                            >
-                              <Icon name="icon-cross" className="-big" />
-                            </button>
-                            <h2 className="c-title obi-illegality-info-title">
-                              {illegality}
-                            </h2>
-                            {groupedByIllegality[illegality].length > 0 && (
-                              <Fragment>
-                                <CheckboxGroup
-                                  className="-inline -light"
-                                  name="observations-columns"
-                                  onChange={(value) => setColumns(value)}
-                                  properties={{
-                                    default: columns,
-                                    name: 'observations-columns',
-                                  }}
-                                  options={tableOptions}
-                                />
-                                <br />
-                                <Table
-                                  sortable
-                                  className="-light"
-                                  data={groupedByIllegality[illegality]}
-                                  options={{
-                                    pagination:
-                                      legalities >
-                                      MAX_ROWS_TABLE_ILLEGALITIES,
-                                    showPageSizeOptions: false,
-                                    columns: columnHeaders.filter((header) =>
-                                      columns.includes(
-                                        header.accessor
-                                      )
-                                    ),
-                                    nextPageSize: pageSize,
-                                    pageSize,
-                                    onPageChange: (indexPage) => {
-                                      setIndexPagination(indexPage);
-                                    },
-                                  }}
-                                />
-                              </Fragment>
-                            )}
-                          </div>
-                        </div>
-                      )}
                     </li>
                   );
                 })}
@@ -228,8 +148,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, year }) => {
 };
 
 TotalObservationsByOperatorByCategorybyIlegallity.propTypes = {
-  data: PropTypes.array,
-  year: PropTypes.number,
+  data: PropTypes.array
 };
 
 export default TotalObservationsByOperatorByCategorybyIlegallity;

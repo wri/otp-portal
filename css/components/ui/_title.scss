@@ -16,11 +16,16 @@
   &.-big { font-size: $font-size-big; }
   &.-bigger { font-size: $font-size-bigger; }
   &.-extrabig { font-size: $font-size-extrabig; }
+  &.-large { font-size: $font-size-large; }
   &.-huge { font-size: $font-size-huge; }
 
   // Text transforms
   &.-uppercase {
     text-transform: uppercase;
+  }
+
+  &.-bold {
+    font-weight: $font-weight-bold;
   }
 
   //Font color

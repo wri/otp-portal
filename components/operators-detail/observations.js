@@ -3,8 +3,10 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { PieChart, Pie, Bar, XAxis, BarChart, ResponsiveContainer, Cell } from 'recharts';
+
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { LEGEND_SEVERITY, PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3 } from 'constants/rechart';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -15,14 +17,13 @@ import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operator
 import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
 
 // Components
-import StaticTabs from 'components/ui/static-tabs';
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import Checkbox from 'components/form/Checkbox';
 
 import { setUrlParam } from 'utils/url';
+import { groupBy, transformValues } from 'utils/general';
 
 const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
-const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'));
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
 
 const OperatorsDetailObservations = (props) => {
@@ -30,20 +31,7 @@ const OperatorsDetailObservations = (props) => {
   const router = useRouter();
   const { fmus, setFMU } = props;
 
-  const [year, setYear] = useState(HELPERS_OBS.getMaxYear(props.operatorObservations));
   const [displayHidden, setDisplayHidden] = useState(false);
-
-  useEffect(() => {
-    setYear(HELPERS_OBS.getMaxYear(props.operatorObservations));
-  }, [props.operatorObservations])
-
-  useEffect(() => {
-    if (props.FMU) {
-      setYear(HELPERS_OBS.getMaxYear(props.operatorObservations.filter(
-        (obs) => obs.fmu && obs.fmu.id === props.FMU.id
-      )));
-    }
-  }, [props.FMU])
 
   useEffect(() => {
     setDisplayHidden(router.query.display_hidden === 'true');
@@ -67,78 +55,142 @@ const OperatorsDetailObservations = (props) => {
     )
   );
 
+  const byYear = transformValues(groupBy(observationData, "date"), (obs) => obs.length);
+  const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
+  const byCategory = transformValues(groupBy(observationData, "category"), (obs) => obs.length);
+  const byStatus = transformValues(groupBy(observationData, "status"), (obs) => obs.length);
+
+  const byYearChart = Object.keys(byYear).map(year => ({ name: year, value: byYear[year] }));
+  const bySeverityChart = Object.keys(bySeverity).map(level => ({ name: level, value: bySeverity[level], fill: PALETTE_COLOR_1[level]?.fill }));
+  const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
+  const byStatusChart = Object.keys(byStatus).map(status => ({ name: status, value: byStatus[status] }));
+
   return (
     <div className="c-section">
       <div className="l-container">
-        <DocumentsFilter showFMU onFmuChange={onFmuChange}>
-          <span className="filter-option">
-            <label>{intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
-            <div className="filters-dropdown">
-              <Checkbox
-                properties={{
-                  checked: displayHidden,
-                  title: intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
-                }}
-                onChange={onChangeDisplayHidden}
-              />
-            </div>
-          </span>
-        </DocumentsFilter>
+        <p>
+          Third-party organizations, including independent forest monitors, conduct missions and research to identify and report on potential
+          illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
+          noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
+        </p>
+
+        <header>
+          <h2 className="c-title -large">
+            Observations from independent forest monitors
+          </h2>
+        </header>
+
+        <Checkbox
+          properties={{
+            checked: displayHidden,
+            title: `observations made by independent forest monitors linked to ${operator.name} in the past five years`,
+            // title: intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
+          }}
+          onChange={onChangeDisplayHidden}
+        />
       </div>
 
       {!!observationData.length && (
         <Fragment>
           <article className="c-article">
             <div className="l-container">
-              <header>
-                <h2 className="c-title">
-                  {intl.formatMessage({
-                    id: 'observations_from_independent_monitors',
-                  })}
-                </h2>
-              </header>
               <div className="content">
                 <TotalObservationsByOperator data={observationData} />
               </div>
             </div>
           </article>
 
+          <div className="l-container">
+            <div className="row l-row">
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>By year</center></h3>
+                <ResponsiveContainer height={400}>
+                  <BarChart data={byYearChart}>
+                    <XAxis dataKey="name" />
+                    <Bar dataKey="value" fill={PALETTE_COLOR_2[2].fill} label={{ fill: 'white', fontSize: 22 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>By severity</center></h3>
+                <ResponsiveContainer height={400}>
+                  <PieChart>
+                    <Pie
+                      data={bySeverityChart}
+                      dataKey="value"
+                      outerRadius={160}
+                      innerRadius={160 - 40}
+                      startAngle={90}
+                      endAngle={-270}
+                      label={{ fontSize: 22 }}
+                      labelLine={false}
+                    >
+                      {bySeverityChart.map((entry, index) => (
+                        <Cell key={entry.value} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>By category</center></h3>
+                <ResponsiveContainer height={400}>
+                  <PieChart>
+                    <Pie
+                      data={byCategoryChart}
+                      dataKey="value"
+                      outerRadius={160}
+                      innerRadius={160 - 40}
+                      startAngle={90}
+                      endAngle={-270}
+                      label={{ fontSize: 22 }}
+                      labelLine={false}
+                    >
+                      {byCategoryChart.map((entry, index) => (
+                        <Cell key={entry.value} fill={PALETTE_COLOR_2[index].fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>By status</center></h3>
+                <ResponsiveContainer height={400}>
+                  <PieChart>
+                    <Pie
+                      data={byStatusChart}
+                      dataKey="value"
+                      outerRadius={160}
+                      innerRadius={160 - 40}
+                      startAngle={90}
+                      endAngle={-270}
+                      label={{ fontSize: 22 }}
+                      labelLine={false}
+                    >
+                      {byStatusChart.map((entry, index) => (
+                        <Cell key={entry.value} fill={PALETTE_COLOR_3[index].fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
           <article className="c-article">
             <div className="l-container">
               <header>
-                <h2 className="c-title">
-                  {intl.formatMessage({
-                    id: 'observations_by_category',
-                  })}
+                <h2 className="c-title -large">
+                  Observations grouped by illegality category
                 </h2>
               </header>
             </div>
 
-            <div className="content">
-              <StaticTabs
-                options={HELPERS_OBS.getYears(observationData)}
-                defaultSelected={year.toString()}
-                onChange={setYear}
-              />
+            <br />
+            <br />
 
-              <div className="l-container">
-                <div className="content">
-                  {/* CHARTS */}
-                  <article className="c-article">
-                    <TotalObservationsByOperatorByCategory
-                      data={observationData}
-                      year={parseInt(year, 10)}
-                    />
-                  </article>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="c-article">
             <TotalObservationsByOperatorByCategorybyIllegality
               data={observationData}
-              year={parseInt(year, 10)}
             />
           </article>
         </Fragment>
@@ -156,6 +208,7 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
+  operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   fmus: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),

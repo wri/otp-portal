@@ -61,7 +61,7 @@ export function getColumnHeaders(intl) {
               }
               overlayClassName="c-tooltip no-pointer-events"
             >
-              <button className="c-button -icon -primary" aria-label="Show information about the status">
+              <button className="c-button -transparent -icon" aria-label="Show information about the status">
                 <Icon name="icon-info" className="-smaller" />
               </button>
             </Tooltip>
@@ -139,7 +139,7 @@ export function getColumnHeaders(intl) {
       accessor: 'observer-organizations',
       headerClassName: '-a-left',
       className: 'observer-organizations',
-      minWidth: 250,
+      minWidth: 220,
       Cell: (attr) => (
         sortBy(attr.value, "name").map((observer, index) => {
           return (
