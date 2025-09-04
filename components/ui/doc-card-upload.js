@@ -16,7 +16,7 @@ import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
 
 // Components
-import ConfirmModal from 'components/ui/confirm-modal';
+import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
 import useUser from 'hooks/use-user';
 
@@ -91,18 +91,13 @@ const DocCardUpload = (props) => {
   const triggerDeleteFile = (e) => {
     e && e.preventDefault();
 
-    modal.toggleModal(true, {
-      children: ConfirmModal,
-      childrenProps: {
-        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: title }),
+    showConfirmModal({
+      title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: title }),
         text: intl.formatMessage(
           { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
         ),
-        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
-        onConfirm: triggerConfirmedDeleteFile,
-        onCancel: () => modal.toggleModal(false),
-      },
-      size: '-small'
+      confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+      onConfirm: triggerConfirmedDeleteFile
     });
   };
 

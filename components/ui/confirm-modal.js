@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
+import modal from 'services/modal';
+
 import Spinner from 'components/ui/spinner';
 
 const ConfirmModal = ({
@@ -55,5 +57,25 @@ const ConfirmModal = ({
     </div>
   )
 };
+
+export function showConfirmModal({
+  title,
+  text,
+  confirmText,
+  onConfirm,
+  onCancel = () => modal.toggleModal(false)
+}) {
+  modal.toggleModal(true, {
+    children: ConfirmModal,
+    childrenProps: {
+      title,
+      text,
+      confirmText,
+      onConfirm,
+      onCancel
+    },
+    size: '-small'
+  });
+}
 
 export default ConfirmModal;

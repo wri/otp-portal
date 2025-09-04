@@ -11,7 +11,7 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
-import ConfirmModal from 'components/ui/confirm-modal';
+import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
@@ -99,20 +99,13 @@ const DocCard = (props) => {
       setAnnexTooltipVisible(undefined);
     });
 
-    modal.toggleModal(true, {
-      children: ConfirmModal,
-      childrenProps: {
-        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: annex.name }),
-        text: intl.formatMessage(
-          { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: annex.name }
-        ),
-        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
-        onConfirm: (options) => {
-          triggerConfirmedRemoveAnnex({ ...options, annexId: id });
-        },
-        onCancel: () => modal.toggleModal(false),
-      },
-      size: '-small'
+    showConfirmModal({
+      title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: annex.name }),
+      text: intl.formatMessage(
+        { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: annex.name }
+      ),
+      confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+      onConfirm: (options) => { triggerConfirmedRemoveAnnex({ ...options, annexId: id }); }
     });
   };
 
