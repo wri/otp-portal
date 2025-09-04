@@ -55,6 +55,10 @@
     }
   }
 
+  &.-transparent {
+    background: transparent;
+  }
+
   &.-secondary {
     border-color: $border-color-3;
     color: $color-text-2;

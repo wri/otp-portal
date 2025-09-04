@@ -59,6 +59,7 @@ export default function Table({ data, options, className }) {
         NoDataComponent={noDataComponent}
         pages={options.pages}
         showPageSizeOptions={options.showPageSizeOptions}
+        showPagination={options.showPagination}
         multiSort={options.multiSort !== undefined ? options.multiSort : true}
         sortable={options.sortable !== undefined ? options.sortable : true}
         resizable={false}

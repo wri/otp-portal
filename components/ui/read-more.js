@@ -18,7 +18,7 @@ const ReadMore = ({ children, more, less, lines }) => {
   };
 
   return (
-    <div>
+    <div className="c-readmore">
       <Truncate
         lines={!expanded && lines}
         ellipsis={
