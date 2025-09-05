@@ -18,24 +18,23 @@ import Layout, { getInitialProps } from 'components/operators-detail/layout';
 // Operator Details Tabs
 import OperatorsDetailDocumentation from 'components/operators-detail/documentation';
 
+import usePrevious from 'hooks/use-previous';
+
 const OperatorsDetailDocumentationPage = ({
   operatorsDetail,
   operatorObservations,
   operatorDocumentation,
   getOperatorDocumentation
 }) => {
-  const prevDateRef = useRef();
+  const date = operatorsDetail?.date?.toString();
+  const previousDate = usePrevious(date);
 
   useEffect(() => {
-    const currentDate = operatorsDetail?.date?.toString();
-
-    if (prevDateRef.current && prevDateRef.current !== currentDate) {
+    if (previousDate && previousDate !== date) {
       const operator = operatorsDetail.data;
       getOperatorDocumentation(operator.id);
     }
-
-    prevDateRef.current = currentDate;
-  }, [operatorsDetail?.date, operatorsDetail.data, getOperatorDocumentation]);
+  }, [date, operatorsDetail.data, getOperatorDocumentation]);
 
   return (
     <Layout operatorObservations={operatorObservations}>
