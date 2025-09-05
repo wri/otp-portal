@@ -37,15 +37,15 @@ function DocumentsByOperator(props) {
         <CountryDocCard {...card} />
 
         {user.canManageCountry(id) && (
-            <CountryDocCardUpload
-              {...card}
-              properties={{
-                type: 'government',
-                id
-              }}
-              user={user}
-              onChange={() => props.getCountry(id)}
-            />
+          <CountryDocCardUpload
+            {...card}
+            properties={{
+              type: 'government',
+              id
+            }}
+            user={user}
+            onChange={() => props.getCountry(id)}
+          />
         )}
       </div>
     ));
