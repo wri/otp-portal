@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
 
-export const PALETTE = {
+export const STATUSES = {
   doc_not_provided: {
     label: 'Not provided',
     fill: PALETTE_COLOR_2[0].fill,
@@ -14,8 +14,7 @@ export const PALETTE = {
   doc_invalid: {
     label: 'Provided (not valid)',
     fill: PALETTE_COLOR_2[1].fill,
-    stroke: PALETTE_COLOR_2[1].fill,
-    user: true
+    stroke: PALETTE_COLOR_2[1].fill
   },
   doc_valid: {
     label: 'Provided (valid)',
@@ -25,8 +24,7 @@ export const PALETTE = {
   doc_pending: {
     label: 'Pending for approval',
     fill: PALETTE_COLOR_2[3].fill,
-    stroke: PALETTE_COLOR_2[3].fill,
-    user: true
+    stroke: PALETTE_COLOR_2[3].fill
   },
   doc_expired: {
     label: 'Expired',
@@ -41,10 +39,6 @@ export const PALETTE = {
 };
 
 const HELPERS_DOC = {
-  getMetadata() {
-    return JSON.parse(JSON.stringify(PALETTE));
-  },
-
   getPercentage(data) {
     // return round(Math.random() * 100, 2);
     if (data['percentage-valid-documents-all']) {
@@ -110,10 +104,10 @@ const HELPERS_DOC = {
       return Object.keys(groupedByStatus).map(status => [
         {
           id: status,
-          label: PALETTE[status].label,
+          label: STATUSES[status].label,
           value: parseFloat(((groupedByStatus[status].length / length) * 100).toFixed(2).replace(/[.,]00$/, '')) || 0,
-          fill: PALETTE[status].fill,
-          stroke: PALETTE[status].stroke
+          fill: STATUSES[status].fill,
+          stroke: STATUSES[status].stroke
         }
       ]).flat();
     }

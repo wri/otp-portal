@@ -4,7 +4,7 @@ import { omit } from 'utils/general';
 import { useRouter } from 'next/router';
 
 // Utils
-import { HELPERS_DOC } from 'utils/documentation';
+import { STATUSES, HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
@@ -22,7 +22,11 @@ function DocumentsProvidedChart({ data }) {
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
   );
-  const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
+  const notVisibleStatuses = [
+    'doc_not_required',
+    ...(user.canManageOperator(operatorId) ? [] : ['doc_pending', 'doc_invalid'])
+  ];
+  const legend = omit(STATUSES, notVisibleStatuses);
 
   groupedByStatusChart.forEach((item) => {
     legend[item.id].value = item.value;
@@ -60,12 +64,7 @@ function DocumentsProvidedChart({ data }) {
 
       {/* Legend */}
       <ChartLegend
-        list={Object.keys(legend)
-          .map((k) => ({ id: k, value: 0, ...legend[k] }))
-          .filter((k) => {
-            if (user.canManageOperator(operatorId)) return true;
-            return !k.user;
-          })}
+        list={Object.keys(legend).map((k) => ({ id: k, value: 0, ...legend[k] }))}
         className="-absolute"
       />
     </div>
