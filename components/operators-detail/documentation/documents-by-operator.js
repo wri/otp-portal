@@ -17,9 +17,12 @@ import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
+import useUser from '~/hooks/use-user';
 
-function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props }) {
+function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
   const intl = useIntl();
+  const user = useUser();
+
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(groupedByCategory)
     .map((categoryDocs) => categoryDocs.length)
@@ -132,25 +135,21 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
                         }}
                       />
 
-                      {((user && user.role === 'admin') ||
-                        (user &&
-                          (user.role === 'operator' || user.role === 'holding') &&
-                          user.operator_ids &&
-                          user.operator_ids.includes(+id))) && (
-                          <DocCardUpload
-                            {...card}
-                            properties={{
-                              type: 'operator',
-                              id,
-                            }}
-                            user={user}
-                            onChange={() => {
-                              props.getOperator(id)
-                              props.getOperatorDocumentation(id)
-                              props.getOperatorTimeline(id)
-                            }}
-                          />
-                        )}
+                      {user.canManageOperator(id) && (
+                        <DocCardUpload
+                          {...card}
+                          properties={{
+                            type: 'operator',
+                            id,
+                          }}
+                          user={user}
+                          onChange={() => {
+                            props.getOperator(id)
+                            props.getOperatorDocumentation(id)
+                            props.getOperatorTimeline(id)
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -160,7 +159,6 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
             {FMUDocs.length > 0 && isCategoryOpen && (
               <DocumentsByFMU
                 documents={FMUDocsByFMU}
-                user={user}
                 id={id}
                 getOperator={(_id) => {
                   props.getOperator(_id)
@@ -183,13 +181,10 @@ DocumentsByOperator.defaultProps = {
 DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,
   searchText: PropTypes.string,
-  id: PropTypes.string,
-  user: PropTypes.object
+  id: PropTypes.string
 };
 
 export default connect(
-  (state) => ({
-    user: state.user,
-  }),
+  null,
   { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline }
 )(DocumentsByOperator);

@@ -7,9 +7,12 @@ import { useIntl } from 'react-intl';
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
+import useUser from 'hooks/use-user';
 
-function DocumentsByFMU({ documents, user, id, getOperator }) {
+function DocumentsByFMU({ documents, id, getOperator }) {
   const intl = useIntl();
+  const user = useUser();
+
   return (
     <div className="c-doc-gallery-fmu-docs">
       <h3>{intl.formatMessage({ id: 'fmus-documents' })}:</h3>
@@ -35,20 +38,16 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
                     }}
                     onChange={() => getOperator(id)}
                   />
-                  {((user && user.role === 'admin') ||
-                    (user &&
-                      (user.role === 'operator' || user.role === 'holding') &&
-                      user.operator_ids &&
-                      user.operator_ids.includes(+id))) && (
-                      <DocCardUpload
-                        {...card}
-                        properties={{
+                  {user.canManageOperator(id) && (
+                    <DocCardUpload
+                      {...card}
+                      properties={{
                         type: 'operator',
                         id,
                       }}
-                        user={user}
-                        onChange={() => getOperator(id)}
-                      />
+                      user={user}
+                      onChange={() => getOperator(id)}
+                    />
                   )}
                 </div>
               ))}
@@ -62,7 +61,6 @@ function DocumentsByFMU({ documents, user, id, getOperator }) {
 
 DocumentsByFMU.propTypes = {
   documents: PropTypes.object,
-  user: PropTypes.object,
   id: PropTypes.string,
   getOperator: PropTypes.func
 };

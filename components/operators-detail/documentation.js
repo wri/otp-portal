@@ -8,8 +8,8 @@ import { useIntl } from 'react-intl';
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Components
-import DocumentsCertification from 'components/operators-detail/documentation/documents-certification';
-import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
+import DocumentsPublicationAuthorization from '~/components/operators-detail/documentation/documents-publication-authorization';
+import DocumentsProvidedChart from '~/components/operators-detail/documentation/documents-provided-chart';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
@@ -50,10 +50,7 @@ function OperatorsDetailDocumentation({
           <DocumentsFilter showDate showFMU />
           <DocumentsHeaderFilter searchText={searchText} setSearchText={setSearchText} />
 
-          <DocumentsCertification
-            // Publication authorization
-            id={operator.id}
-          />
+          <DocumentsPublicationAuthorization id={operator.id} />
 
           <article className="c-article">
             <header>
@@ -74,7 +71,7 @@ function OperatorsDetailDocumentation({
 
             <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
-              <DocumentsProvided
+              <DocumentsProvidedChart
                 data={filteredData}
                 groupedByStatusChart={groupedByStatusChart}
               />

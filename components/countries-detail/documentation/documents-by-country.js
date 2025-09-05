@@ -15,10 +15,12 @@ import { HELPERS_DOC } from "utils/documentation";
 // Components
 import CountryDocCard from "components/ui/country-doc-card";
 import CountryDocCardUpload from "components/ui/country-doc-card-upload";
+import useUser from "hooks/use-user";
 
 function DocumentsByOperator(props) {
-  const { data, user, id } = props;
+  const { data, id } = props;
   const intl = useIntl();
+  const user = useUser();
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
 
@@ -34,8 +36,7 @@ function DocumentsByOperator(props) {
       <div key={card.id} className="columns small-12">
         <CountryDocCard {...card} />
 
-        {((user && user.role === 'admin') ||
-          (user && user.role === 'government' && user.country && user.country.toString() === id)) && (
+        {user.canManageCountry(id) && (
             <CountryDocCardUpload
               {...card}
               properties={{
@@ -125,12 +126,9 @@ DocumentsByOperator.defaultProps = {
 DocumentsByOperator.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
-  user: PropTypes.object
 };
 
 export default connect(
-  state => ({
-    user: state.user
-  }),
+  null,
   { getCountry }
 )(DocumentsByOperator);

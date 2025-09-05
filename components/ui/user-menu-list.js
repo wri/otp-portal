@@ -7,9 +7,11 @@ import uniqBy from 'lodash/uniqBy';
 import Notifications from 'components/ui/notifications';
 import { logout } from 'modules/user';
 import modal from 'services/modal';
+import useUser from 'hooks/use-user';
 
-const UserMenuList = ({ className, listItemClassName, user, operators, notifications, logout: userLogout }) => {
+const UserMenuList = ({ className, listItemClassName, operators, notifications, logout: userLogout }) => {
   const intl = useIntl();
+  const user = useUser();
   const handleNotificationsClick = () => {
     modal.toggleModal(true, {
       children: Notifications,
@@ -36,7 +38,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
           {intl.formatMessage({ id: 'My profile' })}
         </Link>
       </li>
-      {user.role === 'operator' && (
+      {user.isOperator && (
         <li className={listItemClassName}>
           <Link
             href="/operator/edit"
@@ -46,7 +48,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
           </Link>
         </li>
       )}
-      {user.role === 'holding' && userOperators.map(operator => (
+      {user.isHolding && userOperators.map(operator => (
         <li key={`dropodown-operator-profile-${operator.id}`} className={listItemClassName}>
           <Link
             href={`/operator/edit/${operator.id}`}
@@ -58,7 +60,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
           </Link>
         </li>
       ))}
-      {(user.role === 'operator' || user.role === 'holding') && userOperators.map(operator => (
+      {(user.isOperator || user.isHolding) && userOperators.map(operator => (
         <li key={`dropdown-operator-docs-${operator.id}`} className={listItemClassName}>
           <Link
             href={`/operators/${operator.slug}/documentation`}
@@ -70,7 +72,7 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
           </Link>
         </li>
       ))}
-      {user.role === 'admin' && (
+      {user.isAdmin && (
         <li className={listItemClassName}>
           <a href="/admin" >{intl.formatMessage({ id: 'logged_in.dropdown.admin' })}</a>
         </li>
@@ -90,7 +92,6 @@ const UserMenuList = ({ className, listItemClassName, user, operators, notificat
 
 export default connect(
   state => ({
-    user: state.user,
     operators: state.operators.data,
     notifications: state.notifications.data
   }),

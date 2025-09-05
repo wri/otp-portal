@@ -13,20 +13,15 @@ import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
 import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
+import useUser from 'hooks/use-user';
 
-function DocumentsCertification(props) {
-  const { doc, user, id } = props;
+function DocumentsPublicationAuthorization(props) {
+  const { doc, id } = props;
   const intl = useIntl();
+  const user = useUser();
   const { status } = doc;
 
-  const isLogged =
-    (user && user.role === 'admin') ||
-      (user &&
-        (user.role === 'operator' || user.role === 'holding') &&
-        user.operator_ids &&
-        user.operator_ids.includes(+id));
-
-  if (!isLogged || isEmpty(doc)) {
+  if (!user.canManageOperator(id) || isEmpty(doc)) {
     return null;
   }
 
@@ -63,33 +58,27 @@ function DocumentsCertification(props) {
                 onChange={() => props.getOperator(id)}
               />
 
-              {((user && user.role === 'admin') ||
-                (user &&
-                  (user.role === 'operator' || user.role === 'holding') &&
-                  user.operator_ids &&
-                  user.operator_ids.includes(+id))) && (
-                    <DocCardUpload
-                      {...doc}
-                      title={intl.formatMessage({ id: 'operator-detail.license' })}
-                      properties={{
-                        type: 'operator',
-                        id,
-                      }}
-                      buttons={{
-                        add: true,
-                        update: true,
-                        delete: true,
-                        not_required: false,
-                      }}
-                      user={user}
-                      onChange={() => {
-                        props.getOperator(id);
-                        props.getOperatorDocumentation(id);
-                        props.getOperatorTimeline(id);
-                        props.getOperatorPublicationAuthorization(id);
-                      }}
-                    />
-              )}
+              <DocCardUpload
+                {...doc}
+                title={intl.formatMessage({ id: 'operator-detail.license' })}
+                properties={{
+                  type: 'operator',
+                  id,
+                }}
+                buttons={{
+                  add: true,
+                  update: true,
+                  delete: true,
+                  not_required: false,
+                }}
+                user={user}
+                onChange={() => {
+                  props.getOperator(id);
+                  props.getOperatorDocumentation(id);
+                  props.getOperatorTimeline(id);
+                  props.getOperatorPublicationAuthorization(id);
+                }}
+              />
             </div>
           </div>
         </li>
@@ -98,12 +87,11 @@ function DocumentsCertification(props) {
   );
 }
 
-DocumentsCertification.defaultProps = {};
+DocumentsPublicationAuthorization.defaultProps = {};
 
-DocumentsCertification.propTypes = {
+DocumentsPublicationAuthorization.propTypes = {
   doc: PropTypes.shape({}),
   id: PropTypes.string,
-  user: PropTypes.object,
   getOperator: PropTypes.func,
   getOperatorDocumentation: PropTypes.func,
   getOperatorTimeline: PropTypes.func,
@@ -112,8 +100,7 @@ DocumentsCertification.propTypes = {
 
 export default connect(
   (state) => ({
-    user: state.user,
     doc: getContractSignatureDocumentation(state),
   }),
   { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
-)(DocumentsCertification);
+)(DocumentsPublicationAuthorization);
