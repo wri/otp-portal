@@ -71,8 +71,8 @@ function OperatorsDetailDocumentation({
             <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
               <DocumentsProvidedChart
-                data={filteredData}
-                groupedByStatusChart={groupedByStatusChart}
+                data={groupedByStatusChart}
+                operatorId={Number(operator.id)}
               />
               <div className="pie-categories">
                 {Object.entries(docsGroupedByCategory).map(
