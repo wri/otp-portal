@@ -121,7 +121,6 @@ CountriesDetail.propTypes = {
 
 export default withRouter(connect(
   state => ({
-    user: state.user,
     countriesDetail: state.countriesDetail,
     countryDocumentation: getParsedDocumentation(state)
   }),

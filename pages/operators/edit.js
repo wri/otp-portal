@@ -19,9 +19,12 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
+import useUser from 'hooks/use-user';
 
-function OperatorsEdit({ user, userOperator, operatorId, getOperators, getUserOperator }) {
+function OperatorsEdit({ operatorId, getOperators, getUserOperator }) {
   const intl = useIntl();
+  const user = useUser();
+  const userOperator = user.userOperator;
   useEffect(() => {
     if (!user.operator_ids) {
       const location = {
@@ -88,16 +91,11 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
 
 OperatorsEdit.propTypes = {
   operatorId: PropTypes.number.isRequired,
-  user: PropTypes.object,
-  userOperator: PropTypes.object,
   getOperators: PropTypes.func,
   getUserOperator: PropTypes.func
 };
 
 export default connect(
-  state => ({
-    user: state.user,
-    userOperator: state.user.userOperator
-  }),
+  null,
   { getUserOperator, getOperators }
 )(OperatorsEdit);

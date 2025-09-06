@@ -71,7 +71,6 @@ function DocumentsPublicationAuthorization(props) {
                   delete: true,
                   not_required: false,
                 }}
-                user={user}
                 onChange={() => {
                   props.getOperator(id);
                   props.getOperatorDocumentation(id);

@@ -2,9 +2,6 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 
-// Redux
-import { connect } from 'react-redux';
-
 // Intl
 import { useIntl } from 'react-intl';
 
@@ -16,15 +13,17 @@ import SawmillsService from 'services/sawmillsService';
 import Checkbox from 'components/form/Checkbox';
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
+import useUser from 'hooks/use-user';
 
 // Constants
 
 const SawmillModal = dynamic(() => import('components/ui/sawmill-modal'), { ssr: false });
 
-const SawmillsTable = ({ user, sawmills, onChange }) => {
+const SawmillsTable = ({ sawmills, onChange }) => {
   const intl = useIntl();
+  const user = useUser();
   const [loading, setLoading] = useState(false);
-  
+
   const sawmillsService = useMemo(() => new SawmillsService({
     authorization: user.token
   }), [user.token]);
@@ -115,13 +114,8 @@ const SawmillsTable = ({ user, sawmills, onChange }) => {
 };
 
 SawmillsTable.propTypes = {
-  user: PropTypes.object,
   sawmills: PropTypes.array,
   onChange: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    user: state.user
-  })
-)(SawmillsTable);
+export default SawmillsTable;

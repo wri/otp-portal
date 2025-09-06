@@ -25,9 +25,11 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import LocationSearch from 'components/map/location-search';
 
 import CancelButton from '../form/CancelButton';
+import useUser from 'hooks/use-user';
 
-const SawmillModal = ({ user, language, sawmill, sawmillMap, onChange, setMapLocation, unmountMap }) => {
+const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation, unmountMap }) => {
   const intl = useIntl();
+  const user = useUser();
   const sawmillsService = useMemo(() => new SawmillsService({
     authorization: user.token
   }), [user.token]);
@@ -278,7 +280,6 @@ const SawmillModal = ({ user, language, sawmill, sawmillMap, onChange, setMapLoc
 };
 
 SawmillModal.propTypes = {
-  user: PropTypes.object,
   language: PropTypes.string,
   sawmill: PropTypes.object,
   sawmillMap: PropTypes.object,
@@ -289,7 +290,6 @@ SawmillModal.propTypes = {
 
 export default connect(
   state => ({
-    user: state.user,
     language: state.language,
     operatorsDetailFmus: state.operatorsDetailFmus,
     sawmillMap: state.sawmillMap

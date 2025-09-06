@@ -4,7 +4,6 @@ import sortBy from "lodash/sortBy";
 
 // Redux
 import { connect } from "react-redux";
-import { useIntl } from 'react-intl';
 
 import { getCountry } from "modules/countries-detail";
 
@@ -19,11 +18,9 @@ import useUser from "hooks/use-user";
 
 function DocumentsByOperator(props) {
   const { data, id } = props;
-  const intl = useIntl();
   const user = useUser();
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
-
 
   const renderDocs = (docs) => {
     return docs.map(card => (
@@ -37,7 +34,6 @@ function DocumentsByOperator(props) {
               type: 'government',
               id
             }}
-            user={user}
             onChange={() => props.getCountry(id)}
           />
         )}

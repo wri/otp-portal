@@ -18,10 +18,12 @@ import modal from 'services/modal';
 // Components
 import ConfirmModal from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
+import useUser from 'hooks/use-user';
 
 const DocCardUpload = (props) => {
-  const { status, buttons, date, user, title, docId, onChange, reason } = props;
+  const { status, buttons, date, title, docId, onChange, reason } = props;
   const intl = useIntl();
+  const user = useUser();
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token,
   }), [user.token]);
@@ -202,7 +204,6 @@ const DocCardUpload = (props) => {
 DocCardUpload.propTypes = {
   status: PropTypes.string,
   title: PropTypes.string,
-  user: PropTypes.object,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),

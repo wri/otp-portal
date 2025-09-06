@@ -20,6 +20,7 @@ import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from '../form/CancelButton';
+import useUser from 'hooks/use-user';
 
 const TYPES = {
   'operator-document-countries': 'operator-document-countries',
@@ -27,8 +28,9 @@ const TYPES = {
   'operator-document-fmu-histories': 'operator-document-fmus',
 };
 
-const DocModal = ({ startDate, endDate, url, reason, user, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
+const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
   const intl = useIntl();
+  const user = useUser();
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -207,7 +209,6 @@ DocModal.propTypes = {
   properties: PropTypes.object,
   notRequired: PropTypes.bool,
   fmu: PropTypes.object,
-  user: PropTypes.object,
   onChange: PropTypes.func,
 };
 

@@ -11,9 +11,11 @@ import Search from 'components/ui/search';
 
 import { useIntl } from 'react-intl';
 import UserMenuList from 'components/ui/user-menu-list';
+import useUser from 'hooks/use-user';
 
-function MobileMenu({ className, countries, user }) {
+function MobileMenu({ className, countries }) {
   const intl = useIntl();
+  const user = useUser();
   const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
 
   const elements = [
@@ -113,13 +115,11 @@ function MobileMenu({ className, countries, user }) {
 
 MobileMenu.propTypes = {
   className: PropTypes.string,
-  countries: PropTypes.object,
-  user: PropTypes.object
+  countries: PropTypes.object
 };
 
 export default connect(
   (state) => ({
-    user: state.user,
     countries: state.countries,
   }),
 )(MobileMenu);

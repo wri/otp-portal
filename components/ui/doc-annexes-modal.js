@@ -19,9 +19,11 @@ import Input from 'components/form/Input';
 import File from 'components/form/File';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
+import useUser from 'hooks/use-user';
 
-const DocAnnexesModal = ({ title, user, docId, onChange }) => {
+const DocAnnexesModal = ({ title, docId, onChange }) => {
   const intl = useIntl();
+  const user = useUser();
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
   }), [user.token]);
@@ -151,14 +153,11 @@ const DocAnnexesModal = ({ title, user, docId, onChange }) => {
 
 DocAnnexesModal.propTypes = {
   title: PropTypes.string,
-  user: PropTypes.object,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func
 };
 
 export default connect(
-  state => ({
-    user: state.user
-  }),
+  null,
   { getOperator }
 )(DocAnnexesModal);

@@ -1,9 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
 // Redux
-import { connect } from 'react-redux';
 import { getUserProfile } from 'modules/user';
 
 // Intl
@@ -14,9 +12,11 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import UserEditForm from 'components/users/edit';
 import Spinner from 'components/ui/spinner';
+import useUser from '~/hooks/use-user';
 
-const Profile = ({ userProfile }) => {
+const Profile = () => {
   const intl = useIntl();
+  const { userProfile } = useUser();
 
   return (
     <Layout
@@ -50,14 +50,4 @@ Profile.getInitialProps = async ({ store }) => {
   return {};
 }
 
-Profile.propTypes = {
-  user: PropTypes.object,
-  userProfile: PropTypes.object
-};
-
-export default connect(
-  state => ({
-    user: state.user,
-    userProfile: state.user.userProfile
-  }),
-)(Profile);
+export default Profile;

@@ -18,9 +18,11 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
+import useUser from 'hooks/use-user';
 
-const OperatorsEdit = ({ userOperator, operatorId, getOperators, getUserOperator }) => {
+const OperatorsEdit = ({ operatorId, getOperators, getUserOperator }) => {
   const intl = useIntl();
+  const { userOperator } = useUser();
 
   if (!operatorId) {
     return null;
@@ -80,16 +82,11 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
 
 OperatorsEdit.propTypes = {
   operatorId: PropTypes.number.isRequired,
-  user: PropTypes.object,
-  userOperator: PropTypes.object,
   getOperators: PropTypes.func,
   getUserOperator: PropTypes.func
 };
 
 export default connect(
-  state => ({
-    user: state.user,
-    userOperator: state.user.userOperator
-  }),
+  null,
   { getUserOperator, getOperators }
 )(OperatorsEdit);

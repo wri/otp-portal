@@ -12,10 +12,12 @@ import modal from 'services/modal';
 // Components
 import CountryDocModal from 'components/ui/country-doc-modal';
 import Spinner from 'components/ui/spinner';
+import useUser from 'hooks/use-user';
 
 const CountryDocCardUpload = (props) => {
-  const { status, docType, user, id, onChange } = props;
+  const { status, docType, id, onChange } = props;
   const intl = useIntl();
+  const user = useUser();
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const documentationService = useMemo(() => new DocumentationService({
@@ -90,7 +92,6 @@ const CountryDocCardUpload = (props) => {
 CountryDocCardUpload.propTypes = {
   status: PropTypes.string,
   docType: PropTypes.string,
-  user: PropTypes.object,
   id: PropTypes.string,
   onChange: PropTypes.func
 };

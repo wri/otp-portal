@@ -12,6 +12,7 @@ import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { groupBy } from 'utils/general';
 import { getNotifications, dismissAll } from 'modules/notifications';
+import useUser from 'hooks/use-user';
 
 function isBeforeToday(date) {
   const today = new Date();
@@ -19,8 +20,9 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-const Notifications = ({ user, notifications, render, getNotifications, dismissAll }) => {
+const Notifications = ({ notifications, render, getNotifications, dismissAll }) => {
   const intl = useIntl();
+  const user = useUser();
   const handleDismiss = () => {
     dismissAll();
     modal.toggleModal(false);
@@ -31,14 +33,14 @@ const Notifications = ({ user, notifications, render, getNotifications, dismissA
   };
 
   useEffect(() => {
-    if (user.token && !render) {
+    if (user.isLoggedIn && !render) {
       getNotifications();
     }
-  }, [user.token, render, getNotifications]);
+  }, [user.isLoggedIn, render, getNotifications]);
 
   useEffect(() => {
     if (!render
-      && user.token
+      && user.isLoggedIn
       && notifications.data.length
       && !localStorage.getItem('notificationsShown')
     ) {
@@ -51,7 +53,7 @@ const Notifications = ({ user, notifications, render, getNotifications, dismissA
       });
       localStorage.setItem('notificationsShown', true);
     }
-  }, [render, user.token, notifications.data.length]);
+  }, [render, user.isLoggedIn, notifications.data.length]);
 
   const renderSingleNotification = (notification) => {
     const expirationDate = new Date(notification['expiration-date']);
@@ -203,7 +205,6 @@ const Notifications = ({ user, notifications, render, getNotifications, dismissA
 
 Notifications.propTypes = {
   render: PropTypes.bool,
-  user: PropTypes.object,
   notifications: PropTypes.object,
   getNotifications: PropTypes.func,
   dismissAll: PropTypes.func,
@@ -216,7 +217,6 @@ Notifications.defaultProps = {
 
 const ConnectedNotifications = connect(
   state => ({
-    user: state.user,
     notifications: state.notifications,
     language: state.language
   }),

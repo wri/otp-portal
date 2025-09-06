@@ -15,12 +15,14 @@ import { Dropdown, DropdownTrigger, DropdownContent } from 'components/ui/dropdo
 import UserMenuList from 'components/ui/user-menu-list';
 import Icon from 'components/ui/icon';
 import DynamicLoading from 'components/ui/dynamic-loading';
+import useUser from 'hooks/use-user';
 
 const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
 
-const UserDropdown = ({ user, displayIcon, className, theme }) => {
+const UserDropdown = ({ displayIcon, className, theme }) => {
   const intl = useIntl();
-  if (!user.token) {
+  const user = useUser();
+  if (!user.isLoggedIn) {
     return (
       <div
         className={className}
@@ -57,8 +59,7 @@ const UserDropdown = ({ user, displayIcon, className, theme }) => {
 
 UserDropdown.propTypes = {
   displayIcon: PropTypes.bool,
-  theme: PropTypes.string,
-  user: PropTypes.object
+  theme: PropTypes.string
 }
 
 UserDropdown.defaultProps = {
@@ -66,8 +67,6 @@ UserDropdown.defaultProps = {
 }
 
 export default connect(
-  state => ({
-    user: state.user
-  }),
+  null,
   { logout }
 )(UserDropdown);

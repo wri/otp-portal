@@ -22,11 +22,13 @@ import { HELPERS_REGISTER } from 'utils/signup';
 import SubmitButton from '../form/SubmitButton';
 
 import { CERTIFICATIONS } from 'constants/fmu';
+import useUser from 'hooks/use-user';
 
 const EditOperator = (props) => {
   // rewrite class component to functional component
   const { operator } = props;
   const intl = useIntl();
+  const user = useUser();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const handleSubmit = ({ form }) => {
@@ -47,7 +49,7 @@ const EditOperator = (props) => {
       },
       type: 'PATCH',
       id: operator.id,
-      authorization: props.user.token
+      authorization: user.token
     }).then(() => {
       toastr.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -214,7 +216,6 @@ const EditOperator = (props) => {
 
 EditOperator.propTypes = {
   language: PropTypes.string,
-  user: PropTypes.object,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
   onSubmit: PropTypes.func
@@ -222,7 +223,6 @@ EditOperator.propTypes = {
 
 export default connect(
   state => ({
-    user: state.user,
     language: state.language
   }),
   {

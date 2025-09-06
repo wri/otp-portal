@@ -43,7 +43,6 @@ function DocumentsByFMU({ documents, id, getOperator }) {
                         type: 'operator',
                         id,
                       }}
-                      user={user}
                       onChange={() => getOperator(id)}
                     />
                   )}

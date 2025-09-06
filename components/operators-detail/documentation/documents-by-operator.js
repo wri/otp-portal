@@ -17,7 +17,7 @@ import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
 import ExpandableSection from 'components/ui/expandable-section';
-import useUser from '~/hooks/use-user';
+import useUser from 'hooks/use-user';
 
 function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
   const intl = useIntl();
@@ -28,7 +28,6 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
     .map((categoryDocs) => categoryDocs.length)
     .sort((a, b) => a - b)
     .reverse()[0];
-
 
   const removeDiacritics = str => {
     return str
@@ -124,7 +123,6 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
                             type: 'operator',
                             id,
                           }}
-                          user={user}
                           onChange={() => {
                             props.getOperator(id)
                             props.getOperatorDocumentation(id)
