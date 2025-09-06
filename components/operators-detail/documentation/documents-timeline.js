@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl';
 import dayjs from 'dayjs';
 
 // Utils
-import { PALETTE } from 'utils/documentation';
+import { STATUSES } from 'utils/documentation';
 import { groupBy } from 'utils/general';
 
 function CustomTooltip({ active, payload, label: timestamp }) {
@@ -127,8 +127,8 @@ function DocumentsTimeline({ timelineData = [] }) {
                 <Area
                   key={k}
                   dataKey={k}
-                  stroke={PALETTE[k].stroke}
-                  fill={PALETTE[k].fill}
+                  stroke={STATUSES[k].stroke}
+                  fill={STATUSES[k].fill}
                   fillOpacity="1"
                 />
               ))}

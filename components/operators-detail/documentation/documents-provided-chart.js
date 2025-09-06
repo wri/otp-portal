@@ -3,27 +3,30 @@ import PropTypes from 'prop-types';
 import { omit } from 'utils/general';
 import { useRouter } from 'next/router';
 
-// Redux
-import { connect } from 'react-redux';
-
 // Utils
-import { HELPERS_DOC } from 'utils/documentation';
+import { STATUSES, HELPERS_DOC } from 'utils/documentation';
 
 // Components
 import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 import useDeviceInfo from 'hooks/use-device-info';
+import useUser from 'hooks/use-user';
 
-function DocumentsProvided(props) {
-  const { data, user } = props;
+function DocumentsProvidedChart({ data }) {
+  const user = useUser();
   const isMobileAgent = user.userAgent.isMobile;
   const { isMobile, isServer } = useDeviceInfo();
   const router = useRouter();
+  const operatorId = router.query.id;
   const filteredData = data.filter((d) => d.status !== 'doc_not_required');
   const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
     filteredData
   );
-  const legend = omit(HELPERS_DOC.getMetadata(), 'doc_not_required');
+  const notVisibleStatuses = [
+    'doc_not_required',
+    ...(user.canManageOperator(operatorId) ? [] : ['doc_pending', 'doc_invalid'])
+  ];
+  const legend = omit(STATUSES, notVisibleStatuses);
 
   groupedByStatusChart.forEach((item) => {
     legend[item.id].value = item.value;
@@ -61,35 +64,19 @@ function DocumentsProvided(props) {
 
       {/* Legend */}
       <ChartLegend
-        list={Object.keys(legend)
-          .map((k) => ({ id: k, value: 0, ...legend[k] }))
-          .filter((k) => {
-            if (
-              (user.token && user.role === 'admin') ||
-              (user.token &&
-                (user.role === 'operator' || user.role === 'holding') &&
-                user.operator_ids.includes(+router.query.id))
-            ) {
-              return true;
-            }
-
-            return !k.user;
-          })}
+        list={Object.keys(legend).map((k) => ({ id: k, value: 0, ...legend[k] }))}
         className="-absolute"
       />
     </div>
   );
 }
 
-DocumentsProvided.defaultProps = {
+DocumentsProvidedChart.defaultProps = {
   data: [],
 };
 
-DocumentsProvided.propTypes = {
-  data: PropTypes.array,
-  user: PropTypes.object
+DocumentsProvidedChart.propTypes = {
+  data: PropTypes.array
 };
 
-export default connect((state) => ({
-  user: state.user
-}))(DocumentsProvided);
+export default DocumentsProvidedChart;

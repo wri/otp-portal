@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Intl
-import { injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getOperator,
   getOperatorBySlug,
@@ -19,7 +19,6 @@ import {
   getOperatorTimeline,
   getOperatorObservations
 } from 'modules/operators-detail';
-import { getIntegratedAlertsMetadata } from 'modules/operators-detail-fmus';
 
 import Link from 'next/link';
 
@@ -28,6 +27,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
 import Spinner from 'components/ui/spinner';
+import useUser from 'hooks/use-user';
 
 const TABS_OPERATORS_DETAIL = [{
   label: 'overview',
@@ -52,7 +52,7 @@ const COUNTRIES_FRENCH_FIX = {
 export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   let { operatorsDetail, user } = store.getState();
   const requests = [];
-  const {id} = query;
+  const { id } = query;
   const tab = asPath.split('/').pop().split('?')[0];
 
   // we are going to redirect to slug if the id is a number
@@ -94,20 +94,21 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   return {};
 }
 
-class OperatorsDetailLayout extends React.Component {
-  /**
-   * HELPERS
-   * - getTabOptions
-   */
-  getTabOptions() {
-    const operatorsDetail = this.props.operatorsDetail.data;
-    const observationsCount = operatorsDetail.observations ? operatorsDetail.observations.filter(o => !o.hidden).length : 0;
+const OperatorsDetailLayout = ({ children }) => {
+  const router = useRouter();
+  const intl = useIntl();
+  const user = useUser();
+  const operatorsDetail = useSelector(state => state.operatorsDetail);
+
+  const getTabOptions = useMemo(() => {
+    const operatorsData = operatorsDetail.data;
+    const observationsCount = operatorsData.observations ? operatorsData.observations.filter(o => !o.hidden).length : 0;
 
     return TABS_OPERATORS_DETAIL.map((tab) => {
       let number;
       switch (tab.value) {
         case 'documentation': {
-          number = `${HELPERS_DOC.getPercentage(operatorsDetail)}%`;
+          number = `${HELPERS_DOC.getPercentage(operatorsData)}%`;
           break;
         }
         case 'observations': {
@@ -116,113 +117,83 @@ class OperatorsDetailLayout extends React.Component {
         }
 
         default: {
-          const tabData = operatorsDetail[tab.value];
+          const tabData = operatorsData[tab.value];
           number = tabData ? tabData.length : null;
         }
       }
 
       return {
         ...tab,
-        path: `/operators/${operatorsDetail.slug}/${tab.value}`,
-        label: this.props.intl.formatMessage({ id: tab.label }),
+        path: `/operators/${operatorsData.slug}/${tab.value}`,
+        label: intl.formatMessage({ id: tab.label }),
         number,
       };
     });
-  }
+  }, [operatorsDetail.data, intl]);
 
-  render() {
-    const {
-      router,
-      user,
-      operatorsDetail,
-      children,
-      intl
-    } = this.props;
+  const id = operatorsDetail.data.id;
+  const slug = router.query.id;
+  const tab = router.pathname.split("/").pop() || 'overview';
+  const logoPath = operatorsDetail.data.logo?.thumbnail
+    ? operatorsDetail.data.logo.thumbnail.url
+    : '';
+  const logo = logoPath !== '/api/placeholder.png' ? logoPath : '';
 
-    const id = operatorsDetail.data.id;
-    const slug = router.query.id;
-    const tab = router.pathname.split("/").pop() || 'overview';
-    const logoPath = operatorsDetail.data.logo?.thumbnail
-      ? operatorsDetail.data.logo.thumbnail.url
-      : '';
-    const logo = logoPath !== '/api/placeholder.png' ? logoPath : '';
-    let subtitle = intl.formatMessage(
-      { id: 'operator-detail.subtitle' },
-      {
-        rank: operatorsDetail.data['country-doc-rank'],
-        rankCount: operatorsDetail.data['country-operators'],
-        country: operatorsDetail.data.country?.name
-      }
-    );
-    if (intl.locale === 'fr') {
-      const newPreposition = COUNTRIES_FRENCH_FIX[operatorsDetail.data.country?.iso];
-      if (newPreposition) {
-        subtitle = subtitle.replace(/\sen\s/, ` ${newPreposition} `);
-      }
+  let subtitle = intl.formatMessage(
+    { id: 'operator-detail.subtitle' },
+    {
+      rank: operatorsDetail.data['country-doc-rank'],
+      rankCount: operatorsDetail.data['country-operators'],
+      country: operatorsDetail.data.country?.name
     }
+  );
 
-    return (
-      <Layout
-        title={operatorsDetail.data.name || '-'}
-        description="Forest operator's name description..."
-      >
-        <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
-
-        <StaticHeader
-          title={operatorsDetail.data.name || '-'}
-          subtitle={subtitle}
-          background="/static/images/static-header/bg-operator-detail.jpg"
-          Component={
-            user &&
-            (user.role === 'operator' || user.role === 'holding') &&
-            user.operator_ids &&
-            user.operator_ids.includes(+id) && (
-              (<Link href={`/operators/edit/${id}`} className="c-button -secondary -small">
-                {intl.formatMessage({ id: 'update.profile' })}
-              </Link>)
-            )
-          }
-          tabs
-          logo={logo}
-        />
-
-        <Tabs
-          href={{
-            pathname: router.pathname,
-            query: { id: slug },
-            as: `/operators/${slug}`,
-          }}
-          options={this.getTabOptions()}
-          selected={tab}
-        />
-
-        {children}
-      </Layout>
-    );
+  if (intl.locale === 'fr') {
+    const newPreposition = COUNTRIES_FRENCH_FIX[operatorsDetail.data.country?.iso];
+    if (newPreposition) {
+      subtitle = subtitle.replace(/\sen\s/, ` ${newPreposition} `);
+    }
   }
-}
+
+  return (
+    <Layout
+      title={operatorsDetail.data.name || '-'}
+      description="Forest operator's name description..."
+    >
+      <Spinner isLoading={operatorsDetail.loading} className="-fixed" />
+
+      <StaticHeader
+        title={operatorsDetail.data.name || '-'}
+        subtitle={subtitle}
+        background="/static/images/static-header/bg-operator-detail.jpg"
+        Component={
+          user.canManageOperator(id) && (
+            <Link href={`/operators/edit/${id}`} className="c-button -secondary -small">
+              {intl.formatMessage({ id: 'update.profile' })}
+            </Link>
+          )
+        }
+        tabs
+        logo={logo}
+      />
+
+      <Tabs
+        href={{
+          pathname: router.pathname,
+          query: { id: slug },
+          as: `/operators/${slug}`,
+        }}
+        options={getTabOptions}
+        selected={tab}
+      />
+
+      {children}
+    </Layout>
+  );
+};
 
 OperatorsDetailLayout.propTypes = {
   children: PropTypes.any.isRequired,
-  router: PropTypes.object.isRequired,
-  operatorsDetail: PropTypes.object,
-  user: PropTypes.shape({}),
-  intl: PropTypes.object.isRequired,
 };
 
-export default withRouter(injectIntl(
-  connect(
-    (state) => ({
-      user: state.user,
-      operatorsDetail: state.operatorsDetail
-    }),
-    {
-      getOperator,
-      getOperatorDocumentation,
-      getOperatorPublicationAuthorization,
-      getOperatorTimeline,
-      getOperatorObservations,
-      getIntegratedAlertsMetadata
-    }
-  )(OperatorsDetailLayout)
-));
+export default OperatorsDetailLayout;

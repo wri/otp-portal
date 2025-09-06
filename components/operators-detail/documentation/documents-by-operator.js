@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import cx from 'classnames';
 import { useIntl } from 'react-intl';
 import Fuse from 'fuse.js';
 
@@ -17,21 +16,19 @@ import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
 import DocumentsByFMU from './documents-by-fmu';
+import ExpandableSection from 'components/ui/expandable-section';
+import useUser from '~/hooks/use-user';
 
-function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props }) {
+function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
   const intl = useIntl();
+  const user = useUser();
+
   // Maximum amount of documents in a category, other bars will be proportional to it
   const maxDocs = Object.values(groupedByCategory)
     .map((categoryDocs) => categoryDocs.length)
     .sort((a, b) => a - b)
     .reverse()[0];
 
-  const [categoriesOpen, setCategoriesOpen] = useState(
-    Object.keys(groupedByCategory).reduce(
-      (acc, cat) => ({ ...acc, [cat]: false }),
-      {}
-    )
-  );
 
   const removeDiacritics = str => {
     return str
@@ -64,11 +61,9 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
       (doc) => doc.type === 'operator-document-fmu-histories'
     ));
     const FMUDocsByFMU = groupBy(sortBy(FMUDocs, 'fmu.name'), (d) => d.fmu?.name);
-    const isCategoryOpen = categoriesOpen[category] || searchText?.length > 0;
 
     return {
       category,
-      isCategoryOpen,
       hide: searchText?.length > 0 && producerDocs.length === 0 && FMUDocs.length === 0,
       producerDocs,
       FMUDocs,
@@ -87,32 +82,22 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
           }, { searchText })}
         </li>
       )}
-      {results.filter(r => !r.hide).map(({ category, isCategoryOpen, producerDocs, FMUDocs, FMUDocsByFMU }) => {
+      {results.filter(r => !r.hide).map(({ category, producerDocs, FMUDocs, FMUDocsByFMU }) => {
         return (
-          <li key={category} className="doc-gallery-item -top-border c-doc-by-category">
-            <header className="doc-gallery-item-header">
+          <ExpandableSection
+            key={category}
+            className="doc-gallery-item -top-border c-doc-by-category"
+            defaultOpen={searchText?.length > 0}
+            disabled={searchText?.length > 0}
+            header={
               <DocumentStatusBar
                 category={category}
                 docs={groupedByCategory[category]}
                 maxDocs={maxDocs}
               />
-              <button
-                className={cx('doc-by-category-btn -proximanova', {
-                  open: isCategoryOpen,
-                  disabled: searchText?.length > 0
-                })}
-                onClick={() =>
-                  setCategoriesOpen({
-                    ...categoriesOpen,
-                    [category]: !isCategoryOpen,
-                  })
-                }
-              >
-                {isCategoryOpen ? intl.formatMessage({ id: 'collapse' }) : intl.formatMessage({ id: 'expand' })}
-              </button>
-            </header>
-
-            {producerDocs.length > 0 && isCategoryOpen && (
+            }
+          >
+            {producerDocs.length > 0 && (
               <div className="doc-gallery-producer-docs">
                 <h3>{intl.formatMessage({ id: 'operator-documents' })}:</h3>
 
@@ -132,35 +117,30 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
                         }}
                       />
 
-                      {((user && user.role === 'admin') ||
-                        (user &&
-                          (user.role === 'operator' || user.role === 'holding') &&
-                          user.operator_ids &&
-                          user.operator_ids.includes(+id))) && (
-                          <DocCardUpload
-                            {...card}
-                            properties={{
-                              type: 'operator',
-                              id,
-                            }}
-                            user={user}
-                            onChange={() => {
-                              props.getOperator(id)
-                              props.getOperatorDocumentation(id)
-                              props.getOperatorTimeline(id)
-                            }}
-                          />
-                        )}
+                      {user.canManageOperator(id) && (
+                        <DocCardUpload
+                          {...card}
+                          properties={{
+                            type: 'operator',
+                            id,
+                          }}
+                          user={user}
+                          onChange={() => {
+                            props.getOperator(id)
+                            props.getOperatorDocumentation(id)
+                            props.getOperatorTimeline(id)
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {FMUDocs.length > 0 && isCategoryOpen && (
+            {FMUDocs.length > 0 && (
               <DocumentsByFMU
                 documents={FMUDocsByFMU}
-                user={user}
                 id={id}
                 getOperator={(_id) => {
                   props.getOperator(_id)
@@ -169,7 +149,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, user, id, ...props
                 }}
               />
             )}
-          </li>
+          </ExpandableSection>
         );
       })}
     </ul>
@@ -183,13 +163,10 @@ DocumentsByOperator.defaultProps = {
 DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,
   searchText: PropTypes.string,
-  id: PropTypes.string,
-  user: PropTypes.object
+  id: PropTypes.string
 };
 
 export default connect(
-  (state) => ({
-    user: state.user,
-  }),
+  null,
   { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline }
 )(DocumentsByOperator);

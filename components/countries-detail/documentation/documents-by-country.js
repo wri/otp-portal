@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import sortBy from "lodash/sortBy";
-import cx from 'classnames';
 
 // Redux
 import { connect } from "react-redux";
@@ -15,36 +14,32 @@ import { HELPERS_DOC } from "utils/documentation";
 // Components
 import CountryDocCard from "components/ui/country-doc-card";
 import CountryDocCardUpload from "components/ui/country-doc-card-upload";
+import ExpandableSection from "components/ui/expandable-section";
+import useUser from "hooks/use-user";
 
 function DocumentsByOperator(props) {
-  const { data, user, id } = props;
+  const { data, id } = props;
   const intl = useIntl();
+  const user = useUser();
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
 
-  const [categoriesOpen, setCategoriesOpen] = useState(
-    Object.keys(groupedByCategory).reduce(
-      (acc, cat) => ({ ...acc, [cat]: false }),
-      {}
-    )
-  );
 
   const renderDocs = (docs) => {
     return docs.map(card => (
       <div key={card.id} className="columns small-12">
         <CountryDocCard {...card} />
 
-        {((user && user.role === 'admin') ||
-          (user && user.role === 'government' && user.country && user.country.toString() === id)) && (
-            <CountryDocCardUpload
-              {...card}
-              properties={{
-                type: 'government',
-                id
-              }}
-              user={user}
-              onChange={() => props.getCountry(id)}
-            />
+        {user.canManageCountry(id) && (
+          <CountryDocCardUpload
+            {...card}
+            properties={{
+              type: 'government',
+              id
+            }}
+            user={user}
+            onChange={() => props.getCountry(id)}
+          />
         )}
       </div>
     ));
@@ -53,8 +48,6 @@ function DocumentsByOperator(props) {
   return (
     <ul className="c-doc-gallery">
       {Object.keys(groupedByCategory).map((category) => {
-        const isCategoryOpen = categoriesOpen[category];
-        /* const docs = sortBy(groupedByCategory[category], ['position', 'title']) */
         const mainCategoryDocs = sortBy(
           groupedByCategory[category].filter(x => x.subCategory === null),
           ['position', 'title']
@@ -62,56 +55,42 @@ function DocumentsByOperator(props) {
         const groupedBySubCategory = HELPERS_DOC.getGroupedBySubCategory(groupedByCategory[category].filter(x => x.subCategory));
 
         return (
-          <li key={category} className="doc-gallery-item -top-border c-doc-by-category">
-            <header className="doc-gallery-item-header">
+          <ExpandableSection
+            key={category}
+            defaultOpen={false}
+            className="doc-gallery-item -top-border c-doc-by-category"
+            header={
               <h3 className="c-title -proximanova -extrabig -uppercase">
                 {category}
               </h3>
-              <button
-                className={cx('doc-by-category-btn -proximanova', {
-                  open: isCategoryOpen,
-                })}
-                onClick={() =>
-                  setCategoriesOpen({
-                    ...categoriesOpen,
-                    [category]: !isCategoryOpen,
-                  })
-                }
-              >
-                {isCategoryOpen ? intl.formatMessage({ id: 'collapse' }) : intl.formatMessage({ id: 'expand' })}
-              </button>
-            </header>
+            }
+          >
+            <div className="c-doc-gallery-fmu-docs">
+              {mainCategoryDocs.length > 0 && (
+                <div className="doc-gallery-producer-docs row l-row -equal-heigth">
+                  {renderDocs(mainCategoryDocs)}
+                </div>
+              )}
 
-            {isCategoryOpen && (
-              <div className="c-doc-gallery-fmu-docs">
-                {mainCategoryDocs.length > 0 && (
-                  <div className="doc-gallery-producer-docs row l-row -equal-heigth">
-                    {renderDocs(mainCategoryDocs)}
-                  </div>
-                )}
+              {Object.keys(groupedBySubCategory).map((subCategory) => {
+                const docs = sortBy(groupedBySubCategory[subCategory], ['position', 'title'])
 
-                {Object.keys(groupedBySubCategory).map((subCategory) => {
-                  const docs = sortBy(groupedBySubCategory[subCategory], ['position', 'title'])
-
-                  return (
-                    <div key={subCategory} className="subcategory-item">
-                      <div className="doc-gallery-item-header">
-                        <div className="doc-by-category-desc">
-                          <h4>{subCategory}</h4>
-                        </div>
-                      </div>
-
-                      {docs.length > 0 && isCategoryOpen && (
-                        <div className="doc-gallery-producer-docs row l-row -equal-heigth">
-                          {renderDocs(docs)}
-                        </div>
-                      )}
+                return (
+                  <div key={subCategory} className="subcategory-item">
+                    <div className="doc-by-category-desc">
+                      <h4>{subCategory}</h4>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </li>
+
+                    {docs.length > 0 && (
+                      <div className="doc-gallery-producer-docs row l-row -equal-heigth">
+                        {renderDocs(docs)}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </ExpandableSection>
         )
       })}
     </ul>
@@ -125,12 +104,9 @@ DocumentsByOperator.defaultProps = {
 DocumentsByOperator.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
-  user: PropTypes.object
 };
 
 export default connect(
-  state => ({
-    user: state.user
-  }),
+  null,
   { getCountry }
 )(DocumentsByOperator);

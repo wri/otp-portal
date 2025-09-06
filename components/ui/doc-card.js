@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import * as Sentry from '@sentry/nextjs';
 
 // Intl
-import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 // Services
@@ -16,11 +15,13 @@ import ConfirmModal from 'components/ui/confirm-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
+import useUser from 'hooks/use-user';
 
 const DocCard = (props) => {
   const intl = useIntl();
+  const user = useUser();
   const [annexTooltipVisible, setAnnexTooltipVisible] = useState(undefined);
-  const { user, url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
+  const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
 
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
@@ -132,10 +133,7 @@ const DocCard = (props) => {
   };
 
   const { id } = properties;
-  const isActiveUser = (user && user.role === 'admin') ||
-    (user && (user.role === 'operator' || user.role === 'holding') && user.operator_ids && user.operator_ids.includes(+id)) ||
-    (user && user.role === 'government' && user.country && user.country.toString() === id);
-
+  const isActiveUser = user.canManageOperator(id) || user.canManageCountry(id);
   const approvedAnnexes = annexes.filter(a => a.name);
 
   const classNames = classnames({
@@ -380,7 +378,6 @@ const DocCard = (props) => {
 };
 
 DocCard.propTypes = {
-  user: PropTypes.object,
   url: PropTypes.string,
   status: PropTypes.string,
   public: PropTypes.bool,
@@ -406,8 +403,4 @@ DocCard.defaultProps = {
   }
 };
 
-export default connect(
-  state => ({
-    user: state.user
-  })
-)(DocCard);
+export default DocCard;

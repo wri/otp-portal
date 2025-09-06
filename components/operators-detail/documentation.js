@@ -7,9 +7,11 @@ import { useIntl } from 'react-intl';
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
 
+import useUser from 'hooks/use-user';
+
 // Components
-import DocumentsCertification from 'components/operators-detail/documentation/documents-certification';
-import DocumentsProvided from 'components/operators-detail/documentation/documents-provided';
+import DocumentsPublicationAuthorization from '~/components/operators-detail/documentation/documents-publication-authorization';
+import DocumentsProvidedChart from '~/components/operators-detail/documentation/documents-provided-chart';
 import DocumentsByOperator from 'components/operators-detail/documentation/documents-by-operator';
 import DocumentsTimeline from 'components/operators-detail/documentation/documents-timeline';
 import DocumentStatusBar from 'components/operators-detail/documentation/documents-bars';
@@ -18,11 +20,14 @@ import DocumentsHeaderFilter from 'components/operators-detail/documentation/doc
 
 function OperatorsDetailDocumentation({
   operatorDocumentation,
-  operatorTimeline,
   operatorsDetail
 }) {
   const intl = useIntl();
+  const user = useUser();
   const operator = operatorsDetail.data;
+  const contractSigned = operator?.approved;
+  const timeline = operatorsDetail.timeline.data;
+  const canShowTimeline = contractSigned || user.canManageOperator(operator.id);
   const docsGroupedByCategory = HELPERS_DOC.getGroupedByCategory(
     operatorDocumentation
   );
@@ -32,15 +37,9 @@ function OperatorsDetailDocumentation({
     .sort((a, b) => a - b)
     .reverse()[0];
 
-  const filteredData = (operatorDocumentation || []).filter(
-    (d) => d.status !== 'doc_not_required'
-  );
-  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(
-    filteredData
-  );
-  const validDocs = groupedByStatusChart.find(
-    (status) => status.id === 'doc_valid'
-  );
+  const filteredData = (operatorDocumentation || []).filter((d) => d.status !== 'doc_not_required');
+  const groupedByStatusChart = HELPERS_DOC.getGroupedByStatusChart(filteredData);
+  const validDocs = groupedByStatusChart.find((status) => status.id === 'doc_valid');
   const [searchText, setSearchText] = useState('');
 
   return (
@@ -50,10 +49,7 @@ function OperatorsDetailDocumentation({
           <DocumentsFilter showDate showFMU />
           <DocumentsHeaderFilter searchText={searchText} setSearchText={setSearchText} />
 
-          <DocumentsCertification
-            // Publication authorization
-            id={operator.id}
-          />
+          <DocumentsPublicationAuthorization id={operator.id} />
 
           <article className="c-article">
             <header>
@@ -74,7 +70,7 @@ function OperatorsDetailDocumentation({
 
             <div className="content c-documentation-pie-chart">
               {/* Pie chart */}
-              <DocumentsProvided
+              <DocumentsProvidedChart
                 data={filteredData}
                 groupedByStatusChart={groupedByStatusChart}
               />
@@ -94,11 +90,9 @@ function OperatorsDetailDocumentation({
           </article>
 
           {/* Timeline chart */}
-          {operatorTimeline &&
-            !!operatorTimeline.length &&
-            operatorTimeline.length > 1 && (
-              <DocumentsTimeline timelineData={operatorTimeline} />
-            )}
+          {canShowTimeline && timeline && timeline.length > 1 && (
+            <DocumentsTimeline timelineData={timeline} />
+          )}
         </div>
       </div>
 
@@ -118,8 +112,7 @@ function OperatorsDetailDocumentation({
 
 OperatorsDetailDocumentation.propTypes = {
   operatorsDetail: PropTypes.object,
-  operatorDocumentation: PropTypes.array,
-  operatorTimeline: PropTypes.array
+  operatorDocumentation: PropTypes.array
 };
 
 export default OperatorsDetailDocumentation;

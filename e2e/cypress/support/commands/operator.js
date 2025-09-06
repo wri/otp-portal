@@ -15,7 +15,7 @@ Cypress.Commands.add('docCollapseCategory', (categoryName) => {
 });
 
 Cypress.Commands.add('docGetFMUDocCard', (fmuName, documentName) => {
-  return cy.get('.doc-gallery-item-header')
+  return cy.get('.doc-by-category-desc')
     .contains(fmuName)
     .parents('.fmu-item')
     .contains('.doc-card-title', documentName)
