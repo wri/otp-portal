@@ -21,10 +21,8 @@ function DocumentsByFMU({ documents, id, getOperator }) {
 
         return (
           <div className="fmu-item" key={docs[0].fmu.name}>
-            <div className="doc-gallery-item-header">
-              <div className="doc-by-category-desc">
-                <h4>{FMUname}</h4>
-              </div>
+            <div className="doc-by-category-desc">
+              <h4>{FMUname}</h4>
             </div>
 
             <div className="row l-row -equal-heigth">

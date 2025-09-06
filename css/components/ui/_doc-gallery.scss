@@ -26,42 +26,6 @@
       color: $color-tertiary;
     }
 
-    .doc-gallery-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-
-      .doc-by-category-btn {
-        height: 30px;
-        min-width: 100px;
-        border: 1px solid rgba(0, 0, 0, 0.3);
-        border-radius: 3px;
-        background-color: transparent;
-        color: rgba(0, 0, 0, 0.8);
-        font-size: 16px;
-        letter-spacing: 2px;
-        line-height: 26px;
-        text-align: center;
-        text-transform: uppercase;
-        cursor: pointer;
-
-        &.open {
-          color: #f7f6ed;
-          background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        &.disabled {
-          pointer-events: none;
-          opacity: .4;
-        }
-      }
-
-      h3 {
-        margin: 0;
-      }
-    }
-
     .doc-gallery-producer-docs,
     .c-doc-gallery-fmu-docs {
       margin-top: $space-1 * 4;
