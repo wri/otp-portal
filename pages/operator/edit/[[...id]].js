@@ -6,7 +6,7 @@ import { isEmpty } from 'utils/general';
 import Link from 'next/link';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getUserOperator } from 'modules/user';
 import { getOperators } from 'modules/operators';
 
@@ -20,8 +20,9 @@ import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 import useUser from 'hooks/use-user';
 
-const OperatorsEdit = ({ operatorId, getOperators, getUserOperator }) => {
+const OperatorsEdit = ({ operatorId }) => {
   const intl = useIntl();
+  const dispatch = useDispatch();
   const { userOperator } = useUser();
 
   if (!operatorId) {
@@ -29,8 +30,8 @@ const OperatorsEdit = ({ operatorId, getOperators, getUserOperator }) => {
   }
 
   const handleOperatorEditSubmit = () => {
-    getOperators();
-    getUserOperator(operatorId);
+    dispatch(getOperators());
+    dispatch(getUserOperator(operatorId));
   }
 
   return (
@@ -81,12 +82,7 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
 }
 
 OperatorsEdit.propTypes = {
-  operatorId: PropTypes.number.isRequired,
-  getOperators: PropTypes.func,
-  getUserOperator: PropTypes.func
+  operatorId: PropTypes.number.isRequired
 };
 
-export default connect(
-  null,
-  { getUserOperator, getOperators }
-)(OperatorsEdit);
+export default OperatorsEdit;

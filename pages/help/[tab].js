@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
 
 // Intl
@@ -21,8 +21,12 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-const HelpPage = ({ router, howtos, tools, faqs, tutorials }) => {
+const HelpPage = ({ router }) => {
   const intl = useIntl();
+  const howtos = useSelector(state => state.help.howtos);
+  const tools = useSelector(state => state.help.tools);
+  const faqs = useSelector(state => state.help.faqs);
+  const tutorials = useSelector(state => state.help.tutorials);
   const tab = router.query.tab || 'overview';
 
   return (
@@ -107,19 +111,7 @@ HelpPage.getInitialProps = async ({ query, asPath, store }) => {
 };
 
 HelpPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  howtos: PropTypes.shape({}),
-  tools: PropTypes.shape({}),
-  faqs: PropTypes.shape({}),
-  tutorials: PropTypes.shape({})
+  router: PropTypes.object.isRequired
 };
 
-export default withRouter(connect(
-  state => ({
-    howtos: state.help.howtos,
-    tools: state.help.tools,
-    faqs: state.help.faqs,
-    tutorials: state.help.tutorials
-  }),
-  { getHowtos, getTools, getFAQs, getTutorials }
-)(HelpPage));
+export default withRouter(HelpPage);

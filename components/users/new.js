@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { saveUser } from 'modules/user';
 
 // Next components
@@ -27,8 +27,10 @@ import SubmitButton from '../form/SubmitButton';
 import { LOCALES } from 'constants/locales';
 
 const UserNewForm = (props) => {
-  const { countries, operators } = props;
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const countries = useSelector(state => state.countries);
+  const operators = useSelector(state => state.operators);
 
   const handleSubmit = ({ form }) => {
     const body = {
@@ -47,7 +49,7 @@ const UserNewForm = (props) => {
     delete body.user.account_type;
 
     // Save data
-    return props.saveUser({ body })
+    return dispatch(saveUser({ body }))
       .then(() => {
         logEvent('sign_up', { method: 'credentials' });
         if (props.onSubmit) props.onSubmit({ email: form.email });
@@ -297,16 +299,7 @@ const UserNewForm = (props) => {
 }
 
 UserNewForm.propTypes = {
-  operators: PropTypes.object,
-  countries: PropTypes.object,
-  saveUser: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    operators: state.operators,
-    countries: state.countries
-  }),
-  { saveUser }
-)(UserNewForm);
+export default UserNewForm;

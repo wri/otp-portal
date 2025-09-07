@@ -7,7 +7,7 @@ import Router from 'next/router';
 import Link from 'next/link';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getUserOperator } from 'modules/user';
 import { getOperators } from 'modules/operators';
 
@@ -21,8 +21,9 @@ import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
 import useUser from 'hooks/use-user';
 
-function OperatorsEdit({ operatorId, getOperators, getUserOperator }) {
+function OperatorsEdit({ operatorId }) {
   const intl = useIntl();
+  const dispatch = useDispatch();
   const user = useUser();
   const userOperator = user.userOperator;
   useEffect(() => {
@@ -35,8 +36,8 @@ function OperatorsEdit({ operatorId, getOperators, getUserOperator }) {
   }, [user.operator_ids]);
 
   const handleOperatorEditSubmit = () => {
-    getOperators();
-    getUserOperator(operatorId);
+    dispatch(getOperators());
+    dispatch(getUserOperator(operatorId));
   };
 
   if (!operatorId) {
@@ -90,12 +91,7 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
 };
 
 OperatorsEdit.propTypes = {
-  operatorId: PropTypes.number.isRequired,
-  getOperators: PropTypes.func,
-  getUserOperator: PropTypes.func
+  operatorId: PropTypes.number.isRequired
 };
 
-export default connect(
-  null,
-  { getUserOperator, getOperators }
-)(OperatorsEdit);
+export default OperatorsEdit;

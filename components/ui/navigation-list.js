@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -14,9 +14,10 @@ import LanguageDropdown from 'components/ui/language-dropdown';
 
 import { useIntl } from 'react-intl';
 
-function NavigationList({ footer, className, countries }) {
+function NavigationList({ footer, className }) {
   const intl = useIntl();
   const router = useRouter();
+  const countries = useSelector(state => state.countries);
 
   const setActive = (pathname) => {
     if (footer) return '';
@@ -138,7 +139,6 @@ function NavigationList({ footer, className, countries }) {
 
 NavigationList.propTypes = {
   className: PropTypes.string,
-  countries: PropTypes.object,
   footer: PropTypes.bool
 };
 
@@ -146,8 +146,4 @@ NavigationList.defaultProps = {
   footer: false
 }
 
-export default connect(
-  (state) => ({
-    countries: state.countries,
-  }),
-)(NavigationList);
+export default NavigationList;

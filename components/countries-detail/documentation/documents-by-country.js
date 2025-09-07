@@ -2,10 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import sortBy from "lodash/sortBy";
 
-// Redux
-import { connect } from "react-redux";
-
-import { getCountry } from "modules/countries-detail";
 
 // Utils
 import { HELPERS_DOC } from "utils/documentation";
@@ -102,7 +98,4 @@ DocumentsByOperator.propTypes = {
   id: PropTypes.string,
 };
 
-export default connect(
-  null,
-  { getCountry }
-)(DocumentsByOperator);
+export default DocumentsByOperator;

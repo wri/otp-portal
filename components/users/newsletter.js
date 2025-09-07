@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 
 // Intl
 import { useIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import API from 'services/api';
 
@@ -24,8 +24,9 @@ function fetchCountries(lang) {
     .catch((error) => console.error(error));
 }
 
-const NewsletterForm = ({ language }) => {
+const NewsletterForm = () => {
   const intl = useIntl();
+  const language = useSelector(state => state.language);
   const formRef = useRef(null);
   const [loadTime, _setLoadTime] = useState(Date.now());
   const [countryOptions, setCountryOptions] = useState([]);
@@ -176,12 +177,6 @@ const NewsletterForm = ({ language }) => {
   );
 }
 
-NewsletterForm.propTypes = {
-  language: PropTypes.string,
-};
+NewsletterForm.propTypes = {};
 
-export default connect(
-  state => ({
-    language: state.language
-  })
-)(NewsletterForm);
+export default NewsletterForm;

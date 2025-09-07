@@ -6,10 +6,6 @@ import Fuse from 'fuse.js';
 
 import { groupBy } from 'utils/general';
 
-// Redux
-import { connect } from 'react-redux';
-
-import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -164,7 +160,4 @@ DocumentsByOperator.propTypes = {
   id: PropTypes.string
 };
 
-export default connect(
-  null,
-  { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline }
-)(DocumentsByOperator);
+export default DocumentsByOperator;

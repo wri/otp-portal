@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-// Redux
-import { connect } from 'react-redux';
-import { getOperator } from 'modules/operators-detail';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -212,4 +209,4 @@ DocModal.propTypes = {
   onChange: PropTypes.func,
 };
 
-export default connect(null, { getOperator })(DocModal);
+export default DocModal;

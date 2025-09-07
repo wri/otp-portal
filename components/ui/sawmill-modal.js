@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   setMapLocation,
   unmountMap
@@ -27,7 +27,10 @@ import LocationSearch from 'components/map/location-search';
 import CancelButton from '../form/CancelButton';
 import useUser from 'hooks/use-user';
 
-const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation, unmountMap }) => {
+const SawmillModal = ({ sawmill, onChange }) => {
+  const dispatch = useDispatch();
+  const language = useSelector(state => state.language);
+  const sawmillMap = useSelector(state => state.sawmillMap);
   const intl = useIntl();
   const user = useUser();
   const sawmillsService = useMemo(() => new SawmillsService({
@@ -53,19 +56,19 @@ const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation,
     if (sawmill) {
       const { viewport } = sawmillMap;
 
-      setMapLocation({
+      dispatch(setMapLocation({
         ...viewport,
         latitude: sawmill.lat,
         longitude: sawmill.lng
-      });
+      }));
     }
-  }, [sawmill, sawmillMap, setMapLocation]);
+  }, [sawmill, sawmillMap, dispatch]);
 
   useEffect(() => {
     return () => {
-      unmountMap();
+      dispatch(unmountMap());
     };
-  }, [unmountMap]);
+  }, [dispatch]);
 
   const getBody = (form) => {
     return {
@@ -98,20 +101,20 @@ const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation,
 
     setFormValues(value);
 
-    setMapLocation({
+    dispatch(setMapLocation({
       ...viewport,
       latitude: form.lat,
       longitude: form.lng
-    });
+    }));
   };
 
   const setMapLocationHandler = (location, setFormValues) => {
     const { viewport } = sawmillMap;
 
-    setMapLocation({
+    dispatch(setMapLocation({
       ...viewport,
       ...location
-    });
+    }));
 
     setFormValues({
       lat: viewport.latitude,
@@ -167,7 +170,7 @@ const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation,
                 <Spinner isLoading={sawmillMap.loading} className="-light" />
 
                 {process.env.GOOGLE_API_KEY && (
-                  <LocationSearch setMapLocation={setMapLocation} />
+                  <LocationSearch setMapLocation={(location) => dispatch(setMapLocation(location))} />
                 )}
 
                 {/* Map */}
@@ -280,21 +283,8 @@ const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation,
 };
 
 SawmillModal.propTypes = {
-  language: PropTypes.string,
   sawmill: PropTypes.object,
-  sawmillMap: PropTypes.object,
-  onChange: PropTypes.func,
-  setMapLocation: PropTypes.func,
-  unmountMap: PropTypes.func
+  onChange: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    language: state.language,
-    operatorsDetailFmus: state.operatorsDetailFmus,
-    sawmillMap: state.sawmillMap
-  }), {
-  setMapLocation,
-  unmountMap
-}
-)(SawmillModal);
+export default SawmillModal;

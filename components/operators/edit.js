@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { updateOperator } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
@@ -28,11 +28,13 @@ const EditOperator = (props) => {
   // rewrite class component to functional component
   const { operator } = props;
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const language = useSelector(state => state.language);
   const user = useUser();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const handleSubmit = ({ form }) => {
-    return props.updateOperator({
+    return dispatch(updateOperator({
       body: {
         data: {
           type: 'operators',
@@ -50,7 +52,7 @@ const EditOperator = (props) => {
       type: 'PATCH',
       id: operator.id,
       authorization: user.token
-    }).then(() => {
+    })).then(() => {
       toastr.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
         intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
@@ -215,17 +217,8 @@ const EditOperator = (props) => {
 }
 
 EditOperator.propTypes = {
-  language: PropTypes.string,
   operator: PropTypes.object,
-  updateOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    language: state.language
-  }),
-  {
-    updateOperator
-  }
-)(EditOperator);
+export default EditOperator;

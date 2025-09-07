@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { updateUserProfile } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
@@ -20,6 +20,7 @@ import { LOCALES } from 'constants/locales';
 
 const UserEditForm = (props) => {
   const intl = useIntl();
+  const dispatch = useDispatch();
   const { userProfile } = props;
   const isOrganizationAccount = userProfile['organization-account'] === true;
 
@@ -35,8 +36,7 @@ const UserEditForm = (props) => {
       attributes['last-name'] = form.lastName;
     }
 
-    return props
-      .updateUserProfile({ attributes })
+    return dispatch(updateUserProfile({ attributes }))
       .then(() => {
         toastr.success(
           intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -218,11 +218,7 @@ const UserEditForm = (props) => {
 
 UserEditForm.propTypes = {
   userProfile: PropTypes.object,
-  updateUserProfile: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  null,
-  { updateUserProfile }
-)(UserEditForm);
+export default UserEditForm;

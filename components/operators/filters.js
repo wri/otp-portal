@@ -6,7 +6,7 @@ import orderBy from 'lodash/orderBy';
 import modal from 'services/modal';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setFilters } from 'modules/operators-ranking';
 
 // Intl
@@ -73,18 +73,21 @@ const FILTERS_REFS = [
   }
 ];
 
-const OperatorsFilters = ({ filters, options, className = '', setFilters }) => {
+const OperatorsFilters = ({ className = '' }) => {
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const filters = useSelector(state => state.operatorsRanking.filters.data);
+  const options = useSelector(state => state.operatorsRanking.filters.options);
   const setSelect = (opts, key) => {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
-    setFilters(filter);
+    dispatch(setFilters(filter));
   };
 
   const setSearch = (value, key) => {
     const filter = {};
     filter[key] = value;
-    setFilters(filter);
+    dispatch(setFilters(filter));
   };
 
   const renderFiltersSelects = () => {
@@ -189,18 +192,7 @@ const OperatorsFilters = ({ filters, options, className = '', setFilters }) => {
 };
 
 OperatorsFilters.propTypes = {
-  filters: PropTypes.object,
-  options: PropTypes.object,
-  className: PropTypes.string,
-  setFilters: PropTypes.func
+  className: PropTypes.string
 };
 
-export default connect(
-  state => ({
-    filters: state.operatorsRanking.filters.data,
-    options: state.operatorsRanking.filters.options
-  }),
-  {
-    setFilters
-  }
-)(OperatorsFilters);
+export default OperatorsFilters;
