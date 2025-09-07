@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { connect, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import dynamic from 'next/dynamic';
 
 const ReduxToastr = dynamic(() => import('react-redux-toastr'), { ssr: false });
 
-const Toastr = ({ toastr }) => {
+const Toastr = () => {
   const store = useStore();
+  const toastr = useSelector(state => state.toastr);
 
   useEffect(() => {
     async function injectReducer() {
@@ -26,4 +27,4 @@ const Toastr = ({ toastr }) => {
   />;
 }
 
-export default connect((state) => ({ toastr: state.toastr }))(Toastr);
+export default Toastr;

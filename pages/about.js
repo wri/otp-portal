@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getPartners } from 'modules/partners';
 import { getDonors } from 'modules/donors';
 import { getAbout } from 'modules/about';
@@ -16,8 +16,11 @@ import StaticHeader from 'components/ui/static-header';
 import PartnerCard from 'components/ui/partner-card';
 import Html from 'components/html';
 
-const AboutPage = ({ about, partners, donors }) => {
+const AboutPage = () => {
   const intl = useIntl();
+  const about = useSelector(state => state.about);
+  const partners = useSelector(state => state.partners);
+  const donors = useSelector(state => state.donors);
   const renderDonors = () => {
     const prioritisedDonors = sortBy(donors.data, 'priority') || donors.data;
 
@@ -106,17 +109,6 @@ AboutPage.getInitialProps = async ({ store }) => {
   return {};
 };
 
-AboutPage.propTypes = {
-  about: PropTypes.shape({}).isRequired,
-  partners: PropTypes.shape({}).isRequired,
-  donors: PropTypes.shape({}).isRequired
-};
+AboutPage.propTypes = {};
 
-export default connect(
-  state => ({
-    about: state.about,
-    partners: state.partners,
-    donors: state.donors
-  }),
-  { getPartners, getDonors, getAbout }
-)(AboutPage);
+export default AboutPage;

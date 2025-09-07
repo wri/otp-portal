@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import Link from 'next/link';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
@@ -20,11 +20,13 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-const Notifications = ({ notifications, render, getNotifications, dismissAll }) => {
+const Notifications = ({ render }) => {
   const intl = useIntl();
   const user = useUser();
+  const dispatch = useDispatch();
+  const notifications = useSelector(state => state.notifications);
   const handleDismiss = () => {
-    dismissAll();
+    dispatch(dismissAll());
     modal.toggleModal(false);
   };
 
@@ -34,9 +36,9 @@ const Notifications = ({ notifications, render, getNotifications, dismissAll }) 
 
   useEffect(() => {
     if (user.isLoggedIn && !render) {
-      getNotifications();
+      dispatch(getNotifications());
     }
-  }, [user.isLoggedIn, render, getNotifications]);
+  }, [user.isLoggedIn, render, dispatch]);
 
   useEffect(() => {
     if (!render
@@ -45,7 +47,7 @@ const Notifications = ({ notifications, render, getNotifications, dismissAll }) 
       && !localStorage.getItem('notificationsShown')
     ) {
       modal.toggleModal(true, {
-        children: ConnectedNotifications,
+        children: Notifications,
         childrenProps: {
           render: true
         },
@@ -204,23 +206,11 @@ const Notifications = ({ notifications, render, getNotifications, dismissAll }) 
 };
 
 Notifications.propTypes = {
-  render: PropTypes.bool,
-  notifications: PropTypes.object,
-  getNotifications: PropTypes.func,
-  dismissAll: PropTypes.func,
-  language: PropTypes.string
+  render: PropTypes.bool
 };
 
 Notifications.defaultProps = {
   render: false
 };
 
-const ConnectedNotifications = connect(
-  state => ({
-    notifications: state.notifications,
-    language: state.language
-  }),
-  { getNotifications, dismissAll }
-)(Notifications);
-
-export default ConnectedNotifications;
+export default Notifications;

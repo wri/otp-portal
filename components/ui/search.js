@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Next
 import Router from 'next/router';
@@ -19,8 +19,10 @@ import Icon from 'components/ui/icon';
 // Constants
 import { SEARCH_OPTIONS } from 'constants/general';
 
-const Search = ({ list, loading, theme, options }) => {
+const Search = ({ theme, options }) => {
   const intl = useIntl();
+  const list = useSelector(state => state.operators.data);
+  const loading = useSelector(state => state.operators.loading);
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
   const [active, setActive] = useState(false);
@@ -224,20 +226,12 @@ const Search = ({ list, loading, theme, options }) => {
 
 Search.propTypes = {
   theme: PropTypes.string,
-  list: PropTypes.array,
-  loading: PropTypes.bool,
   options: PropTypes.object
 };
 
 Search.defaultProps = {
   theme: '',
-  list: [],
   options: SEARCH_OPTIONS
 };
 
-export default connect(
-  state => ({
-    list: state.operators.data,
-    loading: state.operators.loading
-  })
-)(Search);
+export default Search;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // Components
 import Icon from 'components/ui/icon';
@@ -13,16 +13,18 @@ import * as actions from 'modules/modal';
 // Services
 import { EE } from 'services/modal';
 
-const Modal = ({ modal, toggleModal, setModalOptions }) => {
+const Modal = () => {
   const elRef = useRef(null);
+  const dispatch = useDispatch();
+  const modal = useSelector(state => state.modal ? state.modal : state.get('modal'));
 
   const onToogleModal = useCallback((e) => {
-    if (toggleModal) toggleModal(e.detail.opened, e.detail.opts);
-  }, [toggleModal]);
+    dispatch(actions.toggleModal(e.detail.opened, e.detail.opts));
+  }, [dispatch]);
 
   const onSetModalOptions = useCallback((e) => {
-    if (setModalOptions) setModalOptions(e.detail.opts);
-  }, [setModalOptions]);
+    dispatch(actions.setModalOptions(e.detail.opts));
+  }, [dispatch]);
 
   useEffect(() => {
     EE.addEventListener('toggleModal', onToogleModal);
@@ -30,7 +32,7 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
 
     const handleTransitionEnd = () => {
       if (!modal.opened) {
-        setModalOptions({ children: null });
+        dispatch(actions.setModalOptions({ children: null }));
       }
     };
 
@@ -45,12 +47,12 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
         elRef.current.removeEventListener('transitionend', handleTransitionEnd);
       }
     };
-  }, [onToogleModal, onSetModalOptions, modal.opened, setModalOptions]);
+  }, [onToogleModal, onSetModalOptions, modal.opened, dispatch]);
 
   useEffect(() => {
     const escKeyDownListener = (e) => {
       if (e.keyCode === 27) {
-        toggleModal(false);
+        dispatch(actions.toggleModal(false));
         document.removeEventListener('keydown', escKeyDownListener);
       }
     };
@@ -62,7 +64,7 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
     return () => {
       document.removeEventListener('keydown', escKeyDownListener);
     };
-  }, [modal.opened, toggleModal]);
+  }, [modal.opened, dispatch]);
 
   const getContent = () => {
     return modal.options.children ?
@@ -86,7 +88,7 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
           <div className="modal-container">
             <button
               className="modal-close"
-              onClick={() => toggleModal(false)}
+              onClick={() => dispatch(actions.toggleModal(false))}
             >
               <Icon name="icon-cross" className="-big" />
             </button>
@@ -97,7 +99,7 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
 
           <area
             className="modal-backdrop"
-            onClick={() => toggleModal(false)}
+            onClick={() => dispatch(actions.toggleModal(false))}
           />
         </>
       )}
@@ -105,18 +107,6 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
   );
 };
 
-Modal.propTypes = {
-  // STORE
-  modal: PropTypes.object,
+Modal.propTypes = {};
 
-  // ACTIONS
-  toggleModal: PropTypes.func,
-  setModalOptions: PropTypes.func
-};
-
-export default connect(
-  state => ({
-    modal: state.modal ? state.modal : state.get('modal')
-  }),
-  actions
-)(Modal);
+export default Modal;
