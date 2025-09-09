@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import { parseDocument } from 'utils/documents';

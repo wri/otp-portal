@@ -3,7 +3,7 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
 import { LAYERS } from 'constants/layers';
 import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 import { spiderifyCluster } from 'components/map/layer-manager/utils';
 
 import { parseObservation } from 'utils/observations';

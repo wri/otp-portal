@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 
 import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';

@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 
 // Get the datasets and filters from state
 const getDatabase = (state) => state.database;
