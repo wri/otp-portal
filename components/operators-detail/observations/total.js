@@ -23,7 +23,7 @@ function TotalObservationsByOperator({ data }) {
     <div className="c-observations-by-operator">
       <header className="obo-year-header">
         <span className="c-title -default -proximanova -uppercase">
-          {intl.formatMessage({ id: 'year' })}
+          Breakdown by Year and Severity
         </span>
         <span className="c-title -default -proximanova -uppercase">
           {intl.formatMessage({ id: 'observations_im_visitis' })}
@@ -74,7 +74,7 @@ function TotalObservationsByOperator({ data }) {
                           }}
                           className={`obo-observations-list-item -severity-${severity}`}
                         >
-                          {i === 0 && lengthSeverity}
+                          {lengthSeverity}
                         </li>
                       );
                     })}
