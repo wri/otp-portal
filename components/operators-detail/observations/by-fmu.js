@@ -80,7 +80,7 @@ const TotalObservationsByOperatorByFMU = ({ data }) => {
                         style={{ width: `${(lengthSeverity / length) * 100}%`, background: PALETTE_COLOR_1[severity].fill }}
                         className={`obo-observations-list-item -severity-${severity}`}
                       >
-                        {i === 0 && lengthSeverity}
+                        {lengthSeverity}
                       </li>
                     );
                   })}
