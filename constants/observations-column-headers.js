@@ -20,7 +20,6 @@ export const tableCheckboxes = [
   'location',
   'location-accuracy',
   'observer-organizations',
-  'observer-types',
   'mission-type',
   'operator-type',
   'subcategory',
@@ -119,27 +118,6 @@ export function getColumnHeaders(intl) {
       className: 'description',
       minWidth: 120,
     },
-
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'observer-types' })}
-        </span>
-      ),
-      accessor: 'observer-types',
-      headerClassName: '-a-left',
-      className: 'observer-types',
-      minWidth: 250,
-      Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((type, i) => (
-            <li key={`${type}-${i}`}>
-              {intl.formatMessage({ id: `${type}` })}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
     {
       Header: (
         <span className="sortable">
@@ -149,7 +127,7 @@ export function getColumnHeaders(intl) {
       accessor: 'mission-type',
       headerClassName: '-a-left',
       minWidth: 250,
-      Cell: (attr) => intl.formatMessage({ id: `mission_types.${attr.value}` })
+      Cell: (attr) => attr.value && intl.formatMessage({ id: `mission_types.${attr.value}` })
     },
     {
       Header: (
