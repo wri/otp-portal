@@ -147,6 +147,7 @@ function parseObservation(obs) {
     subcategory: obs?.subcategory?.name || '',
     status: obs['validation-status-id'],
     'litigation-status': obs['litigation-status'],
+    'mission-type': obs['observation-report'] ? obs['observation-report']['mission-type'] : null,
     'observer-types': (obs.observers || []).map(
       (observer) => observer['observer-type']
     ),

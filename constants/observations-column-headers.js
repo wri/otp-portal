@@ -21,6 +21,7 @@ export const tableCheckboxes = [
   'location-accuracy',
   'observer-organizations',
   'observer-types',
+  'mission-type',
   'operator-type',
   'subcategory',
   'relevant-operators',
@@ -138,6 +139,17 @@ export function getColumnHeaders(intl) {
           ))}
         </ul>
       ),
+    },
+    {
+      Header: (
+        <span className="sortable">
+          {intl.formatMessage({ id: 'mission-type', defaultMessage: 'Mission Type' })}
+        </span>
+      ),
+      accessor: 'mission-type',
+      headerClassName: '-a-left',
+      minWidth: 250,
+      Cell: (attr) => intl.formatMessage({ id: `mission_types.${attr.value}` })
     },
     {
       Header: (
