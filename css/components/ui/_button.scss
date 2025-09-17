@@ -34,6 +34,11 @@
   &.-small {
     padding: 5px 15px 4px;
     font-size: $font-size-small;
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   // THEMES
@@ -149,6 +154,16 @@
     justify-content: center;
     width: 16px;
     height: 16px;
+  }
+
+  &.-with-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      margin-left: 7px;
+    }
   }
 
   &.-clean {

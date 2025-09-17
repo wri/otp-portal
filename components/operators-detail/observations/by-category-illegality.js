@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl';
 import { HELPERS_OBS } from 'utils/observations';
 
 // components
+import Accordion from 'components/ui/accordion';
 import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -32,7 +33,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
     'observation',
     'level',
     'fmu',
-    'report',
+    'report'
   ]);
 
   const triggerSelectedIllegality = ({ category, illegality }) => {
@@ -95,28 +96,36 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
                               })
                             }>
                             <span>
-                            {illegality}
-                            {` (${groupedByIllegality[illegality].length})`}
+                              {illegality}
+                              {` (${groupedByIllegality[illegality].length})`}
                             </span>
                             {isSelected ? (
-                                <Icon name="icon-arrow-up" />
-                              ) : (
-                                <Icon name="icon-arrow-down" />
-                              )}
+                              <Icon name="icon-arrow-up" />
+                            ) : (
+                              <Icon name="icon-arrow-down" />
+                            )}
                           </h3>
                           {groupedByIllegality[illegality].length > 0 && isSelected && (
                             <Fragment>
-                              {/* <CheckboxGroup
-                                className="-inline -light"
-                                name="observations-columns"
-                                onChange={(value) => setColumns(value)}
-                                properties={{
-                                  default: columns,
-                                  name: 'observations-columns',
-                                }}
-                                options={tableOptions}
-                              />
-                              <br /> */}
+                              <div>
+                                <Accordion
+                                  defaultOpen={false}
+                                  header={
+                                    <strong>Customize table content</strong>
+                                  }
+                                >
+                                  <CheckboxGroup
+                                    className="-inline -light"
+                                    name="observations-columns"
+                                    onChange={(value) => setColumns(value)}
+                                    properties={{
+                                      default: columns,
+                                      name: 'observations-columns',
+                                    }}
+                                    options={tableOptions}
+                                  />
+                                </Accordion>
+                              </div>
                               <Table
                                 sortable
                                 className="-light"
