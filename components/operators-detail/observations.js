@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { PieChart, Pie, Bar, XAxis, BarChart, ResponsiveContainer, Cell } from 'recharts';
+import { PieChart, Pie, Bar, XAxis, BarChart, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 
 // Utils
 import { LEGEND_SEVERITY, PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3 } from 'constants/rechart';
@@ -25,6 +25,58 @@ import { groupBy, transformValues } from 'utils/general';
 
 const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
+
+const severities = ['unknown', 'low', 'medium', 'high'];
+
+const SimpleTooltip = ({ active, payload }) => {
+  const intl = useIntl();
+  const isVisible = active && payload && payload.length;
+  const name = isVisible ? payload[0].name : null;
+  return (
+    <div className='c-tooltip -white auto-width'>
+      {isVisible && (
+        <div>
+          <strong>{name}</strong>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const StatusTooltip = ({ active, payload }) => {
+  const intl = useIntl();
+
+  const isVisible = active && payload && payload.length;
+  const status = isVisible ? payload[0].name : null;
+  const statusName = intl.formatMessage({ id: `observations.status-${status}` });
+
+  return (
+    <div className='c-tooltip -white auto-width'>
+      {isVisible && (
+        <div>
+          <strong>{statusName}</strong>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SeveritiesTooltip = ({ active, payload }) => {
+  const intl = useIntl();
+  const isVisible = active && payload && payload.length;
+  const severityLevel = isVisible ? payload[0].name : null;
+  const key = severities[parseInt(severityLevel, 10)] || 'unknown';
+  const severityName = intl.formatMessage({ id: key });
+  return (
+    <div className='c-tooltip -white auto-width'>
+      {isVisible && (
+        <div>
+          <strong>{severityName}</strong>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
@@ -122,6 +174,7 @@ const OperatorsDetailObservations = (props) => {
                         <Cell key={entry.value} fill={entry.fill} />
                       ))}
                     </Pie>
+                    <Tooltip content={SeveritiesTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -143,6 +196,7 @@ const OperatorsDetailObservations = (props) => {
                         <Cell key={entry.value} fill={PALETTE_COLOR_2[index].fill} />
                       ))}
                     </Pie>
+                    <Tooltip content={SimpleTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -164,6 +218,7 @@ const OperatorsDetailObservations = (props) => {
                         <Cell key={entry.value} fill={PALETTE_COLOR_3[index].fill} />
                       ))}
                     </Pie>
+                    <Tooltip content={StatusTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

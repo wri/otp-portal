@@ -3,6 +3,11 @@
   min-width: 200px;
   background-color: $color-primary;
 
+  &.-white {
+    background-color: $color-white;
+    color: $color-text-1;
+  }
+
   .tooltip-title {
     margin-top: 0;
   }
