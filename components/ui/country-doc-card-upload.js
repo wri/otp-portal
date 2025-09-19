@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { toastr } from 'react-redux-toastr';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -31,6 +32,10 @@ const CountryDocCardUpload = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         }
       }
@@ -42,7 +47,7 @@ const CountryDocCardUpload = (props) => {
 
     showConfirmModal({
       text: intl.formatMessage(
-        { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
+        { id: 'document.delete.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
       ),
       confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
       onConfirm: ({ onSuccess, onError } = {}) => {
@@ -50,6 +55,10 @@ const CountryDocCardUpload = (props) => {
           .then(() => {
             modal.toggleModal(false);
             onSuccess && onSuccess();
+            toastr.success(
+              intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+              intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
+            );
             onChange && onChange();
           })
           .catch((err) => {

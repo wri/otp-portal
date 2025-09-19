@@ -87,6 +87,7 @@ describe('Operator', function () {
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
+        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
         cy.wait('@documentsReload');
         cy.wait(1000);
 
@@ -112,6 +113,7 @@ describe('Operator', function () {
 
         cy.contains('Are you sure you want to delete document').should('be.visible');
         cy.get('[data-test-id=confirm-modal-confirm]').click();
+        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was removed successfully.');
 
         cy.wait('@documentsReload');
         cy.wait(1000);
@@ -141,6 +143,7 @@ describe('Operator', function () {
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
+        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
         cy.wait('@documentsReload');
         cy.wait(1000);
 
@@ -178,6 +181,7 @@ describe('Operator', function () {
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
+        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Document was marked as non applicable and will be reviewed by the OTP team shortly.');
         cy.wait('@documentsReload');
         cy.wait(1000);
 
@@ -213,6 +217,7 @@ describe('Operator', function () {
 
           cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
           cy.get('button').contains('Submit').click();
+          cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
           cy.wait('@documentsReload');
           cy.wait(1000);
 
@@ -233,6 +238,7 @@ describe('Operator', function () {
 
           cy.contains('Are you sure you want to delete document').should('be.visible');
           cy.get('[data-test-id=confirm-modal-confirm]').click();
+          cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was removed successfully.');
 
           cy.docGetProducerDocCard('Arrêté d’agrément du personnel du centre socio-sanitaire de l’entreprise')
             .find('.doc-card-annexes .doc-card-list-item')
