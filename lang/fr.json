@@ -141,6 +141,12 @@
   "document.delete.title": "Supprimer {document} ?",
   "document.delete.text": "Etes-vous certain de vouloir supprimer le document {document} ?",
   "document.delete.error": "Une erreur s'est produite lors de la suppression du document.",
+  "document.delete.success": "Votre document a été supprimé.",
+  "document.non_applicable.success": "Le document a été marqué comme non applicable et sera examiné prochainement par l'équipe OTP.",
+  "document.add.success": "Votre document a été téléchargé et sera examiné par l'équipe OTP sous peu.",
+  "document.update.success": "Votre document a été mis à jour et sera examiné par l'équipe OTP sous peu.",
+  "document_annex.delete.text": "Êtes-vous sûr de vouloir supprimer l'annexe du document {document} ?",
+  "success": "Succès!",
   "high": "Forte",
   "medium": "Moyenne",
   "low": "Faible",
@@ -434,5 +440,10 @@
   "newsletter.subscription_confirmed": "Votre inscription est confirmée.",
   "newsletter.want_to_receive": "Vous souhaitez recevoir les dernières mises à jour de l'Open Timber portal ?",
   "newsletter.subscribe_to": "Abonnez-vous à notre newsletter",
-  "newsletter.showing_results": "Affichage de {count} newsletters précédentes "
+  "newsletter.showing_results": "Affichage de {count} newsletters précédentes ",
+  "mission-type": "Type de mission",
+  "mission_types.mandated": "Mandatée",
+  "mission_types.semi_mandated": "Semi mandatée",
+  "mission_types.external": "Externe",
+  "mission_types.government": "Administration"
 }
