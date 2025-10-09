@@ -434,5 +434,10 @@
   "newsletter.subscription_confirmed": "Your subscription is confirmed.",
   "newsletter.want_to_receive": "Want to receive the latest updates from the Open Timber Portal?",
   "newsletter.subscribe_to": "Subscribe to our newsletter",
-  "newsletter.showing_results": "Showing {count} previous newsletters"
+  "newsletter.showing_results": "Showing {count} previous newsletters",
+  "mission-type": "Mission Type",
+  "mission_types.mandated": "Mandated",
+  "mission_types.semi_mandated": "Semi-mandated",
+  "mission_types.external": "External",
+  "mission_types.government": "Government"
 }

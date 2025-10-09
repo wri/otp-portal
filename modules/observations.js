@@ -39,7 +39,7 @@ export const getObservations = createApiThunk(
         'fields[categories]': 'name',
         'fields[countries]': 'iso,name',
         'fields[observers]': 'name,observer-type,public-info,address,information-email,information-name,information-phone,data-email,data-name,data-phone',
-        'fields[observation-reports]': 'attachment,title,publication-date',
+        'fields[observation-reports]': 'attachment,title,publication-date,mission-type',
         'fields[observation-documents]': 'attachment,name',
         ...getApiFiltersParams(filters)
       };
