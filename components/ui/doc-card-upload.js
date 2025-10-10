@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
 import * as Sentry from '@sentry/nextjs';
+import { toastr } from 'react-redux-toastr';
 
 import { connect } from 'react-redux';
 
@@ -16,7 +17,7 @@ import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
 
 // Components
-import ConfirmModal from 'components/ui/confirm-modal';
+import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
 import useUser from 'hooks/use-user';
 
@@ -36,6 +37,10 @@ const DocCardUpload = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         },
       },
@@ -51,6 +56,10 @@ const DocCardUpload = (props) => {
         ...props,
         notRequired: true,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.non_applicable.success', defaultMessage: 'Document was marked as non applicable and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         },
       },
@@ -66,6 +75,10 @@ const DocCardUpload = (props) => {
         ...props,
         notRequired: !!reason,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.update.success', defaultMessage: 'Your document was updated and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         },
       },
@@ -77,6 +90,10 @@ const DocCardUpload = (props) => {
       .then(() => {
         modal.toggleModal(false);
         onSuccess && onSuccess();
+        toastr.success(
+          intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+          intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
+        );
         onChange && onChange();
       })
       .catch((err) => {
@@ -91,18 +108,12 @@ const DocCardUpload = (props) => {
   const triggerDeleteFile = (e) => {
     e && e.preventDefault();
 
-    modal.toggleModal(true, {
-      children: ConfirmModal,
-      childrenProps: {
-        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: title }),
-        text: intl.formatMessage(
-          { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
-        ),
-        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
-        onConfirm: triggerConfirmedDeleteFile,
-        onCancel: () => modal.toggleModal(false),
-      },
-      size: '-small'
+    showConfirmModal({
+      text: intl.formatMessage(
+        { id: 'document.delete.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
+      ),
+      confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+      onConfirm: triggerConfirmedDeleteFile
     });
   };
 
@@ -123,34 +134,34 @@ const DocCardUpload = (props) => {
         status === 'doc_invalid' ||
         status === 'doc_pending' ||
         status === 'doc_expired') && (
-        <ul>
-          {buttons.update && (
-            <li>
-              <button
-                title={btnTooltip}
-                disabled={!isEditable}
-                onClick={triggerEditFile}
-                className="c-button -small -primary"
-              >
-                {intl.formatMessage({ id: 'edit' })}
-              </button>
-            </li>
-          )}
+          <ul>
+            {buttons.update && (
+              <li>
+                <button
+                  title={btnTooltip}
+                  disabled={!isEditable}
+                  onClick={triggerEditFile}
+                  className="c-button -small -primary"
+                >
+                  {intl.formatMessage({ id: 'edit' })}
+                </button>
+              </li>
+            )}
 
-          {buttons.delete && (
-            <li>
-              <button
-                title={btnTooltip}
-                disabled={!isEditable}
-                onClick={triggerDeleteFile}
-                className="c-button -small -primary"
-              >
-                {intl.formatMessage({ id: 'delete' })}
-              </button>
-            </li>
-          )}
-        </ul>
-      )}
+            {buttons.delete && (
+              <li>
+                <button
+                  title={btnTooltip}
+                  disabled={!isEditable}
+                  onClick={triggerDeleteFile}
+                  className="c-button -small -primary"
+                >
+                  {intl.formatMessage({ id: 'delete' })}
+                </button>
+              </li>
+            )}
+          </ul>
+        )}
       {status === 'doc_not_provided' && (
         <ul>
           {buttons.add && (

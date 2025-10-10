@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as Sentry from '@sentry/nextjs';
+import { toastr } from 'react-redux-toastr';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -11,7 +12,7 @@ import modal from 'services/modal';
 import DocumentationService from 'services/documentationService';
 
 // Components
-import ConfirmModal from 'components/ui/confirm-modal';
+import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocAnnexesModal from 'components/ui/doc-annexes-modal';
 import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
@@ -84,6 +85,10 @@ const DocCard = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         }
       }
@@ -99,20 +104,12 @@ const DocCard = (props) => {
       setAnnexTooltipVisible(undefined);
     });
 
-    modal.toggleModal(true, {
-      children: ConfirmModal,
-      childrenProps: {
-        title: intl.formatMessage({ id: 'delete.document.title', defaultMessage: 'Delete {document}?' }, { document: annex.name }),
-        text: intl.formatMessage(
-          { id: 'delete.document.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: annex.name }
-        ),
-        confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
-        onConfirm: (options) => {
-          triggerConfirmedRemoveAnnex({ ...options, annexId: id });
-        },
-        onCancel: () => modal.toggleModal(false),
-      },
-      size: '-small'
+    showConfirmModal({
+      text: intl.formatMessage(
+        { id: 'document_annex.delete.text', defaultMessage: 'Are you sure you want to delete document annex {document}?' }, { document: annex.name }
+      ),
+      confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+      onConfirm: (options) => { triggerConfirmedRemoveAnnex({ ...options, annexId: id }); }
     });
   };
 
@@ -120,6 +117,10 @@ const DocCard = (props) => {
     documentationService.deleteAnnex(annexId)
       .then(() => {
         modal.toggleModal(false);
+        toastr.success(
+          intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+          intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
+        );
         onSuccess && onSuccess();
         onChange && onChange();
       })

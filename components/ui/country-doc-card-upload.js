@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { toastr } from 'react-redux-toastr';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -10,15 +11,14 @@ import DocumentationService from 'services/documentationService';
 import modal from 'services/modal';
 
 // Components
+import { showConfirmModal } from 'components/ui/confirm-modal';
 import CountryDocModal from 'components/ui/country-doc-modal';
-import Spinner from 'components/ui/spinner';
 import useUser from 'hooks/use-user';
 
 const CountryDocCardUpload = (props) => {
   const { status, docType, id, onChange } = props;
   const intl = useIntl();
   const user = useUser();
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
@@ -32,6 +32,10 @@ const CountryDocCardUpload = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
+          );
           onChange && onChange();
         }
       }
@@ -41,17 +45,31 @@ const CountryDocCardUpload = (props) => {
   const triggerDeleteFile = (e) => {
     e && e.preventDefault();
 
-    setDeleteLoading(true);
-
-    documentationService.deleteDocument(id, 'gov-documents')
-      .then(() => {
-        setDeleteLoading(false);
-        onChange && onChange();
-      })
-      .catch((err) => {
-        setDeleteLoading(false);
-        console.error(err);
-      });
+    showConfirmModal({
+      text: intl.formatMessage(
+        { id: 'document.delete.text', defaultMessage: 'Are you sure you want to delete document {document}?' }, { document: title }
+      ),
+      confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
+      onConfirm: ({ onSuccess, onError } = {}) => {
+        documentationService.deleteDocument(id, 'gov-documents')
+          .then(() => {
+            modal.toggleModal(false);
+            onSuccess && onSuccess();
+            toastr.success(
+              intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+              intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
+            );
+            onChange && onChange();
+          })
+          .catch((err) => {
+            onError && onError(
+              intl.formatMessage({ id: 'document.delete.error', defaultMessage: 'An error occurred while deleting the document.' })
+            );
+            Sentry.captureException(err);
+            console.error(err);
+          });
+      }
+    })
   };
 
   const classNames = classnames({
@@ -71,7 +89,6 @@ const CountryDocCardUpload = (props) => {
           <li>
             <button onClick={triggerDeleteFile} className="c-button -small -primary">
               {intl.formatMessage({ id: 'delete' })}
-              <Spinner isLoading={deleteLoading} className="-tiny -transparent" />
             </button>
           </li>
         </ul>

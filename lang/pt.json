@@ -141,6 +141,12 @@
   "document.delete.title": "Delete {document}?",
   "document.delete.text": "Are you sure you want to delete document {document}?",
   "document.delete.error": "An error occurred while deleting the document.",
+  "document.delete.success": "Your document was removed successfully.",
+  "document.non_applicable.success": "Document was marked as non applicable and will be reviewed by the OTP team shortly.",
+  "document.add.success": "Your document was uploaded and will be reviewed by the OTP team shortly.",
+  "document.update.success": "Your document was updated and will be reviewed by the OTP team shortly.",
+  "document_annex.delete.text": "Are you sure you want to delete document annex {document}?",
+  "success": "Success!",
   "high": "Alta",
   "medium": "Médio",
   "low": "Baixo",
@@ -434,5 +440,10 @@
   "newsletter.subscription_confirmed": "Your subscription is confirmed.",
   "newsletter.want_to_receive": "Want to receive the latest updates from the Open Timber Portal?",
   "newsletter.subscribe_to": "Subscribe to our newsletter",
-  "newsletter.showing_results": "Showing {count} previous newsletters"
+  "newsletter.showing_results": "Showing {count} previous newsletters",
+  "mission-type": "Mission Type",
+  "mission_types.mandated": "Mandated",
+  "mission_types.semi_mandated": "Semi-mandated",
+  "mission_types.external": "External",
+  "mission_types.government": "Government"
 }

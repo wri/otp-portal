@@ -141,6 +141,12 @@
   "document.delete.title": "¿Eliminar {document}?",
   "document.delete.text": "¿Está seguro de que desea eliminar el documento {document}?",
   "document.delete.error": "Ocurrió un error al eliminar el documento.",
+  "document.delete.success": "Su documento fue eliminado exitosamente.",
+  "document.non_applicable.success": "El documento fue marcado como no aplicable y será revisado por el equipo OTP en breve.",
+  "document.add.success": "Su documento fue cargado y será revisado por el equipo OTP en breve.",
+  "document.update.success": "Su documento fue actualizado y será revisado por el equipo OTP en breve.",
+  "document_annex.delete.text": "¿Está seguro de que desea eliminar el anexo del documento {document}?",
+  "success": "¡Éxito!",
   "high": "Alto",
   "medium": "Medio",
   "low": "Bajo",
@@ -434,5 +440,10 @@
   "newsletter.subscription_confirmed": "Tu suscripción está confirmada.",
   "newsletter.want_to_receive": "¿Quieres recibir las últimas actualizaciones del Portal de Madera Abierto?",
   "newsletter.subscribe_to": "Suscríbete a nuestro boletín",
-  "newsletter.showing_results": "Mostrando {count} boletines anteriores"
+  "newsletter.showing_results": "Mostrando {count} boletines anteriores",
+  "mission-type": "Tipo de Misión",
+  "mission_types.mandated": "Mandatado",
+  "mission_types.semi_mandated": "Semimandatado",
+  "mission_types.external": "Externo",
+  "mission_types.government": "Gobierno"
 }
