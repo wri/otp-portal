@@ -34,7 +34,7 @@ const SimpleTooltip = ({ active, payload }) => {
   const isVisible = active && payload && payload.length;
   const name = isVisible ? payload[0].name : null;
   return (
-    <div className='c-tooltip -white auto-width'>
+    <div className='c-tooltip -chart auto-width'>
       {isVisible && (
         <div>
           <strong>{name}</strong>
@@ -52,7 +52,7 @@ const StatusTooltip = ({ active, payload }) => {
   const statusName = intl.formatMessage({ id: `observations.status-${status}` });
 
   return (
-    <div className='c-tooltip -white auto-width'>
+    <div className='c-tooltip -chart auto-width'>
       {isVisible && (
         <div>
           <strong>{statusName}</strong>
@@ -69,7 +69,7 @@ const SeveritiesTooltip = ({ active, payload }) => {
   const key = severities[parseInt(severityLevel, 10)] || 'unknown';
   const severityName = intl.formatMessage({ id: key });
   return (
-    <div className='c-tooltip -white auto-width'>
+    <div className='c-tooltip -chart auto-width'>
       {isVisible && (
         <div>
           <strong>{severityName}</strong>

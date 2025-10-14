@@ -3,6 +3,14 @@
   min-width: 200px;
   background-color: $color-primary;
 
+  &.-chart {
+    font-family: $font-family-proximanova;
+    background-color: $color-tertiary;
+    padding: 12px 20px;
+    color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 15px 29px 0 rgba(0, 0, 0, 0.14);
+  }
+
   &.-white {
     background-color: $color-white;
     color: $color-text-1;
