@@ -1,12 +1,20 @@
 .c-no-data {
+  padding: $space-1 * 8 $space-1 * 4;
+  background: $color-secondary;
+  color: $color-tertiary;
+
   display: flex;
   align-items: center;
   justify-content: center;
   height: 150px;
-  font-size: $font-size-extrabig;
+  font-size: $font-size-big;
+
+  &.-top-margin {
+    margin-top: $space-1 * 4;
+  }
 
   @include breakpoint(large) {
-    height: 300px;
-    font-size: $font-size-large;
+    height: 200px;
+    font-size: $font-size-extrabig;
   }
 }
