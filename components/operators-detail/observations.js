@@ -19,6 +19,7 @@ import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/op
 // Components
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import Checkbox from 'components/form/Checkbox';
+import Card from 'components/ui/card';
 
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';
@@ -83,14 +84,14 @@ const OperatorsDetailObservations = (props) => {
   const router = useRouter();
   const { fmus, setFMU } = props;
 
-  const [displayHidden, setDisplayHidden] = useState(false);
+  const [displayHidden, setDisplayHidden] = useState(true);
 
   useEffect(() => {
     setDisplayHidden(router.query.display_hidden === 'true');
   }, [router.query.display_hidden]);
 
   const onChangeDisplayHidden = ({ checked }) => {
-    setUrlParam('display_hidden', checked ? true : null);
+    setUrlParam('display_hidden', checked ? null : true);
   };
 
   useEffect(() => {
@@ -117,28 +118,30 @@ const OperatorsDetailObservations = (props) => {
   const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
   const byStatusChart = Object.keys(byStatus).map(status => ({ name: status, value: byStatus[status] }));
 
+  const description = `
+    Third-party organizatibons, including independent forest monitors, conduct missions and research to identify and report on potential
+    illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
+    noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
+  `
+
   return (
     <div className="c-section">
       <div className="l-container">
-        <p>
-          Third-party organizations, including independent forest monitors, conduct missions and research to identify and report on potential
-          illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
-          noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
-        </p>
-
-        <header>
-          <h2 className="c-title -large">
-            Observations from independent forest monitors
-          </h2>
-        </header>
-
-        <Checkbox
-          properties={{
-            checked: displayHidden,
-            title: `observations made by independent forest monitors linked to ${operator.name} in the past five years`,
-            // title: intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
-          }}
-          onChange={onChangeDisplayHidden}
+        <Card
+          theme="-primary"
+          title="Observations from independent forest monitors"
+          description={description}
+          Component={
+            <div>
+              <Checkbox
+                properties={{
+                  checked: !displayHidden,
+                  title: `display only observations made by independent forest monitors linked to ${operator.name} in the past five years`,
+                }}
+                onChange={onChangeDisplayHidden}
+              />
+            </div>
+          }
         />
       </div>
 
@@ -253,7 +256,7 @@ const OperatorsDetailObservations = (props) => {
 
       {!observationData.length && (
         <div className="l-container">
-          <div className="c-no-data">
+          <div className="c-no-data -top-margin">
             {intl.formatMessage({ id: 'no-observations' })}
           </div>
         </div>
