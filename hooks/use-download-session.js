@@ -5,7 +5,7 @@ import { setDownloadCookie } from 'modules/user';
 export function useDownloadSession(userToken) {
   useEffect(() => {
     function updateDownloadCookie() {
-      if (userToken) setDownloadCookie(userToken);
+      if (userToken) setDownloadCookie();
     }
     updateDownloadCookie();
     const intervalId = setInterval(updateDownloadCookie, 1000 * 60);
