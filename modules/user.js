@@ -91,7 +91,7 @@ export function saveUser({ body }) {
 }
 
 export function setDownloadCookie(userToken) {
-  return NEXTAPIClient.post('sessions/download-session', { token: userToken });
+  return NEXTAPIClient.post('download-session', { token: userToken });
 }
 
 export function updateUserProfile({ attributes }) {
