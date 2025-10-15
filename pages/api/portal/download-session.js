@@ -1,8 +1,12 @@
+import { getSession } from 'services/session';
+
 export default async (req, res) => {
+  const session = await getSession(req, res);
+
   fetch(`${process.env.OTP_API}/sessions/download-session`, {
     method: 'POST',
     headers: {
-      authorization: req.headers.authorization,
+      Authorization: `Bearer ${session.user.token}`,
       'OTP-API-KEY': process.env.OTP_API_KEY
     }
   })
