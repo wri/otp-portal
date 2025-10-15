@@ -6,7 +6,9 @@ export default async (req, res) => {
     const apiResponse = await fetch(`${process.env.OTP_API}/logout`, {
       method: 'DELETE',
       headers: {
-        ...req.headers,
+        'Content-Type': 'application/json',
+        'OTP-API-KEY': process.env.OTP_API_KEY,
+        cookie: req.headers.cookie,
         Authorization: `Bearer ${session.user.token}`
       }
     });
