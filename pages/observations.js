@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import { useIntl } from 'react-intl';
+import { useIntl, injectIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
 
@@ -446,7 +446,8 @@ ObservationsPage.getInitialProps = async ({ store, query }) => {
   return {};
 }
 
-export default withRouter(
+// needs injectIntl for selectors
+export default injectIntl(withRouter(
   connect(
     (state, props) => ({
       language: state.language,
@@ -467,4 +468,4 @@ export default withRouter(
       setActiveColumns,
     }
   )(ObservationsPage)
-);
+));
