@@ -91,6 +91,7 @@ class Map extends Component {
     bounds: {},
     dragPan: true,
     scrollZoom: true,
+    touchZoom: true
   };
 
   state = {
