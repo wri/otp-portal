@@ -207,6 +207,7 @@ class Map extends Component {
 
     this.setLocalizedLabels();
     this.fixCursorChange();
+    this.map.touchZoomRotate.disableRotation(); // disable map rotation for touch - does not work with properties
 
     if (!isEmpty(this.props.bounds)) {
       this.fitBounds();
@@ -406,7 +407,6 @@ class Map extends Component {
           touchZoom={!flying && touchZoom}
           touchRotate={false}
           touchPitch={false}
-          touchZoomRotate={false}
           doubleClickZoom={!flying && doubleClickZoom}
           // DEFAULT FUNC IMPLEMENTATIONS
           onClick={onClick}
