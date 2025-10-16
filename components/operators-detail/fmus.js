@@ -369,6 +369,7 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailAnalysis: PropTypes.func
 };
 
+// needs injectIntl for selectors
 export default withDeviceInfo(injectIntl(
   connect(
     (state, props) => ({

@@ -216,6 +216,7 @@ OperatorsPage.propTypes = {
   deviceInfo: PropTypes.object,
 };
 
+// needs injectIntl for selectors
 export default injectIntl(withRouter(withDeviceInfo(connect(
   (state, props) => ({
     language: state.language,
