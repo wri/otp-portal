@@ -52,7 +52,6 @@ const MapPage = () => (
               longitude: 20
             }}
             customClass="c-map-fullscreen"
-            dragRotate={false}
           >
             {map => (
               <Fragment>

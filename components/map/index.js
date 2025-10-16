@@ -53,17 +53,11 @@ class Map extends Component {
     /** A boolean that allows panning */
     dragPan: PropTypes.bool,
 
-    /** A boolean that allows rotating */
-    dragRotate: PropTypes.bool,
-
     /** A boolean that allows zooming */
     scrollZoom: PropTypes.bool,
 
     /** A boolean that allows zooming */
     touchZoom: PropTypes.bool,
-
-    /** A boolean that allows touch rotating */
-    touchRotate: PropTypes.bool,
 
     /** A boolean that allows double click zooming */
     doubleClickZoom: PropTypes.bool,
@@ -96,7 +90,6 @@ class Map extends Component {
     viewport: DEFAULT_VIEWPORT,
     bounds: {},
     dragPan: true,
-    dragRotate: true,
     scrollZoom: true,
   };
 
@@ -374,10 +367,8 @@ class Map extends Component {
       bounds,
       children,
       dragPan,
-      dragRotate,
       scrollZoom,
       touchZoom,
-      touchRotate,
       doubleClickZoom,
       onClick,
       ...mapboxProps
@@ -409,10 +400,12 @@ class Map extends Component {
           style={{ width: '100%', height: '100%' }}
           // INTERACTIVE
           dragPan={!flying && dragPan}
-          dragRotate={!flying && dragRotate}
+          dragRotate={false}
           scrollZoom={!flying && scrollZoom}
           touchZoom={!flying && touchZoom}
-          touchRotate={!flying && touchRotate}
+          touchRotate={false}
+          touchPitch={false}
+          touchZoomRotate={false}
           doubleClickZoom={!flying && doubleClickZoom}
           // DEFAULT FUNC IMPLEMENTATIONS
           onClick={onClick}
