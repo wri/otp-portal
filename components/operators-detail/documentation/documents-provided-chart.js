@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { omit } from 'utils/general';
 
 // Utils
 import { STATUSES, HELPERS_DOC } from 'utils/documentation';
@@ -19,12 +18,16 @@ function DocumentsProvidedChart({ data, operatorId }) {
     'doc_not_required',
     ...(user.canManageOperator(operatorId) ? [] : ['doc_pending', 'doc_invalid'])
   ];
-  const legend = omit(STATUSES, notVisibleStatuses);
-
-  data.forEach((item) => {
-    legend[item.id].value = item.value;
+  const legend = [];
+  Object.keys(STATUSES).forEach((status) => {
+    if (!notVisibleStatuses.includes(status)) {
+      legend.push({
+        id: status,
+        value: data.find((d) => d.id === status)?.value || 0,
+        ...STATUSES[status]
+      });
+    }
   });
-
   const smallChart = (isServer && isMobileAgent) || isMobile;
   let chartHeight = smallChart ? 450 : 600;
   const radius = smallChart ? 160 : 200;
@@ -57,7 +60,7 @@ function DocumentsProvidedChart({ data, operatorId }) {
 
       {/* Legend */}
       <ChartLegend
-        list={Object.keys(legend).map((k) => ({ id: k, value: 0, ...legend[k] }))}
+        list={legend}
         className="-absolute"
       />
     </div>
