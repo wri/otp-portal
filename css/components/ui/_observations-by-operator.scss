@@ -25,18 +25,22 @@
     justify-content: space-between;
     align-items: flex-start;
     font-family: $font-family-proximanova;
-    font-size: 14px;
+    font-size: $font-size-default;
   }
 
   .obo-observations-list {
-    height: 22px;
+    height: 28px;
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
 
     &.-big {
-      height: 32px;
+      height: 42px;
+
+      .obo-observations-list-item {
+        font-size: $font-size-default;
+      }
     }
   }
 
