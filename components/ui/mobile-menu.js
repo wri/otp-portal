@@ -16,7 +16,7 @@ import useUser from 'hooks/use-user';
 function MobileMenu({ className, countries }) {
   const intl = useIntl();
   const user = useUser();
-  const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
+  const navCountries = (countries.data || []).filter(c => (c['required-gov-documents'] || []).length);
 
   const elements = [
     process.env.FEATURE_COUNTRY_PAGES === 'true' && {

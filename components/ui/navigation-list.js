@@ -25,7 +25,7 @@ function NavigationList({ footer, className, countries }) {
       '-active': pathname.includes(router.pathname),
     });
   }
-  const navCountries = countries.data.filter(c => (c['required-gov-documents'] || []).length);
+  const navCountries = (countries.data || []).filter(c => (c['required-gov-documents'] || []).length);
 
   const elements = [
     footer && LanguageDropdown,
