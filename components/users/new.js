@@ -58,7 +58,7 @@ const UserNewForm = (props) => {
     <>
       {intl.formatMessage({ id: 'signin.not_a_producer' })}
       {' '}
-      <Link href="/operators/new" legacyBehavior>
+      <Link href="/operator/new" legacyBehavior>
         {intl.formatMessage({ id: 'signin.register_producer' })}
       </Link>
     </>
@@ -86,7 +86,7 @@ const UserNewForm = (props) => {
             <Form>
               <fieldset className="c-field-container">
                 {/* Permission request */}
-                <Field
+                {/* <Field
                   validations={['required']}
                   className="-fluid"
                   options={[
@@ -101,7 +101,7 @@ const UserNewForm = (props) => {
                   }}
                 >
                   {RadioGroup}
-                </Field>
+                </Field> */}
 
                 {/* Countries */}
                 <Field
