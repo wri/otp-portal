@@ -102,6 +102,7 @@ const MyApp = ({ Component, ...rest }) => {
         }) => {
           const client = getCurrentScope().getClient();
           if (client) {
+            console.log("Sentry client found, adding integrations");
             client.addIntegration(httpClientIntegration());
             client.addIntegration(linkedErrorsIntegration());
             client.addIntegration(contextLinesIntegration({ lines: 5 }));
