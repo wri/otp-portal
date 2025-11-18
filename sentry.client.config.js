@@ -2,7 +2,14 @@
 // The config you add here will be used whenever a page is visited.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import { BrowserClient, makeFetchTransport, defaultStackParser, getCurrentScope } from "@sentry/nextjs";
+import {
+  BrowserClient,
+  makeFetchTransport,
+  defaultStackParser,
+  getCurrentScope,
+  globalHandlersIntegration,
+  httpContextIntegration
+} from "@sentry/nextjs";
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
@@ -12,7 +19,10 @@ if (SENTRY_DSN) {
   const client = new BrowserClient({
     debug: false,
     dsn: SENTRY_DSN,
-    integrations: [],
+    integrations: [
+      globalHandlersIntegration(),
+      httpContextIntegration()
+    ],
     tracesSampleRate: 0.2,
     environment: process.env.ENV,
     ignoreErrors: [
