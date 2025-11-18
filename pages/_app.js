@@ -88,7 +88,7 @@ const MyApp = ({ Component, ...rest }) => {
 
   useEffect(() => {
     // Lazy load Sentry integrations
-    if (typeof window !== 'undefined' && window.Sentry) {
+    if (typeof window !== 'undefined') {
       import('@sentry/nextjs')
         .then(({
           getCurrentScope,
