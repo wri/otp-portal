@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
+import { connect } from 'react-redux';
 
 // Intl
 import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_DOC } from 'utils/documentation';
+import { setUrlParam } from 'utils/url';
 
 import useUser from 'hooks/use-user';
+
+import {
+  setOperatorDocumentationDate,
+  setOperatorDocumentationFMU,
+} from 'modules/operators-detail';
+
+import {
+  getHistoricFMUs,
+} from 'selectors/operators-detail/documentation';
 
 // Components
 import DocumentsPublicationAuthorization from '~/components/operators-detail/documentation/documents-publication-authorization';
@@ -20,7 +33,10 @@ import DocumentsHeaderFilter from 'components/operators-detail/documentation/doc
 
 function OperatorsDetailDocumentation({
   operatorDocumentation,
-  operatorsDetail
+  operatorsDetail,
+  fmus,
+  setFMU,
+  setDate
 }) {
   const intl = useIntl();
   const user = useUser();
@@ -42,12 +58,26 @@ function OperatorsDetailDocumentation({
   const validDocs = groupedByStatusChart.find((status) => status.id === 'doc_valid');
   const [searchText, setSearchText] = useState('');
 
+  const router = useRouter();
+  useEffect(() => {
+    setFMU(fmus.find(f => f.id === router.query.fmuId));
+  }, [router.query.fmuId, fmus])
+  useEffect(() => {
+    setDate(router.query.date || dayjs().format('YYYY-MM-DD'));
+  }, [router.query.date])
+  const onFmuChange = (fmuId) => {
+    setUrlParam('fmuId', fmuId);
+  };
+  const onDateChange = (date) => {
+    setUrlParam('date', dayjs(date).format('YYYY-MM-DD'));
+  };
+
   return (
     <div>
       <div className="c-section">
         <div className="l-container">
-          <DocumentsFilter showDate showFMU />
-          <DocumentsHeaderFilter searchText={searchText} setSearchText={setSearchText} />
+          <DocumentsFilter showDate showFMU onDateChange={onDateChange} onFmuChange={onFmuChange} />
+          <DocumentsHeaderFilter searchText={searchText} onSearchTextChange={setSearchText} onDateChange={onDateChange} onFmuChange={onFmuChange} />
 
           <DocumentsPublicationAuthorization id={operator.id} />
 
@@ -115,4 +145,12 @@ OperatorsDetailDocumentation.propTypes = {
   operatorDocumentation: PropTypes.array
 };
 
-export default OperatorsDetailDocumentation;
+export default connect(
+  (state) => ({
+    fmus: getHistoricFMUs(state),
+  }),
+  {
+    setDate: setOperatorDocumentationDate,
+    setFMU: setOperatorDocumentationFMU
+  }
+)(OperatorsDetailDocumentation);

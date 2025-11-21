@@ -1,45 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
-import { useRouter } from 'next/router';
 
 import Datepicker from 'components/ui/datepicker';
 
-import {
-  setOperatorDocumentationDate,
-  setOperatorDocumentationFMU,
-} from 'modules/operators-detail';
 import {
   getOperatorDocumentationDate,
   getOperatorDocumentationFMU,
   getHistoricFMUs,
 } from 'selectors/operators-detail/documentation';
 
-import { setUrlParam } from 'utils/url';
-
 function DocumentsFilter({
   children,
   date,
-  setDate,
   showDate,
   fmus,
   FMU,
-  setFMU,
   showFMU,
+  onFmuChange,
+  onDateChange
 }) {
   const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
-  const router = useRouter();
-
-  useEffect(() => {
-    setFMU(fmus.find(f => f.id === router.query.fmuId));
-  }, [router.query.fmuId, fmus])
-  useEffect(() => {
-    setDate(router.query.date || dayjs().format('YYYY-MM-DD'));
-  }, [router.query.date])
 
   const selectedFmu = FMU && fmus && fmus.find(f => f.id === FMU.id);
 
@@ -64,7 +49,7 @@ function DocumentsFilter({
                     <option
                       key={_fmu ? _fmu.id : 'no-fmu'}
                       onClick={() => {
-                        setUrlParam('fmuId', _fmu?.id);
+                        onFmuChange && onFmuChange(_fmu?.id);
                         setDropdownOpen(false);
                       }}
                     >
@@ -93,7 +78,7 @@ function DocumentsFilter({
                 noBorder: true,
                 readOnly: false,
               }}
-              onDateChange={(d) => setUrlParam('date', dayjs(d).format('YYYY-MM-DD'))}
+              onDateChange={(d) => onDateChange && onDateChange(d)}
             />
           </span>
         )}
@@ -107,12 +92,12 @@ function DocumentsFilter({
 DocumentsFilter.propTypes = {
   children: PropTypes.any,
   date: PropTypes.string,
-  setDate: PropTypes.func,
   FMU: PropTypes.object,
-  setFMU: PropTypes.func,
   fmus: PropTypes.array,
   showDate: PropTypes.bool,
-  showFMU: PropTypes.bool
+  showFMU: PropTypes.bool,
+  onFmuChange: PropTypes.func,
+  onDateChange: PropTypes.func
 };
 
 export default connect(
@@ -120,9 +105,5 @@ export default connect(
     date: getOperatorDocumentationDate(state),
     FMU: getOperatorDocumentationFMU(state),
     fmus: getHistoricFMUs(state),
-  }),
-  {
-    setDate: setOperatorDocumentationDate,
-    setFMU: setOperatorDocumentationFMU
-  }
+  })
 )(DocumentsFilter);

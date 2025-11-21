@@ -8,10 +8,6 @@ import Datepicker from 'components/ui/datepicker';
 import Icon from 'components/ui/icon';
 
 import {
-  setOperatorDocumentationDate,
-  setOperatorDocumentationFMU,
-} from 'modules/operators-detail';
-import {
   getOperatorDocumentationDate,
   getOperatorDocumentationFMU,
   getHistoricFMUs,
@@ -19,12 +15,12 @@ import {
 
 function DocumentsHeaderFilter({
   date,
-  setDate,
   fmus,
   FMU,
-  setFMU,
   searchText,
-  setSearchText,
+  onSearchTextChange,
+  onFmuChange,
+  onDateChange
 }) {
   const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -62,7 +58,7 @@ function DocumentsHeaderFilter({
                       <option
                         key={_fmu ? _fmu.id : 'no-fmu'}
                         onClick={() => {
-                          setFMU(_fmu);
+                          onFmuChange && onFmuChange(_fmu?.id);
                           setDropdownOpen(false);
                         }}
                       >
@@ -86,7 +82,7 @@ function DocumentsHeaderFilter({
                   noBorder: true,
                   readOnly: false,
                 }}
-                onDateChange={(d) => setDate(dayjs(d).format('YYYY-MM-DD'))}
+                onDateChange={(d) => onDateChange && onDateChange(d)}
               />
             </div>
             <div className="c-doc-header-filters__item c-doc-search">
@@ -101,7 +97,7 @@ function DocumentsHeaderFilter({
                     })
                   }
                   value={searchText}
-                  onChange={(e) => setSearchText(e.currentTarget.value)}
+                  onChange={(e) => onSearchTextChange(e.currentTarget.value)}
                 />
               </div>
             </div>
@@ -114,12 +110,12 @@ function DocumentsHeaderFilter({
 
 DocumentsHeaderFilter.propTypes = {
   date: PropTypes.string,
-  setDate: PropTypes.func,
   FMU: PropTypes.object,
-  setFMU: PropTypes.func,
   fmus: PropTypes.array,
   searchText: PropTypes.string,
-  setSearchText: PropTypes.func
+  onSearchTextChange: PropTypes.func,
+  onFmuChange: PropTypes.func,
+  onDateChange: PropTypes.func
 };
 
 export default connect(
@@ -127,9 +123,5 @@ export default connect(
     date: getOperatorDocumentationDate(state),
     FMU: getOperatorDocumentationFMU(state),
     fmus: getHistoricFMUs(state),
-  }),
-  {
-    setDate: setOperatorDocumentationDate,
-    setFMU: setOperatorDocumentationFMU,
-  }
+  })
 )(DocumentsHeaderFilter);
