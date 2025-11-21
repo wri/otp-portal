@@ -10,9 +10,9 @@ import { HELPERS_OBS } from 'utils/observations';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-import { getOperatorDocumentationFMU } from 'selectors/operators-detail/documentation';
+import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operators-detail/documentation';
 
-import { getOperatorObservations } from 'modules/operators-detail';
+import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
 
 // Components
 import StaticTabs from 'components/ui/static-tabs';
@@ -28,6 +28,7 @@ const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
+  const { fmus, setFMU } = props;
 
   const [year, setYear] = useState(HELPERS_OBS.getMaxYear(props.operatorObservations));
   const [displayHidden, setDisplayHidden] = useState(false);
@@ -52,6 +53,13 @@ const OperatorsDetailObservations = (props) => {
     setUrlParam('display_hidden', checked ? true : null);
   };
 
+  useEffect(() => {
+    setFMU(fmus.find(f => f.id === router.query.fmuId));
+  }, [router.query.fmuId, fmus])
+  const onFmuChange = (fmuId) => {
+    setUrlParam('fmuId', fmuId);
+  };
+
   const observationData = props.operatorObservations.filter(
     (obs) => (
       (!props.FMU || (obs.fmu && obs.fmu.id === props.FMU.id)) &&
@@ -62,7 +70,7 @@ const OperatorsDetailObservations = (props) => {
   return (
     <div className="c-section">
       <div className="l-container">
-        <DocumentsFilter showFMU>
+        <DocumentsFilter showFMU onFmuChange={onFmuChange}>
           <span className="filter-option">
             <label>{intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
             <div className="filters-dropdown">
@@ -149,15 +157,19 @@ const OperatorsDetailObservations = (props) => {
 
 OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
+  fmus: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
+  setFMU: PropTypes.func,
   getOperatorObservations: PropTypes.func
 };
 
 export default connect(
   (state) => ({
+    fmus: getHistoricFMUs(state),
     FMU: getOperatorDocumentationFMU(state),
   }),
   {
-    getOperatorObservations
+    getOperatorObservations,
+    setFMU: setOperatorDocumentationFMU
   }
 )(OperatorsDetailObservations);
