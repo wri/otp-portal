@@ -136,13 +136,7 @@ const OperatorsTable = ({ operators, operatorsTable, isLoading, filters }) => {
                   </td>
 
                   <td className="-ta-left">
-                    <Link
-                      href={{
-                        pathname: '/operators/detail',
-                        query: { id: r.slug },
-                      }}
-                      as={`/operators/${r.slug}`}
-                    >
+                    <Link href={`/operators/${r.slug}/overview`}>
                       {r.name}
                     </Link>
                   </td>

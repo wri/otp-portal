@@ -1,13 +1,14 @@
-import React from 'react';
-
-const OperatorsDetail = () => {
+export default function OperatorsDetail() {
   return null;
-};
+}
 
-OperatorsDetail.getInitialProps = async ({ query, asPath }) => {
-  const { tab } = query;
+export async function getServerSideProps({ params }) {
+  const { id } = params;
 
-  return { redirectTo: `${asPath.replace(`/${tab}`, '/overview')}` };
-};
-
-export default OperatorsDetail;
+  return {
+    redirect: {
+      destination: `/operators/${id}/overview`,
+      permanent: true,
+    },
+  };
+}
