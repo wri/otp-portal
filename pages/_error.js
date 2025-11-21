@@ -71,10 +71,13 @@ const ErrorPage = ({ statusCode, router }) => {
 };
 
 ErrorPage.getInitialProps = async (contextData) => {
-  const { res, xhr } = contextData;
+  const { res, xhr, err } = contextData;
   const statusCode = res ? res.statusCode : (xhr ? xhr.status : 0); // eslint-disable-line
 
-  await Sentry.captureUnderscoreErrorException(contextData);
+  // Only capture actual exceptions (not 404s or other non-error status codes)
+  if (err && statusCode !== 404) {
+    await Sentry.captureUnderscoreErrorException(contextData);
+  }
 
   return { statusCode };
 };
