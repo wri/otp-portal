@@ -72,7 +72,7 @@ class FMUTemplatePopup extends PureComponent {
 
         {operatorId &&
           <Link
-            href={`/operators/${operatorId}`}
+            href={`/operators/${operatorId}/overview`}
             className="c-button -tertiary -fullwidth -ellipsis -small">
 
             {operatorName}

@@ -86,36 +86,35 @@ const MyApp = ({ Component, ...rest }) => {
     }
   }, [pageProps.statusCode]);
 
-  useEffect(() => {
-    // Lazy load Sentry integrations
-    if (typeof window !== 'undefined') {
-      import('@sentry/nextjs')
-        .then(({
-          getCurrentScope,
-          httpClientIntegration,
-          linkedErrorsIntegration,
-          contextLinesIntegration,
-          captureConsoleIntegration,
-          dedupeIntegration,
-          extraErrorDataIntegration,
-          browserProfilingIntegration
-        }) => {
-          const client = getCurrentScope().getClient();
-          if (client) {
-            console.log("Sentry client found, adding integrations");
-            client.addIntegration(httpClientIntegration());
-            client.addIntegration(linkedErrorsIntegration());
-            client.addIntegration(contextLinesIntegration({ lines: 5 }));
-            client.addIntegration(captureConsoleIntegration({
-              levels: ['error']
-            }));
-            client.addIntegration(dedupeIntegration());
-            client.addIntegration(extraErrorDataIntegration());
-            client.addIntegration(browserProfilingIntegration());
-          }
-        });
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Lazy load Sentry integrations
+  //   if (typeof window !== 'undefined') {
+  //     import('@sentry/nextjs')
+  //       .then(({
+  //         getCurrentScope,
+  //         httpClientIntegration,
+  //         linkedErrorsIntegration,
+  //         contextLinesIntegration,
+  //         captureConsoleIntegration,
+  //         dedupeIntegration,
+  //         extraErrorDataIntegration,
+  //         browserProfilingIntegration
+  //       }) => {
+  //         const client = getCurrentScope().getClient();
+  //         if (client) {
+  //           client.addIntegration(httpClientIntegration());
+  //           client.addIntegration(linkedErrorsIntegration());
+  //           client.addIntegration(contextLinesIntegration({ lines: 5 }));
+  //           client.addIntegration(captureConsoleIntegration({
+  //             levels: ['error']
+  //           }));
+  //           client.addIntegration(dedupeIntegration());
+  //           client.addIntegration(extraErrorDataIntegration());
+  //           client.addIntegration(browserProfilingIntegration());
+  //         }
+  //       });
+  //   }
+  // }, []);
 
   if (pageProps.statusCode) {
     return <Error statusCode={pageProps.statusCode} />;

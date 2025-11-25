@@ -12,9 +12,9 @@ import { LEGEND_SEVERITY, PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3 } fr
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-import { getOperatorDocumentationFMU } from 'selectors/operators-detail/documentation';
+import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operators-detail/documentation';
 
-import { getOperatorObservations } from 'modules/operators-detail';
+import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
 
 // Components
 import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
@@ -261,15 +261,19 @@ const OperatorsDetailObservations = (props) => {
 OperatorsDetailObservations.propTypes = {
   operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
+  fmus: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
+  setFMU: PropTypes.func,
   getOperatorObservations: PropTypes.func
 };
 
 export default connect(
   (state) => ({
+    fmus: getHistoricFMUs(state),
     FMU: getOperatorDocumentationFMU(state),
   }),
   {
-    getOperatorObservations
+    getOperatorObservations,
+    setFMU: setOperatorDocumentationFMU
   }
 )(OperatorsDetailObservations);
