@@ -75,7 +75,7 @@ ErrorPage.getInitialProps = async (contextData) => {
   const statusCode = res ? res.statusCode : (xhr ? xhr.status : 0); // eslint-disable-line
 
   // Only capture actual exceptions (not 404s or other non-error status codes)
-  if (err && statusCode !== 404) {
+  if (err && statusCode != 404) {
     await Sentry.captureUnderscoreErrorException(contextData);
   }
 
