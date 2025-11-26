@@ -1,19 +1,18 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
 
 // Components
 import Icon from 'components/ui/icon';
 import Spinner from 'components/ui/spinner';
 
-// Actions
-import * as actions from 'modules/modal';
+// Hooks
+import { useModal } from 'hooks/use-modal';
 
 // Services
 import { EE } from 'services/modal';
 
-const Modal = ({ modal, toggleModal, setModalOptions }) => {
+const Modal = () => {
+  const { modal, toggleModal, setModalOptions } = useModal();
   const elRef = useRef(null);
 
   const onToogleModal = useCallback((e) => {
@@ -105,18 +104,4 @@ const Modal = ({ modal, toggleModal, setModalOptions }) => {
   );
 };
 
-Modal.propTypes = {
-  // STORE
-  modal: PropTypes.object,
-
-  // ACTIONS
-  toggleModal: PropTypes.func,
-  setModalOptions: PropTypes.func
-};
-
-export default connect(
-  state => ({
-    modal: state.modal ? state.modal : state.get('modal')
-  }),
-  actions
-)(Modal);
+export default Modal;

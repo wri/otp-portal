@@ -329,13 +329,15 @@ class OperatorsDetailFMUs extends React.Component {
                   />
                 )}
 
-                <Popup
-                  popup={hoverPopup}
-                  template="fmus-detail"
-                  templateProps={{
-                    layers: hoverPopup?.layers
-                  }}
-                />
+                {hoverPopup && (
+                  <Popup
+                    popup={hoverPopup}
+                    template="fmus-detail"
+                    templateProps={{
+                      layers: hoverPopup?.layers
+                    }}
+                  />
+                )}
 
                 <MapControls>
                   <ZoomControl />
