@@ -2,6 +2,17 @@
   background: $color-gray-2;
   padding: 20px;
 
+  &.-secondary {
+    background: $color-secondary;
+    color: $color-text-2;
+
+    a {
+      color: $color-text-2;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+  }
+
   @include breakpoint(medium) {
     padding: 30px;
   }

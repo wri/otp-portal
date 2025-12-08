@@ -58,7 +58,7 @@ const UserNewForm = (props) => {
     <>
       {intl.formatMessage({ id: 'signin.not_a_producer' })}
       {' '}
-      <Link href="/operators/new" legacyBehavior>
+      <Link href="/operator/new" legacyBehavior>
         {intl.formatMessage({ id: 'signin.register_producer' })}
       </Link>
     </>
@@ -86,7 +86,7 @@ const UserNewForm = (props) => {
             <Form>
               <fieldset className="c-field-container">
                 {/* Permission request */}
-                <Field
+                {/* <Field
                   validations={['required']}
                   className="-fluid"
                   options={[
@@ -101,7 +101,7 @@ const UserNewForm = (props) => {
                   }}
                 >
                   {RadioGroup}
-                </Field>
+                </Field> */}
 
                 {/* Countries */}
                 <Field
@@ -121,21 +121,31 @@ const UserNewForm = (props) => {
 
                 {/* Operators */}
                 {form.permissions_request === 'operator' && form.country_id && (
-                  <Field
-                    validations={['required']}
-                    className="-fluid"
-                    hint={registerNewProducerHint}
-                    options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
-                    properties={{
-                      name: 'operator_id',
-                      label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
-                      required: true,
-                      instanceId: 'select.operator_id',
-                      placeholder: intl.formatMessage({ id: 'select.placeholder' })
-                    }}
-                  >
-                    {Select}
-                  </Field>
+                  <>
+                    <Field
+                      validations={['required']}
+                      className="-fluid"
+                      hint={registerNewProducerHint}
+                      options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
+                      properties={{
+                        name: 'operator_id',
+                        label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
+                        required: true,
+                        instanceId: 'select.operator_id',
+                        placeholder: intl.formatMessage({ id: 'select.placeholder' })
+                      }}
+                    >
+                      {Select}
+                    </Field>
+                    <div className="c-info-box -secondary">
+                      {intl.formatMessage({
+                        id: 'signup.user.form.field.producer.newsletter',
+                        defaultMessage: 'If you are not a producer, you do not need an account to access to the OTP. <link>Sign-up to our newsletter</link> instead.'
+                      }, {
+                        link: (chunks) => <Link href="/newsletter/sign-up">{chunks}</Link>
+                      })}
+                    </div>
+                  </>
                 )}
 
                 <Field
