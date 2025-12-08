@@ -190,6 +190,7 @@
   "signup.user.form.organization_email": "A generic organizational email address (for e.g., info@wri.org)",
   "signup.user.form.field.country": "Country",
   "signup.user.form.field.producer": "Producer",
+  "signup.user.form.field.producer.newsletter": "If you are not a producer, you do not need an account to access to the OTP. <link>Sign-up to our newsletter</link> instead.",
   "signup.user.form.field.permissions_request": "Do you represent a producer or a government entity?",
   "signup.user.form.field.permissions_request.hint": "Depending on your selection you will be able to upload documents for one country or one producer",
   "signup.user.form.field.name": "Name",
