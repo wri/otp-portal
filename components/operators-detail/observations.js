@@ -34,7 +34,7 @@ const SimpleTooltip = ({ active, payload }) => {
   const isVisible = active && payload && payload.length;
   const name = isVisible ? payload[0].name : null;
   return (
-    <div className='c-tooltip -chart auto-width'>
+    <div className='c-tooltip -white auto-width'>
       {isVisible && (
         <div>
           <strong>{name}</strong>
@@ -52,7 +52,7 @@ const StatusTooltip = ({ active, payload }) => {
   const statusName = intl.formatMessage({ id: `observations.status-${status}` });
 
   return (
-    <div className='c-tooltip -chart auto-width'>
+    <div className='c-tooltip -white auto-width'>
       {isVisible && (
         <div>
           <strong>{statusName}</strong>
@@ -69,7 +69,7 @@ const SeveritiesTooltip = ({ active, payload }) => {
   const key = severities[parseInt(severityLevel, 10)] || 'unknown';
   const severityName = intl.formatMessage({ id: key });
   return (
-    <div className='c-tooltip -chart auto-width'>
+    <div className='c-tooltip -white auto-width'>
       {isVisible && (
         <div>
           <strong>{severityName}</strong>
@@ -83,6 +83,7 @@ const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
   const { fmus, setFMU } = props;
+  const operator = props.operatorsDetail?.data || {};
 
   const [displayHidden, setDisplayHidden] = useState(true);
 
@@ -119,7 +120,7 @@ const OperatorsDetailObservations = (props) => {
   const byStatusChart = Object.keys(byStatus).map(status => ({ name: status, value: byStatus[status] }));
 
   const description = `
-    Third-party organizations, including independent forest monitors, conduct missions and research to identify and report on potential
+    Third-party organizatibons, including independent forest monitors, conduct missions and research to identify and report on potential
     illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
     noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
   `
@@ -136,7 +137,7 @@ const OperatorsDetailObservations = (props) => {
               <Checkbox
                 properties={{
                   checked: !displayHidden,
-                  title: `display only observations made by independent forest monitors linked to ${operator.name} in the past five years`,
+                  title: `Display only observations made by independent forest monitors in the past five years`,
                 }}
                 onChange={onChangeDisplayHidden}
               />
@@ -157,7 +158,7 @@ const OperatorsDetailObservations = (props) => {
 
           <div className="l-container">
             <div className="row l-row">
-              <div className="columns small-12 medium-6">
+              {/* <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>By year</center></h3>
                 <ResponsiveContainer height={400}>
                   <BarChart data={byYearChart}>
@@ -165,7 +166,7 @@ const OperatorsDetailObservations = (props) => {
                     <Bar dataKey="value" fill={PALETTE_COLOR_2[2].fill} label={{ fill: 'white', fontSize: 22 }} />
                   </BarChart>
                 </ResponsiveContainer>
-              </div>
+              </div> */}
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>By severity</center></h3>
                 <ResponsiveContainer height={400}>
@@ -210,7 +211,7 @@ const OperatorsDetailObservations = (props) => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="columns small-12 medium-6">
+              {/* <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>By status</center></h3>
                 <ResponsiveContainer height={400}>
                   <PieChart>
@@ -231,7 +232,7 @@ const OperatorsDetailObservations = (props) => {
                     <Tooltip content={StatusTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
-              </div>
+              </div> */}
             </div>
           </div>
 

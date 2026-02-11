@@ -25,9 +25,6 @@ function TotalObservationsByOperator({ data }) {
         <span className="c-title -default -proximanova -uppercase">
           Breakdown by Year and Severity
         </span>
-        <span className="c-title -default -proximanova -uppercase">
-          {intl.formatMessage({ id: 'observations_im_visitis' })}
-        </span>
       </header>
 
       {/* YEAR LIST */}
@@ -48,10 +45,6 @@ function TotalObservationsByOperator({ data }) {
               <li key={year} className="obo-year-list-item">
                 <header className="obo-observations-header">
                   <span>{year}</span>
-                  <span>
-                    {length} (
-                    {HELPERS_OBS.getMonitorVisits(groupedByYear[year])})
-                  </span>
                 </header>
 
                 {/* SEVERITY LIST */}
@@ -78,6 +71,9 @@ function TotalObservationsByOperator({ data }) {
                         </li>
                       );
                     })}
+                  <li className="obo-observations-list-item label">
+                    {length}
+                  </li>
                 </ul>
               </li>
             );
