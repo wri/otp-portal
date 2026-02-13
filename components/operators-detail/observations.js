@@ -29,56 +29,6 @@ const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('
 
 const severities = ['unknown', 'low', 'medium', 'high'];
 
-const SimpleTooltip = ({ active, payload }) => {
-  const intl = useIntl();
-  const isVisible = active && payload && payload.length;
-  const name = isVisible ? payload[0].name : null;
-  return (
-    <div className='c-tooltip -white auto-width'>
-      {isVisible && (
-        <div>
-          <strong>{name}</strong>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const StatusTooltip = ({ active, payload }) => {
-  const intl = useIntl();
-
-  const isVisible = active && payload && payload.length;
-  const status = isVisible ? payload[0].name : null;
-  const statusName = intl.formatMessage({ id: `observations.status-${status}` });
-
-  return (
-    <div className='c-tooltip -white auto-width'>
-      {isVisible && (
-        <div>
-          <strong>{statusName}</strong>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const SeveritiesTooltip = ({ active, payload }) => {
-  const intl = useIntl();
-  const isVisible = active && payload && payload.length;
-  const severityLevel = isVisible ? payload[0].name : null;
-  const key = severities[parseInt(severityLevel, 10)] || 'unknown';
-  const severityName = intl.formatMessage({ id: key });
-  return (
-    <div className='c-tooltip -white auto-width'>
-      {isVisible && (
-        <div>
-          <strong>{severityName}</strong>
-        </div>
-      )}
-    </div>
-  );
-}
-
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
@@ -107,17 +57,69 @@ const OperatorsDetailObservations = (props) => {
       (!props.FMU || (obs.fmu && obs.fmu.id === props.FMU.id)) &&
       (displayHidden || obs.hidden === false)
     )
-  );
+  ).map(obs => ({
+    ...obs,
+    level: obs.level || 0
+  }));
 
-  const byYear = transformValues(groupBy(observationData, "date"), (obs) => obs.length);
+  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
+    const RADIAN = Math.PI / 180;
+    // Position labels outside the donut
+    const radius = outerRadius + 60;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    const isRightSide = x > cx;
+    const labelX = isRightSide ? x - 40 : x - 100;
+
+    return (
+      <foreignObject x={labelX} y={y - 30} width={150} height={100}>
+        <div className='c-title -proximanova' style={{
+          wordWrap: 'break-word',
+          fontSize: '15px',
+          fontWeight: '600',
+          textAlign: 'center',
+          color: fill
+        }}>
+          {name} - {value}
+        </div>
+      </foreignObject>
+    );
+  };
+
+  const CustomLabelSeverity = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
+    const RADIAN = Math.PI / 180;
+    // Position labels outside the donut
+    const radius = outerRadius + 30;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    const isRightSide = x > cx;
+    const labelX = isRightSide ? x - 60 : x - 90;
+
+    const key = severities[parseInt(name, 10)] || 'unknown';
+    const severityName = intl.formatMessage({ id: key });
+
+    return (
+      <foreignObject x={labelX} y={y} width={150} height={100}>
+        <div className='c-title -proximanova' style={{
+          wordWrap: 'break-word',
+          fontSize: '15px',
+          fontWeight: '600',
+          textAlign: 'center',
+          color: fill
+        }}>
+          {severityName} - {value}
+        </div>
+      </foreignObject>
+    );
+  };
+
   const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
   const byCategory = transformValues(groupBy(observationData, "category"), (obs) => obs.length);
-  const byStatus = transformValues(groupBy(observationData, "status"), (obs) => obs.length);
 
-  const byYearChart = Object.keys(byYear).map(year => ({ name: year, value: byYear[year] }));
   const bySeverityChart = Object.keys(bySeverity).map(level => ({ name: level, value: bySeverity[level], fill: PALETTE_COLOR_1[level]?.fill }));
   const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
-  const byStatusChart = Object.keys(byStatus).map(status => ({ name: status, value: byStatus[status] }));
 
   const description = `
     Third-party organizatibons, including independent forest monitors, conduct missions and research to identify and report on potential
@@ -126,7 +128,7 @@ const OperatorsDetailObservations = (props) => {
   `
 
   return (
-    <div className="c-section">
+    <div className="c-section c-operators-detail-observations">
       <div className="l-container">
         <Card
           theme="-primary"
@@ -156,17 +158,8 @@ const OperatorsDetailObservations = (props) => {
             </div>
           </article>
 
-          <div className="l-container">
+          <div className="l-container c-operators-details-observations__charts">
             <div className="row l-row">
-              {/* <div className="columns small-12 medium-6">
-                <h3 className='c-title -extrabig -proximanova'><center>By year</center></h3>
-                <ResponsiveContainer height={400}>
-                  <BarChart data={byYearChart}>
-                    <XAxis dataKey="name" />
-                    <Bar dataKey="value" fill={PALETTE_COLOR_2[2].fill} label={{ fill: 'white', fontSize: 22 }} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div> */}
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>By severity</center></h3>
                 <ResponsiveContainer height={400}>
@@ -175,17 +168,16 @@ const OperatorsDetailObservations = (props) => {
                       data={bySeverityChart}
                       dataKey="value"
                       outerRadius={160}
-                      innerRadius={160 - 40}
+                      innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={{ fontSize: 22 }}
+                      label={CustomLabelSeverity}
                       labelLine={false}
                     >
                       {bySeverityChart.map((entry, index) => (
                         <Cell key={entry.value} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <Tooltip content={SeveritiesTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -197,42 +189,19 @@ const OperatorsDetailObservations = (props) => {
                       data={byCategoryChart}
                       dataKey="value"
                       outerRadius={160}
-                      innerRadius={160 - 40}
+                      innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={{ fontSize: 22 }}
+                      label={CustomLabel}
                       labelLine={false}
                     >
                       {byCategoryChart.map((entry, index) => (
                         <Cell key={entry.value} fill={PALETTE_COLOR_2[index].fill} />
                       ))}
                     </Pie>
-                    <Tooltip content={SimpleTooltip} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              {/* <div className="columns small-12 medium-6">
-                <h3 className='c-title -extrabig -proximanova'><center>By status</center></h3>
-                <ResponsiveContainer height={400}>
-                  <PieChart>
-                    <Pie
-                      data={byStatusChart}
-                      dataKey="value"
-                      outerRadius={160}
-                      innerRadius={160 - 40}
-                      startAngle={90}
-                      endAngle={-270}
-                      label={{ fontSize: 22 }}
-                      labelLine={false}
-                    >
-                      {byStatusChart.map((entry, index) => (
-                        <Cell key={entry.value} fill={PALETTE_COLOR_3[index].fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={StatusTooltip} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div> */}
             </div>
           </div>
 
@@ -240,7 +209,7 @@ const OperatorsDetailObservations = (props) => {
             <div className="l-container">
               <header>
                 <h2 className="c-title -large">
-                  Observations grouped by illegality category
+                  Observations by illegality
                 </h2>
               </header>
             </div>
