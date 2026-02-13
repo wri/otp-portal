@@ -25,10 +25,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
   const intl = useIntl();
   const [expanded, setExpanded] = useState([]);
   const [columns, setColumns] = useState([
-    'status',
     'date',
-    'country',
-    'operator',
     'observer-organizations',
     'observation',
     'level',

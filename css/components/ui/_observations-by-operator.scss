@@ -62,3 +62,11 @@
     }
   }
 }
+
+.c-operators-details-observations {
+  &__charts {
+    svg {
+      overflow: visible;
+    }
+  }
+}
