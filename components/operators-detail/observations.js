@@ -122,7 +122,7 @@ const OperatorsDetailObservations = (props) => {
   const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
 
   const description = `
-    Third-party organizatibons, including independent forest monitors, conduct missions and research to identify and report on potential
+    Third-party organizations, including independent forest monitors, conduct missions and research to identify and report on potential
     illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
     noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
   `
