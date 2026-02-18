@@ -33,7 +33,7 @@ export function getColumnHeaders(intl) {
         <span className="sortable">{intl.formatMessage({ id: 'date' })}</span>
       ),
       accessor: 'date',
-      minWidth: 75,
+      width: 75
     },
     {
       Header: (
@@ -292,6 +292,7 @@ export function getColumnHeaders(intl) {
       accessor: 'report',
       headerClassName: '',
       className: 'report',
+      width: 75,
       Cell: (attr) => (
         <div className="report-item-wrapper">
           {attr.value ? (
