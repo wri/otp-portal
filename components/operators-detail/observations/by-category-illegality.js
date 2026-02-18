@@ -14,12 +14,24 @@ import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
 import CheckboxGroup from 'components/form/CheckboxGroup';
 
-import {
-  tableCheckboxes,
-  getColumnHeaders,
-} from 'constants/observations-column-headers';
+import { getColumnHeaders } from 'constants/observations-column-headers';
 
-// const MAX_ROWS_TABLE_ILLEGALITIES = 10;
+const OBSERVATION_TABLE_COLUMNS = [
+  'date',
+  'status',
+  'fmu',
+  'observation',
+  'level',
+  'report',
+  'evidence',
+  'litigation-status',
+  'location',
+  'location-accuracy',
+  'observer-organizations',
+  'mission-type',
+  'operator-type',
+  'relevant-operators',
+];
 
 const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
   const intl = useIntl();
@@ -49,9 +61,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
   };
 
   const columnHeaders = getColumnHeaders(intl);
-  const inputs = tableCheckboxes;
-
-  const tableOptions = inputs.map((column) => ({
+  const tableOptions = OBSERVATION_TABLE_COLUMNS.map((column) => ({
     label: Object.keys(changeOfLabelLookup).includes(column)
       ? intl.formatMessage({ id: changeOfLabelLookup[column] })
       : intl.formatMessage({ id: column }),
