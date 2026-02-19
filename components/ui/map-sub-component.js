@@ -9,20 +9,17 @@ import Spinner from 'components/ui/spinner';
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
 const MapSubComponent = ({ id, location, level, language }) => {
-  const [loading, setLoading] = useState(true);
   const mapContainerRef = useRef(null);
 
   const color = PALETTE_COLOR_1[level] ? `${PALETTE_COLOR_1[level].fill}` : '#000';
 
   return (
     <div className="c-map-sub-component" key={`subcomponent-${id}`}>
-      { !!location &&
+      { !!location && !!location.lng && !!location.lat &&
         <div
           className="c-map-container -table"
           ref={mapContainerRef}
         >
-          <Spinner isLoading={loading} className="-light" />
-
           {/* Map */}
           <Map
             language={language}
@@ -78,7 +75,7 @@ const MapSubComponent = ({ id, location, level, language }) => {
           </Map>
         </div>
       }
-      { !location &&
+      { (!location || !location.lng || !location.lat) &&
         <p>This observation has no location.</p>
       }
     </div>
