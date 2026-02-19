@@ -126,7 +126,6 @@ export default function Table({ data, options, className }) {
         columns={columns}
         defaultPageSize={options.pageSize}
         pageSize={options.pageSize}
-        showPagination={options.pagination}
         page={options.page}
         previousText={options.previousText}
         nextText={options.nextText}
