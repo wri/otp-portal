@@ -3,10 +3,10 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { PieChart, Pie, Bar, XAxis, BarChart, ResponsiveContainer, Cell, Tooltip } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 
 // Utils
-import { LEGEND_SEVERITY, PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3 } from 'constants/rechart';
+import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/rechart';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -17,7 +17,6 @@ import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operator
 import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
 
 // Components
-import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import Checkbox from 'components/form/Checkbox';
 import Card from 'components/ui/card';
 
@@ -33,7 +32,6 @@ const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
   const { fmus, setFMU } = props;
-  const operator = props.operatorsDetail?.data || {};
 
   const [displayHidden, setDisplayHidden] = useState(true);
 
@@ -121,25 +119,19 @@ const OperatorsDetailObservations = (props) => {
   const bySeverityChart = Object.keys(bySeverity).map(level => ({ name: level, value: bySeverity[level], fill: PALETTE_COLOR_1[level]?.fill }));
   const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
 
-  const description = `
-    Third-party organizations, including independent forest monitors, conduct missions and research to identify and report on potential
-    illegalities related to forest management, harvest and transport of timber. These reports on instances of suspected
-    noncompliance by companies and/or by government actors are referred to as &apos;observations&apos;.
-  `
-
   return (
     <div className="c-section c-operators-detail-observations">
       <div className="l-container">
         <Card
           theme="-primary"
-          title="Observations from independent forest monitors"
-          description={description}
+          title={intl.formatMessage({ id: 'operator-detail.observations.title', defaultMessage: 'Observations from independent forest monitors' })}
+          description={intl.formatMessage({ id: 'operator-detail.observations.description' })}
           Component={
             <div>
               <Checkbox
                 properties={{
                   checked: !displayHidden,
-                  title: `Display only observations made by independent forest monitors in the past five years`,
+                  title: intl.formatMessage({ id: 'operator-detail.observations.display_new', defaultMessage: 'Display only observations made by independent forest monitors in the past five years' }),
                 }}
                 onChange={onChangeDisplayHidden}
               />
@@ -161,7 +153,7 @@ const OperatorsDetailObservations = (props) => {
           <div className="l-container c-operators-details-observations__charts">
             <div className="row l-row">
               <div className="columns small-12 medium-6">
-                <h3 className='c-title -extrabig -proximanova'><center>By severity</center></h3>
+                <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_severity', defaultMessage: 'By severity' })}</center></h3>
                 <ResponsiveContainer height={400}>
                   <PieChart>
                     <Pie
@@ -182,7 +174,7 @@ const OperatorsDetailObservations = (props) => {
                 </ResponsiveContainer>
               </div>
               <div className="columns small-12 medium-6">
-                <h3 className='c-title -extrabig -proximanova'><center>By category</center></h3>
+                <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_category', defaultMessage: 'By category' })}</center></h3>
                 <ResponsiveContainer height={400}>
                   <PieChart>
                     <Pie
@@ -209,7 +201,7 @@ const OperatorsDetailObservations = (props) => {
             <div className="l-container">
               <header>
                 <h2 className="c-title -large">
-                  Observations by illegality
+                  {intl.formatMessage({ id: 'observations_by_illegality', defaultMessage: 'Observations by illegality' })}
                 </h2>
               </header>
             </div>
@@ -236,7 +228,6 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
-  operatorsDetail: PropTypes.object,
   operatorObservations: PropTypes.array,
   fmus: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),

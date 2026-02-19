@@ -33,17 +33,19 @@ const OBSERVATION_TABLE_COLUMNS = [
   'relevant-operators',
 ];
 
+const DEFAULT_COLUMNS = [
+  'date',
+  'observer-organizations',
+  'observation',
+  'level',
+  'fmu',
+  'report'
+];
+
 const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
   const intl = useIntl();
   const [expanded, setExpanded] = useState([]);
-  const [columns, setColumns] = useState([
-    'date',
-    'observer-organizations',
-    'observation',
-    'level',
-    'fmu',
-    'report'
-  ]);
+  const [columns, setColumns] = useState(DEFAULT_COLUMNS);
 
   const triggerSelectedIllegality = ({ category, illegality }) => {
     if (expanded.includes(illegality)) {
@@ -118,7 +120,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
                                 <Accordion
                                   defaultOpen={false}
                                   header={
-                                    <strong>Customize table content</strong>
+                                    <strong>{intl.formatMessage({ id: "Customize Table Content" })}</strong>
                                   }
                                 >
                                   <CheckboxGroup
