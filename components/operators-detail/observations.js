@@ -23,6 +23,8 @@ import Card from 'components/ui/card';
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';
 
+import useDeviceInfo from 'hooks/use-device-info';
+
 const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
 
@@ -34,6 +36,8 @@ const OperatorsDetailObservations = (props) => {
   const { fmus, setFMU } = props;
 
   const [displayHidden, setDisplayHidden] = useState(true);
+
+  const { isDesktop } = useDeviceInfo();
 
   useEffect(() => {
     setDisplayHidden(router.query.display_hidden === 'true');
@@ -60,26 +64,31 @@ const OperatorsDetailObservations = (props) => {
     level: obs.level || 0
   }));
 
-  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
+  const CustomLabelCategory = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
     const RADIAN = Math.PI / 180;
     // Position labels outside the donut
-    const radius = outerRadius + 60;
+    const padding = isDesktop ? 10 : 3;
+    const radius = outerRadius + padding;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
+    const width = isDesktop ? 180 : 100;
     const isRightSide = x > cx;
-    const labelX = isRightSide ? x - 40 : x - 100;
+    const labelX = isRightSide ? x : x - width;
 
     return (
-      <foreignObject x={labelX} y={y - 30} width={150} height={100}>
+      <foreignObject x={labelX} y={y} width={width} height={100}>
         <div className='c-title -proximanova' style={{
           wordWrap: 'break-word',
           fontSize: '15px',
           fontWeight: '600',
-          textAlign: 'center',
+          display: 'flex',
+          justifyContent: isRightSide ? 'left' : 'right',
           color: fill
         }}>
-          {name} - {value}
+          <div style={{ textAlign: 'left' }}>
+            {name} - {value}
+          </div>
         </div>
       </foreignObject>
     );
@@ -154,7 +163,7 @@ const OperatorsDetailObservations = (props) => {
             <div className="row l-row">
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_severity', defaultMessage: 'By severity' })}</center></h3>
-                <ResponsiveContainer height={400}>
+                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
                   <PieChart>
                     <Pie
                       data={bySeverityChart}
@@ -175,7 +184,7 @@ const OperatorsDetailObservations = (props) => {
               </div>
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_category', defaultMessage: 'By category' })}</center></h3>
-                <ResponsiveContainer height={400}>
+                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
                   <PieChart>
                     <Pie
                       data={byCategoryChart}
@@ -184,7 +193,7 @@ const OperatorsDetailObservations = (props) => {
                       innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={CustomLabel}
+                      label={CustomLabelCategory}
                       labelLine={false}
                     >
                       {byCategoryChart.map((entry, index) => (
