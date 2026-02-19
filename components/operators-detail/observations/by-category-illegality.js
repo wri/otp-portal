@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
 import classnames from 'classnames';
 
 // Intl
@@ -13,6 +14,8 @@ import Accordion from 'components/ui/accordion';
 import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
 import CheckboxGroup from 'components/form/CheckboxGroup';
+
+const MapSubComponent = dynamic(() => import('components/ui/map-sub-component'), { ssr: false });
 
 import { getColumnHeaders } from 'constants/observations-column-headers';
 
@@ -42,7 +45,7 @@ const DEFAULT_COLUMNS = [
   'report'
 ];
 
-const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
+const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) => {
   const intl = useIntl();
   const [expanded, setExpanded] = useState([]);
   const [columns, setColumns] = useState(DEFAULT_COLUMNS);
@@ -146,7 +149,17 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
                                     columns.includes(
                                       header.accessor
                                     )
-                                  )
+                                  ),
+                                  showSubComponent: columns.includes('location'),
+                                  subComponent: (row) =>
+                                    columns.includes('location') && (
+                                      <MapSubComponent
+                                        id={row.original.id}
+                                        language={language}
+                                        location={row.original.location}
+                                        level={row.original.level}
+                                      />
+                                    ),
                                 }}
                               />
                             </Fragment>
@@ -166,6 +179,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data }) => {
 };
 
 TotalObservationsByOperatorByCategorybyIlegallity.propTypes = {
+  language: PropTypes.string,
   data: PropTypes.array
 };
 
