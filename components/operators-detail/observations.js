@@ -12,9 +12,7 @@ import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/rechart';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operators-detail/documentation';
-
-import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
+import { getOperatorObservations } from 'modules/operators-detail';
 
 // Components
 import Checkbox from 'components/form/Checkbox';
@@ -33,7 +31,6 @@ const severities = ['unknown', 'low', 'medium', 'high'];
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
-  const { fmus, setFMU } = props;
 
   const [displayHidden, setDisplayHidden] = useState(true);
 
@@ -47,18 +44,8 @@ const OperatorsDetailObservations = (props) => {
     setUrlParam('display_hidden', checked ? null : true);
   };
 
-  useEffect(() => {
-    setFMU(fmus.find(f => f.id === router.query.fmuId));
-  }, [router.query.fmuId, fmus])
-  const onFmuChange = (fmuId) => {
-    setUrlParam('fmuId', fmuId);
-  };
-
   const observationData = props.operatorObservations.filter(
-    (obs) => (
-      (!props.FMU || (obs.fmu && obs.fmu.id === props.FMU.id)) &&
-      (displayHidden || obs.hidden === false)
-    )
+    (obs) => (displayHidden || obs.hidden === false)
   ).map(obs => ({
     ...obs,
     level: obs.level || 0
@@ -240,20 +227,14 @@ const OperatorsDetailObservations = (props) => {
 OperatorsDetailObservations.propTypes = {
   language: PropTypes.string,
   operatorObservations: PropTypes.array,
-  fmus: PropTypes.array,
-  FMU: PropTypes.shape({ id: PropTypes.string }),
-  setFMU: PropTypes.func,
   getOperatorObservations: PropTypes.func
 };
 
 export default connect(
   (state) => ({
-    language: state.language,
-    fmus: getHistoricFMUs(state),
-    FMU: getOperatorDocumentationFMU(state),
+    language: state.language
   }),
   {
-    getOperatorObservations,
-    setFMU: setOperatorDocumentationFMU
+    getOperatorObservations
   }
 )(OperatorsDetailObservations);
