@@ -211,6 +211,7 @@ const OperatorsDetailObservations = (props) => {
 
             <TotalObservationsByOperatorByCategorybyIllegality
               data={observationData}
+              language={props.language}
             />
           </article>
         </Fragment>
@@ -228,6 +229,7 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
+  language: PropTypes.string,
   operatorObservations: PropTypes.array,
   fmus: PropTypes.array,
   FMU: PropTypes.shape({ id: PropTypes.string }),
@@ -237,6 +239,7 @@ OperatorsDetailObservations.propTypes = {
 
 export default connect(
   (state) => ({
+    language: state.language,
     fmus: getHistoricFMUs(state),
     FMU: getOperatorDocumentationFMU(state),
   }),

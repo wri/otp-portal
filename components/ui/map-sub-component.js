@@ -1,10 +1,8 @@
-import React, { Fragment, useState, useRef } from 'react';
+import React, { Fragment, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
-
-import Spinner from 'components/ui/spinner';
 
 import { PALETTE_COLOR_1 } from 'constants/rechart';
 
