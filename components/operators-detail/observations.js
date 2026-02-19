@@ -51,7 +51,7 @@ const OperatorsDetailObservations = (props) => {
     level: obs.level || 0
   }));
 
-  const CustomLabelCategory = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
+  const CustomLabel = ({ cx, cy, formatLabel, midAngle, outerRadius, name, value, fill }) => {
     const RADIAN = Math.PI / 180;
     // Position labels outside the donut
     const padding = isDesktop ? 10 : 3;
@@ -61,10 +61,12 @@ const OperatorsDetailObservations = (props) => {
 
     const width = isDesktop ? 180 : 100;
     const isRightSide = x > cx;
+    const isTop = y < cy;
     const labelX = isRightSide ? x : x - width;
+    const labelY = isTop ? y - 10 : y;
 
     return (
-      <foreignObject x={labelX} y={y} width={width} height={100}>
+      <foreignObject x={labelX} y={labelY} width={width} height={100}>
         <div className='c-title -proximanova' style={{
           wordWrap: 'break-word',
           fontSize: '15px',
@@ -74,40 +76,18 @@ const OperatorsDetailObservations = (props) => {
           color: fill
         }}>
           <div style={{ textAlign: 'left' }}>
-            {name} - {value}
+            {formatLabel({ name, value })}
           </div>
         </div>
       </foreignObject>
     );
   };
 
-  const CustomLabelSeverity = ({ cx, cy, midAngle, innerRadius, outerRadius, name, value, fill }) => {
-    const RADIAN = Math.PI / 180;
-    // Position labels outside the donut
-    const radius = outerRadius + 30;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    const isRightSide = x > cx;
-    const labelX = isRightSide ? x - 60 : x - 90;
-
+  const formatSeverityLabel = ({ name, value }) => {
     const key = severities[parseInt(name, 10)] || 'unknown';
     const severityName = intl.formatMessage({ id: key });
-
-    return (
-      <foreignObject x={labelX} y={y} width={150} height={100}>
-        <div className='c-title -proximanova' style={{
-          wordWrap: 'break-word',
-          fontSize: '15px',
-          fontWeight: '600',
-          textAlign: 'center',
-          color: fill
-        }}>
-          {severityName} - {value}
-        </div>
-      </foreignObject>
-    );
-  };
+    return `${severityName} - ${value}`;
+  }
 
   const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
   const byCategory = transformValues(groupBy(observationData, "category"), (obs) => obs.length);
@@ -159,7 +139,7 @@ const OperatorsDetailObservations = (props) => {
                       innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={CustomLabelSeverity}
+                      label={<CustomLabel formatLabel={formatSeverityLabel} />}
                       labelLine={false}
                     >
                       {bySeverityChart.map((entry, index) => (
@@ -180,7 +160,7 @@ const OperatorsDetailObservations = (props) => {
                       innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={CustomLabelCategory}
+                      label={<CustomLabel formatLabel={({ name, value }) => `${name} - ${value}` } />}
                       labelLine={false}
                     >
                       {byCategoryChart.map((entry, index) => (
