@@ -6,18 +6,29 @@ const BREAKPOINTS = {
   tablet: 1024,
 };
 
+const getCategory = (width) => {
+  if (width < BREAKPOINTS.mobile) return 'mobile';
+  if (width < BREAKPOINTS.tablet) return 'tablet';
+  return 'desktop';
+};
+
 export default function useDeviceInfo() {
-  const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : BREAKPOINTS.mobile);
+  const [category, setCategory] = useState(
+    typeof window !== 'undefined' ? getCategory(window.innerWidth) : 'mobile'
+  );
 
   const handleResize = useCallback(() => {
-    setWidth(window.innerWidth);
-  });
+    setCategory(prev => {
+      const next = getCategory(window.innerWidth);
+      return prev === next ? prev : next;
+    });
+  }, []);
   useResize(handleResize);
 
   return {
-    isMobile: width < BREAKPOINTS.mobile,
-    isTablet: width >= BREAKPOINTS.mobile && width < BREAKPOINTS.tablet,
-    isDesktop: width >= BREAKPOINTS.tablet,
+    isMobile: category === 'mobile',
+    isTablet: category === 'tablet',
+    isDesktop: category === 'desktop',
     isServer: typeof window === 'undefined',
   }
 }
