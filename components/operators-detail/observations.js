@@ -32,20 +32,20 @@ const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [displayHidden, setDisplayHidden] = useState(true);
+  const [onlyLatest, setOnlyLatest] = useState(router.query.only_latest === 'true');
 
   const { isDesktop } = useDeviceInfo();
 
   useEffect(() => {
-    setDisplayHidden(router.query.display_hidden === 'true');
-  }, [router.query.display_hidden]);
+    setOnlyLatest(router.query.only_latest === 'true');
+  }, [router.query.only_latest]);
 
-  const onChangeDisplayHidden = ({ checked }) => {
-    setUrlParam('display_hidden', checked ? null : true);
+  const onChangeOnlyLatest = ({ checked }) => {
+    setUrlParam('only_latest', checked ? true : null);
   };
 
   const observationData = props.operatorObservations.filter(
-    (obs) => (displayHidden || obs.hidden === false)
+    (obs) => (!onlyLatest || obs.hidden === false)
   ).map(obs => ({
     ...obs,
     level: obs.level || 0
@@ -106,10 +106,10 @@ const OperatorsDetailObservations = (props) => {
             <div>
               <Checkbox
                 properties={{
-                  checked: !displayHidden,
+                  checked: onlyLatest,
                   title: intl.formatMessage({ id: 'operator-detail.observations.display_new', defaultMessage: 'Display only observations made by independent forest monitors in the past five years' }),
                 }}
-                onChange={onChangeDisplayHidden}
+                onChange={onChangeOnlyLatest}
               />
             </div>
           }
