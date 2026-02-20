@@ -55,6 +55,7 @@
   "observations_from_independent_monitors": "独立モニターによるオブザベーション",
   "by_category": "By category",
   "by_severity": "By severity",
+  "breakdown_by_year_and_severity": "Breakdown by Year and Severity",
   "observations_im_visitis": "オブザベーション （IMが訪問）",
   "observations.tab.observations-list": "オブザベーションリスト",
   "documentation.tab.documentation-list": "文書一覧",

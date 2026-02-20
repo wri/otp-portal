@@ -55,6 +55,7 @@
   "observations_from_independent_monitors": "Observations from independent monitors",
   "by_category": "By category",
   "by_severity": "By severity",
+  "breakdown_by_year_and_severity": "Breakdown by Year and Severity",
   "observations_im_visitis": "Observations (IM visits)",
   "observations.tab.observations-list": "Observations List",
   "documentation.tab.documentation-list": "Documentation list",
