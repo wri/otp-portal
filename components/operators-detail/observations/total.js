@@ -23,7 +23,7 @@ function TotalObservationsByOperator({ data }) {
     <div className="c-observations-by-operator">
       <header className="obo-year-header">
         <span className="c-title -default -proximanova -uppercase">
-          Breakdown by Year and Severity
+          {intl.formatMessage({ id: 'breakdown_by_year_and_severity', defaultMessage: 'Breakdown by Year and Severity' })}
         </span>
       </header>
 

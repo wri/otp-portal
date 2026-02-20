@@ -55,6 +55,7 @@
   "observations_from_independent_monitors": "Quan sát từ các cơ quan giám sát độc lập",
   "by_category": "By category",
   "by_severity": "By severity",
+  "breakdown_by_year_and_severity": "Breakdown by Year and Severity",
   "observations_im_visitis": "Quan sát (Kiểm tra của IM)",
   "observations.tab.observations-list": "Danh sách quan sát",
   "documentation.tab.documentation-list": "Danh mục tài liệu",

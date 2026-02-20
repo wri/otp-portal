@@ -55,6 +55,7 @@
   "observations_from_independent_monitors": "독립 감독관이 제출한 관찰내용",
   "by_category": "By category",
   "by_severity": "By severity",
+  "breakdown_by_year_and_severity": "Breakdown by Year and Severity",
   "observations_im_visitis": "관찰내용(IM 방문)",
   "observations.tab.observations-list": "관찰내용 목록",
   "documentation.tab.documentation-list": "문서 목록",

@@ -55,6 +55,7 @@
   "observations_from_independent_monitors": "独立监测机构的观察",
   "by_category": "By category",
   "by_severity": "By severity",
+  "breakdown_by_year_and_severity": "Breakdown by Year and Severity",
   "observations_im_visitis": "观察（独立监测机构的访问）",
   "observations.tab.observations-list": "观察清单",
   "documentation.tab.documentation-list": "文档清单",
