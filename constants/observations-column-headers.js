@@ -354,7 +354,7 @@ export function getColumnHeaders(intl) {
       Cell: (attr) => (
         <ul className="cell-list">
           {attr.value.map((operator) => (
-            <li>{operator}</li>
+            <li key={operator}>{operator}</li>
           ))}
         </ul>
       ),
