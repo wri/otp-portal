@@ -13,23 +13,16 @@ const getCategory = (width) => {
 };
 
 export default function useDeviceInfo() {
-  const [category, setCategory] = useState(
-    typeof window !== 'undefined' ? getCategory(window.innerWidth) : 'mobile'
-  );
-
+  const [category, setCategory] = useState('mobile');
   const handleResize = useCallback(() => {
-    setCategory(prev => {
-      const next = getCategory(window.innerWidth);
-      return prev === next ? prev : next;
-    });
+    setCategory(getCategory(window.innerWidth));
   }, []);
   useResize(handleResize);
 
   return {
     isMobile: category === 'mobile',
     isTablet: category === 'tablet',
-    isDesktop: category === 'desktop',
-    isServer: typeof window === 'undefined',
+    isDesktop: category === 'desktop'
   }
 }
 
