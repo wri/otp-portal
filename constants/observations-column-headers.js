@@ -4,6 +4,7 @@ import { PALETTE_COLOR_1 } from 'constants/rechart';
 import Icon from 'components/ui/icon';
 import ObserverInfoModal from 'components/ui/observer-info-modal';
 import modal from 'services/modal';
+import sortBy from 'lodash/sortBy';
 
 export const tableCheckboxes = [
   'date',
@@ -140,41 +141,39 @@ export function getColumnHeaders(intl) {
       className: 'observer-organizations',
       minWidth: 250,
       Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((observer) => {
-            return (<li>
-              <span>
-                {observer.name}
+        sortBy(attr.value, "name").map((observer, index) => {
+          return (
+            <span key={index}>
+              {index === 0 ? '' : ', '}
+              {observer.name}
 
-                {observer['public-info'] && (
-                  <Tooltip
-                    placement="top"
-                    overlay={
-                      <div style={{ maxWidth: 100 }}>
-                        {intl.formatMessage({ id: "contact_info" })}
-                      </div>
-                    }
-                    overlayClassName="c-tooltip no-pointer-events"
+              {observer['public-info'] && (
+                <Tooltip
+                  placement="top"
+                  overlay={
+                    <div style={{ maxWidth: 100 }}>
+                      {intl.formatMessage({ id: "contact_info" })}
+                    </div>
+                  }
+                  overlayClassName="c-tooltip no-pointer-events"
+                >
+                  <button
+                    className="c-button -icon -primary"
+                    style={{ marginLeft: 5 }}
+                    onClick={() => {
+                      modal.toggleModal(true, {
+                        children: ObserverInfoModal,
+                        childrenProps: observer,
+                      });
+                    }}
                   >
-
-                    <button
-                      className="c-button -icon -primary"
-                      style={{ marginLeft: 5 }}
-                      onClick={() => {
-                        modal.toggleModal(true, {
-                          children: ObserverInfoModal,
-                          childrenProps: observer,
-                        });
-                      }}
-                    >
-                      <Icon name="icon-info" className="-smaller" />
-                    </button>
-                  </Tooltip>
-                )}
-              </span>
-            </li>);
-          })}
-        </ul>
+                    <Icon name="icon-info" className="-smaller" />
+                  </button>
+                </Tooltip>
+              )}
+            </span>
+          )
+        })
       ),
     },
     {
