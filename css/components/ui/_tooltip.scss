@@ -37,6 +37,40 @@
     width: 320px;
   }
 
+  &.annex-tooltip {
+    .status-tag {
+      padding: 5px 10px;
+      font-size: $font-size-extrasmall;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: $space-1;
+      display: inline-block;
+
+      &.-doc_invalid {
+        background-color: $color-error;
+        color: $color-white;
+      }
+
+      &.-doc_pending {
+        background-color: $color-warning;
+        color: $color-white;
+      }
+    }
+
+    .tooltip-footer {
+      padding-top: $space-1;
+    }
+
+    dt {
+      margin-top: $space-1;
+    }
+
+    dd {
+      margin-top: $space-1 / 2;
+    }
+
+  }
+
   dd {
     margin-left: 0;
   }
