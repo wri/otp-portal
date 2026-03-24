@@ -14,8 +14,12 @@ export default class DocumentationService {
     return API.delete(`${path}/${id}`, { token: this.opts.authorization });
   }
 
-  saveAnnex({ url, body }) {
-    return API.post(url, { body, token: this.opts.authorization });
+  addAnnex({ body }) {
+    return API.post('operator-document-annexes', { body, token: this.opts.authorization });
+  }
+
+  editAnnex({ id, body }) {
+    return API.patch(`operator-document-annexes/${id}`, { body, token: this.opts.authorization });
   }
 
   deleteAnnex(id) {

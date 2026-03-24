@@ -95,6 +95,33 @@ const DocCard = (props) => {
     });
   };
 
+  const triggerEditAnnex = (annex) => {
+    // workaround to close tooltip before opening modal, but show it again when hovering
+    setAnnexTooltipVisible(false);
+    setTimeout(() => {
+      setAnnexTooltipVisible(undefined);
+    });
+
+    modal.toggleModal(true, {
+      children: DocAnnexesModal,
+      childrenProps: {
+        docId: props.docId,
+        id: annex.id,
+        startDate: annex['start-date'],
+        expireDate: annex['expire-date'],
+        name: annex.name,
+        url: annex.attachment.url,
+        onChange: () => {
+          toastr.success(
+            intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
+            intl.formatMessage({ id: 'document.update.success', defaultMessage: 'Your document was updated and will be reviewed by the OTP team shortly.' })
+          );
+          onChange && onChange();
+        },
+      },
+    });
+  };
+
   const triggerRemoveAnnex = (id) => {
     const annex = annexes.find(a => a.id === id);
 
@@ -212,7 +239,7 @@ const DocCard = (props) => {
                 <ul className="doc-card-list">
                   {approvedAnnexes.map(annex => (
                     <li className="doc-card-list-item" key={annex.id}>
-                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                      <DocAnnex annex={annex} editable={isActiveUser} onRemove={triggerRemoveAnnex} onEdit={triggerEditAnnex} visible={annexTooltipVisible} />
                     </li>
                   ))}
                   {isActiveUser &&
@@ -285,7 +312,7 @@ const DocCard = (props) => {
                 <ul className="doc-card-list">
                   {approvedAnnexes.map(annex => (
                     <li className="doc-card-list-item" key={annex.id}>
-                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                      <DocAnnex annex={annex} editable={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
                     </li>
                   ))}
                   {isActiveUser &&
@@ -352,7 +379,7 @@ const DocCard = (props) => {
                 <ul className="doc-card-list">
                   {approvedAnnexes.map(annex => (
                     <li className="doc-card-list-item" key={annex.id}>
-                      <DocAnnex annex={annex} showRemoveButton={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
+                      <DocAnnex annex={annex} editable={isActiveUser} onRemove={triggerRemoveAnnex} visible={annexTooltipVisible} />
                     </li>
                   ))}
 

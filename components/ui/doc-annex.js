@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl';
 
 import Icon from 'components/ui/icon';
 
-function AnnexTooltip({ annex, showRemoveButton, onRemove }) {
+function AnnexTooltip({ annex, editable, onRemove, onEdit }) {
   const intl = useIntl();
   const formatDate = (date) => intl.formatDate(date, {
     day: '2-digit',
@@ -17,10 +17,10 @@ function AnnexTooltip({ annex, showRemoveButton, onRemove }) {
     <div>
       <h4 className="c-title -default tooltip-title"><strong>{annex.name}</strong></h4>
       <dl className="tooltip-content">
-        {annex.status !== "doc_valid" && (
+        {editable && annex.status !== "doc_valid" && (
           <span className={`status-tag -${annex.status}`}>{intl.formatMessage({ id: 'annex_' + annex.status, defaultMessage: annex.status })}</span>
         )}
-        {annex.status === "doc_invalid" && annex['invalidation-reason'] && (
+        {editable && annex.status === "doc_invalid" && annex['invalidation-reason'] && (
           <>
             <dt><strong>{intl.formatMessage({ id: 'annex.invalidation_reason' })}:</strong></dt>
             <dd>{annex['invalidation-reason']}</dd>
@@ -37,18 +37,17 @@ function AnnexTooltip({ annex, showRemoveButton, onRemove }) {
           }
         </dd>
       </dl>
-      <div className="tooltip-footer">
+      {editable && (
+        <div className="tooltip-footer">
+          <button
+            className="c-button -small -tooltip"
+            type="button"
+            data-test-id="remove-annex-button"
+            onClick={() => onEdit && onEdit(annex)}
+          >
+            Edit
+          </button>
 
-        {/* <button
-          className="c-button -small -tooltip"
-          type="button"
-          data-test-id="remove-annex-button"
-          onClick={() => onRemove && onRemove(annex.id)}
-        >
-          Edit
-        </button> */}
-
-        {showRemoveButton &&
           <button
             className="c-button -small -tooltip -tooltip-secondary"
             type="button"
@@ -58,13 +57,13 @@ function AnnexTooltip({ annex, showRemoveButton, onRemove }) {
             <span className="tooltip-hidden-button-text">{intl.formatMessage({ id: 'annex.remove' })}</span>
             <Icon className="" name="icon-bin" />
           </button>
-        }
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function DocAnnex({ annex, showRemoveButton, visible, onRemove }) {
+export default function DocAnnex({ annex, editable, visible, onEdit, onRemove }) {
   return (
     <Tooltip
       placement="bottom"
@@ -72,7 +71,7 @@ export default function DocAnnex({ annex, showRemoveButton, visible, onRemove })
       align={{
         offset: [0, 10],
       }}
-      overlay={<AnnexTooltip annex={annex} showRemoveButton={showRemoveButton} onRemove={onRemove} />}
+      overlay={<AnnexTooltip annex={annex} editable={editable} onEdit={onEdit} onRemove={onRemove} />}
       overlayClassName="c-tooltip annex-tooltip fixed-width"
     >
       <button
@@ -86,11 +85,12 @@ export default function DocAnnex({ annex, showRemoveButton, visible, onRemove })
 }
 
 DocAnnex.defaultProps = {
-  showRemoveButton: false
+  editable: false
 }
 
 DocAnnex.propTypes = {
   annex: PropTypes.object.isRequired,
-  showRemoveButton: PropTypes.bool,
-  onRemove: PropTypes.func
+  editable: PropTypes.bool,
+  onRemove: PropTypes.func,
+  onEdit: PropTypes.func
 }
