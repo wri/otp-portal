@@ -21,7 +21,7 @@ import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
 import useUser from 'hooks/use-user';
 
-const DocAnnexesModal = ({ title, docId, onChange }) => {
+const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
   const user = useUser();
   const documentationService = useMemo(() => new DocumentationService({
@@ -31,43 +31,58 @@ const DocAnnexesModal = ({ title, docId, onChange }) => {
   const getBody = (form) => {
     return {
       data: {
-        type: 'operator-document-annexes', // TODO: Confirm if server side can accommodate -countries / -fmu
+        ...(id && { id }),
+        type: 'operator-document-annexes', // TODO: Confirm if server side can accommodate -
         attributes: {
           name: form.name,
           'start-date': form.startDate,
           'expire-date': form.expireDate,
-          attachment: form.file.base64
+          ...(form.file.base64 && {
+            attachment: form.file.base64,
+          }),
         },
-        relationships: {
+        ...(!id && { relationships: {
           "operator-document": {
             data: {
               type: "operator-documents",
               id: docId
             }
           }
-        }
+        }})
       }
     };
   };
 
   const handleSubmit = ({ form }) => {
-    return documentationService.saveAnnex({
-      url: 'operator-document-annexes',
-      body: getBody(form)
-    })
-      .then(() => {
+    const body = getBody(form);
+    const action = !!id ? documentationService.editAnnex({ id, body }) : documentationService.addAnnex({ body });
+
+    return action.then(() => {
         onChange && onChange();
         modal.toggleModal(false);
       });
   };
 
+  const formInitialState = useMemo(() => ({
+    startDate:
+      startDate &&
+      startDate !== '1970/01/01' &&
+      startDate.replace(/\//g, '-'),
+    expireDate:
+      expireDate && expireDate !== '1970/01/01' && expireDate.replace(/\//g, '-'),
+    file: {},
+    name: name || '',
+    url: url || ''
+  }), [startDate, expireDate, url]);
+
   return (
     <div className="c-login">
       <h2 className="c-title -extrabig">
-        {intl.formatMessage({ id: "annex.form.title", defaultMessage: "Add a document for the annex of {title}" }, { title })}
+        {!id && intl.formatMessage({ id: "annex.form.title", defaultMessage: "Add a document for the annex of {title}" }, { title })}
+        {!!id && 'Edit annex'}
       </h2>
 
-      <FormProvider initialValues={{ name: '', startDate: '', expiryDate: '', file: {} }} onSubmit={handleSubmit}>
+      <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
         <Form>
           <fieldset className="c-field-container">
             <div className="c-field-row">
@@ -126,7 +141,8 @@ const DocAnnexesModal = ({ title, docId, onChange }) => {
                       properties={{
                         name: 'file',
                         label: intl.formatMessage({ id: 'file' }),
-                        required: true
+                        required: true,
+                        default: !url ? null : { name: url }
                       }}
                     >
                       {File}
