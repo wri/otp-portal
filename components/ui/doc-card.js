@@ -23,6 +23,7 @@ const DocCard = (props) => {
   const user = useUser();
   const [annexTooltipVisible, setAnnexTooltipVisible] = useState(undefined);
   const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
+  const withFile = !!url;
 
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
@@ -226,7 +227,7 @@ const DocCard = (props) => {
         </div>
       }
 
-      {!!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
+      {withFile && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
         <div className="doc-card-content-container">
           <header className="doc-card-header">
             {startDate !== endDate &&
@@ -266,7 +267,7 @@ const DocCard = (props) => {
         </div>
       }
 
-      {!url && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
+      {!withFile && status !== 'doc_not_provided' && status !== 'doc_not_required' &&
         <div>
           <header className="doc-card-header">
             {startDate !== endDate &&
