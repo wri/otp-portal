@@ -23,10 +23,7 @@ function TotalObservationsByOperator({ data }) {
     <div className="c-observations-by-operator">
       <header className="obo-year-header">
         <span className="c-title -default -proximanova -uppercase">
-          {intl.formatMessage({ id: 'year' })}
-        </span>
-        <span className="c-title -default -proximanova -uppercase">
-          {intl.formatMessage({ id: 'observations_im_visitis' })}
+          {intl.formatMessage({ id: 'breakdown_by_year_and_severity', defaultMessage: 'Breakdown by Year and Severity' })}
         </span>
       </header>
 
@@ -48,10 +45,6 @@ function TotalObservationsByOperator({ data }) {
               <li key={year} className="obo-year-list-item">
                 <header className="obo-observations-header">
                   <span>{year}</span>
-                  <span>
-                    {length} (
-                    {HELPERS_OBS.getMonitorVisits(groupedByYear[year])})
-                  </span>
                 </header>
 
                 {/* SEVERITY LIST */}
@@ -74,10 +67,13 @@ function TotalObservationsByOperator({ data }) {
                           }}
                           className={`obo-observations-list-item -severity-${severity}`}
                         >
-                          {i === 0 && lengthSeverity}
+                          {lengthSeverity}
                         </li>
                       );
                     })}
+                  <li className="obo-observations-list-item label">
+                    {length}
+                  </li>
                 </ul>
               </li>
             );

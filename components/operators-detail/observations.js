@@ -3,142 +3,191 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
+
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/rechart';
 
 // Intl
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-import { getOperatorDocumentationFMU, getHistoricFMUs } from 'selectors/operators-detail/documentation';
-
-import { getOperatorObservations, setOperatorDocumentationFMU } from 'modules/operators-detail';
+import { getOperatorObservations } from 'modules/operators-detail';
 
 // Components
-import StaticTabs from 'components/ui/static-tabs';
-import DocumentsFilter from 'components/operators-detail/documentation/documents-filter';
 import Checkbox from 'components/form/Checkbox';
+import Card from 'components/ui/card';
 
 import { setUrlParam } from 'utils/url';
+import { groupBy, transformValues } from 'utils/general';
+
+import useDeviceInfo from 'hooks/use-device-info';
 
 const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
-const TotalObservationsByOperatorByCategory = dynamic(() => import('components/operators-detail/observations/by-category'));
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
+
+const severities = ['unknown', 'low', 'medium', 'high'];
 
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
-  const { fmus, setFMU } = props;
 
-  const [year, setYear] = useState(HELPERS_OBS.getMaxYear(props.operatorObservations));
-  const [displayHidden, setDisplayHidden] = useState(false);
+  const [displayAll, setDisplayAll] = useState(router.query.display_all === 'true');
 
-  useEffect(() => {
-    setYear(HELPERS_OBS.getMaxYear(props.operatorObservations));
-  }, [props.operatorObservations])
+  const { isDesktop } = useDeviceInfo();
 
   useEffect(() => {
-    if (props.FMU) {
-      setYear(HELPERS_OBS.getMaxYear(props.operatorObservations.filter(
-        (obs) => obs.fmu && obs.fmu.id === props.FMU.id
-      )));
-    }
-  }, [props.FMU])
+    setDisplayAll(router.query.display_all === 'true');
+  }, [router.query.display_all]);
 
-  useEffect(() => {
-    setDisplayHidden(router.query.display_hidden === 'true');
-  }, [router.query.display_hidden]);
-
-  const onChangeDisplayHidden = ({ checked }) => {
-    setUrlParam('display_hidden', checked ? true : null);
-  };
-
-  useEffect(() => {
-    setFMU(fmus.find(f => f.id === router.query.fmuId));
-  }, [router.query.fmuId, fmus])
-  const onFmuChange = (fmuId) => {
-    setUrlParam('fmuId', fmuId);
+  const onChangeDisplayAll = ({ checked }) => {
+    setUrlParam('display_all', checked ? null : true);
   };
 
   const observationData = props.operatorObservations.filter(
-    (obs) => (
-      (!props.FMU || (obs.fmu && obs.fmu.id === props.FMU.id)) &&
-      (displayHidden || obs.hidden === false)
-    )
-  );
+    (obs) => (displayAll || obs.hidden === false)
+  ).map(obs => ({
+    ...obs,
+    level: obs.level || 0
+  }));
+
+  const CustomLabel = ({ cx, cy, formatLabel, midAngle, outerRadius, name, value, fill }) => {
+    const RADIAN = Math.PI / 180;
+    // Position labels outside the donut
+    const padding = isDesktop ? 10 : 3;
+    const radius = outerRadius + padding;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    const width = isDesktop ? 180 : 100;
+    const isRightSide = x > cx;
+    const isTop = y < cy;
+    const labelX = isRightSide ? x : x - width;
+    const labelY = isTop ? y - 10 : y;
+
+    return (
+      <foreignObject x={labelX} y={labelY} width={width} height={100}>
+        <div className='c-title -proximanova' style={{
+          wordWrap: 'break-word',
+          fontSize: '15px',
+          fontWeight: '600',
+          display: 'flex',
+          justifyContent: isRightSide ? 'left' : 'right',
+          color: fill
+        }}>
+          <div style={{ textAlign: 'left' }}>
+            {formatLabel({ name, value })}
+          </div>
+        </div>
+      </foreignObject>
+    );
+  };
+
+  const formatSeverityLabel = ({ name, value }) => {
+    const key = severities[parseInt(name, 10)] || 'unknown';
+    const severityName = intl.formatMessage({ id: key });
+    return `${severityName} - ${value}`;
+  }
+
+  const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
+  const byCategory = transformValues(groupBy(observationData, "category"), (obs) => obs.length);
+
+  const bySeverityChart = Object.keys(bySeverity).map(level => ({ name: level, value: bySeverity[level], fill: PALETTE_COLOR_1[level]?.fill }));
+  const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
 
   return (
-    <div className="c-section">
+    <div className="c-section c-operators-detail-observations">
       <div className="l-container">
-        <DocumentsFilter showFMU onFmuChange={onFmuChange}>
-          <span className="filter-option">
-            <label>{intl.formatMessage({ id: 'filter.hidden', defaultMessage: 'Archived observations' })}</label>
-            <div className="filters-dropdown">
+        <Card
+          theme="-primary"
+          title={intl.formatMessage({ id: 'operator-detail.observations.title', defaultMessage: 'Observations from independent forest monitors' })}
+          description={intl.formatMessage({ id: 'operator-detail.observations.description' })}
+          Component={
+            <div>
               <Checkbox
                 properties={{
-                  checked: displayHidden,
-                  title: intl.formatMessage({ id: 'filter.hidden.description', defaultMessage: 'Display observations that are more than five years old' }),
+                  checked: !displayAll,
+                  title: intl.formatMessage({ id: 'operator-detail.observations.display_new', defaultMessage: 'Display only observations made by independent forest monitors in the past five years' }),
                 }}
-                onChange={onChangeDisplayHidden}
+                onChange={onChangeDisplayAll}
               />
             </div>
-          </span>
-        </DocumentsFilter>
+          }
+        />
       </div>
 
       {!!observationData.length && (
         <Fragment>
           <article className="c-article">
             <div className="l-container">
-              <header>
-                <h2 className="c-title">
-                  {intl.formatMessage({
-                    id: 'observations_from_independent_monitors',
-                  })}
-                </h2>
-              </header>
               <div className="content">
                 <TotalObservationsByOperator data={observationData} />
               </div>
             </div>
           </article>
 
+          <div className="l-container c-operators-details-observations__charts">
+            <div className="row l-row">
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_severity', defaultMessage: 'By severity' })}</center></h3>
+                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
+                  <PieChart>
+                    <Pie
+                      data={bySeverityChart}
+                      dataKey="value"
+                      outerRadius={160}
+                      innerRadius={160 - 70}
+                      startAngle={90}
+                      endAngle={-270}
+                      label={<CustomLabel formatLabel={formatSeverityLabel} />}
+                      labelLine={false}
+                    >
+                      {bySeverityChart.map((entry, index) => (
+                        <Cell key={entry.value} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="columns small-12 medium-6">
+                <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_category', defaultMessage: 'By category' })}</center></h3>
+                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
+                  <PieChart>
+                    <Pie
+                      data={byCategoryChart}
+                      dataKey="value"
+                      outerRadius={160}
+                      innerRadius={160 - 70}
+                      startAngle={90}
+                      endAngle={-270}
+                      label={<CustomLabel formatLabel={({ name, value }) => `${name} - ${value}` } />}
+                      labelLine={false}
+                    >
+                      {byCategoryChart.map((entry, index) => (
+                        <Cell key={entry.value} fill={PALETTE_COLOR_2[index].fill} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
           <article className="c-article">
             <div className="l-container">
               <header>
-                <h2 className="c-title">
-                  {intl.formatMessage({
-                    id: 'observations_by_category',
-                  })}
+                <h2 className="c-title -large">
+                  {intl.formatMessage({ id: 'observations_by_illegality', defaultMessage: 'Observations by illegality' })}
                 </h2>
               </header>
             </div>
 
-            <div className="content">
-              <StaticTabs
-                options={HELPERS_OBS.getYears(observationData)}
-                defaultSelected={year.toString()}
-                onChange={setYear}
-              />
+            <br />
+            <br />
 
-              <div className="l-container">
-                <div className="content">
-                  {/* CHARTS */}
-                  <article className="c-article">
-                    <TotalObservationsByOperatorByCategory
-                      data={observationData}
-                      year={parseInt(year, 10)}
-                    />
-                  </article>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="c-article">
             <TotalObservationsByOperatorByCategorybyIllegality
               data={observationData}
-              year={parseInt(year, 10)}
+              language={props.language}
             />
           </article>
         </Fragment>
@@ -146,7 +195,7 @@ const OperatorsDetailObservations = (props) => {
 
       {!observationData.length && (
         <div className="l-container">
-          <div className="c-no-data">
+          <div className="c-no-data -top-margin">
             {intl.formatMessage({ id: 'no-observations' })}
           </div>
         </div>
@@ -156,20 +205,16 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
+  language: PropTypes.string,
   operatorObservations: PropTypes.array,
-  fmus: PropTypes.array,
-  FMU: PropTypes.shape({ id: PropTypes.string }),
-  setFMU: PropTypes.func,
   getOperatorObservations: PropTypes.func
 };
 
 export default connect(
   (state) => ({
-    fmus: getHistoricFMUs(state),
-    FMU: getOperatorDocumentationFMU(state),
+    language: state.language
   }),
   {
-    getOperatorObservations,
-    setFMU: setOperatorDocumentationFMU
+    getOperatorObservations
   }
 )(OperatorsDetailObservations);

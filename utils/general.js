@@ -63,6 +63,14 @@ export function sumBy(arr, funcOrKey) {
   return arr.reduce((acc, item) => acc + func(item), 0);
 }
 
+export function transformValues(obj, func) {
+  const newObj = {};
+  Object.keys(obj).forEach((key) => {
+    newObj[key] = func(obj[key]);
+  });
+  return newObj;
+}
+
 export function groupBy(arr, criteria) {
   return arr.reduce((obj, item) => {
     const key = typeof criteria === 'function' ? criteria(item) : item[criteria];

@@ -13,7 +13,7 @@ import useUser from 'hooks/use-user';
 function DocumentsProvidedChart({ data, operatorId }) {
   const user = useUser();
   const isMobileAgent = user.userAgent.isMobile;
-  const { isMobile, isServer } = useDeviceInfo();
+  const { isMobile } = useDeviceInfo();
   const notVisibleStatuses = [
     'doc_not_required',
     ...(user.canManageOperator(operatorId) ? [] : ['doc_pending', 'doc_invalid'])
@@ -28,7 +28,7 @@ function DocumentsProvidedChart({ data, operatorId }) {
       });
     }
   });
-  const smallChart = (isServer && isMobileAgent) || isMobile;
+  const smallChart = isMobileAgent || isMobile;
   let chartHeight = smallChart ? 450 : 600;
   const radius = smallChart ? 160 : 200;
 

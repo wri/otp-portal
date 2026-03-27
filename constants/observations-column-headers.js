@@ -18,13 +18,13 @@ export const tableCheckboxes = [
   'report',
   'evidence',
   'litigation-status',
-  'location',
-  'location-accuracy',
   'observer-organizations',
   'mission-type',
   'operator-type',
   'subcategory',
   'relevant-operators',
+  'location-accuracy',
+  'location'
 ];
 
 export function getColumnHeaders(intl) {
@@ -34,7 +34,7 @@ export function getColumnHeaders(intl) {
         <span className="sortable">{intl.formatMessage({ id: 'date' })}</span>
       ),
       accessor: 'date',
-      minWidth: 75,
+      width: 75
     },
     {
       Header: (
@@ -61,7 +61,7 @@ export function getColumnHeaders(intl) {
               }
               overlayClassName="c-tooltip no-pointer-events"
             >
-              <button className="c-button -icon -primary" aria-label="Show information about the status">
+              <button className="c-button -transparent -icon" aria-label="Show information about the status">
                 <Icon name="icon-info" className="-smaller" />
               </button>
             </Tooltip>
@@ -88,6 +88,8 @@ export function getColumnHeaders(intl) {
       accessor: 'operator',
       className: '-uppercase description',
       minWidth: 120,
+      maxWidth: 250,
+      autoWidth: true
     },
     {
       Header: (
@@ -96,6 +98,7 @@ export function getColumnHeaders(intl) {
       accessor: 'fmu',
       className: 'description',
       minWidth: 120,
+      autoWidth: true,
       Cell: (attr) => {
         if (attr.value) {
           return (
@@ -111,13 +114,33 @@ export function getColumnHeaders(intl) {
     {
       Header: (
         <span className="sortable">
+          {intl.formatMessage({ id: 'relevant-operators' })}
+        </span>
+      ),
+      accessor: 'relevant-operators',
+      headerClassName: '-a-left',
+      className: 'relevant-operators',
+      minWidth: 200,
+      maxWidth: 300,
+      autoWidth: true,
+      Cell: (attr) => (
+        <ul className="cell-list">
+          {attr.value.map((operator) => (
+            <li key={operator}>{operator}</li>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      Header: (
+        <span className="sortable">
           {intl.formatMessage({ id: 'category' })}
         </span>
       ),
       accessor: 'category',
       headerClassName: '-a-left',
       className: 'description',
-      minWidth: 120,
+      minWidth: 120
     },
     {
       Header: (
@@ -127,7 +150,8 @@ export function getColumnHeaders(intl) {
       ),
       accessor: 'mission-type',
       headerClassName: '-a-left',
-      minWidth: 250,
+      minWidth: 100,
+      autoWidth: true,
       Cell: (attr) => attr.value && intl.formatMessage({ id: `mission_types.${attr.value}` })
     },
     {
@@ -139,7 +163,9 @@ export function getColumnHeaders(intl) {
       accessor: 'observer-organizations',
       headerClassName: '-a-left',
       className: 'observer-organizations',
-      minWidth: 250,
+      minWidth: 120,
+      maxWidth: 300,
+      autoWidth: true,
       Cell: (attr) => (
         sortBy(attr.value, "name").map((observer, index) => {
           return (
@@ -185,7 +211,8 @@ export function getColumnHeaders(intl) {
       accessor: 'operator-type',
       headerClassName: '-a-left',
       className: 'operator-type',
-      minWidth: 250,
+      minWidth: 100,
+      autoWidth: true,
       Cell: (attr) =>
         attr.value ? (
           <span>{intl.formatMessage({ id: `${attr.value}` })}</span>
@@ -213,7 +240,9 @@ export function getColumnHeaders(intl) {
       accessor: 'evidence',
       headerClassName: '-a-left',
       className: 'evidence description',
-      minWidth: 250,
+      autoWidth: true,
+      minWidth: 150,
+      maxWidth: 300,
       Cell: (attr) => (
         <div className="evidence-item-wrapper">
           {Array.isArray(attr.value) &&
@@ -244,7 +273,9 @@ export function getColumnHeaders(intl) {
       accessor: 'litigation-status',
       headerClassName: '-a-left',
       className: 'litigation-status',
-      minWidth: 250,
+      minWidth: 150,
+      maxWidth: 400,
+      autoWidth: true,
     },
     {
       Header: (
@@ -273,6 +304,7 @@ export function getColumnHeaders(intl) {
       accessor: 'level',
       headerClassName: 'severity-th',
       className: 'severity',
+      width: 150,
       Cell: (attr) => {
         return (
           <span
@@ -291,6 +323,7 @@ export function getColumnHeaders(intl) {
       accessor: 'report',
       headerClassName: '',
       className: 'report',
+      width: 75,
       Cell: (attr) => (
         <div className="report-item-wrapper">
           {attr.value ? (
@@ -317,7 +350,8 @@ export function getColumnHeaders(intl) {
       accessor: 'location-accuracy',
       headerClassName: '-a-left',
       className: 'location-accuracy',
-      minWidth: 250,
+      maxWidth: 350,
+      autoWidth: true,
     },
     {
       Header: '',
@@ -325,6 +359,7 @@ export function getColumnHeaders(intl) {
       headerClassName: '',
       className: 'location',
       expander: true,
+      width: 50,
       // eslint-disable-next-line react/prop-types
       Expander: ({ isExpanded }) => (
         <div className="location-item-wrapper">
@@ -338,24 +373,6 @@ export function getColumnHeaders(intl) {
             </button>
           )}
         </div>
-      ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'relevant-operators' })}
-        </span>
-      ),
-      accessor: 'relevant-operators',
-      headerClassName: '-a-left',
-      className: 'relevant-operators',
-      minWidth: 250,
-      Cell: (attr) => (
-        <ul className="cell-list">
-          {attr.value.map((operator) => (
-            <li key={operator}>{operator}</li>
-          ))}
-        </ul>
       ),
     },
   ];

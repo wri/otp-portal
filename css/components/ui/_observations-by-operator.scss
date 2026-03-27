@@ -25,18 +25,22 @@
     justify-content: space-between;
     align-items: flex-start;
     font-family: $font-family-proximanova;
-    font-size: 12px;
+    font-size: $font-size-default;
   }
 
   .obo-observations-list {
-    height: 7px;
+    height: 28px;
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
 
     &.-big {
-      height: 22px;
+      height: 42px;
+
+      .obo-observations-list-item {
+        font-size: $font-size-default;
+      }
     }
   }
 
@@ -50,5 +54,19 @@
     font-family: $font-family-proximanova;
     font-size: $font-size-small;
     font-weight: $font-weight-bold;
+
+    &.label {
+      color: $color-text-1;
+      width: 30px;
+      border: none;
+    }
+  }
+}
+
+.c-operators-details-observations {
+  &__charts {
+    svg {
+      overflow: visible;
+    }
   }
 }
