@@ -32,20 +32,20 @@ const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [displayHidden, setDisplayHidden] = useState(true);
+  const [displayAll, setDisplayAll] = useState(router.query.display_all === 'true');
 
   const { isDesktop } = useDeviceInfo();
 
   useEffect(() => {
-    setDisplayHidden(router.query.display_hidden === 'true');
-  }, [router.query.display_hidden]);
+    setDisplayAll(router.query.display_all === 'true');
+  }, [router.query.display_all]);
 
-  const onChangeDisplayHidden = ({ checked }) => {
-    setUrlParam('display_hidden', checked ? null : true);
+  const onChangeDisplayAll = ({ checked }) => {
+    setUrlParam('display_all', checked ? null : true);
   };
 
   const observationData = props.operatorObservations.filter(
-    (obs) => (displayHidden || obs.hidden === false)
+    (obs) => (displayAll || obs.hidden === false)
   ).map(obs => ({
     ...obs,
     level: obs.level || 0
@@ -106,10 +106,10 @@ const OperatorsDetailObservations = (props) => {
             <div>
               <Checkbox
                 properties={{
-                  checked: !displayHidden,
+                  checked: !displayAll,
                   title: intl.formatMessage({ id: 'operator-detail.observations.display_new', defaultMessage: 'Display only observations made by independent forest monitors in the past five years' }),
                 }}
-                onChange={onChangeDisplayHidden}
+                onChange={onChangeDisplayAll}
               />
             </div>
           }
