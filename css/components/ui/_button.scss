@@ -19,7 +19,7 @@
   cursor: pointer;
 
   // STATES
-  &.-disabled {
+  &.-disabled, &[disabled] {
     pointer-events: none;
     opacity: .4;
   }

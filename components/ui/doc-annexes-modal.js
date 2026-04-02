@@ -83,85 +83,95 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       </h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-        <Form>
-          <fieldset className="c-field-container">
-            <div className="c-field-row">
-              <Field
-                className="-fluid"
-                validations={['required']}
-                properties={{
-                  name: 'name',
-                  label: intl.formatMessage({ id: 'annex.form.name' }),
-                  required: true,
-                  type: 'text',
-                }}
-              >
-                {Input}
-              </Field>
-            </div>
-            <div className="c-field-row">
-              <div className="l-row row">
-                <div className="columns medium-6 small-12">
-                  {/* DATE */}
+        {({ form }) => {
+          const hasChanges =
+            form.name !== formInitialState.name ||
+            form.startDate !== formInitialState.startDate ||
+            form.expireDate !== formInitialState.expireDate ||
+            !!form.file?.base64;
+
+          return (
+            <Form>
+              <fieldset className="c-field-container">
+                <div className="c-field-row">
                   <Field
+                    className="-fluid"
                     validations={['required']}
-                    className="-fluid"
                     properties={{
-                      name: 'startDate',
-                      label: intl.formatMessage({ id: 'annex.form.start_date' }),
-                      type: 'date',
-                      required: true
+                      name: 'name',
+                      label: intl.formatMessage({ id: 'annex.form.name' }),
+                      required: true,
+                      type: 'text',
                     }}
                   >
                     {Input}
                   </Field>
                 </div>
-                <div className="columns medium-6 small-12">
-                  {/* DATE */}
-                  <Field
-                    className="-fluid"
-                    properties={{
-                      name: 'expireDate',
-                      label: intl.formatMessage({ id: 'annex.form.expiry_date' }),
-                      type: 'date'
-                    }}
-                  >
-                    {Input}
-                  </Field>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="l-row row">
-                <div className="columns small-12">
-                  <div className="c-field-row">
-                    <Field
-                      validations={['required']}
-                      className="-fluid"
-                      properties={{
-                        name: 'file',
-                        label: intl.formatMessage({ id: 'file' }),
-                        required: true,
-                        default: !url ? null : { name: url }
-                      }}
-                    >
-                      {File}
-                    </Field>
+                <div className="c-field-row">
+                  <div className="l-row row">
+                    <div className="columns medium-6 small-12">
+                      {/* DATE */}
+                      <Field
+                        validations={['required']}
+                        className="-fluid"
+                        properties={{
+                          name: 'startDate',
+                          label: intl.formatMessage({ id: 'annex.form.start_date' }),
+                          type: 'date',
+                          required: true
+                        }}
+                      >
+                        {Input}
+                      </Field>
+                    </div>
+                    <div className="columns medium-6 small-12">
+                      {/* DATE */}
+                      <Field
+                        className="-fluid"
+                        properties={{
+                          name: 'expireDate',
+                          label: intl.formatMessage({ id: 'annex.form.expiry_date' }),
+                          type: 'date'
+                        }}
+                      >
+                        {Input}
+                      </Field>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </fieldset>
+                <div>
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <div className="c-field-row">
+                        <Field
+                          validations={['required']}
+                          className="-fluid"
+                          properties={{
+                            name: 'file',
+                            label: intl.formatMessage({ id: 'file' }),
+                            required: true,
+                            default: !url ? null : { name: url }
+                          }}
+                        >
+                          {File}
+                        </Field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
 
-          <ul className="c-field-buttons">
-            <li>
-              <CancelButton onClick={() => modal.toggleModal(false)} />
-            </li>
-            <li>
-              <SubmitButton />
-            </li>
-          </ul>
-        </Form>
+              <ul className="c-field-buttons">
+                <li>
+                  <CancelButton onClick={() => modal.toggleModal(false)} />
+                </li>
+                <li>
+                  <SubmitButton disabled={!hasChanges} />
+                </li>
+              </ul>
+            </Form>
+          );
+        }}
       </FormProvider>
     </div>
   );
