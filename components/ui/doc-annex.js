@@ -42,7 +42,7 @@ function AnnexTooltip({ annex, editable, onRemove, onEdit }) {
           <button
             className="c-button -small -tooltip"
             type="button"
-            data-test-id="remove-annex-button"
+            data-test-id="edit-annex-button"
             onClick={() => onEdit && onEdit(annex)}
           >
             Edit
