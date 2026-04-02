@@ -47,12 +47,17 @@
       display: inline-block;
 
       &.-doc_invalid {
-        background-color: $color-error;
+        background-color: $color-secondary;
+        color: $color-white;
+      }
+
+      &.-doc_expired {
+        background-color: $color-doc-expired;
         color: $color-white;
       }
 
       &.-doc_pending {
-        background-color: $color-warning;
+        background-color: $color-doc-pending;
         color: $color-white;
       }
     }

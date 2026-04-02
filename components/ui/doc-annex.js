@@ -75,7 +75,7 @@ export default function DocAnnex({ annex, editable, visible, onEdit, onRemove })
       overlayClassName="c-tooltip annex-tooltip fixed-width"
     >
       <button
-        className="c-button"
+        className={`c-button doc-annex-button -${annex.status}`}
         type="button"
       >
         <Icon className="" name="icon-file-empty" />
