@@ -79,7 +79,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
     <div className="c-login">
       <h2 className="c-title -extrabig">
         {!id && intl.formatMessage({ id: "annex.form.title", defaultMessage: "Add a document for the annex of {title}" }, { title })}
-        {!!id && 'Edit annex'}
+        {!!id && intl.formatMessage({ id: "annex.edit", defaultMessage: "Edit annex" })}
       </h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
