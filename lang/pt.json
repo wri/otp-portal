@@ -174,6 +174,7 @@
   "start-date": "Data de início",
   "expire-date": "Data de validade",
   "annexes": "Anexos",
+  "annex.edit": "Edit annex",
   "annex.remove": "Remover um anexo",
   "annex.invalidation_reason": "Invalidation reason",
   "annex.expiry_date": "Data de validade",
