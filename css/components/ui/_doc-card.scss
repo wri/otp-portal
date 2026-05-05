@@ -161,6 +161,20 @@
     // align-items: center;
   }
 
+  .doc-annex-button {
+    &.-doc_invalid {
+      border-bottom: 4px solid $color-secondary;
+    }
+
+    &.-doc_pending {
+      border-bottom: 4px solid $color-doc-pending;
+    }
+
+    &.-doc_expired {
+      border-bottom: 4px solid $color-doc-expired;
+    }
+  }
+
   .doc-card-annexes-title {
     text-transform: uppercase;
     color: rgba($color-text-1, 0.5);
