@@ -52,12 +52,14 @@
     "viewport-mercator-project": "6.1.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@formatjs/cli": "^6.14.5",
     "@next/bundle-analyzer": "^15.5.18",
     "compression-webpack-plugin": "^12.0.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^15.5.18",
     "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
     "sass": "^1.99.0"
   },
   "resolutions": {
@@ -71,7 +73,7 @@
     "build": "next build",
     "start": "NODE_ENV=${NODE_ENV:-production} PORT=${PORT:-4000} next start",
     "prod": "yarn build && yarn start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
     "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js",
     "lang-compile": "script/lang-compile"
