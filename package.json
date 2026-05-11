@@ -55,13 +55,14 @@
     "@formatjs/cli": "^6.14.5",
     "@next/bundle-analyzer": "14",
     "compression-webpack-plugin": "^12.0.0",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14",
-    "eslint-config-prettier": "^8.10.2",
+    "eslint-config-prettier": "^10.1.8",
     "sass": "^1.99.0"
   },
   "resolutions": {
-    "axios": "^0.32.0"
+    "axios": "^0.32.0",
+    "fast-uri": "^3.1.2"
   },
   "scripts": {
     "dev": "NODE_ENV=development PORT=4000 next dev",
