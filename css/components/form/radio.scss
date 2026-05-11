@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-radio {
   label {
     display: block;
@@ -17,7 +19,7 @@
     color: black;
 
     &:hover {
-      color: lighten(black, 12.5%);
+      color: color.adjust(black, $lightness: 12.5%);
     }
 
     span {

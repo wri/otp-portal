@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-modal {
   position: fixed;
   top: 0;
@@ -64,7 +66,7 @@
     z-index: 2; /* Otherwise, it won't be reachable */
 
     &:hover {
-      fill: darken($color-white, 20%);
+      fill: color.adjust($color-white, $lightness: -20%);
     }
   }
 

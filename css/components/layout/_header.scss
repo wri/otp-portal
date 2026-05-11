@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-header {
   width: 100%;
   z-index: $z-index-2;
@@ -141,7 +143,7 @@
           }
 
           &:hover {
-            color: lighten($color-text-1, 40%);
+            color: color.adjust($color-text-1, $lightness: 40%);
           }
 
           &.-active {
@@ -202,7 +204,7 @@
           }
 
           &:hover {
-            color: darken($color-white, 20%);
+            color: color.adjust($color-white, $lightness: -20%);
           }
         }
       }

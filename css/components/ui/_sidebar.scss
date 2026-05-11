@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $sidebar-width: 800px;
 
 .c-sidebar {
@@ -25,7 +27,7 @@ $sidebar-width: 800px;
     outline: none;
 
     &:hover {
-      background: lighten($color-primary, 10%);
+      background: color.adjust($color-primary, $lightness: 10%);
     }
 
 

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $button-size: 36px;
 
 .c-map-controls {
@@ -57,7 +59,7 @@ $button-size: 36px;
       }
 
       &:hover {
-        background-color: darken($color-white, 5%);
+        background-color: color.adjust($color-white, $lightness: -5%);
       }
 
       &.-disabled {
@@ -75,8 +77,8 @@ $button-size: 36px;
         background: $color-gray-1;
 
         &:hover {
-          color: darken($color-text-2, 10%);
-          fill: darken($color-text-2, 10%);
+          color: color.adjust($color-text-2, $lightness: -10%);
+          fill: color.adjust($color-text-2, $lightness: -10%);
         }
 
         > svg {

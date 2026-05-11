@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .c-tooltip {
   padding: 10px;
   min-width: 200px;
@@ -71,7 +73,7 @@
     }
 
     dd {
-      margin-top: $space-1 / 2;
+      margin-top: math.div($space-1, 2);
     }
 
   }

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-file-image {
 
   .file-placeholder {
@@ -43,7 +45,7 @@
       fill: $color-white;
 
       &:hover {
-        background: darken($color-error, 5%);
+        background: color.adjust($color-error, $lightness: -5%);
       }
     }
   }

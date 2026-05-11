@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-button {
   position: relative;
   display: inline-block;
@@ -55,8 +57,8 @@
     background: transparent;
 
     &:hover {
-      color: darken($color-text-1, 50%);
-      fill: darken($color-text-1, 50%);
+      color: color.adjust($color-text-1, $lightness: -50%);
+      fill: color.adjust($color-text-1, $lightness: -50%);
     }
   }
 
@@ -71,8 +73,8 @@
     background: $color-gray-1;
 
     &:hover {
-      color: darken($color-text-2, 10%);
-      fill: darken($color-text-2, 10%);
+      color: color.adjust($color-text-2, $lightness: -10%);
+      fill: color.adjust($color-text-2, $lightness: -10%);
     }
   }
 
@@ -83,8 +85,8 @@
     background: $color-error;
 
     &:hover {
-      color: darken($color-text-2, 10%);
-      fill: darken($color-text-2, 10%);
+      color: color.adjust($color-text-2, $lightness: -10%);
+      fill: color.adjust($color-text-2, $lightness: -10%);
     }
   }
 
@@ -95,8 +97,8 @@
     background: $color-tertiary;
 
     &:hover {
-      color: darken($color-text-1, 10%);
-      fill: darken($color-text-1, 10%);
+      color: color.adjust($color-text-1, $lightness: -10%);
+      fill: color.adjust($color-text-1, $lightness: -10%);
     }
   }
 
@@ -119,7 +121,7 @@
     border-color: #3b5998;
 
     &:hover {
-      background: darken(#3b5998, 10%);
+      background: color.adjust(#3b5998, $lightness: -10%);
     }
   }
 
@@ -130,7 +132,7 @@
     border-color: #55acee;
 
     &:hover {
-      background: darken(#55acee, 10%);
+      background: color.adjust(#55acee, $lightness: -10%);
     }
   }
 
@@ -142,7 +144,7 @@
     border-color: #007bb5;
 
     &:hover {
-      background: darken(#007bb5, 10%);
+      background: color.adjust(#007bb5, $lightness: -10%);
     }
   }
 

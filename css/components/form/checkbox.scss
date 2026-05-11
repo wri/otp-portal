@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $checkbox-size: 20px;
 $checkbox-size-small: 14px;
 
@@ -21,7 +23,7 @@ $checkbox-size-small: 14px;
     user-select: none;
 
     &:hover {
-      color: lighten($color-text-1, 12.5%);
+      color: color.adjust($color-text-1, $lightness: 12.5%);
     }
 
     .checkbox-icon {

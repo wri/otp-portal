@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-ranking {
   overflow-x: auto;
   margin: $space-1 * 2;
@@ -60,7 +62,7 @@
       cursor: pointer;
 
       &:hover {
-        color: darken($color-primary, 15%);
+        color: color.adjust($color-primary, $lightness: -15%);
       }
 
       svg {

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .c-map-popup {
   padding: $space-1 * 1.5;
 
@@ -25,7 +27,7 @@
     }
 
     &:hover {
-      background: darken($color-white, 5%);
+      background: color.adjust($color-white, $lightness: -5%);
     }
   }
 }
