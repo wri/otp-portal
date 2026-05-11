@@ -33,6 +33,17 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  sassOptions: {
+    quietDeps: true,
+    silenceDeprecations: [
+      'import',
+      'global-builtin',
+      'color-functions',
+      'slash-div',
+      'legacy-js-api',
+      'if-function'
+    ],
+  },
   images: {
     remotePatterns: [
       {

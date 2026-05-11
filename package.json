@@ -25,7 +25,7 @@
     "luma.gl": "7.3.2",
     "mapbox-gl": "^1.13.3",
     "moveto": "^1.8.2",
-    "next": "14",
+    "next": "^15.5.18",
     "next-http-proxy-middleware": "^1.2.8",
     "next-redux-wrapper": "8",
     "normalize.css": "^8.0.1",
@@ -53,10 +53,10 @@
   },
   "devDependencies": {
     "@formatjs/cli": "^6.14.5",
-    "@next/bundle-analyzer": "14",
+    "@next/bundle-analyzer": "^15.5.18",
     "compression-webpack-plugin": "^12.0.0",
     "eslint": "^8.57.1",
-    "eslint-config-next": "14",
+    "eslint-config-next": "^15.5.18",
     "eslint-config-prettier": "^10.1.8",
     "sass": "^1.99.0"
   },
