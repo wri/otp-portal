@@ -7,7 +7,7 @@
   "main": "index.js",
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
-    "@sentry/nextjs": "^8.55.2",
+    "@sentry/nextjs": "^10.52.0",
     "@turf/bbox": "^6.5.0",
     "classnames": "^2.5.1",
     "date-fns": "^3.6.0",
