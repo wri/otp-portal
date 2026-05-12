@@ -83,14 +83,6 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       </h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-        {({ form }) => {
-          const hasChanges =
-            form.name !== formInitialState.name ||
-            form.startDate !== formInitialState.startDate ||
-            form.expireDate !== formInitialState.expireDate ||
-            !!form.file?.base64;
-
-          return (
             <Form>
               <fieldset className="c-field-container">
                 <div className="c-field-row">
@@ -166,12 +158,10 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                   <CancelButton onClick={() => modal.toggleModal(false)} />
                 </li>
                 <li>
-                  <SubmitButton disabled={!hasChanges} />
+                  <SubmitButton disableIfNoChanges />
                 </li>
               </ul>
             </Form>
-          );
-        }}
       </FormProvider>
     </div>
   );

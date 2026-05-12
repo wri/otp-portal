@@ -5,15 +5,15 @@ import cx from 'classnames';
 
 import { useForm } from 'components/form/Form';
 
-const SubmitButton = ({ children, disabled }) => {
-  const { submitting } = useForm();
+const SubmitButton = ({ children, disabled, disableIfNoChanges }) => {
+  const { submitting, hasChanges } = useForm();
   const intl = useIntl();
 
   return (
     <button
       type="submit"
       name="commit"
-      disabled={submitting || disabled}
+      disabled={submitting || disabled || (disableIfNoChanges && !hasChanges)}
       className={cx('c-button -secondary -expanded', { '-submitting': submitting })}
     >
       {children || intl.formatMessage({ id: 'submit' })}
@@ -23,7 +23,8 @@ const SubmitButton = ({ children, disabled }) => {
 
 SubmitButton.propTypes = {
   children: PropTypes.node,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  disableIfNoChanges: PropTypes.bool
 };
 
 export default SubmitButton;

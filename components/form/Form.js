@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useMemo } from "react";
 import { toastr } from 'react-redux-toastr';
 import { useIntl } from "react-intl";
 import uniqBy from 'lodash/uniqBy';
@@ -33,6 +33,7 @@ export const FormContext = React.createContext({
   form: {},
   submitting: false,
   submitted: false,
+  hasChanges: false,
   setFormValues: () => { },
   register: () => { },
 })
@@ -128,6 +129,11 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
     }, 0);
   }
 
+  const hasChanges = useMemo(() => {
+    if (!initialValues) return true;
+    return Object.keys(initialValues).some(key => form[key] !== initialValues[key]);
+  }, [form, initialValues]);
+
   const contextValue = {
     form,
     setFormValues: handleFormChange,
@@ -135,6 +141,7 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
     register,
     submitting,
     submitted,
+    hasChanges,
   }
 
   return (

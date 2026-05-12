@@ -185,7 +185,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                 <CancelButton onClick={() => modal.toggleModal(false)} />
               </li>
               <li>
-                <SubmitButton />
+                <SubmitButton disableIfNoChanges />
               </li>
             </ul>
           </Form>

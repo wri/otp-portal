@@ -203,7 +203,7 @@ const UserEditForm = (props) => {
 
               <ul className="c-field-buttons">
                 <li>
-                  <SubmitButton>
+                  <SubmitButton disableIfNoChanges>
                     {intl.formatMessage({ id: 'Update' })}
                   </SubmitButton>
                 </li>
