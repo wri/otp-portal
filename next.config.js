@@ -35,7 +35,12 @@ const config = {
   sassOptions: {
     quietDeps: true,
     loadPaths: ['node_modules'],
-    silenceDeprecations: ['import', 'color-functions', 'legacy-js-api'],
+    // 'legacy-js-api' is silenced because Next.js itself still uses Sass's legacy
+    // JS API in its bundled sass-loader (see Next's
+    // build/webpack/config/blocks/css/index.js — they have the same TODO until
+    // they upgrade to sass-loader 16). Next silences it by default, but our
+    // sassOptions spread overrides their list, so we have to repeat it here.
+    silenceDeprecations: ['import', 'legacy-js-api'],
   },
   images: {
     remotePatterns: [
