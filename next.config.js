@@ -1,6 +1,5 @@
 const zlib = require("zlib");
 const { withSentryConfig } = require('@sentry/nextjs');
-const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 require('dotenv').config();
@@ -33,6 +32,17 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  sassOptions: {
+    quietDeps: true,
+    silenceDeprecations: [
+      'import',
+      'global-builtin',
+      'color-functions',
+      'slash-div',
+      'legacy-js-api',
+      'if-function'
+    ],
+  },
   images: {
     remotePatterns: [
       {
@@ -52,16 +62,6 @@ const config = {
     // config.infrastructureLogging = {
     //   level: 'verbose',
     // }
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        __SENTRY_DEBUG__: false,
-        // __SENTRY_TRACING__: false, // Tracing, we don't use it
-        __RRWEB_EXCLUDE_IFRAME__: true,  // Session Replay - we don't use it
-        __RRWEB_EXCLUDE_SHADOW_DOM__: true, // Session Replay - we don't use it
-        __SENTRY_EXCLUDE_REPLAY_WORKER__: true, // Session Replay - we don't use it
-      })
-    );
-
     if (!options.dev) {
       new CompressionPlugin({
         filename: "[path][base].br",
@@ -138,8 +138,13 @@ const sentryWebpackPluginOptions = {
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true, // Suppresses all logs
-  hideSourceMaps: process.env.ENV === 'production',
   widenClientFileUpload: true,
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeReplayShadowDom: true,
+    excludeReplayIframe: true,
+    excludeReplayWorker: true,
+  },
   ...(process.env.SENTRY_DISABLE_RELEASE === 'true' && {
     release: {
       create: false,
