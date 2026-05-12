@@ -202,7 +202,7 @@ const EditOperator = (props) => {
 
             <ul className="c-field-buttons">
               <li>
-                <SubmitButton>
+                <SubmitButton disableIfNoChanges>
                   {intl.formatMessage({ id: 'update.operator' })}
                 </SubmitButton>
               </li>
