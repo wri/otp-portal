@@ -1,0 +1,79 @@
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:math';
+@use 'sass:meta';
+
+// Convert a px value (or 0) into ems based on a 16px root.
+@function bp-em($px) {
+  @if $px == 0 { @return 0; }
+  @return math.div($px, 16px) * 1em;
+}
+
+// The breakpoint name immediately after $name in $breakpoints, or null.
+@function bp-next($name) {
+  $names: map.keys($breakpoints);
+  $i: list.index($names, $name);
+  @if $i == null { @return null; }
+  @if $i >= list.length($names) { @return null; }
+  @return list.nth($names, $i + 1);
+}
+
+// Foundation-compatible breakpoint mixin.
+// Usage: @include breakpoint(medium) {}            // min-width
+//        @include breakpoint(medium up) {}         // min-width (alias)
+//        @include breakpoint(medium down) {}       // max-width
+//        @include breakpoint(medium only) {}       // min and max
+//        @include breakpoint(small only) {}        // max-width (since small=0)
+@mixin breakpoint($query) {
+  $name: $query;
+  $modifier: up;
+
+  @if meta.type-of($query) == 'list' {
+    $name: list.nth($query, 1);
+    @if list.length($query) > 1 {
+      $modifier: list.nth($query, 2);
+    }
+  }
+
+  $min-em: null;
+  $max-em: null;
+
+  @if meta.type-of($name) == 'number' {
+    // Raw px/em value: no "next" breakpoint, so 'only' and 'down' just use this value
+    // as the upper bound (with -0.0625em like Foundation), 'up' uses it as min-width.
+    $val-em: bp-em($name);
+    $min-em: $val-em;
+    $max-em: $val-em - 0.0625em;
+  } @else {
+    $px: map.get($breakpoints, $name);
+    @if $px == null {
+      @error 'Unknown breakpoint #{$name}';
+    }
+    $min-em: bp-em($px);
+    $next: bp-next($name);
+    @if $next != null {
+      $max-em: bp-em(map.get($breakpoints, $next)) - 0.0625em;
+    }
+  }
+
+  $use-min: false;
+  $use-max: false;
+
+  @if $modifier == down {
+    @if $max-em != null { $use-max: true; }
+  } @else if $modifier == only {
+    @if $min-em != 0 { $use-min: true; }
+    @if $max-em != null { $use-max: true; }
+  } @else {
+    @if $min-em != 0 { $use-min: true; }
+  }
+
+  @if not $use-min and not $use-max {
+    @content;
+  } @else {
+    $q: 'screen';
+    @if $use-min { $q: $q + ' and (min-width: #{$min-em})'; }
+    @if $use-max { $q: $q + ' and (max-width: #{$max-em})'; }
+    @media #{$q} { @content; }
+  }
+}

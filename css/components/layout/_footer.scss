@@ -146,7 +146,7 @@
       text-align: right;
 
       a, .c-link-button {
-        color: $white;
+        color: $color-white;
         text-decoration: none;
         font-size: $font-size-small;
 
@@ -155,7 +155,7 @@
         }
 
         &:hover {
-          color: $white;
+          color: $color-white;
           text-decoration: underline;
         }
       }

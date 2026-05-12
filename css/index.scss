@@ -3,12 +3,9 @@
 // Reset
 @import 'normalize.css/normalize';
 
-// Foundation
-@import 'foundation_settings';
-@import 'foundation-sites/scss/foundation';
-@include foundation-flex-classes;
-@include foundation-flex-grid;
-@include foundation-responsive-embed;
+// Grid system (replaces foundation-sites)
+@import 'breakpoints';
+@import 'grid';
 
 // Common
 @import 'base';

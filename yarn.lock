@@ -3563,11 +3563,6 @@ forwarded-parse@2.1.2:
   resolved "https://registry.yarnpkg.com/forwarded-parse/-/forwarded-parse-2.1.2.tgz#08511eddaaa2ddfd56ba11138eee7df117a09325"
   integrity sha512-alTFZZQDKMporBH77856pXgzhEzaUVmLCDk+egLgIgHst3Tpndzz8MnKe+GzRJRfvVdn69HhpW7cmXzvtLvJAw==
 
-foundation-sites@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/foundation-sites/-/foundation-sites-6.9.0.tgz#ef4d51fa1c669cbdf61d080d8a328686ff85992a"
-  integrity sha512-bZpjL6lxuGViy1UU/NuMddyAAJP0YgJYKNh+8ZtDWhQRtiY1yQISxHmgF4V8EFx7DWHDTdZC1fwFysnMAYkdQg==
-
 fsevents@~2.3.2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"

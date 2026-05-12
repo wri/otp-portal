@@ -73,7 +73,7 @@ $sidebar-width: 800px;
   }
 
   &.-fmumap {
-    background: $white;
+    background: $color-white;
 
     @include breakpoint(medium) {
       position: absolute;

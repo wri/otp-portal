@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .l-container {
   display: block;
   margin: 0 auto;
@@ -6,8 +8,16 @@
 }
 
 // GRID
+// Nested row: breaks out of parent column padding via negative gutter margins.
+// Always used alongside `.row` in JSX (e.g. `class="row l-row"`), which supplies
+// display:flex and the rest of the base grid styles.
 .l-row {
-  @include flex-grid-row(nest, expand, null, false, $grid-column-gutter);
+  @each $bp, $gutter in $grid-column-gutter {
+    @include breakpoint($bp) {
+      margin-left: math.div($gutter, -2);
+      margin-right: math.div($gutter, -2);
+    }
+  }
 
   &.-equal-heigth {
     .columns {

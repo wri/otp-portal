@@ -35,7 +35,7 @@ const config = {
   sassOptions: {
     quietDeps: true,
     loadPaths: ['node_modules'],
-    silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function', 'legacy-js-api'],
+    silenceDeprecations: ['import', 'color-functions', 'legacy-js-api'],
   },
   images: {
     remotePatterns: [
