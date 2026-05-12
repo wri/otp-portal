@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-documentation-pie-chart {
   display: flex;
   justify-content: space-between;

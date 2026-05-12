@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-info-box {
   background: $color-gray-2;
   padding: 20px;

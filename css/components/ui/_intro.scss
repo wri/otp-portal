@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-intro {
   background: $color-tertiary;
   padding: $space-1 * 4;

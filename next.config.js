@@ -40,7 +40,7 @@ const config = {
     // build/webpack/config/blocks/css/index.js — they have the same TODO until
     // they upgrade to sass-loader 16). Next silences it by default, but our
     // sassOptions spread overrides their list, so we have to repeat it here.
-    silenceDeprecations: ['import', 'legacy-js-api'],
+    silenceDeprecations: ['legacy-js-api'],
   },
   images: {
     remotePatterns: [

@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-mobile-menu {
   background: $color-tertiary;
   height: calc(100% - 66px);

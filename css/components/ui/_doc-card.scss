@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-doc-card {
   flex: 1;
   position: relative;

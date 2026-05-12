@@ -1,3 +1,5 @@
+@use "../../settings" as *;
+
 .c-observation-filters {
   background-color: $color-secondary;
   padding: 30px 30px 65px;

@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-title {
   font-size: $font-size-extrabig;
   font-weight: $font-weight-default;

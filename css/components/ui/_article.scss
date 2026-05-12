@@ -1,3 +1,6 @@
+@use "../../breakpoints" as *;
+@use "../../settings" as *;
+
 .c-article {
   margin: $space-1 * 4 0 0;
 
