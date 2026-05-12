@@ -1,11 +1,11 @@
 @import 'settings';
 
 // Reset
-@import '../node_modules/normalize.css/normalize';
+@import 'normalize.css/normalize';
 
 // Foundation
 @import 'foundation_settings';
-@import '../node_modules/foundation-sites/scss/foundation';
+@import 'foundation-sites/scss/foundation';
 @include foundation-flex-classes;
 @include foundation-flex-grid;
 @include foundation-responsive-embed;
@@ -30,10 +30,10 @@
 @import 'components/page/static-box';
 @import 'components/page/static-tabs';
 
-@import '../node_modules/rc-tooltip/assets/bootstrap_white.css';
+@import 'rc-tooltip/assets/bootstrap_white.css';
 
 // - map
-@import '../node_modules/mapbox-gl/dist/mapbox-gl';
+@import 'mapbox-gl/dist/mapbox-gl';
 @import 'components/map/map';
 @import 'components/map/legend-button';
 @import 'components/map/legend-item-button-opacity-tooltip';
@@ -54,8 +54,8 @@
 @import 'components/map/layer-info';
 
 // - ui
-@import '../node_modules/react-table/react-table';
-@import '../node_modules/react-redux-toastr/src/styles/index';
+@import 'react-table/react-table';
+@import 'react-redux-toastr/src/styles/index';
 @import 'components/ui/accordion';
 @import 'components/ui/account-dropdown';
 @import 'components/ui/article';
