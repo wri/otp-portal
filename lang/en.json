@@ -138,6 +138,7 @@
   "doc-modal.current-file.badge": "current",
   "doc-modal.select-existing.search-placeholder": "Search by filename, FMU, or category",
   "doc-modal.select-existing.empty": "No files match your search.",
+  "doc-modal.selected-file": "Selected file",
   "select-table-content": "Select Table Content",
   "Customize Table Content": "Customize Table Content",
   "required-file": "Require file",

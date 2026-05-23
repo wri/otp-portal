@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -92,13 +92,13 @@ const DocModalSelectExisting = ({
   excludeDocId,
   currentSelection,
   onSelect,
+  search,
+  onSearchChange,
 }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const operators = useSelector(getReusableDocumentsGrouped);
   const loading = useSelector(getReusableDocumentsLoading);
-
-  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (operatorIds && operatorIds.length) {
@@ -121,6 +121,7 @@ const DocModalSelectExisting = ({
       kind: 'document',
       id: doc.docId,
       label: doc.title,
+      url: doc.url,
       fmuName: doc.fmuName,
       operatorName: op.operatorName,
       categoryName: cat.categoryName,
@@ -132,6 +133,7 @@ const DocModalSelectExisting = ({
       kind: 'annex',
       id: annex.id,
       label: annex.name,
+      url: annex.url,
       fmuName: doc.fmuName,
       operatorName: op.operatorName,
       categoryName: cat.categoryName,
@@ -149,7 +151,7 @@ const DocModalSelectExisting = ({
             id: 'doc-modal.select-existing.search-placeholder',
           })}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
 
@@ -168,9 +170,11 @@ const DocModalSelectExisting = ({
 
         {filtered.map((op) => (
           <div key={op.operatorId} className="c-doc-modal-select-existing__operator-group">
-            <div className="c-doc-modal-select-existing__operator-header">
-              {op.operatorName}
-            </div>
+            {filtered.length > 1 && (
+              <div className="c-doc-modal-select-existing__operator-header">
+                {op.operatorName}
+              </div>
+            )}
 
             {op.categories.map((cat) => (
               <React.Fragment key={`${op.operatorId}-${cat.categoryName}`}>
@@ -250,6 +254,8 @@ DocModalSelectExisting.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   onSelect: PropTypes.func.isRequired,
+  search: PropTypes.string.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
 };
 
 export default DocModalSelectExisting;
