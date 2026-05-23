@@ -1,0 +1,234 @@
+.c-doc-modal-current-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: $color-tertiary;
+  border: 1px solid $border-color-1;
+  border-radius: 6px;
+  font-size: $font-size-small;
+  margin-bottom: 10px;
+
+  &__name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $color-primary;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__badge {
+    font-size: $font-size-extrasmall;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    background: rgba($color-doc-valid, 0.15);
+    color: $color-doc-valid;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+}
+
+.c-doc-modal-tabs {
+  display: flex;
+  font-family: $font-family-proximanova;
+  border: 1px solid $border-color-1;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  &__tab {
+    flex: 1;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    font-size: $font-size-default;
+    font-family: inherit;
+    color: $color-gray-3;
+    cursor: pointer;
+    padding: 0 10px;
+
+    & + & {
+      border-left: 1px solid $border-color-1;
+    }
+
+    &.-active {
+      background: $color-tertiary;
+      color: $color-gray-1;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+.c-doc-modal-select-existing {
+  font-family: $font-family-proximanova;
+
+  &__search {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  &__search-input {
+    width: 100%;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid $border-color-1;
+    border-radius: 6px;
+    font-size: $font-size-small;
+    font-family: inherit;
+    background: $color-white;
+  }
+
+  &__list {
+    border: 1px solid $border-color-1;
+    border-radius: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: $color-white;
+  }
+
+  &__loading {
+    padding: 24px 12px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__empty {
+    padding: 18px 12px;
+    font-size: $font-size-small;
+    color: $color-gray-3;
+    text-align: center;
+  }
+
+  &__operator-group {
+    & + & {
+      border-top: 1px solid $border-color-1;
+    }
+  }
+
+  &__operator-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 6px 12px;
+    background: $color-gray-2;
+    border-bottom: 1px solid $border-color-1;
+    font-size: $font-size-extrasmall;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $color-gray-1;
+  }
+
+  &__category-header {
+    padding: 4px 12px 4px 24px;
+    background: $color-tertiary;
+    border-bottom: 1px solid rgba($border-color-1, 0.6);
+    font-size: $font-size-extrasmall;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $color-gray-3;
+  }
+
+  &__doc-row,
+  &__annex-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba($border-color-1, 0.4);
+    margin: 0;
+
+    input[type='radio'] {
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: $color-tertiary;
+    }
+
+    &.-selected {
+      background: rgba($color-doc-valid, 0.08);
+    }
+  }
+
+  &__doc-row {
+    padding: 8px 12px 8px 28px;
+  }
+
+  &__annex-row {
+    padding: 6px 12px 6px 48px;
+    border-left: 2px solid $border-color-1;
+    margin-left: 28px;
+  }
+
+  &__doc-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  &__doc-name {
+    font-size: $font-size-small;
+    color: $color-gray-1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__doc-meta {
+    font-size: $font-size-extrasmall;
+    color: $color-gray-3;
+  }
+
+  &__annex-name {
+    flex: 1;
+    font-size: $font-size-small;
+    color: $color-gray-1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__status-badge {
+    font-size: $font-size-extrasmall;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    color: $color-white;
+
+    &.-doc_valid {
+      background: $color-doc-valid;
+    }
+
+    &.-doc_pending {
+      background: $color-doc-pending;
+      color: $color-gray-1;
+    }
+
+    &.-doc_invalid {
+      background: $color-doc-invalid;
+      color: $color-gray-1;
+    }
+
+    &.-doc_expired {
+      background: $color-doc-expired;
+    }
+
+    &.-doc_not_provided {
+      background: $color-doc-not-provided;
+    }
+  }
+}
