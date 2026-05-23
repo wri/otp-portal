@@ -38,7 +38,8 @@ const CountryDocCardUpload = (props) => {
           );
           onChange && onChange();
         }
-      }
+      },
+      size: '-medium',
     });
   };
 

@@ -1,3 +1,38 @@
+.c-doc-modal-selected-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 12px 0;
+  background: $color-tertiary;
+  border: 1px solid $border-color-1;
+  border-radius: 6px;
+  font-family: $font-family-proximanova;
+  font-size: $font-size-small;
+
+  &__label {
+    color: $color-gray-3;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    font-size: $font-size-extrasmall;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  &__link {
+    color: $color-primary;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .c-doc-modal-current-file {
   display: flex;
   align-items: center;
@@ -87,7 +122,7 @@
   &__list {
     border: 1px solid $border-color-1;
     border-radius: 6px;
-    max-height: 320px;
+    max-height: 300px;
     overflow-y: auto;
     background: $color-white;
   }

@@ -44,6 +44,7 @@ const DocCardUpload = (props) => {
           onChange && onChange();
         },
       },
+      size: '-medium',
     });
   };
 
@@ -63,6 +64,7 @@ const DocCardUpload = (props) => {
           onChange && onChange();
         },
       },
+      size: '-medium',
     });
   };
 
@@ -82,6 +84,7 @@ const DocCardUpload = (props) => {
           onChange && onChange();
         },
       },
+      size: '-medium',
     });
   };
 
