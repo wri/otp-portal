@@ -232,6 +232,15 @@
     white-space: nowrap;
   }
 
+  &__source-field.c-field {
+    padding: 0;
+    background: transparent;
+
+    &.-error {
+      padding: 6px 0 0;
+    }
+  }
+
   &__status-badge {
     font-size: $font-size-extrasmall;
     font-weight: $font-weight-bold;

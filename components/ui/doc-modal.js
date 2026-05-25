@@ -264,7 +264,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                           onSearchChange={setExistingSearch}
                         />
                         <Field
-                          hidden
+                          className="c-doc-modal-select-existing__source-field"
                           validations={['required']}
                           properties={{ name: 'source' }}
                         >
