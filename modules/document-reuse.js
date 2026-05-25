@@ -51,6 +51,7 @@ export const getReusableDocuments = createAsyncThunk(
       responses.forEach(({ operatorId, data: docs }) => {
         (docs || []).forEach((doc) => {
           try {
+            if (!doc.attachment?.url) return;
             const parsed = parseDocument(doc);
             if (!parsed) return;
             const operator = doc.operator || null;
