@@ -10,6 +10,7 @@ import {
   getReusableDocumentsGrouped,
   getReusableDocumentsLoading,
 } from 'selectors/document-reuse';
+import { removeDiacritics } from 'utils/general';
 
 const STATUS_LABEL_ID = {
   doc_valid: 'doc_valid',
@@ -43,11 +44,13 @@ StatusBadge.propTypes = {
   kind: PropTypes.oneOf(['document', 'annex']),
 };
 
+const normalize = (s) => removeDiacritics(s).toLowerCase();
+
 const matches = (q, ...fields) =>
-  fields.some((f) => (f || '').toLowerCase().includes(q));
+  fields.some((f) => normalize(f).includes(q));
 
 const filterTree = (operators, query, excludeDocId) => {
-  const q = query.trim().toLowerCase();
+  const q = normalize(query.trim());
 
   return operators
     .map((op) => {
