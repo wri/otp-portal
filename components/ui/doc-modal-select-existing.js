@@ -143,7 +143,7 @@ const DocModalSelectExisting = ({
 
   return (
     <div className="c-doc-modal-select-existing">
-      <div className="c-doc-modal-select-existing__search">
+      <div className="c-doc-modal-select-existing__search c-field">
         <input
           type="text"
           className="c-doc-modal-select-existing__search-input"

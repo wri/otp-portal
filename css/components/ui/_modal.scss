@@ -129,7 +129,6 @@
       width: calc(100% - 20px);
 
       @include breakpoint(medium) {
-        width: unset;
         max-width: 850px;
       }
     }
