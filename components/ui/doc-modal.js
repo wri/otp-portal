@@ -143,6 +143,13 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
           const showReasonSection = notRequired || (form.reason && !form.file.base64);
           const showTabs = canSelectExisting && showFileSection;
           const onUploadTab = !showTabs || fileTab === 'upload';
+          const showOperatorName = operatorIds.length > 1;
+          const sourceOrigin = [
+            showOperatorName && form.source?.operatorName,
+            form.source?.fmuName,
+          ]
+            .filter(Boolean)
+            .join(' - ');
 
           return (
           <Form>
@@ -305,7 +312,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                   title={form.source.label}
                 >
                   {form.source.label}
-                  {form.source.fmuName && ` (${form.source.fmuName})`}
+                  {sourceOrigin && ` (${sourceOrigin})`}
                 </a>
               </div>
             )}
