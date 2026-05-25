@@ -6,7 +6,6 @@
   margin: 12px 0;
   background: $color-tertiary;
   border: 1px solid $border-color-1;
-  border-radius: 6px;
   font-family: $font-family-proximanova;
   font-size: $font-size-small;
 
@@ -40,7 +39,6 @@
   padding: 8px 12px;
   background: $color-tertiary;
   border: 1px solid $border-color-1;
-  border-radius: 6px;
   font-size: $font-size-small;
   margin-bottom: 10px;
 
@@ -64,7 +62,6 @@
     padding: 2px 7px;
     background: rgba($color-doc-valid, 0.15);
     color: $color-doc-valid;
-    border-radius: 20px;
     white-space: nowrap;
   }
 }
@@ -73,7 +70,6 @@
   display: flex;
   font-family: $font-family-proximanova;
   border: 1px solid $border-color-1;
-  border-radius: 6px;
   overflow: hidden;
   margin-bottom: 10px;
 
@@ -81,21 +77,30 @@
     flex: 1;
     height: 36px;
     border: 0;
-    background: transparent;
-    font-size: $font-size-default;
+    background: $color-gray-2;
+    font-size: $font-size-small;
     font-family: inherit;
+    text-transform: uppercase;
     color: $color-gray-3;
     cursor: pointer;
     padding: 0 10px;
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 
     & + & {
       border-left: 1px solid $border-color-1;
     }
 
-    &.-active {
-      background: $color-tertiary;
+    &:hover:not(.-active) {
+      background: darken($color-gray-2, 3%);
       color: $color-gray-1;
+    }
+
+    &.-active {
+      background: darken($color-gray-2, 6%);
+      color: $color-primary;
       font-weight: $font-weight-bold;
+      box-shadow: inset 0 -3px 0 $color-primary;
     }
   }
 }
@@ -110,18 +115,11 @@
 
   &__search-input {
     width: 100%;
-    height: 34px;
-    padding: 0 10px;
-    border: 1px solid $border-color-1;
-    border-radius: 6px;
-    font-size: $font-size-small;
-    font-family: inherit;
-    background: $color-white;
+    max-width: unset !important;
   }
 
   &__list {
     border: 1px solid $border-color-1;
-    border-radius: 6px;
     max-height: 300px;
     overflow-y: auto;
     background: $color-white;
@@ -199,7 +197,7 @@
   }
 
   &__annex-row {
-    padding: 6px 12px 6px 48px;
+    padding: 6px 12px 6px 28px;
     border-left: 2px solid $border-color-1;
     margin-left: 28px;
   }
@@ -239,7 +237,6 @@
     font-weight: $font-weight-bold;
     text-transform: uppercase;
     padding: 2px 8px;
-    border-radius: 20px;
     white-space: nowrap;
     flex-shrink: 0;
     color: $color-white;
