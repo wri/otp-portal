@@ -82,6 +82,13 @@ export function groupBy(arr, criteria) {
   }, {});
 }
 
+export function removeDiacritics(str) {
+  return (str || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+}
+
 export function getApiFiltersParams(filters) {
   return {
     ...Object.keys(filters).reduce((acc, key) => {
