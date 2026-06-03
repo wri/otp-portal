@@ -2,13 +2,13 @@ import { useEffect } from "react";
 
 import { setDownloadCookie } from 'modules/user';
 
-export function useDownloadSession(userToken) {
+export function useDownloadSession(enabled) {
   useEffect(() => {
     function updateDownloadCookie() {
-      if (userToken) setDownloadCookie();
+      if (enabled) setDownloadCookie();
     }
     updateDownloadCookie();
     const intervalId = setInterval(updateDownloadCookie, 1000 * 60);
     return () => clearInterval(intervalId);
-  }, [userToken]);
+  }, [enabled]);
 }

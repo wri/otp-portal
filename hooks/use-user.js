@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 export default function useUser() {
   const user = useSelector((state) => state.user);
-  const isLoggedIn = !!user.token;
+  const isLoggedIn = !!user.user_id;
   const isAdmin = isLoggedIn && user.role === 'admin';
   const isOperator = isLoggedIn && user.role === 'operator';
   const isHolding = isLoggedIn && user.role === 'holding';

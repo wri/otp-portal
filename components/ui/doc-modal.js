@@ -20,7 +20,6 @@ import Textarea from 'components/form/Textarea';
 import File from 'components/form/File';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from '../form/CancelButton';
-import useUser from 'hooks/use-user';
 
 const TYPES = {
   'operator-document-countries': 'operator-document-countries',
@@ -30,7 +29,6 @@ const TYPES = {
 
 const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
   const intl = useIntl();
-  const user = useUser();
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -43,9 +41,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
     reason: reason || ''
   }), [startDate, endDate, url, reason]);
 
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token,
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;

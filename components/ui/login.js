@@ -25,7 +25,7 @@ const Login = () => {
   const intl = useIntl();
 
   const handleSubmit = ({ form }) => {
-    return login({ body: { auth: form } })
+    return login({ body: { auth: { ...form, set_cookie: true } } })
       .then(() => {
         window.location.reload();
       }).catch((err) => {

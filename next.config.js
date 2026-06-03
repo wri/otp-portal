@@ -4,8 +4,6 @@ const CompressionPlugin = require('compression-webpack-plugin');
 
 require('dotenv').config();
 
-if (!process.env.SECRET) throw new Error('Missing session SECRET')
-
 const config = {
   distDir: process.env.BUILD_DIR || '.next',
   // only PUBLIC env variables here (accessible on the client side)
@@ -110,10 +108,6 @@ const config = {
       {
         source: "/gfw-data-api/:path*",
         destination: "/api/gfw-data/:path*",
-      },
-      {
-        source: "/portal-api/:path*",
-        destination: "/api/portal/:path*",
       }
     ];
   },
