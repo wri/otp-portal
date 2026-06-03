@@ -25,14 +25,10 @@ import ZoomControl from 'components/map/controls/zoom-control';
 import LocationSearch from 'components/map/location-search';
 
 import CancelButton from '../form/CancelButton';
-import useUser from 'hooks/use-user';
 
 const SawmillModal = ({ language, sawmill, sawmillMap, onChange, setMapLocation, unmountMap }) => {
   const intl = useIntl();
-  const user = useUser();
-  const sawmillsService = useMemo(() => new SawmillsService({
-    authorization: user.token
-  }), [user.token]);
+  const sawmillsService = useMemo(() => new SawmillsService(), []);
 
   const initialFormState = useMemo(() => {
     const emptyFormState = {

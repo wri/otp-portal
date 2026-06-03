@@ -22,13 +22,11 @@ import { HELPERS_REGISTER } from 'utils/signup';
 import SubmitButton from '../form/SubmitButton';
 
 import { CERTIFICATIONS } from 'constants/fmu';
-import useUser from 'hooks/use-user';
 
 const EditOperator = (props) => {
   // rewrite class component to functional component
   const { operator } = props;
   const intl = useIntl();
-  const user = useUser();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const logoURL = (operator.logo && operator.logo.url) || '';
@@ -55,7 +53,6 @@ const EditOperator = (props) => {
       },
       type: 'PATCH',
       id: operator.id,
-      authorization: user.token,
       locale: props.language
     }).then(() => {
       toastr.success(

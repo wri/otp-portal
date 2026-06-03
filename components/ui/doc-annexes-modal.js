@@ -19,17 +19,13 @@ import Input from 'components/form/Input';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
 import DocModalFileSource, { getSourceAttributes } from 'components/ui/doc-modal-file-source';
-import useUser from 'hooks/use-user';
 
 const DocAnnexesModal = ({ title, docId, operatorId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
-  const user = useUser();
   // An existing annex id means we're editing; adding a new annex keeps the
   // submit button enabled.
   const isEditing = !!id;
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form) => {
     const usingSource = !!form.source;

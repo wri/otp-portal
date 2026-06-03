@@ -24,9 +24,7 @@ const SawmillsTable = ({ sawmills, onChange }) => {
   const user = useUser();
   const [loading, setLoading] = useState(false);
 
-  const sawmillsService = useMemo(() => new SawmillsService({
-    authorization: user.token
-  }), [user.token]);
+  const sawmillsService = useMemo(() => new SawmillsService(), []);
 
   const handleSawmillActiveDelete = (id) => {
     setLoading(true);

@@ -2,9 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 import API from 'services/api';
 
-export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications', {
-  useUserToken: true
-});
+export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications');
 
 const notificationsSlice = createSlice({
   name: 'notifications',
@@ -25,10 +23,10 @@ export const { setNotifications } = notificationsSlice.actions;
 
 export function dismissAll() {
   return (dispatch, getState) => {
-    const { user, notifications } = getState();
+    const { notifications } = getState();
 
     notifications.data.forEach((notification) => {
-      API.put(`notifications/${notification.id}/dismiss`, { token: user.token });
+      API.put(`notifications/${notification.id}/dismiss`);
     })
     dispatch(setNotifications([]));
   }

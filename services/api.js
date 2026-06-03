@@ -61,13 +61,14 @@ class API {
         }
       });
     }
-    const headers = { ...this.headers };
-    if (options.token) {
-      headers.Authorization = `Bearer ${options.token}`
+    const headers = { ...this.headers, ...(options.headers || {}) };
+    if (options.cookie) {
+      headers.cookie = options.cookie;
     }
     const fetchParams = {
       method,
-      headers
+      headers,
+      credentials: 'include'
     };
     if (options.body) {
       fetchParams.body = JSON.stringify(options.body);
@@ -107,14 +108,7 @@ const APIClient = new API({
   },
   deserialize: true
 });
-const NEXTAPIClient = new API({
-  baseURL: process.env.APP_URL + "/portal-api",
-  headers: {
-    'Content-Type': 'application/json',
-    'OTP-API-KEY': process.env.OTP_API_KEY
-  }
-});
 
-export { NEXTAPIClient, APIClient };
+export { APIClient };
 
 export default APIClient;

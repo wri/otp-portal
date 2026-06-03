@@ -25,9 +25,7 @@ const DocCard = (props) => {
   const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
   const withFile = !!url;
 
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const triggerWhy = (e) => {
     e && e.preventDefault();
