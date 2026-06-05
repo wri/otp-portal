@@ -80,11 +80,11 @@ jobs:
           path: otp_api/public/assets
           key: api-precompiled-assets-${{ steps.otp_api_commit_sha.outputs.VALUE }}
 
-      - name: Read API Access Token
-        id: api_key
-        working-directory: otp_api
-        run: |
-          bin/rails runner 'puts "VALUE=#{User.find_by(email: "webuser@example.com").api_key.access_token}"' > $GITHUB_OUTPUT
+      # - name: Read API Access Token
+      #   id: api_key
+      #   working-directory: otp_api
+      #   run: |
+      #     bin/rails runner 'puts "VALUE=#{User.find_by(email: "webuser@example.com").api_key.access_token}"' > $GITHUB_OUTPUT
 
       - name: Run API Server
         working-directory: otp_api
