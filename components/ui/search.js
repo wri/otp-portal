@@ -111,11 +111,36 @@ const Search = ({ list, loading, theme, options }) => {
   const updateSearchResults = useCallback(async (searchText) => {
     const Fuse = (await import('fuse.js')).default;
     const fuse = new Fuse(list, options);
-    const result = fuse.search(searchText);
+    const fuzzyResults = fuse.search(searchText).map(r => r.item);
+
+    // Prioritise exact (case-insensitive) substring matches on any searched
+    // key. Fuse's bitap scoring penalises matches far from the start of the
+    // string, so acronyms at the end (e.g. "SFF" in "Société Forestière
+    // FANGA (SFF)") rank poorly or fall below the threshold. Cap them so they
+    // don't crowd out the fuzzy results in the limited list.
+    const MAX_EXACT_MATCHES = 3;
+    const needle = searchText.trim().toLowerCase();
+    const exactMatches = needle
+      ? list.filter(item =>
+          (options.keys || []).some((key) => {
+            const fieldValue = item[key];
+            return typeof fieldValue === 'string' &&
+              fieldValue.toLowerCase().includes(needle);
+          })
+        ).slice(0, MAX_EXACT_MATCHES)
+      : [];
+
+    // Exact matches first, then fuzzy results, de-duplicated by id.
+    const seen = new Set();
+    const result = [...exactMatches, ...fuzzyResults].filter((item) => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
 
     setIndex(0);
     setValue(searchText);
-    setResults(result.map(r => r.item).slice(0, 8));
+    setResults(result.slice(0, 8));
     setActive(searchText !== '');
   }, [list, options]);
 
