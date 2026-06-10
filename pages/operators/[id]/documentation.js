@@ -31,7 +31,7 @@ const OperatorsDetailDocumentationPage = ({
   const user = useUser();
   const date = operatorsDetail?.date?.toString();
   const previousDate = usePrevious(date);
-  useDownloadSession(user.token);
+  useDownloadSession(user.isLoggedIn);
 
   useEffect(() => {
     if (previousDate && previousDate !== date) {

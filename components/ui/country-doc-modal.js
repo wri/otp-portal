@@ -19,7 +19,6 @@ import File from 'components/form/File';
 import SubmitButton from 'components/form/SubmitButton';
 import Form, { FormProvider } from 'components/form/Form';
 import CancelButton from 'components/form/CancelButton';
-import useUser from 'hooks/use-user';
 
 const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType, title, url, onChange }) => {
   const intl = useIntl();
@@ -34,11 +33,8 @@ const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType
     units,
     value
   }), [startDate, endDate, link, value, units]);
-  const user = useUser();
 
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form) => {
     return {

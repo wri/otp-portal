@@ -1,3 +1,17 @@
+import { getCookie } from 'services/cookies';
+
+// Double submit cookie CSRF protection: the API sets the token in a JS-readable
+// XSRF-TOKEN cookie, and expects it echoed back in the X-XSRF-TOKEN header on
+// every state-changing request.
+const CSRF_COOKIE_NAME = 'XSRF-TOKEN';
+const CSRF_HEADER_NAME = 'X-XSRF-TOKEN';
+
+const getCsrfToken = (serverCookie) => {
+  // State-changing requests happen client-side, where getCookie reads
+  // document.cookie. On the server (rare) the caller can pass options.cookie.
+  return getCookie(CSRF_COOKIE_NAME, serverCookie);
+};
+
 export class APIError extends Error {
   constructor(response, responseJSON) {
     const message = responseJSON?.errors?.[0]?.title || response.statusText || 'APIError';
@@ -61,13 +75,20 @@ class API {
         }
       });
     }
-    const headers = { ...this.headers };
-    if (options.token) {
-      headers.Authorization = `Bearer ${options.token}`
+    const headers = { ...this.headers, ...(options.headers || {}) };
+    if (options.cookie) {
+      headers.cookie = options.cookie;
+    }
+    if (method !== 'GET' && method !== 'HEAD') {
+      const csrfToken = getCsrfToken(options.cookie);
+      if (csrfToken) {
+        headers[CSRF_HEADER_NAME] = csrfToken;
+      }
     }
     const fetchParams = {
       method,
-      headers
+      headers,
+      credentials: 'include'
     };
     if (options.body) {
       fetchParams.body = JSON.stringify(options.body);
@@ -107,14 +128,7 @@ const APIClient = new API({
   },
   deserialize: true
 });
-const NEXTAPIClient = new API({
-  baseURL: process.env.APP_URL + "/portal-api",
-  headers: {
-    'Content-Type': 'application/json',
-    'OTP-API-KEY': process.env.OTP_API_KEY
-  }
-});
 
-export { NEXTAPIClient, APIClient };
+export { APIClient };
 
 export default APIClient;

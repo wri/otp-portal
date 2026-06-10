@@ -8,10 +8,13 @@ export const setCookie = (key, value, days) => {
   document.cookie = `${key}=${value}${expires}; path=/`;
 }
 
-export const getCookie = (key) => {
+export const getCookie = (key, cookieString) => {
   if (!key) return null;
   try {
-    return document.cookie.split('; ').find((row) => row.startsWith(`${key}=`))?.split('=')[1];
+    const source = cookieString ?? (typeof document !== 'undefined' ? document.cookie : '');
+    const match = source.split('; ').find((row) => row.startsWith(`${key}=`));
+    // slice (not split('=')) so values containing '=' (e.g. base64 padding) survive
+    return match ? decodeURIComponent(match.slice(key.length + 1)) : null;
   } catch (err) {
     return null;
   }

@@ -14,7 +14,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 
 import Error from 'pages/_error';
 
-import { getSession } from 'services/session';
+import API from 'services/api';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -144,50 +144,80 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   const { req, res, locale, defaultLocale } = ctx;
   const isServer = !!req;
   const state = store.getState();
-  let user = null;
-  let language = locale || 'en';
+  const language = locale || 'en';
 
-  if (isServer) {
-    const session = await getSession(req, res);
-    user = session.user;
+  const run = async () => {
+    let user = null;
 
-    const UAParser = (await import('ua-parser-js')).UAParser;
-    const { ua, device } = UAParser(req.headers['user-agent']);
-    const userAgent = {
-      ua,
-      isMobile: device.is('mobile')
-    }
-    store.dispatch(setUserAgent(userAgent));
-  } else {
-    user = state.user;
-  }
-
-  store.dispatch(setLanguage(language));
-  store.dispatch(setUser(user));
-
-  const pageProps = Component.getInitialProps ?
-    await Component.getInitialProps(ctx) :
-    {};
-
-  if (pageProps.statusCode && isServer) {
-    res.statusCode = pageProps.statusCode;
-  }
-  if (pageProps.redirectTo) {
     if (isServer) {
-      const localePrefix = locale === defaultLocale || pageProps.redirectTo.startsWith('/' + locale) ? '' : '/' + locale;
-      let redirectPermanent = true;
-      if (pageProps.redirectPermanent == false) {
-        redirectPermanent = false;
+      if (req.headers.cookie) {
+        const { getCachedUser, setCachedUser } = require('services/current-user-cache');
+        const cached = getCachedUser(req.headers.cookie);
+        if (cached !== undefined) {
+          user = cached;
+        } else {
+          try {
+            const { data } = await API.get('users/current-user', {}, { cookie: req.headers.cookie });
+            user = {
+              user_id: data.id,
+              country: data['country-id'],
+              observer: data['observer-id'],
+              operator_ids: data['operator-ids'] || [],
+              role: data['user-permission'] && data['user-permission']['user-role'] || 'user'
+            };
+          } catch (err) {
+            user = null;
+          }
+          setCachedUser(req.headers.cookie, user);
+        }
       }
-      res.writeHead(redirectPermanent ? 301 : 302, { Location: localePrefix + pageProps.redirectTo });
-      res.end();
-    } else {
-      Router.replace(pageProps.redirectTo);
-    }
-    return {};
-  }
 
-  return { pageProps, language, defaultLocale };
+      const UAParser = (await import('ua-parser-js')).UAParser;
+      const { ua, device } = UAParser(req.headers['user-agent']);
+      const userAgent = {
+        ua,
+        isMobile: device.is('mobile')
+      }
+      store.dispatch(setUserAgent(userAgent));
+    } else {
+      user = state.user;
+    }
+
+    const { token, ...safeUser } = user || {};
+
+    store.dispatch(setLanguage(language));
+    store.dispatch(setUser(safeUser));
+
+    const pageProps = Component.getInitialProps ?
+      await Component.getInitialProps(ctx) :
+      {};
+
+    if (pageProps.statusCode && isServer) {
+      res.statusCode = pageProps.statusCode;
+    }
+    if (pageProps.redirectTo) {
+      if (isServer) {
+        const localePrefix = locale === defaultLocale || pageProps.redirectTo.startsWith('/' + locale) ? '' : '/' + locale;
+        let redirectPermanent = true;
+        if (pageProps.redirectPermanent == false) {
+          redirectPermanent = false;
+        }
+        res.writeHead(redirectPermanent ? 301 : 302, { Location: localePrefix + pageProps.redirectTo });
+        res.end();
+      } else {
+        Router.replace(pageProps.redirectTo);
+      }
+      return {};
+    }
+
+    return { pageProps, language, defaultLocale };
+  };
+
+  if (typeof window === 'undefined') {
+    const { runWithRequestCookie } = require('services/request-context');
+    return runWithRequestCookie(req?.headers.cookie, run);
+  }
+  return run();
 });
 
 export default MyApp;

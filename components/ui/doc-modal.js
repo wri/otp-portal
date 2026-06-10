@@ -69,9 +69,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
     source: null,
   }), [startDate, endDate, url, reason]);
 
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token,
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;

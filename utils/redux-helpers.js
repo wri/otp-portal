@@ -78,7 +78,6 @@ export function createMultipleApiExtraReducers(configs) {
 export function createApiThunk(typePrefix, endpoint, options = {}) {
   const {
     useLanguage = true,
-    useUserToken = false,
     requestOptions = {},
     params = {},
     transformResponse = (data, _response, _arg) => ({ data })
@@ -98,8 +97,10 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
         };
 
         const apiOptions = { ...requestOptions };
-        if (useUserToken) {
-          apiOptions.token = state.user.token;
+        if (typeof window === 'undefined') {
+          const { getRequestCookie } = require('services/request-context');
+          const cookie = getRequestCookie();
+          if (cookie) apiOptions.cookie = cookie;
         }
 
         const { data, response } = await API.get(finalEndpoint, apiParams, apiOptions);

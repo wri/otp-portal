@@ -19,14 +19,10 @@ import Input from 'components/form/Input';
 import File from 'components/form/File';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
-import useUser from 'hooks/use-user';
 
 const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
-  const user = useUser();
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form) => {
     return {
