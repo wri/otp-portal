@@ -188,6 +188,7 @@
   "login": "Log in",
   "login.form.field.email": "Email",
   "login.form.field.password": "Password",
+  "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
   "signin": "Sign in",
   "signin.forgot_password": "Did you forget your password?",
