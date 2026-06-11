@@ -44,7 +44,7 @@ export function getColumnHeaders(intl) {
       accessor: 'country',
       className: 'description',
       minWidth: 100,
-      maxWidth: 220,
+      maxWidth: 200,
       autoWidth: true,
     },
     {
