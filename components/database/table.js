@@ -46,8 +46,10 @@ function DatabaseTable({
         </span>
       ),
       accessor: 'country',
-      className: '-uppercase',
+      className: 'description',
       minWidth: 100,
+      maxWidth: 220,
+      autoWidth: true,
     },
     {
       Header: (
