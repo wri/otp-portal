@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Tooltip from 'rc-tooltip';
 import ReadMore from 'components/ui/read-more';
 import { PALETTE_COLOR_1 } from 'constants/rechart';
@@ -8,7 +9,6 @@ import sortBy from 'lodash/sortBy';
 
 export const tableCheckboxes = [
   'date',
-  'status',
   'country',
   'operator',
   'fmu',
@@ -23,7 +23,6 @@ export const tableCheckboxes = [
   'operator-type',
   'subcategory',
   'relevant-operators',
-  'location-accuracy',
   'location'
 ];
 
@@ -38,46 +37,15 @@ export function getColumnHeaders(intl) {
     },
     {
       Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'status' })}</span>
-      ),
-      accessor: 'status',
-      minWidth: 150,
-      className: 'status',
-      Cell: (attr) => (
-        <span>
-          {intl.formatMessage({
-            id: `observations.status-${attr.value}`,
-          })}
-
-          {[7, 8, 9].includes(attr.value) && (
-            <Tooltip
-              placement="bottom"
-              overlay={
-                <div style={{ maxWidth: 200 }}>
-                  {intl.formatMessage({
-                    id: `observations.status-${attr.value}.info`,
-                  })}
-                </div>
-              }
-              overlayClassName="c-tooltip no-pointer-events"
-            >
-              <button className="c-button -transparent -icon" aria-label="Show information about the status">
-                <Icon name="icon-info" className="-smaller" />
-              </button>
-            </Tooltip>
-          )}
-        </span>
-      ),
-    },
-    {
-      Header: (
         <span className="sortable">
           {intl.formatMessage({ id: 'country' })}
         </span>
       ),
       accessor: 'country',
-      className: '-uppercase',
+      className: 'description',
       minWidth: 100,
+      maxWidth: 220,
+      autoWidth: true,
     },
     {
       Header: (
@@ -86,10 +54,19 @@ export function getColumnHeaders(intl) {
         </span>
       ),
       accessor: 'operator',
-      className: '-uppercase description',
+      className: 'description',
       minWidth: 120,
       maxWidth: 250,
-      autoWidth: true
+      autoWidth: true,
+      Cell: (attr) => {
+        const profileId = attr.original['operator-profile-id'];
+
+        if (profileId) {
+          return <Link href={`/operators/${profileId}`}>{attr.value}</Link>;
+        }
+
+        return attr.value;
+      },
     },
     {
       Header: (
@@ -340,18 +317,6 @@ export function getColumnHeaders(intl) {
           )}
         </div>
       ),
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'location-accuracy' })}
-        </span>
-      ),
-      accessor: 'location-accuracy',
-      headerClassName: '-a-left',
-      className: 'location-accuracy',
-      maxWidth: 350,
-      autoWidth: true,
     },
     {
       Header: '',
