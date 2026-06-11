@@ -26,7 +26,7 @@ export const getDocumentsDatabase = createApiThunk(
         'page[size]': pageSize,
         include: includes.join(','),
         'fields[fmus]': 'name,forest-type',
-        'fields[operators]': 'name,country',
+        'fields[operators]': 'name,country,fa-id,is-active',
         'fields[countries]': 'name,iso',
         ...getApiFiltersParams(filters)
       }

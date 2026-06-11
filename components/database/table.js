@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 // Components
@@ -58,8 +59,17 @@ function DatabaseTable({
         </span>
       ),
       accessor: 'operator',
-      className: '-uppercase description',
+      className: 'description',
       minWidth: 120,
+      Cell: (attr) => {
+        const profileId = attr.original['operator-profile-id'];
+
+        if (profileId) {
+          return <Link href={`/operators/${profileId}`}>{attr.value}</Link>;
+        }
+
+        return attr.value;
+      },
     },
     {
       Header: (
