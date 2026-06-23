@@ -21,7 +21,6 @@ import { getColumnHeaders } from 'constants/observations-column-headers';
 
 const OBSERVATION_TABLE_COLUMNS = [
   'date',
-  'status',
   'fmu',
   'observation',
   'level',
@@ -29,7 +28,6 @@ const OBSERVATION_TABLE_COLUMNS = [
   'evidence',
   'litigation-status',
   'location',
-  'location-accuracy',
   'observer-organizations',
   'mission-type',
   'operator-type',

@@ -33,7 +33,7 @@ export const getObservations = createApiThunk(
         'page[size]': OBS_MAX_SIZE,
         include: includes.join(','),
         'fields[fmus]': 'name',
-        'fields[operators]': 'name,operator-type',
+        'fields[operators]': 'name,operator-type,fa-id,is-active',
         'fields[severities]': 'details,level',
         'fields[subcategories]': 'name,category',
         'fields[categories]': 'name',
@@ -74,7 +74,7 @@ const observationsSlice = createSlice({
       loading: false,
       error: false
     },
-    columns: ['status', 'date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
+    columns: ['date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report']
   },
   reducers: {
     setFiltersObservations: (state, action) => {

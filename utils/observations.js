@@ -124,7 +124,7 @@ function parseObservation(obs) {
 
   return {
     category: obs?.subcategory?.category?.name || '',
-    country: obs.country?.iso || '',
+    country: obs.country?.name || '',
     rawdate: new Date(obs['observation-report'] && obs['observation-report']['publication-date']),
     date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
     details: obs.details,

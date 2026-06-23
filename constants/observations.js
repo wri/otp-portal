@@ -42,11 +42,6 @@ const FILTERS_REFS = [
     placeholder: 'All Subcategories'
   },
   {
-    key: 'validation_status',
-    name: 'Status',
-    placeholder: 'All status'
-  },
-  {
     key: 'severity_level',
     name: 'Severity',
     placeholder: 'All Severities'

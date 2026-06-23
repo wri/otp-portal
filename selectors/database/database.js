@@ -13,8 +13,11 @@ export const getParsedTableDocuments = createSelector(
         .map((doc) => ({
           id: doc.id,
           status: doc.status,
-          country: doc.operator.country && doc.operator.country.iso,
+          country: doc.operator.country && doc.operator.country.name,
           operator: doc.operator.name,
+          'operator-profile-id': (doc.operator['fa-id']?.length && doc.operator['is-active'])
+            ? doc.operator.id
+            : null,
           'forest-type': doc.fmu && doc.fmu['forest-type'],
           fmu: doc.fmu || '',
           'start-date': doc['start-date'],
