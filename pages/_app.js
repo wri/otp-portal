@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import Router from 'next/router';
 import { IntlProvider } from 'react-intl';
 
-import { setUser, setUserAgent } from 'modules/user';
+import { setUser, setUserAgent, removeUser } from 'modules/user';
 import { setLanguage } from 'modules/language';
 import { getCountries } from 'modules/countries';
 import { getOperators } from 'modules/operators';
@@ -14,7 +14,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 
 import Error from 'pages/_error';
 
-import API from 'services/api';
+import API, { setUnauthorizedHandler } from 'services/api';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -78,6 +78,7 @@ const MyApp = ({ Component, ...rest }) => {
   const messages = translations ? translations[language] : window.OTP_PORTAL_TRANSLATIONS;
 
   if (!messages) { throw new Error(`No translations found for language ${language}`); }
+  const user = store.getState().user;
 
   useEffect(() => {
     if (!pageProps.statusCode) {
@@ -85,6 +86,23 @@ const MyApp = ({ Component, ...rest }) => {
       store.dispatch(getCountries());
     }
   }, [pageProps.statusCode]);
+
+  // Reconcile stale auth when the session cookie expires mid-session. A client
+  // request returning 401 means we're no longer authenticated even though the
+  // Redux user state still says we are. Clear it and reload so the server
+  // re-evaluates auth (logged-out chrome + redirects from protected pages).
+  useEffect(() => {
+    let reloading = false;
+    setUnauthorizedHandler(() => {
+      if (reloading) return;
+      if (user?.user_id) {
+        reloading = true;
+        store.dispatch(removeUser());
+        window.location.reload();
+      }
+    });
+    return () => setUnauthorizedHandler(null);
+  }, [user]);
 
   // useEffect(() => {
   //   // Lazy load Sentry integrations

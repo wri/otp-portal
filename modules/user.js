@@ -50,7 +50,7 @@ const userSlice = createSlice({
     setUserAgent: (state, action) => {
       state.userAgent = action.payload;
     },
-    removeUser: () => ({}),
+    removeUser: (state) => ({ userAgent: state.userAgent }),
   },
   extraReducers: (builder) => {
     addApiCases(getUserProfile, 'userProfile')(builder);
@@ -64,7 +64,8 @@ export function login({ body }) {
   return API.post('login', {
     body,
     headers: { 'Content-Type': 'application/json' },
-    deserialize: false
+    deserialize: false,
+    skipUnauthorizedHandler: true
   }).then(() => {
     localStorage.removeItem('notificationsShown');
     logEvent('login', { method: 'credentials' });

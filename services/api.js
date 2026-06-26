@@ -12,6 +12,15 @@ const getCsrfToken = (serverCookie) => {
   return getCookie(CSRF_COOKIE_NAME, serverCookie);
 };
 
+// When a client-side request comes back 401 (e.g. the session cookie expired
+// while the user was browsing), the app's Redux user state is stale: the UI
+// still thinks we're logged in but every API call fails. The host app registers
+// a handler here to reconcile that state (clear the user / reload).
+let unauthorizedHandler = null;
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler;
+}
+
 export class APIError extends Error {
   constructor(response, responseJSON) {
     const message = responseJSON?.errors?.[0]?.title || response.statusText || 'APIError';
@@ -105,7 +114,18 @@ class API {
         return { data: this.JSONA.deserialize(jsonResponse), response: jsonResponse };
       }
       return { data: jsonResponse, response: jsonResponse };
-    })
+    }).catch((err) => {
+      if (
+        err instanceof APIError &&
+        err.status === 401 &&
+        !options.skipUnauthorizedHandler &&
+        typeof window !== 'undefined' &&
+        unauthorizedHandler
+      ) {
+        unauthorizedHandler(err);
+      }
+      throw err;
+    });
   }
 
   async _handleResponse(response) {
