@@ -24,6 +24,9 @@ import useUser from 'hooks/use-user';
 const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
   const user = useUser();
+  // An existing annex id means we're editing; adding a new annex keeps the
+  // submit button enabled.
+  const isEditing = !!id;
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
   }), [user.token]);
@@ -158,7 +161,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                   <CancelButton onClick={() => modal.toggleModal(false)} />
                 </li>
                 <li>
-                  <SubmitButton disableIfNoChanges />
+                  <SubmitButton disableIfNoChanges={isEditing} />
                 </li>
               </ul>
             </Form>

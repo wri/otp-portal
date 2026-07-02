@@ -23,6 +23,9 @@ import useUser from 'hooks/use-user';
 
 const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType, title, url, onChange }) => {
   const intl = useIntl();
+  // The document already has content (a file, link or stats value) when we're
+  // editing; when adding a new one we keep the submit button enabled.
+  const isEditing = !!url || !!link || !!value;
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -211,7 +214,7 @@ const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType
               <CancelButton onClick={() => modal.toggleModal(false)} />
             </li>
             <li>
-              <SubmitButton disableIfNoChanges>
+              <SubmitButton disableIfNoChanges={isEditing}>
                 {intl.formatMessage({ id: 'submit' })}
               </SubmitButton>
             </li>
