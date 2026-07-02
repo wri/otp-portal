@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
@@ -17,9 +18,22 @@ import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import File from 'components/form/File';
+import HiddenInput from 'components/form/HiddenInput';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
+import DocModalSelectExisting from 'components/ui/doc-modal-select-existing';
 import useUser from 'hooks/use-user';
+
+const getFilenameFromUrl = (url) => {
+  if (!url) return '';
+  try {
+    const stripped = url.split('?')[0];
+    const parts = stripped.split('/');
+    return decodeURIComponent(parts[parts.length - 1] || url);
+  } catch (e) {
+    return url;
+  }
+};
 
 const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
@@ -27,11 +41,24 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
   // An existing annex id means we're editing; adding a new annex keeps the
   // submit button enabled.
   const isEditing = !!id;
+  const [existingSearch, setExistingSearch] = useState('');
+  const [existingSelection, setExistingSelection] = useState(null);
+  const [fileTab, setFileTab] = useState('upload');
+
+  const operatorIds = useMemo(() => {
+    if (user.isAdmin) return [];
+    return user.operator_ids || [];
+  }, [user.isAdmin, user.operator_ids]);
+
+  const canSelectExisting = operatorIds.length > 0;
+
   const documentationService = useMemo(() => new DocumentationService({
     authorization: user.token
   }), [user.token]);
 
   const getBody = (form) => {
+    const usingSource = fileTab === 'existing' && !!form.source;
+
     return {
       data: {
         ...(id && { id }),
@@ -40,7 +67,13 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
           name: form.name,
           'start-date': form.startDate,
           'expire-date': form.expireDate,
-          ...(form.file.base64 && {
+          ...(usingSource && form.source.kind === 'document' && {
+            'source-operator-document-id': form.source.id,
+          }),
+          ...(usingSource && form.source.kind === 'annex' && {
+            'source-annex-id': form.source.id,
+          }),
+          ...(!usingSource && form.file.base64 && {
             attachment: form.file.base64,
           }),
         },
@@ -75,8 +108,9 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       expireDate && expireDate !== '1970/01/01' && expireDate.replace(/\//g, '-'),
     file: {},
     name: name || '',
-    url: url || ''
-  }), [startDate, expireDate, url]);
+    url: url || '',
+    source: null,
+  }), [startDate, expireDate, url, name]);
 
   return (
     <div className="c-login">
@@ -86,6 +120,28 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       </h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
+        {({ form, setFormValues }) => {
+          const setTab = (nextTab) => {
+            if (nextTab === fileTab) return;
+            setFileTab(nextTab);
+            if (nextTab === 'upload') {
+              setFormValues({ source: null });
+            } else {
+              setFormValues({ source: existingSelection });
+            }
+          };
+
+          const showTabs = canSelectExisting;
+          const onUploadTab = !showTabs || fileTab === 'upload';
+          const showOperatorName = operatorIds.length > 1;
+          const sourceOrigin = [
+            showOperatorName && form.source?.operatorName,
+            form.source?.fmuName,
+          ]
+            .filter(Boolean)
+            .join(' - ');
+
+          return (
             <Form>
               <fieldset className="c-field-container">
                 <div className="c-field-row">
@@ -137,24 +193,107 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                 <div>
                   <div className="l-row row">
                     <div className="columns small-12">
-                      <div className="c-field-row">
-                        <Field
-                          validations={['required']}
-                          className="-fluid"
-                          properties={{
-                            name: 'file',
-                            label: intl.formatMessage({ id: 'file' }),
-                            required: true,
-                            default: !url ? null : { name: url }
-                          }}
-                        >
-                          {File}
-                        </Field>
-                      </div>
+                      {url && (
+                        <div className="c-doc-modal-current-file">
+                          <a
+                            className="c-doc-modal-current-file__name"
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={getFilenameFromUrl(url)}
+                          >
+                            {getFilenameFromUrl(url)}
+                          </a>
+                          <span className="c-doc-modal-current-file__badge">
+                            {intl.formatMessage({ id: 'doc-modal.current-file.badge' })}
+                          </span>
+                        </div>
+                      )}
+
+                      {showTabs && (
+                        <div className="c-doc-modal-tabs" role="tablist">
+                          <button
+                            type="button"
+                            role="tab"
+                            aria-selected={onUploadTab}
+                            className={classnames('c-doc-modal-tabs__tab', { '-active': onUploadTab })}
+                            onClick={() => setTab('upload')}
+                          >
+                            {intl.formatMessage({ id: 'doc-modal.tabs.upload-new' })}
+                          </button>
+                          <button
+                            type="button"
+                            role="tab"
+                            aria-selected={!onUploadTab}
+                            className={classnames('c-doc-modal-tabs__tab', { '-active': !onUploadTab })}
+                            onClick={() => setTab('existing')}
+                          >
+                            {intl.formatMessage({ id: 'doc-modal.tabs.select-existing' })}
+                          </button>
+                        </div>
+                      )}
+
+                      {onUploadTab && (
+                        <div className="c-field-row">
+                          <Field
+                            validations={['required']}
+                            className="-fluid"
+                            properties={{
+                              name: 'file',
+                              label: intl.formatMessage({ id: 'file' }),
+                              required: true,
+                              default: !url ? null : { name: url }
+                            }}
+                          >
+                            {File}
+                          </Field>
+                        </div>
+                      )}
+
+                      {showTabs && !onUploadTab && (
+                        <>
+                          <DocModalSelectExisting
+                            operatorIds={operatorIds}
+                            excludeDocId={docId}
+                            currentSelection={form.source}
+                            onSelect={(selection) => {
+                              setExistingSelection(selection);
+                              setFormValues({ source: selection });
+                            }}
+                            search={existingSearch}
+                            onSearchChange={setExistingSearch}
+                          />
+                          <Field
+                            className="c-doc-modal-select-existing__source-field"
+                            validations={['required']}
+                            properties={{ name: 'source' }}
+                          >
+                            {HiddenInput}
+                          </Field>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
               </fieldset>
+
+              {fileTab === 'existing' && form.source?.url && (
+                <div className="c-doc-modal-selected-file">
+                  <span className="c-doc-modal-selected-file__label">
+                    {intl.formatMessage({ id: 'doc-modal.selected-file' })}
+                  </span>
+                  <a
+                    className="c-doc-modal-selected-file__link"
+                    href={form.source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={form.source.label}
+                  >
+                    {form.source.label}
+                    {sourceOrigin && ` (${sourceOrigin})`}
+                  </a>
+                </div>
+              )}
 
               <ul className="c-field-buttons">
                 <li>
@@ -165,6 +304,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                 </li>
               </ul>
             </Form>
+          );
+        }}
       </FormProvider>
     </div>
   );
@@ -173,6 +314,11 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
 DocAnnexesModal.propTypes = {
   title: PropTypes.string,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  name: PropTypes.string,
+  startDate: PropTypes.string,
+  expireDate: PropTypes.string,
+  url: PropTypes.string,
   onChange: PropTypes.func
 };
 

@@ -93,7 +93,8 @@ const DocCard = (props) => {
           );
           onChange && onChange();
         }
-      }
+      },
+      size: '-medium',
     });
   };
 
@@ -121,6 +122,7 @@ const DocCard = (props) => {
           onChange && onChange();
         },
       },
+      size: '-medium',
     });
   };
 
