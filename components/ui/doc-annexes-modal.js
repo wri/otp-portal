@@ -107,6 +107,18 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                     {Input}
                   </Field>
                 </div>
+                <div>
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <DocModalFileSource
+                        form={form}
+                        setFormValues={setFormValues}
+                        docId={docId}
+                        url={url}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="c-field-row">
                   <div className="l-row row">
                     <div className="columns medium-6 small-12">
@@ -138,18 +150,6 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                       >
                         {Input}
                       </Field>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="l-row row">
-                    <div className="columns small-12">
-                      <DocModalFileSource
-                        form={form}
-                        setFormValues={setFormValues}
-                        docId={docId}
-                        url={url}
-                      />
                     </div>
                   </div>
                 </div>

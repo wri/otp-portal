@@ -109,6 +109,21 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
           return (
           <Form>
             <fieldset className="c-field-container">
+              {/* DOCUMENT */}
+              {showFileSection && (
+                <div className="l-row row">
+                  <div className="columns small-12">
+                    <DocModalFileSource
+                      form={form}
+                      setFormValues={setFormValues}
+                      docId={docId}
+                      url={url}
+                      allowSelectExisting={!notRequired}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="l-row row">
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
@@ -147,21 +162,6 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                   </Field>
                 </div>
               </div>
-
-              {/* DOCUMENT */}
-              {showFileSection && (
-                <div className="l-row row">
-                  <div className="columns small-12">
-                    <DocModalFileSource
-                      form={form}
-                      setFormValues={setFormValues}
-                      docId={docId}
-                      url={url}
-                      allowSelectExisting={!notRequired}
-                    />
-                  </div>
-                </div>
-              )}
 
               {/* REASON */}
               {showReasonSection && (
