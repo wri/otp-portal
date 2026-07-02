@@ -121,7 +121,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                         ? intl.formatMessage({ id: 'start_date' })
                         : intl.formatMessage({ id: 'doc.start_date' }),
                       type: 'date',
-                      required: true
+                      required: true,
+                      value: form.startDate,
                     }}
                   >
                     {Input}
@@ -138,7 +139,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                         : intl.formatMessage({
                           id: 'doc.expiry_date',
                         }),
-                      type: 'date'
+                      type: 'date',
+                      value: form.expireDate,
                     }}
                   >
                     {Input}

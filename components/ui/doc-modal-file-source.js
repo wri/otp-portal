@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import dayjs from 'dayjs';
 import { useIntl } from 'react-intl';
 
 import Field from 'components/form/Field';
@@ -18,6 +19,16 @@ const getFilenameFromUrl = (url) => {
   } catch (e) {
     return url;
   }
+};
+
+// Converts a date into the 'YYYY-MM-DD' value the date inputs use, ignoring the
+// 1970 "no date" sentinel the API uses for missing dates.
+const toInputDate = (date) => {
+  if (!date) return '';
+  const parsed = dayjs(date);
+  return parsed.isValid() && parsed.year() !== 1970
+    ? parsed.format('YYYY-MM-DD')
+    : '';
 };
 
 // Builds the attachment source attributes for the request body from the
@@ -135,7 +146,11 @@ const DocModalFileSource = ({
             currentSelection={form.source}
             onSelect={(selection) => {
               setExistingSelection(selection);
-              setFormValues({ source: selection });
+              setFormValues({
+                source: selection,
+                startDate: toInputDate(selection.startDate),
+                expireDate: toInputDate(selection.endDate),
+              });
             }}
             search={existingSearch}
             onSearchChange={setExistingSearch}

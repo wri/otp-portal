@@ -128,6 +128,8 @@ const DocModalSelectExisting = ({
       fmuName: doc.fmuName,
       operatorName: op.operatorName,
       categoryName: cat.categoryName,
+      startDate: doc.startDate,
+      endDate: doc.endDate,
     });
   };
 
@@ -141,6 +143,8 @@ const DocModalSelectExisting = ({
       operatorName: op.operatorName,
       categoryName: cat.categoryName,
       parentTitle: doc.title,
+      startDate: annex.startDate,
+      endDate: annex.endDate,
     });
   };
 

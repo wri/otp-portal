@@ -118,7 +118,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                           name: 'startDate',
                           label: intl.formatMessage({ id: 'annex.form.start_date' }),
                           type: 'date',
-                          required: true
+                          required: true,
+                          value: form.startDate,
                         }}
                       >
                         {Input}
@@ -131,7 +132,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                         properties={{
                           name: 'expireDate',
                           label: intl.formatMessage({ id: 'annex.form.expiry_date' }),
-                          type: 'date'
+                          type: 'date',
+                          value: form.expireDate,
                         }}
                       >
                         {Input}

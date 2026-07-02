@@ -1,5 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 import sortBy from 'lodash/sortBy';
+
+// Normalizes an annex date into the 'YYYY/MM/DD' format used by parsed documents.
+const formatDate = (date) => {
+  if (!date) return null;
+  const parsed = dayjs(date);
+  return parsed.isValid() ? parsed.format('YYYY/MM/DD') : null;
+};
 
 const getReusableDocumentsData = (state) => state.documentReuse.data;
 
@@ -38,6 +46,8 @@ export const getReusableDocumentsGrouped = createSelector(
         fmuName: doc.fmu?.name || null,
         status: doc.status,
         url: doc.url,
+        startDate: doc.startDate,
+        endDate: doc.endDate,
         position: doc.position ?? 0,
         annexes: sortBy(
           (doc.annexes || []).map((a) => ({
@@ -45,6 +55,8 @@ export const getReusableDocumentsGrouped = createSelector(
             name: a.name,
             status: a.status,
             url: a.attachment?.url,
+            startDate: formatDate(a['start-date']),
+            endDate: formatDate(a['expire-date']),
           })),
           (a) => (a.name || '').toLowerCase()
         ),
