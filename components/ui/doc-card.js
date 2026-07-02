@@ -86,6 +86,7 @@ const DocCard = (props) => {
       childrenProps: {
         docId: props.docId,
         title: props.title,
+        operatorId: properties.type === 'operator' ? properties.id : null,
         onChange: () => {
           toastr.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
@@ -109,6 +110,7 @@ const DocCard = (props) => {
       children: DocAnnexesModal,
       childrenProps: {
         docId: props.docId,
+        operatorId: properties.type === 'operator' ? properties.id : null,
         id: annex.id,
         startDate: annex['start-date'],
         expireDate: annex['expire-date'],

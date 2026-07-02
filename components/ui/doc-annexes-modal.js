@@ -21,7 +21,7 @@ import CancelButton from '../form/CancelButton';
 import DocModalFileSource, { getSourceAttributes } from 'components/ui/doc-modal-file-source';
 import useUser from 'hooks/use-user';
 
-const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
+const DocAnnexesModal = ({ title, docId, operatorId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
   const user = useUser();
   // An existing annex id means we're editing; adding a new annex keeps the
@@ -115,6 +115,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                         setFormValues={setFormValues}
                         docId={docId}
                         url={url}
+                        operatorId={operatorId}
                       />
                     </div>
                   </div>
@@ -173,6 +174,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
 DocAnnexesModal.propTypes = {
   title: PropTypes.string,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  operatorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string,
   startDate: PropTypes.string,

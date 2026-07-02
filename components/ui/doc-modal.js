@@ -118,6 +118,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                       setFormValues={setFormValues}
                       docId={docId}
                       url={url}
+                      operatorId={properties?.type === 'operator' ? properties.id : null}
                       allowSelectExisting={!notRequired}
                     />
                   </div>

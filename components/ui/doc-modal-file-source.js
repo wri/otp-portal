@@ -51,6 +51,7 @@ const DocModalFileSource = ({
   setFormValues,
   docId,
   url,
+  operatorId,
   allowSelectExisting,
   fileLabelId,
 }) => {
@@ -60,10 +61,13 @@ const DocModalFileSource = ({
   const [existingSearch, setExistingSearch] = useState('');
   const [existingSelection, setExistingSelection] = useState(null);
 
+  // Admins aren't tied to operators, so they reuse documents from the operator
+  // that owns the document being edited. Operator users reuse across their own
+  // operators.
   const operatorIds = useMemo(() => {
-    if (user.isAdmin) return [];
+    if (user.isAdmin) return operatorId ? [operatorId] : [];
     return user.operator_ids || [];
-  }, [user.isAdmin, user.operator_ids]);
+  }, [user.isAdmin, user.operator_ids, operatorId]);
 
   const canSelectExisting = allowSelectExisting && operatorIds.length > 0;
   const onUploadTab = !canSelectExisting || fileTab === 'upload';
@@ -193,11 +197,13 @@ DocModalFileSource.propTypes = {
   setFormValues: PropTypes.func.isRequired,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   url: PropTypes.string,
+  operatorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   allowSelectExisting: PropTypes.bool,
   fileLabelId: PropTypes.string,
 };
 
 DocModalFileSource.defaultProps = {
+  operatorId: null,
   allowSelectExisting: true,
   fileLabelId: 'file',
 };
