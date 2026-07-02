@@ -56,7 +56,7 @@ describe('Operator', function () {
         cy.visit('/operators/afriwood-industries/fmus');
       })
 
-      it.only('displays operators fmus', function () {
+      it('displays operators fmus', function () {
         cy.get('[data-test-id="fmu-select"] option').should('have.length', 3);
         cy.get('[data-test-id="fmu-select"]').within(() => {
           cy.contains('option', 'Cayo').should('exist');
