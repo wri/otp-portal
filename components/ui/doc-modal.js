@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 
 // Redux
 import { connect } from 'react-redux';
@@ -18,11 +17,9 @@ import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
-import File from 'components/form/File';
-import HiddenInput from 'components/form/HiddenInput';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from '../form/CancelButton';
-import DocModalSelectExisting from 'components/ui/doc-modal-select-existing';
+import DocModalFileSource, { getSourceAttributes } from 'components/ui/doc-modal-file-source';
 import useUser from 'hooks/use-user';
 
 const TYPES = {
@@ -31,33 +28,12 @@ const TYPES = {
   'operator-document-fmu-histories': 'operator-document-fmus',
 };
 
-const getFilenameFromUrl = (url) => {
-  if (!url) return '';
-  try {
-    const stripped = url.split('?')[0];
-    const parts = stripped.split('/');
-    return decodeURIComponent(parts[parts.length - 1] || url);
-  } catch (e) {
-    return url;
-  }
-};
-
 const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
   const intl = useIntl();
   const user = useUser();
   // The document already has content (a file or a "not required" reason) when
   // we're editing; when adding a new one we keep the submit button enabled.
   const isEditing = !!url || !!reason;
-  const [existingSearch, setExistingSearch] = useState('');
-  const [existingSelection, setExistingSelection] = useState(null);
-  const [fileTab, setFileTab] = useState('upload');
-
-  const operatorIds = useMemo(() => {
-    if (user.isAdmin) return [];
-    return user.operator_ids || [];
-  }, [user.isAdmin, user.operator_ids]);
-
-  const canSelectExisting = !notRequired && operatorIds.length > 0;
 
   const formInitialState = useMemo(() => ({
     startDate:
@@ -78,7 +54,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
 
   const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;
-    const usingSource = fileTab === 'existing' && !!form.source;
+    const usingSource = !!form.source;
 
     return {
       data: {
@@ -88,12 +64,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
           'start-date': form.startDate,
           'expire-date': form.expireDate,
           'source-type': 'company',
-          ...(usingSource && form.source.kind === 'document' && {
-            'source-operator-document-id': form.source.id,
-          }),
-          ...(usingSource && form.source.kind === 'annex' && {
-            'source-annex-id': form.source.id,
-          }),
+          ...getSourceAttributes(form.source),
           ...(!usingSource && form.file.base64 && {
             attachment: form.file.base64,
           }),
@@ -132,27 +103,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
         {({ form, setFormValues }) => {
-          const setTab = (nextTab) => {
-            if (nextTab === fileTab) return;
-            setFileTab(nextTab);
-            if (nextTab === 'upload') {
-              setFormValues({ source: null });
-            } else {
-              setFormValues({ source: existingSelection });
-            }
-          };
-
           const showFileSection = !notRequired || (form.file.base64 && !form.reason);
           const showReasonSection = notRequired || (form.reason && !form.file.base64);
-          const showTabs = canSelectExisting && showFileSection;
-          const onUploadTab = !showTabs || fileTab === 'upload';
-          const showOperatorName = operatorIds.length > 1;
-          const sourceOrigin = [
-            showOperatorName && form.source?.operatorName,
-            form.source?.fmuName,
-          ]
-            .filter(Boolean)
-            .join(' - ');
 
           return (
           <Form>
@@ -198,83 +150,13 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
               {showFileSection && (
                 <div className="l-row row">
                   <div className="columns small-12">
-                    {url && (
-                      <div className="c-doc-modal-current-file">
-                        <a
-                          className="c-doc-modal-current-file__name"
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={getFilenameFromUrl(url)}
-                        >
-                          {getFilenameFromUrl(url)}
-                        </a>
-                        <span className="c-doc-modal-current-file__badge">
-                          {intl.formatMessage({ id: 'doc-modal.current-file.badge' })}
-                        </span>
-                      </div>
-                    )}
-
-                    {showTabs && (
-                      <div className="c-doc-modal-tabs" role="tablist">
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={onUploadTab}
-                          className={classnames('c-doc-modal-tabs__tab', { '-active': onUploadTab })}
-                          onClick={() => setTab('upload')}
-                        >
-                          {intl.formatMessage({ id: 'doc-modal.tabs.upload-new' })}
-                        </button>
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={!onUploadTab}
-                          className={classnames('c-doc-modal-tabs__tab', { '-active': !onUploadTab })}
-                          onClick={() => setTab('existing')}
-                        >
-                          {intl.formatMessage({ id: 'doc-modal.tabs.select-existing' })}
-                        </button>
-                      </div>
-                    )}
-
-                    {onUploadTab && (
-                      <Field
-                        validations={['required']}
-                        className="-fluid"
-                        properties={{
-                          name: 'file',
-                          label: intl.formatMessage({ id: 'file' }),
-                          required: true,
-                          default: !url ? null : { name: url }
-                        }}
-                      >
-                        {File}
-                      </Field>
-                    )}
-
-                    {showTabs && !onUploadTab && (
-                      <>
-                        <DocModalSelectExisting
-                          operatorIds={operatorIds}
-                          excludeDocId={docId}
-                          currentSelection={form.source}
-                          onSelect={(selection) => {
-                            setExistingSelection(selection);
-                            setFormValues({ source: selection });
-                          }}
-                          search={existingSearch}
-                          onSearchChange={setExistingSearch}
-                        />
-                        <Field
-                          className="c-doc-modal-select-existing__source-field"
-                          validations={['required']}
-                          properties={{ name: 'source' }}
-                        >
-                          {HiddenInput}
-                        </Field>
-                      </>
-                    )}
+                    <DocModalFileSource
+                      form={form}
+                      setFormValues={setFormValues}
+                      docId={docId}
+                      url={url}
+                      allowSelectExisting={!notRequired}
+                    />
                   </div>
                 </div>
               )}
@@ -301,24 +183,6 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                 </div>
               )}
             </fieldset>
-
-            {fileTab === 'existing' && form.source?.url && (
-              <div className="c-doc-modal-selected-file">
-                <span className="c-doc-modal-selected-file__label">
-                  {intl.formatMessage({ id: 'doc-modal.selected-file' })}
-                </span>
-                <a
-                  className="c-doc-modal-selected-file__link"
-                  href={form.source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={form.source.label}
-                >
-                  {form.source.label}
-                  {sourceOrigin && ` (${sourceOrigin})`}
-                </a>
-              </div>
-            )}
 
             <ul className="c-field-buttons">
               <li>
