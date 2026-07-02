@@ -85,6 +85,7 @@ const DocCard = (props) => {
       children: DocAnnexesModal,
       childrenProps: {
         docId: props.docId,
+        title: props.title,
         onChange: () => {
           toastr.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),

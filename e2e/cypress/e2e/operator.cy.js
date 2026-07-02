@@ -56,7 +56,7 @@ describe('Operator', function () {
         cy.visit('/operators/afriwood-industries/fmus');
       })
 
-      it.only('displays operators fmus', function () {
+      it('displays operators fmus', function () {
         cy.get('[data-test-id="fmu-select"] option').should('have.length', 3);
         cy.get('[data-test-id="fmu-select"]').within(() => {
           cy.contains('option', 'Cayo').should('exist');
@@ -87,7 +87,7 @@ describe('Operator', function () {
 
         cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
         cy.get('button').contains('Submit').click();
-        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
+        cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was updated and will be reviewed by the OTP team shortly.');
         cy.wait('@documentsReload');
         cy.wait(1000);
 

@@ -31,6 +31,9 @@ const TYPES = {
 const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId, properties, fmu, onChange, title, notRequired }) => {
   const intl = useIntl();
   const user = useUser();
+  // The document already has content (a file or a "not required" reason) when
+  // we're editing; when adding a new one we keep the submit button enabled.
+  const isEditing = !!url || !!reason;
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -185,7 +188,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                 <CancelButton onClick={() => modal.toggleModal(false)} />
               </li>
               <li>
-                <SubmitButton disableIfNoChanges />
+                <SubmitButton disableIfNoChanges={isEditing} />
               </li>
             </ul>
           </Form>
