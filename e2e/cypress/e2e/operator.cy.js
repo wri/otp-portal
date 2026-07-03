@@ -190,6 +190,77 @@ describe('Operator', function () {
           .should('contains.text', 'Pending approval')
       })
 
+      it('can reuse an existing document instead of uploading a new file', function () {
+        cy.docExpandCategory('Timber harvesting');
+
+        cy.intercept('http://localhost:3000/operator-documents?*').as('reusableDocs');
+
+        cy.docGetFMUDocCard('Ngombe', `Autorisation de coupe d'achèvement`)
+          .siblings('.c-doc-card-upload')
+          .contains('button', 'Edit')
+          .click();
+
+        // upload is the default tab
+        cy.contains('.c-doc-modal-tabs__tab', 'Upload new file').should('have.class', '-active');
+        cy.get('input[type=file]').should('exist');
+        cy.get('.c-doc-modal-select-existing').should('not.exist');
+
+        // switch to the reuse tab: the file input is replaced by the searchable list
+        cy.contains('.c-doc-modal-tabs__tab', 'Select existing').click();
+        cy.wait('@reusableDocs');
+        cy.get('input[type=file]').should('not.exist');
+        cy.get('.c-doc-modal-select-existing__search-input').should('be.visible');
+        cy.get('.c-doc-modal-select-existing__doc-row').its('length').should('be.gte', 1);
+
+        // searching filters client-side; a nonsense query shows the empty state
+        cy.get('.c-doc-modal-select-existing__search-input').type('zzz-no-such-file');
+        cy.get('.c-doc-modal-select-existing__empty').should('be.visible');
+        cy.get('.c-doc-modal-select-existing__doc-row').should('not.exist');
+        cy.get('.c-doc-modal-select-existing__search-input').clear();
+
+        // pick a specific document by name
+        const docName = 'Document du tribunal actant le marteau forestier';
+        cy.contains('.c-doc-modal-select-existing__doc-row', docName).as('sourceDoc');
+
+        cy.get('@sourceDoc').click();
+        cy.get('@sourceDoc').find('input[type=radio]').should('be.checked');
+
+        // the selected-file summary reflects the chosen document
+        cy.get('.c-doc-modal-selected-file__link').should('contain.text', docName);
+
+        // the dates were auto-filled from the selected document
+        cy.get('#input-startDate').should('have.value', '2016-05-31');
+        cy.get('#input-expireDate').should('have.value', '2052-08-29');
+
+        // toggling back to upload clears the selection and restores the file field
+        cy.contains('.c-doc-modal-tabs__tab', 'Upload new file').click();
+        cy.get('input[type=file]').should('exist');
+        cy.get('.c-doc-modal-selected-file').should('not.exist');
+
+        // toggling back to reuse remembers the previous selection
+        cy.contains('.c-doc-modal-tabs__tab', 'Select existing').click();
+        cy.get('@sourceDoc').find('input[type=radio]').should('be.checked');
+        cy.get('.c-doc-modal-selected-file__link').should('contain.text', docName);
+
+        // submitting sends the source id instead of an attachment
+        cy.intercept('PATCH', 'http://localhost:3000/operator-document-*/*').as('saveDoc');
+        cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
+        cy.get('button').contains('Submit').click();
+
+        cy.wait('@saveDoc').its('request.body.data.attributes').should((attributes) => {
+          expect(attributes).to.have.property('source-operator-document-id');
+          expect(attributes).to.not.have.property('attachment');
+        });
+
+        cy.get('.rrt-text', { timeout: 5000 }).should('have.text', 'Your document was updated and will be reviewed by the OTP team shortly.');
+        cy.wait('@documentsReload');
+        cy.wait(1000);
+
+        cy.docGetFMUDocCard('Ngombe', `Autorisation de coupe d'achèvement`)
+          .find('.doc-card-status')
+          .should('contains.text', 'Pending approval');
+      })
+
       describe('annexes', function () {
         it('can add new annex', function () {
           cy.docExpandCategory('Population rights');
@@ -202,6 +273,9 @@ describe('Operator', function () {
             .click();
 
           cy.contains('Add a document for the annex of Compte-rendu du conseil de concertation');
+
+          // the reuse feature is available for annexes too (but we upload a new file here)
+          cy.contains('.c-doc-modal-tabs__tab', 'Select existing').should('be.visible');
 
           // testing validation
           cy.get('button').contains('Submit').click();
@@ -217,7 +291,7 @@ describe('Operator', function () {
 
           cy.intercept('http://localhost:3000/operator-document-histories?*').as('documentsReload');
           cy.get('button').contains('Submit').click();
-          cy.get('.rrt-text', {timeout: 5000}).should('have.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
+          cy.get('.rrt-text', {timeout: 5000}).should('contain.text', 'Your document was uploaded and will be reviewed by the OTP team shortly.');
           cy.wait('@documentsReload');
           cy.wait(1000);
 
