@@ -22,7 +22,11 @@ const FMU_LEGEND = [
   {
     name: 'Democratic Republic of the Congo',
     iso: 'COD',
-    color: '#5ca2d1'
+    color: '#5ca2d1',
+    items: [
+      { name: 'cdc', color: '#9dc7e3' },
+      { name: 'cdcf', color: '#5ca2d1' }
+    ]
   },
   {
     name: 'Gabon',
@@ -340,8 +344,27 @@ export const LAYERS = [
               ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
               ['==', ['get', 'iso3_fmu'], 'COD']
             ],
+            layout: {
+              'fill-sort-key': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['cdcf', 1],
+                  ['cdc', 2]
+                ],
+                default: 1
+              }
+            },
             paint: {
-              'fill-color': '#5ca2d1',
+              'fill-color': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['cdcf', '#5ca2d1'],
+                  ['cdc', '#9dc7e3'],
+                ],
+                default: '#5ca2d1'
+              },
               'fill-opacity': 0.9
             }
           },
@@ -499,8 +522,27 @@ export const LAYERS = [
               ['==', 'iso3_fmu', 'COD'],
               ['==', 'operator_id', '{operator_id}']
             ],
+            layout: {
+              'fill-sort-key': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['cdcf', 1],
+                  ['cdc', 2]
+                ],
+                default: 1
+              }
+            },
             paint: {
-              'fill-color': '#5ca2d1',
+              'fill-color': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['cdcf', '#5ca2d1'],
+                  ['cdc', '#9dc7e3'],
+                ],
+                default: '#5ca2d1'
+              },
               'fill-opacity': 0.9
             }
           },
