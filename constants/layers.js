@@ -342,29 +342,28 @@ export const LAYERS = [
             filter: [
               'all',
               ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
-              ['==', ['get', 'iso3_fmu'], 'COD']
+              ['==', ['get', 'iso3_fmu'], 'COD'],
+              ['!=', ['get', 'forest_type'], 'cdc']
             ],
-            layout: {
-              'fill-sort-key': {
-                property: 'forest_type',
-                type: 'categorical',
-                stops: [
-                  ['cdcf', 1],
-                  ['cdc', 2]
-                ],
-                default: 1
-              }
-            },
             paint: {
-              'fill-color': {
-                property: 'forest_type',
-                type: 'categorical',
-                stops: [
-                  ['cdcf', '#5ca2d1'],
-                  ['cdc', '#9dc7e3'],
-                ],
-                default: '#5ca2d1'
-              },
+              'fill-color': '#5ca2d1',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            metadata: {
+              interactive: false
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'COD'],
+              ['==', ['get', 'forest_type'], 'cdc']
+            ],
+            paint: {
+              'fill-color': '#9dc7e3',
               'fill-opacity': 0.9
             }
           },
@@ -455,7 +454,8 @@ export const LAYERS = [
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['!=', ['get', 'forest_type'], 'cdc']
             ],
             paint: {
               'line-color': '#000000',
@@ -471,6 +471,24 @@ export const LAYERS = [
                 2,
                 1
               ],
+              'line-dasharray': [3, 1]
+            }
+          },
+          {
+            type: 'line',
+            'source-layer': 'layer0',
+            metadata: {
+              interactive: false
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'forest_type'], 'cdc']
+            ],
+            paint: {
+              'line-color': '#000000',
+              'line-opacity': 0.1,
+              'line-width': 1,
               'line-dasharray': [3, 1]
             }
           }
