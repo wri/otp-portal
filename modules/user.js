@@ -115,8 +115,8 @@ export function saveOperator({ body }) {
   return () => API.post('operators', { body });
 }
 
-export function updateOperator({ body, id, authorization }) {
-  return () => API.patch(`operators/${id}`, { body, token: authorization });
+export function updateOperator({ body, id, authorization, locale }) {
+  return () => API.patch(`operators/${id}`, { body, token: authorization, queryParams: { locale }});
 }
 
 export function updateFmu({ id, body, authorization }) {

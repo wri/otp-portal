@@ -49,7 +49,8 @@ const EditOperator = (props) => {
       },
       type: 'PATCH',
       id: operator.id,
-      authorization: user.token
+      authorization: user.token,
+      locale: props.language
     }).then(() => {
       toastr.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
