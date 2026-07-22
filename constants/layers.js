@@ -25,7 +25,7 @@ const FMU_LEGEND = [
     color: '#5ca2d1',
     items: [
       { name: 'cdc', color: '#9dc7e3' },
-      { name: 'cdcf', color: '#5ca2d1' }
+      { name: 'ccf', color: '#5ca2d1' }
     ]
   },
   {
@@ -545,7 +545,7 @@ export const LAYERS = [
                 property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['cdcf', 1],
+                  ['ccf', 1],
                   ['cdc', 2]
                 ],
                 default: 1
@@ -556,7 +556,7 @@ export const LAYERS = [
                 property: 'forest_type',
                 type: 'categorical',
                 stops: [
-                  ['cdcf', '#5ca2d1'],
+                  ['ccf', '#5ca2d1'],
                   ['cdc', '#9dc7e3'],
                 ],
                 default: '#5ca2d1'
