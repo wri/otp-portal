@@ -257,7 +257,7 @@ const DocCard = (props) => {
             {status === 'doc_invalid' && adminComment && (
               <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
                 {intl.formatMessage({ id: status })} <br />
-                See why
+                {intl.formatMessage({ id: 'See why' })}
               </div>
             )}
           </header>
@@ -297,7 +297,7 @@ const DocCard = (props) => {
             {status === 'doc_invalid' && adminComment && (
               <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
                 {intl.formatMessage({ id: status })} <br />
-                See why
+                {intl.formatMessage({ id: 'See why' })}
               </div>
             )}
           </header>
