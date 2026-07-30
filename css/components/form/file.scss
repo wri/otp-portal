@@ -1,16 +1,22 @@
 .c-file {
   .file-dropzone {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
 
-    input {
-      padding-right: 200px;
-    }
+  // The input shares the row with the browse/cancel button instead of reserving
+  // a fixed amount of space for it: the button label is translated, so its width
+  // can't be hardcoded. When there isn't room for both, the button wraps below.
+  .input {
+    flex: 1 1 180px;
+    min-width: 180px;
   }
 
   .file-button {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translate(0,-50%);
+    flex: 0 0 auto;
+    margin-left: auto;
   }
 }

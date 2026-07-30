@@ -45,7 +45,7 @@ function AnnexTooltip({ annex, editable, onRemove, onEdit }) {
             data-test-id="edit-annex-button"
             onClick={() => onEdit && onEdit(annex)}
           >
-            Edit
+            {intl.formatMessage({ id: 'edit' })}
           </button>
 
           <button

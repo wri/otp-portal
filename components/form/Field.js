@@ -33,6 +33,11 @@ class Field extends React.Component {
     if (this.child.triggerValidate) this.child.triggerValidate();
   }
 
+  whenReady() {
+    if (this.child && this.child.whenReady) return this.child.whenReady();
+    return null;
+  }
+
   isValid() {
     return this.state.valid;
   }
@@ -90,8 +95,18 @@ class Field extends React.Component {
   }
 
   render() {
-    const { properties, className } = this.props;
+    const { properties, className, hidden } = this.props;
     const { valid, error } = this.state;
+
+    if (hidden) {
+      return (
+        <this.props.children
+          {...this.getElementProps()}
+          ref={(c) => { if (c) this.child = c; }}
+          onValid={this.onValid}
+        />
+      );
+    }
 
     // Set classes
     const fieldClasses = classnames({
@@ -139,6 +154,7 @@ Field.propTypes = {
   properties: PropTypes.object.isRequired,
   hint: PropTypes.string,
   className: PropTypes.string,
+  hidden: PropTypes.bool,
   formContext: PropTypes.object
 };
 

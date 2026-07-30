@@ -17,9 +17,9 @@ import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
 import Textarea from 'components/form/Textarea';
-import File from 'components/form/File';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from '../form/CancelButton';
+import DocModalFileSource, { getSourceAttributes } from 'components/ui/doc-modal-file-source';
 import useUser from 'hooks/use-user';
 
 const TYPES = {
@@ -34,6 +34,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
   // The document already has content (a file or a "not required" reason) when
   // we're editing; when adding a new one we keep the submit button enabled.
   const isEditing = !!url || !!reason;
+
   const formInitialState = useMemo(() => ({
     startDate:
       startDate &&
@@ -43,7 +44,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
       endDate && endDate !== '1970/01/01' && endDate.replace(/\//g, '-'),
     file: {},
     url: url || '',
-    reason: reason || ''
+    reason: reason || '',
+    source: null,
   }), [startDate, endDate, url, reason]);
 
   const documentationService = useMemo(() => new DocumentationService({
@@ -52,6 +54,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
 
   const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;
+    const usingSource = !!form.source;
 
     return {
       data: {
@@ -61,7 +64,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
           'start-date': form.startDate,
           'expire-date': form.expireDate,
           'source-type': 'company',
-          ...(form.file.base64 && {
+          ...getSourceAttributes(form.source),
+          ...(!usingSource && form.file.base64 && {
             attachment: form.file.base64,
           }),
           ...(form.reason && {
@@ -98,9 +102,29 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
       <h2 className="c-title -extrabig">{title}</h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
-        {({ form }) => (
+        {({ form, setFormValues }) => {
+          const showFileSection = !notRequired || (form.file.base64 && !form.reason);
+          const showReasonSection = notRequired || (form.reason && !form.file.base64);
+
+          return (
           <Form>
             <fieldset className="c-field-container">
+              {/* DOCUMENT */}
+              {showFileSection && (
+                <div className="l-row row">
+                  <div className="columns small-12">
+                    <DocModalFileSource
+                      form={form}
+                      setFormValues={setFormValues}
+                      docId={docId}
+                      url={url}
+                      operatorId={properties?.type === 'operator' ? properties.id : null}
+                      allowSelectExisting={!notRequired}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="l-row row">
                 <div className="columns medium-6 small-12">
                   {/* DATE */}
@@ -113,7 +137,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                         ? intl.formatMessage({ id: 'start_date' })
                         : intl.formatMessage({ id: 'doc.start_date' }),
                       type: 'date',
-                      required: true
+                      required: true,
+                      value: form.startDate,
                     }}
                   >
                     {Input}
@@ -130,7 +155,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                         : intl.formatMessage({
                           id: 'doc.expiry_date',
                         }),
-                      type: 'date'
+                      type: 'date',
+                      value: form.expireDate,
                     }}
                   >
                     {Input}
@@ -138,49 +164,27 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
                 </div>
               </div>
 
-              {/* DOCUMENT */}
-              {(!notRequired ||
-                (form.file.base64 && !form.reason)) && (
-                  <div className="l-row row">
-                    <div className="columns small-12">
-                      <Field
-                        validations={['required']}
-                        className="-fluid"
-                        properties={{
-                          name: 'file',
-                          label: intl.formatMessage({ id: 'file' }),
-                          required: true,
-                          default: !url ? null : { name: url }
-                        }}
-                      >
-                        {File}
-                      </Field>
-                    </div>
-                  </div>
-                )}
-
               {/* REASON */}
-              {(notRequired ||
-                (form.reason && !form.file.base64)) && (
-                  <div className="l-row row">
-                    <div className="columns small-12">
-                      <Field
-                        className="-fluid"
-                        validations={['required']}
-                        properties={{
-                          name: 'reason',
-                          label: intl.formatMessage({
-                            id: 'why-is-it-not-required',
-                          }),
-                          required: true,
-                          rows: '6'
-                        }}
-                      >
-                        {Textarea}
-                      </Field>
-                    </div>
+              {showReasonSection && (
+                <div className="l-row row">
+                  <div className="columns small-12">
+                    <Field
+                      className="-fluid"
+                      validations={['required']}
+                      properties={{
+                        name: 'reason',
+                        label: intl.formatMessage({
+                          id: 'why-is-it-not-required',
+                        }),
+                        required: true,
+                        rows: '6'
+                      }}
+                    >
+                      {Textarea}
+                    </Field>
                   </div>
-                )}
+                </div>
+              )}
             </fieldset>
 
             <ul className="c-field-buttons">
@@ -192,7 +196,8 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
               </li>
             </ul>
           </Form>
-        )}
+          );
+        }}
       </FormProvider>
     </div>
   );

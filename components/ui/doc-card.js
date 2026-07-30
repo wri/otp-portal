@@ -86,6 +86,7 @@ const DocCard = (props) => {
       childrenProps: {
         docId: props.docId,
         title: props.title,
+        operatorId: properties.type === 'operator' ? properties.id : null,
         onChange: () => {
           toastr.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
@@ -93,7 +94,8 @@ const DocCard = (props) => {
           );
           onChange && onChange();
         }
-      }
+      },
+      size: '-medium',
     });
   };
 
@@ -108,6 +110,7 @@ const DocCard = (props) => {
       children: DocAnnexesModal,
       childrenProps: {
         docId: props.docId,
+        operatorId: properties.type === 'operator' ? properties.id : null,
         id: annex.id,
         startDate: annex['start-date'],
         expireDate: annex['expire-date'],
@@ -121,6 +124,7 @@ const DocCard = (props) => {
           onChange && onChange();
         },
       },
+      size: '-medium',
     });
   };
 
@@ -253,7 +257,7 @@ const DocCard = (props) => {
             {status === 'doc_invalid' && adminComment && (
               <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
                 {intl.formatMessage({ id: status })} <br />
-                See why
+                {intl.formatMessage({ id: 'See why' })}
               </div>
             )}
           </header>
@@ -293,7 +297,7 @@ const DocCard = (props) => {
             {status === 'doc_invalid' && adminComment && (
               <div className="doc-card-status -why" onClick={triggerDocInvalidExplanation}>
                 {intl.formatMessage({ id: status })} <br />
-                See why
+                {intl.formatMessage({ id: 'See why' })}
               </div>
             )}
           </header>

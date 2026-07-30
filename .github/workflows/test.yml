@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: wri/fti_api
-          ref: develop
+          ref: fix/missing-annex-attachment-validation
           path: otp_api
 
       - name: Save OTP API Commit SHA
@@ -91,7 +91,7 @@ jobs:
         env:
           APP_URL: http://localhost:3000
         run: |
-          bin/rails s &
+          bin/rails s > log/e2e.log 2>&1 &
 
       - name: Read .nvmrc
         id: nvm
@@ -153,7 +153,7 @@ jobs:
           key: nextjs-${{ hashFiles('yarn.lock') }}
 
       - name: Start Portal
-        run: yarn start > otp-portal.log &
+        run: yarn start > otp-portal.log 2>&1 &
 
       - name: Run E2E Tests
         working-directory: e2e

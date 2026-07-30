@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 import { useIntl } from 'react-intl';
 import Fuse from 'fuse.js';
 
-import { groupBy } from 'utils/general';
+import { groupBy, removeDiacritics } from 'utils/general';
 
 // Redux
 import { connect } from 'react-redux';
@@ -28,12 +28,6 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
     .map((categoryDocs) => categoryDocs.length)
     .sort((a, b) => a - b)
     .reverse()[0];
-
-  const removeDiacritics = str => {
-    return str
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
 
   const searchDocuments = (documents) => {
     if (!searchText) return documents;

@@ -16,12 +16,12 @@ import DocumentationService from 'services/documentationService';
 import Form, { FormProvider } from 'components/form/Form';
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
-import File from 'components/form/File';
 import SubmitButton from '../form/SubmitButton';
 import CancelButton from '../form/CancelButton';
+import DocModalFileSource, { getSourceAttributes } from 'components/ui/doc-modal-file-source';
 import useUser from 'hooks/use-user';
 
-const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, onChange }) => {
+const DocAnnexesModal = ({ title, docId, operatorId, id, name, startDate, expireDate, url, onChange }) => {
   const intl = useIntl();
   const user = useUser();
   // An existing annex id means we're editing; adding a new annex keeps the
@@ -32,6 +32,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
   }), [user.token]);
 
   const getBody = (form) => {
+    const usingSource = !!form.source;
+
     return {
       data: {
         ...(id && { id }),
@@ -40,7 +42,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
           name: form.name,
           'start-date': form.startDate,
           'expire-date': form.expireDate,
-          ...(form.file.base64 && {
+          ...getSourceAttributes(form.source),
+          ...(!usingSource && form.file.base64 && {
             attachment: form.file.base64,
           }),
         },
@@ -75,8 +78,9 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       expireDate && expireDate !== '1970/01/01' && expireDate.replace(/\//g, '-'),
     file: {},
     name: name || '',
-    url: url || ''
-  }), [startDate, expireDate, url]);
+    url: url || '',
+    source: null,
+  }), [startDate, expireDate, url, name]);
 
   return (
     <div className="c-login">
@@ -86,6 +90,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
       </h2>
 
       <FormProvider initialValues={formInitialState} onSubmit={handleSubmit}>
+        {({ form, setFormValues }) => (
             <Form>
               <fieldset className="c-field-container">
                 <div className="c-field-row">
@@ -102,6 +107,19 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                     {Input}
                   </Field>
                 </div>
+                <div>
+                  <div className="l-row row">
+                    <div className="columns small-12">
+                      <DocModalFileSource
+                        form={form}
+                        setFormValues={setFormValues}
+                        docId={docId}
+                        url={url}
+                        operatorId={operatorId}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="c-field-row">
                   <div className="l-row row">
                     <div className="columns medium-6 small-12">
@@ -113,7 +131,8 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                           name: 'startDate',
                           label: intl.formatMessage({ id: 'annex.form.start_date' }),
                           type: 'date',
-                          required: true
+                          required: true,
+                          value: form.startDate,
                         }}
                       >
                         {Input}
@@ -126,31 +145,12 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                         properties={{
                           name: 'expireDate',
                           label: intl.formatMessage({ id: 'annex.form.expiry_date' }),
-                          type: 'date'
+                          type: 'date',
+                          value: form.expireDate,
                         }}
                       >
                         {Input}
                       </Field>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="l-row row">
-                    <div className="columns small-12">
-                      <div className="c-field-row">
-                        <Field
-                          validations={['required']}
-                          className="-fluid"
-                          properties={{
-                            name: 'file',
-                            label: intl.formatMessage({ id: 'file' }),
-                            required: true,
-                            default: !url ? null : { name: url }
-                          }}
-                        >
-                          {File}
-                        </Field>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -165,6 +165,7 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
                 </li>
               </ul>
             </Form>
+          )}
       </FormProvider>
     </div>
   );
@@ -173,6 +174,12 @@ const DocAnnexesModal = ({ title, docId, id, name, startDate, expireDate, url, o
 DocAnnexesModal.propTypes = {
   title: PropTypes.string,
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  operatorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  name: PropTypes.string,
+  startDate: PropTypes.string,
+  expireDate: PropTypes.string,
+  url: PropTypes.string,
   onChange: PropTypes.func
 };
 
