@@ -53,25 +53,60 @@ class File extends FormElement {
   }
 
   onDrop(accepted, rejected) {
-    if (accepted.length) {
-      this.getBase64(accepted[0])
-        .then((value) => {
-          this.setState({
-            value: {
-              name: accepted[0].name,
-              base64: value
-            },
-            accepted,
-            rejected,
-            dropzoneActive: false
-          }, () => {
-            // Publish the new value to the form
-            if (this.props.onChange) this.props.onChange(this.state.value);
-            // Trigger validation
-            this.triggerValidate();
-          });
+    if (!accepted.length) return;
+
+    this.setState({
+      accepted,
+      rejected,
+      dropzoneActive: false,
+      loading: true
+    });
+
+    // Reading the file is asynchronous, so keep the pending read around for
+    // whenReady(): submitting before it resolves would send the form without
+    // the file.
+    this.pendingRead = this.getBase64(accepted[0])
+      .then(value => new Promise((resolve) => {
+        // The file was cancelled or replaced while it was being read
+        if (this.state.accepted[0] !== accepted[0]) {
+          resolve();
+          return;
+        }
+
+        this.setState({
+          value: {
+            name: accepted[0].name,
+            base64: value
+          },
+          loading: false
+        }, () => {
+          // Publish the new value to the form
+          if (this.props.onChange) this.props.onChange(this.state.value);
+          // Trigger validation
+          this.triggerValidate();
+          resolve();
         });
-    }
+      }))
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          accepted: [],
+          value: '',
+          loading: false
+        }, () => {
+          if (this.props.onChange) this.props.onChange(this.state.value);
+          this.triggerValidate();
+        });
+      });
+  }
+
+  /**
+   * - whenReady
+   * Resolves once the dropped file has been read and published to the form.
+   * @return {Promise}
+  */
+  whenReady() {
+    return this.pendingRead;
   }
 
   /**
@@ -86,9 +121,12 @@ class File extends FormElement {
   }
 
   triggerCancel() {
+    this.pendingRead = null;
+
     this.setState({
       accepted: [],
-      value: ''
+      value: '',
+      loading: false
     }, () => {
       // Publish the new value to the form
       if (this.props.onChange) this.props.onChange(this.state.value);

@@ -33,6 +33,11 @@ class Field extends React.Component {
     if (this.child.triggerValidate) this.child.triggerValidate();
   }
 
+  whenReady() {
+    if (this.child && this.child.whenReady) return this.child.whenReady();
+    return null;
+  }
+
   isValid() {
     return this.state.valid;
   }

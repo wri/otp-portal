@@ -27,6 +27,18 @@ class FormElements {
 
     return valid;
   }
+
+  // Some elements (file inputs) read their value asynchronously. Wait for those
+  // reads to be published to the form before validating or submitting.
+  ready() {
+    const elements = this.elements;
+    return Promise.all(
+      Object
+        .keys(elements)
+        .map(k => elements[k].whenReady && elements[k].whenReady())
+        .filter(Boolean)
+    );
+  }
 }
 
 export const FormContext = React.createContext({
@@ -64,6 +76,9 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
   const [submitting, _setSubmitting] = useState(false);
   const [submitted, _setSubmitted] = useState(false);
   const [form, setForm] = useState(initialValues || {});
+  // Mirrors `form` so that submitting reads the latest values even when a field
+  // published them after the last render.
+  const formRef = useRef(form);
 
   const register = (element) => {
     if (element) {
@@ -73,10 +88,11 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
   }
 
   const handleFormChange = (formValue) => {
-    setForm({
-      ...form,
+    formRef.current = {
+      ...formRef.current,
       ...formValue
-    });
+    };
+    setForm(formRef.current);
   }
 
   const setSubmitting = (value) => {
@@ -88,22 +104,25 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
     onStatusChange && onStatusChange({ submitted: value, submitting });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e && e.preventDefault();
 
+    // A file dropped just before submitting may still be being read
+    await formElements.current.ready();
+
     // Validate the form
-    formElements.current.validate(form);
+    formElements.current.validate();
 
     // Set a timeout due to the setState function of react
     setTimeout(() => {
       // Validate all the inputs on the current step
-      const valid = formElements.current.isValid(form);
+      const valid = formElements.current.isValid();
 
       if (valid) {
         // Start the submitting
         setSubmitting(true);
 
-        onSubmit({ form, setFormValues: handleFormChange })
+        onSubmit({ form: formRef.current, setFormValues: handleFormChange })
           .then(() => {
             setSubmitting(false);
             setSubmitted(true);
