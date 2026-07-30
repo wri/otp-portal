@@ -22,7 +22,11 @@ const FMU_LEGEND = [
   {
     name: 'Democratic Republic of the Congo',
     iso: 'COD',
-    color: '#5ca2d1'
+    color: '#5ca2d1',
+    items: [
+      { name: 'cdc', color: '#9dc7e3' },
+      { name: 'ccf', color: '#5ca2d1' }
+    ]
   },
   {
     name: 'Gabon',
@@ -338,10 +342,28 @@ export const LAYERS = [
             filter: [
               'all',
               ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
-              ['==', ['get', 'iso3_fmu'], 'COD']
+              ['==', ['get', 'iso3_fmu'], 'COD'],
+              ['!=', ['get', 'forest_type'], 'cdc']
             ],
             paint: {
               'fill-color': '#5ca2d1',
+              'fill-opacity': 0.9
+            }
+          },
+          {
+            type: 'fill',
+            'source-layer': 'layer0',
+            metadata: {
+              interactive: false
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'iso3_fmu'], 'COD'],
+              ['==', ['get', 'forest_type'], 'cdc']
+            ],
+            paint: {
+              'fill-color': '#9dc7e3',
               'fill-opacity': 0.9
             }
           },
@@ -432,7 +454,8 @@ export const LAYERS = [
             'source-layer': 'layer0',
             filter: [
               'all',
-              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']]
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['!=', ['get', 'forest_type'], 'cdc']
             ],
             paint: {
               'line-color': '#000000',
@@ -448,6 +471,24 @@ export const LAYERS = [
                 2,
                 1
               ],
+              'line-dasharray': [3, 1]
+            }
+          },
+          {
+            type: 'line',
+            'source-layer': 'layer0',
+            metadata: {
+              interactive: false
+            },
+            filter: [
+              'all',
+              ['in', ['get', 'iso3_fmu'], ['literal', '{country_iso_codes}']],
+              ['==', ['get', 'forest_type'], 'cdc']
+            ],
+            paint: {
+              'line-color': '#000000',
+              'line-opacity': 0.1,
+              'line-width': 1,
               'line-dasharray': [3, 1]
             }
           }
@@ -499,8 +540,27 @@ export const LAYERS = [
               ['==', 'iso3_fmu', 'COD'],
               ['==', 'operator_id', '{operator_id}']
             ],
+            layout: {
+              'fill-sort-key': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['ccf', 1],
+                  ['cdc', 2]
+                ],
+                default: 1
+              }
+            },
             paint: {
-              'fill-color': '#5ca2d1',
+              'fill-color': {
+                property: 'forest_type',
+                type: 'categorical',
+                stops: [
+                  ['ccf', '#5ca2d1'],
+                  ['cdc', '#9dc7e3'],
+                ],
+                default: '#5ca2d1'
+              },
               'fill-opacity': 0.9
             }
           },

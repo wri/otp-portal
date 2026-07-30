@@ -106,11 +106,14 @@ export function getInteractiveLayersIds(layer) {
   return layers.map((l, i) => {
     const {
       id: vectorLayerId,
-      type: vectorLayerType
+      type: vectorLayerType,
+      metadata
     } = l;
 
+    if (metadata && metadata.interactive === false) return null;
+
     return vectorLayerId || `${id}-${vectorLayerType}-${i}`;
-  });
+  }).filter(x => !!x);
 }
 
 export function getActiveInteractiveLayersSelector(layers, interactions) {
