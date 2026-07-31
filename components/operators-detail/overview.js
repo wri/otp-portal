@@ -34,7 +34,7 @@ function OperatorsDetailOverview(props) {
               <div className="row l-row -equal-heigth">
                 <div className="columns small-12">
                   {Boolean(details) && (
-                    <p className="description">
+                    <p className="description -plain-text">
                       {details}
                     </p>
                   )}
