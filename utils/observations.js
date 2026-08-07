@@ -77,13 +77,16 @@ const HELPERS_OBS = {
   },
 
   // Monitors
+  // A "visit" is a day with observations, regardless of how many observations
+  // happened that day. This mirrors the backend's obs_per_visit calculation,
+  // which groups by date(observation_reports.publication_date).
   getMonitorVisits(data) {
-    const dates = groupBy(data.map((o) => o.rawdate));
+    const dates = groupBy(data, (o) => new Date(o.rawdate).toISOString().slice(0, 10));
     return Object.keys(dates).length;
   },
 
   getAvgObservationByMonitors(data) {
-    const dates = groupBy(data.map((o) => o.rawdate));
+    const dates = groupBy(data, (o) => new Date(o.rawdate).toISOString().slice(0, 10));
 
     const avg =
       Object.keys(dates).reduce((sum, k) => sum + dates[k].length, 0) /
