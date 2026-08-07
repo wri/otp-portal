@@ -31,7 +31,13 @@ const EditOperator = (props) => {
   const user = useUser();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
+  const logoURL = (operator.logo && operator.logo.url) || '';
+
   const handleSubmit = ({ form }) => {
+    // The logo is only sent when the user picked a new file (or removed it),
+    // otherwise the form still holds the URL of the current one.
+    const logoChanged = (form.logo || '') !== logoURL;
+
     return props.updateOperator({
       body: {
         data: {
@@ -42,8 +48,8 @@ const EditOperator = (props) => {
             details: form.details,
             'operator-type': form.operator_type,
             website: form.website,
-            logo: form.logo,
-            address: form.address
+            address: form.address,
+            ...(logoChanged && { logo: form.logo })
           },
         }
       },
@@ -63,7 +69,7 @@ const EditOperator = (props) => {
     name: operator.name || '',
     details: operator.details || '',
     operator_type: operator['operator-type'],
-    logo: operator.logo && operator.logo.url,
+    logo: logoURL,
     address: operator.address || '',
     website: operator.website || ''
   };
