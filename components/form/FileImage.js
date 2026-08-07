@@ -12,14 +12,14 @@ class FileImage extends FormElement {
   constructor(props) {
     super(props);
 
+    // The default value is the URL of the image already uploaded. It's kept as
+    // is (instead of being read into base64) so that the form only holds a new
+    // value once the user actually picks another file.
     const defaultValue = props.properties.default;
-    const previewURL = defaultValue;
     this.state = {
-      value: (defaultValue) ?
-        this.getBase64FromURL(previewURL) :
-        '',
+      value: defaultValue || '',
       accepted: (defaultValue) ?
-        [{ name: defaultValue, preview: previewURL }] :
+        [{ name: defaultValue, preview: defaultValue }] :
         [],
       rejected: [],
       dropzoneActive: false,
@@ -68,7 +68,6 @@ class FileImage extends FormElement {
 
   /**
    * - getBase64
-   * - getFileFromUrl
   */
   getBase64(file) {
     const reader = new FileReader();
@@ -94,18 +93,6 @@ class FileImage extends FormElement {
         this.triggerValidate();
       });
     };
-  }
-
-  getBase64FromURL(url) {
-    if (typeof XMLHttpRequest === 'undefined') return;
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('get', url);
-    xhr.responseType = 'blob';
-    xhr.onload = () => {
-      this.getBase64(xhr.response);
-    };
-    xhr.send();
   }
 
   /**
