@@ -154,7 +154,7 @@ class Map extends Component {
 
   componentWillUnmount() {
     const { onUnmount } = this.props;
-    if (this.deckInitializedInterval) clearInterval(this.deckInitializedInterval);
+    if (this.map) this.map.off('styledata', this.applyDeckCursor);
     if (onUnmount) onUnmount();
   }
 
@@ -352,15 +352,20 @@ class Map extends Component {
     }
   }
 
+  getDeckCursor = () => (this.isHovering ? 'pointer' : '');
+
+  // The decoded raster layers render through deck.gl interleaved into the mapbox canvas, and
+  // deck resets the canvas cursor every frame. Hand it our own hover state instead. The deck
+  // instance only exists once such a layer has been added, hence the styledata hook.
   fixCursorChange = () => {
-    this.deckInitializedInterval = setInterval(() => {
-      if (this.map && this.map.__deck) {
-        this.map.__deck.props.getCursor = () => {
-          return this.isHovering ? 'pointer' : '';
-        }
-        clearInterval(this.deckInitializedInterval);
-      }
-    }, 100);
+    this.applyDeckCursor();
+    this.map.on('styledata', this.applyDeckCursor);
+  }
+
+  applyDeckCursor = () => {
+    if (this.map && this.map.__deck && this.map.__deck.props.getCursor !== this.getDeckCursor) {
+      this.map.__deck.props.getCursor = this.getDeckCursor;
+    }
   }
 
   render() {
