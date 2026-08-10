@@ -37,12 +37,17 @@ export const getActiveLayers = createSelector(
         const interactiveLayersIds = getInteractiveLayersIds(l);
         const settings = _layersSettings[id] || {};
         const interactionParams = { clickId: Number(_fmu) };
-        const layerConfig = { ...l.config };
-
-        // just fetch only tiles for operator's fmus
-        if (id === 'fmusdetail') {
-          layerConfig.source.tiles = [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}?operator_id=${operator_id}`];
-        }
+        // just fetch only tiles for operator's fmus. `l.config` is the shared object from
+        // constants/layers.js, so replace `source` rather than writing through to it
+        const layerConfig = id !== 'fmusdetail'
+          ? l.config
+          : {
+            ...l.config,
+            source: {
+              ...l.config.source,
+              tiles: [`${process.env.OTP_API}/fmus/tiles/{z}/{x}/{y}?operator_id=${operator_id}`]
+            }
+          };
 
         return {
           id,

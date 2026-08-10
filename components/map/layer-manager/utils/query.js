@@ -33,9 +33,16 @@ const substitution = (originalStr, params = {}) =>
 /**
  * Interpolate params into a layer spec fragment (`source` or `render`).
  * `parse: false` opts a fragment out, matching layer-manager's behaviour.
+ *
+ * With no params there is nothing to interpolate, so the fragment is handed back untouched rather
+ * than round-tripped through JSON. That matters on the observations map, where the geojson source
+ * holds every observation: returning the memoised selector's own object lets react-map-gl's
+ * `deepEqual` bail out on identity instead of walking the whole FeatureCollection.
+ *
+ * Callers must therefore treat the result as read-only — it may be shared with `constants/layers.js`.
  */
 export const parseSpec = (spec = {}, params) => {
-  if (spec.parse === false) return spec;
+  if (spec.parse === false || !params || !Object.keys(params).length) return spec;
 
   return JSON.parse(substitution(JSON.stringify(spec), params));
 };
