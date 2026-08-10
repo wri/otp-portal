@@ -56,9 +56,9 @@ function renderSubLayers({ id, data, tile, decodeParams, decodeFunction, opacity
   });
 }
 
-function getDeckLayerProps({ id, source = {}, decodeParams, decodeFunction, opacity, visibility }) {
+function getDeckLayerProps({ deckLayerId, source = {}, decodeParams, decodeFunction, opacity, visibility }) {
   return {
-    id: `${id}-raster-decode`,
+    id: deckLayerId,
     type: TileLayer,
     data: source.tiles,
     getTileData,
@@ -81,6 +81,7 @@ function DecodedRasterLayer({ layer, beforeId }) {
   const beforeIdRef = useRef(beforeId);
 
   const { id, source, decodeParams, decodeFunction, opacity = 1, visibility = true } = layer;
+  const deckLayerId = `${id}-raster-decode`;
 
   // Add / remove. The layer instance is created once and kept alive across prop changes so that
   // deck can reuse its loaded tiles.
@@ -88,7 +89,7 @@ function DecodedRasterLayer({ layer, beforeId }) {
     if (!map) return undefined;
 
     const deckLayer = new MapboxLayer(
-      getDeckLayerProps({ id, source, decodeParams, decodeFunction, opacity, visibility })
+      getDeckLayerProps({ deckLayerId, source, decodeParams, decodeFunction, opacity, visibility })
     );
     deckLayerRef.current = deckLayer;
 
@@ -104,7 +105,7 @@ function DecodedRasterLayer({ layer, beforeId }) {
     // Recreating on a source change mirrors layer-manager, which removed and re-added the layer
     // whenever the parsed source changed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, id, JSON.stringify(source)]);
+  }, [map, deckLayerId, JSON.stringify(source)]);
 
   // Timeline scrubbing, the opacity slider and the visibility toggle
   useEffect(() => {
@@ -121,12 +122,11 @@ function DecodedRasterLayer({ layer, beforeId }) {
   useEffect(() => {
     beforeIdRef.current = beforeId;
 
-    if (!map || !deckLayerRef.current) return;
-    if (!map.getLayer(`${id}-raster-decode`)) return;
+    if (!map || !map.getLayer(deckLayerId)) return;
     if (beforeId && !map.getLayer(beforeId)) return;
 
-    map.moveLayer(`${id}-raster-decode`, beforeId);
-  }, [map, id, beforeId]);
+    map.moveLayer(deckLayerId, beforeId);
+  }, [map, deckLayerId, beforeId]);
 
   return null;
 }

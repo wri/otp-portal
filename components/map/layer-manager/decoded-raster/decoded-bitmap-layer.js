@@ -14,6 +14,17 @@ const DATA_TEXTURE_PARAMETERS = {
 };
 
 /**
+ * Only the numeric decode params become GLSL uniforms — the rest of `decodeParams` is timeline UI
+ * config (date strings, colours, flags). The declarations in `getShaders()` and the values in
+ * `draw()` have to stay in lockstep, so both derive them here.
+ */
+function getDecodeUniforms(decodeParams = {}) {
+  return Object.fromEntries(
+    Object.entries(decodeParams).filter(([, value]) => typeof value === 'number')
+  );
+}
+
+/**
  * A BitmapLayer whose fragment shader runs a layer-supplied GLSL snippet over every texel.
  *
  * The GFW raster tiles this renders (`loss`, `integrated-alerts`) encode data — dates,
@@ -40,8 +51,7 @@ export default class DecodedBitmapLayer extends BitmapLayer {
   getShaders() {
     const { decodeParams = {}, decodeFunction = '' } = this.props;
 
-    const uniformDeclarations = Object.keys(decodeParams)
-      .filter((key) => typeof decodeParams[key] === 'number')
+    const uniformDeclarations = Object.keys(getDecodeUniforms(decodeParams))
       .map((key) => `uniform float ${key};`)
       .join('\n');
 
@@ -59,13 +69,9 @@ export default class DecodedBitmapLayer extends BitmapLayer {
     // `floor(viewport.zoom) + 1` from its own tile layer; keep that exact expression.
     const zoom = Math.floor(this.context.viewport.zoom) + 1;
 
-    const decodeUniforms = Object.keys(decodeParams)
-      .filter((key) => typeof decodeParams[key] === 'number')
-      .reduce((acc, key) => ({ ...acc, [key]: decodeParams[key] }), {});
-
     super.draw({
       ...opts,
-      uniforms: { ...opts.uniforms, ...decodeUniforms, zoom }
+      uniforms: { ...opts.uniforms, ...getDecodeUniforms(decodeParams), zoom }
     });
   }
 }

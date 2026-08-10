@@ -1,53 +1,34 @@
 /**
  * Param interpolation for layer specs.
  *
- * Ported from layer-manager v3 (`src/utils/query.js`), which was applied to
- * `JSON.stringify(source | render)` before parsing the result back. Keys are written as
- * `{key}` or `{{key}}` in the layer definitions in `constants/layers.js`.
+ * Ported from layer-manager v3 (`src/utils/query.js`): placeholders are written as `{key}` in
+ * `constants/layers.js` and substituted into `JSON.stringify(source | render)` before the result
+ * is parsed back.
  *
- * The quoted variants matter: `['literal', '{country_iso_codes}']` has to become
- * `['literal', ['CMR', 'COG']]`, not `['literal', 'CMR,COG']`, so an array or object value
- * replaces the surrounding quotes too. Same for numbers, so `['==', 'id', '{clickId}']`
- * compares against a number rather than a string.
+ * A quoted placeholder loses its quotes so the value keeps its JSON type —
+ * `['literal', '{country_iso_codes}']` has to become `['literal', ['CMR', 'COG']]` rather than
+ * `['literal', 'CMR,COG']`, and `['==', 'id', '{clickId}']` has to compare against a number.
+ * Only the `"` form needs handling, since the input is always JSON.
  *
- * The `sqlParams` / `concatenation` half of the original module is not ported: no layer in
- * this app uses it.
+ * Two halves of the original are deliberately not ported: `sqlParams` / `concatenation`, which no
+ * layer here uses, and the `{{key}}` placeholder form, which appears in no layer spec.
+ * `components/map/legend/legend-item-types/utils.js` keeps its own older copy for legend strings.
  */
-import isObject from 'lodash/isObject';
 
-const QUOTES = ['"', "'", '`'];
+const substitution = (originalStr, params = {}) =>
+  Object.entries(params).reduce((str, [key, value]) => {
+    const isStructured = value !== null && typeof value === 'object';
+    const isScalar = typeof value === 'number' || typeof value === 'boolean';
 
-export const substitution = (originalStr, params = {}) => {
-  let str = originalStr;
+    const typed = isStructured ? JSON.stringify(value) : isScalar ? String(value) : null;
 
-  Object.keys(params).forEach((key) => {
-    const value = params[key];
+    // Quoted first, so a typed value replaces its quotes; whatever is left interpolates as a string
+    const withTypedValues = typed
+      ? str.replace(new RegExp(`"\\{${key}\\}"`, 'g'), () => typed)
+      : str;
 
-    // Replace the quoted placeholder, dropping the quotes, so the value keeps its JSON type
-    if (Array.isArray(value) || isObject(value) || typeof value === 'number' || typeof value === 'boolean') {
-      const replacement = isObject(value) || Array.isArray(value) ? JSON.stringify(value) : value;
-
-      QUOTES.forEach((q) => {
-        str = str
-          .replace(new RegExp(`${q}{{${key}}}${q}`, 'g'), replacement)
-          .replace(new RegExp(`${q}{${key}}${q}`, 'g'), replacement);
-      });
-    }
-
-    // Anything left over is interpolated as a plain string
-    str = str
-      .replace(new RegExp(`{{${key}}}`, 'g'), value)
-      .replace(new RegExp(`{${key}}`, 'g'), value);
-  });
-
-  return str;
-};
-
-export const replace = (originalStr, params = {}) => {
-  if (typeof originalStr !== 'string') return originalStr;
-
-  return substitution(originalStr, params);
-};
+    return withTypedValues.replace(new RegExp(`\\{${key}\\}`, 'g'), () => String(value));
+  }, originalStr);
 
 /**
  * Interpolate params into a layer spec fragment (`source` or `render`).
@@ -56,5 +37,5 @@ export const replace = (originalStr, params = {}) => {
 export const parseSpec = (spec = {}, params) => {
   if (spec.parse === false) return spec;
 
-  return JSON.parse(replace(JSON.stringify(spec), params));
+  return JSON.parse(substitution(JSON.stringify(spec), params));
 };

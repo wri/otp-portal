@@ -23,51 +23,30 @@ export function getStyleLayerId(layerId, renderLayer = {}, index = 0) {
 }
 
 /**
- * layer-manager applies the layer opacity on top of whatever the paint property already says,
- * and always sets the property even when the render layer declares no paint at all.
+ * Bakes the layer opacity into the paint properties the way layer-manager did: the opacity
+ * property is always set, even when the render layer declares no paint at all, and an existing
+ * value is scaled rather than replaced.
+ *
+ * Falsy paint values are dropped on the way through, because mapbox breaks interaction on a paint
+ * property that is explicitly null.
  */
-function getOpacityPaint(renderLayer, opacity) {
+function getPaint(renderLayer, opacity) {
   const { paint = {}, type } = renderLayer;
-  const paintStyleNames = PAINT_STYLE_NAMES[type] || [type];
 
-  return paintStyleNames.reduce((acc, name) => {
+  const scale = (value) => (typeof value === 'number' ? value * opacity * 0.99 : value);
+
+  const opacityPaint = (PAINT_STYLE_NAMES[type] || [type]).map((name) => {
     const property = `${name}-opacity`;
     const current = paint[property];
 
-    let value = 0.99 * opacity;
-
-    if (current !== undefined && current !== null) {
-      if (typeof current === 'number') {
-        value = current * opacity * 0.99;
-      }
-
-      if (Array.isArray(current)) {
-        value = current.map((j) => (typeof j === 'number' ? j * opacity * 0.99 : j));
-      }
-    }
-
-    return { ...acc, [property]: value };
-  }, {});
-}
-
-/**
- * mapbox breaks interaction when a paint property is explicitly null, so drop the falsy ones
- * before handing the layer over.
- */
-function getPaint(renderLayer, opacity) {
-  const { paint = {} } = renderLayer;
-
-  const definedPaint = Object.entries(paint).reduce(
-    (acc, [key, value]) => ({
-      ...acc,
-      ...(!!value && { [key]: value })
-    }),
-    {}
-  );
+    if (typeof current === 'number') return [property, scale(current)];
+    if (Array.isArray(current)) return [property, current.map(scale)];
+    return [property, 0.99 * opacity];
+  });
 
   return {
-    ...definedPaint,
-    ...getOpacityPaint(renderLayer, opacity)
+    ...Object.fromEntries(Object.entries(paint).filter(([, value]) => !!value)),
+    ...Object.fromEntries(opacityPaint)
   };
 }
 
