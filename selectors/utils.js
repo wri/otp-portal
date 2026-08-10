@@ -197,7 +197,10 @@ export function getLegendLayersSelector(layers, layersSettings, layersActive, in
             ...timelineConfig,
             ...getParams(paramsConfig, lSettings.params),
             ...getParams(decodeConfig, lSettings.decodeParams),
-            ...lSettings.timelineParams
+            ...lSettings.timelineParams,
+            ...(!!timelineConfig.description && {
+              description: intl.formatMessage({ id: timelineConfig.description })
+            })
           }
         })
       }],

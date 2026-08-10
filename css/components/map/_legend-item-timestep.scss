@@ -7,4 +7,10 @@
     margin-left: 0px;
     width: calc(100% - 10px);
   }
+
+  .timestep-description {
+    margin: 0 0 4px;
+    font-size: $font-size-extrasmall;
+    color: $color-gray-1;
+  }
 }
