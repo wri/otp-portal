@@ -3,6 +3,7 @@ import dayOfYear from 'dayjs/plugin/dayOfYear';
 import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
+import { getStyleLayerId } from 'components/map/layer-manager/utils';
 
 dayjs.extend(dayOfYear);
 
@@ -104,15 +105,11 @@ export function getInteractiveLayersIds(layer) {
   if (!layers) return null;
 
   return layers.map((l, i) => {
-    const {
-      id: vectorLayerId,
-      type: vectorLayerType,
-      metadata
-    } = l;
+    const { metadata } = l;
 
     if (metadata && metadata.interactive === false) return null;
 
-    return vectorLayerId || `${id}-${vectorLayerType}-${i}`;
+    return getStyleLayerId(id, l, i);
   }).filter(x => !!x);
 }
 
