@@ -12,6 +12,11 @@ const Layers = [
   {
     id: 'gain',
     ...LAYERS.find(l => l.id === 'gain').config,
+    decodeFunction: LAYERS.find(l => l.id === 'gain').decodeFunction,
+    decodeParams: {
+      startYear: 2000,
+      endYear: 2020
+    },
   },
   {
     id: 'loss',

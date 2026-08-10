@@ -146,7 +146,7 @@ describe('sources', () => {
       type: 'raster',
       tileSize: 256,
       tiles: findLayer('gain').config.source.tiles,
-      minzoom: 3,
+      minzoom: 2,
       maxzoom: 12
     });
   });
