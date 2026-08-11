@@ -62,19 +62,37 @@ const config = {
     // config.infrastructureLogging = {
     //   level: 'verbose',
     // }
-    if (!options.dev) {
-      new CompressionPlugin({
-        filename: "[path][base].br",
-        algorithm: "brotliCompress",
+    // only client assets are served statically by NGINX, so the server build gains nothing from this
+    if (!options.dev && !options.isServer) {
+      // NGINX picks these up with brotli_static/gzip_static. Dynamic gzip only covers
+      // text/html, so without these files /_next/static/ is served uncompressed.
+      const sharedOptions = {
         test: /\.(js|css|html|svg)$/,
-        compressionOptions: {
-          params: {
-            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-          },
-        },
         threshold: 5120,
         minRatio: 0.8,
-      });
+      };
+
+      config.plugins.push(
+        new CompressionPlugin({
+          ...sharedOptions,
+          filename: "[path][base].br",
+          algorithm: "brotliCompress",
+          compressionOptions: {
+            params: {
+              [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+            },
+          },
+        }),
+        // fallback for the few clients that don't advertise brotli support
+        new CompressionPlugin({
+          ...sharedOptions,
+          filename: "[path][base].gz",
+          algorithm: "gzip",
+          compressionOptions: {
+            level: 9,
+          },
+        })
+      );
     }
 
     // if (!options.dev) {
