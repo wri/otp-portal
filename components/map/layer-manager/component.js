@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 import { Source, Layer, useMap } from 'react-map-gl';
@@ -63,6 +63,37 @@ function useAnchorLayer(map) {
   return ready;
 }
 
+/**
+ * One layer spec's source and style layers.
+ *
+ * Split out of `LayerManager` so the parsing and the opacity baking can be memoised per layer:
+ * the `getActiveLayers` selectors hand back the same layer object until their inputs actually
+ * change, so an unrelated re-render costs nothing here.
+ */
+function SpecLayer({ layer, beforeId }) {
+  const source = useMemo(() => getStyleSource(layer), [layer]);
+  const styleLayers = useMemo(() => getStyleLayers(layer), [layer]);
+
+  return (
+    <Source id={layer.id} {...source}>
+      {styleLayers.map((styleLayer) => (
+        <Layer
+          key={styleLayer.id}
+          {...styleLayer}
+          beforeId={
+            styleLayer.metadata && styleLayer.metadata.position === 'top' ? undefined : beforeId
+          }
+        />
+      ))}
+    </Source>
+  );
+}
+
+SpecLayer.propTypes = {
+  layer: PropTypes.object.isRequired,
+  beforeId: PropTypes.string
+};
+
 function LayerManager({ layers }) {
   const { current: mapRef } = useMap();
   const map = mapRef && mapRef.getMap();
@@ -87,19 +118,7 @@ function LayerManager({ layers }) {
             {layer.decodeFunction ? (
               <DecodedRasterLayer layer={layer} beforeId={beforeId} />
             ) : (
-              <Source id={layer.id} {...getStyleSource(layer)}>
-                {getStyleLayers(layer).map((styleLayer) => (
-                  <Layer
-                    key={styleLayer.id}
-                    {...styleLayer}
-                    beforeId={
-                      styleLayer.metadata && styleLayer.metadata.position === 'top'
-                        ? undefined
-                        : beforeId
-                    }
-                  />
-                ))}
-              </Source>
+              <SpecLayer layer={layer} beforeId={beforeId} />
             )}
           </Fragment>
         );
@@ -112,4 +131,6 @@ LayerManager.propTypes = {
   layers: PropTypes.array
 };
 
-export default LayerManager;
+// The pages holding a map keep unrelated state (open popup, active tab, fitted bounds) that would
+// otherwise re-render every layer on every interaction
+export default memo(LayerManager);
