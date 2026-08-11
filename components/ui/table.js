@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import ReactTable from 'react-table/react-table';
+import ReactTable from 'react-table';
 
 /**
  * Recursively extracts plain text from a React element or primitive.
