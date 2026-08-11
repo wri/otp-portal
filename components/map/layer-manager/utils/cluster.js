@@ -1,4 +1,4 @@
-import { lngLatToWorld, worldToLngLat } from 'viewport-mercator-project';
+import { lngLatToWorld, worldToLngLat } from '@math.gl/web-mercator';
 
 const CIRCLE_TO_SPIRAL_SWITCHOVER = 15;
 
@@ -84,7 +84,7 @@ export function spiderifyCluster({ coordinates = [], features = [], zoom = 4 }) 
   });
 
 
-  const clusterXY = lngLatToWorld(coordinates, 1);
+  const clusterXY = lngLatToWorld(coordinates);
 
   // Generate spiderlegs and leaves coordinates
   features.forEach((element, index) => {
@@ -93,7 +93,7 @@ export function spiderifyCluster({ coordinates = [], features = [], zoom = 4 }) 
     const spiderLeafLatLng = worldToLngLat([
       clusterXY[0] + (leavesCoordinates[index].x / (2 ** zoom)),
       clusterXY[1] + (leavesCoordinates[index].y / (2 ** zoom))
-    ], 1);
+    ]);
 
     spiderLeavesCollection.push({
       type: 'Feature',
