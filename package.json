@@ -61,7 +61,8 @@
     "eslint-config-next": "^15.5.18",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
-    "sass": "^1.99.0"
+    "sass": "^1.99.0",
+    "vitest": "^4.1.10"
   },
   "resolutions": {
     "compression-webpack-plugin/**/ajv": "^8.20.0",
@@ -80,6 +81,8 @@
     "start": "NODE_ENV=${NODE_ENV:-production} PORT=${PORT:-4000} next start",
     "prod": "yarn build && yarn start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
     "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js",
     "lang-compile": "script/lang-compile"
