@@ -15,7 +15,9 @@ import { getParsedTableObservations } from 'selectors/observations/parsed-table-
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
 import {
   getObservationsLayers,
+  getObservationsInteractiveLayersIds,
   getObservationsLegend,
+  OBSERVATIONS_LEAVES_LAYER_ID,
 } from 'selectors/observations/parsed-map-observations';
 import { getParsedFilters } from 'selectors/observations/parsed-filters';
 
@@ -175,7 +177,7 @@ const ObservationsPage = (props) => {
             data: feature.properties
           }
         });
-        if (feature.layer.id !== 'observations-leaves') {
+        if (feature.layer.id !== OBSERVATIONS_LEAVES_LAYER_ID) {
           props.setObservationsMapCluster({});
         }
       }
@@ -223,6 +225,7 @@ const ObservationsPage = (props) => {
   const {
     observations,
     getObservationsLayers,
+    interactiveLayerIds,
     getObservationsLegend,
     parsedFilters,
     parsedTableObservations,
@@ -243,15 +246,6 @@ const ObservationsPage = (props) => {
       : intl.formatMessage({ id: column }),
     value: column,
   }));
-
-  const interactiveLayerIds = [
-    'observations-circle-0',
-    'observations-symbol-1',
-    'observations-circle-2'
-  ]
-  if (props.observations.cluster.id) {
-    interactiveLayerIds.push('observations-leaves');
-  }
 
   return (
     <Layout
@@ -456,6 +450,7 @@ export default injectIntl(withRouter(
       parsedTableObservations: getParsedTableObservations(state),
       parsedChartObservations: getParsedChartObservations(state),
       getObservationsLayers: getObservationsLayers(state),
+      interactiveLayerIds: getObservationsInteractiveLayersIds(state),
       getObservationsLegend: getObservationsLegend(state, props),
     }),
     {

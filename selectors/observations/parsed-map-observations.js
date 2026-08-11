@@ -4,10 +4,18 @@ import { LAYERS } from 'constants/layers';
 import { isEmpty } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 import { createSelector } from '@reduxjs/toolkit';
-import { spiderifyCluster } from 'components/map/layer-manager/utils';
+import { spiderifyCluster, getStyleLayerId } from 'components/map/layer-manager/utils';
 
 import { parseObservation } from 'utils/observations';
 import { omitBy } from 'utils/general';
+
+// The spider leaves declare their own style layer id, so the page can test a clicked feature
+// against it
+export const OBSERVATIONS_LEAVES_LAYER_ID = 'observations-leaves';
+
+// Layers whose style layers respond to clicks. The FMU layer and the spider legs are drawn but
+// not interactive.
+const INTERACTIVE_LAYERS = ['observations', OBSERVATIONS_LEAVES_LAYER_ID];
 
 const intl = (state, props) => props && props.intl;
 
@@ -67,7 +75,7 @@ const getObservationsLayers = createSelector(
                     metadata: {
                       position: 'top'
                     },
-                    id: 'observations-leaves',
+                    id: OBSERVATIONS_LEAVES_LAYER_ID,
                     type: 'circle',
                     paint: {
                       'circle-radius': 6,
@@ -223,6 +231,21 @@ const getObservationsLayers = createSelector(
 );
 
 
+/**
+ * Style layer ids to hand to the map as `interactiveLayerIds`, derived from the same specs that
+ * produce the layers rather than spelled out by hand — the ids are generated, so a change to a
+ * render layer's type or position would otherwise break clicking with no error.
+ *
+ * The spider leaves only exist while a cluster is open, so they drop out of the list on their own.
+ */
+const getObservationsInteractiveLayersIds = createSelector(
+  getObservationsLayers,
+  (_layers) => _layers
+    .filter(l => INTERACTIVE_LAYERS.includes(l.id))
+    .flatMap(l => (l.render.layers || []).map((rl, i) => getStyleLayerId(l.id, rl, i)))
+);
+
+
 const getObservationsLegend = createSelector(
   observations, intl,
   (_observations, _intl) => {
@@ -286,4 +309,4 @@ const getObservationsLegend = createSelector(
 
 
 
-export { getObservationsLayers, getObservationsLegend };
+export { getObservationsLayers, getObservationsInteractiveLayersIds, getObservationsLegend };
