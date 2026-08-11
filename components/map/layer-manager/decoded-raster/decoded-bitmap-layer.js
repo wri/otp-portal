@@ -24,6 +24,11 @@ function getDecodeUniforms(decodeParams = {}) {
   );
 }
 
+// Which uniforms the shader was compiled with. The names are baked into the source, so a change
+// here means the shader is stale.
+export const getUniformSignature = (decodeParams) =>
+  Object.keys(getDecodeUniforms(decodeParams)).sort().join(',');
+
 /**
  * A BitmapLayer whose fragment shader runs a layer-supplied GLSL snippet over every texel.
  *
@@ -37,16 +42,8 @@ function getDecodeUniforms(decodeParams = {}) {
  */
 export default class DecodedBitmapLayer extends BitmapLayer {
   /**
-   * KNOWN LIMITATION: deck.gl calls this once, when the model is built, so the uniforms declared
-   * here are whatever `decodeParams` happened to hold at that moment. A param that shows up later
-   * is never declared, and a `decodeFunction` reading it fails to compile for good.
-   *
-   * `integrated-alerts` is the layer at risk — it has no static startDate/endDate defaults, so its
-   * `startDayIndex` / `endDayIndex` only exist once the metadata fetch resolves. It works today
-   * only because `modules/operators-ranking.js` (and its operators-detail twin) dispatch the layer
-   * settings before adding the layer to `layersActive`. If that ordering is ever reversed, the
-   * layer goes silently blank. Fix would be to key the deck layer's recreation in
-   * `./index.js` on the declared-uniform signature.
+   * deck.gl calls this once, when the model is built, so the declared uniforms are whatever
+   * `decodeParams` held at that moment — see `updateState` for how a later change is handled.
    */
   getShaders() {
     const { decodeParams = {}, decodeFunction = '' } = this.props;
@@ -60,6 +57,33 @@ export default class DecodedBitmapLayer extends BitmapLayer {
       .replace('{decodeFunction}', decodeFunction);
 
     return { ...super.getShaders(), fs };
+  }
+
+  /**
+   * Rebuild the model when the set of decode params changes shape, because `getShaders()` writes
+   * the uniform names straight into the fragment shader source.
+   *
+   * `integrated-alerts` is why this matters: it has no static startDate/endDate defaults, so its
+   * `startDayIndex` / `endDayIndex` only exist once the metadata fetch resolves. A shader compiled
+   * before then would read uniforms it never declared and fail for good — leaving the layer
+   * silently blank — with no way back, since deck would otherwise keep the stale model forever.
+   */
+  updateState(params) {
+    super.updateState(params);
+
+    const signature = getUniformSignature(this.props.decodeParams);
+    if (this.state.uniformSignature === signature) return;
+
+    // On the first pass super.updateState has just built the model with the right shader already
+    if (this.state.uniformSignature !== undefined) {
+      const { gl } = this.context;
+
+      this.state.model?.delete();
+      this.state.model = this._getModel(gl);
+      this.getAttributeManager().invalidateAll();
+    }
+
+    this.setState({ uniformSignature: signature });
   }
 
   draw(opts) {
