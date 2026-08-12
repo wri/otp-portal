@@ -47,6 +47,21 @@ export default function CustomDocument({ locale, criticalCss }) {
   return (
     <Html lang={language}>
       <CustomHead>
+        {/*
+          The @font-face lives in css/_fonts.scss, so Next has no knowledge of this font
+          and won't preload it. Without this the browser only discovers it after parsing
+          the stylesheet, adding a round trip to the critical path.
+          crossOrigin is required even same-origin: fonts are fetched in CORS mode, and
+          a preload without it is discarded and re-fetched.
+        */}
+        <link
+          rel="preload"
+          href="/static/fonts/ProximaNova-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+
         {withOsano && <link rel="preconnect" href="https://cmp.osano.com" />}
         {withGTM && <link rel="preconnect" href="https://www.googletagmanager.com" />}
         {withHotjar && <link rel="preconnect" href="https://static.hotjar.com" />}
