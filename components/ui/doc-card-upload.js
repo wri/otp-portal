@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from 'utils/sentry';
 import { toastr } from 'react-redux-toastr';
 
 import { connect } from 'react-redux';
@@ -103,7 +103,7 @@ const DocCardUpload = (props) => {
         onError && onError(
           intl.formatMessage({ id: 'document.delete.error', defaultMessage: 'An error occurred while deleting the document.' })
         );
-        Sentry.captureException(err);
+        captureException(err);
         console.error(err);
       });
   };

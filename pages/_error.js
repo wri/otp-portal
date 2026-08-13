@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import * as Sentry from '@sentry/nextjs';
+import { loadSentry } from 'utils/sentry';
 
 const ErrorPage = ({ statusCode, router }) => {
   const css = (
@@ -76,7 +76,8 @@ ErrorPage.getInitialProps = async (contextData) => {
 
   // Only capture actual exceptions (not 404s or other non-error status codes)
   if (err && statusCode != 404) {
-    await Sentry.captureUnderscoreErrorException(contextData);
+    const Sentry = await loadSentry();
+    if (Sentry) await Sentry.captureUnderscoreErrorException(contextData);
   }
 
   return { statusCode };
