@@ -10,6 +10,30 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 
 const isCriticalCssEnabled = process.env.NODE_ENV === 'production' && process.env.CRITICAL_CSS === 'true';
 
+// Read once, lazily. Absent in dev, where the unversioned URL is what we want anyway.
+let buildId;
+
+function getBuildId() {
+  if (buildId === undefined) {
+    try {
+      buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
+    } catch (e) {
+      buildId = null;
+    }
+  }
+  return buildId;
+}
+
+// /translations.js is render-blocking (beforeInteractive) because _app.js reads
+// window.OTP_PORTAL_TRANSLATIONS synchronously during render, so it has to run before
+// hydration. Versioning the URL by build id lets the route be cached immutably - see the
+// matching Cache-Control in pages/translations.js.js, which only caches versioned requests.
+function getTranslationsSrc(language) {
+  const src = `/${language === 'en' ? '' : `${language}/`}translations.js`;
+  const id = getBuildId();
+  return id ? `${src}?v=${id}` : src;
+}
+
 class CustomHead extends Head {
   constructor(...args) {
     super(...args);
@@ -70,7 +94,7 @@ export default function CustomDocument({ locale, criticalCss }) {
       </CustomHead>
       <body>
         {withOsano && <Script src={`https://cmp.osano.com/${process.env.OSANO_ID}/osano.js`} strategy="beforeInteractive" />}
-        <Script src={`/${language === 'en' ? '' : language + '/'}translations.js`} strategy="beforeInteractive" />
+        <Script src={getTranslationsSrc(language)} strategy="beforeInteractive" />
         <GoogleTagManager noscript />
         <Main />
         <NextScript />
