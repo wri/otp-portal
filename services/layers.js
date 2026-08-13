@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+import { captureException } from 'utils/sentry';
 
 export function fetchIntegratedAlertsMetadata() {
   return fetch(`${process.env.GFW_PROXY_API}/dataset/gfw_integrated_alerts/latest`, {
@@ -22,7 +22,7 @@ export function fetchIntegratedAlertsMetadata() {
       }
     })
     .catch((err) => {
-      Sentry.captureException(err);
+      captureException(err);
       console.error(err);
 
       return {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import * as Sentry from "@sentry/nextjs";
+import { captureException } from 'utils/sentry';
 
 import isEqual from 'react-fast-compare';
 import { isEmpty } from 'utils/general';
@@ -312,7 +312,7 @@ class Map extends Component {
       );
     } catch (err) {
       console.error(err);
-      Sentry.captureException(err);
+      captureException(err);
     }
   };
 
