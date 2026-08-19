@@ -6,14 +6,14 @@
   "private": true,
   "devDependencies": {
     "@frsource/cypress-plugin-visual-regression-diff": "^3.3.10",
-    "cypress": "^15"
+    "cypress": "^15",
+    "cypress-split": "^1.25.0"
   },
   "dependencies": {
     "cypress-file-upload": "^5.0.8"
   },
   "resolutions": {
     "brace-expansion": "^2.0.3",
-    "minimatch": "^5.1.9",
     "sharp": "^0.32.6",
     "tar-fs": "^2.1.4"
   }

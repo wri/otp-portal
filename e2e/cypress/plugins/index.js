@@ -17,10 +17,15 @@
  */
 // eslint-disable-next-line no-unused-vars
 const { initPlugin } = require("@frsource/cypress-plugin-visual-regression-diff/plugins");
+const cypressSplit = require('cypress-split');
 
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   initPlugin(on, config);
+  // Splits specs across CI shards via SPLIT / SPLIT_INDEX, balanced by timings.json.
+  // Without SPLIT set it is a no-op, so local runs are unaffected.
+  cypressSplit(on, config);
+  // cypress-split mutates config, so it must be returned or the split silently no-ops
   return config;
 }

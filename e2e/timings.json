@@ -1,0 +1,40 @@
+{
+  "durations": [
+    {
+      "spec": "cypress/e2e/operator.cy.js",
+      "duration": 39000
+    },
+    {
+      "spec": "cypress/e2e/user.cy.js",
+      "duration": 17000
+    },
+    {
+      "spec": "cypress/e2e/pages.cy.js",
+      "duration": 14000
+    },
+    {
+      "spec": "cypress/e2e/newsletter.cy.js",
+      "duration": 6000
+    },
+    {
+      "spec": "cypress/e2e/document-database.cy.js",
+      "duration": 3000
+    },
+    {
+      "spec": "cypress/e2e/observations.cy.js",
+      "duration": 2000
+    },
+    {
+      "spec": "cypress/e2e/password-reset.cy.js",
+      "duration": 2000
+    },
+    {
+      "spec": "cypress/e2e/transparency-ranking.cy.js",
+      "duration": 2000
+    },
+    {
+      "spec": "cypress/e2e/home.cy.js",
+      "duration": 1000
+    }
+  ]
+}

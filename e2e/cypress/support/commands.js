@@ -48,5 +48,10 @@ Cypress.Commands.add('selectOption', (selector, text, option) => {
 
 Cypress.Commands.add('resetDB', () => {
   const apiPath = Cypress.env('API_PATH') || '../../otp-api';
-  cy.exec(`cd ${apiPath}; RAILS_ENV=e2e bin/rails e2e:db_reset`);
+  const fastReset = `${apiPath}/bin/e2e-db-reset`;
+  // The rake task is ~2s slower because every rake entry point loads the whole
+  // Rails app first. Fall back to it while the API repo is missing the script.
+  cy.exec(
+    `if [ -f ${fastReset} ]; then sh ${fastReset}; else cd ${apiPath}; RAILS_ENV=e2e bin/rails e2e:db_reset; fi`
+  );
 });
