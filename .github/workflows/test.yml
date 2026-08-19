@@ -19,7 +19,13 @@ on: push
 jobs:
   test:
     name: E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    strategy:
+      # Without this, one failing shard cancels the others and their results are lost.
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2]
 
     services:
       redis:
@@ -34,13 +40,13 @@ jobs:
 
     steps:
       - name: Checkout Portal
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout OTP API
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: wri/fti_api
-          ref: fix/missing-annex-attachment-validation
+          ref: chore/e2e-speed-up-portal
           path: otp_api
 
       - name: Save OTP API Commit SHA
@@ -48,77 +54,25 @@ jobs:
         working-directory: otp_api
         run: echo "VALUE=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Install API dependencies
-        run: |
-          sudo apt update --fix-missing
-          sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev libgdal-dev imagemagick
-          npm install -g mjml@4
-
-      - name: Setup API Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-          working-directory: otp_api
-
-      - name: Restore API Precompiled Assets Cache
-        id: cache-api-precompiled-assets
-        uses: actions/cache/restore@v3
-        with:
-          path: otp_api/public/assets
-          key: api-precompiled-assets-${{ steps.otp_api_commit_sha.outputs.VALUE }}
-
-      - name: Setup API
-        working-directory: otp_api
-        env:
-          APP_URL: http://localhost:3000
-        run: |
-          bin/rails e2e:setup ${{ steps.cache-api-precompiled-assets.outputs.cache-hit == 'true' && 'SKIP_ASSETS_RESET=true' || '' }}
-
-      - name: Save API Precompiled Assets Cache
-        uses: actions/cache/save@v3
-        with:
-          path: otp_api/public/assets
-          key: api-precompiled-assets-${{ steps.otp_api_commit_sha.outputs.VALUE }}
-
-      # - name: Read API Access Token
-      #   id: api_key
-      #   working-directory: otp_api
-      #   run: |
-      #     bin/rails runner 'puts "VALUE=#{User.find_by(email: "webuser@example.com").api_key.access_token}"' > $GITHUB_OUTPUT
-
-      - name: Run API Server
-        working-directory: otp_api
-        env:
-          APP_URL: http://localhost:3000
-        run: |
-          bin/rails s > log/e2e.log 2>&1 &
+      - name: Install mjml
+        run: npm install -g mjml@4
 
       - name: Read .nvmrc
         id: nvm
         run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v7
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-      - name: Restore Portal Node Modules Cache
+      - name: Cache Portal Node Modules
         id: cache-portal-modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
       - name: Install Portal Dependencies
-        run: yarn install --immutable
-
-      - name: Save Portal Node Modules Cache
-        uses: actions/cache/save@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Install E2E Dependencies
-        working-directory: e2e
         run: yarn install --immutable
 
       - name: Set Portal ENV Variables
@@ -132,42 +86,93 @@ jobs:
           OTP_COUNTRIES_IDS='7,47,45,188,53'
           APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
-          OTP_API_KEY=Bearer ${{ steps.api_key.outputs.VALUE }}
           DISABLE_HOTJAR=true
           " > .env
 
-      - name: Restore Next.js Build Cache
+      - name: Cache Next.js Build
         id: cache-nextjs
-        uses: actions/cache/restore@v3
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: nextjs-${{ hashFiles('yarn.lock') }}
 
-      - name: Build Portal
-        run: yarn build
-
-      - name: Save Next.js Build Cache
-        uses: actions/cache/save@v3
-        with:
-          path: .next/cache
-          key: nextjs-${{ hashFiles('yarn.lock') }}
-
+      # Backgrounded so the Next.js production build overlaps the API setup below
+      # rather than running after it. Blocked on further down.
       - name: Start Portal
-        run: yarn start > otp-portal.log 2>&1 &
+        run: |
+          nohup sh -c 'yarn build && yarn start' > otp-portal.log 2>&1 &
+          echo "portal building in background, pid $!"
+
+      - name: Install API dependencies
+        timeout-minutes: 8
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # The runner image points apt at azure.archive.ubuntu.com via a mirrorlist.
+          # With three shards hitting it at once it intermittently stops answering and
+          # apt burns minutes retrying before it falls back. Use the canonical archive.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i '/azure\.archive\.ubuntu\.com/Id' /etc/apt/apt-mirrors.txt
+          fi
+          sudo -E apt-get update
+          sudo -E apt-get -yqq install --no-install-recommends \
+            build-essential libgdal-dev imagemagick
+
+      - name: Setup API Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: otp_api
+
+      - name: Cache API Precompiled Assets
+        id: cache-api-precompiled-assets
+        uses: actions/cache@v6
+        with:
+          path: otp_api/public/assets
+          key: api-precompiled-assets-${{ steps.otp_api_commit_sha.outputs.VALUE }}
+
+      - name: Setup API
+        working-directory: otp_api
+        env:
+          APP_URL: http://localhost:3000
+        run: |
+          bin/rails e2e:setup ${{ steps.cache-api-precompiled-assets.outputs.cache-hit == 'true' && 'SKIP_ASSETS_RESET=true' || '' }}
+
+      - name: Run API Server
+        working-directory: otp_api
+        env:
+          APP_URL: http://localhost:3000
+        run: |
+          bin/rails s > log/e2e.log 2>&1 &
+
+      - name: Wait for Portal
+        timeout-minutes: 8
+        run: |
+          npx --yes wait-on -t 300000 http://localhost:4000 \
+            || { echo '--- portal build log ---'; cat otp-portal.log; exit 1; }
+
+      - name: Install E2E Dependencies
+        working-directory: e2e
+        run: yarn install --immutable
 
       - name: Run E2E Tests
         working-directory: e2e
+        env:
+          SPLIT: 3
+          SPLIT_INDEX: ${{ matrix.shard }}
+          # Balances shards by recorded spec duration; without it specs split by name
+          # and operator.cy.js could land beside pages.cy.js.
+          SPLIT_FILE: timings.json
         run: yarn cypress run
 
       - name: Uploading Test Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: e2e-tests-artifacts
+          name: e2e-tests-artifacts-${{ matrix.shard }}
           path: |
             otp-portal.log
             e2e/cypress/screenshots
             e2e/cypress/videos
             e2e/cypress/e2e/__image_snapshots__
             otp_api/log
-
