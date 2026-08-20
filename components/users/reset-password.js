@@ -25,7 +25,7 @@ const ResetPasswordForm = ({ token }) => {
     }
     // Save data
     return resetPassword(attributes)
-      .then((user) => {
+      .then(({ data: user }) => {
         toastr.success(
           intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
           intl.formatMessage({ id: 'Password changed successfully' })
