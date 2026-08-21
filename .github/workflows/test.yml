@@ -17,6 +17,42 @@ name: Run tests
 on: push
 
 jobs:
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Portal
+        uses: actions/checkout@v4
+
+      - name: Read .nvmrc
+        id: nvm
+        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+
+      - name: Restore Portal Node Modules Cache
+        id: cache-portal-modules
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Portal Dependencies
+        run: yarn install --immutable
+
+      - name: Save Portal Node Modules Cache
+        uses: actions/cache/save@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      # vitest.config.mjs supplies the env vars constants/layers.js reads, so no .env is needed
+      - name: Run unit tests
+        run: yarn test
+
   test:
     name: E2E Tests
     runs-on: ubuntu-24.04

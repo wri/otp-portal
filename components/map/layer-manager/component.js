@@ -1,34 +1,136 @@
-import React, { PureComponent } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
+import { Source, Layer, useMap } from 'react-map-gl';
 
-import { LayerManager, Layer } from 'layer-manager/dist/components';
-import { PluginMapboxGl } from 'layer-manager';
+import { getStyleLayers, getStyleSource } from './utils';
 
-class LayerManagerComponent extends PureComponent {
-  static propTypes = {
-    map: PropTypes.object,
-    layers: PropTypes.array
-  };
+// deck.gl is browser-only, and its ESM build can't be resolved by node during `next build`'s
+// page data collection
+const DecodedRasterLayer = dynamic(() => import('./decoded-raster'), { ssr: false });
 
-  render() {
-    const { map, layers } = this.props;
+/**
+ * Renders layer specs (see `constants/layers.js` and the `getActiveLayers` selectors) onto the
+ * map, using react-map-gl's own `<Source>` / `<Layer>` for everything mapbox can draw and
+ * deck.gl for the GPU-decoded rasters.
+ *
+ * Stacking is expressed with invisible `background` anchor layers: anchor `i` is inserted below
+ * anchor `i - 1`, and each layer's style layers go just above their own anchor. The net effect
+ * is that the first entry in `layers` ends up on top, which is what layer-manager's
+ * `zIndex = 1000 - i` did. Render layers flagged `metadata.position === 'top'` opt out and are
+ * appended above everything instead.
+ */
 
-    return (
-      <LayerManager
-        map={map}
-        plugin={PluginMapboxGl}
-      >
-        {!!layers && layers.map((l) => {
-          return (
-            <Layer
-              key={l.id}
-              {...l}
-            />
-          )
-        })}
-      </LayerManager>
-    );
-  }
+const ANCHOR_ID = 'custom-layers';
+
+// The basemap layer the data layers have to stay below. Mapbox's light-v9 style has no
+// `custom-layers` layer of its own, so we insert one before its first label layer.
+const ANCHOR_MATCHES = ['custom-layers', 'label', 'place', 'poi'];
+
+function useAnchorLayer(map) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!map) return undefined;
+
+    const addAnchor = () => {
+      // The same readiness check react-map-gl's own <Source> / <Layer> use. Deliberately not
+      // `isStyleLoaded()`, which also waits on tiles and so is still false right after `load`.
+      if (!map.style || !map.style._loaded) return;
+
+      if (!map.getLayer(ANCHOR_ID)) {
+        const { layers = [] } = map.getStyle();
+        const labelLayer = layers.find((l) => ANCHOR_MATCHES.some((m) => l.id.includes(m)));
+
+        map.addLayer(
+          { id: ANCHOR_ID, type: 'background', paint: { 'background-opacity': 0 } },
+          labelLayer && labelLayer.id
+        );
+      }
+
+      setReady(true);
+    };
+
+    addAnchor();
+    // The anchor has to come back if the style is ever swapped out from under us
+    map.on('styledata', addAnchor);
+
+    return () => {
+      map.off('styledata', addAnchor);
+    };
+  }, [map]);
+
+  return ready;
 }
 
-export default LayerManagerComponent;
+/**
+ * One layer spec's source and style layers.
+ *
+ * Split out of `LayerManager` so the parsing and the opacity baking can be memoised per layer:
+ * the `getActiveLayers` selectors hand back the same layer object until their inputs actually
+ * change, so an unrelated re-render costs nothing here.
+ */
+function SpecLayer({ layer, beforeId }) {
+  const source = useMemo(() => getStyleSource(layer), [layer]);
+  const styleLayers = useMemo(() => getStyleLayers(layer), [layer]);
+
+  return (
+    <Source id={layer.id} {...source}>
+      {styleLayers.map((styleLayer) => (
+        <Layer
+          key={styleLayer.id}
+          {...styleLayer}
+          beforeId={
+            styleLayer.metadata && styleLayer.metadata.position === 'top' ? undefined : beforeId
+          }
+        />
+      ))}
+    </Source>
+  );
+}
+
+SpecLayer.propTypes = {
+  layer: PropTypes.object.isRequired,
+  beforeId: PropTypes.string
+};
+
+function LayerManager({ layers }) {
+  const { current: mapRef } = useMap();
+  const map = mapRef && mapRef.getMap();
+  const anchorReady = useAnchorLayer(map);
+
+  if (!anchorReady || !layers || !layers.length) return null;
+
+  return (
+    <>
+      {layers.map((layer, i) => {
+        const beforeId = i === 0 ? ANCHOR_ID : `${layers[i - 1].id}-bg`;
+
+        return (
+          <Fragment key={layer.id}>
+            <Layer
+              id={`${layer.id}-bg`}
+              type="background"
+              layout={{ visibility: 'none' }}
+              beforeId={beforeId}
+            />
+
+            {layer.decodeFunction ? (
+              <DecodedRasterLayer layer={layer} beforeId={beforeId} />
+            ) : (
+              <SpecLayer layer={layer} beforeId={beforeId} />
+            )}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
+
+LayerManager.propTypes = {
+  layers: PropTypes.array
+};
+
+// The pages holding a map keep unrelated state (open popup, active tab, fitted bounds) that would
+// otherwise re-render every layer on every interaction
+export default memo(LayerManager);
