@@ -8,9 +8,27 @@ describe('User', () => {
   })
 
   context('Login form', () => {
-    it('can log in', function () {
+    // the portal sends no ?app= param, so it gets the API's bare cookie names,
+    // see the API's APIController#auth_cookie_name
+    const AUTH_COOKIE = 'otp_auth_token';
+    const CSRF_COOKIE = 'XSRF-TOKEN';
+    const REMEMBER_ME_CHECKBOX = 'checkbox-remember_me-undefined';
+    const THIRTY_DAYS_IN_SECONDS = 30 * 24 * 60 * 60;
+
+    const openLoginForm = () => {
       cy.visit('/');
       cy.get('div[role=button]').contains('Sign in').click();
+    };
+
+    const submitLogin = () => {
+      cy.get('#input-email').type('operator@example.com');
+      cy.get('#input-password').type('Supersecret1');
+      cy.get('button').contains('Log in').click();
+      cy.contains('div[role=button]', 'My account');
+    };
+
+    it('can log in', function () {
+      openLoginForm();
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
       cy.get('button').contains('Log in').click();
@@ -18,6 +36,35 @@ describe('User', () => {
       cy.get('#input-password').clear().type('Supersecret1');
       cy.get('button').contains('Log in').click();
       cy.contains('div[role=button]', 'My account');
+    });
+
+    it('keeps the session for 30 days when remember me ticked', function () {
+      openLoginForm();
+      // the checkbox input itself is display:none, the label is what is clickable
+      cy.get(`label[for=${REMEMBER_ME_CHECKBOX}]`).click();
+      cy.get(`#${REMEMBER_ME_CHECKBOX}`).should('be.checked');
+      submitLogin();
+
+      [AUTH_COOKIE, CSRF_COOKIE].forEach(name => {
+        cy.getCookie(name).should(cookie => {
+          const expectedExpiry = Math.floor(Date.now() / 1000) + THIRTY_DAYS_IN_SECONDS;
+          // an hour of slack so the assertion does not depend on how long the login took
+          expect(cookie.expiry, `${name} expiry`).to.be.closeTo(expectedExpiry, 60 * 60);
+        });
+      });
+    });
+
+    it('keeps the session until the browser closes when remember me not ticked', function () {
+      openLoginForm();
+      cy.get(`#${REMEMBER_ME_CHECKBOX}`).should('not.be.checked');
+      submitLogin();
+
+      [AUTH_COOKIE, CSRF_COOKIE].forEach(name => {
+        // no expiry at all means the browser drops the cookie on close
+        cy.getCookie(name).should(cookie => {
+          expect(cookie.expiry, `${name} expiry`).to.be.undefined;
+        });
+      });
     });
   })
 
