@@ -19,15 +19,11 @@ import modal from 'services/modal';
 // Components
 import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
-import useUser from 'hooks/use-user';
 
 const DocCardUpload = (props) => {
   const { status, buttons, date, title, docId, onChange, reason } = props;
   const intl = useIntl();
-  const user = useUser();
-  const documentationService = useMemo(() => new DocumentationService({
-    authorization: user.token,
-  }), [user.token]);
+  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const triggerAddFile = (e) => {
     e && e.preventDefault();

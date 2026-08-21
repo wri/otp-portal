@@ -39,7 +39,7 @@ function CountriesDetail({ router, countriesDetail, countryDocumentation, getCou
   const id = router.query.id;
   const tab = router.query.tab || 'overview';
   const user = useUser();
-  useDownloadSession(user.token);
+  useDownloadSession(user.isLoggedIn);
 
   useEffect(() => {
     if (id) {

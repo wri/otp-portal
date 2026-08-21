@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 import { omitBy, isEmpty } from 'utils/general';
-import API, { NEXTAPIClient } from 'services/api'
+import API from 'services/api'
 import { logEvent } from 'utils/analytics';
 
 export const getUserOperator = createApiThunk(
@@ -36,8 +36,7 @@ export const getUserProfile = createApiThunk(
   'user/getUserProfile',
   (_arg, { user }) => `users/${user.user_id}`,
   {
-    useLanguage: false,
-    useUserToken: true
+    useLanguage: false
   }
 )
 
@@ -51,7 +50,7 @@ const userSlice = createSlice({
     setUserAgent: (state, action) => {
       state.userAgent = action.payload;
     },
-    removeUser: () => ({}),
+    removeUser: (state) => ({ userAgent: state.userAgent }),
   },
   extraReducers: (builder) => {
     addApiCases(getUserProfile, 'userProfile')(builder);
@@ -62,14 +61,19 @@ const userSlice = createSlice({
 export const { setUser, setUserAgent, removeUser } = userSlice.actions;
 
 export function login({ body }) {
-  return NEXTAPIClient.post('login', { body }).then(() => {
+  return API.post('login', {
+    body,
+    headers: { 'Content-Type': 'application/json' },
+    deserialize: false,
+    skipUnauthorizedHandler: true
+  }).then(() => {
     localStorage.removeItem('notificationsShown');
     logEvent('login', { method: 'credentials' });
   });
 }
 
 export function logout() {
-  return () => NEXTAPIClient.delete('logout').then(() => {
+  return () => API.delete('logout', { deserialize: false }).then(() => {
     window.location.reload();
   })
 }
@@ -91,7 +95,7 @@ export function saveUser({ body }) {
 }
 
 export function setDownloadCookie() {
-  return NEXTAPIClient.post('download-session');
+  return API.post('sessions/download-session', { deserialize: false });
 }
 
 export function updateUserProfile({ attributes }) {
@@ -105,8 +109,7 @@ export function updateUserProfile({ attributes }) {
           type: 'users',
           attributes: omitBy(attributes, isEmpty)
         }
-      },
-      token: user.token
+      }
     });
   }
 }
@@ -115,12 +118,12 @@ export function saveOperator({ body }) {
   return () => API.post('operators', { body });
 }
 
-export function updateOperator({ body, id, authorization, locale }) {
-  return () => API.patch(`operators/${id}`, { body, token: authorization, queryParams: { locale }});
+export function updateOperator({ body, id, locale }) {
+  return () => API.patch(`operators/${id}`, { body, queryParams: { locale }});
 }
 
-export function updateFmu({ id, body, authorization }) {
-  return () => API.patch(`fmus/${id}`, { body, token: authorization });
+export function updateFmu({ id, body }) {
+  return () => API.patch(`fmus/${id}`, { body });
 }
 
 export default userSlice.reducer;

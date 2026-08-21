@@ -31,7 +31,7 @@ const ResetPasswordForm = ({ token }) => {
           intl.formatMessage({ id: 'Password changed successfully' })
         );
         return login({
-          body: { auth: { email: user.email, password: attributes.password } }
+          body: { auth: { email: user.email, password: attributes.password, set_cookie: true } }
         }).then(() => { window.location.href = '/'; })
       })
   }

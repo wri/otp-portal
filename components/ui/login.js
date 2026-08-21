@@ -14,6 +14,7 @@ import modal from 'services/modal';
 // Components
 import Field from 'components/form/Field';
 import Input from 'components/form/Input';
+import Checkbox from 'components/form/Checkbox';
 import Form, { FormProvider } from 'components/form/Form';
 import SubmitButton from 'components/form/SubmitButton';
 import CancelButton from 'components/form/CancelButton';
@@ -25,7 +26,7 @@ const Login = () => {
   const intl = useIntl();
 
   const handleSubmit = ({ form }) => {
-    return login({ body: { auth: form } })
+    return login({ body: { auth: { ...form, set_cookie: true } } })
       .then(() => {
         window.location.reload();
       }).catch((err) => {
@@ -51,7 +52,7 @@ const Login = () => {
         {intl.formatMessage({ id: 'login' })}
       </h2>
 
-      <FormProvider onSubmit={handleSubmit} initialValues={{ email: '', password: '' }}>
+      <FormProvider onSubmit={handleSubmit} initialValues={{ email: '', password: '', remember_me: false }}>
         <Form>
           <fieldset className="c-field-container">
             {/* EMAIL */}
@@ -80,6 +81,17 @@ const Login = () => {
               }}
             >
               {Input}
+            </Field>
+
+            {/* REMEMBER ME */}
+            <Field
+              className="-fluid"
+              properties={{
+                name: 'remember_me',
+                title: intl.formatMessage({ id: 'login.form.field.remember_me', defaultMessage: 'Remember me for 30 days' }),
+              }}
+            >
+              {Checkbox}
             </Field>
           </fieldset>
 

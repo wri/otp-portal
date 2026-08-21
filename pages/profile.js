@@ -42,7 +42,7 @@ const Profile = () => {
 
 Profile.getInitialProps = async ({ store }) => {
   const state = store.getState();
-  if (!state.user || !state.user.token) {
+  if (!state.user || !state.user.user_id) {
     return { redirectTo: '/', redirectPermanent: false };
   }
 

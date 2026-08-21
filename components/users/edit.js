@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 
 // Redux
 import { connect } from 'react-redux';
-import { updateUserProfile } from 'modules/user';
+import { updateUserProfile, login } from 'modules/user';
 import { toastr } from 'react-redux-toastr';
 
 // Components
@@ -34,9 +34,34 @@ const UserEditForm = (props) => {
       attributes['first-name'] = form.firstName;
       attributes['last-name'] = form.lastName;
     }
+    const updatingPassword = !!form.password && !!form.password.length;
 
     return props
       .updateUserProfile({ attributes })
+      .then(() => {
+        if (!updatingPassword) return null;
+
+        // the session cookie is tied to the old password, so it stops working
+        // as soon as the password changes: log the user in again to renew it
+        return login({
+          body: {
+            auth: {
+              email: userProfile.email,
+              password: form.password,
+              set_cookie: true
+            }
+          }
+        }).catch(() => {
+          // the old cookie is dead at this point, so send the user back to log in
+          toastr.info(
+            intl.formatMessage({ id: 'Password changed successfully' }),
+            intl.formatMessage({ id: 'Please log in again' })
+          );
+          window.location.href = '/';
+          // keep the chain pending until the redirect happens
+          return new Promise(() => {});
+        });
+      })
       .then(() => {
         toastr.success(
           intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),

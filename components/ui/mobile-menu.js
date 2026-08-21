@@ -67,13 +67,13 @@ function MobileMenu({ className, countries }) {
         <Search />
       </li>
       <li>
-        {user.token && (
+        {user.isLoggedIn && (
           <>
             <span>{intl.formatMessage({ id: 'logged_in.trigger' })}</span>
             <UserMenuList />
           </>
         )}
-        {!user.token && <UserDropdown displayIcon={false} />}
+        {!user.isLoggedIn && <UserDropdown displayIcon={false} />}
       </li>
       {elements.map((element, idx) => {
         if (element.children) {
