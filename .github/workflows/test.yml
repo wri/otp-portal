@@ -73,10 +73,8 @@ jobs:
           path: node_modules
           key: node-modules-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('package.json', 'yarn.lock') }}
 
-      # `resolutions` defeats yarn 1's integrity check, so any yarn run is a full
-      # ~40s reinstall even with node_modules restored. --immutable is a no-op here.
+      # --immutable is a no-op on yarn 1; --frozen-lockfile is the real flag.
       - name: Install Portal Dependencies
-        if: steps.cache-portal-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: Set Portal ENV Variables
@@ -119,7 +117,6 @@ jobs:
           key: e2e-deps-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('e2e/package.json', 'e2e/yarn.lock') }}
 
       - name: Install E2E Dependencies
-        if: steps.cache-e2e-deps.outputs.cache-hit != 'true'
         working-directory: e2e
         run: yarn install --frozen-lockfile
 
