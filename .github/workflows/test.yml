@@ -32,7 +32,7 @@ jobs:
         image: redis
         ports: ["6379:6379"]
       postgres:
-        image: postgis/postgis:12-3.1-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
@@ -125,22 +125,31 @@ jobs:
       # apt burns minutes retrying before it falls back. Use the canonical archive.
       # Still needed alongside the cache below: that action refreshes stale apt lists,
       # and a cache miss downloads the packages the usual way.
-      - name: Use a reachable apt mirror
+      - name: Configure apt sources
         run: |
           if [ -f /etc/apt/apt-mirrors.txt ]; then
             sudo sed -i '/azure\.archive\.ubuntu\.com/Id' /etc/apt/apt-mirrors.txt
           fi
+          # Ubuntu 24.04 only ships client 16, and pg_dump refuses a server newer
+          # than itself. The update is needed every run: the cache action resolves
+          # package versions to build its key before it checks the cache.
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          sudo apt-get update -qq
 
-      # Bump `version` to rebuild the cache; the key is derived from the package list
-      # and that value only, so it does not invalidate on new upstream package versions.
+      # Bump `version` to rebuild the cache. The key also covers resolved package
+      # versions, so upstream releases invalidate it on their own.
       - name: Install API dependencies
         timeout-minutes: 8
         uses: awalsh128/cache-apt-pkgs-action@v1.6.3
         env:
           DEBIAN_FRONTEND: noninteractive
         with:
-          packages: build-essential libgdal-dev imagemagick
-          version: "1"
+          packages: build-essential libgdal-dev imagemagick postgresql-client-18
+          version: "2"
           execute_install_scripts: true
 
       - name: Setup API Ruby
