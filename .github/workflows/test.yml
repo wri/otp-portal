@@ -65,15 +65,19 @@ jobs:
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
+      # The install below is skipped on a hit, so package.json is in the key too.
       - name: Cache Portal Node Modules
         id: cache-portal-modules
         uses: actions/cache@v6
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('package.json', 'yarn.lock') }}
 
+      # `resolutions` defeats yarn 1's integrity check, so any yarn run is a full
+      # ~40s reinstall even with node_modules restored. --immutable is a no-op here.
       - name: Install Portal Dependencies
-        run: yarn install --immutable
+        if: steps.cache-portal-modules.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
 
       - name: Set Portal ENV Variables
         run: |
@@ -102,6 +106,22 @@ jobs:
         run: |
           nohup sh -c 'yarn build && yarn start' > otp-portal.log 2>&1 &
           echo "portal building in background, pid $!"
+
+      # Cypress's ~800 MB binary lives in ~/.cache/Cypress. Installed here rather than
+      # after "Wait for Portal" so a miss overlaps the background build.
+      - name: Cache E2E Dependencies
+        id: cache-e2e-deps
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cache/Cypress
+            e2e/node_modules
+          key: e2e-deps-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('e2e/package.json', 'e2e/yarn.lock') }}
+
+      - name: Install E2E Dependencies
+        if: steps.cache-e2e-deps.outputs.cache-hit != 'true'
+        working-directory: e2e
+        run: yarn install --frozen-lockfile
 
       # The runner image points apt at azure.archive.ubuntu.com via a mirrorlist.
       # With three shards hitting it at once it intermittently stops answering and
@@ -158,10 +178,6 @@ jobs:
         run: |
           npx --yes wait-on -t 300000 http://localhost:4000 \
             || { echo '--- portal build log ---'; cat otp-portal.log; exit 1; }
-
-      - name: Install E2E Dependencies
-        working-directory: e2e
-        run: yarn install --immutable
 
       - name: Run E2E Tests
         working-directory: e2e
