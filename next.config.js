@@ -27,9 +27,6 @@ const config = {
     OSANO_ID: process.env.OSANO_ID,
     DISABLE_HOTJAR: process.env.DISABLE_HOTJAR
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   sassOptions: {
     quietDeps: true,
     silenceDeprecations: [

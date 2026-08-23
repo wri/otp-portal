@@ -32,7 +32,12 @@ const ResetPasswordForm = ({ token }) => {
         );
         return login({
           body: { auth: { email: user.email, password: attributes.password, set_cookie: true } }
-        }).then(() => { window.location.href = '/'; })
+        }).then(() => {
+          // a full reload, not router.push: the app has to re-bootstrap with the
+          // session cookie the login above just set
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+          window.location.href = '/';
+        })
       })
   }
 
