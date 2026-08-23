@@ -123,21 +123,13 @@ jobs:
       # The runner image points apt at azure.archive.ubuntu.com via a mirrorlist.
       # With three shards hitting it at once it intermittently stops answering and
       # apt burns minutes retrying before it falls back. Use the canonical archive.
-      # Still needed alongside the cache below: that action refreshes stale apt lists,
-      # and a cache miss downloads the packages the usual way.
-      - name: Configure apt sources
+      - name: Refresh apt index
         run: |
           if [ -f /etc/apt/apt-mirrors.txt ]; then
             sudo sed -i '/azure\.archive\.ubuntu\.com/Id' /etc/apt/apt-mirrors.txt
           fi
-          # Ubuntu 24.04 only ships client 16, and pg_dump refuses a server newer
-          # than itself. The update is needed every run: the cache action resolves
-          # package versions to build its key before it checks the cache.
-          sudo install -d /usr/share/postgresql-common/pgdg
-          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
-            https://www.postgresql.org/media/keys/ACCC4CF8.asc
-          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
-            | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
+          # Stale lists resolve to versions the archive no longer carries, which 404s
+          # on a cache miss.
           sudo apt-get update -qq
 
       # Bump `version` to rebuild the cache. The key also covers resolved package
@@ -148,15 +140,18 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         with:
-          packages: build-essential libgdal-dev imagemagick postgresql-client-18
-          version: "2"
+          packages: gdal-bin libgdal-dev imagemagick
+          version: "1"
           execute_install_scripts: true
 
+      # gdal, rgeo and pg are compiled against the apt libraries, so the gem cache has
+      # to follow the apt one. CACHE_KEY is the package-set hash the step above exports.
       - name: Setup API Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           working-directory: otp_api
+          cache-version: apt-${{ env.CACHE_KEY }}
 
       - name: Cache API Precompiled Assets
         id: cache-api-precompiled-assets
