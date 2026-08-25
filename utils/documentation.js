@@ -1,9 +1,15 @@
+import dayjs from 'dayjs';
 import { groupBy } from 'utils/general';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';
+
+// Must stay a function: evaluating this at module scope freezes the date for the
+// whole lifetime of the node server process, so SSR would serve the deploy day's
+// documentation until the next redeploy.
+export const getTodayDate = () => dayjs().format('YYYY-MM-DD');
 
 export const STATUSES = {
   doc_not_provided: {

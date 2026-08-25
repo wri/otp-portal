@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import dayjs from 'dayjs';
 
 import { parseDocument } from 'utils/documents';
+import { getTodayDate } from 'utils/documentation';
 import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 
 export const getOperatorBySlug = createApiThunk(
@@ -39,7 +39,7 @@ export const getOperatorDocumentation = createApiThunk(
   'operator-document-histories',
   {
     params: (operatorId, { operatorsDetail }) => {
-      const { date } = operatorsDetail;
+      const date = operatorsDetail.date || getTodayDate();
       const includeFields = [
         'required-operator-document',
         'required-operator-document.required-operator-document-group',
@@ -119,7 +119,7 @@ const operatorsDetailSlice = createSlice({
     ...createApiInitialState({}),
     ...createNestedApiInitialState(['observations', 'documentation', 'timeline']),
     publicationAuthorization: null,
-    date: dayjs().format('YYYY-MM-DD'),
+    date: null,
     fmu: null
   },
   reducers: {

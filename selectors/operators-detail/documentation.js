@@ -2,13 +2,14 @@ import { createSelector } from '@reduxjs/toolkit';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
 import { parseDocument } from 'utils/documents';
+import { getTodayDate } from 'utils/documentation';
 
 // Get the datasets and filters from state
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
 export const getFMUs = (state) => state.operatorsDetail.data.fmus;
 export const getOperatorDocumentationFMU = (state) => state.operatorsDetail.fmu;
 export const getOperatorDocumentationDate = (state) =>
-  state.operatorsDetail.date;
+  state.operatorsDetail.date || getTodayDate();
 
 // Create a function to compare the current active datatasets and the current datasetsIds
 const getParsedDocumentation = createSelector(
