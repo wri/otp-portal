@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl';
 
 // Redux
 import { useSelector } from 'react-redux';
+import { getHistoricFMUs } from 'selectors/operators-detail/documentation';
 import {
   getOperator,
   getOperatorBySlug,
@@ -18,7 +19,8 @@ import {
   getOperatorPublicationAuthorization,
   getOperatorTimeline,
   getOperatorObservations,
-  setOperatorDocumentationDate
+  setOperatorDocumentationDate,
+  setOperatorDocumentationFMU
 } from 'modules/operators-detail';
 
 import Link from 'next/link';
@@ -97,6 +99,13 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   }
 
   await Promise.all(requests);
+
+  if (tab === 'documentation') {
+    // same reason as the date above, but it has to wait for the documentation request:
+    // the FMU list is derived from it
+    const fmus = getHistoricFMUs(store.getState());
+    store.dispatch(setOperatorDocumentationFMU(fmus.find((f) => f.id === query.fmuId) || null));
+  }
 
   return {};
 }
