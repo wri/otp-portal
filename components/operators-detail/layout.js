@@ -4,7 +4,7 @@ import { isEmpty } from 'utils/general';
 import { useRouter } from 'next/router';
 
 // Utils
-import { HELPERS_DOC } from 'utils/documentation';
+import { HELPERS_DOC, getTodayDate } from 'utils/documentation';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -17,7 +17,8 @@ import {
   getOperatorDocumentation,
   getOperatorPublicationAuthorization,
   getOperatorTimeline,
-  getOperatorObservations
+  getOperatorObservations,
+  setOperatorDocumentationDate
 } from 'modules/operators-detail';
 
 import Link from 'next/link';
@@ -74,6 +75,12 @@ export async function getInitialProps({ query, asPath, res, store, ...rest }) {
   const operator = operatorsDetail.data;
 
   if (operator && !isEmpty(operator)) {
+    if (tab === 'documentation') {
+      // match the date the client computes on mount, otherwise the first paint
+      // shows another day's documents and is immediately refetched
+      store.dispatch(setOperatorDocumentationDate(query.date || getTodayDate()));
+    }
+
     if (operatorsDetail.documentation.operatorId !== operator.id && tab === 'documentation') {
       requests.push(store.dispatch(getOperatorDocumentation(operator.id)));
       requests.push(store.dispatch(getOperatorTimeline(operator.id)));

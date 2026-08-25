@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 // Utils
-import { HELPERS_DOC } from 'utils/documentation';
+import { HELPERS_DOC, getTodayDate } from 'utils/documentation';
 import { setUrlParam } from 'utils/url';
 
 import useUser from 'hooks/use-user';
@@ -63,7 +63,7 @@ function OperatorsDetailDocumentation({
     setFMU(fmus.find(f => f.id === router.query.fmuId));
   }, [router.query.fmuId, fmus])
   useEffect(() => {
-    setDate(router.query.date || dayjs().format('YYYY-MM-DD'));
+    setDate(router.query.date || getTodayDate());
   }, [router.query.date])
   const onFmuChange = (fmuId) => {
     setUrlParam('fmuId', fmuId);
