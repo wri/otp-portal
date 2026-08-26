@@ -51,11 +51,11 @@ const Footer = () => {
             </div>
 
             <div className="footer-links">
-              <Link href="/terms" prefetch={false} legacyBehavior>
+              <Link href="/terms" prefetch={false}>
                 {intl.formatMessage({ id: 'terms.title' })}
               </Link>
               <span> | </span>
-              <Link href="/privacy-policy" prefetch={false} legacyBehavior>
+              <Link href="/privacy-policy" prefetch={false}>
                 {intl.formatMessage({ id: 'Privacy Policy' })}
               </Link>
               <span> | </span>

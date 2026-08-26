@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,18 +18,11 @@ import { setCookie } from 'services/cookies';
 // otherwise we will have to deal with reloading all of the data
 // this is also preserving old behaviour
 // we should revisit this in the future
-const LanguageLink = forwardRef(({ href, locale, children }, ref) => {
-  const saveLocale = () => {
-    setCookie('NEXT_LOCALE', locale, 365);
-  }
-
-  return (
-    <a href={href} onClick={saveLocale}>
-      {children}
-    </a>
-  )
-});
-LanguageLink.displayName = 'LanguageLink';
+const changeLanguage = (e, code) => {
+  setCookie('NEXT_LOCALE', code, 365);
+  e.preventDefault();
+  window.location.href = e.currentTarget.href;
+};
 
 const LanguageDropdown = ({ showSelectedCode, className }) => {
   const { asPath, locale } = useRouter();
@@ -53,10 +46,12 @@ const LanguageDropdown = ({ showSelectedCode, className }) => {
               key={l.code}
               className="language-dropdown-list-item"
             >
-              <Link href={fixedAsPath} passHref locale={l.code} legacyBehavior>
-                <LanguageLink locale={l.code}>
-                  {l.name}
-                </LanguageLink>
+              <Link
+                href={fixedAsPath}
+                locale={l.code}
+                onClick={(e) => changeLanguage(e, l.code)}
+              >
+                {l.name}
               </Link>
             </li>
           ))}

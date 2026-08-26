@@ -59,8 +59,7 @@ import 'dayjs/locale/zh-cn';
 dayjs.extend(dayOfYearPlugin);
 
 const IGNORE_WARNINGS = [
-  /Support for defaultProps will be removed from function components in a future major release/,
-  /`legacyBehavior` is deprecated and will be removed in a future release. A codemod is available to upgrade your components:/
+  /Support for defaultProps will be removed from function components in a future major release/
 ];
 const consoleError = console.error;
 console.error = (...args) => {
