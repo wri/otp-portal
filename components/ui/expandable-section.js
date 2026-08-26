@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { useIntl } from 'react-intl';
@@ -12,9 +12,11 @@ function ExpandableSection({
 }) {
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  useEffect(() => {
+  const [prevDefaultOpen, setPrevDefaultOpen] = useState(defaultOpen);
+  if (prevDefaultOpen !== defaultOpen) {
+    setPrevDefaultOpen(defaultOpen);
     setIsOpen(defaultOpen);
-  }, [defaultOpen]);
+  }
 
   return (
     <li className={cx("c-expandable-section", className)}>
