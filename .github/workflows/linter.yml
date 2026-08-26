@@ -27,7 +27,7 @@ jobs:
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
       - name: Install Portal Dependencies
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile
 
       - name: Run linter
         run: yarn lint
