@@ -65,16 +65,17 @@ dayjs.extend(dayOfYearPlugin);
 const AUTH_COOKIE_NAME = 'otp_auth_token';
 
 const IGNORE_WARNINGS = [
-  /Support for defaultProps will be removed from function components in a future major release/
+  /Support for defaultProps will be removed from function components in a future major release/,
+  /`legacyBehavior` is deprecated and will be removed in a future release. A codemod is available to upgrade your components:/
 ];
 const consoleError = console.error;
 console.error = (...args) => {
   const text = args[0];
-  if (IGNORE_WARNINGS.some(w => w.test(text))) return;
+  if (typeof text === 'string' && IGNORE_WARNINGS.some(w => w.test(text))) return;
   consoleError(...args);
 };
 if (process.env.NODE_ENV !== 'production') {
-  console.error("Application is ignoring warnings:", IGNORE_WARNINGS);
+  console.info('Application is ignoring warnings:', IGNORE_WARNINGS.map(w => w.source));
 }
 
 const MyApp = ({ Component, ...rest }) => {
