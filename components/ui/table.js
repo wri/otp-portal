@@ -80,6 +80,7 @@ export default function Table({ data, options, className }) {
     // only reset if page is set to 0, and options page is set to default value -1
     // that should happen when filters are changed
     if (options.page === 0 && options.manual && options.pages === -1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the react-table v6 workaround described above
       setReset(true);
       setTimeout(() => setReset(false), 1);
     }

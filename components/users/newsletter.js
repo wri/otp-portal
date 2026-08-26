@@ -27,7 +27,7 @@ function fetchCountries(lang) {
 const NewsletterForm = ({ language }) => {
   const intl = useIntl();
   const formRef = useRef(null);
-  const [loadTime, _setLoadTime] = useState(Date.now());
+  const [loadTime, _setLoadTime] = useState(() => Date.now());
   const [countryOptions, setCountryOptions] = useState([]);
   const [ipAddress, setIPAddress] = useState('');
   useEffect(() => {

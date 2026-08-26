@@ -41,7 +41,15 @@ const NewOperator = ({ language, saveOperator, onSubmit }) => {
   const [fmusOptions, setFmusOptions] = useState([]);
   const [fmusLoading, setFmusLoading] = useState(true);
 
+  const getCountries = async () => {
+    setCountryLoading(true);
+    const countries = await HELPERS_REGISTER.getCountries(language);
+    setCountryOptions(countries);
+    setCountryLoading(false);
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount; the setState calls happen after the await
     getCountries();
   }, []);
 
@@ -54,13 +62,6 @@ const NewOperator = ({ language, saveOperator, onSubmit }) => {
       .then(() => {
         if (onSubmit) onSubmit();
       });
-  };
-
-  const getCountries = async () => {
-    setCountryLoading(true);
-    const countries = await HELPERS_REGISTER.getCountries(language);
-    setCountryOptions(countries);
-    setCountryLoading(false);
   };
 
   const getFmus = async (countryId) => {
