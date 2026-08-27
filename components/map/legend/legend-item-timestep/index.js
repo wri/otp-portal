@@ -115,6 +115,7 @@ export class TimestepContainer extends PureComponent {
       endDate,
       trimEndDate,
       canPlay,
+      description,
     } = this.timelineParams;
 
     return (
@@ -124,6 +125,8 @@ export class TimestepContainer extends PureComponent {
           '-can-play': canPlay,
         })}
       >
+        {description && <p className="timestep-description">{description}</p>}
+
         <Timestep
           {...this.props}
           {...defaultStyles}

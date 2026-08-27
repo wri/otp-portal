@@ -215,18 +215,87 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://tiles.globalforestwatch.org/umd_tree_cover_gain_from_height/v202206/mode/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/umd_tree_cover_gain_from_height/v20240126/default/{z}/{x}/{y}.png'
         ],
-        minzoom: 3,
+        minzoom: 2,
         maxzoom: 12
       }
     },
     legendConfig: {
       type: 'basic',
       items: [
-        { name: 'Tree cover gain', color: '#6D6DE5' }
+        { name: 'Tree cover gain', color: '#3F07F5' }
       ]
     },
+    decodeConfig: [
+      {
+        default: '2000-01-01',
+        key: 'startDate',
+        required: true
+      },
+      {
+        default: '2020-12-31',
+        key: 'endDate',
+        required: true
+      }
+    ],
+    timelineConfig: {
+      step: 5,
+      speed: 250,
+      interval: 'years',
+      dateFormat: 'YYYY',
+      trimEndDate: '2020-12-31',
+      maxDate: '2020-12-31',
+      minDate: '2000-01-01',
+      canPlay: false,
+      // gain is measured against a baseline year, so only the start handle moves
+      disableEndHandle: true,
+      description: 'layer.tree-cover-gain.timeline.description',
+      railStyle: {
+        background: '#DDD'
+      },
+      trackStyle: [
+        {
+          background: '#3F07F5'
+        },
+        {
+          background: '#3F07F5'
+        }
+      ]
+    },
+    // data is encoded in 5 year periods: blue channel holds the period index
+    // (1 -> 2000-2005, 2 -> 2005-2010, 3 -> 2010-2015, 4 -> 2015-2020)
+    decodeFunction: `
+      // values for creating power scale, domain (input), and range (output)
+      float domainMin = 0.;
+      float domainMax = 255.;
+      float rangeMin = 0.;
+      float rangeMax = 255.;
+
+      float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+      float intensity = color.r * 255.;
+
+      // get the min, max, and current values on the power scale
+      float minPow = pow(domainMin, exponent - domainMin);
+      float maxPow = pow(domainMax, exponent);
+      float currentPow = pow(intensity, exponent);
+
+      // get intensity value mapped to range
+      float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+      // a value between 0 and 255
+      alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+
+      float year = 1999.0 + ((color.b * 5.) * 255.);
+      // map to years
+      if (year >= startYear && year <= endYear && year >= 2001.) {
+        color.r = 19. / 255.;
+        color.g = (72. - zoom + 3. - scaleIntensity / zoom) / 255.;
+        color.b = (33. - zoom + 255. - intensity / zoom) / 255.;
+        alpha = (8. * intensity) / 255.;
+      } else {
+        alpha = 0.;
+      }
+    `,
     metadata: {
       title: 'Tree cover gain',
       subtitle: 'layer.tree-cover-gain.metadata.subtitle',
