@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { LAYERS } from 'constants/layers';
 import { getParams } from 'selectors/utils';
 
-import { getUniformSignature } from '../decoded-bitmap-layer';
+import { clampZoom, getUniformSignature } from '../decoded-bitmap-layer';
 
 const findLayer = (id) => LAYERS.find((l) => l.id === id);
 
@@ -64,5 +64,19 @@ describe('decode uniform signature', () => {
 
     expect(typeof after.startDayIndex).toBe('number');
     expect(getUniformSignature(after)).not.toBe(getUniformSignature(before));
+  });
+});
+
+describe('decode zoom', () => {
+  it('stays inside the source zoom range, so overzoomed tiles decode as their own level', () => {
+    // `loss` reads `zoom < 13.` to pick its encoding; its tiles stop at 12
+    expect(clampZoom(13, 3, 12)).toBe(12);
+    expect(clampZoom(20, 3, 12)).toBe(12);
+    expect(clampZoom(2, 3, 12)).toBe(3);
+    expect(clampZoom(8, 3, 12)).toBe(8);
+  });
+
+  it('leaves zoom alone when the source declares no bounds', () => {
+    expect(clampZoom(18, 0, null)).toBe(18);
   });
 });

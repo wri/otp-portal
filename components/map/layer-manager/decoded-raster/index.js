@@ -40,7 +40,17 @@ async function getTileData({ url, signal }) {
   });
 }
 
-function renderSubLayers({ id, data, tile, decodeParams, decodeFunction, opacity, visible }) {
+function renderSubLayers({
+  id,
+  data,
+  tile,
+  decodeParams,
+  decodeFunction,
+  opacity,
+  visible,
+  minZoom,
+  maxZoom
+}) {
   if (!data) return null;
 
   const { west, south, east, north } = tile.bbox;
@@ -52,7 +62,10 @@ function renderSubLayers({ id, data, tile, decodeParams, decodeFunction, opacity
     decodeParams,
     decodeFunction,
     opacity,
-    visible
+    visible,
+    // The decode functions read zoom, and have to see the zoom of the tile they were handed
+    minZoom,
+    maxZoom
   });
 }
 

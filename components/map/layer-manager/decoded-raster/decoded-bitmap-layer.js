@@ -29,6 +29,14 @@ function getDecodeUniforms(decodeParams = {}) {
 export const getUniformSignature = (decodeParams) =>
   Object.keys(getDecodeUniforms(decodeParams)).sort().join(',');
 
+// Mirrors layer-manager's `getLayerZoomLevel()`: above the source's max zoom deck keeps drawing
+// tiles from that level, so the shader has to keep decoding them as tiles of that level.
+export function clampZoom(zoom, minZoom, maxZoom) {
+  if (Number.isFinite(maxZoom) && zoom > maxZoom) return Math.floor(maxZoom);
+  if (Number.isFinite(minZoom) && zoom < minZoom) return Math.ceil(minZoom);
+  return zoom;
+}
+
 /**
  * A BitmapLayer whose fragment shader runs a layer-supplied GLSL snippet over every texel.
  *
@@ -87,11 +95,13 @@ export default class DecodedBitmapLayer extends BitmapLayer {
   }
 
   draw(opts) {
-    const { decodeParams = {} } = this.props;
+    const { decodeParams = {}, minZoom, maxZoom } = this.props;
 
     // The decode functions scale their output by zoom. layer-manager fed them
-    // `floor(viewport.zoom) + 1` from its own tile layer; keep that exact expression.
-    const zoom = Math.floor(this.context.viewport.zoom) + 1;
+    // `floor(viewport.zoom) + 1` from its own tile layer, clamped to the source's zoom range —
+    // both halves matter. `loss` switches to a different encoding above zoom 12, which is where
+    // its tiles stop, so an unclamped zoom decodes overzoomed tiles as fully transparent.
+    const zoom = clampZoom(Math.floor(this.context.viewport.zoom) + 1, minZoom, maxZoom);
 
     super.draw({
       ...opts,
@@ -106,5 +116,8 @@ DecodedBitmapLayer.defaultProps = {
   ...BitmapLayer.defaultProps,
   textureParameters: { type: 'object', value: DATA_TEXTURE_PARAMETERS, ignore: true },
   decodeParams: { type: 'object', value: {}, compare: true },
-  decodeFunction: { type: 'string', value: '', compare: true }
+  decodeFunction: { type: 'string', value: '', compare: true },
+  // Same defaults as deck's TileLayer, which is where these come from
+  minZoom: 0,
+  maxZoom: null
 };
