@@ -108,13 +108,18 @@ function getCriticalCss(ctx, pageHtml) {
   let criticalCss = null;
 
   try {
-    const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
-    const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
+    // webpack emitted one bundle under static/css; Turbopack emits CSS chunks
+    // alongside the JS ones. The .br/.gz siblings don't end in .css, so they're skipped.
+    const cssDirPath = ['static/css', 'static/chunks']
+      .map((dir) => path.resolve(process.cwd(), '.next', dir))
+      .find((dir) => fs.existsSync(dir) && fs.readdirSync(dir).some((f) => f.endsWith('.css')));
 
-    if (cssFiles.length === 0) {
+    if (!cssDirPath) {
       console.warn('No CSS files found in the directory'); // eslint-disable-line
       return null;
     }
+
+    const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
 
     // get cached critical css
     const buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
