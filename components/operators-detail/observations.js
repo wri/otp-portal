@@ -23,8 +23,8 @@ import { groupBy, transformValues } from 'utils/general';
 
 import useDeviceInfo from 'hooks/use-device-info';
 
-const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
-const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
+const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'), { ssr: false });
+const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
 const severities = ['unknown', 'low', 'medium', 'high'];
 

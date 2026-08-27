@@ -1,6 +1,4 @@
-const zlib = require("zlib");
 const { withSentryConfig } = require('@sentry/nextjs');
-const CompressionPlugin = require('compression-webpack-plugin');
 
 require('dotenv').config();
 
@@ -28,6 +26,9 @@ const config = {
     DISABLE_HOTJAR: process.env.DISABLE_HOTJAR
   },
   sassOptions: {
+    // dart-sass prepends a BOM when the output has non-ASCII characters, which
+    // Turbopack's CSS parser rejects. The page is served UTF-8 regardless.
+    charset: false,
     quietDeps: true,
     silenceDeprecations: [
       'import',
@@ -52,53 +53,7 @@ const config = {
     locales: ['en', 'es', 'fr', 'pt', 'zh', 'ja', 'ko', 'vi'],
     defaultLocale: 'en'
   },
-  compress: false, // NGINX will handle this with dynamic compression and better algorithms, static assets compressed with webpack plugin (not all)
-  webpack: (config, options) => {
-    // config.infrastructureLogging = {
-    //   level: 'verbose',
-    // }
-    // only client assets are served statically by NGINX, so the server build gains nothing from this
-    if (!options.dev && !options.isServer) {
-      // NGINX picks these up with brotli_static/gzip_static. Dynamic gzip only covers
-      // text/html, so without these files /_next/static/ is served uncompressed.
-      const sharedOptions = {
-        test: /\.(js|css|html|svg)$/,
-        threshold: 5120,
-        minRatio: 0.8,
-      };
-
-      config.plugins.push(
-        new CompressionPlugin({
-          ...sharedOptions,
-          filename: "[path][base].br",
-          algorithm: "brotliCompress",
-          compressionOptions: {
-            params: {
-              [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
-            },
-          },
-        }),
-        // fallback for the few clients that don't advertise brotli support
-        new CompressionPlugin({
-          ...sharedOptions,
-          filename: "[path][base].gz",
-          algorithm: "gzip",
-          compressionOptions: {
-            level: 9,
-          },
-        })
-      );
-    }
-
-    // if (!options.dev) {
-    //   config.resolve.alias = {
-    //     ...config.resolve.alias,
-    //     '@formatjs/icu-messageformat-parser': '@formatjs/icu-messageformat-parser/no-parser'
-    //   };
-    // }
-
-    return config
-  },
+  compress: false, // NGINX will handle this with dynamic compression and better algorithms, static assets pre-compressed by script/compress-static (not all)
   async redirects() {
     return [
       {
@@ -125,6 +80,14 @@ const config = {
         destination: "/api/gfw-data/:path*",
       }
     ];
+  },
+  turbopack: {
+    rules: {
+      // see the loader for why this one dependency file needs rewriting
+      '**/@luma.gl/webgl/dist/esm/webgl-utils/webgl-types.js': {
+        loaders: [require.resolve('./tools/luma-gl-module-shim.js')],
+      },
+    },
   },
   experimental: {
     optimizePackageImports: ["modules"]
