@@ -155,7 +155,12 @@ function getCriticalCss(ctx, pageHtml) {
       html
     }).css;
     // saving critical css
-    fs.writeFileSync(cacheFilePath, criticalCss, 'utf8');
+    // Write atomically: under pm2 cluster every worker misses this cache after a
+    // deploy, and concurrent writeFileSync to one path can leave a truncated file
+    // that then gets inlined for the whole release.
+    const tmpPath = `${cacheFilePath}.${process.pid}.tmp`;
+    fs.writeFileSync(tmpPath, criticalCss, 'utf8');
+    fs.renameSync(tmpPath, cacheFilePath);
     span.end();
     console.timeEnd(label); // eslint-disable-line
   } catch (e) {
