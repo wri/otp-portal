@@ -15,6 +15,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 import Error from 'pages/_error';
 
 import API, { setUnauthorizedHandler } from 'services/api';
+import { getCookie } from 'services/cookies';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -58,6 +59,10 @@ import 'dayjs/locale/zh-cn';
 
 dayjs.extend(dayOfYearPlugin);
 
+// The API issues bare cookie names because the portal sends no ?app= param
+// (see the API's APIController#auth_cookie_name).
+const AUTH_COOKIE_NAME = 'otp_auth_token';
+
 const IGNORE_WARNINGS = [
   /Support for defaultProps will be removed from function components in a future major release/
 ];
@@ -89,17 +94,12 @@ const MyApp = ({ Component, ...rest }) => {
 
   // Reconcile stale auth when the session cookie expires mid-session. A client
   // request returning 401 means we're no longer authenticated even though the
-  // Redux user state still says we are. Clear it and reload so the server
-  // re-evaluates auth (logged-out chrome + redirects from protected pages).
+  // Redux user state still says we are. Clearing it gives logged-out chrome, and
+  // the protected pages redirect off their own getInitialProps on the next
+  // navigation - no reload, which against a cached current-user would just loop.
   useEffect(() => {
-    let reloading = false;
     setUnauthorizedHandler(() => {
-      if (reloading) return;
-      if (user?.user_id) {
-        reloading = true;
-        store.dispatch(removeUser());
-        window.location.reload();
-      }
+      if (user?.user_id) store.dispatch(removeUser());
     });
     return () => setUnauthorizedHandler(null);
   }, [user]);
@@ -168,9 +168,13 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     let user = null;
 
     if (isServer) {
-      if (req.headers.cookie) {
+      // Only the auth cookie can mean a session. Gating on any cookie made every
+      // visitor carrying _ga/_hj/Osano pay a blocking current-user request.
+      const authToken = getCookie(AUTH_COOKIE_NAME, req.headers.cookie);
+
+      if (authToken) {
         const { getCachedUser, setCachedUser } = require('services/current-user-cache');
-        const cached = getCachedUser(req.headers.cookie);
+        const cached = getCachedUser(authToken);
         if (cached !== undefined) {
           user = cached;
         } else {
@@ -186,7 +190,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
           } catch (err) {
             user = null;
           }
-          setCachedUser(req.headers.cookie, user);
+          setCachedUser(authToken, user);
         }
       }
 

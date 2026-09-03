@@ -12,7 +12,9 @@ export const getCookie = (key, cookieString) => {
   if (!key) return null;
   try {
     const source = cookieString ?? (typeof document !== 'undefined' ? document.cookie : '');
-    const match = source.split('; ').find((row) => row.startsWith(`${key}=`));
+    // split on ';' and trim rather than on '; ': browsers use the space, but a
+    // header arriving without it must not read as "cookie absent"
+    const match = source.split(';').map((row) => row.trim()).find((row) => row.startsWith(`${key}=`));
     // slice (not split('=')) so values containing '=' (e.g. base64 padding) survive
     return match ? decodeURIComponent(match.slice(key.length + 1)) : null;
   } catch (err) {
