@@ -42,7 +42,12 @@ export const getUserProfile = createApiThunk(
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: createNestedApiInitialState(['userProfile', 'userOperator'], {}),
+  initialState: {
+    ...createNestedApiInitialState(['userProfile', 'userOperator'], {}),
+    // Prerendered pages never run the server-side UA parse, and selectors read
+    // userAgent.isMobile during render - without a default that throws.
+    userAgent: { ua: '', isMobile: false }
+  },
   reducers: {
     setUser: (state, action) => {
       return { ...state, ...action.payload };

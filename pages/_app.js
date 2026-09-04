@@ -14,7 +14,8 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 
 import Error from 'pages/_error';
 
-import API, { setUnauthorizedHandler } from 'services/api';
+import API, { setUnauthorizedHandler, CSRF_COOKIE_NAME } from 'services/api';
+import { mapCurrentUser } from 'services/current-user';
 import { getCookie } from 'services/cookies';
 import wrapper from 'store';
 
@@ -91,6 +92,41 @@ const MyApp = ({ Component, ...rest }) => {
       store.dispatch(getCountries());
     }
   }, [pageProps.statusCode]);
+
+  // Same reason as the user below: a prerendered page had no request to parse a
+  // user agent from, so fill it in here or every visitor there looks like desktop.
+  useEffect(() => {
+    if (store.getState().user.userAgent?.ua) return undefined;
+
+    let cancelled = false;
+    import('ua-parser-js').then(({ UAParser }) => {
+      if (cancelled) return;
+      const { ua, device } = UAParser(window.navigator.userAgent);
+      store.dispatch(setUserAgent({ ua, isMobile: device.is('mobile') }));
+    });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // Prerendered pages are built with no request, so their HTML always renders
+  // logged out. The XSRF cookie is only ever issued for a real session and,
+  // unlike the auth cookie, is readable here - so it tells us when to reconcile
+  // without costing anonymous visitors a request.
+  useEffect(() => {
+    if (user?.user_id) return undefined;
+    if (!getCookie(CSRF_COOKIE_NAME)) return undefined;
+
+    let cancelled = false;
+    API.get('users/current-user', {}, { skipUnauthorizedHandler: true })
+      .then(({ data }) => {
+        if (!cancelled) store.dispatch(setUser(mapCurrentUser(data)));
+      })
+      .catch(() => {
+        // no usable session after all; the logged-out chrome already showing is correct
+      });
+
+    return () => { cancelled = true; };
+  }, [user?.user_id]);
 
   // Reconcile stale auth when the session cookie expires mid-session. A client
   // request returning 401 means we're no longer authenticated even though the
@@ -180,13 +216,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
         } else {
           try {
             const { data } = await API.get('users/current-user', {}, { cookie: req.headers.cookie });
-            user = {
-              user_id: data.id,
-              country: data['country-id'],
-              observer: data['observer-id'],
-              operator_ids: data['operator-ids'] || [],
-              role: data['user-permission'] && data['user-permission']['user-role'] || 'user'
-            };
+            user = mapCurrentUser(data);
           } catch (err) {
             user = null;
           }

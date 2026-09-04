@@ -38,12 +38,19 @@ const TermsPage = ({ page }) => {
   )
 }
 
-TermsPage.getInitialProps = async () => {
+// Prerendered: the page body is the same for every visitor, so it is fetched at
+// build time and refreshed on the interval instead of on every request.
+export async function getStaticProps() {
   const page = await API
     .get('pages', { 'filter[slug]': 'terms', locale: 'en' })
     .then(({ data }) => data[0]);
 
-  return { page };
+  if (!page) return { notFound: true };
+
+  return {
+    props: { page },
+    revalidate: 60
+  };
 }
 
 TermsPage.propTypes = {

@@ -3,7 +3,9 @@ import { getCookie } from 'services/cookies';
 // Double submit cookie CSRF protection: the API sets the token in a JS-readable
 // XSRF-TOKEN cookie, and expects it echoed back in the X-XSRF-TOKEN header on
 // every state-changing request.
-const CSRF_COOKIE_NAME = 'XSRF-TOKEN';
+// Exported because its presence doubles as the only JS-readable signal that a
+// session exists - the auth cookie itself is httponly.
+export const CSRF_COOKIE_NAME = 'XSRF-TOKEN';
 const CSRF_HEADER_NAME = 'X-XSRF-TOKEN';
 
 const getCsrfToken = (serverCookie) => {

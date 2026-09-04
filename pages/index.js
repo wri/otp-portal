@@ -98,4 +98,12 @@ const HomePage = () => {
   );
 }
 
+// Nothing here is per-request or per-user: the copy comes from the translations
+// bundle and the search list is fetched client-side. An empty getStaticProps is
+// what opts it back into prerendering, since _app's getInitialProps disables
+// automatic static optimization app-wide.
+export async function getStaticProps() {
+  return { props: {} };
+}
+
 export default HomePage;

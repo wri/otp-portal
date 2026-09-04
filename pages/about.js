@@ -4,11 +4,7 @@ import sortBy from 'lodash/sortBy';
 
 import { useIntl } from 'react-intl';
 
-// Redux
-import { connect } from 'react-redux';
-import { getPartners } from 'modules/partners';
-import { getDonors } from 'modules/donors';
-import { getAbout } from 'modules/about';
+import API from 'services/api';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -96,15 +92,29 @@ const AboutPage = ({ about, partners, donors }) => {
   );
 };
 
-AboutPage.getInitialProps = async ({ store }) => {
-  await Promise.all([
-    store.dispatch(getPartners()),
-    store.dispatch(getDonors()),
-    store.dispatch(getAbout())
+// Prerendered per locale. The thunks read state.language for their locale param,
+// and a static build gets a fresh store rather than the one _app sets up per request.
+// Fetched straight into props rather than through the redux wrapper: that
+// serialises a build-time snapshot of the whole store, which HYDRATE then merges
+// over live client state - wiping slices the client had already fetched.
+export async function getStaticProps({ locale }) {
+  const language = locale || 'en';
+
+  const [about, partners, donors] = await Promise.all([
+    API.get('about-page-entries', { locale: language }).then(({ data }) => data),
+    API.get('partners', { 'page[size]': 2000 }).then(({ data }) => data),
+    API.get('donors', { 'page[size]': 2000, locale: language }).then(({ data }) => data)
   ]);
 
-  return {};
-};
+  return {
+    props: {
+      about: { data: about || [] },
+      partners: { data: partners || [] },
+      donors: { data: donors || [] }
+    },
+    revalidate: 60
+  };
+}
 
 AboutPage.propTypes = {
   about: PropTypes.shape({}).isRequired,
@@ -112,11 +122,4 @@ AboutPage.propTypes = {
   donors: PropTypes.shape({}).isRequired
 };
 
-export default connect(
-  state => ({
-    about: state.about,
-    partners: state.partners,
-    donors: state.donors
-  }),
-  { getPartners, getDonors, getAbout }
-)(AboutPage);
+export default AboutPage;

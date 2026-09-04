@@ -10,13 +10,18 @@ import GoogleTagManager from 'components/layout/google-tag-manager';
 
 const isCriticalCssEnabled = process.env.NODE_ENV === 'production' && process.env.CRITICAL_CSS === 'true';
 
+// Prerendered pages run this at build time, when the build is still writing to
+// BUILD_DIR and .next is the previous deploy - reading .next there would derive
+// critical CSS from the old stylesheet. Unset at runtime, so this is .next then.
+const distDir = process.env.BUILD_DIR || '.next';
+
 // Read once, lazily. Absent in dev, where the unversioned URL is what we want anyway.
 let buildId;
 
 function getBuildId() {
   if (buildId === undefined) {
     try {
-      buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
+      buildId = fs.readFileSync(path.resolve(process.cwd(), `${distDir}/BUILD_ID`), 'utf8').trim();
     } catch (e) {
       buildId = null;
     }
@@ -108,7 +113,7 @@ function getCriticalCss(ctx, pageHtml) {
   let criticalCss = null;
 
   try {
-    const cssDirPath = path.resolve(process.cwd(), '.next/static/css'); // Path to the CSS directory
+    const cssDirPath = path.resolve(process.cwd(), `${distDir}/static/css`); // Path to the CSS directory
     const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
 
     if (cssFiles.length === 0) {
@@ -117,9 +122,9 @@ function getCriticalCss(ctx, pageHtml) {
     }
 
     // get cached critical css
-    const buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
+    const buildId = fs.readFileSync(path.resolve(process.cwd(), `${distDir}/BUILD_ID`), 'utf8').trim();
     const page = ctx.pathname === '/' ? 'index' : ctx.pathname.replace(/\//g, '_').replace(/^\_/, '');
-    const cacheDirPath = path.resolve(process.cwd(), `.next/cache/critical-css/${buildId}`);
+    const cacheDirPath = path.resolve(process.cwd(), `${distDir}/cache/critical-css/${buildId}`);
     const cacheFilePath = path.join(cacheDirPath, `${page}.css`);
 
     // checking dropcss cached

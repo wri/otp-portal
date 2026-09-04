@@ -101,8 +101,10 @@ const operatorsDetailFmusSlice = createSlice({
       'fmusdetail'
     ],
     layersSettings: {},
-    fmu: undefined,
-    fmusBounds: undefined,
+    // null, not undefined: next-redux-wrapper serialises the whole store into
+    // props for statically generated pages, and undefined is not valid JSON
+    fmu: null,
+    fmusBounds: null,
     analysis: {
       data: {},
       loading: false,
