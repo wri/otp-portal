@@ -8,6 +8,7 @@ export const getOperatorBySlug = createApiThunk(
   'operatorsDetail/getOperatorBySlug',
   'operators',
   {
+    auth: true,
     params: ({ slug, loadFmus = false }) => ({
       include: ['country', 'fmus', 'observations'].join(','),
       'fields[countries]': 'name,id,iso',
@@ -28,6 +29,7 @@ export const getOperator = createApiThunk(
   'operatorsDetail/getOperator',
   (id) => `operators/${id}`,
   {
+    auth: true,
     params: {
       include: ['country', 'fmus'].join(',')
     }
@@ -38,6 +40,7 @@ export const getOperatorDocumentation = createApiThunk(
   'operatorsDetail/getOperatorDocumentation',
   'operator-document-histories',
   {
+    auth: true,
     params: (operatorId, { operatorsDetail }) => {
       const date = operatorsDetail.date || getTodayDate();
       const includeFields = [
@@ -64,6 +67,7 @@ export const getOperatorObservations = createApiThunk(
   'operatorsDetail/getOperatorObservations',
   'observations',
   {
+    auth: true,
     params: (operatorId) => {
       const includes = [
         'country', 'fmu', 'observers', 'severity', 'subcategory',
@@ -88,6 +92,7 @@ export const getOperatorPublicationAuthorization = createApiThunk(
   'operatorsDetail/getOperatorPublicationAuthorization',
   'operator-documents',
   {
+    auth: true,
     params: (id) => ({
       include: [
         'required-operator-document',
@@ -107,6 +112,7 @@ export const getOperatorTimeline = createApiThunk(
   'operatorsDetail/getOperatorTimeline',
   'score-operator-documents',
   {
+    auth: true,
     params: (id) => ({
       'filter[operator]': id
     })

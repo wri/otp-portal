@@ -17,7 +17,6 @@ export const getReusableDocuments = createAsyncThunk(
         return { skip: true };
       }
 
-      const token = state.user.token;
       const locale = state.language;
 
       const include = [
@@ -39,8 +38,7 @@ export const getReusableDocuments = createAsyncThunk(
               'fields[fmus]': 'name',
               'fields[operators]': 'name',
               'filter[operator-id]': operatorId,
-            },
-            { token }
+            }
           ).then(({ data }) => ({ operatorId, data }))
         )
       );

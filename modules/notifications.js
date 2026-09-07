@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
 import API from 'services/api';
 
-export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications');
+export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications', { auth: true });
 
 const notificationsSlice = createSlice({
   name: 'notifications',
