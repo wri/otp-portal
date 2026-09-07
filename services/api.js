@@ -84,8 +84,12 @@ class API {
         }
       });
     }
+    // Requests carry the session by default. `auth: false` opts out, so an endpoint
+    // that has both a public and a user-scoped shape returns the public one even
+    // while somebody is logged in (the old code did this by omitting the token).
+    const auth = options.auth !== false;
     const headers = { ...this.headers, ...(options.headers || {}) };
-    if (options.cookie) {
+    if (auth && options.cookie) {
       headers.cookie = options.cookie;
     }
     if (method !== 'GET' && method !== 'HEAD') {
@@ -97,7 +101,7 @@ class API {
     const fetchParams = {
       method,
       headers,
-      credentials: 'include'
+      credentials: auth ? 'include' : 'omit'
     };
     if (options.body) {
       fetchParams.body = JSON.stringify(options.body);
