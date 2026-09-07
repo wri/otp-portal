@@ -8,6 +8,7 @@ export const getUserOperator = createApiThunk(
   'user/getUserOperator',
   (id) => `operators/${id}`,
   {
+    auth: true,
     params: () => {
       const includeFields = ['country', 'fmus'];
       const fields = {
@@ -36,7 +37,8 @@ export const getUserProfile = createApiThunk(
   'user/getUserProfile',
   (_arg, { user }) => `users/${user.user_id}`,
   {
-    useLanguage: false
+    useLanguage: false,
+    auth: true
   }
 )
 

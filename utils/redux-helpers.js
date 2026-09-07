@@ -78,6 +78,7 @@ export function createMultipleApiExtraReducers(configs) {
 export function createApiThunk(typePrefix, endpoint, options = {}) {
   const {
     useLanguage = true,
+    auth = false,
     requestOptions = {},
     params = {},
     transformResponse = (data, _response, _arg) => ({ data })
@@ -96,8 +97,10 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
           ...finalParams
         };
 
-        const apiOptions = { ...requestOptions };
-        if (typeof window === 'undefined') {
+        // Page data is public unless the thunk asks for `auth: true`; without that
+        // a logged-in user would get their own view of every list on the site.
+        const apiOptions = { ...requestOptions, auth };
+        if (auth && typeof window === 'undefined') {
           const { getRequestCookie } = require('services/request-context');
           const cookie = getRequestCookie();
           if (cookie) apiOptions.cookie = cookie;

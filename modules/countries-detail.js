@@ -5,6 +5,7 @@ export const getCountry = createApiThunk(
   'countriesDetail/getCountry',
   (id) => `countries/${id}`,
   {
+    auth: true,
     params: {
       include: [
         'governments',
@@ -21,6 +22,7 @@ export const getCountryLinks = createApiThunk(
   'countriesDetail/getCountryLinks',
   'country-links',
   {
+    auth: true,
     params: (id) => ({
       country: id
     })
@@ -31,6 +33,7 @@ export const getCountryVPAs = createApiThunk(
   'countriesDetail/getCountryVPAs',
   'country-vpas',
   {
+    auth: true,
     params: (id) => ({
       country: id
     })
