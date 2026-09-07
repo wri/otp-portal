@@ -15,6 +15,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 import Error from 'pages/_error';
 
 import API, { setUnauthorizedHandler } from 'services/api';
+import { track } from 'services/server-timing';
 import { getCookie } from 'services/cookies';
 import wrapper from 'store';
 
@@ -172,6 +173,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
       // visitor carrying _ga/_hj/Osano pay a blocking current-user request.
       const authToken = getCookie(AUTH_COOKIE_NAME, req.headers.cookie);
 
+      const doneAuth = track(req, 'auth');
       if (authToken) {
         const { getCachedUser, setCachedUser } = require('services/current-user-cache');
         const cached = getCachedUser(authToken);
@@ -193,6 +195,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
           setCachedUser(authToken, user);
         }
       }
+      doneAuth();
 
       const UAParser = (await import('ua-parser-js')).UAParser;
       const { ua, device } = UAParser(req.headers['user-agent']);
@@ -210,9 +213,11 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(safeUser));
 
+    const donePage = track(req, 'page');
     const pageProps = Component.getInitialProps ?
       await Component.getInitialProps(ctx) :
       {};
+    donePage();
 
     if (pageProps.statusCode && isServer) {
       res.statusCode = pageProps.statusCode;

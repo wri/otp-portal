@@ -7,6 +7,7 @@ import dropcss from 'dropcss';
 import * as Sentry from '@sentry/nextjs';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
+import { track, sendServerTiming } from 'services/server-timing';
 
 const isCriticalCssEnabled = process.env.NODE_ENV === 'production' && process.env.CRITICAL_CSS === 'true';
 
@@ -172,8 +173,18 @@ function getCriticalCss(ctx, pageHtml) {
 }
 
 CustomDocument.getInitialProps = async (ctx) => {
+  // Document.getInitialProps is what actually runs renderPage/renderToString, so
+  // this is the react render cost, separate from the data fetching in _app.
+  const doneRender = track(ctx.req, 'render');
   const initialProps = await Document.getInitialProps(ctx);
+  doneRender();
+
+  const doneCss = track(ctx.req, 'dropcss');
   const criticalCss = getCriticalCss(ctx, initialProps.html);
+  doneCss();
+
+  // Last hook before the body is sent, so every phase has reported by now.
+  sendServerTiming(ctx.req, ctx.res);
 
   return { ...initialProps, criticalCss };
 };
