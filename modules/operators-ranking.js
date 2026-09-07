@@ -57,13 +57,12 @@ const initialState = {
 export const getOperatorsRanking = createApiThunk('operatorsRanking/getOperatorsRanking', 'operators', {
   params: {
     'page[size]': 3000,
-    include: 'observations,fmus,country',
+    include: 'fmus,country',
     'filter[fa]': true,
     'filter[country]': process.env.OTP_COUNTRIES_IDS,
     'fields[fmus]': 'name,forest-type,certification-fsc,certification-olb,certification-pefc,certification-pbn,certification-pafc,certification-fsc-cw,certification-tlv,certification-ls',
     'fields[countries]': 'name',
-    'fields[operators]': 'name,slug,obs-per-visit,percentage-valid-documents-all,score,country,fmus,observations',
-    'fields[observations]': 'country-id,fmu-id',
+    'fields[operators]': 'name,slug,obs-per-visit,percentage-valid-documents-all,score,country,fmus',
   },
   transformResponse: (data) => {
     const groupByDocPercentage = groupBy(data, (o) => {
