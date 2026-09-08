@@ -144,11 +144,21 @@ class API {
   }
 }
 
+// OTP_API is the public url, so a server side call leaves the box and comes back
+// through nginx - paying dns, a tls handshake and crypto over the whole body - to
+// reach rails on localhost. OTP_API_SERVER goes straight there; unset, this is
+// exactly the old behaviour. The browser always uses the public url.
+const internalAPI = typeof window === 'undefined' ? process.env.OTP_API_SERVER : null;
+
 const APIClient = new API({
-  baseURL: process.env.OTP_API,
+  baseURL: internalAPI || process.env.OTP_API,
   headers: {
     'Content-Type': 'application/vnd.api+json',
-    'OTP-API-KEY': process.env.OTP_API_KEY
+    'OTP-API-KEY': process.env.OTP_API_KEY,
+    // Going direct means rails no longer gets the headers nginx sets, and
+    // config.force_ssl would 301 a plain http request. This is the one that
+    // matters; Host is not, because asset urls come from the API's APP_URL.
+    ...(internalAPI ? { 'X-Forwarded-Proto': 'https' } : {})
   },
   deserialize: true
 });
