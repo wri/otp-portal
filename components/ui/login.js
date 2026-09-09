@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 import dynamic from 'next/dynamic';
 
 // Intl
 import { useIntl } from 'react-intl';
+
+import { toastr } from 'react-redux-toastr';
 
 import { login } from 'modules/user';
 
@@ -22,8 +25,16 @@ import DynamicLoading from 'components/ui/dynamic-loading';
 
 const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { ssr: false, loading: DynamicLoading });
 
-const Login = () => {
+const Login = ({ notice }) => {
   const intl = useIntl();
+
+  // the toastr is fired from here, once the modal is mounted, so it doesn't get
+  // lost while the toastr container is still being loaded
+  useEffect(() => {
+    if (notice) {
+      toastr.success(notice.title, notice.message);
+    }
+  }, [notice]);
 
   const handleSubmit = ({ form }) => {
     return login({ body: { auth: { ...form, set_cookie: true } } })
@@ -116,5 +127,12 @@ const Login = () => {
     </div>
   );
 }
+
+Login.propTypes = {
+  notice: PropTypes.shape({
+    title: PropTypes.string,
+    message: PropTypes.string
+  })
+};
 
 export default Login;
