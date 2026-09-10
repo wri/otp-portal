@@ -41,11 +41,12 @@ const Login = ({ notice }) => {
       .then(() => {
         window.location.reload();
       }).catch((err) => {
-        let errorMessage = intl.formatMessage({ id: 'Oops! There was an error, try again' });
-        if (err.status === 401) {
+        // the API title tells apart e.g. a locked account from wrong credentials
+        let errorMessage = err.errors?.[0]?.title;
+        if ((!errorMessage && err.status === 401) || errorMessage === 'Incorrect email or password') {
           errorMessage = intl.formatMessage({ id: 'login.error', defaultMessage: 'Wrong email or password' });
         }
-        throw new Error(errorMessage);
+        throw new Error(errorMessage || intl.formatMessage({ id: 'Oops! There was an error, try again' }));
       })
   };
 
