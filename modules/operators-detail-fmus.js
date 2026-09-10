@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { sumBy } from 'utils/general';
+import { getIntegratedAlertsSource } from 'constants/layers';
 
 export const setOperatorsDetailAnalysis = createAsyncThunk(
   'operatorsDetailFmus/setOperatorsDetailAnalysis',
@@ -42,7 +43,7 @@ export const getIntegratedAlertsMetadata = createAsyncThunk(
   'operatorsDetailFmus/getIntegratedAlertsMetadata',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { minDataDate, maxDataDate } = await fetchIntegratedAlertsMetadata();
+      const { minDataDate, maxDataDate, version } = await fetchIntegratedAlertsMetadata();
       const { operatorsDetailFmus } = getState();
       const activeLayers = operatorsDetailFmus.layersActive;
 
@@ -60,6 +61,7 @@ export const getIntegratedAlertsMetadata = createAsyncThunk(
         layersSettings: {
           id: 'integrated-alerts',
           settings: {
+            ...(version && { source: getIntegratedAlertsSource(version) }),
             decodeParams: {
               startDate,
               endDate: maxDataDate,

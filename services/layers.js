@@ -18,7 +18,8 @@ export function fetchIntegratedAlertsMetadata() {
 
       return {
         minDataDate,
-        maxDataDate
+        maxDataDate,
+        version: data.version
       }
     })
     .catch((err) => {
@@ -27,7 +28,8 @@ export function fetchIntegratedAlertsMetadata() {
 
       return {
         minDataDate: null,
-        maxDataDate: null
+        maxDataDate: null,
+        version: null
       }
     });
 }
