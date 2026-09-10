@@ -62,7 +62,7 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "sass": "^1.99.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "resolutions": {
     "compression-webpack-plugin/**/ajv": "^8.20.0",
