@@ -86,7 +86,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://tiles.globalforestwatch.org/gfw_integrated_alerts/latest/default/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/gfw_integrated_alerts/latest/dynamic/{z}/{x}/{y}.png?render_type=encoded'
         ],
         minzoom: 2,
         maxzoom: 12
@@ -311,7 +311,7 @@ export const LAYERS = [
       type: 'raster',
       source: {
         tiles: [
-          'https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.13/tcd_30/{z}/{x}/{y}.png'
+          'https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.13/dynamic/{z}/{x}/{y}.png?tree_cover_density_threshold=30'
         ],
         minzoom: 3,
         maxzoom: 12
