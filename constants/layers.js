@@ -78,6 +78,12 @@ export const BASEMAP_LAYERS = [
   }
 ];
 
+// Pinning the version skips the uncached `latest` redirect GFW does on every tile
+export function getIntegratedAlertsSource(version) {
+  const { source } = LAYERS.find(l => l.id === 'integrated-alerts').config;
+  return { ...source, tiles: source.tiles.map(url => url.replace('/latest/', `/${version}/`)) };
+}
+
 export const LAYERS = [
   {
     id: 'integrated-alerts',
