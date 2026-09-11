@@ -241,8 +241,8 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   };
 
   if (typeof window === 'undefined') {
-    const { runWithRequestCookie } = require('services/request-context');
-    return runWithRequestCookie(req?.headers.cookie, run);
+    const { runWithRequest } = require('services/request-context');
+    return runWithRequest(req?.headers, run);
   }
   return run();
 });
