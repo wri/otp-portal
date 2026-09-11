@@ -92,6 +92,15 @@ class API {
     if (auth && options.cookie) {
       headers.cookie = options.cookie;
     }
+    // Direct calls skip nginx, so pass on the chain it built for the page request;
+    // rails then resolves the visitor's ip instead of 127.0.0.1.
+    if (typeof window === 'undefined' && internalAPI) {
+      const { getRequestForwardedFor } = await import('services/request-context');
+      const forwardedFor = getRequestForwardedFor();
+      if (forwardedFor) {
+        headers['X-Forwarded-For'] = forwardedFor;
+      }
+    }
     if (method !== 'GET' && method !== 'HEAD') {
       const csrfToken = getCsrfToken(options.cookie);
       if (csrfToken) {
