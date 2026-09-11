@@ -87,14 +87,14 @@ const Modal = () => {
               className="modal-close"
               onClick={() => toggleModal(false)}
             >
-              <Icon name="icon-cross" className="-big" />
+              <Icon name="icon-cross" />
             </button>
             <div className="modal-content">
               {loading ? <Spinner isLoading /> : getContent()}
             </div>
           </div>
 
-          <area
+          <div
             className="modal-backdrop"
             onClick={() => toggleModal(false)}
           />

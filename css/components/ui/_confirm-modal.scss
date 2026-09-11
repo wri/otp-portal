@@ -1,5 +1,6 @@
 .c-confirm-modal {
   padding: 20px;
+  padding-top: 48px; // clear the modal close button
 
   p {
     font-size: $font-size-big;
