@@ -94,7 +94,7 @@ const Modal = () => {
             </div>
           </div>
 
-          <area
+          <div
             className="modal-backdrop"
             onClick={() => toggleModal(false)}
           />
