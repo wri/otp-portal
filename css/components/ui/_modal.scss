@@ -49,22 +49,31 @@
   }
 
   .modal-close {
-    fill: $color-white;
+    fill: $color-text-1;
     background: none;
     border: none;
     outline: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    bottom: 100%;
-    right: 0;
-    width: 40px;
-    height: 40px;
+    top: $space-1;
+    right: $space-1;
+    width: 36px;
+    height: 36px;
     padding: 0;
+    border-radius: 50%;
     cursor: pointer;
+    transition: background-color $animation-time $ease-in-sine;
     z-index: 2; /* Otherwise, it won't be reachable */
 
+    .c-icon {
+      width: 24px;
+      height: 24px;
+    }
+
     &:hover {
-      fill: darken($color-white, 20%);
+      background-color: $color-gray-2;
     }
   }
 
