@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 // Components
 import NavigationList from 'components/ui/navigation-list';
 import MobileMenu from 'components/ui/mobile-menu';
-import Search from 'components/ui/search';
+import SearchTrigger from 'components/ui/search-trigger';
 import Hamburger from 'components/ui/hamburger';
 
 import LanguageDropdown from 'components/ui/language-dropdown';
@@ -45,7 +45,7 @@ const Header = () => {
 
             <ul className="header-nav-list c-navigation-list">
               <li className="search">
-                <Search theme={theme} />
+                <SearchTrigger theme={theme} />
               </li>
               <li>
                 <UserDropdown theme={theme} className="header-nav-list-item" />

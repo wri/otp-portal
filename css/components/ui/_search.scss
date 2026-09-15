@@ -34,6 +34,19 @@
     }
   }
 
+  .search-trigger {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: $font-family-proximanova;
+    font-size: $font-size-small;
+    line-height: 16px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $color-text-1;
+    cursor: pointer;
+  }
+
   .results-container {
     position: absolute;
     display: none;
