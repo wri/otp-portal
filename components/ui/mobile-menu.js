@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 import LanguageDropdown from 'components/ui/language-dropdown';
 import UserDropdown from 'components/ui/user-dropdown';
-import Search from 'components/ui/search';
+import SearchTrigger from 'components/ui/search-trigger';
 
 import { useIntl } from 'react-intl';
 import UserMenuList from 'components/ui/user-menu-list';
@@ -64,7 +64,7 @@ function MobileMenu({ className, countries }) {
       })}
     >
       <li>
-        <Search />
+        <SearchTrigger />
       </li>
       <li>
         {user.isLoggedIn && (

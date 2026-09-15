@@ -210,6 +210,10 @@
 
     .c-search {
       .search {
+        &.search-trigger {
+          color: $color-tertiary;
+        }
+
         input {
           color: $color-tertiary;
 
