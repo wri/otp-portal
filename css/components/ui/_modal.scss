@@ -143,6 +143,27 @@
     }
   }
 
+  &.-search {
+    align-items: flex-start;
+    padding-top: 8vh;
+
+    .modal-container {
+      max-width: 760px;
+    }
+
+    .modal-content {
+      display: flex;
+      min-height: 0;
+      max-height: 84vh;
+      overflow: hidden;
+    }
+
+    // The search panel has its own Esc button
+    .modal-close {
+      display: none;
+    }
+  }
+
   &.-auto {
     .modal-container {
       width: unset;
