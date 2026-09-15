@@ -11,12 +11,14 @@ import { getSearchFmus, getSearchObservationReports } from 'modules/search';
 import { SEARCH_OPTIONS } from 'constants/general';
 import { encode } from 'utils/general';
 import { mergeExactMatches } from 'utils/search';
+import { getRecentSearches, addRecentSearch, clearRecentSearches } from 'utils/recent-searches';
 
 const TYPES = [
   { key: 'producer', icon: 'icon-building', tab: 'search.modal.tabs.producers', tabDefault: 'Producers', label: 'search.modal.type.producer', labelDefault: 'Producer' },
   { key: 'fmu', icon: 'icon-location', tab: 'search.modal.tabs.fmus', tabDefault: 'FMUs', label: 'search.modal.type.fmu', labelDefault: 'FMU' },
   { key: 'report', icon: 'icon-file-empty', tab: 'search.modal.tabs.reports', tabDefault: 'Observation reports', label: 'search.modal.type.report', labelDefault: 'Report' }
 ];
+const TYPE_BY_KEY = Object.fromEntries(TYPES.map(t => [t.key, t]));
 const TABS = ['all', ...TYPES.map(t => t.key)];
 const PER_GROUP_LIMIT = 5;
 const TAB_LIMIT = 30;
@@ -74,6 +76,8 @@ const SearchModal = () => {
   const [query, setQuery] = useState('');
   const [tab, setTab] = useState('all');
   const [cursor, setCursor] = useState(0);
+  // Safe to read storage in the initializer: the modal is loaded with ssr:false
+  const [recent, setRecent] = useState(() => getRecentSearches().filter(i => TYPE_BY_KEY[i.type]));
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -110,15 +114,25 @@ const SearchModal = () => {
     return [key, mergeExactMatches(indexes[key].items, FUSE_OPTIONS.keys, term, fuzzy)];
   })), [term, fuses]);
 
-  const groups = TYPES
-    .filter(t => tab === 'all' || tab === t.key)
-    .map(t => ({ ...t, items: matches[t.key].slice(0, tab === 'all' ? PER_GROUP_LIMIT : TAB_LIMIT) }))
-    .filter(g => g.items.length || (term && indexes[g.key].loading));
+  const groups = term
+    ? TYPES
+      .filter(t => tab === 'all' || tab === t.key)
+      .map(t => ({ ...t, items: matches[t.key].slice(0, tab === 'all' ? PER_GROUP_LIMIT : TAB_LIMIT) }))
+      .filter(g => g.items.length || indexes[g.key].loading)
+    : [{ key: 'recent', items: recent }].filter(g => g.items.length);
   const flat = groups.flatMap(g => g.items);
 
   const onClose = useCallback(() => modal.toggleModal(false), []);
 
+  const onClearRecent = () => {
+    clearRecentSearches();
+    setRecent([]);
+    setCursor(0);
+    inputRef.current.focus();
+  };
+
   const onPick = useCallback((item) => {
+    addRecentSearch(item);
     modal.toggleModal(false);
     Router.push(item.href).then(() => window.scrollTo(0, 0));
   }, []);
@@ -139,7 +153,7 @@ const SearchModal = () => {
       } else if (e.key === 'Enter' && flat[cursor]) {
         e.preventDefault();
         onPick(flat[cursor]);
-      } else if (e.key === 'Tab') {
+      } else if (e.key === 'Tab' && term) {
         e.preventDefault();
         const i = TABS.indexOf(tab);
         selectTab(TABS[(i + (e.shiftKey ? -1 : 1) + TABS.length) % TABS.length]);
@@ -147,7 +161,7 @@ const SearchModal = () => {
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [flat, cursor, tab, onPick]);
+  }, [flat, cursor, tab, term, onPick]);
 
   useEffect(() => {
     const row = listRef.current && listRef.current.querySelector('.search-modal-row.-active');
@@ -201,7 +215,7 @@ const SearchModal = () => {
       )}
 
       <div className="search-modal-list" ref={listRef} data-test-id="search-modal-results">
-        {!term && (
+        {!term && !recent.length && (
           <p className="search-modal-message">
             {t('search.modal.hint', 'Start typing to search producers, FMUs and observation reports')}
           </p>
@@ -215,7 +229,15 @@ const SearchModal = () => {
 
         {groups.map(group => (
           <div className="search-modal-group" key={group.key}>
-            {tab === 'all' && (
+            {group.key === 'recent' && (
+              <div className="search-modal-group-title">
+                {t('search.modal.recent', 'Recent')}
+                <button className="search-modal-group-action" data-test-id="search-modal-clear-recent" onClick={onClearRecent}>
+                  {t('search.modal.recent.clear', 'Clear')}
+                </button>
+              </div>
+            )}
+            {group.key !== 'recent' && tab === 'all' && (
               <div className="search-modal-group-title">{t(group.tab, group.tabDefault)}</div>
             )}
             {!group.items.length && (
@@ -224,6 +246,7 @@ const SearchModal = () => {
             {group.items.map((item) => {
               rowIndex += 1;
               const i = rowIndex;
+              const type = TYPE_BY_KEY[item.type];
               return (
                 <button
                   key={item.id}
@@ -232,7 +255,7 @@ const SearchModal = () => {
                   onClick={() => onPick(item)}
                 >
                   <span className={`search-modal-row-icon -${item.type}`}>
-                    <Icon name={group.icon} />
+                    <Icon name={type.icon} />
                   </span>
                   <span className="search-modal-row-body">
                     <span className="search-modal-row-title">{item.title}</span>
@@ -240,7 +263,7 @@ const SearchModal = () => {
                   </span>
                   <span className="search-modal-row-right">
                     {item.meta && <span className="search-modal-row-meta">{item.meta}</span>}
-                    <span className="search-modal-row-type">{t(group.label, group.labelDefault)}</span>
+                    <span className="search-modal-row-type">{t(type.label, type.labelDefault)}</span>
                   </span>
                 </button>
               );
