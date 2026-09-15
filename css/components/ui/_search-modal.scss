@@ -140,12 +140,28 @@
   .search-modal-group + .search-modal-group { margin-top: $space-1; }
 
   .search-modal-group-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: $space-1 * 1.25 $space-1 * 1.5 6px;
     font-size: $font-size-extrasmall + 1px;
     font-weight: $font-weight-bold;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $color-gray-3;
+  }
+
+  .search-modal-group-action {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    color: $color-primary;
+
+    &:hover { text-decoration: underline; }
   }
 
   .search-modal-row {
