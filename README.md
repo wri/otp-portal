@@ -25,6 +25,14 @@ yarn start
 
 You should run the the build step again any time you make changes to pages or components.
 
+`yarn dev` uses Turbopack, `yarn build` uses webpack (`--webpack`). Webpack builds are much
+slower but stay within the memory the staging box has; keep both paths working.
+
+Next 16 no longer prints per-route bundle sizes. `yarn stats` prints them (gzipped, the way
+Next reported them) for the last build
+(`yarn stats <dir>` for another build dir, `BUILD_DIR` is honoured too). Passing two build dirs
+diffs them, which is what `yarn build:stats` does after building with both bundlers.
+
 ## Regenerate Home Page Static Map
 
 Home page map could be regenerated using `tools/map-screenshot/index.js` script.
