@@ -1,0 +1,204 @@
+#!/usr/bin/env node
+
+// Prints the per-route first load JS that Next 16 dropped from the build output.
+// Turbopack writes the numbers to diagnostics/route-bundle-stats.json but webpack
+// writes nothing, so this recomputes them from build-manifest.json, which both
+// bundlers emit, using the same rule Next did: the route's JS chunks plus /_app's,
+// gzipped, which is how Next reported them (experimental.gzipSize, default true).
+// Pass two build dirs to diff them.
+
+const fs = require('fs/promises');
+const path = require('path');
+const zlib = require('zlib');
+const { promisify } = require('util');
+
+const gzip = promisify(zlib.gzip);
+
+// matches script/compress-static, so the numbers are what NGINX ends up serving
+const GZIP_OPTIONS = { level: 9 };
+
+const SKIPPED = new Set(['/_app', '/_document', '/_error']);
+
+async function sizeOf(file, cache) {
+  let pending = cache.get(file);
+
+  if (!pending) {
+    pending = fs
+      .readFile(file)
+      .then(async (buffer) => ({
+        raw: buffer.length,
+        gz: (await gzip(buffer, GZIP_OPTIONS)).length,
+      }));
+    cache.set(file, pending);
+  }
+
+  return pending;
+}
+
+async function collect(dist) {
+  const manifestFile = path.resolve(dist, 'build-manifest.json');
+
+  let manifest;
+  try {
+    manifest = JSON.parse(await fs.readFile(manifestFile, 'utf8'));
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+    console.error(`route-bundle-stats: no build-manifest.json in ${dist}`);
+    process.exit(1);
+  }
+
+  const cache = new Map();
+  const shared = (manifest.pages['/_app'] ?? []).filter((f) => f.endsWith('.js'));
+  const routes = new Map();
+
+  // Next counted a chunk towards a route's own Size only when no other route
+  // used it, so count references across the manifest first.
+  const uses = new Map();
+  for (const files of Object.values(manifest.pages)) {
+    for (const file of files.filter((f) => f.endsWith('.js'))) {
+      uses.set(file, (uses.get(file) ?? 0) + 1);
+    }
+  }
+
+  const sum = async (files) => {
+    const sizes = await Promise.all(
+      files.map((f) => sizeOf(path.join(dist, f), cache))
+    );
+
+    return {
+      raw: sizes.reduce((total, s) => total + s.raw, 0),
+      gz: sizes.reduce((total, s) => total + s.gz, 0),
+    };
+  };
+
+  for (const [route, files] of Object.entries(manifest.pages)) {
+    if (SKIPPED.has(route) || route.startsWith('/api/')) continue;
+
+    const chunks = [
+      ...new Set([...files.filter((f) => f.endsWith('.js')), ...shared]),
+    ];
+    // what the old Next table called Size: the chunks only this route pulls in
+    const own = chunks.filter((f) => !shared.includes(f) && uses.get(f) === 1);
+
+    routes.set(route, {
+      ...(await sum(chunks)),
+      own: await sum(own),
+      chunks: chunks.length,
+    });
+  }
+
+  return {
+    routes,
+    shared: {
+      ...(await sum(shared)),
+      files: await Promise.all(
+        shared.map(async (f) => ({ file: f, ...(await sizeOf(path.join(dist, f), cache)) }))
+      ),
+    },
+  };
+}
+
+function kb(bytes) {
+  const value = bytes / 1024;
+  // small routes round to a useless "0 kB" without a decimal
+  return `${value.toFixed(value < 10 ? 1 : 0)} kB`;
+}
+
+function delta(after, before) {
+  const diff = after - before;
+  const sign = diff > 0 ? '+' : '';
+  return `${sign}${(diff / 1024).toFixed(0)} kB (${sign}${((diff / before) * 100).toFixed(1)}%)`;
+}
+
+function printTable(headers, rows) {
+  const widths = headers.map((header, i) =>
+    Math.max(header.length, ...rows.map((row) => row[i].length))
+  );
+  const line = (cells, gutter) =>
+    console.log(
+      `${gutter} ${cells[0].padEnd(widths[0])}` +
+        cells
+          .slice(1)
+          .map((cell, i) => `  ${cell.padStart(widths[i + 1])}`)
+          .join('')
+    );
+
+  line(headers, ' ');
+  rows.forEach((row, i) =>
+    line(row, i === 0 ? '┌' : i === rows.length - 1 ? '└' : '├')
+  );
+}
+
+function compare(dists, a, b) {
+  const rows = [...a.routes.entries()].sort((x, y) => y[1].gz - x[1].gz);
+
+  console.log(`\nFirst load JS per route, largest first — ${dists.join(' vs ')}\n`);
+  printTable(
+    ['Route (pages)', ...dists, 'Diff', 'Chunks'],
+    rows.map(([route, stats]) => {
+      const other = b.routes.get(route);
+
+      return [
+        route,
+        kb(stats.gz),
+        other ? kb(other.gz) : '-',
+        other ? delta(stats.gz, other.gz) : 'missing',
+        `${stats.chunks} vs ${other?.chunks ?? '-'}`,
+      ];
+    })
+  );
+  console.log();
+}
+
+function report(dist, { routes, shared }) {
+  const rows = [...routes.entries()].sort((x, y) => y[1].gz - x[1].gz);
+
+  console.log(`\n${dist}, largest first load first\n`);
+  printTable(
+    ['Route (pages)', 'Size', 'First Load JS', 'Chunks'],
+    rows.map(([route, stats]) => [
+      route,
+      kb(stats.own.gz),
+      kb(stats.gz),
+      String(stats.chunks),
+    ])
+  );
+
+  console.log(`\n+ First Load JS shared by all ${kb(shared.gz)}`);
+
+  // the handful of big ones explain most of it; the rest is noise as a list
+  const [big, small] = [
+    shared.files.filter((f) => f.gz >= 5 * 1024).sort((a, b) => b.gz - a.gz),
+    shared.files.filter((f) => f.gz < 5 * 1024),
+  ];
+
+  const width = Math.max(...big.map(({ file }) => file.length));
+
+  for (const { file, gz } of big) {
+    console.log(`  ├ ${file.padEnd(width)}  ${kb(gz).padStart(7)}`);
+  }
+
+  if (small.length) {
+    const total = small.reduce((n, f) => n + f.gz, 0);
+    console.log(
+      `  └ ${'other shared chunks (total)'.padEnd(width)}  ${kb(total).padStart(7)}`
+    );
+  }
+
+  console.log();
+}
+
+async function main() {
+  const dists = process.argv.slice(2);
+  if (!dists.length) dists.push(process.env.BUILD_DIR || '.next');
+
+  const [a, b] = await Promise.all(dists.map(collect));
+
+  if (b) compare(dists, a, b);
+  else report(dists[0], a);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -40,7 +40,6 @@ export default function ObservationPopup({ data }) {
         data['operator-profile-id'] ? (
           (<Link
             href={`/operators/${data['operator-profile-id']}`}
-            passHref
             target="_blank">
 
             {data.operator}

@@ -32,6 +32,18 @@ const Search = ({ list, loading, theme, options }) => {
   const inputRef = useRef(null);
   const itemRefs = useRef({});
 
+  const onClose = useCallback(() => {
+    if (active) {
+      setResults([]);
+      setValue('');
+      setActive(false);
+      setIndex(0);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    }
+  }, [active]);
+
   const onWindowClick = useCallback(() => {
     // TODO: check that you have clicked outside the result container
     if (false) {
@@ -89,18 +101,6 @@ const Search = ({ list, loading, theme, options }) => {
     return false;
   }, [setIndexByDirection, onChangeRoute]);
 
-  const onClose = useCallback(() => {
-    if (active) {
-      setResults([]);
-      setValue('');
-      setActive(false);
-      setIndex(0);
-      if (inputRef.current) {
-        inputRef.current.value = '';
-      }
-    }
-  }, [active]);
-
   const addListeners = useCallback(() => {
     window.addEventListener('click', onWindowClick);
     window.addEventListener('keyup', onWindowKeyUp);
@@ -134,6 +134,7 @@ const Search = ({ list, loading, theme, options }) => {
 
   useEffect(() => {
     if (!loading && value.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- re-runs the search once the source list has loaded
       updateSearchResults(value);
     }
   }, [loading, value, updateSearchResults]);

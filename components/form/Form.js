@@ -167,6 +167,7 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
     <>
       <Spinner isLoading={submitting} className="-light -fixed" />
       <FormContext.Provider value={contextValue}>
+        {/* eslint-disable-next-line react-hooks/refs -- contextValue's callbacks close over refs but are only invoked from events */}
         {typeof children === 'function' && children(contextValue)}
         {typeof children !== 'function' && children}
       </FormContext.Provider>

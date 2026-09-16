@@ -16,8 +16,8 @@ export default [
     },
   },
   reactPlugin.configs.flat.recommended,
-  reactHooksPlugin.configs['recommended-latest'],
-  nextPlugin.flatConfig.recommended,
+  reactHooksPlugin.configs.flat['recommended-latest'],
+  nextPlugin.configs.recommended,
   {
     plugins: {
       import: importPlugin,
@@ -78,6 +78,9 @@ export default [
       'import/no-anonymous-default-export': 'off',
       '@next/next/no-img-element': 'off',
       'react-hooks/exhaustive-deps': 'off',
+
+      // React Compiler lint rules (eslint-plugin-react-hooks v7, via eslint-config-next 16)
+      // are on. The remaining known exceptions are disabled inline, with a reason.
     },
   },
   prettierConfig,

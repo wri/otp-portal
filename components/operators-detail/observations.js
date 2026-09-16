@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -23,8 +23,40 @@ import { groupBy, transformValues } from 'utils/general';
 
 import useDeviceInfo from 'hooks/use-device-info';
 
-const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'));
-const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'));
+const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'), { ssr: false });
+const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
+
+const CustomLabel = ({ cx, cy, formatLabel, midAngle, outerRadius, name, value, fill, isDesktop }) => {
+  const RADIAN = Math.PI / 180;
+  // Position labels outside the donut
+  const padding = isDesktop ? 10 : 3;
+  const radius = outerRadius + padding;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  const width = isDesktop ? 180 : 100;
+  const isRightSide = x > cx;
+  const isTop = y < cy;
+  const labelX = isRightSide ? x : x - width;
+  const labelY = isTop ? y - 10 : y;
+
+  return (
+    <foreignObject x={labelX} y={labelY} width={width} height={100}>
+      <div className='c-title -proximanova' style={{
+        wordWrap: 'break-word',
+        fontSize: '15px',
+        fontWeight: '600',
+        display: 'flex',
+        justifyContent: isRightSide ? 'left' : 'right',
+        color: fill
+      }}>
+        <div style={{ textAlign: 'left' }}>
+          {formatLabel({ name, value })}
+        </div>
+      </div>
+    </foreignObject>
+  );
+};
 
 const severities = ['unknown', 'low', 'medium', 'high'];
 
@@ -32,13 +64,9 @@ const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [displayAll, setDisplayAll] = useState(router.query.display_all === 'true');
+  const displayAll = router.query.display_all === 'true';
 
   const { isDesktop } = useDeviceInfo();
-
-  useEffect(() => {
-    setDisplayAll(router.query.display_all === 'true');
-  }, [router.query.display_all]);
 
   const onChangeDisplayAll = ({ checked }) => {
     setUrlParam('display_all', checked ? null : true);
@@ -50,38 +78,6 @@ const OperatorsDetailObservations = (props) => {
     ...obs,
     level: obs.level || 0
   }));
-
-  const CustomLabel = ({ cx, cy, formatLabel, midAngle, outerRadius, name, value, fill }) => {
-    const RADIAN = Math.PI / 180;
-    // Position labels outside the donut
-    const padding = isDesktop ? 10 : 3;
-    const radius = outerRadius + padding;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    const width = isDesktop ? 180 : 100;
-    const isRightSide = x > cx;
-    const isTop = y < cy;
-    const labelX = isRightSide ? x : x - width;
-    const labelY = isTop ? y - 10 : y;
-
-    return (
-      <foreignObject x={labelX} y={labelY} width={width} height={100}>
-        <div className='c-title -proximanova' style={{
-          wordWrap: 'break-word',
-          fontSize: '15px',
-          fontWeight: '600',
-          display: 'flex',
-          justifyContent: isRightSide ? 'left' : 'right',
-          color: fill
-        }}>
-          <div style={{ textAlign: 'left' }}>
-            {formatLabel({ name, value })}
-          </div>
-        </div>
-      </foreignObject>
-    );
-  };
 
   const formatSeverityLabel = ({ name, value }) => {
     const key = severities[parseInt(name, 10)] || 'unknown';
@@ -139,7 +135,7 @@ const OperatorsDetailObservations = (props) => {
                       innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={<CustomLabel formatLabel={formatSeverityLabel} />}
+                      label={<CustomLabel formatLabel={formatSeverityLabel} isDesktop={isDesktop} />}
                       labelLine={false}
                     >
                       {bySeverityChart.map((entry, index) => (
@@ -160,7 +156,7 @@ const OperatorsDetailObservations = (props) => {
                       innerRadius={160 - 70}
                       startAngle={90}
                       endAngle={-270}
-                      label={<CustomLabel formatLabel={({ name, value }) => `${name} - ${value}` } />}
+                      label={<CustomLabel formatLabel={({ name, value }) => `${name} - ${value}` } isDesktop={isDesktop} />}
                       labelLine={false}
                     >
                       {byCategoryChart.map((entry, index) => (
