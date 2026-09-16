@@ -198,6 +198,8 @@
   "login.form.field.password": "Password",
   "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
+  "login.unlocked.title": "Account unlocked",
+  "login.unlocked.message": "Your account has been unlocked, you can sign in again.",
   "signin": "Sign in",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",
