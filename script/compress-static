@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+
+// Pre-compresses the client assets NGINX serves with brotli_static/gzip_static.
+// This used to be compression-webpack-plugin; Turbopack has no webpack plugin
+// hook, so it runs as a postbuild step instead. Thresholds match what the plugin
+// was configured with, so the emitted set of .br/.gz files is unchanged.
+
+const fs = require('fs/promises');
+const os = require('os');
+const path = require('path');
+const zlib = require('zlib');
+const { promisify } = require('util');
+
+const brotli = promisify(zlib.brotliCompress);
+const gzip = promisify(zlib.gzip);
+
+const TEST = /\.(js|css|html|svg)$/;
+const THRESHOLD = 5120;
+const MIN_RATIO = 0.8;
+
+const BROTLI_OPTIONS = {
+  params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 11 },
+};
+const GZIP_OPTIONS = { level: 9 };
+
+async function collect(dir, out = []) {
+  let entries;
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true });
+  } catch (err) {
+    if (err.code === 'ENOENT') return out;
+    throw err;
+  }
+
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      await collect(full, out);
+    } else if (entry.isFile() && TEST.test(entry.name)) {
+      out.push(full);
+    }
+  }
+
+  return out;
+}
+
+async function compress(file) {
+  const buffer = await fs.readFile(file);
+  if (buffer.length < THRESHOLD) return 0;
+
+  const results = await Promise.all([
+    brotli(buffer, BROTLI_OPTIONS).then((b) => [`${file}.br`, b]),
+    gzip(buffer, GZIP_OPTIONS).then((b) => [`${file}.gz`, b]),
+  ]);
+
+  let written = 0;
+  for (const [target, compressed] of results) {
+    // a file that barely compresses costs a request-time stat for nothing
+    if (compressed.length / buffer.length > MIN_RATIO) continue;
+    await fs.writeFile(target, compressed);
+    written += 1;
+  }
+
+  return written;
+}
+
+async function main() {
+  const dist = process.env.BUILD_DIR || '.next';
+  const root = path.resolve(process.cwd(), dist, 'static');
+  const files = await collect(root);
+
+  if (!files.length) {
+    console.error(`compress-static: nothing to compress in ${dist}/static`);
+    process.exit(1);
+  }
+
+  const queue = files.slice();
+  // each worker keeps its own tally: `total += await ...` reads total before the
+  // await, so concurrent workers would clobber each other's updates
+  const workers = Array.from({ length: os.cpus().length }, async () => {
+    let count = 0;
+    let file;
+    while ((file = queue.pop())) {
+      count += await compress(file);
+    }
+    return count;
+  });
+  const written = (await Promise.all(workers)).reduce((a, b) => a + b, 0);
+
+  console.log(
+    `compress-static: wrote ${written} files from ${files.length} candidates in ${dist}/static`
+  );
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

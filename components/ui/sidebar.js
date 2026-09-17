@@ -9,7 +9,9 @@ export default function Sidebar(props) {
   const [render, setRender] = React.useState(false);
 
   // keep rendering content after first open
+  // NOTE: this effect also runs on mount, so children currently render even while closed
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRender(true);
   }, [open]);
 

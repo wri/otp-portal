@@ -57,6 +57,9 @@ const UserEditForm = (props) => {
             intl.formatMessage({ id: 'Password changed successfully' }),
             intl.formatMessage({ id: 'Please log in again' })
           );
+          // a full reload, not router.push: the store still holds the authenticated
+          // user, and only a fresh boot clears it
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
           window.location.href = '/';
           // keep the chain pending until the redirect happens
           return new Promise(() => {});

@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import Truncate from 'react-truncate';
 
 import classnames from 'classnames';
 import { omit } from 'utils/general';
-
-const Truncate = dynamic(() => import('react-truncate'));
 
 function isNullOrUndefined(val) {
   return val === null || val === undefined;

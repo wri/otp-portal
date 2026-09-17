@@ -61,6 +61,13 @@ function OperatorsPage({
 }) {
   const mapRef = useRef(null);
 
+  const onCustomAttribute = (e) => {
+    e.preventDefault();
+    modal.toggleModal(true, {
+      children: FAAttributions
+    });
+  };
+
   useEffect(() => {
     // Set location
     setOperatorsMapLocation(getOperatorsUrl(router));
@@ -117,13 +124,6 @@ function OperatorsPage({
   const setMapLocation = debounce((mapLocation) => {
     setOperatorsMapLocation(mapLocation);
   }, 700);
-
-  const onCustomAttribute = (e) => {
-    e.preventDefault();
-    modal.toggleModal(true, {
-      children: FAAttributions
-    });
-  };
 
   const { open } = sidebar;
 
