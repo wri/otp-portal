@@ -15,3 +15,4 @@ export { default as help } from './help';
 export { default as about } from './about';
 export { default as notifications } from './notifications';
 export { default as documentReuse } from './document-reuse';
+export { default as search } from './search';

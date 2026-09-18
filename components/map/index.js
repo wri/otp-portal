@@ -197,6 +197,10 @@ class Map extends Component {
   onLoad = () => {
     const { onLoad } = this.props;
 
+    // mapbox can fire load after the map ref was cleared (unmount/remount mid-load,
+    // e.g. fast refresh); that instance is gone, and everything below needs it
+    if (!this.map) return;
+
     this.setState({
       loaded: true,
       size: {

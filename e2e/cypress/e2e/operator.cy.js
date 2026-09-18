@@ -57,12 +57,43 @@ describe('Operator', function () {
       })
 
       it('displays operators fmus', function () {
-        cy.get('[data-test-id="fmu-select"] option').should('have.length', 3);
+        cy.get('.fmu-select-value').should('have.text', 'Select FMU');
+        cy.get('[data-test-id="fmu-select"] option:not([value=""])').should('have.length', 3);
         cy.get('[data-test-id="fmu-select"]').within(() => {
           cy.contains('option', 'Cayo').should('exist');
           cy.contains('option', 'Doumanga').should('exist');
           cy.contains('option', 'Nkola').should('exist');
         })
+      });
+
+      it('preselects the fmu from the fmuId query param', function () {
+        cy.contains('[data-test-id="fmu-select"] option', 'Nkola').invoke('val').then((fmuId) => {
+          cy.visit(`/operators/afriwood-industries/fmus?fmuId=${fmuId}`);
+          cy.get('[data-test-id="fmu-select"]', {timeout: 25000}).should('have.value', fmuId);
+          cy.get('.fmu-select-value').should('have.text', 'Nkola');
+        });
+      });
+
+      it('keeps the selected fmu in the url', function () {
+        cy.contains('[data-test-id="fmu-select"] option', 'Nkola').invoke('val').then((fmuId) => {
+          cy.get('[data-test-id="fmu-select"]').select('Nkola');
+          cy.location('search').should('include', `fmuId=${fmuId}`);
+          cy.get('.fmu-select-value').should('have.text', 'Nkola');
+
+          cy.go('back');
+          cy.location('search').should('not.include', 'fmuId');
+          cy.get('.fmu-select-value').should('have.text', 'Select FMU');
+        });
+      });
+
+      it('shows all fmus again after selecting one', function () {
+        cy.get('[data-test-id="fmu-select"]').select('Nkola');
+        cy.location('search').should('include', 'fmuId=');
+
+        cy.get('[data-test-id="fmu-select"]').select('Show all FMUs');
+        cy.location('search').should('not.include', 'fmuId');
+        cy.get('.fmu-select-value').should('have.text', 'Select FMU');
+        cy.contains('[data-test-id="fmu-select"] option', 'Show all FMUs').should('not.exist');
       });
     });
 
