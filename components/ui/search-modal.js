@@ -3,20 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import classnames from 'classnames';
-import dayjs from 'dayjs';
 
 import Icon from 'components/ui/icon';
 import modal from 'services/modal';
-import { getSearchFmus, getSearchObservationReports } from 'modules/search';
+import { getSearchFmus } from 'modules/search';
 import { SEARCH_OPTIONS } from 'constants/general';
-import { encode } from 'utils/general';
 import { mergeExactMatches } from 'utils/search';
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from 'utils/recent-searches';
 
 const TYPES = [
   { key: 'producer', icon: 'icon-building', tab: 'search.modal.tabs.producers', tabDefault: 'Producers', label: 'search.modal.type.producer', labelDefault: 'Producer' },
-  { key: 'fmu', icon: 'icon-location', tab: 'search.modal.tabs.fmus', tabDefault: 'FMUs', label: 'search.modal.type.fmu', labelDefault: 'FMU' },
-  { key: 'report', icon: 'icon-file-empty', tab: 'search.modal.tabs.reports', tabDefault: 'Observation reports', label: 'search.modal.type.report', labelDefault: 'Report' }
+  { key: 'fmu', icon: 'icon-location', tab: 'search.modal.tabs.fmus', tabDefault: 'FMUs', label: 'search.modal.type.fmu', labelDefault: 'FMU' }
 ];
 const TYPE_BY_KEY = Object.fromEntries(TYPES.map(t => [t.key, t]));
 const TABS = ['all', ...TYPES.map(t => t.key)];
@@ -28,7 +25,7 @@ const compact = (values) => values.filter(Boolean).join(' · ');
 
 function useSearchIndexes() {
   const operators = useSelector(state => state.operators);
-  const { fmus, observationReports } = useSelector(state => state.search);
+  const { fmus } = useSelector(state => state.search);
 
   const producers = useMemo(() => operators.data.map(o => ({
     id: `producer-${o.id}`,
@@ -48,20 +45,9 @@ function useSearchIndexes() {
       href: `/operators/${f.operator.slug}/fmus`
     })), [fmus.data]);
 
-  const reports = useMemo(() => observationReports.data.map(r => ({
-    id: `report-${r.id}`,
-    type: 'report',
-    title: r.title,
-    sub: compact((r.observers || []).map(o => o.name)),
-    // API sends a UTC timestamp; slicing the string would show the day before
-    meta: r['publication-date'] && dayjs(r['publication-date']).format('YYYY-MM-DD'),
-    href: { pathname: '/observations', query: { filters: encode({ 'observation-report': [Number(r.id)] }) } }
-  })), [observationReports.data]);
-
   return {
     producer: { items: producers, loading: operators.loading },
-    fmu: { items: fmuItems, loading: fmus.loading },
-    report: { items: reports, loading: observationReports.loading }
+    fmu: { items: fmuItems, loading: fmus.loading }
   };
 }
 
@@ -69,7 +55,6 @@ const SearchModal = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const fmusState = useSelector(state => state.search.fmus);
-  const reportsState = useSelector(state => state.search.observationReports);
   const indexes = useSearchIndexes();
 
   const [Fuse, setFuse] = useState(null);
@@ -98,14 +83,13 @@ const SearchModal = () => {
   useEffect(() => {
     import('fuse.js').then(m => setFuse(() => m.default));
     if (!fmusState.data.length && !fmusState.loading) dispatch(getSearchFmus());
-    if (!reportsState.data.length && !reportsState.loading) dispatch(getSearchObservationReports());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fuses = useMemo(() => {
     if (!Fuse) return {};
     return Object.fromEntries(TYPES.map(({ key }) => [key, new Fuse(indexes[key].items, FUSE_OPTIONS)]));
-  }, [Fuse, indexes.producer.items, indexes.fmu.items, indexes.report.items]);
+  }, [Fuse, indexes.producer.items, indexes.fmu.items]);
 
   const term = query.trim();
   const matches = useMemo(() => Object.fromEntries(TYPES.map(({ key }) => {
@@ -174,10 +158,11 @@ const SearchModal = () => {
     return term && indexes[key].loading ? '…' : matches[key].length;
   };
 
-  let rowIndex = -1;
+  // Index of each group's first row in `flat`, for keyboard cursor matching
+  const groupOffsets = groups.map((_, gi) => groups.slice(0, gi).reduce((n, g) => n + g.items.length, 0));
 
   return (
-    <div className="c-search-modal" role="dialog" aria-label={t('search.modal.placeholder', 'Search producers, FMUs and observation reports…')}>
+    <div className="c-search-modal" role="dialog" aria-label={t('search.modal.placeholder', 'Search producers and FMUs…')}>
       <div className="search-modal-input">
         <Icon name="icon-search" />
         <input
@@ -185,7 +170,7 @@ const SearchModal = () => {
           type="text"
           value={query}
           data-test-id="search-modal-input"
-          placeholder={t('search.modal.placeholder', 'Search producers, FMUs and observation reports…')}
+          placeholder={t('search.modal.placeholder', 'Search producers and FMUs…')}
           onChange={(e) => {
             setQuery(e.target.value);
             setCursor(0);
@@ -217,7 +202,7 @@ const SearchModal = () => {
       <div className="search-modal-list" ref={listRef} data-test-id="search-modal-results">
         {!term && !recent.length && (
           <p className="search-modal-message">
-            {t('search.modal.hint', 'Start typing to search producers, FMUs and observation reports')}
+            {t('search.modal.hint', 'Start typing to search producers and FMUs')}
           </p>
         )}
 
@@ -227,7 +212,7 @@ const SearchModal = () => {
           </p>
         )}
 
-        {groups.map(group => (
+        {groups.map((group, gi) => (
           <div className="search-modal-group" key={group.key}>
             {group.key === 'recent' && (
               <div className="search-modal-group-title">
@@ -243,9 +228,8 @@ const SearchModal = () => {
             {!group.items.length && (
               <p className="search-modal-message -small">{t('search.modal.loading', 'Loading…')}</p>
             )}
-            {group.items.map((item) => {
-              rowIndex += 1;
-              const i = rowIndex;
+            {group.items.map((item, j) => {
+              const i = groupOffsets[gi] + j;
               const type = TYPE_BY_KEY[item.type];
               return (
                 <button
