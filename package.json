@@ -97,6 +97,8 @@
     "coverage:report": "script/coverage-report",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
     "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js",
+    "transifex:branch-keys": "node transifex/branch-keys.js",
+    "transifex:push-keys": "env $(grep ^TX_TOKEN -m 1 .env | xargs) node transifex/push-keys.js",
     "lang-compile": "script/lang-compile"
   },
   "prettier": {

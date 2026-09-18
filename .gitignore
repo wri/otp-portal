@@ -17,6 +17,7 @@ static/tiles
 
 # compiled languages
 lang/compiled
+transifex/pending/
 
 # coverage
 /coverage
