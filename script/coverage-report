@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+// Merges unit (vitest) and e2e (cypress) istanbul coverage into one report in coverage/combined.
+// Pass coverage JSON files or directories to merge; defaults to the local unit and e2e output.
+//
+// The two runs instrument differently: vitest remaps its counters through source maps and loses
+// end columns, and istanbul merges by exact location, so a plain `nyc merge` would count the same
+// statement twice. Instead every file in .nycrc.json is instrumented here once and the hits from
+// each run are added onto that map. This also lists files no test touched at 0%.
+
+const fs = require('fs');
+const path = require('path');
+const { execFileSync } = require('child_process');
+const { createInstrumenter } = require('istanbul-lib-instrument');
+
+const root = path.resolve(__dirname, '..');
+const nyc = JSON.parse(fs.readFileSync(path.join(root, '.nycrc.json'), 'utf8'));
+const inputs = process.argv.slice(2);
+if (!inputs.length) inputs.push('coverage/unit/coverage-final.json', 'coverage/e2e');
+
+function jsonFiles(input) {
+  const abs = path.resolve(root, input);
+  if (!fs.existsSync(abs)) return [];
+  if (!fs.statSync(abs).isDirectory()) return [abs];
+  return fs.globSync('**/*.json', { cwd: abs }).map((f) => path.join(abs, f));
+}
+
+const sources = fs
+  .globSync(nyc.include, { cwd: root })
+  .filter((f) => !nyc.exclude.some((pattern) => path.matchesGlob(f, pattern)))
+  .sort();
+
+// vitest reports end columns as null, so match on everything else; the queue handles ties
+const locKey = (loc) => `${loc.start.line}:${loc.start.column}-${loc.end.line}`;
+const itemKeys = {
+  s: ['statementMap', (item) => locKey(item)],
+  f: ['fnMap', (item) => locKey(item.loc)],
+  b: ['branchMap', (item) => locKey(item.locations[0])]
+};
+
+const combined = {};
+for (const file of sources) {
+  const instrumenter = createInstrumenter({ parserPlugins: ['jsx'] });
+  instrumenter.instrumentSync(fs.readFileSync(path.join(root, file), 'utf8'), path.join(root, file));
+  combined[file] = instrumenter.lastFileCoverage();
+}
+
+// coverage keys are absolute paths from whichever machine ran the tests
+const sourceFor = (key) => sources.find((file) => key === file || key.endsWith(`/${file}`));
+
+let unmatched = 0;
+for (const input of inputs.flatMap(jsonFiles)) {
+  const data = JSON.parse(fs.readFileSync(input, 'utf8'));
+  let files = 0;
+  for (const [key, coverage] of Object.entries(data)) {
+    const target = combined[sourceFor(key)];
+    if (!target) continue;
+    files += 1;
+    for (const [hitsProp, [mapProp, keyOf]] of Object.entries(itemKeys)) {
+      const slots = {};
+      for (const [id, item] of Object.entries(target[mapProp])) (slots[keyOf(item)] ||= []).push(id);
+      for (const [id, item] of Object.entries(coverage[mapProp])) {
+        const slot = slots[keyOf(item)]?.shift();
+        if (slot === undefined) {
+          unmatched += 1;
+          continue;
+        }
+        const hits = coverage[hitsProp][id];
+        target[hitsProp][slot] = Array.isArray(hits)
+          ? target[hitsProp][slot].map((count, i) => count + (hits[i] || 0))
+          : target[hitsProp][slot] + hits;
+      }
+    }
+  }
+  console.log(`merged ${files} files from ${path.relative(root, input)}`);
+}
+if (unmatched) console.warn(`warning: ${unmatched} counters did not match a source location`);
+
+const tempDir = path.join(root, nyc['temp-dir']);
+fs.rmSync(tempDir, { recursive: true, force: true });
+fs.mkdirSync(tempDir, { recursive: true });
+fs.writeFileSync(path.join(tempDir, 'combined.json'), JSON.stringify(combined));
+
+execFileSync(path.join(root, 'node_modules/.bin/nyc'), ['report'], { cwd: root, stdio: 'inherit' });

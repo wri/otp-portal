@@ -26,6 +26,7 @@ module.exports = (on, config) => {
   // Splits specs across CI shards via SPLIT / SPLIT_INDEX, balanced by timings.json.
   // Without SPLIT set it is a no-op, so local runs are unaffected.
   cypressSplit(on, config);
+  require('@cypress/code-coverage/task')(on, config);
   // cypress-split mutates config, so it must be returned or the split silently no-ops
   return config;
 }

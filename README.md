@@ -33,6 +33,21 @@ Next reported them) for the last build
 (`yarn stats <dir>` for another build dir, `BUILD_DIR` is honoured too). Passing two build dirs
 diffs them, which is what `yarn build:stats` does after building with both bundlers.
 
+## Code coverage
+
+Unit and e2e coverage are collected separately and merged into one report in `coverage/combined`:
+
+```
+yarn test:coverage                  # unit, also writes its own report to coverage/unit
+yarn build:coverage && yarn start   # or `COVERAGE=true ./start-server.sh` from e2e/
+cd e2e && rm -rf ../coverage/e2e && COVERAGE=true yarn cypress run && cd ..
+yarn coverage:report                # merge whatever is in coverage/unit and coverage/e2e
+```
+
+Either half can be skipped; the report lists every file in `.nycrc.json` and shows untested ones
+at 0%. E2e coverage includes server-side rendering, which is read from `/api/__coverage__`.
+Remember to rebuild with `yarn build` afterwards, as the instrumented build is slower.
+
 ## Regenerate Home Page Static Map
 
 Home page map could be regenerated using `tools/map-screenshot/index.js` script.
