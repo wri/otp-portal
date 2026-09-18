@@ -38,11 +38,10 @@ describe('fmus detail layers', () => {
     operatorsDetailFmus: {
       layersActive: ['fmusdetail'],
       layersSettings: {},
-      fmu: 1,
       fmuBounds: null,
       analysis: { loading: {}, error: {}, data: {} }
     },
-    operatorsDetail: { data: { id: operatorId, fmus: [{ id: 1, name: 'A' }] } }
+    operatorsDetail: { data: { id: operatorId, loadedFMUS: true, fmus: [{ id: 1, name: 'A' }] } }
   });
 
   const tilesFor = (operatorId) =>

@@ -13,7 +13,6 @@ import {
   getIntegratedAlertsMetadata,
   setOperatorsDetailMapLocation,
   setOperatorsDetailMapLayersSettings,
-  setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
   setOperatorsDetailAnalysis
 } from 'modules/operators-detail-fmus';
@@ -64,11 +63,10 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (fmus.length) {
-      this.props.setOperatorsDetailFmu(fmus[0].id);
-      this.getBBOX();
+      this.fitBounds();
     }
 
-    if (fmu) {
+    if (fmu.id) {
       this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
       this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
@@ -77,16 +75,16 @@ class OperatorsDetailFMUs extends React.Component {
   componentDidUpdate(prevProps) {
     const {
       fmus: prevFmus,
-      fmu: prevFmu
+      fmu: prevFmu,
+      fmuId: prevFmuId
     } = prevProps;
-    const { fmus, fmu } = this.props;
+    const { fmus, fmu, fmuId } = this.props;
 
-    if (!isEqual(fmus, prevFmus)) {
+    // fmuId changes without a remount: dropdown, map click, search, back button
+    if (!isEqual(fmus, prevFmus) || fmuId !== prevFmuId) {
       if (fmus.length) {
-        this.props.setOperatorsDetailFmu(fmus[0].id);
-        this.getBBOX();
+        this.fitBounds();
       } else {
-        this.props.setOperatorsDetailFmu(undefined);
         this.props.setOperatorsDetailMapLocation({
           zoom: 5,
           latitude: 0,
@@ -95,12 +93,13 @@ class OperatorsDetailFMUs extends React.Component {
       }
     }
 
-    if (fmu.id !== prevFmu.id) {
+    if (fmu.id && fmu.id !== prevFmu.id) {
       this.props.setOperatorsDetailAnalysis({ fmu, type: 'loss' });
       this.props.setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' });
     }
 
     if (
+      fmu.id &&
       fmu.loss &&
       prevFmu.loss &&
       (fmu.loss.startDate !== prevFmu.loss.startDate ||
@@ -110,6 +109,7 @@ class OperatorsDetailFMUs extends React.Component {
     }
 
     if (
+      fmu.id &&
       fmu['integrated-alerts'] &&
       prevFmu['integrated-alerts'] &&
       (fmu['integrated-alerts'].startDate !== prevFmu['integrated-alerts'].startDate ||
@@ -145,7 +145,7 @@ class OperatorsDetailFMUs extends React.Component {
     ) {
       const clickedFmu = e.features.find(f => f.source === 'fmusdetail')?.properties;
       if (clickedFmu) {
-        this.props.setOperatorsDetailFmu(clickedFmu.id);
+        this.props.onFmuChange(clickedFmu.id);
       }
     }
   }
@@ -177,8 +177,16 @@ class OperatorsDetailFMUs extends React.Component {
     this.props.setOperatorsDetailMapLocation(v);
   }, 250);
 
-  getBBOX() {
-    const { fmus, deviceInfo } = this.props;
+  // Zoom to the selected FMU, or fit all of them when none is selected
+  fitBounds() {
+    const { fmus, fmu } = this.props;
+    const selected = fmu.id && fmus.find((f) => f.id === fmu.id);
+
+    this.getBBOX(selected ? [selected] : fmus);
+  }
+
+  getBBOX(fmus) {
+    const { deviceInfo } = this.props;
 
     const bbox = getBBox({
       type: 'FeatureCollection',
@@ -210,6 +218,11 @@ class OperatorsDetailFMUs extends React.Component {
       deviceInfo
     } = this.props;
     const { hoverPopup } = this.state;
+
+    const selectFmuPlaceholder = this.props.intl.formatMessage({
+      id: 'operator-detail.fmus.select',
+      defaultMessage: 'Select FMU'
+    });
 
     const certifications = CERTIFICATIONS.filter(
       ({ value }) => fmu[`certification-${value}`]
@@ -247,16 +260,18 @@ class OperatorsDetailFMUs extends React.Component {
 
               <div className="fmu-select">
                 <select
-                  value={fmu.id}
+                  value={fmu.id || ''}
                   data-test-id="fmu-select"
-                  onChange={(e) => {
-                    this.props.setOperatorsDetailFmu(
-                      fmus.find(
-                        (f) => Number(f.id) === Number(e.currentTarget.value)
-                      ).id
-                    );
-                  }}
+                  onChange={(e) => this.props.onFmuChange(e.currentTarget.value || undefined)}
                 >
+                  {!fmu.id && (
+                    <option value="" disabled>{selectFmuPlaceholder}</option>
+                  )}
+                  {!!fmu.id && fmus.length > 1 && (
+                    <option value="">
+                      {this.props.intl.formatMessage({ id: 'operator-detail.fmus.show_all', defaultMessage: 'Show all FMUs' })}
+                    </option>
+                  )}
                   {fmus.map((f) => (
                     <option key={f.id} value={f.id}>
                       {f.name}
@@ -264,7 +279,7 @@ class OperatorsDetailFMUs extends React.Component {
                   ))}
                 </select>
 
-                <div className="fmu-select-value">{fmu.name}</div>
+                <div className="fmu-select-value">{fmu.name || selectFmuPlaceholder}</div>
               </div>
 
               {!!certifications.length && (
@@ -356,6 +371,8 @@ OperatorsDetailFMUs.propTypes = {
   intl: PropTypes.object.isRequired,
   fmus: PropTypes.array.isRequired,
   fmu: PropTypes.shape({}).isRequired,
+  fmuId: PropTypes.string,
+  onFmuChange: PropTypes.func.isRequired,
   operatorsDetail: PropTypes.object.isRequired,
   operatorsDetailFmus: PropTypes.object.isRequired,
   activeLayers: PropTypes.array,
@@ -366,7 +383,6 @@ OperatorsDetailFMUs.propTypes = {
   getIntegratedAlertsMetadata: PropTypes.func,
   setOperatorsDetailMapLocation: PropTypes.func,
   setOperatorsDetailMapLayersSettings: PropTypes.func,
-  setOperatorsDetailFmu: PropTypes.func,
   setOperatorsDetailFmuBounds: PropTypes.func,
   setOperatorsDetailAnalysis: PropTypes.func
 };
@@ -388,7 +404,6 @@ export default withDeviceInfo(injectIntl(
       getIntegratedAlertsMetadata,
       setOperatorsDetailMapLocation,
       setOperatorsDetailMapLayersSettings,
-      setOperatorsDetailFmu,
       setOperatorsDetailFmuBounds,
       setOperatorsDetailAnalysis
     }

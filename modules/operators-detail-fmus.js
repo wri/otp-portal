@@ -103,7 +103,6 @@ const operatorsDetailFmusSlice = createSlice({
       'fmusdetail'
     ],
     layersSettings: {},
-    fmu: undefined,
     fmusBounds: undefined,
     analysis: {
       data: {},
@@ -114,9 +113,6 @@ const operatorsDetailFmusSlice = createSlice({
   reducers: {
     setOperatorsDetailMapLocation: (state, action) => {
       state.map = { ...state.map, ...action.payload };
-    },
-    setOperatorsDetailFmu: (state, action) => {
-      state.fmu = action.payload;
     },
     setOperatorsDetailFmuBounds: (state, action) => {
       state.fmuBounds = action.payload;
@@ -235,7 +231,6 @@ const operatorsDetailFmusSlice = createSlice({
 
 export const {
   setOperatorsDetailMapLocation,
-  setOperatorsDetailFmu,
   setOperatorsDetailFmuBounds,
   setOperatorsDetailMapLayersSettings,
   setOperatorsDetailMapLayersActive,
