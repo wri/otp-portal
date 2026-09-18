@@ -1,4 +1,4 @@
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require('@sentry/nextjs/config');
 
 require('dotenv').config();
 
@@ -91,6 +91,32 @@ const config = {
   },
   experimental: {
     optimizePackageImports: ["modules"]
+  },
+  webpack(webpackConfig, { isServer }) {
+    // `yarn build:coverage`: instrument app source for e2e coverage. Runs as a pre-loader on the
+    // original source; .nycrc.json picks the files.
+    if (process.env.COVERAGE === 'true') {
+      // counters wrap `typeof window` checks, so the server-only imports behind them are no
+      // longer tree-shaken out of the client bundle
+      if (!isServer) {
+        webpackConfig.resolve.fallback = { ...webpackConfig.resolve.fallback, async_hooks: false };
+      }
+      webpackConfig.module.rules.push({
+        test: /\.js$/,
+        enforce: 'pre',
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            configFile: false,
+            parserOpts: { plugins: ['jsx'] },
+            plugins: ['istanbul']
+          }
+        }
+      });
+    }
+    return webpackConfig;
   },
   onDemandEntries: {
     // period (in ms) where the server will keep pages in the buffer

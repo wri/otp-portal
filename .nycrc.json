@@ -1,0 +1,17 @@
+{
+  "include": [
+    "components/**/*.js",
+    "constants/**/*.js",
+    "hooks/**/*.js",
+    "modules/**/*.js",
+    "pages/**/*.js",
+    "selectors/**/*.js",
+    "services/**/*.js",
+    "utils/**/*.js",
+    "store.js"
+  ],
+  "exclude": ["**/__tests__/**", "**/__smoke__/**", "pages/api/__coverage__.js"],
+  "temp-dir": "coverage/raw",
+  "report-dir": "coverage/combined",
+  "reporter": ["html", "lcov", "text-summary"]
+}

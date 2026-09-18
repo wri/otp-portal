@@ -4,7 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "coverage:report": "echo \"e2e coverage saved to coverage/e2e, run yarn coverage:report in the portal root to merge it\""
+  },
+  "nyc": {
+    "temp-dir": "../coverage/e2e"
+  },
   "devDependencies": {
+    "@cypress/code-coverage": "^4.0.3",
     "@frsource/cypress-plugin-visual-regression-diff": "^3.3.10",
     "cypress": "^15",
     "cypress-split": "^1.25.0"

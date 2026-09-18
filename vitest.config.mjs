@@ -1,4 +1,9 @@
+import { readFileSync } from 'node:fs';
+
 import { defineConfig } from 'vitest/config';
+
+// shared with the e2e build so both runs count the same files and can be merged
+const nyc = JSON.parse(readFileSync(new URL('./.nycrc.json', import.meta.url), 'utf8'));
 
 /**
  * The app imports its own modules as bare specifiers (`constants/layers`, `selectors/utils`),
@@ -25,6 +30,12 @@ export default defineConfig({
     env: {
       OTP_API: 'https://api.example.org',
       OTP_COUNTRIES: 'CMR,COG,CAF,GAB,COD'
+    },
+    coverage: {
+      provider: 'istanbul',
+      exclude: nyc.exclude,
+      reportsDirectory: 'coverage/unit',
+      reporter: ['text-summary', 'html', 'json']
     }
   }
 });

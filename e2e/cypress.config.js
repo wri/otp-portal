@@ -9,6 +9,13 @@ module.exports = defineConfig({
   env: {
     pluginVisualRegressionMaxDiffThreshold: 0.036,
   },
+  // COVERAGE=true collects coverage from a `yarn build:coverage` portal build, see README
+  expose: {
+    coverage: process.env.COVERAGE === 'true',
+    codeCoverage: {
+      url: '/api/__coverage__',
+    },
+  },
   e2e: {
     baseUrl: 'http://localhost:4000',
     // We've imported your old cypress plugins here.
