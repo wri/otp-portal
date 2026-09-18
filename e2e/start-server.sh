@@ -20,7 +20,12 @@ echo 'Starting Portal...'
 cd ../otp-portal/
 fnm use
 if [ "$1" = "dev" ]; then
+  if [ "$COVERAGE" = "true" ]; then
+    echo 'COVERAGE is ignored in dev: Turbopack does not run the istanbul instrumentation.'
+  fi
   yarn dev
+elif [ "$COVERAGE" = "true" ]; then
+  yarn build:coverage && yarn start
 else
   yarn build && yarn start
 fi

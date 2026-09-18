@@ -17,3 +17,7 @@ static/tiles
 
 # compiled languages
 lang/compiled
+
+# coverage
+/coverage
+.nyc_output/
