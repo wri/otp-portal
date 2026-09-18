@@ -403,6 +403,8 @@
   "See why": "See why",
   "analysis": "Analysis",
   "analysis.description": "Select an FMU by using the following select or by clicking on the map shapes.",
+  "operator-detail.fmus.select": "Select FMU",
+  "operator-detail.fmus.show_all": "Show all FMUs",
   "analysis.loss": "There were {alerts} ha of tree cover loss",
   "analysis.gain": "There were {alerts} ha of tree cover gain",
   "analysis.integrated-zero": "There were 0 deforestation alerts between {startDate} and {trimEndDate}",

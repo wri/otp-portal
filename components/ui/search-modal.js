@@ -42,7 +42,7 @@ function useSearchIndexes() {
       type: 'fmu',
       title: f.name,
       sub: compact([f.operator.name, f.country?.name]),
-      href: `/operators/${f.operator.slug}/fmus`
+      href: `/operators/${f.operator.slug}/fmus?fmuId=${f.id}`
     })), [fmus.data]);
 
   return {
