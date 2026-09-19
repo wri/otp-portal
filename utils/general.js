@@ -52,7 +52,7 @@ export function sumBy(arr, funcOrKey) {
     return arr.reduce((acc, item) => acc + item[funcOrKey], 0);
   }
 
-  return arr.reduce((acc, item) => acc + func(item), 0);
+  return arr.reduce((acc, item) => acc + funcOrKey(item), 0);
 }
 
 export function transformValues(obj, func) {
