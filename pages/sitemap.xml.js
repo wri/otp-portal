@@ -57,7 +57,7 @@ export async function getServerSideProps({ res }) {
     .get('operators', { locale: 'en', 'page[size]': 3000, 'fields[operators]': 'slug' })
 
   let countries = [];
-  if (process.env.FEATURE_COUNTRY_PAGES) {
+  if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
     countries = await API.get('countries', {
       locale: 'en',
       include: 'required-gov-documents',
