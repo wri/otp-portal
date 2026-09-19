@@ -39,7 +39,6 @@
     "react-dom": "18",
     "react-dropzone": "^14.4.1",
     "react-fast-compare": "^3.2.2",
-    "react-geosuggest": "^2.7.0",
     "react-intl": "^6.8.9",
     "react-map-gl": "^7.1.9",
     "react-redux": "^9.2.0",
@@ -54,8 +53,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7",
-    "@eslint/eslintrc": "^3.3.5",
-    "@formatjs/cli": "^6.14.5",
     "@next/bundle-analyzer": "^16.3.2",
     "@vitest/coverage-istanbul": "4.1.11",
     "babel-loader": "^10.1.1",
@@ -81,11 +78,10 @@
   "scripts": {
     "dev": "NODE_ENV=development PORT=4000 next dev",
     "dev:debug": "NODE_ENV=development NODE_OPTIONS='--inspect' next dev",
-    "prebuild": "yarn lang-compile",
     "build": "next build --webpack",
-    "build:coverage": "yarn lang-compile && COVERAGE=true next build --webpack",
+    "build:coverage": "COVERAGE=true next build --webpack",
     "stats": "script/route-bundle-stats",
-    "build:stats": "yarn lang-compile && BUILD_DIR=.next-stats-turbopack next build && BUILD_DIR=.next-stats-webpack next build --webpack && script/route-bundle-stats .next-stats-turbopack .next-stats-webpack",
+    "build:stats": "BUILD_DIR=.next-stats-turbopack next build && BUILD_DIR=.next-stats-webpack next build --webpack && script/route-bundle-stats .next-stats-turbopack .next-stats-webpack",
     "postbuild": "script/compress-static",
     "start": "NODE_ENV=${NODE_ENV:-production} PORT=${PORT:-4000} next start",
     "prod": "yarn build && yarn start",
@@ -96,8 +92,7 @@
     "test:coverage": "vitest run --coverage",
     "coverage:report": "script/coverage-report",
     "transifex:push": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx push -s",
-    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js",
-    "lang-compile": "script/lang-compile"
+    "transifex:pull": "env $(grep ^TX_TOKEN -m 1 .env | xargs) tx pull -a -f && node transifex/format-locales.js"
   },
   "prettier": {
     "singleQuote": true

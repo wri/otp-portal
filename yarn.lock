@@ -382,7 +382,7 @@
   dependencies:
     "@types/json-schema" "^7.0.15"
 
-"@eslint/eslintrc@^3.3.5", "@eslint/eslintrc@^3.3.6":
+"@eslint/eslintrc@^3.3.6":
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-3.3.7.tgz#76d3dedec4a30ea32df797bf8a0085c1311b7316"
   integrity sha512-F42g89Qd5oAWtp0k0nnSrjziAKza7w8SVT4mStc18LZMaRb4J1HQAHLCalEtDCxrTuksx7NU9qsmeLwpOfPqWw==
@@ -434,48 +434,6 @@
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
-
-"@formatjs/cli-native-darwin-arm64@1.1.23":
-  version "1.1.23"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-darwin-arm64/-/cli-native-darwin-arm64-1.1.23.tgz#cae9b7c055431b3f4ba8826f5bc14ff787a7db50"
-  integrity sha512-PqtgkkSd0WGV5ebhoIT9fE++P+8KLVq/K1el3i79HSNYkly4yWdQPNEDBTvOMucPcyzZ/+XqNr9UvMbRe7pIqg==
-
-"@formatjs/cli-native-linux-arm64-musl@1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64-musl/-/cli-native-linux-arm64-musl-1.0.21.tgz#9e896cfd0152fd2c0f91059478f2b229de83f073"
-  integrity sha512-RobgvwLDxteURQ9cVQJTTCj6kcuiLz6H1nrtwl5TipW6YVffhmrg8c5SdU7BWvmU0fP5FFJYognKQOOLL33WiA==
-
-"@formatjs/cli-native-linux-arm64@1.2.23":
-  version "1.2.23"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64/-/cli-native-linux-arm64-1.2.23.tgz#7f200ff97c0dc2c89b9c907b3e3e76bd73b66cbe"
-  integrity sha512-RIQ8WNtUlwbTIvbE84tm54D12EFOa90u3qfcHgbmUTrjB89+2NfYzFoX48kibNORxGYR5J215bOpqsVDd1oyvQ==
-
-"@formatjs/cli-native-linux-x64-musl@1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64-musl/-/cli-native-linux-x64-musl-1.0.21.tgz#ce91c2993ad5c373972cf0a2aac490aa75043ce9"
-  integrity sha512-FteQ/AmlHEIRSOJbkuZ2YlAPjZRvR3iQAHOkPI49f8/OfxiXfXmCKYErF1EVPhn6lHi22nYDYpTLgy1xGKaC3Q==
-
-"@formatjs/cli-native-linux-x64@1.1.23":
-  version "1.1.23"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64/-/cli-native-linux-x64-1.1.23.tgz#73d11391cd43be8a2229f86780ece8a988cfb613"
-  integrity sha512-H3BFv0T+xPUUFeyneILY0DCqx9MBV9sqUiEEE3gNOfe2IIjAAn7w9j6PDvRepPw4hK3IwvnEcbPKmaYNCDRaSQ==
-
-"@formatjs/cli-native-win32-x64@1.1.24":
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.24.tgz#6f183464f04d8c0374f36aed23ca52cbad79e977"
-  integrity sha512-Sh/o+olExw6Hd+y7LlkbNyB//VlFi34LgIU58QD7DBTuj1F+fVEHwvBbFMWZZU+ylm+IPPM2ZUgRijMsxAFYww==
-
-"@formatjs/cli@^6.14.5":
-  version "6.16.29"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.29.tgz#6e5db91f16462a8457789188b58b0299b5a8580f"
-  integrity sha512-14iRpw8HwRcTj48u1QLUKou5m5fsE880ZpsOKgXwT5P/3P343nuKs8b0CEBqc1A/uGkxHm2VIa4z8gxBWpGECQ==
-  optionalDependencies:
-    "@formatjs/cli-native-darwin-arm64" "1.1.23"
-    "@formatjs/cli-native-linux-arm64" "1.2.23"
-    "@formatjs/cli-native-linux-arm64-musl" "1.0.21"
-    "@formatjs/cli-native-linux-x64" "1.1.23"
-    "@formatjs/cli-native-linux-x64-musl" "1.0.21"
-    "@formatjs/cli-native-win32-x64" "1.1.24"
 
 "@formatjs/ecma402-abstract@2.2.4":
   version "2.2.4"
@@ -4916,11 +4874,6 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-lodash.debounce@^4.0.6:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-  integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
-
 lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
@@ -5638,14 +5591,6 @@ react-fast-compare@^3.0.1, react-fast-compare@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.2.tgz#929a97a532304ce9fee4bcae44234f1ce2c21d49"
   integrity sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==
-
-react-geosuggest@^2.7.0:
-  version "2.14.1"
-  resolved "https://registry.yarnpkg.com/react-geosuggest/-/react-geosuggest-2.14.1.tgz#1e127b24d3c8b4ffb353bb0b74370ddc6806e8b8"
-  integrity sha512-gaAEZfDEHHWEMn9y8UNH+nJzu5Kc3LvK8CAFD6dFZmn69TJ/4GgoXLCLzUunbPK/Nqs08mpDsryK5ceFFmVhVg==
-  dependencies:
-    classnames "^2.2.6"
-    lodash.debounce "^4.0.6"
 
 react-intl@^6.8.9:
   version "6.8.9"

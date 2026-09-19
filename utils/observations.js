@@ -14,17 +14,6 @@ const HELPERS_OBS = {
     return groupBy(data, 'category');
   },
 
-  getGroupedByFMU(data) {
-    const groupedByFmu = groupBy(
-      data.filter((d) => !!d.fmu),
-      (d) => {
-        return d.fmu.name;
-      }
-    );
-
-    return groupedByFmu;
-  },
-
   getGroupedBySeverity(data, raw, lookupKey) {
     const key = lookupKey || 'level';
     const grouped = groupBy(data, key);
@@ -61,19 +50,6 @@ const HELPERS_OBS = {
   getMaxLength(data) {
     const arr = Object.keys(data).map((k) => data[k].length);
     return Math.max(...arr);
-  },
-
-  // Years
-  getYears(data) {
-    const years = Object.keys(groupBy(data, (d) => d.date));
-    return years
-      .sort((a, b) => b - a)
-      .map((year) => ({ label: year, value: year }));
-  },
-
-  getMaxYear(data) {
-    const years = Object.keys(groupBy(data, (d) => d.date));
-    return Math.max(...years);
   },
 
   // Monitors

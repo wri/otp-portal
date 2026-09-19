@@ -94,14 +94,6 @@ const HELPERS_DOC = {
     return groupBy(data, 'status');
   },
 
-  getGroupedByFmu(data) {
-    return groupBy(data, d => d.fmu.id);
-  },
-
-  getFMUName(data, id) {
-    return uniqBy(data.map(doc => doc.fmu), 'id').filter(fmu => fmu.id === id)[0].name;
-  },
-
   getGroupedByStatusChart(data) {
     if (data.length) {
       const length = data.length;
@@ -119,16 +111,6 @@ const HELPERS_DOC = {
     }
 
     return [];
-  },
-
-  getPercentageOfValidDocumentation(data) {
-    const grouped = this.getGroupedByStatus(data);
-    return (grouped.doc_valid) ? ((grouped.doc_valid.length / data.length) * 100).toFixed(2) : 0;
-  },
-
-  getMaxLength(data) {
-    const arr = Object.keys(data).map(k => data[k].length);
-    return Math.max(...arr);
   }
 };
 
