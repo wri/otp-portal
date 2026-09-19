@@ -1,14 +1,12 @@
-// const langFolder = process.env.NODE_ENV === 'production' ? 'compiled/' : '';
-const langFolder = '';
 const translations = {
-  en: require(`lang/${langFolder}en.json`),
-  es: require(`lang/${langFolder}es.json`),
-  fr: require(`lang/${langFolder}fr.json`),
-  pt: require(`lang/${langFolder}pt.json`),
-  ja: require(`lang/${langFolder}ja.json`),
-  ko: require(`lang/${langFolder}ko.json`),
-  vi: require(`lang/${langFolder}vi.json`),
-  zh: require(`lang/${langFolder}zh_CN.json`)
+  en: require('lang/en.json'),
+  es: require('lang/es.json'),
+  fr: require('lang/fr.json'),
+  pt: require('lang/pt.json'),
+  ja: require('lang/ja.json'),
+  ko: require('lang/ko.json'),
+  vi: require('lang/vi.json'),
+  zh: require('lang/zh_CN.json')
 }
 
 // The output is identical for a given locale, so serialise each one only once.
