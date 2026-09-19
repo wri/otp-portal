@@ -21,3 +21,6 @@ lang/compiled
 # coverage
 /coverage
 .nyc_output/
+
+# tmp files
+/tmp
