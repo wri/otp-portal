@@ -99,4 +99,22 @@ describe('Pages', () => {
       cy.contains('List of Cookies that May Be Set');
     })
   })
+
+  describe('Not found page', () => {
+    it('displays content', function () {
+      cy.visit('/this-page-does-not-exist', { failOnStatusCode: false });
+      cy.contains('h1', 'Page Not Found');
+      cy.contains('/this-page-does-not-exist');
+    })
+  })
+
+  describe('Sitemap', () => {
+    it('lists static and operator pages', function () {
+      cy.request('/sitemap.xml').then((response) => {
+        expect(response.headers['content-type']).to.include('text/xml');
+        expect(response.body).to.include('/observations</loc>');
+        expect(response.body).to.include('/operators/afriwood-industries/documentation</loc>');
+      });
+    })
+  })
 });

@@ -20,6 +20,27 @@ describe('Operator', function () {
       cy.docGetFMUDocCard('Nkola', `Compte-rendu du comité de suivi et d'évaluation du plan de gestion`)
         .contains('div', 'Not provided')
     })
+
+    it('can see operator observations', function () {
+      // seed observations have fixed dates, so they fall out of the default past-five-years view
+      cy.visit('/operators/afriwood-industries/observations?display_all=true');
+
+      cy.contains('Breakdown by Year and Severity');
+      cy.contains('h3', 'By severity');
+      cy.contains('h3', 'By category');
+
+      cy.get('.obi-illegality-info-title').first().click();
+      cy.get('.obi-illegality-info.-expanded').as('illegality');
+      cy.get('@illegality').find('.rt-tbody .rt-tr-group').should('have.length.at.least', 1);
+
+      cy.get('@illegality').contains('button', 'Customize Table Content').click();
+      cy.get('@illegality').contains('label', 'Location').click();
+      cy.get('@illegality').find('.rt-td.location button').first().click();
+      cy.get('@illegality').find('.c-map-sub-component').should('exist');
+
+      cy.contains('label', 'Display only observations made by independent forest monitors').click();
+      cy.location('search').should('not.include', 'display_all');
+    })
   });
 
   context('when logged in as Operator', function () {
