@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 
-import { getCookie } from '../cookies';
+import { getCookie, setCookie, deleteCookie } from '../cookies';
 
 describe('getCookie', () => {
   const AUTH = 'otp_auth_token';
@@ -31,5 +31,54 @@ describe('getCookie', () => {
     expect(getCookie(AUTH, '')).toBeNull();
     expect(getCookie(AUTH, undefined)).toBeNull();
     expect(getCookie('', 'otp_auth_token=abc123')).toBeNull();
+  });
+});
+
+describe('setCookie / deleteCookie', () => {
+  // the browser turns each assignment into one stored cookie; here the last write is enough
+  const documentStub = () => {
+    const doc = { cookie: '' };
+    vi.stubGlobal('document', doc);
+    return doc;
+  };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+  });
+
+  it('writes a session cookie without an expiry', () => {
+    const doc = documentStub();
+
+    setCookie('otp_auth_token', 'abc123');
+
+    expect(doc.cookie).toBe('otp_auth_token=abc123; path=/');
+  });
+
+  it('expires a cookie the given number of days ahead', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    const doc = documentStub();
+
+    setCookie('otp_auth_token', 'abc123', 30);
+
+    expect(doc.cookie).toBe(`otp_auth_token=abc123; expires=${new Date('2026-01-31T00:00:00Z').toUTCString()}; path=/`);
+  });
+
+  it('reads back what it wrote', () => {
+    documentStub();
+
+    setCookie('otp_auth_token', 'abc123');
+
+    expect(getCookie('otp_auth_token')).toBe('abc123');
+  });
+
+  it('deletes by expiring in the past', () => {
+    const doc = documentStub();
+
+    deleteCookie('otp_auth_token');
+
+    expect(doc.cookie).toBe('otp_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
+    expect(getCookie('otp_auth_token')).toBe('');
   });
 });

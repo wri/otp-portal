@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+
+// Merges the timings the e2e shards upload into e2e/timings.json.
+//
+// cypress-split records only the specs its own shard ran, but writes them merged over the
+// committed file, so every shard's copy also carries the other shards' old numbers. A spec
+// runs on one shard, so for each spec the value that differs from the committed one is the
+// fresh one. Specs no shard reported - a failing spec is not recorded - keep their number.
+
+const fs = require('fs');
+const path = require('path');
+
+const file = path.resolve(__dirname, '../e2e/timings.json');
+const read = (f) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).durations : []);
+
+const committed = new Map(read(file).map(({ spec, duration }) => [spec, duration]));
+const merged = new Map(committed);
+
+for (const shard of process.argv.slice(2)) {
+  for (const { spec, duration } of read(shard)) {
+    if (committed.get(spec) !== duration) merged.set(spec, duration);
+  }
+}
+
+// sorted by name so an update shows up as changed durations and nothing else
+const durations = [...merged]
+  .map(([spec, duration]) => ({ spec, duration }))
+  .sort((a, b) => a.spec.localeCompare(b.spec));
+
+fs.writeFileSync(file, `${JSON.stringify({ durations }, null, 2)}\n`);
+
+for (const { spec, duration } of [...durations].sort((a, b) => b.duration - a.duration)) {
+  const was = committed.get(spec);
+  const change = was === duration ? '' : was === undefined ? '  (new)' : `  (was ${was}ms)`;
+  console.log(`${String(duration).padStart(6)}ms  ${spec}${change}`);
+}

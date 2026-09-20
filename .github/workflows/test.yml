@@ -19,35 +19,28 @@ on: push
 jobs:
   unit:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Portal
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Read .nvmrc
         id: nvm
         run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v7
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-      - name: Restore Portal Node Modules Cache
-        id: cache-portal-modules
-        uses: actions/cache/restore@v3
+      - name: Cache Portal Node Modules
+        uses: actions/cache@v6
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('package.json', 'yarn.lock') }}
 
       - name: Install Portal Dependencies
-        run: yarn install --immutable
-
-      - name: Save Portal Node Modules Cache
-        uses: actions/cache/save@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+        run: yarn install --frozen-lockfile
 
       # vitest.config.mjs supplies the env vars constants/layers.js reads, so no .env is needed
       - name: Run unit tests
@@ -64,7 +57,7 @@ jobs:
   # E2E runs against an instrumented build, so this keeps the real production build checked.
   build:
     name: Production Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Portal
@@ -99,6 +92,7 @@ jobs:
           APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
           DISABLE_HOTJAR=true
+          CRITICAL_CSS=true
           " > .env
 
       - name: Cache Next.js Build
@@ -182,6 +176,7 @@ jobs:
           APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
           DISABLE_HOTJAR=true
+          CRITICAL_CSS=true
           " > .env
 
       # Separate from the Production Build cache: instrumented modules would only miss there.
@@ -282,8 +277,19 @@ jobs:
           # Balances shards by recorded spec duration; without it specs split by name
           # and operator.cy.js could land beside pages.cy.js.
           SPLIT_FILE: timings.json
+          # Only written when an output file is named, and only for specs that passed.
+          # The Coverage Report job merges the shards back into one timings.json.
+          SPLIT_OUTPUT_FILE: timings-${{ matrix.shard }}.json
           COVERAGE: "true"
         run: yarn cypress run
+
+      - name: Upload E2E Timings
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e-timings-${{ matrix.shard }}
+          path: e2e/timings-${{ matrix.shard }}.json
+          if-no-files-found: ignore
 
       - name: Upload E2E Coverage
         uses: actions/upload-artifact@v7
@@ -307,7 +313,7 @@ jobs:
 
   coverage:
     name: Coverage Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [unit, test]
     # Failing tests still leave coverage worth looking at.
     if: ${{ !cancelled() }}
@@ -347,6 +353,25 @@ jobs:
         with:
           pattern: coverage-e2e-*
           path: coverage/e2e
+
+      # Each shard times only the specs it ran, so they are merged back into one file
+      - name: Download E2E Timings
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: e2e-timings-*
+          path: timings
+
+      - name: Merge E2E Timings
+        run: |
+          node script/merge-e2e-timings timings/*/*.json | tee timings.txt
+          { echo '```'; cat timings.txt; echo '```'; } >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload E2E Timings
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-timings
+          path: e2e/timings.json
 
       - name: Merge Coverage
         run: |

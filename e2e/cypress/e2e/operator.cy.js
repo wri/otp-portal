@@ -20,6 +20,74 @@ describe('Operator', function () {
       cy.docGetFMUDocCard('Nkola', `Compte-rendu du comité de suivi et d'évaluation du plan de gestion`)
         .contains('div', 'Not provided')
     })
+
+    it('shows the deforestation analysis for the selected fmu', function () {
+      // the geostore and gfw requests are mocked: they are slow, and their data keeps moving
+      cy.intercept('GET', '**/gfw-data-api/dataset/gfw_integrated_alerts/latest', {
+        body: {
+          data: {
+            version: 'v20260910',
+            metadata: { content_date_range: { start_date: '2014-12-31', end_date: '2026-09-10' } }
+          }
+        }
+      });
+      cy.intercept('POST', '**/geostore', { body: { data: { id: 'geo-1' } } });
+      cy.intercept('GET', '**/gfw-data-api/dataset/gfw_integrated_alerts/latest/query*', {
+        body: {
+          data: [
+            { gfw_integrated_alerts__confidence: 'nominal', count: 8, area__ha: 1.1 },
+            { gfw_integrated_alerts__confidence: 'highest', count: 12, area__ha: 3.2 }
+          ]
+        }
+      }).as('alertsQuery');
+      cy.intercept('GET', '**/gfw-data-api/analysis/zonal/*', (req) => {
+        const gain = req.query.group_by === 'is__umd_tree_cover_gain';
+        req.reply({ data: gain ? [{ area__ha: 12.5 }] : [{ area__ha: 1 }, { area__ha: 2.5 }] });
+      }).as('zonal');
+
+      cy.visit('/operators/afriwood-industries/fmus');
+      cy.get('[data-test-id="fmu-select"]').select('Nkola');
+
+      cy.wait('@alertsQuery');
+      cy.wait('@zonal');
+
+      cy.get('.c-legend-analysis').contains('There were 20 deforestation alerts');
+      cy.get('.c-legend-analysis').contains('Highest confidence: 12');
+      cy.get('.c-legend-analysis').contains('Detected by single alert system: 8');
+      cy.get('.c-legend-analysis').contains('There were 12.5 ha of tree cover gain');
+      cy.get('.c-legend-analysis').contains('There were 3.5 ha of tree cover loss');
+    })
+
+    it('reports a failed analysis in the legend', function () {
+      cy.intercept('POST', '**/geostore', { statusCode: 500, body: {} }).as('geostore');
+
+      cy.visit('/operators/afriwood-industries/fmus');
+      cy.get('[data-test-id="fmu-select"]').select('Nkola');
+
+      cy.wait('@geostore');
+      cy.get('.c-legend-analysis').contains('There was an error during the analysis');
+    })
+
+    it('can see operator observations', function () {
+      // seed observations have fixed dates, so they fall out of the default past-five-years view
+      cy.visit('/operators/afriwood-industries/observations?display_all=true');
+
+      cy.contains('Breakdown by Year and Severity');
+      cy.contains('h3', 'By severity');
+      cy.contains('h3', 'By category');
+
+      cy.get('.obi-illegality-info-title').first().click();
+      cy.get('.obi-illegality-info.-expanded').as('illegality');
+      cy.get('@illegality').find('.rt-tbody .rt-tr-group').should('have.length.at.least', 1);
+
+      cy.get('@illegality').contains('button', 'Customize Table Content').click();
+      cy.get('@illegality').contains('label', 'Location').click();
+      cy.get('@illegality').find('.rt-td.location button').first().click();
+      cy.get('@illegality').find('.c-map-sub-component').should('exist');
+
+      cy.contains('label', 'Display only observations made by independent forest monitors').click();
+      cy.location('search').should('not.include', 'display_all');
+    })
   });
 
   context('when logged in as Operator', function () {

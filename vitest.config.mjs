@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 
+import { transformWithOxc } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 // shared with the e2e build so both runs count the same files and can be merged
@@ -12,7 +13,20 @@ const nyc = JSON.parse(readFileSync(new URL('./.nycrc.json', import.meta.url), '
  */
 const SOURCE_DIRS = ['components', 'constants', 'hooks', 'modules', 'selectors', 'services', 'utils'];
 
+// Components and some selectors keep JSX in .js files, which vite parses as plain JS.
+// Only files importing React are transformed: reprinting shifts columns, and the coverage
+// merge in script/coverage-report matches counters by source location.
+const jsxInJs = {
+  name: 'jsx-in-js',
+  enforce: 'pre',
+  transform(code, id) {
+    if (!id.endsWith('.js') || id.includes('/node_modules/') || !/^import React\b/m.test(code)) return null;
+    return transformWithOxc(code, id, { lang: 'jsx', jsx: { runtime: 'automatic' } });
+  }
+};
+
 export default defineConfig({
+  plugins: [jsxInJs],
   resolve: {
     alias: [
       { find: /^~\/(.*)$/, replacement: new URL('./$1', import.meta.url).pathname },
