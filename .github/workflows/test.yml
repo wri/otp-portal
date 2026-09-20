@@ -277,8 +277,19 @@ jobs:
           # Balances shards by recorded spec duration; without it specs split by name
           # and operator.cy.js could land beside pages.cy.js.
           SPLIT_FILE: timings.json
+          # Only written when an output file is named, and only for specs that passed.
+          # The Coverage Report job merges the shards back into one timings.json.
+          SPLIT_OUTPUT_FILE: timings-${{ matrix.shard }}.json
           COVERAGE: "true"
         run: yarn cypress run
+
+      - name: Upload E2E Timings
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e-timings-${{ matrix.shard }}
+          path: e2e/timings-${{ matrix.shard }}.json
+          if-no-files-found: ignore
 
       - name: Upload E2E Coverage
         uses: actions/upload-artifact@v7
@@ -342,6 +353,25 @@ jobs:
         with:
           pattern: coverage-e2e-*
           path: coverage/e2e
+
+      # Each shard times only the specs it ran, so they are merged back into one file
+      - name: Download E2E Timings
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: e2e-timings-*
+          path: timings
+
+      - name: Merge E2E Timings
+        run: |
+          node script/merge-e2e-timings timings/*/*.json | tee timings.txt
+          { echo '```'; cat timings.txt; echo '```'; } >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload E2E Timings
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-timings
+          path: e2e/timings.json
 
       - name: Merge Coverage
         run: |
