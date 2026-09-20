@@ -23,31 +23,24 @@ jobs:
 
     steps:
       - name: Checkout Portal
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Read .nvmrc
         id: nvm
         run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v7
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-      - name: Restore Portal Node Modules Cache
-        id: cache-portal-modules
-        uses: actions/cache/restore@v3
+      - name: Cache Portal Node Modules
+        uses: actions/cache@v6
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ steps.nvm.outputs.NVMRC }}-${{ hashFiles('package.json', 'yarn.lock') }}
 
       - name: Install Portal Dependencies
-        run: yarn install --immutable
-
-      - name: Save Portal Node Modules Cache
-        uses: actions/cache/save@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+        run: yarn install --frozen-lockfile
 
       # vitest.config.mjs supplies the env vars constants/layers.js reads, so no .env is needed
       - name: Run unit tests
