@@ -2,43 +2,43 @@
   "durations": [
     {
       "spec": "cypress/e2e/document-database.cy.js",
-      "duration": 3535
+      "duration": 3069
     },
     {
       "spec": "cypress/e2e/home.cy.js",
-      "duration": 4600
+      "duration": 4077
     },
     {
       "spec": "cypress/e2e/newsletter.cy.js",
-      "duration": 8265
+      "duration": 8466
     },
     {
       "spec": "cypress/e2e/notifications.cy.js",
-      "duration": 8117
+      "duration": 3848
     },
     {
       "spec": "cypress/e2e/observations.cy.js",
-      "duration": 5598
+      "duration": 7233
     },
     {
       "spec": "cypress/e2e/operator.cy.js",
-      "duration": 40389
+      "duration": 48597
     },
     {
       "spec": "cypress/e2e/pages.cy.js",
-      "duration": 14951
+      "duration": 19304
     },
     {
       "spec": "cypress/e2e/password-reset.cy.js",
-      "duration": 13104
+      "duration": 15138
     },
     {
       "spec": "cypress/e2e/transparency-ranking.cy.js",
-      "duration": 8370
+      "duration": 3845
     },
     {
       "spec": "cypress/e2e/user.cy.js",
-      "duration": 23283
+      "duration": 20324
     }
   ]
 }
