@@ -100,6 +100,33 @@ describe('Pages', () => {
     })
   })
 
+  describe('Mobile menu', () => {
+    beforeEach(() => {
+      cy.viewport('iphone-6');
+      cy.visit('/');
+    })
+
+    it('opens from the hamburger and links to the main pages', function () {
+      cy.get('.c-mobile-menu').should('not.exist');
+
+      cy.get('.c-hamburger').click();
+      cy.get('.c-mobile-menu').within(() => {
+        cy.contains('a', 'Transparency Ranking');
+        cy.contains('a', 'Observations');
+        cy.contains('a', 'About').click();
+      });
+
+      cy.location('pathname').should('eq', '/about');
+    })
+
+    it('closes again', function () {
+      cy.get('.c-hamburger').click();
+      cy.get('.c-hamburger').click();
+
+      cy.get('.c-mobile-menu').should('not.exist');
+    })
+  })
+
   describe('Not found page', () => {
     it('displays content', function () {
       cy.visit('/this-page-does-not-exist', { failOnStatusCode: false });
