@@ -22,18 +22,29 @@ const NOTIFICATIONS = [
   notification('2', { 'operator-document-name': 'Tax clearance', 'fmu-name': 'Nkola', 'expiration-date': daysFromNow(10) })
 ];
 
+const setNotificationsShown = (win) => win.localStorage.setItem('notificationsShown', 'true');
+const clearNotificationsShown = (win) => win.localStorage.removeItem('notificationsShown');
+
+// the count doubles as a check that the mocked payload was parsed into the store
+const openFromUserMenu = (count) => {
+  cy.get('div[role=button]').contains('My account').click();
+  cy.contains('a', `Notifications (${count})`).click();
+  return cy.get('.c-notifications', { timeout: 25000 }).should('exist');
+};
+
 describe('Notifications', function () {
   beforeEach(function () {
     cy.intercept('GET', '**/notifications*', { body: { data: NOTIFICATIONS } }).as('getNotifications');
     cy.login('operator@example.com', 'Supersecret1');
-    // the modal is shown once per browser, and cy.session restores what the login stored
-    cy.clearLocalStorage();
-    cy.visit('/');
+    // The modal shows itself once per browser and stores that in localStorage. The flag is
+    // set in onBeforeLoad, so it is in place before the page boots and reads it: setting it
+    // on an already loaded page would race with that page storing it itself.
+    cy.visit('/', { onBeforeLoad: setNotificationsShown });
     cy.wait('@getNotifications');
   })
 
-  it('opens a modal listing expired and expiring documents', function () {
-    cy.get('.c-notifications').within(() => {
+  it('lists expired and expiring documents', function () {
+    openFromUserMenu(2).within(() => {
       cy.contains('h3', 'AFRIWOOD INDUSTRIES has documents that have expired');
       cy.contains('p', 'Annual work plan');
       cy.contains('h3', 'AFRIWOOD INDUSTRIES has documents that are expiring soon');
@@ -41,18 +52,16 @@ describe('Notifications', function () {
     });
   })
 
-  it('closes with remind me later and does not reopen', function () {
-    cy.get('.c-notifications').contains('button', 'Remind me later').click();
-    cy.get('.c-notifications').should('not.exist');
+  it('closes with remind me later', function () {
+    openFromUserMenu(2).contains('button', 'Remind me later').click();
 
-    cy.visit('/');
     cy.get('.c-notifications').should('not.exist');
   })
 
   it('dismisses every notification', function () {
     cy.intercept('PUT', '**/notifications/*/dismiss', { statusCode: 200, body: {} }).as('dismiss');
 
-    cy.get('.c-notifications').contains('button', 'Dismiss All').click();
+    openFromUserMenu(2).contains('button', 'Dismiss All').click();
 
     cy.wait('@dismiss');
     cy.wait('@dismiss');
@@ -60,18 +69,29 @@ describe('Notifications', function () {
   })
 
   it('links to the producer documentation', function () {
-    cy.get('.c-notifications').contains('a', 'Update Now').click();
+    openFromUserMenu(2).contains('a', 'Update Now').click();
 
     cy.location('pathname', { timeout: 25000 }).should('include', '/documentation');
   })
+});
 
-  it('opens from the user menu and counts the documents', function () {
-    cy.get('.c-notifications').contains('button', 'Remind me later').click();
+describe('Notifications, on the first visit', function () {
+  beforeEach(function () {
+    cy.intercept('GET', '**/notifications*', { body: { data: NOTIFICATIONS } }).as('getNotifications');
+    cy.login('operator@example.com', 'Supersecret1');
+    // the login may already have shown the modal, so the flag is cleared for this load
+    cy.visit('/', { onBeforeLoad: clearNotificationsShown });
+    cy.wait('@getNotifications');
+  })
 
-    cy.get('div[role=button]').contains('My account').click();
-    cy.contains('a', 'Notifications (2)').click();
+  it('shows the modal once, then leaves it closed', function () {
+    cy.get('.c-notifications', { timeout: 25000 }).should('exist')
+      .contains('button', 'Remind me later').click();
+    cy.get('.c-notifications').should('not.exist');
 
-    cy.get('.c-notifications').contains('p', 'Annual work plan');
+    cy.visit('/');
+    cy.wait('@getNotifications');
+    cy.get('.c-notifications').should('not.exist');
   })
 });
 
@@ -79,8 +99,7 @@ describe('Notifications, with nothing to report', function () {
   beforeEach(function () {
     cy.intercept('GET', '**/notifications*', { body: { data: [] } }).as('getNotifications');
     cy.login('operator@example.com', 'Supersecret1');
-    cy.clearLocalStorage();
-    cy.visit('/');
+    cy.visit('/', { onBeforeLoad: clearNotificationsShown });
     cy.wait('@getNotifications');
   })
 
@@ -89,10 +108,7 @@ describe('Notifications, with nothing to report', function () {
   })
 
   it('says there is nothing when opened from the user menu', function () {
-    cy.get('div[role=button]').contains('My account').click();
-    cy.contains('a', 'Notifications (0)').click();
-
-    cy.get('.c-notifications').within(() => {
+    openFromUserMenu(0).within(() => {
       cy.contains('There are no new notifications.');
       cy.contains('button', 'Close').click();
     });
