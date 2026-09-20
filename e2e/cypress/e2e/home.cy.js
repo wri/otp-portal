@@ -13,24 +13,28 @@ describe('Home Page', () => {
       cy.get('[data-test-id=search-input]').as('input');
     })
 
-    it('shows matching operators and says when there are none', function () {
-      cy.get('@input').type('sic');
-      cy.get('[data-test-id=search-results]').contains('li', 'SIFCO');
-
-      cy.get('@input').clear().type('zzzzzz');
+    it('shows matching operators, says when there are none and opens the clicked result', function () {
+      cy.get('@input').type('zzzzzz');
       cy.get('[data-test-id=search-results]').contains('li', 'No results');
-    })
 
-    it('goes to the operator page when a result is clicked', function () {
-      cy.get('@input').type('sic');
+      cy.get('@input').clear().type('sic');
+      cy.get('[data-test-id=search-results]').contains('li', 'SIFCO');
       cy.get('[data-test-id=search-results]').contains('a', 'SIFCO').click();
 
       cy.location('pathname', { timeout: 25000 }).should('include', '/operators/');
       cy.get('.c-static-header').should('contain.text', 'SIFCO');
     })
 
-    it('walks the results with the arrow keys and opens one with enter', function () {
-      cy.get('@input').type('a');
+    it('clears the search with the button and with escape, and walks the results with the keyboard', function () {
+      cy.get('@input').type('sic');
+      cy.get('.c-search button[aria-label="Clear search"]').click();
+      cy.get('[data-test-id=search-results]').should('not.contain.text', 'SIFCO');
+      cy.get('@input').should('have.value', '');
+
+      cy.get('@input').type('sic{esc}');
+      cy.get('[data-test-id=search-results]').should('not.contain.text', 'SIFCO');
+
+      cy.get('@input').clear().type('a');
       cy.get('[data-test-id=search-results] li').should('have.length.at.least', 2);
 
       cy.get('@input').type('{downarrow}');
@@ -42,16 +46,6 @@ describe('Home Page', () => {
         cy.get('@input').type('{enter}');
         cy.location('pathname', { timeout: 25000 }).should('eq', `/operators/${slug}/overview`);
       });
-    })
-
-    it('clears the search with the button and with escape', function () {
-      cy.get('@input').type('sic');
-      cy.get('.c-search button[aria-label="Clear search"]').click();
-      cy.get('[data-test-id=search-results]').should('not.contain.text', 'SIFCO');
-      cy.get('@input').should('have.value', '');
-
-      cy.get('@input').type('sic{esc}');
-      cy.get('[data-test-id=search-results]').should('not.contain.text', 'SIFCO');
     })
   });
 
