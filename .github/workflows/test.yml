@@ -19,7 +19,7 @@ on: push
 jobs:
   unit:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Portal
@@ -64,7 +64,7 @@ jobs:
   # E2E runs against an instrumented build, so this keeps the real production build checked.
   build:
     name: Production Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Portal
@@ -307,7 +307,7 @@ jobs:
 
   coverage:
     name: Coverage Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [unit, test]
     # Failing tests still leave coverage worth looking at.
     if: ${{ !cancelled() }}
