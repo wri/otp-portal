@@ -22,13 +22,14 @@ for (const shard of process.argv.slice(2)) {
   }
 }
 
+// sorted by name so an update shows up as changed durations and nothing else
 const durations = [...merged]
   .map(([spec, duration]) => ({ spec, duration }))
-  .sort((a, b) => b.duration - a.duration);
+  .sort((a, b) => a.spec.localeCompare(b.spec));
 
 fs.writeFileSync(file, `${JSON.stringify({ durations }, null, 2)}\n`);
 
-for (const { spec, duration } of durations) {
+for (const { spec, duration } of [...durations].sort((a, b) => b.duration - a.duration)) {
   const was = committed.get(spec);
   const change = was === duration ? '' : was === undefined ? '  (new)' : `  (was ${was}ms)`;
   console.log(`${String(duration).padStart(6)}ms  ${spec}${change}`);

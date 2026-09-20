@@ -1,24 +1,12 @@
 {
   "durations": [
     {
-      "spec": "cypress/e2e/operator.cy.js",
-      "duration": 40389
+      "spec": "cypress/e2e/document-database.cy.js",
+      "duration": 3535
     },
     {
-      "spec": "cypress/e2e/user.cy.js",
-      "duration": 23283
-    },
-    {
-      "spec": "cypress/e2e/pages.cy.js",
-      "duration": 14951
-    },
-    {
-      "spec": "cypress/e2e/password-reset.cy.js",
-      "duration": 13104
-    },
-    {
-      "spec": "cypress/e2e/transparency-ranking.cy.js",
-      "duration": 8370
+      "spec": "cypress/e2e/home.cy.js",
+      "duration": 4600
     },
     {
       "spec": "cypress/e2e/newsletter.cy.js",
@@ -33,12 +21,24 @@
       "duration": 5598
     },
     {
-      "spec": "cypress/e2e/home.cy.js",
-      "duration": 4600
+      "spec": "cypress/e2e/operator.cy.js",
+      "duration": 40389
     },
     {
-      "spec": "cypress/e2e/document-database.cy.js",
-      "duration": 3535
+      "spec": "cypress/e2e/pages.cy.js",
+      "duration": 14951
+    },
+    {
+      "spec": "cypress/e2e/password-reset.cy.js",
+      "duration": 13104
+    },
+    {
+      "spec": "cypress/e2e/transparency-ranking.cy.js",
+      "duration": 8370
+    },
+    {
+      "spec": "cypress/e2e/user.cy.js",
+      "duration": 23283
     }
   ]
 }
