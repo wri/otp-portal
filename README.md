@@ -48,6 +48,27 @@ Either half can be skipped; the report lists every file in `.nycrc.json` and sho
 at 0%. E2e coverage includes server-side rendering, which is read from `/api/__coverage__`.
 Remember to rebuild with `yarn build` afterwards, as the instrumented build is slower.
 
+## Translations
+
+Translations live in `lang/` and are managed on Transifex. The source file is `zu.json`; add new keys there (and to `en.json`). The scripts need the [Transifex CLI](https://developers.transifex.com/docs/cli) and `TX_TOKEN` in `.env`.
+
+```
+yarn transifex:push    # upload the source file (new keys)
+yarn transifex:pull    # download all translations and format them
+```
+
+To add translations for the keys your branch introduces, without uploading whole language files (which would overwrite everyone else's work on Transifex):
+
+```
+yarn transifex:branch-keys                                  # collect keys changed since master into transifex/pending/<branch>.json
+# fill in the empty values in that file
+yarn transifex:push                                         # the keys must exist in the source on Transifex first
+yarn transifex:push-keys transifex/pending/<branch>.json    # dry run, shows what would change
+yarn transifex:push-keys transifex/pending/<branch>.json --apply
+```
+
+`push-keys` never touches reviewed or proofread translations and skips existing ones unless `--overwrite` is passed. `transifex/pending/` is git-ignored.
+
 ## Regenerate Home Page Static Map
 
 Home page map could be regenerated using `tools/map-screenshot/index.js` script.
