@@ -213,6 +213,8 @@
   "login.form.field.password": "Mật khẩu",
   "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
+  "login.unlocked.title": "Tài khoản đã được mở khóa",
+  "login.unlocked.message": "Tài khoản của bạn đã được mở khóa, bạn có thể đăng nhập lại.",
   "signin": "Đăng nhập",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",

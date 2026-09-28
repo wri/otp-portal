@@ -213,6 +213,8 @@
   "login.form.field.password": "Senha",
   "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
+  "login.unlocked.title": "Conta desbloqueada",
+  "login.unlocked.message": "A sua conta foi desbloqueada, já pode entrar novamente.",
   "signin": "Entrar",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",

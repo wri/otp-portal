@@ -213,6 +213,8 @@
   "login.form.field.password": "密码",
   "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
+  "login.unlocked.title": "账户已解锁",
+  "login.unlocked.message": "您的账户已解锁，您可以重新登录。",
   "signin": "登录",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",

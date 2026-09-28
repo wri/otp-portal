@@ -213,6 +213,8 @@
   "login.form.field.password": "Mot de passe",
   "login.form.field.remember_me": "Se souvenir de moi pendant 30 jours",
   "login.error": "Mot de passe ou adresse mail incorrect",
+  "login.unlocked.title": "Compte débloqué",
+  "login.unlocked.message": "Votre compte a été débloqué, vous pouvez à nouveau vous connecter.",
   "signin": "Se connecter",
   "signin.forgot_password": "Vous avez oublié votre mot de passe ?",
   "signin.reset_your_password": "Réinitialiser votre mot de passe",
