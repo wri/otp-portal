@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 import dynamic from 'next/dynamic';
 
 // Intl
 import { useIntl } from 'react-intl';
+
+import { toastr } from 'react-redux-toastr';
 
 import { login } from 'modules/user';
 
@@ -22,19 +25,28 @@ import DynamicLoading from 'components/ui/dynamic-loading';
 
 const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { ssr: false, loading: DynamicLoading });
 
-const Login = () => {
+const Login = ({ notice }) => {
   const intl = useIntl();
+
+  // the toastr is fired from here, once the modal is mounted, so it doesn't get
+  // lost while the toastr container is still being loaded
+  useEffect(() => {
+    if (notice) {
+      toastr.success(notice.title, notice.message);
+    }
+  }, [notice]);
 
   const handleSubmit = ({ form }) => {
     return login({ body: { auth: { ...form, set_cookie: true } } })
       .then(() => {
         window.location.reload();
       }).catch((err) => {
-        let errorMessage = intl.formatMessage({ id: 'Oops! There was an error, try again' });
-        if (err.status === 401) {
+        // the API title tells apart e.g. a locked account from wrong credentials
+        let errorMessage = err.errors?.[0]?.title;
+        if ((!errorMessage && err.status === 401) || errorMessage === 'Incorrect email or password') {
           errorMessage = intl.formatMessage({ id: 'login.error', defaultMessage: 'Wrong email or password' });
         }
-        throw new Error(errorMessage);
+        throw new Error(errorMessage || intl.formatMessage({ id: 'Oops! There was an error, try again' }));
       })
   };
 
@@ -116,5 +128,12 @@ const Login = () => {
     </div>
   );
 }
+
+Login.propTypes = {
+  notice: PropTypes.shape({
+    title: PropTypes.string,
+    message: PropTypes.string
+  })
+};
 
 export default Login;

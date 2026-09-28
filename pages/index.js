@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
+
+// Services
+import modal from 'services/modal';
 
 // Components
 import Layout from 'components/layout/layout';
 import StaticSection from 'components/ui/static-section';
 import Card from 'components/ui/card';
 import Search from 'components/ui/search';
+import DynamicLoading from 'components/ui/dynamic-loading';
+
+const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
 
 const HomePage = () => {
   const intl = useIntl();
+  const router = useRouter();
+
+  // the API redirects here after unlocking an account
+  useEffect(() => {
+    if (!router.isReady || router.query.message !== 'user_unlocked') return;
+
+    modal.toggleModal(true, {
+      children: Login,
+      childrenProps: {
+        notice: {
+          title: intl.formatMessage({ id: 'login.unlocked.title', defaultMessage: 'Account unlocked' }),
+          message: intl.formatMessage({ id: 'login.unlocked.message', defaultMessage: 'Your account has been unlocked, you can sign in again.' })
+        }
+      }
+    });
+
+    // drop the param, so the modal doesn't show up again on reload
+    const { message, ...query } = router.query;
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+  }, [router.isReady, router.query.message]);
 
   return (
     <Layout

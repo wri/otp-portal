@@ -213,6 +213,8 @@
   "login.form.field.password": "パスワード",
   "login.form.field.remember_me": "Remember me for 30 days",
   "login.error": "Wrong email or password",
+  "login.unlocked.title": "アカウントのロックが解除されました",
+  "login.unlocked.message": "アカウントのロックが解除されました。再度サインインできます。",
   "signin": "サインイン",
   "signin.forgot_password": "Did you forget your password?",
   "signin.reset_your_password": "Reset your password",
