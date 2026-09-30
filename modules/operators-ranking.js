@@ -6,7 +6,6 @@ import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { groupBy } from 'utils/general';
 import { CERTIFICATIONS } from 'constants/fmu';
-import { getIntegratedAlertsSource } from 'constants/layers';
 
 const COUNTRIES = [
   { label: 'Congo', value: 47, iso: 'COG' },
@@ -178,7 +177,11 @@ export function setFilters(filter) {
 
 export function getIntegratedAlertsMetadata() {
   return (dispatch, getState) => {
-    return fetchIntegratedAlertsMetadata().then(({ minDataDate, maxDataDate, version }) => {
+    return Promise.all([
+      fetchIntegratedAlertsMetadata(),
+      // imported lazily so the layer definitions stay out of _app, which bundles every module
+      import('constants/layers')
+    ]).then(([{ minDataDate, maxDataDate, version }, { getIntegratedAlertsSource }]) => {
       const state = getState();
       const activeLayers = state.operatorsRanking.layersActive;
 

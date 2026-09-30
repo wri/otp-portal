@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { sumBy } from 'utils/general';
-import { getIntegratedAlertsSource } from 'constants/layers';
 
 export const setOperatorsDetailAnalysis = createAsyncThunk(
   'operatorsDetailFmus/setOperatorsDetailAnalysis',
@@ -43,7 +42,11 @@ export const getIntegratedAlertsMetadata = createAsyncThunk(
   'operatorsDetailFmus/getIntegratedAlertsMetadata',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { minDataDate, maxDataDate, version } = await fetchIntegratedAlertsMetadata();
+      const [{ minDataDate, maxDataDate, version }, { getIntegratedAlertsSource }] = await Promise.all([
+        fetchIntegratedAlertsMetadata(),
+        // imported lazily so the layer definitions stay out of _app, which bundles every module
+        import('constants/layers')
+      ]);
       const { operatorsDetailFmus } = getState();
       const activeLayers = operatorsDetailFmus.layersActive;
 
