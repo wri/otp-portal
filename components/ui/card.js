@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Link from 'next/link';
-import Truncate from 'react-truncate';
 
 import classnames from 'classnames';
 import { omit } from 'utils/general';
@@ -28,18 +27,11 @@ export default function Card({ theme, letter, title, description, descriptionTru
         {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="card-title">{title}</h2>
-        {!shouldTruncate && (
-          <div className="card-description" dangerouslySetInnerHTML={{ __html: description || '' }}>
-          </div>
-        )}
-        {shouldTruncate && (
-          <div className="card-description">
-            <Truncate lines={descriptionTruncateLines} >
-              <span dangerouslySetInnerHTML={{ __html: description || '' }}>
-              </span>
-            </Truncate>
-          </div>
-        )}
+        <div
+          className={classnames('card-description', { 'line-clamp': shouldTruncate })}
+          style={shouldTruncate ? { WebkitLineClamp: descriptionTruncateLines } : undefined}
+          dangerouslySetInnerHTML={{ __html: description || '' }}
+        />
 
         {!!Component && (
           <div className="card-component">

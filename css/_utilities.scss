@@ -1,3 +1,10 @@
 .whitespace-nowrap {
   white-space: nowrap;
 }
+
+// set the number of lines inline with `WebkitLineClamp`
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
