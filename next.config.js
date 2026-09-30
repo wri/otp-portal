@@ -1,7 +1,5 @@
 const { withSentryConfig } = require('@sentry/nextjs/config');
 
-require('dotenv').config();
-
 const config = {
   distDir: process.env.BUILD_DIR || '.next',
   // only PUBLIC env variables here (accessible on the client side)
