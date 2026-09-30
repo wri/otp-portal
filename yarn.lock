@@ -6153,11 +6153,6 @@ sirv@^2.0.3:
     mrmime "^2.0.0"
     totalist "^3.0.0"
 
-slugify@^1.6.9:
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.9.tgz#610957dea21e56b65e3a153215ef7b265715c8e8"
-  integrity sha512-vZ7rfeehZui7wQs438JXBckYLkIIdfHOXsaVEUMyS5fHo1483l1bMdo0EDSWYclY0yZKFOipDy4KHuKs6ssvdg==
-
 sort-asc@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/sort-asc/-/sort-asc-0.2.0.tgz#00a49e947bc25d510bfde2cbb8dffda9f50eb2fc"

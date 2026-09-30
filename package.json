@@ -46,7 +46,6 @@
     "react-table": "^6.11.5",
     "react-truncate": "^2.4.0",
     "recharts": "^2.15.4",
-    "slugify": "^1.6.9",
     "spin-delay": "^2.0.1"
   },
   "devDependencies": {
