@@ -17,6 +17,7 @@ import Error from 'pages/_error';
 import API, { setUnauthorizedHandler } from 'services/api';
 import { track } from 'services/server-timing';
 import { getCookie } from 'services/cookies';
+import { isMobileUserAgent } from 'utils/user-agent';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -202,11 +203,10 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
       }
       doneAuth();
 
-      const UAParser = (await import('ua-parser-js')).UAParser;
-      const { ua, device } = UAParser(req.headers['user-agent']);
+      const ua = req.headers['user-agent'] || '';
       const userAgent = {
         ua,
-        isMobile: device.is('mobile')
+        isMobile: isMobileUserAgent(ua)
       }
       store.dispatch(setUserAgent(userAgent));
     } else {
