@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 // Normalizes an annex date into the 'YYYY/MM/DD' format used by parsed documents.
 const formatDate = (date) => {

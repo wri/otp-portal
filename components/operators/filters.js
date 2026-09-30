@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import orderBy from 'lodash/orderBy';
+import { sortBy } from 'utils/general';
 
 import modal from 'services/modal';
 
@@ -89,7 +89,7 @@ const OperatorsFilters = ({ filters, options, className = '', setFilters }) => {
 
   const renderFiltersSelects = () => {
     return FILTERS_REFS.map((f) => {
-      const sortedOptions = orderBy(
+      const sortedOptions = sortBy(
         (options[f.key] || []).map(o => ({
           ...o,
           label: f.translate ? intl.formatMessage({ id: o.label }) : o.label

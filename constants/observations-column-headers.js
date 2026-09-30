@@ -5,7 +5,7 @@ import { PALETTE_COLOR_1 } from 'constants/rechart';
 import Icon from 'components/ui/icon';
 import ObserverInfoModal from 'components/ui/observer-info-modal';
 import modal from 'services/modal';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 export const tableCheckboxes = [
   'date',

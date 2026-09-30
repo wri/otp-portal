@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import {
   encode,
@@ -9,6 +9,9 @@ import {
   omitBy,
   isEmpty,
   sumBy,
+  sortBy,
+  uniqBy,
+  debounce,
   transformValues,
   groupBy,
   removeDiacritics,
@@ -81,6 +84,74 @@ describe('sumBy', () => {
 
   it('sums by function', () => {
     expect(sumBy([{ n: 1 }, { n: 2 }], (item) => item.n * 2)).toBe(6);
+  });
+
+  it('skips undefined values', () => {
+    expect(sumBy([{ n: 1 }, {}, { n: 2 }], 'n')).toBe(3);
+  });
+});
+
+describe('sortBy', () => {
+  it('sorts by key, nested path and function', () => {
+    const items = [{ name: 'b', fmu: { name: 'y' } }, { name: 'a', fmu: { name: 'z' } }, { name: 'c', fmu: { name: 'x' } }];
+
+    expect(sortBy(items, 'name').map((i) => i.name)).toEqual(['a', 'b', 'c']);
+    expect(sortBy(items, 'fmu.name').map((i) => i.name)).toEqual(['c', 'b', 'a']);
+    expect(sortBy(items, (i) => -i.name.charCodeAt(0)).map((i) => i.name)).toEqual(['c', 'b', 'a']);
+  });
+
+  it('sorts primitives when no iteratee is given', () => {
+    expect(sortBy(['b', 'c', 'a'])).toEqual(['a', 'b', 'c']);
+  });
+
+  it('breaks ties with the next key and keeps the original order otherwise', () => {
+    const items = [{ id: 1, p: 2, t: 'b' }, { id: 2, p: 1, t: 'z' }, { id: 3, p: 2, t: 'a' }, { id: 4, p: 2, t: 'a' }];
+
+    expect(sortBy(items, ['p', 't']).map((i) => i.id)).toEqual([2, 3, 4, 1]);
+  });
+
+  it('puts null, then undefined, then NaN last, as lodash does', () => {
+    expect(sortBy([NaN, undefined, 2, null, 1])).toEqual([1, 2, null, undefined, NaN]);
+  });
+
+  it('returns an empty array for a missing collection and does not mutate the input', () => {
+    const input = [3, 1, 2];
+
+    expect(sortBy(undefined, 'name')).toEqual([]);
+    expect(sortBy(input)).toEqual([1, 2, 3]);
+    expect(input).toEqual([3, 1, 2]);
+  });
+});
+
+describe('uniqBy', () => {
+  it('keeps the first item per key or function result', () => {
+    const items = [{ id: 1, k: 'a' }, { id: 2, k: 'b' }, { id: 3, k: 'a' }];
+
+    expect(uniqBy(items, 'k').map((i) => i.id)).toEqual([1, 2]);
+    expect(uniqBy(items, (i) => i.id % 2).map((i) => i.id)).toEqual([1, 2]);
+    expect(uniqBy(undefined, 'k')).toEqual([]);
+  });
+});
+
+describe('debounce', () => {
+  it('calls once with the last arguments after the wait', () => {
+    vi.useFakeTimers();
+    const fn = vi.fn();
+    const debounced = debounce(fn, 250);
+
+    debounced(1);
+    debounced(2);
+    vi.advanceTimersByTime(249);
+    expect(fn).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    expect(fn).toHaveBeenCalledOnce();
+    expect(fn).toHaveBeenCalledWith(2);
+
+    debounced(3);
+    debounced.cancel();
+    vi.advanceTimersByTime(250);
+    expect(fn).toHaveBeenCalledOnce();
+    vi.useRealTimers();
   });
 });
 

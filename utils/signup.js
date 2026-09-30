@@ -1,7 +1,5 @@
-import sortBy from 'lodash/sortBy';
-
 import API from 'services/api';
-import { groupBy } from 'utils/general';
+import { groupBy, sortBy } from 'utils/general';
 
 const HELPERS_REGISTER = {
   getCountries(lang) {

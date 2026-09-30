@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 import { getInteractiveLayersIds, getParams, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
 

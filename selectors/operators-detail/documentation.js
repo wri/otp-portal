@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import uniqBy from 'lodash/uniqBy';
-import sortBy from 'lodash/sortBy';
+import { sortBy, uniqBy } from 'utils/general';
 import { parseDocument } from 'utils/documents';
 import { getTodayDate } from 'utils/documentation';
 

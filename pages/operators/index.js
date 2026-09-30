@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import debounce from 'lodash/debounce';
+import { debounce } from 'utils/general';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'next/router';
 import { connect } from 'react-redux';

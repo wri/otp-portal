@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import sumBy from 'lodash/sumBy';
-import sortBy from 'lodash/sortBy';
+import { sortBy, sumBy } from 'utils/general';
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import dayjs from 'dayjs';
 

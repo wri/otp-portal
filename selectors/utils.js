@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
-import { isEmpty } from 'utils/general';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
+import { isEmpty, sortBy, uniqBy } from 'utils/general';
 import { getStyleLayerId } from 'components/map/layer-manager/utils';
 
 dayjs.extend(dayOfYear);

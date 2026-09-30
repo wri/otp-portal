@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 import { connect } from 'react-redux';
 
 // Next

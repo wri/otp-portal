@@ -47,12 +47,76 @@ export function isEmpty(obj) {
   return true;
 }
 
+// like lodash, undefined values are skipped rather than turning the sum into NaN
 export function sumBy(arr, funcOrKey) {
-  if (typeof funcOrKey === 'string') {
-    return arr.reduce((acc, item) => acc + item[funcOrKey], 0);
-  }
+  const iteratee = toIteratee(funcOrKey);
+  return arr.reduce((acc, item) => {
+    const value = iteratee(item);
+    return value === undefined ? acc : acc + value;
+  }, 0);
+}
 
-  return arr.reduce((acc, item) => acc + funcOrKey(item), 0);
+function toIteratee(iteratee) {
+  if (typeof iteratee === 'function') return iteratee;
+  if (iteratee === undefined) return (item) => item;
+  const path = String(iteratee).split('.');
+  return (item) => path.reduce((value, key) => value?.[key], item);
+}
+
+// lodash's order: null, then undefined, then NaN sort after every other value
+function sortRank(value) {
+  if (value === null) return 1;
+  if (value === undefined) return 2;
+  if (value !== value) return 3; // eslint-disable-line no-self-compare
+  return 0;
+}
+
+function compareAscending(a, b) {
+  const rankA = sortRank(a);
+  const rankB = sortRank(b);
+  if (rankA || rankB) return rankA - rankB;
+  if (a > b) return 1;
+  if (a < b) return -1;
+  return 0;
+}
+
+// Stable ascending sort by one or more keys (property paths or functions), as lodash/sortBy.
+export function sortBy(collection, iteratees) {
+  const fns = [iteratees].flat().map(toIteratee);
+  const items = collection ? Object.values(collection) : [];
+
+  return items
+    .map((item) => ({ item, keys: fns.map((fn) => fn(item)) }))
+    .sort((a, b) => {
+      for (let i = 0; i < fns.length; i++) {
+        const result = compareAscending(a.keys[i], b.keys[i]);
+        if (result) return result;
+      }
+      return 0;
+    })
+    .map(({ item }) => item);
+}
+
+export function uniqBy(arr, iteratee) {
+  const fn = toIteratee(iteratee);
+  const seen = new Set();
+  return (arr || []).filter((item) => {
+    const key = fn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// Trailing-edge only, which is lodash/debounce's default and all this app uses.
+export function debounce(fn, wait = 0) {
+  let timer;
+  function debounced(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), wait);
+  }
+  debounced.cancel = () => clearTimeout(timer);
+  return debounced;
 }
 
 export function transformValues(obj, func) {

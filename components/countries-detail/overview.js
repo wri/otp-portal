@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 import Html from 'components/html';
 

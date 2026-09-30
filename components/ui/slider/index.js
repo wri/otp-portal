@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import RCSlider from 'rc-slider';
 import Tooltip from 'rc-tooltip';
-import fill from 'lodash/fill';
 
 import { getStyledMarks } from './utils';
 
@@ -124,7 +123,7 @@ export class Slider extends PureComponent {
     } = this.props;
 
     const handleNum = Array.isArray(value) ? value.length : 1;
-    const handleStyles = fill(Array(handleNum), {
+    const handleStyles = Array(handleNum).fill({
       width: '1px',
       height: '10px',
       backgroundColor: '#808080',

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 import { HELPERS_DOC } from 'utils/documentation';
 
