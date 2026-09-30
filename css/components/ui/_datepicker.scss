@@ -186,6 +186,8 @@ $day-padding: 10px;
 
 
 .c-datepicker-input {
+  // anchors the chevron; the placeholder rendered before react-datepicker loads has no positioned wrapper
+  position: relative;
   width: auto;
   border-radius: 0;
   text-align: center;

@@ -6,6 +6,12 @@ class DatepickerInput extends PureComponent {
     focus: false
   }
 
+  button = React.createRef();
+
+  componentDidMount() {
+    if (this.props.autoFocus) this.button.current.focus();
+  }
+
   onFocus = (e) => {
     const { onFocus } = this.props;
 
@@ -21,11 +27,13 @@ class DatepickerInput extends PureComponent {
   }
 
   render () {
-    const { value, onClick } = this.props;
+    // label (formatted by the wrapper) wins over react-datepicker's own date-fns value
+    const { label, value, onClick } = this.props;
     const { focus } = this.state;
 
     return (
       <button
+        ref={this.button}
         className={classnames({
           "c-datepicker-input": true,
           "-focus": focus
@@ -34,7 +42,7 @@ class DatepickerInput extends PureComponent {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
       >
-        {value}
+        {label ?? value}
       </button>
     )
   }

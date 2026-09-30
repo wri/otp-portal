@@ -1,80 +1,50 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import classnames from 'classnames';
-
-import frLocale from 'date-fns/locale/fr';
-import ptLocale from 'date-fns/locale/pt';
-import jaLocale from 'date-fns/locale/ja';
-import koLocale from 'date-fns/locale/ko';
-import viLocale from 'date-fns/locale/vi';
-import zhCNLocale from 'date-fns/locale/zh-CN';
 
 import Input from './input';
 
-registerLocale('fr', frLocale);
-registerLocale('pt', ptLocale);
-registerLocale('ja', jaLocale);
-registerLocale('ko', koLocale);
-registerLocale('vi', viLocale);
-registerLocale('zh', zhCNLocale);
+// react-datepicker and date-fns are ~54 kB gzipped, so they load on first use, not with the page.
+// Hover/focus starts the download so the click rarely waits for it.
+const loadPicker = () => import('./picker');
 
-class Datepicker extends PureComponent {
-  render() {
-    const {
-      className,
-      onDateChange,
-      settings,
-      theme,
-      date,
-      dateFormat,
-      language
-    } = this.props;
-    const { minDate, maxDate } = settings;
+// dayjs locales are registered in _app; only Chinese is named differently there
+const DAYJS_LOCALES = { zh: 'zh-cn' };
 
-    return (
-      <div
-        ref={(ref) => {
-          this.ref = ref;
-        }}
-        className={classnames('c-datepicker', theme, className)}
-      >
-        <ReactDatePicker
-          locale={language}
-          className="datepicker-input"
-          selected={date.toDate()}
-          minDate={new Date(minDate)}
-          maxDate={new Date(maxDate)}
-          dateFormat={dateFormat || 'dd MMM'}
-          showMonthDropdown
-          showYearDropdown
-          // Custom components
-          customInput={<Input />}
-          // Popper
-          popperPlacement="bottom-start"
-          popperClassName="c-datepicker-popper"
-          popperModifiers={{
-            flip: {
-              enabled: false,
-            },
-            offset: {
-              enabled: true,
-              offset: '0px, -15px',
-            },
-            preventOverflow: {
-              enabled: true,
-              escapeWithReference: false, // force popper to stay in viewport (even when input is scrolled out of view)
-              boundariesElement: 'viewport',
-            },
-          }}
-          portalId="__next"
-          // Func
-          onSelect={onDateChange}
-          // renderCustomHeader={this.renderCalendarHeader}
+// The label is formatted with dayjs so it doesn't change once date-fns loads. Only the
+// date-fns tokens callers pass (dd, yyyy) need translating; MMM is the same in both.
+function formatLabel(date, dateFormat, language) {
+  const format = dateFormat.replace('dd', 'DD').replace('yyyy', 'YYYY');
+  return date.locale(DAYJS_LOCALES[language] || language).format(format);
+}
+
+const noop = () => {};
+
+function Datepicker({ className, onDateChange, settings, theme, date, dateFormat = 'dd MMM', language }) {
+  const [Picker, setPicker] = useState(null);
+  const label = formatLabel(date, dateFormat, language);
+
+  const open = () => {
+    loadPicker().then((m) => setPicker(() => m.default));
+  };
+
+  return (
+    <div className={classnames('c-datepicker', theme, className)} onMouseEnter={loadPicker}>
+      {Picker ? (
+        <Picker
+          language={language}
+          date={date}
+          minDate={settings.minDate}
+          maxDate={settings.maxDate}
+          dateFormat={dateFormat}
+          label={label}
+          onDateChange={onDateChange}
         />
-      </div>
-    );
-  }
+      ) : (
+        <Input label={label} onClick={open} onFocus={loadPicker} onBlur={noop} />
+      )}
+    </div>
+  );
 }
 
 Datepicker.propTypes = {
