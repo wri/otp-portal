@@ -40,14 +40,6 @@ if (typeof window === 'undefined') {
 import dayjs from 'dayjs';
 import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
 
-import 'dayjs/locale/es';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/pt';
-import 'dayjs/locale/ja';
-import 'dayjs/locale/ko';
-import 'dayjs/locale/vi';
-import 'dayjs/locale/zh-cn';
-
 dayjs.extend(dayOfYearPlugin);
 
 // The API issues bare cookie names because the portal sends no ?app= param

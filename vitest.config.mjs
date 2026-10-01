@@ -11,7 +11,7 @@ const nyc = JSON.parse(readFileSync(new URL('./.nycrc.json', import.meta.url), '
  * which next resolves through `baseUrl: "."` in jsconfig.json. Vite needs to be told the same
  * thing, so every top-level source directory is aliased back to the repo root.
  */
-const SOURCE_DIRS = ['components', 'constants', 'hooks', 'modules', 'selectors', 'services', 'utils'];
+const SOURCE_DIRS = ['components', 'constants', 'hooks', 'lang', 'modules', 'selectors', 'services', 'utils'];
 
 // Components and some selectors keep JSX in .js files, which vite parses as plain JS.
 // Only files importing React are transformed: reprinting shifts columns, and the coverage
