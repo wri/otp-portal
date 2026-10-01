@@ -64,6 +64,7 @@ const HomePage = () => {
         background="/static/images/home/bg-a.jpg"
         position={{ top: true, left: true }}
         column={5}
+        backgroundProps={{ fetchpriority: 'low' }}
       >
         <Card
           theme="-secondary -theme-home"
