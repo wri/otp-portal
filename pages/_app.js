@@ -34,16 +34,7 @@ let translations;
 // if (isServer) { ... }
 // DOES NOT WORK because required files ends up in the client bundle anyway. Dunno why
 if (typeof window === 'undefined') {
-  translations = {
-    en: require('lang/en.json'),
-    es: require('lang/es.json'),
-    fr: require('lang/fr.json'),
-    pt: require('lang/pt.json'),
-    ja: require('lang/ja.json'),
-    ko: require('lang/ko.json'),
-    vi: require('lang/vi.json'),
-    zh: require('lang/zh_CN.json')
-  }
+  translations = require('utils/translations').translations;
 }
 
 import dayjs from 'dayjs';

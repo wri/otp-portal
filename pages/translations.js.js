@@ -1,13 +1,4 @@
-const translations = {
-  en: require('lang/en.json'),
-  es: require('lang/es.json'),
-  fr: require('lang/fr.json'),
-  pt: require('lang/pt.json'),
-  ja: require('lang/ja.json'),
-  ko: require('lang/ko.json'),
-  vi: require('lang/vi.json'),
-  zh: require('lang/zh_CN.json')
-}
+import { translations } from 'utils/translations';
 
 // The output is identical for a given locale, so serialise each one only once.
 const scripts = {};
