@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 export const getCountry = createApiThunk(
   'countriesDetail/getCountry',
@@ -55,5 +56,7 @@ const countriesDetailSlice = createSlice({
     addApiCases(getCountryVPAs, 'vpas')(builder);
   },
 });
+
+registerReducer('countriesDetail', countriesDetailSlice.reducer);
 
 export default countriesDetailSlice.reducer;

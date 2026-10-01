@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { parseDocument } from 'utils/documents';
 import { getTodayDate } from 'utils/documentation';
 import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 export const getOperatorBySlug = createApiThunk(
   'operatorsDetail/getOperatorBySlug',
@@ -155,5 +156,7 @@ const operatorsDetailSlice = createSlice({
 });
 
 export const { setOperatorDocumentationDate, setOperatorDocumentationFMU } = operatorsDetailSlice.actions;
+
+registerReducer('operatorsDetail', operatorsDetailSlice.reducer);
 
 export default operatorsDetailSlice.reducer;

@@ -6,6 +6,7 @@ import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { groupBy } from 'utils/general';
 import { CERTIFICATIONS } from 'constants/fmu';
+import { registerReducer } from 'modules/registry';
 
 const COUNTRIES = [
   { label: 'Congo', value: 47, iso: 'COG' },
@@ -222,5 +223,7 @@ export function getIntegratedAlertsMetadata() {
     });
   };
 }
+
+registerReducer('operatorsRanking', operatorsRankingSlice.reducer);
 
 export default operatorsRankingSlice.reducer;

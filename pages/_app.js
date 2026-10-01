@@ -37,11 +37,6 @@ if (typeof window === 'undefined') {
   translations = require('utils/translations').translations;
 }
 
-import dayjs from 'dayjs';
-import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
-
-dayjs.extend(dayOfYearPlugin);
-
 // The API issues bare cookie names because the portal sends no ?app= param
 // (see the API's APIController#auth_cookie_name).
 const AUTH_COOKIE_NAME = 'otp_auth_token';

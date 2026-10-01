@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 export const getHowtos = createApiThunk('help/getHowtos', 'how-tos');
 export const getTools = createApiThunk('help/getTools', 'tools');
@@ -19,5 +20,7 @@ const helpSlice = createSlice({
     addApiCases(getTutorials, 'tutorials')(builder);
   },
 });
+
+registerReducer('help', helpSlice.reducer);
 
 export default helpSlice.reducer;
