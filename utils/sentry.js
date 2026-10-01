@@ -26,7 +26,9 @@ let sentry = null;
 
 export function loadSentry() {
   if (!sentryPromise) {
-    sentryPromise = import('@sentry/nextjs')
+    // The browser gets only the functions named in utils/sentry-browser.js; a whole-namespace
+    // import can't be tree-shaken. The server SDK is already loaded there, and lacks some of them.
+    sentryPromise = (typeof window === 'undefined' ? import('@sentry/nextjs') : import('utils/sentry-browser'))
       .then((mod) => {
         if (typeof window !== 'undefined' && SENTRY_DSN) {
           mod.init({
