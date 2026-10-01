@@ -490,5 +490,10 @@
   "mission_types.mandated": "Mandatado",
   "mission_types.semi_mandated": "Semimandatado",
   "mission_types.external": "Externo",
-  "mission_types.government": "Gobierno"
+  "mission_types.government": "Gobierno",
+  "value": "Valor",
+  "units": "Unidades",
+  "link": "Enlace",
+  "Address": "Dirección",
+  "Please log in again": "Por favor, inicie sesión de nuevo"
 }
