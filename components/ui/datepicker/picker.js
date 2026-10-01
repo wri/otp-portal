@@ -12,6 +12,9 @@ import zhCNLocale from 'date-fns/locale/zh-CN';
 
 import Input from './input';
 
+// loaded on demand with this chunk; css/components/ui/_datepicker.scss holds our overrides
+import 'react-datepicker/dist/react-datepicker.css';
+
 registerLocale('es', esLocale);
 registerLocale('fr', frLocale);
 registerLocale('pt', ptLocale);

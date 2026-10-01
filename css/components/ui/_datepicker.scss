@@ -1,4 +1,5 @@
-@import '../../../node_modules/react-datepicker/dist/react-datepicker';
+// react-datepicker's own CSS loads with the lazy picker (components/ui/datepicker/picker.js),
+// so after this file. Every override therefore carries one extra class to keep winning.
 
 $day-size: 30px;
 $day-padding: 10px;
@@ -13,11 +14,15 @@ $day-padding: 10px;
   }
 }
 
-.c-datepicker-popper {
+.react-datepicker-popper.c-datepicker-popper {
   z-index: 10;
 }
 
-.react-datepicker {
+.c-datepicker .react-datepicker-wrapper {
+  width: unset;
+}
+
+.c-datepicker-popper .react-datepicker {
   width: ($day-size * 7) + ($day-padding * 2);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25);
   transition: transform 0.3s linear;
@@ -27,10 +32,6 @@ $day-padding: 10px;
   font-size: $font-size-extrasmall;
   font-weight: $font-weight-bold;
   letter-spacing: 1px;
-
-  &-wrapper {
-    width: unset;
-  }
 
   .react-datepicker__navigation {
     cursor: pointer;
@@ -180,7 +181,7 @@ $day-padding: 10px;
   }
 }
 
-.react-datepicker__triangle {
+.c-datepicker-popper .react-datepicker__triangle {
   display: none;
 }
 
