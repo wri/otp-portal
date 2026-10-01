@@ -145,6 +145,26 @@ export function removeDiacritics(str) {
     .replace(/[̀-ͯ]/g, '');
 }
 
+const HTML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+const BLOCK_TAGS = /<\/?(p|div|br|li|ul|ol|h[1-6]|tr|td|th|table|blockquote|hr)\b[^>]*>/gi;
+
+// Plain text of an HTML string, for previews that must not render the markup itself
+// (links, bold text, embedded videos). Block tags become spaces so words don't run together.
+export function htmlToText(html) {
+  return (html || '')
+    .toString()
+    .replace(/<(script|style|iframe)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ')
+    .replace(BLOCK_TAGS, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z]+);/gi, (entity, code) => {
+      if (code[0] !== '#') return HTML_ENTITIES[code.toLowerCase()] ?? entity;
+      const point = code[1].toLowerCase() === 'x' ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+      return point <= 0x10ffff ? String.fromCodePoint(point) : entity;
+    })
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function getApiFiltersParams(filters) {
   return {
     ...Object.keys(filters).reduce((acc, key) => {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 
 import classnames from 'classnames';
-import { omit } from 'utils/general';
+import { htmlToText, omit } from 'utils/general';
 
 function isNullOrUndefined(val) {
   return val === null || val === undefined;
@@ -27,11 +27,14 @@ export default function Card({ theme, letter, title, description, descriptionTru
         {!isNullOrUndefined(letter) && <div className={`card-letter ${letterClassName}`}> {letter} </div>}
 
         <h2 className="card-title">{title}</h2>
-        <div
-          className={classnames('card-description', { 'line-clamp': shouldTruncate })}
-          style={shouldTruncate ? { WebkitLineClamp: descriptionTruncateLines } : undefined}
-          dangerouslySetInnerHTML={{ __html: description || '' }}
-        />
+        {/* a truncated description is a plain-text preview: no links, formatting or embeds */}
+        {shouldTruncate ? (
+          <div className="card-description line-clamp" style={{ WebkitLineClamp: descriptionTruncateLines }}>
+            {htmlToText(description)}
+          </div>
+        ) : (
+          <div className="card-description" dangerouslySetInnerHTML={{ __html: description || '' }} />
+        )}
 
         {!!Component && (
           <div className="card-component">

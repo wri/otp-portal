@@ -15,6 +15,7 @@ import {
   transformValues,
   groupBy,
   removeDiacritics,
+  htmlToText,
   getApiFiltersParams
 } from '../general';
 
@@ -174,6 +175,31 @@ describe('removeDiacritics', () => {
   it('strips accents and handles empty values', () => {
     expect(removeDiacritics('Société Forestière')).toBe('Societe Forestiere');
     expect(removeDiacritics(null)).toBe('');
+  });
+});
+
+describe('htmlToText', () => {
+  it('drops inline tags and keeps their text', () => {
+    expect(htmlToText('See <a href="https://example.org">the <strong>guide</strong></a>.')).toBe('See the guide.');
+  });
+
+  it('separates block elements with a space', () => {
+    expect(htmlToText('<p>First.</p><p>Second</p><ul><li>one</li><li>two</li></ul>line<br/>break'))
+      .toBe('First. Second one two line break');
+  });
+
+  it('removes embedded frames, scripts and styles entirely', () => {
+    expect(htmlToText('<p>Watch:</p><iframe src="https://www.youtube.com/embed/x">fallback</iframe><script>alert(1)</script>'))
+      .toBe('Watch:');
+  });
+
+  it('decodes common entities', () => {
+    expect(htmlToText('A&nbsp;&amp;&nbsp;B &lt;tag&gt; &quot;q&quot; it&#39;s &#x41; &eacute;')).toBe('A & B <tag> "q" it\'s A &eacute;');
+  });
+
+  it('handles empty values', () => {
+    expect(htmlToText(null)).toBe('');
+    expect(htmlToText(undefined)).toBe('');
   });
 });
 
