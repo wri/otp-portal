@@ -16,7 +16,7 @@
     "@sentry/nextjs": "^10.70.0",
     "@turf/bbox": "^6.5.0",
     "classnames": "^2.5.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^2.30.0",
     "dayjs": "^1.11.20",
     "dropcss": "^1.0.16",
     "foundation-sites": "^6.9.0",
