@@ -17,6 +17,7 @@ import Error from 'pages/_error';
 import API, { setUnauthorizedHandler } from 'services/api';
 import { track } from 'services/server-timing';
 import { getCookie } from 'services/cookies';
+import { isMobileUserAgent } from 'utils/user-agent';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -33,28 +34,11 @@ let translations;
 // if (isServer) { ... }
 // DOES NOT WORK because required files ends up in the client bundle anyway. Dunno why
 if (typeof window === 'undefined') {
-  translations = {
-    en: require('lang/en.json'),
-    es: require('lang/es.json'),
-    fr: require('lang/fr.json'),
-    pt: require('lang/pt.json'),
-    ja: require('lang/ja.json'),
-    ko: require('lang/ko.json'),
-    vi: require('lang/vi.json'),
-    zh: require('lang/zh_CN.json')
-  }
+  translations = require('utils/translations').translations;
 }
 
 import dayjs from 'dayjs';
 import dayOfYearPlugin from 'dayjs/plugin/dayOfYear';
-
-import 'dayjs/locale/es';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/pt';
-import 'dayjs/locale/ja';
-import 'dayjs/locale/ko';
-import 'dayjs/locale/vi';
-import 'dayjs/locale/zh-cn';
 
 dayjs.extend(dayOfYearPlugin);
 
@@ -202,11 +186,10 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
       }
       doneAuth();
 
-      const UAParser = (await import('ua-parser-js')).UAParser;
-      const { ua, device } = UAParser(req.headers['user-agent']);
+      const ua = req.headers['user-agent'] || '';
       const userAgent = {
         ua,
-        isMobile: device.is('mobile')
+        isMobile: isMobileUserAgent(ua)
       }
       store.dispatch(setUserAgent(userAgent));
     } else {

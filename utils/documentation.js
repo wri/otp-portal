@@ -1,7 +1,5 @@
 import dayjs from 'dayjs';
-import { groupBy } from 'utils/general';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
+import { groupBy, sortBy, uniqBy } from 'utils/general';
 
 // Constants
 import { PALETTE_COLOR_2 } from 'constants/rechart';

@@ -490,5 +490,10 @@
   "mission_types.mandated": "Mandated",
   "mission_types.semi_mandated": "Semi-mandated",
   "mission_types.external": "External",
-  "mission_types.government": "Government"
+  "mission_types.government": "Government",
+  "value": "值",
+  "units": "单位",
+  "link": "链接",
+  "Address": "地址",
+  "Please log in again": "请重新登录"
 }

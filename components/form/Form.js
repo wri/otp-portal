@@ -1,7 +1,7 @@
 import React, { useRef, useState, useContext, useMemo } from "react";
 import { toastr } from 'react-redux-toastr';
 import { useIntl } from "react-intl";
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy } from 'utils/general';
 
 import Spinner from "components/ui/spinner";
 

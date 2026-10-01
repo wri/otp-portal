@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import sortBy from 'lodash/sortBy';
-import slugify from 'slugify';
+import { sortBy } from 'utils/general';
 
 import { getInteractiveLayersIds, getParams, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
 
@@ -45,8 +44,7 @@ export const getActiveLayers = createSelector(
   (_layersActive, _layers, _layersSettings, _fmu, _operatorsDetail) => {
     if (!_operatorsDetail.loadedFMUS) return [];
 
-    const { id: operator_id, fmus } = _operatorsDetail;
-    const fmuNames = (fmus || []).map(f => slugify(f.name, { lower: true }));
+    const { id: operator_id } = _operatorsDetail;
 
     return _layersActive
       .map((id) => _layers.find(l => l.id === id))
@@ -76,11 +74,11 @@ export const getActiveLayers = createSelector(
           ...settings,
 
           ...(!!paramsConfig && {
-            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, operator_id: Number(operator_id), fmuNames })
+            params: getParams(paramsConfig, { ...settings.params, ...interactionParams, operator_id: Number(operator_id) })
           }),
 
           ...(!!decodeConfig && {
-            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams, operator_id: Number(operator_id), fmuNames }),
+            decodeParams: getParams(decodeConfig, { ...timelineConfig, ...settings.decodeParams, ...settings.timelineParams, operator_id: Number(operator_id) }),
             decodeFunction
           })
         };

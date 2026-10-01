@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import orderBy from 'lodash/orderBy';
+import { sortBy } from 'utils/general';
 import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -153,7 +153,7 @@ const ObservationsPage = (props) => {
               props.setObservationsMapCluster({
                 id: clusterId,
                 coordinates: geometry.coordinates,
-                features: orderBy(fts, 'properties.level'),
+                features: sortBy(fts, 'properties.level'),
                 layers,
               });
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import ReactTable from 'react-table';
+// only pages with a table load this; css/components/ui/_table.scss holds our overrides
+import 'react-table/react-table.css';
 
 /**
  * Recursively extracts plain text from a React element or primitive.

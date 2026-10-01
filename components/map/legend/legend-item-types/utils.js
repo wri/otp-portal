@@ -5,8 +5,6 @@
  * By including the content of the file here, we can remove the layer-manager v1 as a dependency
  */
 
-import compact from 'lodash/compact';
-
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
  * Keys to search should be in this format {{key}}
@@ -34,25 +32,23 @@ export const concatenation = (originalStr, params = {}) => {
   let sql;
 
   Object.keys(params).forEach((key) => {
-    sql = `${compact(
-      Object.keys(params[key]).map((k) => {
-        const value = params[key][k];
+    sql = `${Object.keys(params[key]).map((k) => {
+      const value = params[key][k];
 
-        if (Array.isArray(value) && !!value.length) {
-          // window.isNaN is needed here as Number.isNaN returns
-          // false in the case Number.isNaN('string'). please dont change.
-          const mappedValue = value.map((v) => (Number.isNaN(v) ? `'${v}'` : v));
-          // eslint-disable-line
-          return `${k} IN (${mappedValue.join(', ')})`;
-        }
+      if (Array.isArray(value) && !!value.length) {
+        // window.isNaN is needed here as Number.isNaN returns
+        // false in the case Number.isNaN('string'). please dont change.
+        const mappedValue = value.map((v) => (Number.isNaN(v) ? `'${v}'` : v));
+        // eslint-disable-line
+        return `${k} IN (${mappedValue.join(', ')})`;
+      }
 
-        if (value) {
-          return Number.isNaN(value) ? `${k} = '${value}'` : `${k} = ${value}`; // eslint-disable-line
-        }
+      if (value) {
+        return Number.isNaN(value) ? `${k} = '${value}'` : `${k} = ${value}`; // eslint-disable-line
+      }
 
-        return null;
-      })
-    ).join(' AND ')}`;
+      return null;
+    }).filter(Boolean).join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;
     else if (sql && key.startsWith('and')) sql = `AND ${sql}`;

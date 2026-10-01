@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import sortBy from 'lodash/sortBy';
+import { sortBy } from 'utils/general';
 
 // Get the datasets and filters from state
 const countriesDetail = state => state.countriesDetail;

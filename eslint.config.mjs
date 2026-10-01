@@ -8,7 +8,8 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['.next/**', 'node_modules/**', 'public/**', 'out/**', 'next.config.js'],
+    // .next-stats-* and tmp/ hold extra builds (yarn build:stats, size comparisons)
+    ignores: ['.next/**', '.next-stats-*/**', 'tmp/**', 'node_modules/**', 'public/**', 'out/**', 'next.config.js'],
   },
   {
     linterOptions: {

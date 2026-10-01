@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import sumBy from 'lodash/sumBy';
-import sortBy from 'lodash/sortBy';
+import { sortBy, sumBy } from 'utils/general';
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import dayjs from 'dayjs';
 
+import { dayjsLocale } from 'utils/dayjs-locales';
 import Spinner from 'components/ui/spinner';
 
 import { useIntl } from 'react-intl';
@@ -26,10 +26,10 @@ const LegendAnalysisIntegratedAlerts = (props) => {
   };
   const formatDate = (date) => {
     if (language === 'fr') {
-      return dayjs(date).locale(language).format('Do MMMM YYYY');
+      return dayjs(date).locale(dayjsLocale(language)).format('Do MMMM YYYY');
     }
 
-    return dayjs(date).locale(language).format('MMMM Do, YYYY');
+    return dayjs(date).locale(dayjsLocale(language)).format('MMMM Do, YYYY');
   }
   let alertText;
   if (data && totalCount > 0) {

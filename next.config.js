@@ -1,7 +1,5 @@
 const { withSentryConfig } = require('@sentry/nextjs/config');
 
-require('dotenv').config();
-
 const config = {
   distDir: process.env.BUILD_DIR || '.next',
   // only PUBLIC env variables here (accessible on the client side)
@@ -82,6 +80,11 @@ const config = {
     ];
   },
   turbopack: {
+    resolveAlias: {
+      // browser only: messages arrive precompiled (utils/translations.js), same as webpack below
+      // lib/ is the ES-module build; the CommonJS one at the package root pulls in all of tslib
+      '@formatjs/icu-messageformat-parser': { browser: '@formatjs/icu-messageformat-parser/lib/no-parser' },
+    },
     rules: {
       // see the loader for why this one dependency file needs rewriting
       '**/@luma.gl/webgl/dist/esm/webgl-utils/webgl-types.js': {
@@ -93,6 +96,15 @@ const config = {
     optimizePackageImports: ["modules"]
   },
   webpack(webpackConfig, { isServer }) {
+    // Messages reach the browser precompiled (utils/translations.js), so it doesn't need the
+    // ~10 kB gz ICU parser. `$` keeps the alias from also rewriting the no-parser subpath.
+    if (!isServer) {
+      webpackConfig.resolve.alias = {
+        ...webpackConfig.resolve.alias,
+        '@formatjs/icu-messageformat-parser$': '@formatjs/icu-messageformat-parser/lib/no-parser'
+      };
+    }
+
     // `yarn build:coverage`: instrument app source for e2e coverage. Runs as a pre-loader on the
     // original source; .nycrc.json picks the files.
     if (process.env.COVERAGE === 'true') {

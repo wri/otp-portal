@@ -14,17 +14,21 @@
     padding: 5px;
   }
 
-  &.-no-data {
-    .rt-table, .pagination-bottom {
-      display: none;
-    }
-  }
-
   &__no-data {
     padding: 20px;
     background: $color-gray-2;
     margin-top: $space-1 * 4;
     margin-bottom: $space-1 * 4;
+  }
+}
+
+// react-table's own CSS is imported by components/ui/table.js, so it loads after this file.
+// The doubled class keeps these overrides ahead of library rules of the same specificity.
+.c-table.c-table {
+  &.-no-data {
+    .rt-table, .pagination-bottom {
+      display: none;
+    }
   }
 
   &.-fit-to-page {

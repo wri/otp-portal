@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 import { useIntl } from 'react-intl';
 import Fuse from 'fuse.js';
 
-import { groupBy, removeDiacritics } from 'utils/general';
+import { groupBy, removeDiacritics, sortBy } from 'utils/general';
 
 // Redux
 import { connect } from 'react-redux';

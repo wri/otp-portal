@@ -2,7 +2,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Link from 'next/link';
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy } from 'utils/general';
 
 import Notifications from 'components/ui/notifications';
 import { logout } from 'modules/user';

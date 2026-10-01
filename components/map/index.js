@@ -7,6 +7,8 @@ import isEqual from 'react-fast-compare';
 import { isEmpty } from 'utils/general';
 
 import ReactMapGL from 'react-map-gl';
+// only pages with a map load this; css/components/map/*.scss holds our overrides
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const DEFAULT_VIEWPORT = {
   zoom: 2,

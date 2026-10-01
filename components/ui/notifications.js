@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
+import { sortBy, uniqBy } from 'utils/general';
 import Link from 'next/link';
 
 // Redux

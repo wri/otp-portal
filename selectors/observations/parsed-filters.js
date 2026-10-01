@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { isEmpty } from 'utils/general';
-import sortBy from 'lodash/sortBy';
+import { isEmpty, sortBy } from 'utils/general';
 
 // Get the datasets and filters from state
 const filters = state => state.observations.filters.data;

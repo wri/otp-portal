@@ -109,18 +109,16 @@ function getCriticalCss(ctx, pageHtml) {
   let criticalCss = null;
 
   try {
-    // webpack emitted one bundle under static/css; Turbopack emits CSS chunks
-    // alongside the JS ones. The .br/.gz siblings don't end in .css, so they're skipped.
-    const cssDirPath = ['static/css', 'static/chunks']
-      .map((dir) => path.resolve(process.cwd(), '.next', dir))
-      .find((dir) => fs.existsSync(dir) && fs.readdirSync(dir).some((f) => f.endsWith('.css')));
+    // The stylesheets this page links: the global one plus any the page's own components import.
+    // Not "every .css in the build": on-demand chunks (e.g. the date picker's) sit next to them.
+    const { pages } = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), '.next/build-manifest.json'), 'utf8'));
+    const cssFiles = [...new Set([...(pages['/_app'] || []), ...(pages[ctx.pathname] || [])])]
+      .filter((file) => file.endsWith('.css'));
 
-    if (!cssDirPath) {
-      console.warn('No CSS files found in the directory'); // eslint-disable-line
+    if (!cssFiles.length) {
+      console.warn('No CSS files found in the build manifest'); // eslint-disable-line
       return null;
     }
-
-    const cssFiles = fs.readdirSync(cssDirPath).filter(file => file.endsWith('.css'));
 
     // get cached critical css
     const buildId = fs.readFileSync(path.resolve(process.cwd(), '.next/BUILD_ID'), 'utf8').trim();
@@ -143,9 +141,9 @@ function getCriticalCss(ctx, pageHtml) {
       return cachedCriticalCss;
     }
 
-    // Get the first CSS file
-    const cssFilePath = path.join(cssDirPath, cssFiles[0]);
-    const css = fs.readFileSync(cssFilePath, 'utf8');
+    const css = cssFiles
+      .map((file) => fs.readFileSync(path.resolve(process.cwd(), '.next', file), 'utf8'))
+      .join('\n');
     const html = `
       <html>
         <body>
