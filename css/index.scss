@@ -32,8 +32,7 @@
 
 @import '../node_modules/rc-tooltip/assets/bootstrap_white';
 
-// - map
-@import '../node_modules/mapbox-gl/dist/mapbox-gl';
+// - map (mapbox-gl's own CSS is imported by components/map/index.js)
 @import 'components/map/map';
 @import 'components/map/legend-button';
 @import 'components/map/legend-item-button-opacity-tooltip';
@@ -53,8 +52,7 @@
 @import 'components/map/tooltip';
 @import 'components/map/layer-info';
 
-// - ui
-@import '../node_modules/react-table/react-table';
+// - ui (react-table's own CSS is imported by components/ui/table.js)
 @import '../node_modules/react-redux-toastr/src/styles/index';
 @import 'components/ui/accordion';
 @import 'components/ui/account-dropdown';

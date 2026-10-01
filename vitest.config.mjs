@@ -38,7 +38,7 @@ export default defineConfig({
   },
   test: {
     include: ['**/__tests__/**/*.test.js'],
-    exclude: ['node_modules/**', 'e2e/**', 'tools/**', '.next/**'],
+    exclude: ['node_modules/**', 'e2e/**', 'tools/**', '.next/**', 'tmp/**'],
     environment: 'node',
     // constants/layers.js reads these at module load, so they have to exist before any import
     env: {
