@@ -63,7 +63,6 @@ const DocumentsDatabasePage = (props) => {
         title={intl.formatMessage({
           id: 'producers_documents_database',
         })}
-        background="/static/images/static-header/bg-observations.jpg"
         className="-compact -wide"
       />
       <Filters

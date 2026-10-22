@@ -5,6 +5,8 @@
 
   width: 100%;
   min-height: 220px;
+  // shows while the image loads, or on its own when a page passes no background
+  background-color: $color-primary;
 
   position: relative;
 
@@ -86,7 +88,7 @@
   // a title strip for pages where the content below should start above the fold
   &.-compact {
     min-height: 0;
-    padding: $space-1 * 4 0;
+    padding: $space-1 * 4 0 $space-1 * 3.5;
     text-align: left;
 
     h2 {
