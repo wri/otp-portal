@@ -1,14 +1,428 @@
+$db-border: #E3E1D6;
+$db-border-light: #EEECE3;
+$db-muted: #5A6159;
+$db-head-bg: #F4F3EC;
+$db-row-hover: #FAFAF5;
+$db-tint: #F3F8F4;
+
 .c-db-table {
-  h2.c-title {
-    color: $color-primary;
-    font-family: $font-family-proximanova;
-    font-size: 16px;
-    letter-spacing: 1px;
-    line-height: 19px;
-    text-transform: uppercase;
+  &__toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $space-1 * 1.5;
+    margin-bottom: $space-1 * 2;
   }
 
-  .c-checkbox-box {
-    margin: 35px 0 55px;
+  &__title {
+    margin: 0;
+    color: $color-text-1;
+    font-family: $font-family-georgia;
+    font-size: 28px;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+
+  &__meta {
+    margin: $space-1 * .5 0 0;
+    color: $db-muted;
+    font-family: $font-family-proximanova;
+    font-size: 14px;
+  }
+
+  &__customize {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 14px 0 12px;
+    border: 1px solid $border-color-1;
+    background: $color-white;
+    color: $color-text-1;
+    font-family: $font-family-proximanova;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color $animation-time $ease-in-sine;
+
+    svg {
+      color: $color-primary;
+    }
+
+    &:hover {
+      border-color: $color-primary;
+    }
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    background: $color-gray-2;
+    color: $db-muted;
+    font-size: $font-size-small;
+  }
+
+  &__card {
+    position: relative;
+    background: $color-white;
+    border: 1px solid $db-border;
+    overflow: hidden;
+  }
+}
+
+// react-table overrides, scoped so other tables keep the shared .c-table look
+.c-table.c-table.database-table {
+  .c-table__no-data {
+    margin: 0;
+    background: none;
+    text-align: center;
+  }
+
+  .ReactTable {
+    .rt-thead.-header {
+      background: $db-head-bg;
+      border-bottom: 1px solid $db-border;
+    }
+
+    .rt-tbody .rt-tr-group {
+      border-bottom: 1px solid $db-border-light;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    .rt-tr {
+      align-items: center;
+    }
+
+    .rt-tbody .rt-tr:hover {
+      background: $db-row-hover;
+    }
+
+    .rt-th,
+    .rt-td {
+      padding: 14px 16px;
+      font-family: $font-family-proximanova;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .rt-th {
+      padding: 12px 16px;
+      color: $db-muted;
+      font-size: $font-size-small;
+      line-height: 16px;
+      letter-spacing: 1px;
+      white-space: normal;
+    }
+
+    .rt-td {
+      color: $color-text-1;
+
+      &.report {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .-empty {
+        color: $color-gray-3;
+      }
+    }
+
+    .rt-td.description a {
+      color: $color-primary;
+    }
+
+    .rt-td.evidence .evidence-item-wrapper {
+      flex-wrap: wrap;
+      gap: 6px;
+
+      .evidence-item {
+        margin: 0;
+        padding: 7px;
+        border: 1px solid $border-color-1;
+
+        .c-icon {
+          width: 14px;
+          height: 14px;
+          fill: $color-primary;
+        }
+
+        &:hover {
+          border-color: $color-primary;
+          background: $db-tint;
+        }
+      }
+    }
+  }
+}
+
+.c-db-file-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid $border-color-1;
+  background: $color-white;
+  color: $color-primary;
+  font-family: $font-family-proximanova;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+
+  .c-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  &:hover {
+    border-color: $color-primary;
+    background: $db-tint;
+  }
+}
+
+.c-db-status {
+  display: inline-block;
+  padding: 3px 8px;
+  background: $color-doc-not-required;
+  font-family: $font-family-proximanova;
+  font-size: $font-size-small;
+  line-height: 16px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  @include doc-status-badge-colors;
+
+  &.-doc_was_valid {
+    background: $color-doc-pending;
+    color: $color-gray-1;
+  }
+}
+
+.c-db-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: $space-1 * 1.5;
+  padding: $space-1 * 1.5 $space-1 * 2;
+  border-top: 1px solid $db-border;
+  font-family: $font-family-proximanova;
+
+  &__summary {
+    margin: 0;
+    color: $db-muted;
+    font-size: 14px;
+  }
+
+  &__pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 $space-1;
+    border: 0;
+    background: transparent;
+    color: $color-text-1;
+    font-family: $font-family-proximanova;
+    font-size: 15px;
+    cursor: pointer;
+
+    &:hover:not(:disabled):not(.-current) {
+      background: $color-gray-2;
+    }
+
+    &.-current {
+      background: $color-primary;
+      color: $color-white;
+      cursor: default;
+    }
+
+    &.-arrow {
+      border: 1px solid $border-color-1;
+      background: $color-white;
+
+      .c-icon {
+        width: 8px;
+        height: 14px;
+        fill: currentColor;
+      }
+    }
+
+    &:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__gap {
+    width: 24px;
+    color: $db-muted;
+    text-align: center;
+  }
+}
+
+.c-columns-modal {
+  color: $color-text-1;
+  font-family: $font-family-proximanova;
+
+  &__header {
+    padding: 28px 64px 12px 28px;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-georgia;
+    font-size: $font-size-extrabig;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+
+  &__description {
+    margin: 6px 0 0;
+    color: $db-muted;
+    font-size: 15px;
+
+    strong {
+      color: $color-text-1;
+      font-weight: normal;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 28px 24px;
+  }
+
+  &__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    legend {
+      padding: 0 0 10px;
+      color: $db-muted;
+      font-size: $font-size-small;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+  }
+
+  &__options {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $space-1;
+
+    @include breakpoint(medium) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid $db-border;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color $animation-time $ease-in-sine, background-color $animation-time $ease-in-sine;
+
+    input {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: $color-primary;
+      cursor: pointer;
+    }
+
+    &:hover {
+      border-color: $border-color-2;
+    }
+
+    &.-checked {
+      border-color: $color-primary;
+      background: $db-tint;
+    }
+  }
+
+  &__footer {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 28px;
+    border-top: 1px solid $db-border;
+    background: $db-row-hover;
+  }
+
+  &__shortcuts,
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  button {
+    min-height: 44px;
+    padding: 0 18px;
+    font-family: $font-family-proximanova;
+    font-size: 15px;
+    cursor: pointer;
+
+    &.-link {
+      padding: 0 10px;
+      border: 0;
+      background: none;
+      color: $color-primary;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.-outline {
+      border: 1px solid $border-color-1;
+      background: $color-white;
+      color: $color-text-1;
+
+      &:hover {
+        border-color: $color-text-1;
+      }
+    }
+
+    &.-solid {
+      border: 0;
+      background: $color-primary;
+      color: $color-white;
+
+      &:hover {
+        background: darken($color-primary, 5%);
+      }
+
+      &:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+      }
+    }
   }
 }

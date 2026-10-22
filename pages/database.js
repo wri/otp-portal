@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
@@ -16,7 +16,6 @@ import StaticHeader from 'components/ui/static-header';
 import { FILTERS_REFS } from 'constants/documents-database';
 import Filters from 'components/ui/database-filters';
 import DatabaseTable from 'components/database/table';
-import StaticTabs from 'components/ui/static-tabs';
 
 import useDeepCompareEffect from 'hooks/use-deep-compare-effect';
 import usePrevious from 'hooks/use-previous';
@@ -34,7 +33,6 @@ import {
 
 const DocumentsDatabasePage = (props) => {
   const intl = useIntl();
-  const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
   const { page } = props.database;
   const previousPage = usePrevious(page);
 
@@ -54,10 +52,6 @@ const DocumentsDatabasePage = (props) => {
     props.getDocumentsDatabaseUrl(props.router);
   }, [props.router.asPath]);
 
-  const triggerChangeTab = (tabValue) => {
-    setTab(tabValue);
-  };
-
   const { parsedFilters } = props;
 
   return (
@@ -70,6 +64,7 @@ const DocumentsDatabasePage = (props) => {
           id: 'producers_documents_database',
         })}
         background="/static/images/static-header/bg-observations.jpg"
+        className="-compact -wide"
       />
       <Filters
         options={parsedFilters.options}
@@ -77,19 +72,6 @@ const DocumentsDatabasePage = (props) => {
         setFilters={props.setFilters}
         loading={props.database.filters.loading}
         filtersRefs={FILTERS_REFS}
-      />
-
-      <StaticTabs
-        options={[
-          {
-            label: intl.formatMessage({
-              id: 'documentation.tab.documentation-list',
-            }),
-            value: 'documentation-list',
-          },
-        ]}
-        defaultSelected={tab}
-        onChange={triggerChangeTab}
       />
 
       <DatabaseTable />

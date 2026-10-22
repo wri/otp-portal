@@ -11,11 +11,24 @@ import Filters from 'components/ui/filters';
 class DatabaseFilters extends Filters {
   constructor(props) {
     super(props);
-    this.state = { open: true };
+    // open "more filters" straight away when the url already filters by one of them
+    this.state = {
+      showMore: props.filtersRefs.some((f) => !f.primary && this.isActive(f.key, props.filters))
+    };
   }
 
-  renderFiltersSelects() {
-    const { options, filters, filtersRefs } = this.props;
+  isActive(key, filters = this.props.filters) {
+    return !!(filters && filters[key] && filters[key].length);
+  }
+
+  clearAll = () => {
+    const filter = {};
+    this.props.filtersRefs.forEach((f) => { filter[f.key] = []; });
+    this.props.setFilters(filter);
+  }
+
+  renderFiltersSelects(filtersRefs) {
+    const { options, filters } = this.props;
 
     return filtersRefs.map((f) => {
       let opts = options[f.key];
@@ -107,49 +120,54 @@ class DatabaseFilters extends Filters {
   }
 
   render() {
-    const { className, loading } = this.props;
+    const { className, loading, filtersRefs, intl } = this.props;
+    const { showMore } = this.state;
 
-    const classNames = classnames({
-      [className]: !!className,
-    });
+    const primaryRefs = filtersRefs.filter((f) => f.primary);
+    const moreRefs = filtersRefs.filter((f) => !f.primary);
+    const activeCount = filtersRefs.filter((f) => this.isActive(f.key)).length;
+    const hiddenActiveCount = moreRefs.filter((f) => this.isActive(f.key)).length;
 
     return (
-      <aside className={`c-filters ${classNames}`}>
-        <div className="filters-content">
-          <div className="l-container">
-            <div className="row l-row">
-              <div className="columns small-12">
-                <h2 className="c-title">
-                  {this.props.intl.formatMessage({ id: 'filter.title' })}
-                  <button
-                    className={`filters-toggle-btn${
-                      this.state.open ? ' -green' : ''
-                    }`}
-                    aria-label="Toggle filters"
-                    onClick={() => this.setState({ open: !this.state.open })}
-                  >
-                    {this.state.open ? (
-                      <Icon name="icon-arrow-up" />
-                    ) : (
-                      <Icon name="icon-arrow-down" />
-                    )}
+      <aside className={classnames('c-filters', className)}>
+        <div className="l-container -wide">
+          <div className="filters-panel">
+            <Spinner isLoading={loading} />
+            <div className="filters-header">
+              <h2 className="filters-title">
+                {intl.formatMessage({ id: 'filter.title' })}
+              </h2>
+              {activeCount > 0 && (
+                <>
+                  <span className="filters-badge">
+                    {intl.formatMessage({ id: 'filter.active_count' }, { count: activeCount })}
+                  </span>
+                  <button type="button" className="filters-clear" onClick={this.clearAll}>
+                    {intl.formatMessage({ id: 'filter.clear_all' })}
                   </button>
-                </h2>
-              </div>
+                </>
+              )}
+            </div>
+
+            <div id="filters-grid" className="filters-grid">
+              {this.renderFiltersSelects(showMore ? [...primaryRefs, ...moreRefs] : primaryRefs)}
+              {moreRefs.length > 0 && (
+                <button
+                  type="button"
+                  className="filters-more-btn"
+                  aria-expanded={showMore}
+                  aria-controls="filters-grid"
+                  onClick={() => this.setState({ showMore: !showMore })}
+                >
+                  {intl.formatMessage({ id: showMore ? 'filter.fewer' : 'filter.more' })}
+                  {!showMore && hiddenActiveCount > 0 && (
+                    <span className="filters-more-count">{hiddenActiveCount}</span>
+                  )}
+                  <Icon name={showMore ? 'icon-arrow-up' : 'icon-arrow-down'} />
+                </button>
+              )}
             </div>
           </div>
-          {this.state.open && (
-            <div className="filters-wrapper">
-              <Spinner isLoading={loading} />
-              <div className="l-container">
-                <div className="row l-row">
-                  <div className="columns small-12 grid-wrapper">
-                    {this.renderFiltersSelects()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </aside>
     );

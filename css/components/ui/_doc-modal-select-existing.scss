@@ -247,28 +247,6 @@
     padding: 2px 8px;
     white-space: nowrap;
     flex-shrink: 0;
-    color: $color-white;
-
-    &.-doc_valid {
-      background: $color-doc-valid;
-    }
-
-    &.-doc_pending {
-      background: $color-doc-pending;
-      color: $color-gray-1;
-    }
-
-    &.-doc_invalid {
-      background: $color-doc-invalid;
-      color: $color-gray-1;
-    }
-
-    &.-doc_expired {
-      background: $color-doc-expired;
-    }
-
-    &.-doc_not_provided {
-      background: $color-doc-not-provided;
-    }
+    @include doc-status-badge-colors;
   }
 }

@@ -78,4 +78,28 @@
     right: 0;
     margin: $space-1 * 3 0 0;
   }
+
+  &.-wide .wrapper {
+    @include layout-wide;
+  }
+
+  // a title strip for pages where the content below should start above the fold
+  &.-compact {
+    min-height: 0;
+    padding: $space-1 * 4 0;
+    text-align: left;
+
+    h2 {
+      margin: 0;
+      font-size: $font-size-large;
+
+      @media screen and (max-width: 780px) {
+        font-size: $font-size-bigger;
+      }
+    }
+
+    h3:empty {
+      display: none;
+    }
+  }
 }
