@@ -54,7 +54,8 @@ const AboutPage = ({ about, partners, donors }) => {
     );
   };
 
-  const aboutPageEntries = sortBy(about.data, 'position') || about.data;
+  const page = about.data;
+  const sections = sortBy(page?.sections, 'position');
 
   return (
     <Layout
@@ -68,23 +69,40 @@ const AboutPage = ({ about, partners, donors }) => {
 
       <div className="c-section">
         <div className="l-container">
-          {aboutPageEntries && aboutPageEntries.map((aboutEntry) => (
+          {(page?.intro || page?.body) && (
+            <article className="c-article">
+              <div className="row l-row">
+                <div className="columns small-12">
+                  <div className="content">
+                    <div className="description">
+                      {page.intro && <p className="bigger georgia">{page.intro}</p>}
+                      {page.body && <Html html={page.body} className="bigger georgia" />}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          )}
+
+          {sections.map((section) => (
             <article
               className="c-article"
-              key={aboutEntry.id}
+              key={section.id}
             >
               <div className="row l-row">
                 <div className="columns small-12">
                   <header>
-                    <h2 className="c-title">{aboutEntry.title}</h2>
+                    <h2 className="c-title">{section.title}</h2>
                   </header>
                   <div className="content">
-                    <div className="description">
-                      <Html html={aboutEntry.body} className="bigger georgia" />
-                    </div>
+                    {section.body && (
+                      <div className="description">
+                        <Html html={section.body} className="bigger georgia" />
+                      </div>
+                    )}
 
-                    {aboutEntry.code === 'donors' && renderDonors()}
-                    {aboutEntry.code === 'partners' && renderPartners()}
+                    {section.code === 'donors' && renderDonors()}
+                    {section.code === 'partners' && renderPartners()}
                   </div>
                 </div>
               </div>
