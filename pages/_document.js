@@ -154,9 +154,13 @@ function getCriticalCss(ctx, pageHtml) {
     const label = `generating critical CSS for ${page}`;
     const span = Sentry.startInactiveSpan({ name: 'dropCSS', description: label });
     console.time(label); // eslint-disable-line
+    // The result is cached per route, so it must not depend on which record rendered first.
+    // Keep the static header's data-dependent variants (e.g. -logo) or they shift in later.
+    const hasStaticHeader = pageHtml.includes('c-static-header');
     criticalCss = dropcss({
       css,
-      html
+      html,
+      shouldDrop: (sel) => !(hasStaticHeader && sel.startsWith('.c-static-header'))
     }).css;
     // saving critical css
     // Write atomically: under pm2 cluster every worker misses this cache after a
