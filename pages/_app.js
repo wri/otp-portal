@@ -22,6 +22,7 @@ import wrapper from 'store';
 
 import 'css/index.scss';
 import { WebVitalsTracking } from '~/components/layout/web-vitals-tracking';
+import { IconSymbols } from 'components/ui/icon';
 
 let translations;
 // Here is some magic to not pass translations in page props as that is significantly increasing the size of the initial page load of every page.
@@ -141,6 +142,7 @@ const MyApp = ({ Component, ...rest }) => {
           <GoogleTagManager />
           <HotJar />
           <PageViewTracking />
+          <IconSymbols />
           <Component {...pageProps} language={language} />
         </>
       </Provider>

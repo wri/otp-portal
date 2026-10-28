@@ -176,7 +176,7 @@ const Search = ({ list, loading, theme, options }) => {
         }
 
         {!active &&
-          <Icon name="icon-search" />
+          <Icon name="icon-search" inline />
         }
 
         <input
