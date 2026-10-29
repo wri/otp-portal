@@ -33,7 +33,7 @@ const UserDropdown = ({ displayIcon, className, theme }) => {
           });
         }}
       >
-        {displayIcon && <Icon name="icon-user" />}
+        {displayIcon && <Icon name="icon-user" inline />}
         <span>{intl.formatMessage({ id: 'signin' })}</span>
       </div>
     )
@@ -45,7 +45,7 @@ const UserDropdown = ({ displayIcon, className, theme }) => {
     >
       <DropdownTrigger>
         <div className="header-nav-list-item">
-          {displayIcon && <Icon name="icon-user" />}
+          {displayIcon && <Icon name="icon-user" inline />}
           <span>{intl.formatMessage({ id: 'logged_in.trigger' })}</span>
         </div>
       </DropdownTrigger>

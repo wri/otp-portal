@@ -21,7 +21,7 @@ const SearchTrigger = ({ theme }) => {
         data-test-id="search-trigger"
         onClick={() => modal.toggleModal(true, { children: SearchModal, size: '-search' })}
       >
-        <Icon name="icon-search" />
+        <Icon name="icon-search" inline />
         <span>{intl.formatMessage({ id: 'search.trigger', defaultMessage: 'Search' })}</span>
       </button>
     </div>

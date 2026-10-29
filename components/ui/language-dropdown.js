@@ -35,7 +35,7 @@ const LanguageDropdown = ({ showSelectedCode, className }) => {
   return (
     <Dropdown className={cx("c-language-dropdown", className)}>
       <DropdownTrigger>
-        <Icon name="icon-language" />
+        <Icon name="icon-language" inline />
         <span>{showSelectedCode ? selectedLocale.code : selectedLocale.name}</span>
       </DropdownTrigger>
 

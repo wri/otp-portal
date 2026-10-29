@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
-import Icons from 'components/layout/icons';
 import Modal from 'components/ui/modal';
 import Toastr from 'components/ui/toastr';
 import Notifications from 'components/ui/notifications';
@@ -23,8 +22,6 @@ const Layout = ({ title, description, children, className, footer }) => {
         title={title}
         description={description}
       />
-
-      <Icons />
 
       <Header />
 
