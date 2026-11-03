@@ -63,13 +63,16 @@
   },
   "resolutions": {
     "**/@loaders.gl/xml/fast-xml-parser": "^5.7.0",
+    "**/@typescript-eslint/typescript-estree/minimatch": "^11.0.4",
     "compression-webpack-plugin/**/ajv": "^8.20.0",
     "fast-uri": "^3.1.3",
     "flatted": "^3.4.2",
+    "glob": "^14.0.3",
     "lodash": "4.18.1",
     "mapbox-gl/**/protocol-buffers-schema": "^3.6.1",
     "postcss": "^8.5.18",
     "sharp": "^0.35",
+    "**/test-exclude/minimatch": "^11.0.4",
     "**/texture-compressor/image-size": "^2.0.3"
   },
   "scripts": {
