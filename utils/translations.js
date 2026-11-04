@@ -11,6 +11,7 @@ import ja from 'lang/ja.json';
 import ko from 'lang/ko.json';
 import vi from 'lang/vi.json';
 import zh from 'lang/zh_CN.json';
+import zu from 'lang/zu.json';
 
 export const SOURCES = { en, es, fr, pt, ja, ko, vi, zh };
 
@@ -27,6 +28,8 @@ export function compileMessages(messages, locale) {
   }));
 }
 
+// Deploy replaces the locales with Transifex's copies, which lack keys not pushed yet. zu is the
+// committed source file the pull leaves alone, so it fills those in.
 export const translations = Object.fromEntries(
-  Object.entries(SOURCES).map(([locale, messages]) => [locale, compileMessages(messages, locale)])
+  Object.entries(SOURCES).map(([locale, messages]) => [locale, compileMessages({ ...zu, ...messages }, locale)])
 );

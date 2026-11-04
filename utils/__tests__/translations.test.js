@@ -15,6 +15,7 @@ const LOCALES = Object.fromEntries(
     .map((f) => [f, JSON.parse(fs.readFileSync(path.join(LANG_DIR, f), 'utf8'))])
 );
 const EN = LOCALES['en.json'];
+const ZU = LOCALES['zu.json'];
 
 // The only messages allowed to contain tags, and the tags the code rendering them has handlers for.
 // Adding a tag anywhere else means adding a handler first, then an entry here.
@@ -93,8 +94,8 @@ describe.each(Object.keys(LOCALES))('%s', (file) => {
 
 describe('message ids used in code', () => {
   // Without a message, react-intl falls back to defaultMessage, which the browser bundle can no
-  // longer parse, or to the raw id.
-  it('all exist in en.json', () => {
+  // longer parse, or to the raw id. zu.json, the Transifex source, backs every locale.
+  it('all exist in zu.json', () => {
     const files = [];
     const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
       const full = path.join(dir, entry.name);
@@ -112,7 +113,7 @@ describe('message ids used in code', () => {
     const missing = files.flatMap((file) => {
       const source = fs.readFileSync(file, 'utf8');
       return [...source.matchAll(LITERAL_ID)]
-        .filter(([, , id]) => !(id in EN))
+        .filter(([, , id]) => !(id in ZU))
         .map(([, , id]) => `${id} (${path.relative(ROOT, file)})`);
     });
 
