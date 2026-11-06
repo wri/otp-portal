@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 export const getAbout = createApiThunk('about/getAbout', 'pages', {
   params: { 'filter[slug]': 'about', include: 'sections' },
@@ -14,5 +15,7 @@ const aboutSlice = createSlice({
     addApiCases(getAbout)(builder);
   },
 });
+
+registerReducer('about', aboutSlice.reducer);
 
 export default aboutSlice.reducer;

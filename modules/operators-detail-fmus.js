@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 
 import { fetchIntegratedAlertsMetadata } from 'services/layers';
 import { sumBy } from 'utils/general';
+import { registerReducer } from 'modules/registry';
 
 export const setOperatorsDetailAnalysis = createAsyncThunk(
   'operatorsDetailFmus/setOperatorsDetailAnalysis',
@@ -367,5 +368,7 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
     });
 }
 
+
+registerReducer('operatorsDetailFmus', operatorsDetailFmusSlice.reducer);
 
 export default operatorsDetailFmusSlice.reducer;

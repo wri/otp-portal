@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 import { addApiCases, createApiThunk } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 const OBS_MAX_SIZE = 3000;
 const FRONTEND_FILTERS = {
@@ -136,5 +137,7 @@ export function getObservationsUrl(url) {
     dispatch(setFiltersObservations(payload));
   };
 }
+
+registerReducer('observations', observationsSlice.reducer);
 
 export default observationsSlice.reducer;
