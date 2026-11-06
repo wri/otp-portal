@@ -5,6 +5,7 @@ import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'u
 import { setUrlParam } from 'utils/url';
 import { addApiCases, createApiThunk } from 'utils/redux-helpers';
 import { DEFAULT_COLUMNS } from 'constants/documents-database';
+import { registerReducer } from 'modules/registry';
 
 export const getDocumentsDatabase = createApiThunk(
   'database/getDocumentsDatabase',
@@ -126,5 +127,7 @@ export function getDocumentsDatabaseUrl(url) {
     dispatch(setFiltersDocuments(payload));
   };
 }
+
+registerReducer('database', databaseSlice.reducer);
 
 export default databaseSlice.reducer;

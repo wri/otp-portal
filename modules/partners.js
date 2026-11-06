@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
+import { registerReducer } from 'modules/registry';
 
 export const getPartners = createApiThunk('partners/getPartners', 'partners', {
   useLanguage: false,
@@ -14,5 +15,7 @@ const partnersSlice = createSlice({
     addApiCases(getPartners)(builder);
   },
 });
+
+registerReducer('partners', partnersSlice.reducer);
 
 export default partnersSlice.reducer;

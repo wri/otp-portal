@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import API from 'services/api';
 import { parseDocument } from 'utils/documents';
+import { registerReducer } from 'modules/registry';
 
 const buildCacheKey = (operatorIds) =>
   [...operatorIds].map(Number).sort((a, b) => a - b).join(',');
@@ -116,4 +117,6 @@ const documentReuseSlice = createSlice({
 });
 
 export const { resetReusableDocuments } = documentReuseSlice.actions;
+registerReducer('documentReuse', documentReuseSlice.reducer);
+
 export default documentReuseSlice.reducer;
