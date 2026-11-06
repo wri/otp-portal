@@ -3,18 +3,23 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 
 // Components
-import CheckboxGroup from 'components/form/CheckboxGroup';
 import Table from 'components/ui/table';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
+import ColumnsModal from 'components/database/columns-modal';
+import Pagination from 'components/database/pagination';
 
 // Redux and HOC
 import { connect } from 'react-redux';
 // Intl
 import { useIntl } from 'react-intl';
 
+import modal from 'services/modal';
+import { COLUMN_GROUPS } from 'constants/documents-database';
 import { getParsedTableDocuments } from 'selectors/database/database';
-import { getDocumentsDatabase, setActiveColumns, setPage } from 'modules/documents-database';
+import { setActiveColumns, setPage } from 'modules/documents-database';
+
+const TOTAL_COLUMNS = COLUMN_GROUPS.flatMap((g) => g.columns).length;
 
 function DatabaseTable({
   database,
@@ -23,29 +28,10 @@ function DatabaseTable({
   setPage: _setPage
 }) {
   const intl = useIntl();
-  const inputs = [
-    'country',
-    'operator',
-    'forest-type',
-    'fmu',
-    'document-name',
-    'document',
-    'status',
-    'legal-category',
-    'start-date',
-    'expire-date',
-    'source',
-    'reason',
-    'annexes',
-  ];
 
   const columnHeaders = [
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'country' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'country' }),
       accessor: 'country',
       className: 'description',
       minWidth: 100,
@@ -53,14 +39,10 @@ function DatabaseTable({
       autoWidth: true,
     },
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'operator' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'operator' }),
       accessor: 'operator',
       className: 'description',
-      minWidth: 120,
+      minWidth: 140,
       Cell: (attr) => {
         const profileId = attr.original['operator-profile-id'];
 
@@ -72,148 +54,101 @@ function DatabaseTable({
       },
     },
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'forest-type' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'forest-type' }),
       accessor: 'forest-type',
       className: 'description',
-      minWidth: 150,
-      Cell: (attr) => (attr.value && intl.formatMessage({
-        id: attr.value,
-      })),
+      minWidth: 130,
+      Cell: (attr) => (attr.value
+        ? intl.formatMessage({ id: attr.value })
+        : <span className="-empty">-</span>),
     },
     {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'fmu' })}</span>
-      ),
+      Header: intl.formatMessage({ id: 'fmu' }),
       accessor: 'fmu',
       className: 'description',
-      minWidth: 100,
-      Cell: (attr) => (
-        <span>
-          {attr.value ? attr.value.name : ''}
-        </span>
-      ),
+      minWidth: 110,
+      Cell: (attr) => (attr.value && attr.value.name
+        ? attr.value.name
+        : <span className="-empty">-</span>),
     },
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'document-name' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'document-name' }),
       accessor: 'document-name',
       className: 'description',
-      minWidth: 200,
+      minWidth: 220,
+      maxWidth: 420,
     },
-
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'document' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'document' }),
       accessor: 'document',
-      headerClassName: '',
       className: 'report',
-      minWidth: 120,
+      minWidth: 110,
       Cell: (attr) => (
-        <div className="report-item-wrapper">
-          {(attr.value && attr.value.url) ? (
-            <a
-              href={attr.value.url}
-              target="_blank"
-              className="report-item"
-              aria-label="Download document"
-            >
-              <Icon className="" name="icon-file-empty" />
-            </a>
-          ) : (
-            <span className="report-item-text">-</span>
-          )}
-        </div>
+        (attr.value && attr.value.url) ? (
+          <a
+            href={attr.value.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="c-db-file-link"
+          >
+            <Icon name="icon-file-empty" />
+            {intl.formatMessage({ id: 'database.view_document' })}
+          </a>
+        ) : (
+          <span className="-empty">-</span>
+        )
       ),
     },
-
     {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'status' })}</span>
-      ),
+      Header: intl.formatMessage({ id: 'status' }),
       accessor: 'status',
-      minWidth: 150,
+      minWidth: 170,
       className: 'status',
-      Cell: (attr) => (
-        <span>
-          {attr.value && intl.formatMessage({
-            id: attr.value,
-          })}
+      Cell: (attr) => attr.value && (
+        <span className={`c-db-status -${attr.value}`}>
+          {intl.formatMessage({ id: attr.value })}
         </span>
       ),
     },
-
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'category' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'category' }),
       accessor: 'legal-category',
-      headerClassName: '-a-left',
       className: 'description',
+      minWidth: 140,
+    },
+    {
+      Header: intl.formatMessage({ id: 'doc.start_date' }),
+      accessor: 'start-date',
       minWidth: 120,
     },
-
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'doc.start_date' })}
-        </span>
-      ),
-      accessor: 'start-date',
-      minWidth: 150,
-    },
-    {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'doc.expiry_date' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'doc.expiry_date' }),
       accessor: 'expire-date',
-      minWidth: 150,
+      minWidth: 120,
     },
     {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'source' })}</span>
-      ),
+      Header: intl.formatMessage({ id: 'source' }),
       accessor: 'source',
-      minWidth: 200,
+      className: 'description',
+      minWidth: 160,
       Cell: (attr) => (
-        <span className="-source">
-          {attr.value && attr.value !== 'other_source'
-            ? intl.formatMessage({ id: attr.value })
-            : attr.original.sourceInfo}
-        </span>
+        attr.value && attr.value !== 'other_source'
+          ? intl.formatMessage({ id: attr.value })
+          : attr.original.sourceInfo
       ),
     },
     {
-      Header: (
-        <span className="sortable">{intl.formatMessage({ id: 'reason' })}</span>
-      ),
+      Header: intl.formatMessage({ id: 'reason' }),
       accessor: 'reason',
       className: 'description',
       minWidth: 200,
+      maxWidth: 420,
     },
     {
-      Header: (
-        <span className="sortable">
-          {intl.formatMessage({ id: 'annexes' })}
-        </span>
-      ),
+      Header: intl.formatMessage({ id: 'annexes' }),
       accessor: 'annexes',
-      headerClassName: '-a-left',
       className: 'evidence description',
-      minWidth: 200,
+      minWidth: 160,
       Cell: (attr) => (
         <div className="evidence-item-wrapper">
           {Array.isArray(attr.value) &&
@@ -222,10 +157,11 @@ function DatabaseTable({
                 href={v.attachment ? v.attachment.url : ''}
                 key={v.id}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="evidence-item"
                 aria-label="Download evidence document"
               >
-                <Icon className="" name="icon-file-empty" />
+                <Icon name="icon-file-empty" />
               </a>
             ))}
 
@@ -237,58 +173,78 @@ function DatabaseTable({
     },
   ];
 
-  const tableOptions = inputs.map((column) => ({
-    label: intl.formatMessage({ id: column }),
-    value: column,
-  }));
+  const openColumnsModal = () => {
+    modal.toggleModal(true, {
+      children: ColumnsModal,
+      childrenProps: {
+        selected: database.columns,
+        onApply: _setActiveColumns,
+      },
+    });
+  };
 
   return (
     <section className="c-section -relative c-db-table">
-      <div className="l-container">
-        <h2 className="c-title">
-          {intl.formatMessage({
-            id: 'select-table-content',
-          })}
-        </h2>
-        <Spinner isLoading={database.loading} />
-        <CheckboxGroup
-          className="-inline"
-          name="observations-columns"
-          onChange={(value) => _setActiveColumns(value)}
-          properties={{
-            default: database.columns,
-            name: 'observations-columns',
-          }}
-          options={tableOptions}
-        />
+      <div className="l-container -wide">
+        <div className="c-db-table__toolbar">
+          <div>
+            <h2 className="c-db-table__title">
+              {intl.formatMessage({ id: 'documents' })}
+            </h2>
+            {database.pageCount > 0 && (
+              <p className="c-db-table__meta">
+                {intl.formatMessage(
+                  { id: 'database.page_of' },
+                  { page: database.page + 1, pages: database.pageCount }
+                )}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            className="c-db-table__customize"
+            onClick={openColumnsModal}
+          >
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M9 4v16M15 4v16" />
+            </svg>
+            {intl.formatMessage({ id: 'database.customize_table' })}
+            <span className="c-db-table__count">
+              {database.columns.length} / {TOTAL_COLUMNS}
+            </span>
+          </button>
+        </div>
 
-        <Table
-          className="database-table -fit-to-page"
-          data={parsedTableDocuments}
-          options={{
-            columns: columnHeaders.filter((header) =>
-              database.columns.includes(header.accessor)
-            ),
-            pagination: true,
-            manual: true,
-            sortable: false,
-            multiSort: false,
-            page: database.page,
-            pageSize: 30,
-            pages: database.pageCount,
-            loading: database.loading,
-            onFetchData: ((state) => {
-              _setPage(state.page);
-            }),
-            previousText: '<',
-            nextText: '>',
-            noDataText: intl.formatMessage({
-              id: 'operator-documents.no-data',
-              defaultMessage: 'There are no documents that match you selected criteria'
-            }),
-            showPageSizeOptions: false
-          }}
-        />
+        <div className="c-db-table__card">
+          <Spinner isLoading={database.loading} />
+          <Table
+            className="database-table -fit-to-page"
+            data={parsedTableDocuments}
+            options={{
+              columns: columnHeaders.filter((header) =>
+                database.columns.includes(header.accessor)
+              ),
+              pagination: true,
+              manual: true,
+              sortable: false,
+              multiSort: false,
+              page: database.page,
+              pageSize: 30,
+              pages: database.pageCount,
+              loading: database.loading,
+              onFetchData: ((state) => {
+                _setPage(state.page);
+              }),
+              PaginationComponent: Pagination,
+              noDataText: intl.formatMessage({
+                id: 'operator-documents.no-data',
+                defaultMessage: 'There are no documents that match you selected criteria'
+              }),
+              showPageSizeOptions: false
+            }}
+          />
+        </div>
       </div>
     </section>
   );

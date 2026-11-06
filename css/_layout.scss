@@ -1,8 +1,21 @@
+@mixin layout-wide {
+  max-width: $layout-wide-max-width + 80px;
+  padding: 0 24px;
+
+  @include breakpoint(large) {
+    padding: 0 40px;
+  }
+}
+
 .l-container {
   display: block;
   margin: 0 auto;
   max-width: $layout-max-width + 40px;
   padding: 0 20px;
+
+  &.-wide {
+    @include layout-wide;
+  }
 }
 
 // GRID

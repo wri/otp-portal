@@ -20,9 +20,9 @@ const StaticHeader = ({
   return (
     <div
       className={`c-static-header ${customClasses}`}
-      style={{
+      style={background ? {
         backgroundImage: `image-set(url(${background.replace('.jpg', '.webp')}) type('image/webp'), url(${background}) type('image/jpeg'))`,
-      }}
+      } : undefined}
     >
       {tabs ? (
         <div className="wrapper">
@@ -65,7 +65,7 @@ StaticHeader.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   Component: PropTypes.oneOfType([PropTypes.element, PropTypes.bool]),
-  background: PropTypes.string.isRequired,
+  background: PropTypes.string,
   tabs: PropTypes.bool,
   logo: PropTypes.string,
   className: PropTypes.string,

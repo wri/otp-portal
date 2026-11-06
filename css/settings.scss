@@ -48,6 +48,33 @@ $color-doc-not-provided: $color-secondary;
 $color-doc-expired: #de2239;
 $color-doc-not-required: #333;
 
+// status badge colors, shared by the select-existing-document modal and the documents database table
+@mixin doc-status-badge-colors {
+  color: $color-white;
+
+  &.-doc_valid {
+    background: $color-doc-valid;
+  }
+
+  &.-doc_pending {
+    background: $color-doc-pending;
+    color: $color-gray-1;
+  }
+
+  &.-doc_invalid {
+    background: $color-doc-invalid;
+    color: $color-gray-1;
+  }
+
+  &.-doc_expired {
+    background: $color-doc-expired;
+  }
+
+  &.-doc_not_provided {
+    background: $color-doc-not-provided;
+  }
+}
+
 // Zindex
 $z-index-1: 0;
 $z-index-2: 999;
@@ -84,6 +111,8 @@ $font-weight-bold:    700;
 */
 // Max widths
 $layout-max-width: 1200px;
+// data-heavy pages (documents database table)
+$layout-wide-max-width: 1840px;
 
 // Responsive breakpoints
 $br-mobile: 640px;

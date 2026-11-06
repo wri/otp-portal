@@ -4,6 +4,7 @@ import { createSlice, isPending } from '@reduxjs/toolkit';
 import { encode, decode, parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 import { setUrlParam } from 'utils/url';
 import { addApiCases, createApiThunk } from 'utils/redux-helpers';
+import { DEFAULT_COLUMNS } from 'constants/documents-database';
 
 export const getDocumentsDatabase = createApiThunk(
   'database/getDocumentsDatabase',
@@ -57,7 +58,7 @@ const databaseSlice = createSlice({
       loading: false,
       error: false,
     },
-    columns: ['country', 'document', 'forest-type', 'document-name', 'status', 'operator', 'fmu'],
+    columns: DEFAULT_COLUMNS,
   },
   reducers: {
     setFiltersDocuments: (state, action) => {
