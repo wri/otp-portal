@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 
-import esLocale from 'date-fns/locale/es';
-import frLocale from 'date-fns/locale/fr';
-import ptLocale from 'date-fns/locale/pt';
-import jaLocale from 'date-fns/locale/ja';
-import koLocale from 'date-fns/locale/ko';
-import viLocale from 'date-fns/locale/vi';
-import zhCNLocale from 'date-fns/locale/zh-CN';
+import { es as esLocale } from 'date-fns/locale/es';
+import { fr as frLocale } from 'date-fns/locale/fr';
+import { pt as ptLocale } from 'date-fns/locale/pt';
+import { ja as jaLocale } from 'date-fns/locale/ja';
+import { ko as koLocale } from 'date-fns/locale/ko';
+import { vi as viLocale } from 'date-fns/locale/vi';
+import { zhCN as zhCNLocale } from 'date-fns/locale/zh-CN';
 
 import Input from './input';
 
