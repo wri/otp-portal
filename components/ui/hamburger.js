@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-const Hamburger = ({ isOpen, onClick, theme }) => {
+const Hamburger = ({ isOpen, onClick, theme = '-theme-light' }) => {
   return (
     <button
       aria-expanded={isOpen}
@@ -25,9 +25,6 @@ Hamburger.propTypes = {
   theme: PropTypes.string
 };
 
-Hamburger.defaultProps = {
-  theme: '-theme-light'
-};
 
 export default Hamburger;
 

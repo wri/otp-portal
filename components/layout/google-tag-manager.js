@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Script from 'next/script';
 
-const GoogleTagManager = ({ noscript }) => {
+const GoogleTagManager = ({ noscript = false }) => {
   const gtmKey = process.env.GOOGLE_TAG_MANAGER_KEY;
 
   if (!gtmKey) return null;
@@ -37,9 +37,6 @@ const GoogleTagManager = ({ noscript }) => {
   )
 }
 
-GoogleTagManager.defaultProps = {
-  noscript: false
-};
 
 GoogleTagManager.propTypes = {
   noscript: PropTypes.bool

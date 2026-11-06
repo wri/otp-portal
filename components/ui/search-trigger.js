@@ -10,7 +10,7 @@ import modal from 'services/modal';
 // ssr:false - pages-router dynamic() with SSR breaks hydration under Turbopack.
 const SearchModal = dynamic(() => import('components/ui/search-modal'), { ssr: false, loading: DynamicLoading });
 
-const SearchTrigger = ({ theme }) => {
+const SearchTrigger = ({ theme = '' }) => {
   const intl = useIntl();
 
   return (
@@ -32,8 +32,5 @@ SearchTrigger.propTypes = {
   theme: PropTypes.string
 };
 
-SearchTrigger.defaultProps = {
-  theme: ''
-};
 
 export default SearchTrigger;

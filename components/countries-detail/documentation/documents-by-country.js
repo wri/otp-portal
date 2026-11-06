@@ -16,8 +16,10 @@ import CountryDocCardUpload from "components/ui/country-doc-card-upload";
 import ExpandableSection from "components/ui/expandable-section";
 import useUser from "hooks/use-user";
 
+const NO_DATA = [];
+
 function DocumentsByOperator(props) {
-  const { data, id } = props;
+  const { data = NO_DATA, id } = props;
   const user = useUser();
 
   const groupedByCategory = HELPERS_DOC.getGroupedByCategory(data);
@@ -92,10 +94,6 @@ function DocumentsByOperator(props) {
     </ul>
   );
 }
-
-DocumentsByOperator.defaultProps = {
-  data: []
-};
 
 DocumentsByOperator.propTypes = {
   data: PropTypes.array,

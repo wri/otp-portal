@@ -63,7 +63,7 @@ function AnnexTooltip({ annex, editable, onRemove, onEdit }) {
   );
 }
 
-export default function DocAnnex({ annex, editable, visible, onEdit, onRemove }) {
+export default function DocAnnex({ annex, editable = false, visible, onEdit, onRemove }) {
   return (
     <Tooltip
       placement="bottom"
@@ -84,9 +84,6 @@ export default function DocAnnex({ annex, editable, visible, onEdit, onRemove })
   )
 }
 
-DocAnnex.defaultProps = {
-  editable: false
-}
 
 DocAnnex.propTypes = {
   annex: PropTypes.object.isRequired,

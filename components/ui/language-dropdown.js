@@ -24,7 +24,7 @@ const changeLanguage = (e, code) => {
   window.location.href = e.currentTarget.href;
 };
 
-const LanguageDropdown = ({ showSelectedCode, className }) => {
+const LanguageDropdown = ({ showSelectedCode = false, className }) => {
   const { asPath, locale } = useRouter();
 
   // when using custom server asPath is prefixed with locale sometimes, it should not be
@@ -66,8 +66,5 @@ LanguageDropdown.propTypes = {
   showSelectedCode: PropTypes.bool
 }
 
-LanguageDropdown.defaultProps = {
-  showSelectedCode: false
-}
 
 export default LanguageDropdown;

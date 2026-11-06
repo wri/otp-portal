@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Icon from 'components/ui/icon';
 
 export default function Sidebar(props) {
-  const { className, open, name, children, onToggle } = props;
+  const { className, open = true, name, children, onToggle } = props;
   const [render, setRender] = React.useState(false);
 
   // keep rendering content after first open
@@ -56,6 +56,3 @@ Sidebar.propTypes = {
   onToggle: PropTypes.func
 };
 
-Sidebar.defaultProps = {
-  open: true
-};

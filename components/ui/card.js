@@ -10,7 +10,7 @@ function isNullOrUndefined(val) {
   return val === null || val === undefined;
 }
 
-export default function Card({ theme, letter, title, description, descriptionTruncateLines, link, Component }) {
+export default function Card({ theme, letter, title, description, descriptionTruncateLines = 6, link, Component }) {
   const classNames = classnames({
     [theme]: !!theme,
     '-nolink': !link
@@ -66,6 +66,3 @@ Card.propTypes = {
   link: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
 
-Card.defaultProps = {
-  descriptionTruncateLines: 6
-}
