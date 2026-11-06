@@ -22,7 +22,9 @@ import { SEARCH_OPTIONS } from 'constants/general';
 // Utils
 import { mergeExactMatches } from 'utils/search';
 
-const Search = ({ list, loading, theme, options }) => {
+const NO_LIST = [];
+
+const Search = ({ list = NO_LIST, loading, theme = '', options = SEARCH_OPTIONS }) => {
   const intl = useIntl();
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
@@ -234,11 +236,6 @@ Search.propTypes = {
   options: PropTypes.object
 };
 
-Search.defaultProps = {
-  theme: '',
-  list: [],
-  options: SEARCH_OPTIONS
-};
 
 export default connect(
   state => ({

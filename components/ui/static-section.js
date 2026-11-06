@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-const StaticSection = ({ children, background, backgroundProps, column, className, position, map }) => {
+const DEFAULT_POSITION = { top: true, left: true };
+
+const StaticSection = ({ children, background, backgroundProps, column = 12, className, position = DEFAULT_POSITION, map }) => {
   const setPosition = () => {
     return classnames({
       '-top': position.top,
@@ -56,10 +58,6 @@ const StaticSection = ({ children, background, backgroundProps, column, classNam
 
 export default StaticSection;
 
-StaticSection.defaultProps = {
-  position: { top: true, left: true },
-  column: 12
-};
 
 StaticSection.propTypes = {
   className: PropTypes.string,

@@ -10,7 +10,9 @@ import ChartLegend from 'components/ui/chart-legend';
 import useDeviceInfo from 'hooks/use-device-info';
 import useUser from 'hooks/use-user';
 
-function DocumentsProvidedChart({ data, operatorId }) {
+const NO_DATA = [];
+
+function DocumentsProvidedChart({ data = NO_DATA, operatorId }) {
   const user = useUser();
   const isMobileAgent = user.userAgent.isMobile;
   const { isMobile } = useDeviceInfo();
@@ -67,9 +69,6 @@ function DocumentsProvidedChart({ data, operatorId }) {
   );
 }
 
-DocumentsProvidedChart.defaultProps = {
-  data: [],
-};
 
 DocumentsProvidedChart.propTypes = {
   data: PropTypes.array,

@@ -51,9 +51,9 @@ const DocModalFileSource = ({
   setFormValues,
   docId,
   url,
-  operatorId,
-  allowSelectExisting,
-  fileLabelId,
+  operatorId = null,
+  allowSelectExisting = true,
+  fileLabelId = 'file',
 }) => {
   const intl = useIntl();
   const user = useUser();
@@ -202,10 +202,5 @@ DocModalFileSource.propTypes = {
   fileLabelId: PropTypes.string,
 };
 
-DocModalFileSource.defaultProps = {
-  operatorId: null,
-  allowSelectExisting: true,
-  fileLabelId: 'file',
-};
 
 export default DocModalFileSource;

@@ -23,7 +23,7 @@ function preprocess(text, linkify, placeholders) {
   return processedText;
 }
 
-const HTML = ({ html, linkify, placeholders, className }) => (
+const HTML = ({ html, linkify = false, placeholders, className }) => (
   <div className={cx('c-html', className)}>
     {renderHTML(
       preprocess(html, linkify, placeholders) || '',
@@ -54,9 +54,6 @@ const HTML = ({ html, linkify, placeholders, className }) => (
   </div>
 )
 
-HTML.defaultProps = {
-  linkify: false
-}
 
 HTML.propTypes = {
   html: PropTypes.string.isRequired,

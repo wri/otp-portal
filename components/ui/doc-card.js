@@ -18,11 +18,17 @@ import DocAnnex from 'components/ui/doc-annex';
 import Icon from 'components/ui/icon';
 import useUser from 'hooks/use-user';
 
+const NO_ANNEXES = [];
+const DEFAULT_LAYOUT = {
+  info: true,
+  annexes: true
+};
+
 const DocCard = (props) => {
   const intl = useIntl();
   const user = useUser();
   const [annexTooltipVisible, setAnnexTooltipVisible] = useState(undefined);
-  const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes, layout, onChange } = props;
+  const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes = NO_ANNEXES, layout = DEFAULT_LAYOUT, onChange } = props;
   const withFile = !!url;
 
   const documentationService = useMemo(() => new DocumentationService(), []);
@@ -359,14 +365,6 @@ DocCard.propTypes = {
   annexes: PropTypes.array,
   layout: PropTypes.shape({}),
   onChange: PropTypes.func
-};
-
-DocCard.defaultProps = {
-  annexes: [],
-  layout: {
-    info: true,
-    annexes: true
-  }
 };
 
 export default DocCard;

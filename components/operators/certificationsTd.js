@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CertificationsTd = ({ fmus }) => {
+const NO_FMUS = [];
+
+const CertificationsTd = ({ fmus = NO_FMUS }) => {
   const fsc = fmus.filter(f => f['certification-fsc']).length;
   const olb = fmus.filter(f => f['certification-olb']).length;
   const pefc = fmus.filter(f => f['certification-pefc']).length;
@@ -33,9 +35,6 @@ const CertificationsTd = ({ fmus }) => {
   );
 };
 
-CertificationsTd.defaultProps = {
-  fmus: []
-};
 
 CertificationsTd.propTypes = {
   fmus: PropTypes.array

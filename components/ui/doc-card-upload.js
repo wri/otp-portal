@@ -20,8 +20,15 @@ import modal from 'services/modal';
 import { showConfirmModal } from 'components/ui/confirm-modal';
 import DocModal from 'components/ui/doc-modal';
 
+const DEFAULT_BUTTONS = {
+  add: true,
+  update: true,
+  delete: true,
+  not_required: true,
+};
+
 const DocCardUpload = (props) => {
-  const { status, buttons, date, title, docId, onChange, reason } = props;
+  const { status, buttons = DEFAULT_BUTTONS, date, title, docId, onChange, reason } = props;
   const intl = useIntl();
   const documentationService = useMemo(() => new DocumentationService(), []);
 
@@ -219,25 +226,6 @@ DocCardUpload.propTypes = {
   buttons: PropTypes.shape({}),
   date: PropTypes.string,
   reason: PropTypes.string,
-};
-
-DocCardUpload.defaultProps = {
-  buttons: {
-    add: true,
-    update: true,
-    delete: true,
-    not_required: true,
-  },
-};
-
-
-DocCardUpload.defaultProps = {
-  buttons: {
-    add: true,
-    update: true,
-    delete: true,
-    not_required: true,
-  },
 };
 
 export default connect(

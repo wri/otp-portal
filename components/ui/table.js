@@ -69,7 +69,10 @@ function computeAutoWidth(column, data, font) {
   return computed;
 }
 
-export default function Table({ data, options, className }) {
+const NO_DATA = [];
+const NO_OPTIONS = {};
+
+export default function Table({ data = NO_DATA, options = NO_OPTIONS, className }) {
 
   // react table has some issue with not changing page number in page navigation when providing
   // new page number when using manual option
@@ -154,10 +157,6 @@ export default function Table({ data, options, className }) {
   );
 }
 
-Table.defaultProps = {
-  data: [],
-  options: {}
-};
 
 Table.propTypes = {
   data: PropTypes.array,

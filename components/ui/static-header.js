@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 const StaticHeader = ({
-  title,
-  subtitle,
-  background,
-  Component,
-  tabs,
-  logo,
-  className,
+  title = '',
+  subtitle = '',
+  background = '',
+  Component = null,
+  tabs = false,
+  logo = '',
+  className = null,
 }) => {
   const customClasses = classnames({
     '-tabs': tabs,
@@ -71,14 +71,5 @@ StaticHeader.propTypes = {
   className: PropTypes.string,
 };
 
-StaticHeader.defaultProps = {
-  title: '',
-  subtitle: '',
-  Component: null,
-  background: '',
-  tabs: false,
-  logo: '',
-  className: null,
-};
 
 export default StaticHeader;
