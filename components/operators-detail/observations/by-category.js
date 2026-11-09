@@ -3,44 +3,22 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Constants
-import {
-  PALETTE_COLOR_1,
-  ANIMATION_TIMES,
-  LEGEND_SEVERITY,
-} from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
 
 // Components
-import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import ChartLegend from 'components/ui/chart-legend';
 
+const SEVERITIES = [
+  { key: 'hight', fill: PALETTE_COLOR_1[3].fill },
+  { key: 'medium', fill: PALETTE_COLOR_1[2].fill },
+  { key: 'low', fill: PALETTE_COLOR_1[1].fill },
+  { key: 'unknown', fill: PALETTE_COLOR_1[0].fill }
+];
+
 const TotalObservationsByOperatorByCategory = ({ data, year, horizontal }) => {
-  const getXAxis = (max) => {
-    if (horizontal) {
-      return (
-        <XAxis
-          key="x-axis"
-          hide
-          axisLine={false}
-          domain={[0, max]}
-          type="number"
-        />
-      );
-    }
-
-    return <XAxis key="x-axis" hide axisLine />;
-  };
-
-  const getYAxis = (max) => {
-    if (horizontal) {
-      return <YAxis key="y-axis" hide axisLine type="category" />;
-    }
-
-    return <YAxis key="y-axis" hide axisLine={false} domain={[0, max]} />;
-  };
-
   const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data, year);
   const max = HELPERS_OBS.getMaxValue(groupedByCategory);
 
@@ -77,7 +55,7 @@ const TotalObservationsByOperatorByCategory = ({ data, year, horizontal }) => {
       {/* Charts */}
       <div className="row l-row">
         {Object.keys(groupedByCategory).map((category) => {
-          const groupedBySeverity = HELPERS_OBS.getGroupedBySeverity(
+          const [groupedBySeverity] = HELPERS_OBS.getGroupedBySeverity(
             groupedByCategory[category],
             false,
             'level'
@@ -85,65 +63,23 @@ const TotalObservationsByOperatorByCategory = ({ data, year, horizontal }) => {
 
           return (
             <div key={category} className={classColumns}>
-              {/* <div key={category} className="columns small-6 medium-4 large-2"> */}
               <div className="c-chart">
-                {/* <div className="chart -max-width-100"> */}
                 <div className={classChart}>
-                  <ResponsiveContainer height={horizontal ? 100 : 120}>
-                    <BarChart
-                      layout={horizontal ? 'vertical' : 'horizontal'}
-                      data={groupedBySeverity}
-                      barGap={horizontal ? 3 : 5}
-                      barCategoryGap={0}
-                      margin={{
-                        top: 20,
-                        right: 30,
-                        bottom: 20,
-                        left: 20,
-                      }}
-                      {...ANIMATION_TIMES}
-                    >
-                      {getXAxis(max)}
-                      {getYAxis(max)}
-
-                      <Bar
-                        dataKey="hight"
-                        fill={PALETTE_COLOR_1[3].fill}
-                        isAnimationActive={!!horizontal}
-                        label={{
-                          position: horizontal ? 'right' : 'top',
-                          formatter: (v) => v || null,
-                        }}
-                      />
-                      <Bar
-                        dataKey="medium"
-                        fill={PALETTE_COLOR_1[2].fill}
-                        isAnimationActive={!!horizontal}
-                        label={{
-                          position: horizontal ? 'right' : 'top',
-                          formatter: (v) => v || null,
-                        }}
-                      />
-                      <Bar
-                        dataKey="low"
-                        fill={PALETTE_COLOR_1[1].fill}
-                        isAnimationActive={!!horizontal}
-                        label={{
-                          position: horizontal ? 'right' : 'top',
-                          formatter: (v) => v || null,
-                        }}
-                      />
-                      <Bar
-                        dataKey="unknown"
-                        fill={PALETTE_COLOR_1[0].fill}
-                        isAnimationActive={!!horizontal}
-                        label={{
-                          position: horizontal ? 'right' : 'top',
-                          formatter: (v) => v || null,
-                        }}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <div className={classnames('c-severity-bars', { '-horizontal': horizontal })}>
+                    {SEVERITIES.map(({ key, fill }) => {
+                      const value = groupedBySeverity[key];
+                      return (
+                        <div key={key} className="c-severity-bars__track">
+                          <div
+                            className="c-severity-bars__bar"
+                            style={{ '--value': max ? value / max : 0, background: fill }}
+                          >
+                            {!!value && <span className="c-severity-bars__label">{value}</span>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <h3 className={classTitle}>{category}</h3>

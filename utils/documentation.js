@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { groupBy, sortBy, uniqBy } from 'utils/general';
 
 // Constants
-import { PALETTE_COLOR_2 } from 'constants/rechart';
+import { PALETTE_COLOR_2 } from 'constants/charts';
 
 // Must stay a function: evaluating this at module scope freezes the date for the
 // whole lifetime of the node server process, so SSR would serve the deploy day's

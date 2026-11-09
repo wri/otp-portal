@@ -36,8 +36,183 @@
       max-width: 100px;
     }
   }
+}
 
-  text.recharts-text.recharts-label  {
+@keyframes chart-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes donut-sweep {
+  from { stroke-dashoffset: 1.01; }
+}
+
+.c-donut {
+  position: relative;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  &__sweep {
+    stroke-dasharray: 1.01 1;
+  }
+
+  &__label {
+    position: absolute;
+    width: max-content;
+    max-width: var(--label-width, 130px);
+    font-family: $font-family-proximanova;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+    pointer-events: none;
+  }
+
+  &.-animate {
+    .c-donut__sweep {
+      animation: donut-sweep 1.2s ease both;
+    }
+
+    .c-donut__label {
+      animation: chart-fade-in 0.3s 1.1s both;
+    }
+  }
+}
+
+// Severity counts per category: 4 bars, high to unknown
+.c-severity-bars {
+  display: flex;
+  gap: 5px;
+  height: 120px;
+  padding: 20px 30px 20px 20px;
+
+  &__track {
+    position: relative;
+    flex: 1;
+  }
+
+  &__bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--value) * 100%);
+  }
+
+  &__label {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 3px;
     font-size: 12px;
+    line-height: 1;
+    color: #808080;
+  }
+
+  &.-horizontal {
+    flex-direction: column;
+    gap: 3px;
+    height: 100px;
+
+    .c-severity-bars__bar {
+      top: 0;
+      right: auto;
+      width: calc(var(--value) * 100%);
+      height: auto;
+      transform-origin: left;
+      animation: severity-bar-grow 0.5s 0.25s ease-in-out both;
+    }
+
+    .c-severity-bars__label {
+      bottom: auto;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      margin: 0 0 0 5px;
+      animation: chart-fade-in 0.2s 0.75s both;
+    }
+  }
+}
+
+@keyframes severity-bar-grow {
+  from { transform: scaleX(0); }
+}
+
+@keyframes timeline-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+}
+
+.c-timeline-chart {
+  height: 90px;
+
+  &__inner {
+    position: relative;
+    height: 100%;
+    padding: 5px;
+    // Horizontal drags scrub the timeline, vertical ones still scroll the page
+    touch-action: pan-y;
+  }
+
+  &__plot {
+    position: relative;
+    height: 50px;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      animation: timeline-reveal 1.2s ease both;
+    }
+  }
+
+  &__cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #ccc;
+    pointer-events: none;
+  }
+
+  &__dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  &__axis {
+    position: relative;
+    height: 30px;
+    border-top: 1px solid #666;
+
+    span {
+      position: absolute;
+      top: 8px;
+      transform: translateX(-50%);
+      font-family: $font-family-proximanova;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1;
+      color: #666;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-donut.-animate .c-donut__sweep,
+  .c-donut.-animate .c-donut__label,
+  .c-severity-bars.-horizontal .c-severity-bars__bar,
+  .c-severity-bars.-horizontal .c-severity-bars__label,
+  .c-timeline-chart__plot svg {
+    animation: none;
   }
 }

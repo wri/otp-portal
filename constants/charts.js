@@ -19,12 +19,6 @@ const PALETTE_COLOR_3 = [
   { fill: '#005b23', stroke: '#005b23' }
 ];
 
-const ANIMATION_TIMES = {
-  animationBegin: 250,
-  animationDuration: 500,
-  animationEasing: 'ease-in-out'
-};
-
 const LEGEND_CHRONOLOGICAL = {
   list: [{
     fill: PALETTE_COLOR_3[0].fill,
@@ -86,4 +80,4 @@ const LEGEND_DOCUMENTATION = {
   }]
 };
 
-export { PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3, ANIMATION_TIMES, LEGEND_SEVERITY, LEGEND_DOCUMENTATION, LEGEND_CHRONOLOGICAL };
+export { PALETTE_COLOR_1, PALETTE_COLOR_2, PALETTE_COLOR_3, LEGEND_SEVERITY, LEGEND_DOCUMENTATION, LEGEND_CHRONOLOGICAL };

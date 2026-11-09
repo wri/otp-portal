@@ -65,8 +65,15 @@
 
 .c-operators-details-observations {
   &__charts {
-    svg {
-      overflow: visible;
+    .c-donut {
+      --label-width: 130px;
+      // Leaves room beside the ring for the outside labels
+      width: min(320px, calc(100% - 2 * var(--label-width)));
+      margin: 64px auto;
+
+      @include breakpoint(medium down) {
+        --label-width: 90px;
+      }
     }
   }
 }
