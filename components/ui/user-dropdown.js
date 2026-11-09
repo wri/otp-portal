@@ -19,7 +19,7 @@ import useUser from 'hooks/use-user';
 
 const Login = dynamic(() => import('components/ui/login'), { ssr: false, loading: DynamicLoading });
 
-const UserDropdown = ({ displayIcon, className, theme }) => {
+const UserDropdown = ({ displayIcon = true, className, theme }) => {
   const intl = useIntl();
   const user = useUser();
   if (!user.isLoggedIn) {
@@ -62,9 +62,6 @@ UserDropdown.propTypes = {
   theme: PropTypes.string
 }
 
-UserDropdown.defaultProps = {
-  displayIcon: true
-}
 
 export default connect(
   null,

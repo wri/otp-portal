@@ -147,9 +147,6 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
   );
 }
 
-DocumentsByOperator.defaultProps = {
-  data: [],
-};
 
 DocumentsByOperator.propTypes = {
   groupedByCategory: PropTypes.object,

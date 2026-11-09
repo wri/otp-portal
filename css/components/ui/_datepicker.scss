@@ -33,7 +33,9 @@ $day-padding: 10px;
   font-weight: $font-weight-bold;
   letter-spacing: 1px;
 
-  .react-datepicker__navigation {
+  // month arrows only; the year list's --years-* arrows keep the library look
+  .react-datepicker__navigation--previous,
+  .react-datepicker__navigation--next {
     cursor: pointer;
     position: absolute;
     top: 10px;
@@ -50,13 +52,53 @@ $day-padding: 10px;
     line-height: 1;
     text-align: center;
 
-    &--previous {
+    &.react-datepicker__navigation--previous {
       left: 10px;
     }
 
-    &--next {
+    &.react-datepicker__navigation--next {
       right: 10px;
     }
+  }
+
+  // more/earlier years at the ends of the year list; the library leaves them blank
+  .react-datepicker__navigation--years {
+    height: 20px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      border: solid $color-gray-3;
+      border-width: 2px 2px 0 0;
+    }
+
+    &:hover::before {
+      border-color: $color-primary;
+    }
+  }
+
+  .react-datepicker__navigation--years-upcoming::before {
+    transform: translate(-50%, -25%) rotate(-45deg);
+  }
+
+  .react-datepicker__navigation--years-previous::before {
+    transform: translate(-50%, -75%) rotate(135deg);
+  }
+
+  // v9 renders these as <button>s, which would otherwise get the browser's button chrome
+  .react-datepicker__month-read-view,
+  .react-datepicker__year-read-view {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
   }
 
   .react-datepicker__navigation-icon {

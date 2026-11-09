@@ -19,7 +19,7 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-const Notifications = ({ notifications, render, getNotifications, dismissAll }) => {
+const Notifications = ({ notifications, render = false, getNotifications, dismissAll }) => {
   const intl = useIntl();
   const user = useUser();
   const handleDismiss = () => {
@@ -210,9 +210,6 @@ Notifications.propTypes = {
   language: PropTypes.string
 };
 
-Notifications.defaultProps = {
-  render: false
-};
 
 const ConnectedNotifications = connect(
   state => ({

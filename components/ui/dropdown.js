@@ -81,10 +81,6 @@ Dropdown.propTypes = {
   style: PropTypes.object
 };
 
-Dropdown.defaultProps = {
-  className: ''
-};
-
 export { Dropdown, DropdownContent, DropdownTrigger };
 
 export default Dropdown;

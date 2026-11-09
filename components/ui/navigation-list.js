@@ -14,7 +14,7 @@ import LanguageDropdown from 'components/ui/language-dropdown';
 
 import { useIntl } from 'react-intl';
 
-function NavigationList({ footer, className, countries }) {
+function NavigationList({ footer = false, className, countries }) {
   const intl = useIntl();
   const router = useRouter();
 
@@ -142,9 +142,6 @@ NavigationList.propTypes = {
   footer: PropTypes.bool
 };
 
-NavigationList.defaultProps = {
-  footer: false
-}
 
 export default connect(
   (state) => ({

@@ -86,7 +86,6 @@ function DocumentsPublicationAuthorization(props) {
   );
 }
 
-DocumentsPublicationAuthorization.defaultProps = {};
 
 DocumentsPublicationAuthorization.propTypes = {
   doc: PropTypes.shape({}),

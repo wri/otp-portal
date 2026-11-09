@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
-const ReadMore = ({ children, more, less, lines }) => {
+const ReadMore = ({ children, more = "Read more", less = "Show less", lines = 3 }) => {
   const textRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [truncated, setTruncated] = useState(false);
@@ -43,11 +43,6 @@ const ReadMore = ({ children, more, less, lines }) => {
   );
 };
 
-ReadMore.defaultProps = {
-  lines: 3,
-  more: "Read more",
-  less: "Show less"
-};
 
 ReadMore.propTypes = {
   children: PropTypes.node.isRequired,

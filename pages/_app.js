@@ -47,7 +47,6 @@ function nextReduxWrapperHydrateWarning(...args) {
 }
 
 const IGNORE_WARNINGS = [
-  /Support for defaultProps will be removed from function components in a future major release/,
   /`legacyBehavior` is deprecated and will be removed in a future release. A codemod is available to upgrade your components:/,
   nextReduxWrapperHydrateWarning
 ];
