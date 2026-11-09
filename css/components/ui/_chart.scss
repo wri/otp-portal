@@ -196,8 +196,12 @@
 
     span {
       position: absolute;
-      top: 8px;
+      top: 6px;
       transform: translateX(-50%);
+
+      // Edge labels stay inside the chart
+      &.-start { transform: none; }
+      &.-end { transform: translateX(-100%); }
       font-family: $font-family-proximanova;
       font-size: 12px;
       font-weight: bold;

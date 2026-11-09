@@ -65,14 +65,19 @@
 
 .c-operators-details-observations {
   &__charts {
+    .columns {
+      container-type: inline-size;
+    }
+
+    // Ring and outside labels share the column: the ring gives up width first, labels get the rest
     .c-donut {
-      --label-width: 130px;
-      // Leaves room beside the ring for the outside labels
-      width: min(320px, calc(100% - 2 * var(--label-width)));
-      margin: 64px auto;
+      --size: clamp(140px, 100cqw - 300px, 320px);
+      --label-width: calc((100cqw - var(--size)) / 2 - 12px);
+      width: var(--size);
+      margin: 48px auto;
 
       @include breakpoint(medium down) {
-        --label-width: 90px;
+        margin: 64px auto;
       }
     }
   }

@@ -24,6 +24,8 @@ const TotalObservationsByOperator = dynamic(() => import('components/operators-d
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
 const severities = ['unknown', 'low', 'medium', 'high'];
+// Keeps the count with the dash, so a wrapped label never ends in "-" with the number below
+const donutLabel = (name, value) => <>{name} <span className="whitespace-nowrap">- {value}</span></>;
 
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
@@ -45,7 +47,7 @@ const OperatorsDetailObservations = (props) => {
   const formatSeverityLabel = ({ name, value }) => {
     const key = severities[parseInt(name, 10)] || 'unknown';
     const severityName = intl.formatMessage({ id: key });
-    return `${severityName} - ${value}`;
+    return donutLabel(severityName, value);
   }
 
   const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
@@ -93,7 +95,7 @@ const OperatorsDetailObservations = (props) => {
               </div>
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_category', defaultMessage: 'By category' })}</center></h3>
-                <Donut data={byCategoryChart} innerRatio={90 / 160} formatLabel={({ name, value }) => `${name} - ${value}`} animate />
+                <Donut data={byCategoryChart} innerRatio={90 / 160} formatLabel={({ name, value }) => donutLabel(name, value)} animate />
               </div>
             </div>
           </div>

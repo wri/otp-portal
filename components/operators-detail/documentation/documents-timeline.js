@@ -161,7 +161,13 @@ function DocumentsTimeline({ timelineData = [] }) {
 
           <div className="c-timeline-chart__axis">
             {chart.ticks.map((t) => (
-              <span key={t.year} style={{ left: `${t.x * 100}%` }}>{t.year}</span>
+              <span
+                key={t.year}
+                className={classnames({ '-start': t.x < 0.02, '-end': t.x > 0.98 })}
+                style={{ left: `${t.x * 100}%` }}
+              >
+                {t.year}
+              </span>
             ))}
           </div>
 

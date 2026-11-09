@@ -57,6 +57,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    // left: 50% would otherwise cap the legend at half its container's width
+    width: max-content;
     transform: translate(-50%,-50%);
     margin: 0 0 0 10px;
   }
