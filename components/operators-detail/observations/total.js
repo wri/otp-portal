@@ -9,7 +9,7 @@ import { HELPERS_OBS } from 'utils/observations';
 import { useIntl } from 'react-intl';
 
 // Constants
-import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 
 // Components
 import ChartLegend from 'components/ui/chart-legend';

@@ -65,8 +65,20 @@
 
 .c-operators-details-observations {
   &__charts {
-    svg {
-      overflow: visible;
+    .columns {
+      container-type: inline-size;
+    }
+
+    // Ring and outside labels share the column: the ring gives up width first, labels get the rest
+    .c-donut {
+      --size: clamp(140px, 100cqw - 300px, 320px);
+      --label-width: calc((100cqw - var(--size)) / 2 - 12px);
+      width: var(--size);
+      margin: 48px auto;
+
+      @include breakpoint(medium down) {
+        margin: 64px auto;
+      }
     }
   }
 }

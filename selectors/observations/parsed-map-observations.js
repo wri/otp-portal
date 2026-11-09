@@ -1,5 +1,5 @@
 // Constants
-import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/rechart';
+import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 import { LAYERS } from 'constants/layers';
 import { isEmpty, sortBy } from 'utils/general';
 import { createSelector } from '@reduxjs/toolkit';

@@ -2,4 +2,14 @@
   @include breakpoint(large) {
     padding: $space-1 * 5 0 0;
   }
+
+  .c-donut {
+    width: min(400px, 100%);
+    margin: 100px auto;
+
+    @include breakpoint(small only) {
+      width: min(320px, 100%);
+      margin: 65px auto;
+    }
+  }
 }

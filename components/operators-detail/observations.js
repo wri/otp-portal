@@ -3,10 +3,8 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
-
 // Utils
-import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/rechart';
+import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -17,56 +15,23 @@ import { getOperatorObservations } from 'modules/operators-detail';
 // Components
 import Checkbox from 'components/form/Checkbox';
 import Card from 'components/ui/card';
+import Donut from 'components/ui/donut';
 
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';
 
-import useDeviceInfo from 'hooks/use-device-info';
-
 const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'), { ssr: false });
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
-const CustomLabel = ({ cx, cy, formatLabel, midAngle, outerRadius, name, value, fill, isDesktop }) => {
-  const RADIAN = Math.PI / 180;
-  // Position labels outside the donut
-  const padding = isDesktop ? 10 : 3;
-  const radius = outerRadius + padding;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  const width = isDesktop ? 180 : 100;
-  const isRightSide = x > cx;
-  const isTop = y < cy;
-  const labelX = isRightSide ? x : x - width;
-  const labelY = isTop ? y - 10 : y;
-
-  return (
-    <foreignObject x={labelX} y={labelY} width={width} height={100}>
-      <div className='c-title -proximanova' style={{
-        wordWrap: 'break-word',
-        fontSize: '15px',
-        fontWeight: '600',
-        display: 'flex',
-        justifyContent: isRightSide ? 'left' : 'right',
-        color: fill
-      }}>
-        <div style={{ textAlign: 'left' }}>
-          {formatLabel({ name, value })}
-        </div>
-      </div>
-    </foreignObject>
-  );
-};
-
 const severities = ['unknown', 'low', 'medium', 'high'];
+// Keeps the count with the dash, so a wrapped label never ends in "-" with the number below
+const donutLabel = (name, value) => <>{name} <span className="whitespace-nowrap">- {value}</span></>;
 
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
   const router = useRouter();
 
   const displayAll = router.query.display_all === 'true';
-
-  const { isDesktop } = useDeviceInfo();
 
   const onChangeDisplayAll = ({ checked }) => {
     setUrlParam('display_all', checked ? null : true);
@@ -82,14 +47,14 @@ const OperatorsDetailObservations = (props) => {
   const formatSeverityLabel = ({ name, value }) => {
     const key = severities[parseInt(name, 10)] || 'unknown';
     const severityName = intl.formatMessage({ id: key });
-    return `${severityName} - ${value}`;
+    return donutLabel(severityName, value);
   }
 
   const bySeverity = transformValues(groupBy(observationData, "level"), (obs) => obs.length);
   const byCategory = transformValues(groupBy(observationData, "category"), (obs) => obs.length);
 
   const bySeverityChart = Object.keys(bySeverity).map(level => ({ name: level, value: bySeverity[level], fill: PALETTE_COLOR_1[level]?.fill }));
-  const byCategoryChart = Object.keys(byCategory).map(cat => ({ name: cat, value: byCategory[cat] }));
+  const byCategoryChart = Object.keys(byCategory).map((cat, i) => ({ name: cat, value: byCategory[cat], fill: PALETTE_COLOR_2[i % PALETTE_COLOR_2.length].fill }));
 
   return (
     <div className="c-section c-operators-detail-observations">
@@ -126,45 +91,11 @@ const OperatorsDetailObservations = (props) => {
             <div className="row l-row">
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_severity', defaultMessage: 'By severity' })}</center></h3>
-                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
-                  <PieChart>
-                    <Pie
-                      data={bySeverityChart}
-                      dataKey="value"
-                      outerRadius={160}
-                      innerRadius={160 - 70}
-                      startAngle={90}
-                      endAngle={-270}
-                      label={<CustomLabel formatLabel={formatSeverityLabel} isDesktop={isDesktop} />}
-                      labelLine={false}
-                    >
-                      {bySeverityChart.map((entry, index) => (
-                        <Cell key={entry.value} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <Donut data={bySeverityChart} innerRatio={90 / 160} formatLabel={formatSeverityLabel} animate />
               </div>
               <div className="columns small-12 medium-6">
                 <h3 className='c-title -extrabig -proximanova'><center>{intl.formatMessage({ id: 'by_category', defaultMessage: 'By category' })}</center></h3>
-                <ResponsiveContainer height={400} style={{ padding: isDesktop ? 0 : '20px' }}>
-                  <PieChart>
-                    <Pie
-                      data={byCategoryChart}
-                      dataKey="value"
-                      outerRadius={160}
-                      innerRadius={160 - 70}
-                      startAngle={90}
-                      endAngle={-270}
-                      label={<CustomLabel formatLabel={({ name, value }) => `${name} - ${value}` } isDesktop={isDesktop} />}
-                      labelLine={false}
-                    >
-                      {byCategoryChart.map((entry, index) => (
-                        <Cell key={entry.value} fill={PALETTE_COLOR_2[index].fill} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <Donut data={byCategoryChart} innerRatio={90 / 160} formatLabel={({ name, value }) => donutLabel(name, value)} animate />
               </div>
             </div>
           </div>
