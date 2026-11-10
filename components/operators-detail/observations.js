@@ -24,8 +24,16 @@ const TotalObservationsByOperator = dynamic(() => import('components/operators-d
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
 const severities = ['unknown', 'low', 'medium', 'high'];
-// Keeps the count with the dash, so a wrapped label never ends in "-" with the number below
-const donutLabel = (name, value) => <>{name} <span className="whitespace-nowrap">- {value}</span></>;
+// Binds the last word to the count, so a wrapped label never leaves "- 8" on a line of its own
+const donutLabel = (name, value) => {
+  const lastSpace = name.lastIndexOf(' ');
+  return (
+    <>
+      {name.slice(0, lastSpace + 1)}
+      <span className="whitespace-nowrap">{name.slice(lastSpace + 1)} - {value}</span>
+    </>
+  );
+};
 
 const OperatorsDetailObservations = (props) => {
   const intl = useIntl();
