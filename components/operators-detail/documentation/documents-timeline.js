@@ -38,7 +38,15 @@ function buildPoints(timelineData) {
 }
 
 function bandPath(points, key, x) {
-  const edge = (i, v) => `${Math.round(x(points[i].time) * W * 10) / 10},${Math.round((100 - v) * 100) / 100}`;
+  const y = (v) => Math.round((100 - v) * 100) / 100;
+
+  // A single snapshot has no width to draw, so its bands fill the chart
+  if (points.length === 1) {
+    const [lo, hi] = points[0].bands[key];
+    return `M0,${y(hi)}L${W},${y(hi)}L${W},${y(lo)}L0,${y(lo)}Z`;
+  }
+
+  const edge = (i, v) => `${Math.round(x(points[i].time) * W * 10) / 10},${y(v)}`;
   const top = points.map((p, i) => edge(i, p.bands[key][1]));
   const bottom = points.map((p, i) => edge(i, p.bands[key][0])).reverse();
   return `M${top.join('L')}L${bottom.join('L')}Z`;
@@ -126,7 +134,8 @@ function DocumentsTimeline({ timelineData = [] }) {
           className="c-timeline-chart__inner"
           onPointerMove={onPointerMove}
           onPointerDown={onPointerMove}
-          onPointerLeave={() => setActiveIndex(null)}
+          // A lifted finger also "leaves", which would hide the tooltip the moment it appears
+          onPointerLeave={(e) => e.pointerType !== 'touch' && setActiveIndex(null)}
         >
           <div className="c-timeline-chart__plot">
             <svg viewBox={`0 0 ${W} 100`} preserveAspectRatio="none" aria-hidden="true" focusable="false">

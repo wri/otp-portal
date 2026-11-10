@@ -9,7 +9,7 @@ import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 import { HELPERS_OBS } from 'utils/observations';
 
 // Components
-import ChartLegend from 'components/ui/chart-legend';
+import ChartLegend from 'components/ui/charts/legend';
 
 const SEVERITIES = [
   { key: 'hight', fill: PALETTE_COLOR_1[3].fill },

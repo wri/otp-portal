@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import Donut from 'components/ui/donut';
+import Donut from 'components/ui/charts/donut';
 
 const data = [
   { name: 'a', value: 1, fill: '#111' },

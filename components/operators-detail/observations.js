@@ -15,7 +15,7 @@ import { getOperatorObservations } from 'modules/operators-detail';
 // Components
 import Checkbox from 'components/form/Checkbox';
 import Card from 'components/ui/card';
-import Donut from 'components/ui/donut';
+import Donut from 'components/ui/charts/donut';
 
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';

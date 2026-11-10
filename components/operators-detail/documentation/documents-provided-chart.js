@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { STATUSES } from 'utils/documentation';
 
 // Components
-import Donut from 'components/ui/donut';
-import ChartLegend from 'components/ui/chart-legend';
+import Donut from 'components/ui/charts/donut';
+import ChartLegend from 'components/ui/charts/legend';
 import useUser from 'hooks/use-user';
 
 const NO_DATA = [];
