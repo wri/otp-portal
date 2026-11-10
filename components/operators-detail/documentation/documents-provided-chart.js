@@ -2,20 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Utils
-import { STATUSES, HELPERS_DOC } from 'utils/documentation';
+import { STATUSES } from 'utils/documentation';
 
 // Components
-import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
-import ChartLegend from 'components/ui/chart-legend';
-import useDeviceInfo from 'hooks/use-device-info';
+import Donut from 'components/ui/charts/donut';
+import ChartLegend from 'components/ui/charts/legend';
 import useUser from 'hooks/use-user';
 
 const NO_DATA = [];
 
 function DocumentsProvidedChart({ data = NO_DATA, operatorId }) {
   const user = useUser();
-  const isMobileAgent = user.userAgent.isMobile;
-  const { isMobile } = useDeviceInfo();
   const notVisibleStatuses = [
     'doc_not_required',
     ...(user.canManageOperator(operatorId) ? [] : ['doc_pending', 'doc_invalid'])
@@ -30,41 +27,15 @@ function DocumentsProvidedChart({ data = NO_DATA, operatorId }) {
       });
     }
   });
-  const smallChart = isMobileAgent || isMobile;
-  let chartHeight = smallChart ? 450 : 600;
-  const radius = smallChart ? 160 : 200;
 
   return (
     <div className="c-doc-provided c-chart">
-      <ResponsiveContainer height={chartHeight} initialDimension={{ height: chartHeight }}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            outerRadius={radius}
-            innerRadius={radius - 10}
-            startAngle={90}
-            endAngle={-270}
-            isAnimationActive={false}
-          // If you want to change the labels you should do something similar to this
-          // https://github.com/recharts/recharts/blob/master/src/polar/Pie.js#L339
-          >
-            {data.map((entry) => (
-              <Cell
-                key={entry.label}
-                fill={entry.fill}
-                stroke={entry.stroke}
-              />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-
-      {/* Legend */}
-      <ChartLegend
-        list={legend}
-        className="-absolute"
-      />
+      <Donut data={data.map((d) => ({ ...d, name: d.id }))} innerRatio={0.95}>
+        <ChartLegend
+          list={legend}
+          className="-absolute"
+        />
+      </Donut>
     </div>
   );
 }

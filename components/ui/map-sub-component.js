@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Map from 'components/map';
 import LayerManager from 'components/map/layer-manager';
 
-import { PALETTE_COLOR_1 } from 'constants/rechart';
+import { PALETTE_COLOR_1 } from 'constants/charts';
 
 const MapSubComponent = ({ id, location, level, language }) => {
   const mapContainerRef = useRef(null);

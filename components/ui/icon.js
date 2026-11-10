@@ -1,7 +1,8 @@
-import React, { useSyncExternalStore } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import useHydrated from 'hooks/use-hydrated';
 import { ICONS } from './icons';
 
 function Shape({ icon }) {
@@ -12,10 +13,6 @@ function Shape({ icon }) {
     </>
   );
 }
-
-// false on the server and while hydrating, true afterwards
-const subscribe = () => () => {};
-const useHydrated = () => useSyncExternalStore(subscribe, () => true, () => false);
 
 // Rendered once, in _app. Adds every shape to the document as a symbol once the page has hydrated,
 // so they stay out of the server's HTML. Hidden by size, like a sprite, not with display: none.

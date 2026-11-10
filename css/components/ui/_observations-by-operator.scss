@@ -65,8 +65,28 @@
 
 .c-operators-details-observations {
   &__charts {
-    svg {
-      overflow: visible;
+    .columns {
+      container-type: inline-size;
+    }
+
+    // Ring and outside labels share the column: the ring gives up width first, labels get the
+    // rest plus 8px of the column's padding, which can't reach the neighbouring donut's labels
+    .c-donut {
+      // Without container units the clamp() is invalid and width would fall back to auto
+      --size: 320px;
+      --label-width: 130px;
+
+      @supports (width: 1cqw) {
+        --size: clamp(140px, 100cqw - 270px, 320px);
+        --label-width: min(180px, (100cqw - var(--size)) / 2 + 8px);
+      }
+
+      width: var(--size);
+      margin: 48px auto;
+
+      @include breakpoint(medium down) {
+        margin: 64px auto;
+      }
     }
   }
 }
