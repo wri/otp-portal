@@ -12,7 +12,7 @@ import { useIntl } from 'react-intl';
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 
 // Components
-import ChartLegend from 'components/ui/chart-legend';
+import ChartLegend from 'components/ui/charts/legend';
 
 function TotalObservationsByOperator({ data }) {
   const intl = useIntl();
