@@ -16,11 +16,12 @@ import { getOperatorObservations } from 'modules/operators-detail';
 import Checkbox from 'components/form/Checkbox';
 import Card from 'components/ui/card';
 import Donut from 'components/ui/charts/donut';
+// Static so it's in the server HTML; client-only it would push the donuts below it down on mount
+import TotalObservationsByOperator from 'components/operators-detail/observations/total';
 
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';
 
-const TotalObservationsByOperator = dynamic(() => import('components/operators-detail/observations/total'), { ssr: false });
 const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
 const severities = ['unknown', 'low', 'medium', 'high'];

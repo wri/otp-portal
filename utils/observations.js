@@ -105,7 +105,8 @@ function parseObservation(obs) {
     category: obs?.subcategory?.category?.name || '',
     country: obs.country?.name || '',
     rawdate: new Date(obs['observation-report'] && obs['observation-report']['publication-date']),
-    date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getFullYear(),
+    // UTC: the year is now server-rendered, so it must not depend on the viewer's timezone
+    date: new Date(obs['observation-report'] && obs['observation-report']['publication-date']).getUTCFullYear(),
     details: obs.details,
     evidence,
     fmu: obs.fmu,
