@@ -2,7 +2,7 @@ import React, { useId } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { arcPath, pieSegments } from 'utils/charts';
+import { arcPath, pieSegments, round } from 'utils/charts';
 
 const R = 100;
 // Labels sit just outside the ring.
@@ -12,11 +12,11 @@ function labelStyle(angle, fill) {
   const sin = Math.sin(angle);
   const cos = Math.cos(angle);
   const tx = Math.abs(sin) < 0.25 ? -50 : sin > 0 ? 0 : -100;
-  const ty = -50 - 50 * cos;
+  const ty = round(-50 - 50 * cos);
 
   return {
-    left: `${50 + 50 * LABEL_RADIUS * sin}%`,
-    top: `${50 - 50 * LABEL_RADIUS * cos}%`,
+    left: `${round(50 + 50 * LABEL_RADIUS * sin)}%`,
+    top: `${round(50 - 50 * LABEL_RADIUS * cos)}%`,
     transform: `translate(${tx}%, ${ty}%)`,
     textAlign: tx === -50 ? 'center' : (tx === 0 ? 'left' : 'right'),
     color: fill

@@ -5,7 +5,8 @@ export function polar(angle, radius) {
   return [radius * Math.sin(angle), -radius * Math.cos(angle)];
 }
 
-const round = (n) => Math.round(n * 100) / 100;
+// Server and browser Math.sin/cos can differ in the last digits; rounding keeps hydration in sync
+export const round = (n) => Math.round(n * 100) / 100;
 const point = (angle, radius) => polar(angle, radius).map(round).join(' ');
 
 export function arcPath(start, end, outer, inner) {
