@@ -1,38 +1,17 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 import classnames from 'classnames';
-
-// Intl
-import { useIntl } from 'react-intl';
 
 // Utils
 import { HELPERS_OBS } from 'utils/observations';
 
 // components
-import Accordion from 'components/ui/accordion';
-import Table from 'components/ui/table';
 import Icon from 'components/ui/icon';
-import CheckboxGroup from 'components/form/CheckboxGroup';
 
-const MapSubComponent = dynamic(() => import('components/ui/map-sub-component'), { ssr: false });
-
-import { getColumnHeaders } from 'constants/observations-column-headers';
-
-const OBSERVATION_TABLE_COLUMNS = [
-  'date',
-  'fmu',
-  'observation',
-  'level',
-  'report',
-  'evidence',
-  'litigation-status',
-  'location',
-  'observer-organizations',
-  'mission-type',
-  'operator-type',
-  'relevant-operators',
-];
+// Table code (react-table, tooltips, modals) is only needed once a row is expanded.
+// Appearing right after the click
+const IllegalityTable = dynamic(() => import('components/operators-detail/observations/illegality-table'), { ssr: false });
 
 const DEFAULT_COLUMNS = [
   'date',
@@ -44,11 +23,11 @@ const DEFAULT_COLUMNS = [
 ];
 
 const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) => {
-  const intl = useIntl();
   const [expanded, setExpanded] = useState([]);
+  // Shared by every expanded table
   const [columns, setColumns] = useState(DEFAULT_COLUMNS);
 
-  const triggerSelectedIllegality = ({ category, illegality }) => {
+  const toggleIllegality = (illegality) => {
     if (expanded.includes(illegality)) {
       setExpanded(expanded.filter(x => x !== illegality));
     } else {
@@ -57,19 +36,6 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) =
   };
 
   const groupedByCategory = HELPERS_OBS.getGroupedByCategory(data);
-
-  const changeOfLabelLookup = {
-    level: 'severity',
-    observation: 'detail',
-  };
-
-  const columnHeaders = getColumnHeaders(intl);
-  const tableOptions = OBSERVATION_TABLE_COLUMNS.map((column) => ({
-    label: Object.keys(changeOfLabelLookup).includes(column)
-      ? intl.formatMessage({ id: changeOfLabelLookup[column] })
-      : intl.formatMessage({ id: column }),
-    value: column,
-  }));
 
   return (
     <div className="c-observations-by-illegality">
@@ -99,12 +65,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) =
                       <div className={illegalityInfoClassName}>
                         <div className="l-container">
                           <h3 className="c-title -big -proximanova obi-illegality-info-title"
-                            onClick={() =>
-                              triggerSelectedIllegality({
-                                category,
-                                illegality
-                              })
-                            }>
+                            onClick={() => toggleIllegality(illegality)}>
                             <span>
                               {illegality}
                               {` (${groupedByIllegality[illegality].length})`}
@@ -116,51 +77,12 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) =
                             )}
                           </h3>
                           {groupedByIllegality[illegality].length > 0 && isSelected && (
-                            <Fragment>
-                              <div>
-                                <Accordion
-                                  defaultOpen={false}
-                                  header={
-                                    <strong>{intl.formatMessage({ id: "Customize Table Content" })}</strong>
-                                  }
-                                >
-                                  <CheckboxGroup
-                                    className="-inline -light"
-                                    name="observations-columns"
-                                    onChange={(value) => setColumns(value)}
-                                    properties={{
-                                      default: columns,
-                                      name: 'observations-columns',
-                                    }}
-                                    options={tableOptions}
-                                  />
-                                </Accordion>
-                              </div>
-                              <Table
-                                sortable
-                                className="-light"
-                                data={groupedByIllegality[illegality]}
-                                options={{
-                                  showPagination: false,
-                                  showPageSizeOptions: false,
-                                  columns: columnHeaders.filter((header) =>
-                                    columns.includes(
-                                      header.accessor
-                                    )
-                                  ),
-                                  showSubComponent: columns.includes('location'),
-                                  subComponent: (row) =>
-                                    columns.includes('location') && (
-                                      <MapSubComponent
-                                        id={row.original.id}
-                                        language={language}
-                                        location={row.original.location}
-                                        level={row.original.level}
-                                      />
-                                    ),
-                                }}
-                              />
-                            </Fragment>
+                            <IllegalityTable
+                              data={groupedByIllegality[illegality]}
+                              columns={columns}
+                              onChangeColumns={setColumns}
+                              language={language}
+                            />
                           )}
                         </div>
                       </div>

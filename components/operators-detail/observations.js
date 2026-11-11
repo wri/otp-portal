@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -18,11 +17,10 @@ import Card from 'components/ui/card';
 import Donut from 'components/ui/charts/donut';
 // Static so it's in the server HTML; client-only it would push the donuts below it down on mount
 import TotalObservationsByOperator from 'components/operators-detail/observations/total';
+import TotalObservationsByOperatorByCategorybyIllegality from 'components/operators-detail/observations/by-category-illegality';
 
 import { setUrlParam } from 'utils/url';
 import { groupBy, transformValues } from 'utils/general';
-
-const TotalObservationsByOperatorByCategorybyIllegality = dynamic(() => import('components/operators-detail/observations/by-category-illegality'), { ssr: false });
 
 const severities = ['unknown', 'low', 'medium', 'high'];
 // Binds the last word to the count, so a wrapped label never leaves "- 8" on a line of its own
