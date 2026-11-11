@@ -11,7 +11,10 @@ import Icon from 'components/ui/icon';
 
 // Table code (react-table, tooltips, modals) is only needed once a row is expanded.
 // Appearing right after the click
-const IllegalityTable = dynamic(() => import('components/operators-detail/observations/illegality-table'), { ssr: false });
+// One loader for both: Turbopack gives an import() inlined in dynamic() its own chunk,
+// so a separate preload import() would download the component twice
+const loadTable = () => import('components/operators-detail/observations/illegality-table');
+const IllegalityTable = dynamic(loadTable, { ssr: false });
 
 const DEFAULT_COLUMNS = [
   'date',
@@ -65,6 +68,7 @@ const TotalObservationsByOperatorByCategorybyIlegallity = ({ data, language }) =
                       <div className={illegalityInfoClassName}>
                         <div className="l-container">
                           <h3 className="c-title -big -proximanova obi-illegality-info-title"
+                            onMouseEnter={loadTable}
                             onClick={() => toggleIllegality(illegality)}>
                             <span>
                               {illegality}
