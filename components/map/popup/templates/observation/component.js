@@ -37,9 +37,9 @@ export default function ObservationPopup({ data }) {
     data.operator && {
       label: intl.formatMessage({ id: 'operator' }),
       value: (
-        data['operator-profile-id'] ? (
+        data['operator-slug'] ? (
           (<Link
-            href={`/operators/${data['operator-profile-id']}`}
+            href={`/operators/${data['operator-slug']}/overview`}
             target="_blank">
 
             {data.operator}

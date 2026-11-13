@@ -1,13 +1,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { connect } from 'react-redux';
+
+import { getOperatorSlug } from 'selectors/operators';
 
 // Intl
 import { injectIntl } from 'react-intl';
 
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
-    layers: PropTypes.array.isRequired,
+    fmuData: PropTypes.object.isRequired,
+    output: PropTypes.array.isRequired,
+    operatorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     intl: PropTypes.object.isRequired
   };
 
@@ -23,18 +28,13 @@ class FMUTemplatePopup extends PureComponent {
   }
 
   render() {
-    const { layers, intl } = this.props;
-    const activeInteractiveLayer = layers.find(l => l.id === 'fmus');
-    const { interactionConfig, data } = activeInteractiveLayer;
-    const { output } = interactionConfig;
-    const { data: fmuData } = data;
-
-    const { id, operator_id: operatorId, company_na: operatorName, observations: fmuObservations } = fmuData;
+    const { intl, operatorId, fmuData, output } = this.props;
+    const { id, company_na: operatorName, observations: fmuObservations } = fmuData;
 
     return (
       <div className="c-layer-popup">
         <h2 className="layer-popup--title">
-          {data.data.fmu_name}
+          {fmuData.fmu_name}
         </h2>
 
         <table className="layer-popup--table">
@@ -84,4 +84,14 @@ class FMUTemplatePopup extends PureComponent {
   }
 }
 
-export default injectIntl(FMUTemplatePopup);
+export default connect((state, { layers }) => {
+  const { interactionConfig, data } = layers.find(l => l.id === 'fmus');
+  const fmuData = data.data;
+
+  return {
+    fmuData,
+    output: interactionConfig.output,
+    // tile properties only carry the numeric operator id
+    operatorId: fmuData.operator_id && getOperatorSlug(state, fmuData.operator_id)
+  };
+})(injectIntl(FMUTemplatePopup));

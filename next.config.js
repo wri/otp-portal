@@ -55,7 +55,8 @@ const config = {
   async redirects() {
     return [
       {
-        source: '/operators/:id',
+        // numeric ids are left to proxy.js, which redirects straight to the slug
+        source: '/operators/:id([^/]*[^0-9/][^/]*)',
         destination: '/operators/:id/overview',
         permanent: true
       },
