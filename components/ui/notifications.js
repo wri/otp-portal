@@ -4,7 +4,7 @@ import { sortBy, uniqBy } from 'utils/general';
 import Link from 'next/link';
 
 // Redux
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
@@ -12,6 +12,7 @@ import modal from 'services/modal';
 import { groupBy } from 'utils/general';
 import { getNotifications, dismissAll } from 'modules/notifications';
 import useUser from 'hooks/use-user';
+import { getOperatorSlug } from 'selectors/operators';
 
 function isBeforeToday(date) {
   const today = new Date();
@@ -22,6 +23,7 @@ function isBeforeToday(date) {
 const Notifications = ({ notifications, render = false, getNotifications, dismissAll }) => {
   const intl = useIntl();
   const user = useUser();
+  const operatorSlug = useSelector((state) => getOperatorSlug(state, user.operator_ids?.[0]));
   const handleDismiss = () => {
     dismissAll();
     modal.toggleModal(false);
@@ -182,7 +184,7 @@ const Notifications = ({ notifications, render = false, getNotifications, dismis
         </button>
 
         <Link
-          href={`/operators/${user.operator_ids[0]}/documentation`}
+          href={`/operators/${operatorSlug}/documentation`}
           className="c-button -secondary">
 
           {intl.formatMessage({ id: 'Update Now' })}

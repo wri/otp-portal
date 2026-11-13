@@ -18,7 +18,7 @@ const API_OBSERVATION = {
   severity: { level: 2 },
   subcategory: { name: 'Illegal logging', category: { name: 'Forest management' } },
   country: { name: 'Cameroon', 'country-centroid': { coordinates: [5, 12] } },
-  operator: { id: '9', name: 'AFRIWOOD', 'fa-id': 'fa-9', 'is-active': true, 'operator-type': 'Logging company' },
+  operator: { id: '9', slug: 'afriwood', name: 'AFRIWOOD', 'fa-id': 'fa-9', 'is-active': true, 'operator-type': 'Logging company' },
   'observation-report': {
     title: 'Mission report',
     'publication-date': '2023-05-10T00:00:00Z',
@@ -42,7 +42,7 @@ describe('parseObservation', () => {
       id: '1',
       level: 2,
       operator: 'AFRIWOOD',
-      'operator-profile-id': '9',
+      'operator-slug': 'afriwood',
       observation: 'Logging outside the FMU',
       location: { lat: 3.5, lng: 11.2 },
       'location-accuracy': 'Estimated location',
@@ -79,7 +79,7 @@ describe('parseObservation', () => {
       category: '',
       country: '',
       operator: false,
-      'operator-profile-id': null,
+      'operator-slug': null,
       location: {},
       report: null,
       'report-title': null,
@@ -93,8 +93,8 @@ describe('parseObservation', () => {
     const inactive = { ...API_OBSERVATION.operator, 'is-active': false };
     const noFaId = { ...API_OBSERVATION.operator, 'fa-id': '' };
 
-    expect(parseObservation({ ...API_OBSERVATION, operator: inactive })['operator-profile-id']).toBeNull();
-    expect(parseObservation({ ...API_OBSERVATION, operator: noFaId })['operator-profile-id']).toBeNull();
+    expect(parseObservation({ ...API_OBSERVATION, operator: inactive })['operator-slug']).toBeNull();
+    expect(parseObservation({ ...API_OBSERVATION, operator: noFaId })['operator-slug']).toBeNull();
   });
 
   it('parses a list', () => {

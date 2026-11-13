@@ -34,7 +34,7 @@ export const getObservations = createApiThunk(
         'page[size]': OBS_MAX_SIZE,
         include: includes.join(','),
         'fields[fmus]': 'name',
-        'fields[operators]': 'name,operator-type,fa-id,is-active',
+        'fields[operators]': 'name,slug,operator-type,fa-id,is-active',
         'fields[severities]': 'details,level',
         'fields[subcategories]': 'name,category',
         'fields[categories]': 'name',

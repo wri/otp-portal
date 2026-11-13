@@ -59,10 +59,10 @@ export function getColumnHeaders(intl) {
       maxWidth: 250,
       autoWidth: true,
       Cell: (attr) => {
-        const profileId = attr.original['operator-profile-id'];
+        const slug = attr.original['operator-slug'];
 
-        if (profileId) {
-          return <Link href={`/operators/${profileId}`}>{attr.value}</Link>;
+        if (slug) {
+          return <Link href={`/operators/${slug}/overview`}>{attr.value}</Link>;
         }
 
         return attr.value;
