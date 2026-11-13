@@ -44,10 +44,10 @@ function DatabaseTable({
       className: 'description',
       minWidth: 140,
       Cell: (attr) => {
-        const profileId = attr.original['operator-profile-id'];
+        const slug = attr.original['operator-slug'];
 
-        if (profileId) {
-          return <Link href={`/operators/${profileId}`}>{attr.value}</Link>;
+        if (slug) {
+          return <Link href={`/operators/${slug}/overview`}>{attr.value}</Link>;
         }
 
         return attr.value;

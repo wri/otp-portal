@@ -15,8 +15,8 @@ export const getParsedTableDocuments = createSelector(
           status: doc.status,
           country: doc.operator.country && doc.operator.country.name,
           operator: doc.operator.name,
-          'operator-profile-id': (doc.operator['fa-id']?.length && doc.operator['is-active'])
-            ? doc.operator.id
+          'operator-slug': (doc.operator['fa-id']?.length && doc.operator['is-active'])
+            ? doc.operator.slug
             : null,
           'forest-type': doc.fmu && doc.fmu['forest-type'],
           fmu: doc.fmu || '',
