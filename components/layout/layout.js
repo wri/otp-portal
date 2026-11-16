@@ -7,7 +7,7 @@ import Header from 'components/layout/header';
 import Footer from 'components/layout/footer';
 import Head from 'components/layout/head';
 import Modal from 'components/ui/modal';
-import Toastr from 'components/ui/toastr';
+import Toast from 'components/ui/toast';
 import Notifications from 'components/ui/notifications';
 import RouterSpinner from 'components/layout/router-spinner';
 
@@ -32,7 +32,7 @@ const Layout = ({ title, description, children, className, footer }) => {
       {footer !== false && <Footer />}
 
       <Modal />
-      <Toastr />
+      <Toast />
 
       <Notifications />
       <RouterSpinner />

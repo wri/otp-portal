@@ -3,11 +3,10 @@ import * as globalReducers from 'modules/index';
 import { getRegisteredReducers, onReducerRegistered } from 'modules/registry';
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
-function createReducer(asyncReducers) {
+function createReducer() {
   const reducers = {
     ...globalReducers,
-    ...getRegisteredReducers(),
-    ...asyncReducers
+    ...getRegisteredReducers()
   };
   const combinedReducers = combineReducers(reducers);
 
@@ -36,16 +35,10 @@ export const makeStore = (context) => {
     devTools: process.env.NODE_ENV !== 'production',
   });
 
-  store.asyncReducers = {};
-  store.injectReducer = (key, asyncReducer) => {
-    store.asyncReducers[key] = asyncReducer;
-    store.replaceReducer(createReducer(store.asyncReducers));
-  }
-
   // Slices imported after the store exists: the next page on client navigation, lazy chunks.
   // Server stores live for one request and are created after the page's modules have loaded.
   if (typeof window !== 'undefined') {
-    onReducerRegistered(() => store.replaceReducer(createReducer(store.asyncReducers)));
+    onReducerRegistered(() => store.replaceReducer(createReducer()));
   }
 
   return store;

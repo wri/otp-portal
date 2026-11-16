@@ -40,7 +40,6 @@
     "react-intl": "^7.1.14",
     "react-map-gl": "^7.1.9",
     "react-redux": "^9.2.0",
-    "react-redux-toastr": "^8",
     "react-select": "^5.10.2",
     "react-table": "^6.11.5",
     "spin-delay": "^2.0.1"

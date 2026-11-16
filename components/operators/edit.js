@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { updateOperator } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -55,7 +55,7 @@ const EditOperator = (props) => {
       id: operator.id,
       locale: props.language
     }).then(() => {
-      toastr.success(
+      toast.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
         intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
       );

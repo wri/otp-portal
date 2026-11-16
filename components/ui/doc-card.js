@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { captureException } from 'utils/sentry';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -92,7 +92,7 @@ const DocCard = (props) => {
         title: props.title,
         operatorId: properties.type === 'operator' ? properties.id : null,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
           );
@@ -121,7 +121,7 @@ const DocCard = (props) => {
         name: annex.name,
         url: annex.attachment.url,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.update.success', defaultMessage: 'Your document was updated and will be reviewed by the OTP team shortly.' })
           );
@@ -154,7 +154,7 @@ const DocCard = (props) => {
     documentationService.deleteAnnex(annexId)
       .then(() => {
         modal.toggleModal(false);
-        toastr.success(
+        toast.success(
           intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
           intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
         );

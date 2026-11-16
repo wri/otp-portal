@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -28,7 +28,7 @@ const CountryDocCardUpload = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
           );
@@ -52,7 +52,7 @@ const CountryDocCardUpload = (props) => {
           .then(() => {
             modal.toggleModal(false);
             onSuccess && onSuccess();
-            toastr.success(
+            toast.success(
               intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
               intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
             );
