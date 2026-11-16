@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 // Intl
 import { useIntl } from 'react-intl';
 
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 import { login } from 'modules/user';
 
@@ -28,11 +28,9 @@ const ForgotPassword = dynamic(() => import('components/ui/forgot-password'), { 
 const Login = ({ notice }) => {
   const intl = useIntl();
 
-  // the toastr is fired from here, once the modal is mounted, so it doesn't get
-  // lost while the toastr container is still being loaded
   useEffect(() => {
     if (notice) {
-      toastr.success(notice.title, notice.message);
+      toast.success(notice.title, notice.message);
     }
   }, [notice]);
 

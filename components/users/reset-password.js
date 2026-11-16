@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 
 // Redux
 import { resetPassword, login } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -26,7 +26,7 @@ const ResetPasswordForm = ({ token }) => {
     // Save data
     return resetPassword(attributes)
       .then(({ data: user }) => {
-        toastr.success(
+        toast.success(
           intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
           intl.formatMessage({ id: 'Password changed successfully' })
         );

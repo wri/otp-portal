@@ -1,5 +1,5 @@
 import React, { useRef, useState, useContext, useMemo } from "react";
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 import { useIntl } from "react-intl";
 import { uniqBy } from 'utils/general';
 
@@ -136,14 +136,14 @@ export const FormProvider = ({ children, onSubmit, onStatusChange, initialValues
             );
             try {
               errors.forEach(er =>
-                toastr.error(intl.formatMessage({ id: 'Error' }), er.detail || er.title)
+                toast.error(intl.formatMessage({ id: 'Error' }), er.detail || er.title)
               );
             } catch (e) {
-              toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+              toast.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
             }
           });
       } else {
-        toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Fill all the required fields' }));
+        toast.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Fill all the required fields' }));
       }
     }, 0);
   }

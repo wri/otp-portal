@@ -53,7 +53,6 @@
 @import 'components/map/layer-info';
 
 // - ui (react-table's own CSS is imported by components/ui/table.js)
-@import '../node_modules/react-redux-toastr/src/styles/index';
 @import 'components/ui/accordion';
 @import 'components/ui/account-dropdown';
 @import 'components/ui/article';
@@ -109,7 +108,7 @@
 @import 'components/ui/tabs';
 @import 'components/ui/timestep';
 @import 'components/ui/title';
-@import 'components/ui/toastr';
+@import 'components/ui/toast';
 @import 'components/ui/tooltip';
 @import 'components/ui/search';
 @import 'components/ui/search-modal';

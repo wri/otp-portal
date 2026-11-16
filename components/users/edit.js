@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl';
 // Redux
 import { connect } from 'react-redux';
 import { updateUserProfile, login } from 'modules/user';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -53,7 +53,7 @@ const UserEditForm = (props) => {
           }
         }).catch(() => {
           // the old cookie is dead at this point, so send the user back to log in
-          toastr.info(
+          toast.info(
             intl.formatMessage({ id: 'Password changed successfully' }),
             intl.formatMessage({ id: 'Please log in again' })
           );
@@ -66,7 +66,7 @@ const UserEditForm = (props) => {
         });
       })
       .then(() => {
-        toastr.success(
+        toast.success(
           intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
           intl.formatMessage({ id: 'operators.edit.toaster.success.content' })
         );
@@ -83,16 +83,16 @@ const UserEditForm = (props) => {
         try {
           error.errors.forEach(er => {
             if (er.title === "is invalid" && er.source?.pointer === '/data/attributes/current-password') {
-              toastr.error(
+              toast.error(
                 intl.formatMessage({ id: 'Error' }),
                 intl.formatMessage({ id: 'Current password is invalid' }),
               )
             } else {
-              toastr.error(intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
+              toast.error(intl.formatMessage({ id: 'Error' }), `${er.title} - ${er.detail}`)
             }
           });
         } catch (e) {
-          toastr.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
+          toast.error(intl.formatMessage({ id: 'Error' }), intl.formatMessage({ id: 'Oops! There was an error, try again' }));
         }
       });
   };

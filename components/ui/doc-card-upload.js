@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
 import { captureException } from 'utils/sentry';
-import { toastr } from 'react-redux-toastr';
+import toast from 'services/toast';
 
 import { connect } from 'react-redux';
 
@@ -40,7 +40,7 @@ const DocCardUpload = (props) => {
       childrenProps: {
         ...props,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.add.success', defaultMessage: 'Your document was uploaded and will be reviewed by the OTP team shortly.' })
           );
@@ -60,7 +60,7 @@ const DocCardUpload = (props) => {
         ...props,
         notRequired: true,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.non_applicable.success', defaultMessage: 'Document was marked as non applicable and will be reviewed by the OTP team shortly.' })
           );
@@ -80,7 +80,7 @@ const DocCardUpload = (props) => {
         ...props,
         notRequired: !!reason,
         onChange: () => {
-          toastr.success(
+          toast.success(
             intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
             intl.formatMessage({ id: 'document.update.success', defaultMessage: 'Your document was updated and will be reviewed by the OTP team shortly.' })
           );
@@ -96,7 +96,7 @@ const DocCardUpload = (props) => {
       .then(() => {
         modal.toggleModal(false);
         onSuccess && onSuccess();
-        toastr.success(
+        toast.success(
           intl.formatMessage({ id: 'success', defaultMessage: 'Success!' }),
           intl.formatMessage({ id: 'document.delete.success', defaultMessage: 'Your document was removed successfully.' })
         );
