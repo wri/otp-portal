@@ -1,15 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
 
-// Selectors
-import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
-
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { getCountry, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
+import { fetchApi, settle } from 'services/fetch-api';
+import { parseCountryDocumentation } from 'components/countries-detail/documents';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -33,22 +30,38 @@ const TABS_COUNTRIES_DETAIL = [
   }
 ];
 
-function CountriesDetail() {
+const COUNTRY_INCLUDE = [
+  'governments',
+  'required-gov-documents',
+  'required-gov-documents.required-gov-document-group',
+  'required-gov-documents.required-gov-document-group.parent',
+  'required-gov-documents.gov-documents'
+].join(',');
+
+function fetchCountry(id, language, cache = true) {
+  return fetchApi(`countries/${id}`, { locale: language, auth: true, cache, params: { include: COUNTRY_INCLUDE } });
+}
+
+function CountriesDetail({ country, links, vpas }) {
   const router = useRouter();
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const countriesDetail = useSelector((state) => state.countriesDetail);
-  const countryDocumentation = useSelector(getParsedDocumentation);
   const id = router.query.id;
   const tab = router.query.tab || 'overview';
   const user = useUser();
   useDownloadSession(user.isLoggedIn);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getCountry(id));
-    }
-  }, [id, dispatch]);
+  const [reloaded, setReloaded] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // after a document change; the cache has the same copy for the next getInitialProps
+  const countryData = reloaded && reloaded.id === country.data.id ? reloaded : country.data;
+  const countryDocumentation = useMemo(() => parseCountryDocumentation(countryData), [countryData]);
+
+  const reloadCountry = () => {
+    setLoading(true);
+    fetchCountry(id, intl.locale, 'reload')
+      .then(setReloaded, console.error)
+      .finally(() => setLoading(false));
+  };
 
   const getTabOptions = () => {
     return TABS_COUNTRIES_DETAIL.map((tab) => {
@@ -61,13 +74,13 @@ function CountriesDetail() {
 
   return (
     <Layout
-      title={countriesDetail.data.name || '-'}
+      title={countryData.name || '-'}
       description="Country description..."
     >
-      <Spinner isLoading={countriesDetail.loading} className="-fixed" />
+      <Spinner isLoading={loading} className="-fixed" />
 
       <StaticHeader
-        title={countriesDetail.data.name || '-'}
+        title={countryData.name || '-'}
         background="/static/images/static-header/bg-operator-detail.jpg"
       />
 
@@ -82,19 +95,20 @@ function CountriesDetail() {
       />
 
       {tab === 'overview' &&
-        <CountriesDetailOverview countriesDetail={countriesDetail} />
+        <CountriesDetailOverview country={countryData} links={links.data} vpas={vpas.data} />
       }
       {tab === 'documentation' &&
         <CountriesDetailDocumentation
-          vpaOverview={countriesDetail.data['vpa-overview']}
+          vpaOverview={countryData['vpa-overview']}
           countryDocumentation={countryDocumentation}
+          onDocumentChange={reloadCountry}
         />
       }
     </Layout>
   );
 }
 
-CountriesDetail.getInitialProps = async ({ query, asPath, store }) => {
+CountriesDetail.getInitialProps = async ({ query, asPath, language }) => {
   const { id, tab } = query;
 
   if (process.env.FEATURE_COUNTRY_PAGES !== 'true') {
@@ -105,19 +119,20 @@ CountriesDetail.getInitialProps = async ({ query, asPath, store }) => {
     return { redirectTo: `${asPath}/overview` };
   }
 
-  const { countriesDetail } = store.getState();
-  const requests = [];
+  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, auth: true, cache: true, params: { country: id } }), []);
+  const [country, links, vpas] = await Promise.all([
+    settle(fetchCountry(id, language), {}),
+    load('country-links'),
+    load('country-vpas')
+  ]);
 
-  if (countriesDetail.data.id !== id) {
-    requests.push(store.dispatch(getCountry(id)));
-    requests.push(store.dispatch(getCountryLinks(id)));
-    requests.push(store.dispatch(getCountryVPAs(id)));
-  }
-
-  await Promise.all(requests);
-
-  return {};
+  return { country, links, vpas };
 };
 
+CountriesDetail.propTypes = {
+  country: PropTypes.shape({ data: PropTypes.object }).isRequired,
+  links: PropTypes.shape({ data: PropTypes.array }).isRequired,
+  vpas: PropTypes.shape({ data: PropTypes.array }).isRequired
+};
 
 export default CountriesDetail;

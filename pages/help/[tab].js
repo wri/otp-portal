@@ -1,9 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 
-// Redux
-import { useSelector } from 'react-redux';
-import { getHowtos, getTools, getFAQs, getTutorials } from 'modules/help';
+import { fetchApi, settle } from 'services/fetch-api';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -20,10 +19,9 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-const HelpPage = () => {
+const HelpPage = ({ howtos, tools, faqs, tutorials }) => {
   const router = useRouter();
   const intl = useIntl();
-  const { howtos, tools, faqs, tutorials } = useSelector((state) => state.help);
   const tab = router.query.tab || 'overview';
 
   return (
@@ -90,22 +88,22 @@ const HelpPage = () => {
   );
 };
 
-HelpPage.getInitialProps = async ({ query, asPath, store }) => {
+HelpPage.getInitialProps = async ({ query, asPath, language }) => {
   if (!query.tab) return { redirectTo: `${asPath}/overview` };
 
-  const { howtos, tools, faqs, tutorials } = store.getState().help;
+  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, cache: true }), []);
+  const [howtos, tools, faqs, tutorials] = await Promise.all(
+    ['how-tos', 'tools', 'faqs', 'tutorials'].map(load)
+  );
 
-  const requests = [];
-
-  if (!howtos.data.length) requests.push(store.dispatch(getHowtos()));
-  if (!tools.data.length) requests.push(store.dispatch(getTools()));
-  if (!faqs.data.length) requests.push(store.dispatch(getFAQs()));
-  if (!tutorials.data.length) requests.push(store.dispatch(getTutorials()));
-
-  await Promise.all(requests);
-
-  return {};
+  return { howtos, tools, faqs, tutorials };
 };
 
+HelpPage.propTypes = {
+  howtos: PropTypes.shape({}),
+  tools: PropTypes.shape({}),
+  faqs: PropTypes.shape({}),
+  tutorials: PropTypes.shape({})
+};
 
 export default HelpPage;

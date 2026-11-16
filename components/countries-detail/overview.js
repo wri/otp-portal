@@ -9,18 +9,18 @@ import Html from 'components/html';
 // Intl
 import { useIntl } from 'react-intl';
 
-function CountriesDetailOverview({ countriesDetail }) {
+function CountriesDetailOverview({ country, links: allLinks, vpas: allVpas }) {
   const intl = useIntl();
 
-  const vpas = sortBy(countriesDetail.vpas.data, 'position');
-  const links = sortBy(countriesDetail.links.data, 'position');
+  const vpas = sortBy(allVpas, 'position');
+  const links = sortBy(allLinks, 'position');
 
   return (
     <div
       className="c-section"
     >
       <div className="l-container">
-        {countriesDetail.data.overview && <Html html={countriesDetail.data.overview} className="georgia" /> }
+        {country.overview && <Html html={country.overview} className="georgia" /> }
 
         {(vpas || []).length > 0 && (
           <article className="c-article">
@@ -75,7 +75,9 @@ function CountriesDetailOverview({ countriesDetail }) {
 }
 
 CountriesDetailOverview.propTypes = {
-  countriesDetail: PropTypes.object
+  country: PropTypes.object.isRequired,
+  links: PropTypes.array,
+  vpas: PropTypes.array
 };
 
 export default CountriesDetailOverview;

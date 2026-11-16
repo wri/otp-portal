@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { getParsedDocumentation } from '../countries-detail/documentation';
+import { parseCountryDocumentation } from 'components/countries-detail/documents';
 
 const govDoc = (overrides = {}) => ({
   id: '100',
@@ -26,15 +26,13 @@ const requiredDoc = (overrides = {}) => ({
   ...overrides
 });
 
-const state = (data, documentation = {}) => ({ countriesDetail: { data, documentation } });
-
-describe('getParsedDocumentation', () => {
+describe('parseCountryDocumentation', () => {
   it('is empty for a country without required documents', () => {
-    expect(getParsedDocumentation(state({}))).toEqual([]);
+    expect(parseCountryDocumentation({})).toEqual([]);
   });
 
   it('flattens a required document and its first gov document', () => {
-    const [doc] = getParsedDocumentation(state({ 'required-gov-documents': [requiredDoc()] }));
+    const [doc] = parseCountryDocumentation({ 'required-gov-documents': [requiredDoc()] });
 
     expect(doc).toEqual({
       id: '100',
@@ -67,9 +65,9 @@ describe('getParsedDocumentation', () => {
     });
     const missing = requiredDoc({ 'document-type': 'file' });
 
-    expect(getParsedDocumentation(state({ 'required-gov-documents': [file] }))[0].url)
+    expect(parseCountryDocumentation({ 'required-gov-documents': [file] })[0].url)
       .toBe('https://example.org/file.pdf');
-    expect(getParsedDocumentation(state({ 'required-gov-documents': [missing] }))[0].url).toBeUndefined();
+    expect(parseCountryDocumentation({ 'required-gov-documents': [missing] })[0].url).toBeUndefined();
   });
 
   it('uses the parent group as the category and the group itself as the subcategory', () => {
@@ -77,7 +75,7 @@ describe('getParsedDocumentation', () => {
       'required-gov-document-group': { name: 'Permits', position: 3, parent: { name: 'Legal', position: 1 } }
     });
 
-    expect(getParsedDocumentation(state({ 'required-gov-documents': [nested] }))[0]).toMatchObject({
+    expect(parseCountryDocumentation({ 'required-gov-documents': [nested] })[0]).toMatchObject({
       category: 'Legal',
       categoryPosition: 1,
       subCategory: 'Permits',
@@ -88,6 +86,6 @@ describe('getParsedDocumentation', () => {
   it('formats the expiry date when there is one', () => {
     const expiring = requiredDoc({ 'gov-documents': [govDoc({ 'expire-date': '2027-12-31T00:00:00Z' })] });
 
-    expect(getParsedDocumentation(state({ 'required-gov-documents': [expiring] }))[0].endDate).toBe('2027/12/31');
+    expect(parseCountryDocumentation({ 'required-gov-documents': [expiring] })[0].endDate).toBe('2027/12/31');
   });
 });

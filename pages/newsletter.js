@@ -76,9 +76,7 @@ Newsletter.propTypes = {
   newsletters: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired
 };
-Newsletter.getInitialProps = async ({ locale }) => {
-  // same default as _app
-  const language = locale || 'en';
+Newsletter.getInitialProps = async ({ language }) => {
   const newsletters = await fetchNewsletters(language);
 
   return { newsletters, language };
