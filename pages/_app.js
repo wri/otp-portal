@@ -196,6 +196,8 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
 
     store.dispatch(setLanguage(language));
     store.dispatch(setUser(safeUser));
+    // pages without the store read these from ctx
+    ctx.language = language;
 
     const donePage = track(req, 'page');
     const pageProps = Component.getInitialProps ?

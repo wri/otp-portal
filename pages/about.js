@@ -4,11 +4,7 @@ import { sortBy } from 'utils/general';
 
 import { useIntl } from 'react-intl';
 
-// Redux
-import { connect } from 'react-redux';
-import { getPartners } from 'modules/partners';
-import { getDonors } from 'modules/donors';
-import { getAbout } from 'modules/about';
+import { fetchApi, settle } from 'services/fetch-api';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -114,14 +110,14 @@ const AboutPage = ({ about, partners, donors }) => {
   );
 };
 
-AboutPage.getInitialProps = async ({ store }) => {
-  await Promise.all([
-    store.dispatch(getPartners()),
-    store.dispatch(getDonors()),
-    store.dispatch(getAbout())
+AboutPage.getInitialProps = async ({ language }) => {
+  const [about, partners, donors] = await Promise.all([
+    settle(fetchApi('pages', { locale: language, params: { 'filter[slug]': 'about', include: 'sections' } }).then((pages) => pages[0] || null), null),
+    settle(fetchApi('partners', { params: { 'page[size]': 2000 } }), []),
+    settle(fetchApi('donors', { locale: language, params: { 'page[size]': 2000 } }), [])
   ]);
 
-  return {};
+  return { about, partners, donors };
 };
 
 AboutPage.propTypes = {
@@ -130,11 +126,4 @@ AboutPage.propTypes = {
   donors: PropTypes.shape({}).isRequired
 };
 
-export default connect(
-  state => ({
-    about: state.about,
-    partners: state.partners,
-    donors: state.donors
-  }),
-  { getPartners, getDonors, getAbout }
-)(AboutPage);
+export default AboutPage;

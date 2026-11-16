@@ -9,7 +9,7 @@ import { HELPERS_DOC } from 'utils/documentation';
 import DocumentsByCountry from 'components/countries-detail/documentation/documents-by-country';
 import Html from 'components/html';
 
-function OperatorsDetailDocumentation ({ countryDocumentation, vpaOverview }) {
+function OperatorsDetailDocumentation ({ countryDocumentation, vpaOverview, onDocumentChange }) {
   const router = useRouter();
   const groupedByType = HELPERS_DOC.getGroupedByType(countryDocumentation);
 
@@ -18,7 +18,7 @@ function OperatorsDetailDocumentation ({ countryDocumentation, vpaOverview }) {
       <div className="c-section">
         <div className="l-container">
           {vpaOverview && <Html html={vpaOverview} className="georgia" /> }
-          <DocumentsByCountry data={groupedByType['gov-documents']} id={router.query.id} />
+          <DocumentsByCountry data={groupedByType['gov-documents']} id={router.query.id} onDocumentChange={onDocumentChange} />
         </div>
       </div>
     </div>
@@ -27,7 +27,8 @@ function OperatorsDetailDocumentation ({ countryDocumentation, vpaOverview }) {
 
 OperatorsDetailDocumentation.propTypes = {
   countryDocumentation: PropTypes.array,
-  vpaOverview: PropTypes.string
+  vpaOverview: PropTypes.string,
+  onDocumentChange: PropTypes.func
 };
 
 export default OperatorsDetailDocumentation;

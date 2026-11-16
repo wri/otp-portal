@@ -2,11 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { sortBy } from "utils/general";
 
-// Redux
-import { connect } from "react-redux";
-
-import { getCountry } from "modules/countries-detail";
-
 // Utils
 import { HELPERS_DOC } from "utils/documentation";
 
@@ -36,7 +31,7 @@ function DocumentsByOperator(props) {
               type: 'government',
               id
             }}
-            onChange={() => props.getCountry(id)}
+            onChange={props.onDocumentChange}
           />
         )}
       </div>
@@ -98,9 +93,7 @@ function DocumentsByOperator(props) {
 DocumentsByOperator.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
+  onDocumentChange: PropTypes.func,
 };
 
-export default connect(
-  null,
-  { getCountry }
-)(DocumentsByOperator);
+export default DocumentsByOperator;
