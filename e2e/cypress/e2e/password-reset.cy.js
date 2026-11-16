@@ -50,7 +50,7 @@ describe('Password Reset', () => {
       cy.get('#input-password').type('NewPassword1');
       cy.get('#input-passwordConfirmation').type('NewPassword1');
       cy.get('button').contains('Change Password').click();
-      cy.get('.rrt-text').should('have.text', 'Password changed successfully');
+      cy.get('.toast-message').should('have.text', 'Password changed successfully');
       // user should automatically log in
       cy.contains('div[role=button]', 'My account');
 
@@ -74,7 +74,7 @@ describe('Password Reset', () => {
         cy.get('#input-password').type('NewPassword1');
         cy.get('#input-passwordConfirmation').type('NewPassword1');
         cy.get('button').contains('Change Password').click();
-        cy.get('.rrt-text').should('have.text', 'reset_password_token is invalid');
+        cy.get('.toast-message').should('have.text', 'reset_password_token is invalid');
       });
     })
   })

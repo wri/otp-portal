@@ -32,7 +32,7 @@ describe('User', () => {
       cy.get('#input-email').type('operator@example.com');
       cy.get('#input-password').type('wrongpassword');
       cy.get('button').contains('Log in').click();
-      cy.get('.rrt-text').should('have.text', 'Wrong email or password');
+      cy.get('.toast-message').should('have.text', 'Wrong email or password');
       cy.get('#input-password').clear().type('Supersecret1');
       cy.get('button').contains('Log in').click();
       cy.contains('div[role=button]', 'My account');
@@ -99,7 +99,7 @@ describe('User', () => {
       cy.contains('.error', 'The field should have at least one digit');
       cy.contains('.error', 'The field should have at least 10 characters');
       cy.contains('.error', 'The field should be equal to password');
-      cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
+      cy.get('.toast-message').should('have.text', 'Fill all the required fields');
       cy.get('#input-password').clear().type('Superpassword1');
       cy.get('#input-password_confirmation').clear().type('Superpassword1');
       cy.get('label[for=checkbox-agree-undefined]').click();
@@ -148,7 +148,7 @@ describe('User', () => {
       cy.get('#input-currentPassword').type('Supersecret1');
 
       cy.get('button').contains('Update').click();
-      cy.get('.rrt-text').should('have.text', 'Profile saved correctly');
+      cy.get('.toast-message').should('have.text', 'Profile saved correctly');
       cy.get('#input-password').should('have.value', '');
       cy.get('#input-passwordConfirmation').should('have.value', '');
 

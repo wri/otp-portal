@@ -41,7 +41,7 @@ describe('Newsletter', () => {
 
     it('can submit form', function () {
       cy.contains('Sign up').click();
-      cy.get('.rrt-text').should('have.text', 'Fill all the required fields');
+      cy.get('.toast-message').should('have.text', 'Fill all the required fields');
       cy.get('input[name=first_name] ~ .error').should('have.text', 'The field is required');
       cy.get('input[name=last_name] ~ .error').should('have.text', 'The field is required');
       cy.get('input[name=email] ~ .error').should('have.text', 'The field is requiredThe field should be a valid email address');
