@@ -2,7 +2,7 @@
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 import { LAYERS } from 'constants/layers';
 import { isEmpty, sortBy } from 'utils/general';
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeOne } from 'utils/memoize';
 import { spiderifyCluster, getStyleLayerId } from 'components/map/layer-manager/utils';
 
 import { parseObservation } from 'services/observations';
@@ -16,12 +16,7 @@ export const OBSERVATIONS_LEAVES_LAYER_ID = 'observations-leaves';
 // not interactive.
 const INTERACTIVE_LAYERS = ['observations', OBSERVATIONS_LEAVES_LAYER_ID];
 
-const intl = (state, props) => props && props.intl;
-
-// Get the datasets and filters from state
-const observations = state => state.observations.data;
-const cluster = state => state.observations.cluster;
-const zoom = state => state.observations.map.zoom;
+const NO_LAYERS = [];
 
 const getLocation = (obs = {}) => {
   if (obs.lat && obs.lng) {
@@ -51,8 +46,7 @@ const getLocation = (obs = {}) => {
  * The spider legs and leaves for an expanded cluster. Depends on zoom because the leaves are
  * positioned in world coordinates.
  */
-const getClusterLayers = createSelector(
-  cluster, zoom,
+const getClusterLayers = memoizeOne(
   (_cluster, _zoom) => {
     if (isEmpty(_cluster)) return [];
 
@@ -123,8 +117,7 @@ const FMUS_LAYER = LAYERS.find(l => l.id === 'fmus');
  * The FMU layer fades in as you zoom, so this is the only part of the map that zoom should
  * rebuild. Keeping it separate is what stops a zoom change from re-deriving every observation.
  */
-const getFmusLayer = createSelector(
-  zoom,
+const getFmusLayer = memoizeOne(
   (_zoom) => ({
     ...FMUS_LAYER,
     ...FMUS_LAYER.config,
@@ -140,8 +133,7 @@ const getFmusLayer = createSelector(
  * react-map-gl's `deepEqual` bail out immediately rather than comparing the whole FeatureCollection
  * on each render.
  */
-const getObservationsLayer = createSelector(
-  observations,
+const getObservationsLayer = memoizeOne(
   (_observations) => ({
     id: 'observations',
     type: 'geojson',
@@ -237,16 +229,17 @@ const getObservationsLayer = createSelector(
   })
 );
 
+const combineLayers = memoizeOne((clusterLayers, fmusLayer, observationsLayer) => [
+  ...clusterLayers, fmusLayer, observationsLayer
+]);
+
 // Assembled from three separately memoised parts so that panning and zooming, which only affect
 // the cluster and FMU layers, no longer re-derive the observation features
-const getObservationsLayers = createSelector(
-  observations, getClusterLayers, getFmusLayer, getObservationsLayer,
-  (_observations, _clusterLayers, _fmusLayer, _observationsLayer) => {
-    if (!_observations) return [];
+const getObservationsLayers = (observations, cluster, zoom) => {
+  if (!observations) return NO_LAYERS;
 
-    return [..._clusterLayers, _fmusLayer, _observationsLayer];
-  }
-);
+  return combineLayers(getClusterLayers(cluster, zoom), getFmusLayer(zoom), getObservationsLayer(observations));
+};
 
 
 /**
@@ -256,17 +249,15 @@ const getObservationsLayers = createSelector(
  *
  * The spider leaves only exist while a cluster is open, so they drop out of the list on their own.
  */
-const getObservationsInteractiveLayersIds = createSelector(
-  getObservationsLayers,
+const getObservationsInteractiveLayersIds = memoizeOne(
   (_layers) => _layers
     .filter(l => INTERACTIVE_LAYERS.includes(l.id))
     .flatMap(l => (l.render.layers || []).map((rl, i) => getStyleLayerId(l.id, rl, i)))
 );
 
 
-const getObservationsLegend = createSelector(
-  observations, intl,
-  (_observations, _intl) => {
+const getObservationsLegend = memoizeOne(
+  (_intl) => {
 
     if (!_intl) return [];
 

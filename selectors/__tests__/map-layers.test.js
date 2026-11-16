@@ -3,11 +3,11 @@ import { describe, it, expect } from 'vitest';
 import { LAYERS } from 'constants/layers';
 import { getStyleSource } from 'components/map/layer-manager/utils';
 
-import { getObservationsInteractiveLayersIds } from '../observations/parsed-map-observations';
+import { getObservationsLayers, getObservationsInteractiveLayersIds } from '../observations/parsed-map-observations';
 import { getActiveLayers as getFmuDetailLayers } from '../operators-detail/fmus';
 
 describe('observations interactive layer ids', () => {
-  const state = (cluster) => ({ observations: { data: [], cluster, map: { zoom: 5 } } });
+  const state = (cluster) => getObservationsLayers([], cluster, 5);
 
   it('derives the ids the map needs for clicking', () => {
     expect(getObservationsInteractiveLayersIds(state({})).sort()).toEqual([

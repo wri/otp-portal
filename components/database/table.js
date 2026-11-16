@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 
 // Components
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -7,19 +8,21 @@ import Table from 'components/ui/table';
 import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
-// Redux and HOC
-import { useDispatch, useSelector } from 'react-redux';
 // Intl
 import { useIntl } from 'react-intl';
 
-import { getParsedTableDocuments } from 'selectors/database/database';
-import { setActiveColumns, setPage } from 'modules/documents-database';
 
-function DatabaseTable() {
+function DatabaseTable({
+  documents,
+  loading,
+  page,
+  pageCount,
+  pageSize,
+  onPageChange,
+  columns,
+  onColumnsChange
+}) {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const database = useSelector((state) => state.database);
-  const parsedTableDocuments = useSelector(getParsedTableDocuments);
   const inputs = [
     'country',
     'operator',
@@ -247,13 +250,13 @@ function DatabaseTable() {
             id: 'select-table-content',
           })}
         </h2>
-        <Spinner isLoading={database.loading} />
+        <Spinner isLoading={loading} />
         <CheckboxGroup
           className="-inline"
           name="observations-columns"
-          onChange={(value) => dispatch(setActiveColumns(value))}
+          onChange={onColumnsChange}
           properties={{
-            default: database.columns,
+            default: columns,
             name: 'observations-columns',
           }}
           options={tableOptions}
@@ -261,22 +264,22 @@ function DatabaseTable() {
 
         <Table
           className="database-table -fit-to-page"
-          data={parsedTableDocuments}
+          data={documents}
           options={{
             columns: columnHeaders.filter((header) =>
-              database.columns.includes(header.accessor)
+              columns.includes(header.accessor)
             ),
             pagination: true,
             manual: true,
             sortable: false,
             multiSort: false,
-            page: database.page,
-            pageSize: 30,
-            pages: database.pageCount,
-            loading: database.loading,
-            onFetchData: ((state) => {
-              dispatch(setPage(state.page));
-            }),
+            page,
+            pageSize,
+            pages: pageCount,
+            loading,
+            onFetchData: (state) => {
+              if (state.page !== page) onPageChange(state.page);
+            },
             previousText: '<',
             nextText: '>',
             noDataText: intl.formatMessage({
@@ -290,5 +293,16 @@ function DatabaseTable() {
     </section>
   );
 }
+
+DatabaseTable.propTypes = {
+  documents: PropTypes.array.isRequired,
+  loading: PropTypes.bool,
+  page: PropTypes.number.isRequired,
+  pageCount: PropTypes.number.isRequired,
+  pageSize: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  columns: PropTypes.array.isRequired,
+  onColumnsChange: PropTypes.func.isRequired
+};
 
 export default DatabaseTable;

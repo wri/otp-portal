@@ -1,14 +1,10 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeOne } from 'utils/memoize';
 
-// Get the datasets and filters from state
-const getDatabase = (state) => state.database;
+export const getParsedTableDocuments = memoizeOne(
+  (documents) => {
+    if (documents && documents.length) {
 
-export const getParsedTableDocuments = createSelector(
-  getDatabase,
-  (documentsDatabase) => {
-    if (documentsDatabase.data && documentsDatabase.data.length) {
-
-      return documentsDatabase.data
+      return documents
         .filter((doc) => !doc['required-operator-document']['contract-signature'])
         .map((doc) => ({
           id: doc.id,

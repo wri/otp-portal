@@ -1,14 +1,10 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeOne } from 'utils/memoize';
 
 import { FILTER_RULES } from 'constants/documents-database';
 import { narrowFilterOptions } from 'utils/filter-options';
 
-const getFilters = (state) => state.database.filters.data;
-const getFilterOptions = (state) => state.database.filters.options;
-
-export const getParsedFilters = createSelector(
-  getFilters,
-  getFilterOptions,
+// Narrows the dependent filter options to the current selection
+export const getParsedFilters = memoizeOne(
   (filters, options) => ({
     data: filters,
     options: narrowFilterOptions(filters, options, FILTER_RULES)

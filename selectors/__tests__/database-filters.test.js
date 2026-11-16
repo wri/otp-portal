@@ -30,7 +30,7 @@ const OPTIONS = {
   ]
 };
 
-const parse = (filters, options = OPTIONS) => getParsedFilters({ database: { filters: { data: filters, options } } });
+const parse = (filters, options = OPTIONS) => getParsedFilters(filters, options);
 const names = (list) => list.map((o) => o.name);
 
 describe('getParsedFilters', () => {
