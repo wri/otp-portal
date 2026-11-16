@@ -1,14 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeOne } from 'utils/memoize';
 
-// Get the datasets and filters from state
-const observations = (state) => state.observations;
-
-// Create a function to compare the current active datatasets and the current datasetsIds
-const getParsedChartObservations = createSelector(
-  observations,
-  (_observations) => {
-    if (_observations.data && _observations.data.length) {
-      return _observations.data.map((obs) => ({
+const getParsedChartObservations = memoizeOne(
+  (observations) => {
+    if (observations && observations.length) {
+      return observations.map((obs) => ({
         id: obs.id,
         details: obs.details,
         level: obs.severity && obs.severity.level,

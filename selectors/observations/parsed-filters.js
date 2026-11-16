@@ -1,14 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { memoizeOne } from 'utils/memoize';
 
 import { isEmpty, sortBy } from 'utils/general';
 
-// Get the datasets and filters from state
-const filters = state => state.observations.filters.data;
-const filterOptions = state => state.observations.filters.options;
-
-// Create a function to compare the current active datatasets and the current datasetsIds
-const getParsedFilters = createSelector(
-  filters, filterOptions,
+// Narrows the dependent filter options (operators, observers, FMUs, subcategories) to the selection
+const getParsedFilters = memoizeOne(
   (_filters, _filterOptions) => {
     let newFilterOptions = _filterOptions;
 

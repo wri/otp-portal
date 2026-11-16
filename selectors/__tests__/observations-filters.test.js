@@ -29,7 +29,7 @@ const OPTIONS = {
   ]
 };
 
-const parse = (data, options = OPTIONS) => getParsedFilters({ observations: { filters: { data, options } } });
+const parse = (data, options = OPTIONS) => getParsedFilters(data, options);
 const names = (list) => list.map((o) => o.name);
 
 describe('observations getParsedFilters', () => {

@@ -1,15 +1,17 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { sortBy } from 'utils/general';
-import { connect } from 'react-redux';
-import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import { useIntl, injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
 
 import modal from 'services/modal';
+import { fetchApi } from 'services/fetch-api';
 import useDeepCompareEffect from 'hooks/use-deep-compare-effect';
+import useApi from 'hooks/use-api';
+import useUrlFilters from 'hooks/use-url-filters';
+import { parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 
 import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
 import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
@@ -32,16 +34,6 @@ import StaticTabs from 'components/ui/static-tabs';
 
 import FAAttributions from 'components/map/fa-attributions';
 
-import {
-  getObservations,
-  getFilters,
-  setFilters,
-  getObservationsUrl,
-  setActiveColumns,
-  setObservationsMapLocation,
-  setObservationsMapCluster
-} from 'modules/observations';
-
 import { FILTERS_REFS } from 'constants/observations';
 import {
   tableCheckboxes,
@@ -56,30 +48,89 @@ const MapControls = dynamic(() => import('components/map/map-controls'), { ssr: 
 const ZoomControl = dynamic(() => import('components/map/controls/zoom-control'), { ssr: false });
 const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
-const ObservationsPage = (props) => {
+const OBS_MAX_SIZE = 3000;
+const OBSERVATION_INCLUDES = [
+  'country',
+  'subcategory',
+  'subcategory.category',
+  'operator',
+  'severity',
+  'fmu',
+  'observation-report',
+  'observers',
+  'observation-documents',
+  'relevant-operators'
+].join(',');
+const FRONTEND_FILTERS = {
+  hidden: [{ id: 'all', name: 'all' }]
+};
+const DEFAULT_COLUMNS = ['date', 'country', 'operator', 'category', 'observation', 'level', 'fmu', 'report'];
+const DEFAULT_MAP_LOCATION = { zoom: 5, latitude: -1.45, longitude: 15 };
+const NO_OBSERVATIONS = [];
+const NO_OPTIONS = {};
+const NO_CLUSTER = {};
+
+function fetchObservations(filters, locale) {
+  return fetchApi('observations', {
+    locale,
+    params: {
+      'page[size]': OBS_MAX_SIZE,
+      include: OBSERVATION_INCLUDES,
+      'fields[fmus]': 'name',
+      'fields[operators]': 'name,slug,operator-type,fa-id,is-active',
+      'fields[severities]': 'details,level',
+      'fields[subcategories]': 'name,category',
+      'fields[categories]': 'name',
+      'fields[countries]': 'iso,name',
+      'fields[observers]': 'name,observer-type,public-info,address,information-email,information-name,information-phone,data-email,data-name,data-phone',
+      'fields[observation-reports]': 'attachment,title,publication-date,mission-type',
+      'fields[observation-documents]': 'attachment,name',
+      ...getApiFiltersParams(filters)
+    }
+  });
+}
+
+function fetchFilterOptions(locale) {
+  return fetchApi('observation_filters_tree', { locale, deserialize: false, cache: true })
+    .then((data) => parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS }));
+}
+
+const ObservationsPage = ({ language }) => {
   const intl = useIntl();
   const [tab, setTab] = useState('observations-list');
   const [popup, setPopup] = useState(null);
   const [bounds, setBounds] = useState(null);
+  const [columns, setColumns] = useState(DEFAULT_COLUMNS);
+  const [mapLocation, setMapLocation] = useState(DEFAULT_MAP_LOCATION);
+  const [openCluster, setOpenCluster] = useState(NO_CLUSTER);
   const mapRef = useRef(null);
   const makeJumpToStaticHeaderRef = useRef(false);
 
-  useEffect(() => {
-    props.getFilters();
-  }, []);
+  const [filters, setFilters] = useUrlFilters();
+  const filterOptions = useApi(`observation-filters:${intl.locale}`, () => fetchFilterOptions(intl.locale));
+  const observations = useApi(
+    `observations:${intl.locale}:${JSON.stringify(filters)}`,
+    () => fetchObservations(filters, intl.locale)
+  );
 
-  useDeepCompareEffect(() => {
-    props.getObservations();
-    props.setObservationsMapCluster({});
+  const data = observations.data || NO_OBSERVATIONS;
+  const parsedFilters = getParsedFilters(filters, filterOptions.data || NO_OPTIONS);
+  const parsedTableObservations = getParsedTableObservations(data);
+  const parsedChartObservations = getParsedChartObservations(data);
+  const layers = getObservationsLayers(data, openCluster, mapLocation.zoom);
+  const interactiveLayerIds = getObservationsInteractiveLayersIds(layers);
+  const legend = getObservationsLegend(intl);
+
+  // new filters mean new markers, so a cluster or popup left open would point at nothing
+  const [shownFilters, setShownFilters] = useState(filters);
+  if (shownFilters !== filters) {
+    setShownFilters(filters);
+    setOpenCluster(NO_CLUSTER);
     setPopup(null);
-  }, [props.parsedFilters.data]);
-
-  useEffect(() => {
-    props.getObservationsUrl(props.router);
-  }, [props.router.asPath]);
+  }
 
   useDeepCompareEffect(() => {
-    const obsLayer = props.getObservationsLayers.find((l) => l.id === 'observations');
+    const obsLayer = layers.find((l) => l.id === 'observations');
     if (obsLayer) {
       const bbox = getBBox(obsLayer.source.data);
       setBounds({
@@ -90,7 +141,7 @@ const ObservationsPage = (props) => {
         },
       });
     }
-  }, [props.observations.data]);
+  }, [data]);
 
   const onCustomAttribute = (e) => {
     e.preventDefault();
@@ -99,24 +150,20 @@ const ObservationsPage = (props) => {
     });
   };
 
-  const setActiveColumns = (value) => {
-    props.setActiveColumns(value);
-  };
-
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
   };
 
-  const onViewportChange = (mapLocation) => {
+  const onViewportChange = (nextLocation) => {
     // if zoom level changes (rounding as sometimes is like 4.999999...) then hide open cluster
-    if (Math.round(props.observations.map.zoom) != Math.round(mapLocation.zoom)) {
-      props.setObservationsMapCluster({});
+    if (Math.round(mapLocation.zoom) != Math.round(nextLocation.zoom)) {
+      setOpenCluster(NO_CLUSTER);
     }
-    props.setObservationsMapLocation(mapLocation);
+    setMapLocation(nextLocation);
   };
 
   const onClick = (e) => {
-    const { cluster: clusterProp, map } = props.observations;
+    const map = mapLocation;
     const element = e.originalEvent.target;
 
     if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) { // No better way to do this
@@ -127,9 +174,9 @@ const ObservationsPage = (props) => {
       const { cluster, cluster_id: clusterId, point_count } = properties;
 
       if (cluster) {
-        if (+clusterId !== +clusterProp.id) {
+        if (+clusterId !== +openCluster.id) {
           if (map.zoom < 12 && point_count > 16) {
-            props.setObservationsMapLocation({
+            setMapLocation({
               ...map,
               longitude: lngLat.lng,
               latitude: lngLat.lat,
@@ -146,11 +193,11 @@ const ObservationsPage = (props) => {
             .getSource(source)
             .getClusterLeaves(clusterId, point_count, 0, (error, fts) => {
               if (error) {
-                props.setObservationsMapCluster({});
+                setOpenCluster(NO_CLUSTER);
                 return true;
               }
 
-              props.setObservationsMapCluster({
+              setOpenCluster({
                 id: clusterId,
                 coordinates: geometry.coordinates,
                 features: sortBy(fts, 'properties.level'),
@@ -160,7 +207,7 @@ const ObservationsPage = (props) => {
               return fts;
             });
         } else {
-          props.setObservationsMapCluster({});
+          setOpenCluster(NO_CLUSTER);
         }
 
         if (popup) {
@@ -178,7 +225,7 @@ const ObservationsPage = (props) => {
           }
         });
         if (feature.layer.id !== OBSERVATIONS_LEAVES_LAYER_ID) {
-          props.setObservationsMapCluster({});
+          setOpenCluster(NO_CLUSTER);
         }
       }
     }
@@ -222,16 +269,6 @@ const ObservationsPage = (props) => {
     }
   };
 
-  const {
-    observations,
-    getObservationsLayers,
-    interactiveLayerIds,
-    getObservationsLegend,
-    parsedFilters,
-    parsedTableObservations,
-    parsedChartObservations,
-  } = props;
-
   const changeOfLabelLookup = {
     level: 'severity',
     observation: 'detail',
@@ -264,8 +301,8 @@ const ObservationsPage = (props) => {
               <Filters
                 options={parsedFilters.options}
                 filters={parsedFilters.data}
-                setFilters={props.setFilters}
-                loading={observations.filters.loading}
+                setFilters={setFilters}
+                loading={filterOptions.loading}
                 filtersRefs={FILTERS_REFS}
               />
             </div>
@@ -310,9 +347,9 @@ const ObservationsPage = (props) => {
               <CheckboxGroup
                 className="-single-row -small -secondary"
                 name="observations-columns"
-                onChange={(value) => setActiveColumns(value)}
+                onChange={setColumns}
                 properties={{
-                  default: observations.columns,
+                  default: columns,
                   name: 'observations-columns',
                 }}
                 options={tableOptions}
@@ -325,7 +362,7 @@ const ObservationsPage = (props) => {
               data={parsedTableObservations}
               options={{
                 columns: columnHeaders.filter((header) =>
-                  observations.columns.includes(header.accessor)
+                  columns.includes(header.accessor)
                 ),
                 pageSize: 50,
                 pagination: true,
@@ -347,12 +384,12 @@ const ObservationsPage = (props) => {
                     desc: true,
                   },
                 ],
-                showSubComponent: observations.columns.includes('location'),
+                showSubComponent: columns.includes('location'),
                 subComponent: (row) =>
-                  observations.columns.includes('location') && (
+                  columns.includes('location') && (
                     <MapSubComponent
                       id={row.original.id}
-                      language={props.language}
+                      language={language}
                       location={row.original.location}
                       level={row.original.level}
                     />
@@ -368,18 +405,17 @@ const ObservationsPage = (props) => {
           <Spinner isLoading={observations.loading} />
           {/* Map */}
           <Map
-            language={props.language}
+            language={language}
             // options
             scrollZoom={false}
             // viewport
-            viewport={observations.map}
+            viewport={mapLocation}
             onViewportChange={onViewportChange}
             // Bounds
             bounds={bounds}
             // Interaction
             interactiveLayerIds={interactiveLayerIds}
             onClick={onClick}
-            onHover={props.onHover}
             onLoad={onMapLoaded}
             onUnmount={() => (mapRef.current = null)}
             // Options
@@ -396,7 +432,7 @@ const ObservationsPage = (props) => {
                     onClose={() => setPopup(null)}
                   />
                 )}
-                <LayerManager map={map} layers={getObservationsLayers} />
+                <LayerManager map={map} layers={layers} />
 
                 <MapControls>
                   <ZoomControl />
@@ -407,7 +443,7 @@ const ObservationsPage = (props) => {
 
           {/* LEGEND */}
           <Legend
-            layerGroups={getObservationsLegend}
+            layerGroups={legend}
             expanded={false}
             toolbar={<></>}
             setLayerSettings={() => { }}
@@ -419,48 +455,7 @@ const ObservationsPage = (props) => {
 };
 
 ObservationsPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  observations: PropTypes.object,
-  parsedFilters: PropTypes.object,
-  getObservationsLayers: PropTypes.array,
-  parsedChartObservations: PropTypes.array,
-  parsedTableObservations: PropTypes.array,
   language: PropTypes.string.isRequired,
-
-  getObservations: PropTypes.func.isRequired,
-  getObservationsUrl: PropTypes.func.isRequired,
-  setActiveColumns: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
-  setObservationsMapLocation: PropTypes.func.isRequired,
-  setObservationsMapCluster: PropTypes.func.isRequired,
 };
 
-ObservationsPage.getInitialProps = async ({ store, query }) => {
-  store.dispatch(getObservationsUrl({ query }));
-  return {};
-}
-
-// needs injectIntl for selectors
-export default injectIntl(withRouter(
-  connect(
-    (state, props) => ({
-      language: state.language,
-      observations: state.observations,
-      parsedFilters: getParsedFilters(state),
-      parsedTableObservations: getParsedTableObservations(state),
-      parsedChartObservations: getParsedChartObservations(state),
-      getObservationsLayers: getObservationsLayers(state),
-      interactiveLayerIds: getObservationsInteractiveLayersIds(state),
-      getObservationsLegend: getObservationsLegend(state, props),
-    }),
-    {
-      getObservations,
-      getFilters,
-      getObservationsUrl,
-      setObservationsMapLocation,
-      setObservationsMapCluster,
-      setFilters,
-      setActiveColumns,
-    }
-  )(ObservationsPage)
-));
+export default ObservationsPage;

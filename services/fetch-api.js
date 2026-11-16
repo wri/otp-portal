@@ -12,8 +12,9 @@ export const CONTENT_MAX_AGE = 5 * 60 * 1000;
  * `auth`: send the session; public lists stay public for a logged-in user unless asked.
  * `cache`: true reuses a browser response for the session, a number of ms only for that long,
  * and 'reload' refetches and stores it.
+ * `meta`: resolve with { data, meta } for endpoints whose paging info is in the response meta.
  */
-export async function fetchApi(endpoint, { locale, params = {}, auth = false, cache: cacheMode = false, ...requestOptions } = {}) {
+export async function fetchApi(endpoint, { locale, params = {}, auth = false, cache: cacheMode = false, meta = false, ...requestOptions } = {}) {
   const queryParams = { ...(locale && { locale }), ...params };
   const options = { ...requestOptions, auth };
   if (auth && typeof window === 'undefined') {
@@ -22,10 +23,11 @@ export async function fetchApi(endpoint, { locale, params = {}, auth = false, ca
     if (cookie) options.cookie = cookie;
   }
 
-  const request = () => API.get(endpoint, queryParams, options).then(({ data }) => data);
+  const request = () => API.get(endpoint, queryParams, options)
+    .then(({ data, response }) => (meta ? { data, meta: response.meta } : data));
   if (!cacheMode || typeof window === 'undefined') return request();
 
-  const key = JSON.stringify([endpoint, queryParams, auth]);
+  const key = JSON.stringify([endpoint, queryParams, auth, meta]);
   const cached = cache.get(key);
   const fresh = cached && (cacheMode === true || Date.now() - cached.at < cacheMode);
   if (cacheMode !== 'reload' && fresh) return cached.pending;
