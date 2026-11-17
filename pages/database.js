@@ -8,19 +8,16 @@ import { useIntl } from 'react-intl';
 // Components
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
-import { FILTERS_REFS } from 'constants/documents-database';
+import { FILTERS_REFS, FILTER_RULES } from 'constants/documents-database';
 import Filters from 'components/ui/database-filters';
 import DatabaseTable from 'components/database/table';
 import StaticTabs from 'components/ui/static-tabs';
 
 import useApi from 'hooks/use-api';
+import useFilterOptions from 'hooks/use-filter-options';
 import useUrlFilters from 'hooks/use-url-filters';
 import { fetchApi } from 'services/fetch-api';
 import { parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
-
-// Selectors
-import { getParsedFilters } from 'selectors/database/filters';
-import { getParsedTableDocuments } from 'selectors/database/database';
 
 const PAGE_SIZE = 30;
 const DOCUMENT_INCLUDES = [
@@ -75,7 +72,7 @@ const DocumentsDatabasePage = () => {
     () => fetchDocuments(filters, page, intl.locale)
   );
   const results = documents.data || NO_RESULTS;
-  const parsedFilters = getParsedFilters(filters, filterOptions.data || NO_OPTIONS);
+  const options = useFilterOptions(filters, filterOptions.data || NO_OPTIONS, FILTER_RULES);
 
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
@@ -93,8 +90,8 @@ const DocumentsDatabasePage = () => {
         background="/static/images/static-header/bg-observations.jpg"
       />
       <Filters
-        options={parsedFilters.options}
-        filters={parsedFilters.data}
+        options={options}
+        filters={filters}
         setFilters={setFilters}
         loading={filterOptions.loading}
         filtersRefs={FILTERS_REFS}
@@ -114,7 +111,7 @@ const DocumentsDatabasePage = () => {
       />
 
       <DatabaseTable
-        documents={getParsedTableDocuments(results.data)}
+        documents={results.data}
         loading={documents.loading}
         page={page}
         pageCount={results.meta['page-count']}

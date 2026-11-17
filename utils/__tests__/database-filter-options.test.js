@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
-import { getParsedFilters } from '../database/filters';
+import { narrowFilterOptions } from 'utils/filter-options';
+import { FILTER_RULES } from 'constants/documents-database';
 
 const OPTIONS = {
   country_ids: [
@@ -30,16 +31,16 @@ const OPTIONS = {
   ]
 };
 
-const parse = (filters, options = OPTIONS) => getParsedFilters(filters, options);
+const parse = (filters, options = OPTIONS) => narrowFilterOptions(filters, options, FILTER_RULES);
 const names = (list) => list.map((o) => o.name);
 
-describe('getParsedFilters', () => {
+describe('database filter options', () => {
   it('passes options through without active filters', () => {
-    expect(parse({}).options).toBe(OPTIONS);
+    expect(parse({})).toBe(OPTIONS);
   });
 
   it('narrows options to the selected countries, sorted by name', () => {
-    const { options } = parse({ country_ids: ['7'] });
+    const options = parse({ country_ids: ['7'] });
 
     expect(names(options.operator_id)).toEqual(['Alpha', 'Bravo']);
     expect(names(options.fmu_id)).toEqual(['Cayo', 'Nkola']);
@@ -48,7 +49,7 @@ describe('getParsedFilters', () => {
   });
 
   it('narrows fmus and forest types to the selected operators', () => {
-    const { options } = parse({ operator_id: ['2', '3'] });
+    const options = parse({ operator_id: ['2', '3'] });
 
     expect(names(options.fmu_id)).toEqual(['Ngombe', 'Nkola']);
     expect(names(options.forest_types)).toEqual(['Communal forest', 'Forest management unit']);
@@ -56,12 +57,12 @@ describe('getParsedFilters', () => {
   });
 
   it('narrows documents to the selected legal categories', () => {
-    const { options } = parse({ legal_categories: ['5'] });
+    const options = parse({ legal_categories: ['5'] });
 
     expect(names(options.required_operator_document_id)).toEqual(['Tax clearance']);
   });
 
   it('ignores filters until options are loaded', () => {
-    expect(parse({ country_ids: ['7'] }, {}).options).toEqual({});
+    expect(parse({ country_ids: ['7'] }, {})).toEqual({});
   });
 });

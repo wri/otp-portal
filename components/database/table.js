@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 
@@ -12,6 +12,49 @@ import Icon from 'components/ui/icon';
 import { useIntl } from 'react-intl';
 
 
+// One table row per document, leaving out publication authorizations
+const toTableRows = (documents) => {
+  if (documents && documents.length) {
+
+    return documents
+      .filter((doc) => !doc['required-operator-document']['contract-signature'])
+      .map((doc) => ({
+        id: doc.id,
+        status: doc.status,
+        country: doc.operator.country && doc.operator.country.name,
+        operator: doc.operator.name,
+        'operator-slug': (doc.operator['fa-id']?.length && doc.operator['is-active'])
+          ? doc.operator.slug
+          : null,
+        'forest-type': doc.fmu && doc.fmu['forest-type'],
+        fmu: doc.fmu || '',
+        'start-date': doc['start-date'],
+        'expire-date': doc['expire-date'],
+        source: doc['source-type'],
+        sourceInfo: doc['source-info'],
+        document: doc.attachment,
+        reason: doc.reason || '',
+        annexes: doc['operator-document-annexes'],
+        'document-name':
+          (doc['required-operator-document'] &&
+            doc['required-operator-document'].name) ||
+          '',
+        'legal-category':
+          (doc['required-operator-document'] &&
+            doc['required-operator-document'][
+              'required-operator-document-group'
+            ] &&
+            doc['required-operator-document'][
+              'required-operator-document-group'
+            ].name) ||
+          '',
+      })
+    );
+  }
+
+  return [];
+};
+
 function DatabaseTable({
   documents,
   loading,
@@ -23,6 +66,7 @@ function DatabaseTable({
   onColumnsChange
 }) {
   const intl = useIntl();
+  const rows = useMemo(() => toTableRows(documents), [documents]);
   const inputs = [
     'country',
     'operator',
@@ -264,7 +308,7 @@ function DatabaseTable({
 
         <Table
           className="database-table -fit-to-page"
-          data={documents}
+          data={rows}
           options={{
             columns: columnHeaders.filter((header) =>
               columns.includes(header.accessor)
