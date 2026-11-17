@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from 'react';
+import React, { Fragment, useMemo, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { sortBy } from 'utils/general';
 import dynamic from 'next/dynamic';
@@ -13,15 +13,10 @@ import useApi from 'hooks/use-api';
 import useUrlFilters from 'hooks/use-url-filters';
 import { parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 
-import { getParsedTableObservations } from 'selectors/observations/parsed-table-observations';
-import { getParsedChartObservations } from 'selectors/observations/parsed-chart-observations';
-import {
-  getObservationsLayers,
-  getObservationsInteractiveLayersIds,
-  getObservationsLegend,
-  OBSERVATIONS_LEAVES_LAYER_ID,
-} from 'selectors/observations/parsed-map-observations';
-import { getParsedFilters } from 'selectors/observations/parsed-filters';
+import { parseObservations } from 'services/observations';
+import useFilterOptions from 'hooks/use-filter-options';
+import { OBSERVATIONS_LEAVES_LAYER_ID } from 'components/observations/map-layers';
+import useObservationsMap from 'components/observations/use-observations-map';
 
 import Layout from 'components/layout/layout';
 import Overview from 'components/observations/overview';
@@ -34,7 +29,7 @@ import StaticTabs from 'components/ui/static-tabs';
 
 import FAAttributions from 'components/map/fa-attributions';
 
-import { FILTERS_REFS } from 'constants/observations';
+import { FILTERS_REFS, FILTER_RULES } from 'constants/observations';
 import {
   tableCheckboxes,
   getColumnHeaders,
@@ -114,12 +109,9 @@ const ObservationsPage = ({ language }) => {
   );
 
   const data = observations.data || NO_OBSERVATIONS;
-  const parsedFilters = getParsedFilters(filters, filterOptions.data || NO_OPTIONS);
-  const parsedTableObservations = getParsedTableObservations(data);
-  const parsedChartObservations = getParsedChartObservations(data);
-  const layers = getObservationsLayers(data, openCluster, mapLocation.zoom);
-  const interactiveLayerIds = getObservationsInteractiveLayersIds(layers);
-  const legend = getObservationsLegend(intl);
+  const options = useFilterOptions(filters, filterOptions.data || NO_OPTIONS, FILTER_RULES);
+  const tableRows = useMemo(() => parseObservations(data), [data]);
+  const { layers, interactiveLayerIds, legend } = useObservationsMap(data, openCluster, mapLocation.zoom);
 
   // new filters mean new markers, so a cluster or popup left open would point at nothing
   const [shownFilters, setShownFilters] = useState(filters);
@@ -299,8 +291,8 @@ const ObservationsPage = ({ language }) => {
           <div className="row l-row">
             <div className="columns small-12 medium-4">
               <Filters
-                options={parsedFilters.options}
-                filters={parsedFilters.data}
+                options={options}
+                filters={filters}
                 setFilters={setFilters}
                 loading={filterOptions.loading}
                 filtersRefs={FILTERS_REFS}
@@ -310,7 +302,7 @@ const ObservationsPage = ({ language }) => {
             <div className="columns small-12 medium-6 medium-offset-1">
               {/* Overview by category graphs */}
               <Overview
-                parsedObservations={parsedChartObservations}
+                observations={data}
                 loading={observations.loading}
                 onShowObservations={onShowObservations}
                 onShowMap={onShowMap}
@@ -359,7 +351,7 @@ const ObservationsPage = ({ language }) => {
             <Table
               className="-fit-to-page"
               sortable
-              data={parsedTableObservations}
+              data={tableRows}
               options={{
                 columns: columnHeaders.filter((header) =>
                   columns.includes(header.accessor)

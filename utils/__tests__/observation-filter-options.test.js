@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
-import { getParsedFilters } from '../observations/parsed-filters';
+import { narrowFilterOptions } from 'utils/filter-options';
+import { FILTER_RULES } from 'constants/observations';
 
 const OPTIONS = {
   country_id: [
@@ -29,19 +30,16 @@ const OPTIONS = {
   ]
 };
 
-const parse = (data, options = OPTIONS) => getParsedFilters(data, options);
+const parse = (data, options = OPTIONS) => narrowFilterOptions(data, options, FILTER_RULES);
 const names = (list) => list.map((o) => o.name);
 
-describe('observations getParsedFilters', () => {
-  it('returns the filters with untouched options when nothing is selected', () => {
-    const { data, options } = parse({});
-
-    expect(data).toEqual({});
-    expect(options).toBe(OPTIONS);
+describe('observation filter options', () => {
+  it('leaves the options untouched when nothing is selected', () => {
+    expect(parse({})).toBe(OPTIONS);
   });
 
   it('narrows operators, observers and fmus to the selected countries', () => {
-    const { options } = parse({ country_id: ['7'] });
+    const options = parse({ country_id: ['7'] });
 
     expect(names(options.operator)).toEqual(['Alpha', 'Bravo']);
     expect(names(options.observer_id)).toEqual(['FODER']);
@@ -49,25 +47,25 @@ describe('observations getParsedFilters', () => {
   });
 
   it('narrows fmus to the selected operators', () => {
-    const { options } = parse({ operator: ['2', '3'] });
+    const options = parse({ operator: ['2', '3'] });
 
     expect(names(options.fmu_id)).toEqual(['Ngombe', 'Nkola']);
   });
 
   it('narrows subcategories to the selected categories', () => {
-    const { options } = parse({ category_id: ['5'] });
+    const options = parse({ category_id: ['5'] });
 
     expect(names(options.subcategory_id)).toEqual(['Illegal logging', 'Safety']);
   });
 
   it('applies country and operator filters together', () => {
-    const { options } = parse({ country_id: ['7'], operator: ['1'] });
+    const options = parse({ country_id: ['7'], operator: ['1'] });
 
     expect(names(options.operator)).toEqual(['Alpha', 'Bravo']);
     expect(names(options.fmu_id)).toEqual(['Cayo']);
   });
 
   it('ignores filters until options are loaded', () => {
-    expect(parse({ country_id: ['7'] }, {}).options).toEqual({});
+    expect(parse({ country_id: ['7'] }, {})).toEqual({});
   });
 });
