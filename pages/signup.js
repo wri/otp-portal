@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
-
-// Redux
-import { connect } from 'react-redux';
 
 import { getCountries } from 'modules/countries';
 
@@ -62,10 +58,4 @@ SignUp.getInitialProps = async ({ store }) => {
   return {};
 }
 
-
-export default connect(
-  (state) => ({
-    countries: state.countries,
-  }),
-  { getCountries }
-)(SignUp);
+export default SignUp;

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { captureException } from 'utils/sentry';
 import toast from 'services/toast';
 
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
 
@@ -28,7 +28,8 @@ const DEFAULT_BUTTONS = {
 };
 
 const DocCardUpload = (props) => {
-  const { status, buttons = DEFAULT_BUTTONS, date, title, docId, onChange, reason } = props;
+  const { status, buttons = DEFAULT_BUTTONS, title, docId, onChange, reason } = props;
+  const date = useSelector(getOperatorDocumentationDate);
   const intl = useIntl();
   const documentationService = useMemo(() => new DocumentationService(), []);
 
@@ -224,13 +225,7 @@ DocCardUpload.propTypes = {
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
-  date: PropTypes.string,
   reason: PropTypes.string,
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-  }),
-  {}
-)(DocCardUpload);
+export default DocCardUpload;

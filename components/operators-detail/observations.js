@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 // Utils
 import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
@@ -9,7 +8,6 @@ import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-import { getOperatorObservations } from 'modules/operators-detail';
 
 // Components
 import Checkbox from 'components/form/Checkbox';
@@ -140,12 +138,6 @@ const OperatorsDetailObservations = (props) => {
 
 OperatorsDetailObservations.propTypes = {
   operatorObservations: PropTypes.array,
-  getOperatorObservations: PropTypes.func
 };
 
-export default connect(
-  null,
-  {
-    getOperatorObservations
-  }
-)(OperatorsDetailObservations);
+export default OperatorsDetailObservations;

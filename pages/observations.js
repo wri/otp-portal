@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { sortBy } from 'utils/general';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import { useIntl, injectIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import getBBox from '@turf/bbox';
 
@@ -58,6 +58,14 @@ const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr
 
 const ObservationsPage = (props) => {
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const observations = useSelector((state) => state.observations);
+  const parsedFilters = useSelector(getParsedFilters);
+  const parsedTableObservations = useSelector(getParsedTableObservations);
+  const parsedChartObservations = useSelector(getParsedChartObservations);
+  const observationsLayers = useSelector(getObservationsLayers);
+  const interactiveLayerIds = useSelector(getObservationsInteractiveLayersIds);
+  const observationsLegend = useSelector((state) => getObservationsLegend(state, { intl }));
   const [tab, setTab] = useState('observations-list');
   const [popup, setPopup] = useState(null);
   const [bounds, setBounds] = useState(null);
@@ -65,21 +73,21 @@ const ObservationsPage = (props) => {
   const makeJumpToStaticHeaderRef = useRef(false);
 
   useEffect(() => {
-    props.getFilters();
+    dispatch(getFilters());
   }, []);
 
   useDeepCompareEffect(() => {
-    props.getObservations();
-    props.setObservationsMapCluster({});
+    dispatch(getObservations());
+    dispatch(setObservationsMapCluster({}));
     setPopup(null);
-  }, [props.parsedFilters.data]);
+  }, [parsedFilters.data]);
 
   useEffect(() => {
-    props.getObservationsUrl(props.router);
+    dispatch(getObservationsUrl(props.router));
   }, [props.router.asPath]);
 
   useDeepCompareEffect(() => {
-    const obsLayer = props.getObservationsLayers.find((l) => l.id === 'observations');
+    const obsLayer = observationsLayers.find((l) => l.id === 'observations');
     if (obsLayer) {
       const bbox = getBBox(obsLayer.source.data);
       setBounds({
@@ -90,7 +98,7 @@ const ObservationsPage = (props) => {
         },
       });
     }
-  }, [props.observations.data]);
+  }, [observations.data]);
 
   const onCustomAttribute = (e) => {
     e.preventDefault();
@@ -99,24 +107,20 @@ const ObservationsPage = (props) => {
     });
   };
 
-  const setActiveColumns = (value) => {
-    props.setActiveColumns(value);
-  };
-
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
   };
 
   const onViewportChange = (mapLocation) => {
     // if zoom level changes (rounding as sometimes is like 4.999999...) then hide open cluster
-    if (Math.round(props.observations.map.zoom) != Math.round(mapLocation.zoom)) {
-      props.setObservationsMapCluster({});
+    if (Math.round(observations.map.zoom) != Math.round(mapLocation.zoom)) {
+      dispatch(setObservationsMapCluster({}));
     }
-    props.setObservationsMapLocation(mapLocation);
+    dispatch(setObservationsMapLocation(mapLocation));
   };
 
   const onClick = (e) => {
-    const { cluster: clusterProp, map } = props.observations;
+    const { cluster: clusterProp, map } = observations;
     const element = e.originalEvent.target;
 
     if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) { // No better way to do this
@@ -129,12 +133,12 @@ const ObservationsPage = (props) => {
       if (cluster) {
         if (+clusterId !== +clusterProp.id) {
           if (map.zoom < 12 && point_count > 16) {
-            props.setObservationsMapLocation({
+            dispatch(setObservationsMapLocation({
               ...map,
               longitude: lngLat.lng,
               latitude: lngLat.lat,
               zoom: map.zoom + 2
-            });
+            }));
             return;
           }
 
@@ -146,21 +150,21 @@ const ObservationsPage = (props) => {
             .getSource(source)
             .getClusterLeaves(clusterId, point_count, 0, (error, fts) => {
               if (error) {
-                props.setObservationsMapCluster({});
+                dispatch(setObservationsMapCluster({}));
                 return true;
               }
 
-              props.setObservationsMapCluster({
+              dispatch(setObservationsMapCluster({
                 id: clusterId,
                 coordinates: geometry.coordinates,
                 features: sortBy(fts, 'properties.level'),
                 layers,
-              });
+              }));
 
               return fts;
             });
         } else {
-          props.setObservationsMapCluster({});
+          dispatch(setObservationsMapCluster({}));
         }
 
         if (popup) {
@@ -178,7 +182,7 @@ const ObservationsPage = (props) => {
           }
         });
         if (feature.layer.id !== OBSERVATIONS_LEAVES_LAYER_ID) {
-          props.setObservationsMapCluster({});
+          dispatch(setObservationsMapCluster({}));
         }
       }
     }
@@ -222,15 +226,6 @@ const ObservationsPage = (props) => {
     }
   };
 
-  const {
-    observations,
-    getObservationsLayers,
-    interactiveLayerIds,
-    getObservationsLegend,
-    parsedFilters,
-    parsedTableObservations,
-    parsedChartObservations,
-  } = props;
 
   const changeOfLabelLookup = {
     level: 'severity',
@@ -264,7 +259,7 @@ const ObservationsPage = (props) => {
               <Filters
                 options={parsedFilters.options}
                 filters={parsedFilters.data}
-                setFilters={props.setFilters}
+                setFilters={(filter) => dispatch(setFilters(filter))}
                 loading={observations.filters.loading}
                 filtersRefs={FILTERS_REFS}
               />
@@ -310,7 +305,7 @@ const ObservationsPage = (props) => {
               <CheckboxGroup
                 className="-single-row -small -secondary"
                 name="observations-columns"
-                onChange={(value) => setActiveColumns(value)}
+                onChange={(value) => dispatch(setActiveColumns(value))}
                 properties={{
                   default: observations.columns,
                   name: 'observations-columns',
@@ -396,7 +391,7 @@ const ObservationsPage = (props) => {
                     onClose={() => setPopup(null)}
                   />
                 )}
-                <LayerManager map={map} layers={getObservationsLayers} />
+                <LayerManager map={map} layers={observationsLayers} />
 
                 <MapControls>
                   <ZoomControl />
@@ -407,7 +402,7 @@ const ObservationsPage = (props) => {
 
           {/* LEGEND */}
           <Legend
-            layerGroups={getObservationsLegend}
+            layerGroups={observationsLegend}
             expanded={false}
             toolbar={<></>}
             setLayerSettings={() => { }}
@@ -420,19 +415,7 @@ const ObservationsPage = (props) => {
 
 ObservationsPage.propTypes = {
   router: PropTypes.object.isRequired,
-  observations: PropTypes.object,
-  parsedFilters: PropTypes.object,
-  getObservationsLayers: PropTypes.array,
-  parsedChartObservations: PropTypes.array,
-  parsedTableObservations: PropTypes.array,
   language: PropTypes.string.isRequired,
-
-  getObservations: PropTypes.func.isRequired,
-  getObservationsUrl: PropTypes.func.isRequired,
-  setActiveColumns: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
-  setObservationsMapLocation: PropTypes.func.isRequired,
-  setObservationsMapCluster: PropTypes.func.isRequired,
 };
 
 ObservationsPage.getInitialProps = async ({ store, query }) => {
@@ -440,26 +423,4 @@ ObservationsPage.getInitialProps = async ({ store, query }) => {
   return {};
 }
 
-// needs injectIntl for selectors
-export default injectIntl(withRouter(
-  connect(
-    (state, props) => ({
-      observations: state.observations,
-      parsedFilters: getParsedFilters(state),
-      parsedTableObservations: getParsedTableObservations(state),
-      parsedChartObservations: getParsedChartObservations(state),
-      getObservationsLayers: getObservationsLayers(state),
-      interactiveLayerIds: getObservationsInteractiveLayersIds(state),
-      getObservationsLegend: getObservationsLegend(state, props),
-    }),
-    {
-      getObservations,
-      getFilters,
-      getObservationsUrl,
-      setObservationsMapLocation,
-      setObservationsMapCluster,
-      setFilters,
-      setActiveColumns,
-    }
-  )(ObservationsPage)
-));
+export default withRouter(ObservationsPage);

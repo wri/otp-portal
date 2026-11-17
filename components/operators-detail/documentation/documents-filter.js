@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
@@ -14,14 +14,14 @@ import {
 
 function DocumentsFilter({
   children,
-  date,
   showDate,
-  fmus,
-  FMU,
   showFMU,
   onFmuChange,
   onDateChange
 }) {
+  const date = useSelector(getOperatorDocumentationDate);
+  const FMU = useSelector(getOperatorDocumentationFMU);
+  const fmus = useSelector(getHistoricFMUs);
   const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
@@ -91,19 +91,10 @@ function DocumentsFilter({
 
 DocumentsFilter.propTypes = {
   children: PropTypes.any,
-  date: PropTypes.string,
-  FMU: PropTypes.object,
-  fmus: PropTypes.array,
   showDate: PropTypes.bool,
   showFMU: PropTypes.bool,
   onFmuChange: PropTypes.func,
   onDateChange: PropTypes.func
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-    FMU: getOperatorDocumentationFMU(state),
-    fmus: getHistoricFMUs(state),
-  })
-)(DocumentsFilter);
+export default DocumentsFilter;

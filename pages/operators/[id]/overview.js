@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Selectors
 import { getParsedObservations } from 'selectors/operators-detail/observations';
 import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
 
 // Redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Components
 import Layout, { getInitialProps } from 'components/operators-detail/layout';
@@ -14,11 +13,10 @@ import Layout, { getInitialProps } from 'components/operators-detail/layout';
 // Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
 
-export const OperatorsDetailOverviewPage = ({
-  operatorsDetail,
-  operatorObservations,
-  operatorDocumentation,
-}) => {
+export const OperatorsDetailOverviewPage = () => {
+  const operatorsDetail = useSelector((state) => state.operatorsDetail);
+  const operatorObservations = useSelector(getParsedObservations);
+  const operatorDocumentation = useSelector(getParsedDocumentation);
   return (
     <Layout operatorObservations={operatorObservations}>
       <OperatorsDetailOverview
@@ -32,16 +30,4 @@ export const OperatorsDetailOverviewPage = ({
 
 OperatorsDetailOverviewPage.getInitialProps = getInitialProps;
 
-OperatorsDetailOverviewPage.propTypes = {
-  operatorsDetail: PropTypes.object,
-  operatorObservations: PropTypes.array,
-  operatorDocumentation: PropTypes.array,
-};
-
-export default connect(
-  (state) => ({
-    operatorsDetail: state.operatorsDetail,
-    operatorObservations: getParsedObservations(state),
-    operatorDocumentation: getParsedDocumentation(state),
-  }),
-)(OperatorsDetailOverviewPage);
+export default OperatorsDetailOverviewPage;

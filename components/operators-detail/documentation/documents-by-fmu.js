@@ -9,7 +9,7 @@ import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 import useUser from 'hooks/use-user';
 
-function DocumentsByFMU({ documents, id, getOperator }) {
+function DocumentsByFMU({ documents, id, onChange }) {
   const intl = useIntl();
   const user = useUser();
 
@@ -34,7 +34,7 @@ function DocumentsByFMU({ documents, id, getOperator }) {
                       type: 'operator',
                       id,
                     }}
-                    onChange={() => getOperator(id)}
+                    onChange={onChange}
                   />
                   {user.canManageOperator(id) && (
                     <DocCardUpload
@@ -43,7 +43,7 @@ function DocumentsByFMU({ documents, id, getOperator }) {
                         type: 'operator',
                         id,
                       }}
-                      onChange={() => getOperator(id)}
+                      onChange={onChange}
                     />
                   )}
                 </div>
@@ -59,7 +59,7 @@ function DocumentsByFMU({ documents, id, getOperator }) {
 DocumentsByFMU.propTypes = {
   documents: PropTypes.object,
   id: PropTypes.string,
-  getOperator: PropTypes.func
+  onChange: PropTypes.func
 };
 
 export default DocumentsByFMU;

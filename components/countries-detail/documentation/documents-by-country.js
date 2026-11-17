@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { sortBy } from "utils/general";
 
 // Redux
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { getCountry } from "modules/countries-detail";
 
@@ -19,6 +19,7 @@ import useUser from "hooks/use-user";
 const NO_DATA = [];
 
 function DocumentsByOperator(props) {
+  const dispatch = useDispatch();
   const { data = NO_DATA, id } = props;
   const user = useUser();
 
@@ -36,7 +37,7 @@ function DocumentsByOperator(props) {
               type: 'government',
               id
             }}
-            onChange={() => props.getCountry(id)}
+            onChange={() => dispatch(getCountry(id))}
           />
         )}
       </div>
@@ -100,7 +101,4 @@ DocumentsByOperator.propTypes = {
   id: PropTypes.string,
 };
 
-export default connect(
-  null,
-  { getCountry }
-)(DocumentsByOperator);
+export default DocumentsByOperator;

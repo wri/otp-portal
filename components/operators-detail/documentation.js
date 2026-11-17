@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -33,11 +33,10 @@ import DocumentsHeaderFilter from 'components/operators-detail/documentation/doc
 
 function OperatorsDetailDocumentation({
   operatorDocumentation,
-  operatorsDetail,
-  fmus,
-  setFMU,
-  setDate
+  operatorsDetail
 }) {
+  const dispatch = useDispatch();
+  const fmus = useSelector(getHistoricFMUs);
   const intl = useIntl();
   const user = useUser();
   const operator = operatorsDetail.data;
@@ -60,10 +59,10 @@ function OperatorsDetailDocumentation({
 
   const router = useRouter();
   useEffect(() => {
-    setFMU(fmus.find(f => f.id === router.query.fmuId));
+    dispatch(setOperatorDocumentationFMU(fmus.find(f => f.id === router.query.fmuId)));
   }, [router.query.fmuId, fmus])
   useEffect(() => {
-    setDate(router.query.date || getTodayDate());
+    dispatch(setOperatorDocumentationDate(router.query.date || getTodayDate()));
   }, [router.query.date])
   const onFmuChange = (fmuId) => {
     setUrlParam('fmuId', fmuId);
@@ -145,12 +144,4 @@ OperatorsDetailDocumentation.propTypes = {
   operatorDocumentation: PropTypes.array
 };
 
-export default connect(
-  (state) => ({
-    fmus: getHistoricFMUs(state),
-  }),
-  {
-    setDate: setOperatorDocumentationDate,
-    setFMU: setOperatorDocumentationFMU
-  }
-)(OperatorsDetailDocumentation);
+export default OperatorsDetailDocumentation;
