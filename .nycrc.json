@@ -4,11 +4,9 @@
     "constants/**/*.js",
     "contexts/**/*.js",
     "hooks/**/*.js",
-    "modules/**/*.js",
     "pages/**/*.js",
     "services/**/*.js",
-    "utils/**/*.js",
-    "store.js"
+    "utils/**/*.js"
   ],
   "exclude": ["**/__tests__/**", "**/__smoke__/**", "pages/api/__coverage__.js"],
   "temp-dir": "coverage/raw",

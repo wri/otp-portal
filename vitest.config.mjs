@@ -7,11 +7,11 @@ import { defineConfig } from 'vitest/config';
 const nyc = JSON.parse(readFileSync(new URL('./.nycrc.json', import.meta.url), 'utf8'));
 
 /**
- * The app imports its own modules as bare specifiers (`constants/layers`, `selectors/utils`),
+ * The app imports its own modules as bare specifiers (`constants/layers`, `utils/map-layers`),
  * which next resolves through `baseUrl: "."` in jsconfig.json. Vite needs to be told the same
  * thing, so every top-level source directory is aliased back to the repo root.
  */
-const SOURCE_DIRS = ['components', 'constants', 'contexts', 'hooks', 'lang', 'modules', 'services', 'utils'];
+const SOURCE_DIRS = ['components', 'constants', 'contexts', 'hooks', 'lang', 'services', 'utils'];
 
 // Components and some selectors keep JSX in .js files, which vite parses as plain JS.
 // Only files importing React are transformed: reprinting shifts columns, and the coverage
