@@ -5,7 +5,7 @@ import { withRouter } from 'next/router';
 // Intl
 import { useIntl } from 'react-intl';
 
-import { fetchApi, settle } from 'services/fetch-api';
+import { fetchApi, settle, CONTENT_MAX_AGE } from 'services/fetch-api';
 import { parseCountryDocumentation } from 'utils/country-documentation';
 
 // Components
@@ -38,7 +38,7 @@ const COUNTRY_INCLUDE = [
   'required-gov-documents.gov-documents'
 ].join(',');
 
-function fetchCountry(id, language, cache = true) {
+function fetchCountry(id, language, cache = CONTENT_MAX_AGE) {
   return fetchApi(`countries/${id}`, { locale: language, auth: true, cache, params: { include: COUNTRY_INCLUDE } });
 }
 
@@ -118,7 +118,7 @@ CountriesDetail.getInitialProps = async ({ query, asPath, language }) => {
     return { redirectTo: `${asPath}/overview` };
   }
 
-  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, auth: true, cache: true, params: { country: id } }), []);
+  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, auth: true, cache: CONTENT_MAX_AGE, params: { country: id } }), []);
   const [country, links, vpas] = await Promise.all([
     settle(fetchCountry(id, language), {}),
     load('country-links'),

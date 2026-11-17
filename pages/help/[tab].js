@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 
-import { fetchApi, settle } from 'services/fetch-api';
+import { fetchApi, settle, CONTENT_MAX_AGE } from 'services/fetch-api';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -90,7 +90,7 @@ const HelpPage = ({ router, howtos, tools, faqs, tutorials }) => {
 HelpPage.getInitialProps = async ({ query, asPath, language }) => {
   if (!query.tab) return { redirectTo: `${asPath}/overview` };
 
-  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, cache: true }), []);
+  const load = (endpoint) => settle(fetchApi(endpoint, { locale: language, cache: CONTENT_MAX_AGE }), []);
   const [howtos, tools, faqs, tutorials] = await Promise.all(
     ['how-tos', 'tools', 'faqs', 'tutorials'].map(load)
   );

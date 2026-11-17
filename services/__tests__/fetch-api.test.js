@@ -45,6 +45,24 @@ describe('fetchApi', () => {
     expect(API.get).toHaveBeenCalledTimes(3);
   });
 
+  it('reuses a response for a number of milliseconds, then refetches', async () => {
+    globalThis.window = {};
+    vi.useFakeTimers();
+    respond(['first']);
+    respond(['second']);
+
+    try {
+      expect(await fetchApi('donors', { cache: 1000 })).toEqual(['first']);
+      vi.advanceTimersByTime(999);
+      expect(await fetchApi('donors', { cache: 1000 })).toEqual(['first']);
+      vi.advanceTimersByTime(1);
+      expect(await fetchApi('donors', { cache: 1000 })).toEqual(['second']);
+      expect(API.get).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('drops a failed request from the cache so the next call retries', async () => {
     globalThis.window = {};
     API.get.mockRejectedValueOnce(new Error('boom'));

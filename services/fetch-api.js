@@ -4,10 +4,14 @@ import API from 'services/api';
 // Redux store used to. The server must not share responses between requests.
 const cache = new Map();
 
+// CMS-like content (about, help, country pages): instant revisits, fresh again after a while
+export const CONTENT_MAX_AGE = 5 * 60 * 1000;
+
 /**
  * GET an API endpoint and resolve with the deserialized data.
  * `auth`: send the session; public lists stay public for a logged-in user unless asked.
- * `cache`: true reuses a browser response for the session, 'reload' refetches and stores it.
+ * `cache`: true reuses a browser response for the session, a number of ms only for that long,
+ * and 'reload' refetches and stores it.
  */
 export async function fetchApi(endpoint, { locale, params = {}, auth = false, cache: cacheMode = false, ...requestOptions } = {}) {
   const queryParams = { ...(locale && { locale }), ...params };
@@ -22,12 +26,15 @@ export async function fetchApi(endpoint, { locale, params = {}, auth = false, ca
   if (!cacheMode || typeof window === 'undefined') return request();
 
   const key = JSON.stringify([endpoint, queryParams, auth]);
-  if (cacheMode !== 'reload' && cache.has(key)) return cache.get(key);
+  const cached = cache.get(key);
+  const fresh = cached && (cacheMode === true || Date.now() - cached.at < cacheMode);
+  if (cacheMode !== 'reload' && fresh) return cached.pending;
 
   const pending = request();
-  cache.set(key, pending);
+  const entry = { pending, at: Date.now() };
+  cache.set(key, entry);
   pending.catch(() => {
-    if (cache.get(key) === pending) cache.delete(key);
+    if (cache.get(key) === entry) cache.delete(key);
   });
   return pending;
 }
