@@ -5,9 +5,7 @@ import dayjs from 'dayjs';
 import { captureException } from 'utils/sentry';
 import toast from 'services/toast';
 
-import { connect } from 'react-redux';
-
-import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -228,9 +226,10 @@ DocCardUpload.propTypes = {
   reason: PropTypes.string,
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-  }),
-  {}
-)(DocCardUpload);
+// editing is only allowed for today's documents, so it needs the date the page shows
+const DocCardUploadWithDate = (props) => {
+  const { date } = useOperatorDetail();
+  return <DocCardUpload date={date} {...props} />;
+};
+
+export default DocCardUploadWithDate;

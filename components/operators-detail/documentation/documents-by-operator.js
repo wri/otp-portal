@@ -5,10 +5,7 @@ import Fuse from 'fuse.js';
 
 import { groupBy, removeDiacritics, sortBy } from 'utils/general';
 
-// Redux
-import { connect } from 'react-redux';
-
-import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -18,8 +15,9 @@ import DocumentsByFMU from './documents-by-fmu';
 import ExpandableSection from 'components/ui/expandable-section';
 import useUser from 'hooks/use-user';
 
-function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
+function DocumentsByOperator({ groupedByCategory, searchText, id }) {
   const intl = useIntl();
+  const { reload } = useOperatorDetail();
   const user = useUser();
 
   // Maximum amount of documents in a category, other bars will be proportional to it
@@ -102,11 +100,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
                           type: 'operator',
                           id,
                         }}
-                        onChange={() => {
-                          props.getOperator(id)
-                          props.getOperatorDocumentation(id)
-                          props.getOperatorTimeline(id)
-                        }}
+                        onChange={reload}
                       />
 
                       {user.canManageOperator(id) && (
@@ -116,11 +110,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
                             type: 'operator',
                             id,
                           }}
-                          onChange={() => {
-                            props.getOperator(id)
-                            props.getOperatorDocumentation(id)
-                            props.getOperatorTimeline(id)
-                          }}
+                          onChange={reload}
                         />
                       )}
                     </div>
@@ -133,11 +123,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id, ...props }) {
               <DocumentsByFMU
                 documents={FMUDocsByFMU}
                 id={id}
-                getOperator={(_id) => {
-                  props.getOperator(_id)
-                  props.getOperatorDocumentation(id)
-                  props.getOperatorTimeline(id)
-                }}
+                onChange={reload}
               />
             )}
           </ExpandableSection>
@@ -154,7 +140,4 @@ DocumentsByOperator.propTypes = {
   id: PropTypes.string
 };
 
-export default connect(
-  null,
-  { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline }
-)(DocumentsByOperator);
+export default DocumentsByOperator;

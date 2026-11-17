@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 
-import {
-  getOperatorDocumentationDate,
-  getOperatorDocumentationFMU,
-  getHistoricFMUs,
-} from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 function DocumentsFilter({
   children,
@@ -100,10 +95,11 @@ DocumentsFilter.propTypes = {
   onDateChange: PropTypes.func
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-    FMU: getOperatorDocumentationFMU(state),
-    fmus: getHistoricFMUs(state),
-  })
-)(DocumentsFilter);
+// date, FMU and the FMUs to pick from come from the operator detail page
+const DocumentsFilterWithDetail = (props) => {
+  const { date, fmu, fmus } = useOperatorDetail();
+  return <DocumentsFilter date={date} FMU={fmu} fmus={fmus} {...props} />;
+};
+
+export default DocumentsFilterWithDetail;
+

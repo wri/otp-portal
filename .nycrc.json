@@ -2,10 +2,10 @@
   "include": [
     "components/**/*.js",
     "constants/**/*.js",
+    "contexts/**/*.js",
     "hooks/**/*.js",
     "modules/**/*.js",
     "pages/**/*.js",
-    "selectors/**/*.js",
     "services/**/*.js",
     "utils/**/*.js",
     "store.js"

@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 import Icon from 'components/ui/icon';
 
-import {
-  getOperatorDocumentationDate,
-  getOperatorDocumentationFMU,
-  getHistoricFMUs,
-} from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 function DocumentsHeaderFilter({
   date,
@@ -118,10 +113,11 @@ DocumentsHeaderFilter.propTypes = {
   onDateChange: PropTypes.func
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-    FMU: getOperatorDocumentationFMU(state),
-    fmus: getHistoricFMUs(state),
-  })
-)(DocumentsHeaderFilter);
+// date, FMU and the FMUs to pick from come from the operator detail page
+const DocumentsHeaderFilterWithDetail = (props) => {
+  const { date, fmu, fmus } = useOperatorDetail();
+  return <DocumentsHeaderFilter date={date} FMU={fmu} fmus={fmus} {...props} />;
+};
+
+export default DocumentsHeaderFilterWithDetail;
+

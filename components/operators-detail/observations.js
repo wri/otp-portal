@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 // Utils
 import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
@@ -8,8 +7,6 @@ import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
 // Intl
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
-
-import { getOperatorObservations } from 'modules/operators-detail';
 
 // Components
 import Checkbox from 'components/form/Checkbox';
@@ -121,7 +118,7 @@ const OperatorsDetailObservations = (props) => {
 
             <TotalObservationsByOperatorByCategorybyIllegality
               data={observationData}
-              language={props.language}
+              language={intl.locale}
             />
           </article>
         </Fragment>
@@ -139,16 +136,7 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
-  language: PropTypes.string,
   operatorObservations: PropTypes.array,
-  getOperatorObservations: PropTypes.func
 };
 
-export default connect(
-  (state) => ({
-    language: state.language
-  }),
-  {
-    getOperatorObservations
-  }
-)(OperatorsDetailObservations);
+export default OperatorsDetailObservations;

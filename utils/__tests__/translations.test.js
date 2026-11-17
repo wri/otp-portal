@@ -105,7 +105,7 @@ describe('message ids used in code', () => {
         files.push(full);
       }
     });
-    ['components', 'constants', 'hooks', 'modules', 'pages', 'selectors', 'services', 'utils']
+    ['components', 'constants', 'contexts', 'hooks', 'modules', 'pages', 'services', 'utils']
       .forEach((dir) => walk(path.join(ROOT, dir)));
 
     // literal ids only; `'annex_' + status` and template strings are built at runtime

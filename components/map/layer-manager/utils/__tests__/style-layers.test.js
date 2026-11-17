@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { LAYERS } from 'constants/layers';
-import { getInteractiveLayersIds } from 'selectors/utils';
+import { getInteractiveLayersIds } from 'utils/map-layers';
 
 import { getStyleLayers, getStyleSource } from '../style-layers';
 

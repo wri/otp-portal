@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import dayjs from 'dayjs';
 
 import { LAYERS } from 'constants/layers';
-import { getParams } from 'selectors/utils';
+import { getParams } from 'utils/map-layers';
 
 import { clampZoom, getUniformSignature } from '../decoded-bitmap-layer';
 

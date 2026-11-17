@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 
-import { getOperatorSlug } from 'selectors/operators';
+import { getOperatorSlug } from 'utils/operators';
 
 // Intl
 import { injectIntl } from 'react-intl';

@@ -10,7 +10,7 @@ import modal from 'services/modal';
 import { groupBy } from 'utils/general';
 import { useNotifications, useOperators, dismissAllNotifications } from 'services/resources';
 import useUser from 'hooks/use-user';
-import { getOperatorSlug } from 'selectors/operators';
+import { getOperatorSlug } from 'utils/operators';
 
 function isBeforeToday(date) {
   const today = new Date();

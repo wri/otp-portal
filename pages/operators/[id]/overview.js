@@ -1,47 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// Selectors
-import { getParsedObservations } from 'selectors/operators-detail/observations';
-import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
-
-// Redux
-import { connect } from 'react-redux';
-
 // Components
-import Layout, { getInitialProps } from 'components/operators-detail/layout';
+import Layout, { getInitialProps, useOperatorDetail } from 'components/operators-detail/layout';
 
 // Operator Details Tabs
 import OperatorsDetailOverview from 'components/operators-detail/overview';
 
-export const OperatorsDetailOverviewPage = ({
-  operatorsDetail,
-  operatorObservations,
-  operatorDocumentation,
-}) => {
+const OverviewTab = () => {
+  const { operatorsDetail, observations, documentation } = useOperatorDetail();
+
   return (
-    <Layout operatorObservations={operatorObservations}>
-      <OperatorsDetailOverview
-        operatorsDetail={operatorsDetail}
-        operatorDocumentation={operatorDocumentation}
-        operatorObservations={operatorObservations.filter(o => !o.hidden)}
-      />
-    </Layout>
+    <OperatorsDetailOverview
+      operatorsDetail={operatorsDetail}
+      operatorDocumentation={documentation}
+      operatorObservations={observations.filter(o => !o.hidden)}
+    />
   );
 };
+
+export const OperatorsDetailOverviewPage = ({ operatorsDetail }) => (
+  <Layout operatorsDetail={operatorsDetail}>
+    <OverviewTab />
+  </Layout>
+);
 
 OperatorsDetailOverviewPage.getInitialProps = getInitialProps;
 
 OperatorsDetailOverviewPage.propTypes = {
-  operatorsDetail: PropTypes.object,
-  operatorObservations: PropTypes.array,
-  operatorDocumentation: PropTypes.array,
+  operatorsDetail: PropTypes.object
 };
 
-export default connect(
-  (state) => ({
-    operatorsDetail: state.operatorsDetail,
-    operatorObservations: getParsedObservations(state),
-    operatorDocumentation: getParsedDocumentation(state),
-  }),
-)(OperatorsDetailOverviewPage);
+export default OperatorsDetailOverviewPage;

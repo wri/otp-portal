@@ -5,10 +5,6 @@ import { sortBy } from 'utils/general';
 
 import modal from 'services/modal';
 
-// Redux
-import { connect } from 'react-redux';
-import { setFilters } from 'modules/operators-ranking';
-
 // Intl
 import { useIntl } from 'react-intl';
 
@@ -195,12 +191,4 @@ OperatorsFilters.propTypes = {
   setFilters: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    filters: state.operatorsRanking.filters.data,
-    options: state.operatorsRanking.filters.options
-  }),
-  {
-    setFilters
-  }
-)(OperatorsFilters);
+export default OperatorsFilters;

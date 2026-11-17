@@ -1,26 +1,14 @@
-import React, { Fragment, useEffect, useRef } from 'react';
+import React, { Fragment, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { debounce } from 'utils/general';
-import { injectIntl } from 'react-intl';
-import { withRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { debounce, groupBy } from 'utils/general';
+import { useIntl } from 'react-intl';
+import { useRouter } from 'next/router';
 
-import {
-  getOperatorsRanking,
-  setOperatorsMapLocation,
-  setOperatorsMapInteractions,
-  setOperatorsMapLayersActive,
-  setOperatorsMapLayersSettings,
-  setOperatorsSidebar,
-  setOperatorsUrl,
-  getOperatorsUrl,
-  getIntegratedAlertsMetadata
-} from 'modules/operators-ranking';
-import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable, getActiveCountries } from 'selectors/operators-ranking';
 
 import modal from 'services/modal';
-
-import { withDeviceInfo } from 'hooks/use-device-info';
+import { fetchApi } from 'services/fetch-api';
+import { fetchIntegratedAlertsSettings } from 'services/integrated-alerts-layer';
+import useApi from 'hooks/use-api';
 import { isMobileUserAgent } from 'utils/user-agent';
 
 import Layout from 'components/layout/layout';
@@ -36,31 +24,61 @@ import ZoomControl from 'components/map/controls/zoom-control';
 
 import OperatorsFilters from 'components/operators/filters';
 import OperatorsTable from 'components/operators/table';
+import useRankingMap from 'components/operators/use-ranking-map';
+import { FILTER_OPTIONS, initRankingState, rankingReducer, setOperatorsUrl } from 'components/operators/ranking-state';
 
 import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
 
-function OperatorsPage({
-  router,
-  intl,
-  language,
-  isMobile,
-  operatorsRanking,
-  activeLayers,
-  activeInteractiveLayers,
-  activeInteractiveLayersIds,
-  legendLayers,
-  popup,
-  map,
-  sidebar,
-  activeCountries,
-  setOperatorsMapLocation,
-  setOperatorsMapInteractions,
-  setOperatorsMapLayersSettings,
-  setOperatorsSidebar,
-  getOperatorsRanking,
-  getIntegratedAlertsMetadata
-}) {
+const NO_OPERATORS = [];
+
+function fetchOperatorsRanking(language) {
+  return fetchApi('operators', {
+    locale: language,
+    cache: true,
+    params: {
+      'page[size]': 3000,
+      include: 'fmus,country',
+      'filter[fa]': true,
+      'filter[country]': process.env.OTP_COUNTRIES_IDS,
+      'fields[fmus]': 'name,forest-type,certification-fsc,certification-olb,certification-pefc,certification-pbn,certification-pafc,certification-fsc-cw,certification-tlv,certification-ls',
+      'fields[countries]': 'name',
+      'fields[operators]': 'name,slug,obs-per-visit,percentage-valid-documents-all,score,country,fmus',
+    }
+  }).then((data) => {
+    const groupByDocPercentage = groupBy(data, (o) => {
+      if (typeof o['percentage-valid-documents-all'] !== 'number') return 0;
+      return o['percentage-valid-documents-all'];
+    });
+
+    return Object.keys(groupByDocPercentage).sort().reverse()
+      .map((k, i) => groupByDocPercentage[k].map(o => ({ ...o, ranking: i })))
+      .flat();
+  });
+}
+
+function OperatorsPage({ language, isMobile, operators: serverOperators }) {
+  const intl = useIntl();
+  const router = useRouter();
   const mapRef = useRef(null);
+  const [state, dispatch] = useReducer(rankingReducer, { query: router.query, isMobile }, initRankingState);
+  const { map, sidebar, filters } = state;
+
+  // phones get the page without the list and load it here
+  const lazyRanking = useApi(serverOperators ? null : `ranking:${intl.locale}`, () => fetchOperatorsRanking(intl.locale));
+  const operators = serverOperators || lazyRanking.data || NO_OPERATORS;
+  const operatorsLoading = !serverOperators && lazyRanking.loading;
+
+  const {
+    activeCountries,
+    activeLayers,
+    interactiveLayerIds: activeInteractiveLayersIds,
+    clickedLayers: activeInteractiveLayers,
+    legendLayers,
+    popup
+  } = useRankingMap(state);
+
+  const setOperatorsMapInteractions = (payload) => dispatch({ type: 'interactions', payload });
+  const setOperatorsMapLayersSettings = (payload) => dispatch({ type: 'layerSettings', payload });
 
   const onCustomAttribute = (e) => {
     e.preventDefault();
@@ -70,16 +88,10 @@ function OperatorsPage({
   };
 
   useEffect(() => {
-    // Set location
-    setOperatorsMapLocation(getOperatorsUrl(router));
-    if (!operatorsRanking.layersSettings['integrated-alerts']) {
-      getIntegratedAlertsMetadata();
-    }
-
-    // lazy load on mobile
-    if (isMobile) {
-      getOperatorsRanking();
-    }
+    fetchIntegratedAlertsSettings().then(
+      (settings) => dispatch({ type: 'integratedAlerts', payload: settings }),
+      console.error
+    );
 
     return () => {
       // Attribution listener cleanup
@@ -123,7 +135,8 @@ function OperatorsPage({
   };
 
   const setMapLocation = debounce((mapLocation) => {
-    setOperatorsMapLocation(mapLocation);
+    dispatch({ type: 'map', payload: mapLocation });
+    setOperatorsUrl(mapLocation);
   }, 700);
 
   const { open } = sidebar;
@@ -140,11 +153,19 @@ function OperatorsPage({
           open={open}
           name={intl.formatMessage({ id: 'transparency_ranking' })}
           onToggle={(o) => {
-            setOperatorsSidebar({ open: o });
+            dispatch({ type: 'sidebar', payload: { open: o } });
           }}
         >
-          <OperatorsFilters />
-          <OperatorsTable />
+          <OperatorsFilters
+            filters={filters}
+            options={FILTER_OPTIONS}
+            setFilters={(filter) => dispatch({ type: 'filter', payload: filter })}
+          />
+          <OperatorsTable
+            operators={operators}
+            isLoading={operatorsLoading}
+            filters={filters}
+          />
         </Sidebar>
 
         <div className="c-map-container -absolute" style={{ width: `calc(100% - ${open ? 800 : 50}px)`, left: open ? 800 : 50 }}>
@@ -196,62 +217,22 @@ function OperatorsPage({
   );
 }
 
-OperatorsPage.getInitialProps = async ({ store, req }) => {
-  const { operatorsRanking } = store.getState();
-  const isMobile = isMobileUserAgent(req ? req.headers['user-agent'] : navigator.userAgent);
-  const requests = [];
+OperatorsPage.getInitialProps = async ({ req, language }) => {
+  const ua = req ? req.headers['user-agent'] : navigator.userAgent;
+  const isMobile = isMobileUserAgent(ua);
+  if (isMobile) return { isMobile, operators: null };
 
-  if (!operatorsRanking.data.length && !isMobile) {
-    requests.push(store.dispatch(getOperatorsRanking()));
-  }
-  requests.push(store.dispatch(setOperatorsSidebar({ open: !isMobile })));
-
-  await Promise.all(requests);
-
-  return { isMobile };
+  const operators = await fetchOperatorsRanking(language).catch((error) => {
+    console.error(error);
+    return [];
+  });
+  return { isMobile, operators };
 };
 
 OperatorsPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  deviceInfo: PropTypes.object,
+  language: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
+  operators: PropTypes.array
 };
 
-// needs injectIntl for selectors
-export default injectIntl(withRouter(withDeviceInfo(connect(
-  (state, props) => ({
-    language: state.language,
-    operatorsRanking: state.operatorsRanking,
-    map: state.operatorsRanking.map,
-    sidebar: state.operatorsRanking.sidebar,
-    activeCountries: getActiveCountries(state, props),
-    activeLayers: getActiveLayers(state, props),
-    activeInteractiveLayers: getActiveInteractiveLayers(state, props),
-    activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
-    legendLayers: getLegendLayers(state, props),
-    popup: getPopup(state, props)
-  }),
-  dispatch => ({
-    getOperatorsRanking() {
-      dispatch(getOperatorsRanking());
-    },
-    getIntegratedAlertsMetadata() {
-      dispatch(getIntegratedAlertsMetadata());
-    },
-    setOperatorsMapLocation(mapLocation) {
-      dispatch(setOperatorsMapLocation(mapLocation));
-      dispatch(setOperatorsUrl(mapLocation));
-    },
-    setOperatorsMapInteractions(obj) {
-      dispatch(setOperatorsMapInteractions(obj));
-    },
-    setOperatorsMapLayersActive(obj) {
-      dispatch(setOperatorsMapLayersActive(obj));
-    },
-    setOperatorsMapLayersSettings(obj) {
-      dispatch(setOperatorsMapLayersSettings(obj));
-    },
-    setOperatorsSidebar(obj) {
-      dispatch(setOperatorsSidebar(obj));
-    }
-  })
-)(OperatorsPage))));
+export default OperatorsPage;

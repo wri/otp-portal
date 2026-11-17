@@ -2,21 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
-// Redux
-import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
-
-import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
-import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 import useUser from 'hooks/use-user';
 
-function DocumentsPublicationAuthorization(props) {
-  const { doc, id } = props;
+const NO_DOC = {};
+
+function DocumentsPublicationAuthorization({ id }) {
+  const { operatorsDetail, reload } = useOperatorDetail();
+  const doc = operatorsDetail.publicationAuthorization || NO_DOC;
   const intl = useIntl();
   const user = useUser();
   const { status } = doc;
@@ -55,7 +54,7 @@ function DocumentsPublicationAuthorization(props) {
                   info: false,
                   annexes: false,
                 }}
-                onChange={() => props.getOperator(id)}
+                onChange={reload}
               />
 
               <DocCardUpload
@@ -71,12 +70,7 @@ function DocumentsPublicationAuthorization(props) {
                   delete: true,
                   not_required: false,
                 }}
-                onChange={() => {
-                  props.getOperator(id);
-                  props.getOperatorDocumentation(id);
-                  props.getOperatorTimeline(id);
-                  props.getOperatorPublicationAuthorization(id);
-                }}
+                onChange={reload}
               />
             </div>
           </div>
@@ -88,17 +82,7 @@ function DocumentsPublicationAuthorization(props) {
 
 
 DocumentsPublicationAuthorization.propTypes = {
-  doc: PropTypes.shape({}),
   id: PropTypes.string,
-  getOperator: PropTypes.func,
-  getOperatorDocumentation: PropTypes.func,
-  getOperatorTimeline: PropTypes.func,
-  getOperatorPublicationAuthorization: PropTypes.func,
 };
 
-export default connect(
-  (state) => ({
-    doc: getContractSignatureDocumentation(state),
-  }),
-  { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
-)(DocumentsPublicationAuthorization);
+export default DocumentsPublicationAuthorization;
