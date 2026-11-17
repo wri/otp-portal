@@ -121,7 +121,7 @@ const OperatorsDetailObservations = (props) => {
 
             <TotalObservationsByOperatorByCategorybyIllegality
               data={observationData}
-              language={props.language}
+              language={intl.locale}
             />
           </article>
         </Fragment>
@@ -139,15 +139,12 @@ const OperatorsDetailObservations = (props) => {
 }
 
 OperatorsDetailObservations.propTypes = {
-  language: PropTypes.string,
   operatorObservations: PropTypes.array,
   getOperatorObservations: PropTypes.func
 };
 
 export default connect(
-  (state) => ({
-    language: state.language
-  }),
+  null,
   {
     getOperatorObservations
   }

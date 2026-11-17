@@ -76,8 +76,9 @@ Newsletter.propTypes = {
   newsletters: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired
 };
-Newsletter.getInitialProps = async ({ store }) => {
-  const { language } = store.getState();
+Newsletter.getInitialProps = async ({ locale }) => {
+  // same default as _app
+  const language = locale || 'en';
   const { data: newsletters } = await API
     .get('newsletters', { locale: language })
 

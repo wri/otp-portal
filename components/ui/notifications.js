@@ -208,15 +208,13 @@ Notifications.propTypes = {
   render: PropTypes.bool,
   notifications: PropTypes.object,
   getNotifications: PropTypes.func,
-  dismissAll: PropTypes.func,
-  language: PropTypes.string
+  dismissAll: PropTypes.func
 };
 
 
 const ConnectedNotifications = connect(
   state => ({
-    notifications: state.notifications,
-    language: state.language
+    notifications: state.notifications
   }),
   { getNotifications, dismissAll }
 )(Notifications);

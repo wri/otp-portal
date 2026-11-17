@@ -311,7 +311,7 @@ class OperatorsDetailFMUs extends React.Component {
         <div className="c-map-container -static">
           {/* Map */}
           <Map
-            language={this.props.language}
+            language={this.props.intl.locale}
             bounds={fmu.bounds}
             // options
             scrollZoom={false}
@@ -378,7 +378,6 @@ OperatorsDetailFMUs.propTypes = {
   activeLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
-  language: PropTypes.string.isRequired,
 
   getIntegratedAlertsMetadata: PropTypes.func,
   setOperatorsDetailMapLocation: PropTypes.func,
@@ -391,7 +390,6 @@ OperatorsDetailFMUs.propTypes = {
 export default withDeviceInfo(injectIntl(
   connect(
     (state, props) => ({
-      language: state.language,
       operatorsDetail: state.operatorsDetail,
       operatorsDetailFmus: state.operatorsDetailFmus,
       fmus: getFMUs(state, props),

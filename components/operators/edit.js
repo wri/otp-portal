@@ -53,7 +53,7 @@ const EditOperator = (props) => {
       },
       type: 'PATCH',
       id: operator.id,
-      locale: props.language
+      locale: intl.locale
     }).then(() => {
       toast.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -219,16 +219,13 @@ const EditOperator = (props) => {
 }
 
 EditOperator.propTypes = {
-  language: PropTypes.string,
   operator: PropTypes.object,
   updateOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
 export default connect(
-  state => ({
-    language: state.language
-  }),
+  null,
   {
     updateOperator
   }
