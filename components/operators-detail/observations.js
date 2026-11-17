@@ -8,7 +8,6 @@ import { PALETTE_COLOR_1, PALETTE_COLOR_2 } from 'constants/charts';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/router';
 
-
 // Components
 import Checkbox from 'components/form/Checkbox';
 import Card from 'components/ui/card';

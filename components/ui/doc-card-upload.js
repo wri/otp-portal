@@ -5,9 +5,7 @@ import dayjs from 'dayjs';
 import { captureException } from 'utils/sentry';
 import toast from 'services/toast';
 
-import { useSelector } from 'react-redux';
-
-import { getOperatorDocumentationDate } from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -28,8 +26,7 @@ const DEFAULT_BUTTONS = {
 };
 
 const DocCardUpload = (props) => {
-  const { status, buttons = DEFAULT_BUTTONS, title, docId, onChange, reason } = props;
-  const date = useSelector(getOperatorDocumentationDate);
+  const { status, buttons = DEFAULT_BUTTONS, date, title, docId, onChange, reason } = props;
   const intl = useIntl();
 
   const triggerAddFile = (e) => {
@@ -224,7 +221,14 @@ DocCardUpload.propTypes = {
   docId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,
   buttons: PropTypes.shape({}),
+  date: PropTypes.string,
   reason: PropTypes.string,
 };
 
-export default DocCardUpload;
+// editing is only allowed for today's documents, so it needs the date the page shows
+const DocCardUploadWithDate = (props) => {
+  const { date } = useOperatorDetail();
+  return <DocCardUpload date={date} {...props} />;
+};
+
+export default DocCardUploadWithDate;

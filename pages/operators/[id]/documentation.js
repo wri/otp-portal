@@ -1,50 +1,41 @@
-import React, { useEffect, useState, useRef } from 'react';
-
-// Selectors
-import { getParsedObservations } from 'selectors/operators-detail/observations';
-import { getParsedDocumentation } from 'selectors/operators-detail/documentation';
-
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { getOperatorDocumentation } from 'modules/operators-detail';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Components
-import Layout, { getInitialProps } from 'components/operators-detail/layout';
+import Layout, { getInitialProps, useOperatorDetail } from 'components/operators-detail/layout';
 
 // Operator Details Tabs
 import OperatorsDetailDocumentation from 'components/operators-detail/documentation';
 import { useDownloadSession } from 'hooks/use-download-session';
 
-import usePrevious from 'hooks/use-previous';
 import useUser from 'hooks/use-user';
 
-const OperatorsDetailDocumentationPage = () => {
-  const dispatch = useDispatch();
-  const operatorsDetail = useSelector((state) => state.operatorsDetail);
-  const operatorObservations = useSelector(getParsedObservations);
-  const operatorDocumentation = useSelector(getParsedDocumentation);
-  const user = useUser();
-  const date = operatorsDetail?.date?.toString();
-  const previousDate = usePrevious(date);
-  useDownloadSession(user.isLoggedIn);
-
-  useEffect(() => {
-    if (previousDate && previousDate !== date) {
-      const operator = operatorsDetail.data;
-      dispatch(getOperatorDocumentation(operator.id));
-    }
-  }, [date, operatorsDetail.data, dispatch]);
+const DocumentationTab = () => {
+  const { operatorsDetail, documentation } = useOperatorDetail();
 
   return (
-    <Layout operatorObservations={operatorObservations}>
-      <OperatorsDetailDocumentation
-        operatorsDetail={operatorsDetail}
-        operatorDocumentation={operatorDocumentation}
-      />
+    <OperatorsDetailDocumentation
+      operatorsDetail={operatorsDetail}
+      operatorDocumentation={documentation}
+    />
+  );
+};
+
+const OperatorsDetailDocumentationPage = ({ operatorsDetail }) => {
+  const user = useUser();
+  useDownloadSession(user.isLoggedIn);
+
+  return (
+    <Layout operatorsDetail={operatorsDetail}>
+      <DocumentationTab />
     </Layout>
   );
 };
 
 OperatorsDetailDocumentationPage.getInitialProps = getInitialProps;
+
+OperatorsDetailDocumentationPage.propTypes = {
+  operatorsDetail: PropTypes.object
+};
 
 export default OperatorsDetailDocumentationPage;

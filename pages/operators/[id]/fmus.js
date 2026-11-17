@@ -1,34 +1,22 @@
 import React, { useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
-
 // Components
-import Layout, { getInitialProps } from 'components/operators-detail/layout';
+import Layout, { getInitialProps, useOperatorDetail } from 'components/operators-detail/layout';
 
 // Operator Details Tabs
 import OperatorsDetailFMUs from 'components/operators-detail/fmus';
 
-// Selectors
-import { getParsedObservations } from 'selectors/operators-detail/observations';
-
-import { getOperatorBySlug } from 'modules/operators-detail';
-
-const OperatorsDetailFMUsPage = () => {
+const FmusTab = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const operatorsDetail = useSelector((state) => state.operatorsDetail);
-  const operatorObservations = useSelector(getParsedObservations);
-  // Client routing between two operators' fmus pages keeps this page mounted, and
-  // getInitialProps loads the new operator without fmus - so re-run on change.
-  // Use the store's slug: it updates before router.query, which would still name
-  // the previous operator and make this refetch (and restore) the old one.
+  const { operatorsDetail, loadFmus } = useOperatorDetail();
+
+  // getInitialProps loads the operator without fmu geometries, which only this tab needs.
+  // Keyed on the loaded operator's slug: router.query can still name the previous one.
   const { slug, loadedFMUS } = operatorsDetail.data;
   useEffect(() => {
-    if (slug && !loadedFMUS) {
-      dispatch(getOperatorBySlug({ slug, loadFmus: true }));
-    }
+    if (slug && !loadedFMUS) loadFmus();
   }, [slug, loadedFMUS]);
 
   // The URL is the single source of truth for the selected FMU. Shallow, so
@@ -44,17 +32,24 @@ const OperatorsDetailFMUsPage = () => {
   }, [router]);
 
   return (
-    <Layout operatorObservations={operatorObservations}>
-      <OperatorsDetailFMUs
-        operatorsDetail={operatorsDetail}
-        fmuId={router.query.fmuId}
-        onFmuChange={onFmuChange}
-      />
-    </Layout>
+    <OperatorsDetailFMUs
+      operatorsDetail={operatorsDetail}
+      fmuId={router.query.fmuId}
+      onFmuChange={onFmuChange}
+    />
   );
 };
 
+const OperatorsDetailFMUsPage = ({ operatorsDetail }) => (
+  <Layout operatorsDetail={operatorsDetail}>
+    <FmusTab />
+  </Layout>
+);
+
 OperatorsDetailFMUsPage.getInitialProps = getInitialProps;
 
+OperatorsDetailFMUsPage.propTypes = {
+  operatorsDetail: PropTypes.object
+};
 
 export default OperatorsDetailFMUsPage;

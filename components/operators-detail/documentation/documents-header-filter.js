@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
 import Icon from 'components/ui/icon';
 
-import {
-  getOperatorDocumentationDate,
-  getOperatorDocumentationFMU,
-  getHistoricFMUs,
-} from 'selectors/operators-detail/documentation';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 function DocumentsHeaderFilter({
+  date,
+  fmus,
+  FMU,
   searchText,
   onSearchTextChange,
   onFmuChange,
   onDateChange
 }) {
-  const date = useSelector(getOperatorDocumentationDate);
-  const FMU = useSelector(getOperatorDocumentationFMU);
-  const fmus = useSelector(getHistoricFMUs);
   const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
@@ -109,10 +104,20 @@ function DocumentsHeaderFilter({
 }
 
 DocumentsHeaderFilter.propTypes = {
+  date: PropTypes.string,
+  FMU: PropTypes.object,
+  fmus: PropTypes.array,
   searchText: PropTypes.string,
   onSearchTextChange: PropTypes.func,
   onFmuChange: PropTypes.func,
   onDateChange: PropTypes.func
 };
 
-export default DocumentsHeaderFilter;
+// date, FMU and the FMUs to pick from come from the operator detail page
+const DocumentsHeaderFilterWithDetail = (props) => {
+  const { date, fmu, fmus } = useOperatorDetail();
+  return <DocumentsHeaderFilter date={date} FMU={fmu} fmus={fmus} {...props} />;
+};
+
+export default DocumentsHeaderFilterWithDetail;
+

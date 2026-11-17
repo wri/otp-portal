@@ -1,30 +1,33 @@
 import React from 'react';
-
-// Selectors
-import { getParsedObservations } from 'selectors/operators-detail/observations';
-
-// Redux
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 // Components
-import Layout, { getInitialProps } from 'components/operators-detail/layout';
+import Layout, { getInitialProps, useOperatorDetail } from 'components/operators-detail/layout';
 
 // Operator Details Tabs
 import OperatorsDetailObservations from 'components/operators-detail/observations';
 
-const OperatorsDetailObservationsPage = () => {
-  const operatorsDetail = useSelector((state) => state.operatorsDetail);
-  const operatorObservations = useSelector(getParsedObservations);
+const ObservationsTab = () => {
+  const { operatorsDetail, observations } = useOperatorDetail();
+
   return (
-    <Layout operatorObservations={operatorObservations}>
-      <OperatorsDetailObservations
-        operatorsDetail={operatorsDetail}
-        operatorObservations={operatorObservations}
-      />
-    </Layout>
+    <OperatorsDetailObservations
+      operatorsDetail={operatorsDetail}
+      operatorObservations={observations}
+    />
   );
 };
 
+const OperatorsDetailObservationsPage = ({ operatorsDetail }) => (
+  <Layout operatorsDetail={operatorsDetail}>
+    <ObservationsTab />
+  </Layout>
+);
+
 OperatorsDetailObservationsPage.getInitialProps = getInitialProps;
+
+OperatorsDetailObservationsPage.propTypes = {
+  operatorsDetail: PropTypes.object
+};
 
 export default OperatorsDetailObservationsPage;

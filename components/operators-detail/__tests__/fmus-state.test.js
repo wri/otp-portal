@@ -1,16 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { configureStore } from '@reduxjs/toolkit';
 
 import { fetchIntegratedAlertsMetadata } from 'services/gfw';
+import { fetchIntegratedAlertsSettings } from 'components/map/integrated-alerts-layer';
 
-import reducer, {
-  getIntegratedAlertsMetadata,
-  setOperatorsDetailAnalysis,
-  setOperatorsDetailMapLocation,
-  setOperatorsDetailFmuBounds,
-  setOperatorsDetailMapLayersSettings,
-  setOperatorsDetailMapLayersActive
-} from '../operators-detail-fmus';
+import { fmusReducer as reducer, initialFmusState, runFmuAnalysis } from '../fmus-state';
 
 // only the metadata is stubbed; the analysis requests go through the fetch mock below
 vi.mock('services/gfw', async (importOriginal) => ({
@@ -18,8 +11,18 @@ vi.mock('services/gfw', async (importOriginal) => ({
   fetchIntegratedAlertsMetadata: vi.fn()
 }));
 
-const createStore = () => configureStore({ reducer: { operatorsDetailFmus: reducer } });
-const analysisState = (store) => store.getState().operatorsDetailFmus.analysis;
+// what useReducer does, readable from a test
+const createStore = () => {
+  let state = initialFmusState;
+  const store = {
+    dispatch: (action) => { state = reducer(state, action); },
+    getState: () => state
+  };
+  store.analyse = (arg) => runFmuAnalysis(arg, store.dispatch, store.getState);
+  store.loadAlerts = async () => store.dispatch({ type: 'integratedAlerts', payload: await fetchIntegratedAlertsSettings() });
+  return store;
+};
+const analysisState = (store) => store.getState().analysis;
 
 const jsonResponse = (body) => ({ ok: true, json: () => Promise.resolve(body) });
 const errorResponse = { ok: false, statusText: 'Server Error' };
@@ -42,52 +45,52 @@ const mockFetch = (routes) => {
 };
 const requestedUrls = (fetchMock) => fetchMock.mock.calls.map(([url]) => new URL(url));
 
-describe('operators detail fmus reducer', () => {
+describe('fmus tab reducer', () => {
   it('merges map location into the current viewport', () => {
-    const state = reducer(undefined, setOperatorsDetailMapLocation({ zoom: 8 }));
+    const state = reducer(initialFmusState, { type: 'mapLocation', payload: { zoom: 8 } });
 
     expect(state.map).toEqual({ zoom: 8, latitude: 0, longitude: 20, scrollZoom: false });
   });
 
   it('stores fmu bounds', () => {
-    const state = reducer(undefined, setOperatorsDetailFmuBounds([[1, 2], [3, 4]]));
+    const state = reducer(initialFmusState, { type: 'fmuBounds', payload: [[1, 2], [3, 4]] });
 
     expect(state.fmuBounds).toEqual([[1, 2], [3, 4]]);
   });
 
   it('merges layer settings per layer', () => {
-    let state = reducer(undefined, setOperatorsDetailMapLayersSettings({ id: 'loss', settings: { opacity: 0.5 } }));
-    state = reducer(state, setOperatorsDetailMapLayersSettings({ id: 'loss', settings: { visibility: false } }));
+    let state = reducer(initialFmusState, { type: 'layerSettings', payload: { id: 'loss', settings: { opacity: 0.5 } } });
+    state = reducer(state, { type: 'layerSettings', payload: { id: 'loss', settings: { visibility: false } } });
 
     expect(state.layersSettings).toEqual({ loss: { opacity: 0.5, visibility: false } });
   });
 
   it('replaces active layers', () => {
-    const state = reducer(undefined, setOperatorsDetailMapLayersActive(['fmusdetail']));
+    const state = reducer(initialFmusState, { type: 'layersActive', payload: ['fmusdetail'] });
 
     expect(state.layersActive).toEqual(['fmusdetail']);
   });
 });
 
-describe('getIntegratedAlertsMetadata', () => {
+describe('integrated alerts layer', () => {
   it('drops the alerts layer when there is no metadata', async () => {
     fetchIntegratedAlertsMetadata.mockResolvedValue({});
     const store = createStore();
-    store.dispatch(setOperatorsDetailMapLayersActive(['gain', 'integrated-alerts', 'fmusdetail']));
+    store.dispatch({ type: 'layersActive', payload: ['gain', 'integrated-alerts', 'fmusdetail'] });
 
-    await store.dispatch(getIntegratedAlertsMetadata());
+    await store.loadAlerts();
 
-    expect(store.getState().operatorsDetailFmus.layersActive).toEqual(['gain', 'fmusdetail']);
+    expect(store.getState().layersActive).toEqual(['gain', 'fmusdetail']);
   });
 
   it('adds the alerts layer below fmus once, with a two year range', async () => {
     fetchIntegratedAlertsMetadata.mockResolvedValue({ minDataDate: '2014-12-31', maxDataDate: '2026-09-10' });
     const store = createStore();
 
-    await store.dispatch(getIntegratedAlertsMetadata());
-    await store.dispatch(getIntegratedAlertsMetadata());
+    await store.loadAlerts();
+    await store.loadAlerts();
 
-    const { layersActive, layersSettings } = store.getState().operatorsDetailFmus;
+    const { layersActive, layersSettings } = store.getState();
     expect(layersActive).toEqual(['gain', 'loss', 'integrated-alerts', 'fmusdetail']);
     expect(layersSettings['integrated-alerts'].timelineParams).toEqual({
       minDate: '2024-09-10',
@@ -99,13 +102,11 @@ describe('getIntegratedAlertsMetadata', () => {
   it('rejects when the metadata request fails', async () => {
     fetchIntegratedAlertsMetadata.mockRejectedValue(new Error('offline'));
 
-    const action = await createStore().dispatch(getIntegratedAlertsMetadata());
-
-    expect(action.payload).toBe('offline');
+    await expect(fetchIntegratedAlertsSettings()).rejects.toThrow('offline');
   });
 });
 
-describe('setOperatorsDetailAnalysis', () => {
+describe('runFmuAnalysis', () => {
   beforeEach(() => {
     vi.stubEnv('RW_API', 'https://rw.example.org');
     vi.stubEnv('GFW_PROXY_API', 'https://gfw.example.org');
@@ -119,7 +120,7 @@ describe('setOperatorsDetailAnalysis', () => {
   it('does nothing for an fmu without geometry', async () => {
     const fetchMock = mockFetch({});
 
-    await createStore().dispatch(setOperatorsDetailAnalysis({ fmu: { id: '10' }, type: 'loss' }));
+    await createStore().analyse({ fmu: { id: '10' }, type: 'loss' });
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -132,7 +133,7 @@ describe('setOperatorsDetailAnalysis', () => {
     });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'loss' }));
+    await store.analyse({ fmu: FMU, type: 'loss' });
     await vi.waitFor(() => expect(analysisState(store).data['10']).toBeDefined());
 
     expect(analysisState(store)).toEqual({
@@ -158,11 +159,11 @@ describe('setOperatorsDetailAnalysis', () => {
     });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'loss' }));
+    await store.analyse({ fmu: FMU, type: 'loss' });
     await vi.waitFor(() => expect(analysisState(store).data['10']).toBeDefined());
     fetchMock.mockClear();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'loss' }));
+    await store.analyse({ fmu: FMU, type: 'loss' });
 
     expect(requestedUrls(fetchMock).map((url) => url.pathname)).toEqual([
       '/analysis/zonal/geo-1',
@@ -175,7 +176,7 @@ describe('setOperatorsDetailAnalysis', () => {
     mockFetch({ '/geostore': errorResponse });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'loss' }));
+    await store.analyse({ fmu: FMU, type: 'loss' });
 
     expect(analysisState(store)).toMatchObject({ loading: { loss: false }, error: { loss: true } });
   });
@@ -184,7 +185,7 @@ describe('setOperatorsDetailAnalysis', () => {
     mockFetch({ '/geostore': jsonResponse({ data: { id: 'geo-1' } }) });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'loss' }));
+    await store.analyse({ fmu: FMU, type: 'loss' });
     await vi.waitFor(() => expect(analysisState(store).error.loss).toBe(true));
 
     expect(analysisState(store).loading.loss).toBe(false);
@@ -198,7 +199,7 @@ describe('setOperatorsDetailAnalysis', () => {
     });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'integrated-alerts' }));
+    await store.analyse({ fmu: FMU, type: 'integrated-alerts' });
     await vi.waitFor(() => expect(analysisState(store).data['10']).toBeDefined());
 
     expect(analysisState(store)).toEqual({
@@ -217,7 +218,7 @@ describe('setOperatorsDetailAnalysis', () => {
     const fetchMock = mockFetch({ '/geostore': jsonResponse({ data: { id: 'geo-1' } }) });
     const fmu = { ...FMU, 'integrated-alerts': { startDate: undefined, trimEndDate: undefined } };
 
-    await createStore().dispatch(setOperatorsDetailAnalysis({ fmu, type: 'integrated-alerts' }));
+    await createStore().analyse({ fmu, type: 'integrated-alerts' });
 
     expect(requestedUrls(fetchMock).map((url) => url.pathname)).toEqual(['/geostore']);
   });
@@ -226,7 +227,7 @@ describe('setOperatorsDetailAnalysis', () => {
     mockFetch({ '/geostore': jsonResponse({ data: { id: 'geo-1' } }) });
     const store = createStore();
 
-    await store.dispatch(setOperatorsDetailAnalysis({ fmu: FMU, type: 'integrated-alerts' }));
+    await store.analyse({ fmu: FMU, type: 'integrated-alerts' });
     await vi.waitFor(() => expect(analysisState(store).error['integrated-alerts']).toBe(true));
   });
 });

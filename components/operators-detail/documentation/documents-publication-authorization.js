@@ -2,24 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
-
-import { getOperator, reloadOperatorDocumentation } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
+import { useOperatorDetail } from 'components/operators-detail/layout';
 import useUser from 'hooks/use-user';
 
 const NO_DOC = {};
 
 function DocumentsPublicationAuthorization({ id }) {
-  const dispatch = useDispatch();
-  // no fallback inside the selector: a new {} each time would re-render on every dispatch
-  const doc = useSelector((state) => state.operatorsDetail.publicationAuthorization) || NO_DOC;
+  const { operatorsDetail, reload } = useOperatorDetail();
+  const doc = operatorsDetail.publicationAuthorization || NO_DOC;
   const intl = useIntl();
   const user = useUser();
   const { status } = doc;
@@ -58,7 +54,7 @@ function DocumentsPublicationAuthorization({ id }) {
                   info: false,
                   annexes: false,
                 }}
-                onChange={() => dispatch(getOperator(id))}
+                onChange={reload}
               />
 
               <DocCardUpload
@@ -74,7 +70,7 @@ function DocumentsPublicationAuthorization({ id }) {
                   delete: true,
                   not_required: false,
                 }}
-                onChange={() => dispatch(reloadOperatorDocumentation(id, { publicationAuthorization: true }))}
+                onChange={reload}
               />
             </div>
           </div>

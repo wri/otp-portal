@@ -5,10 +5,7 @@ import Fuse from 'fuse.js';
 
 import { groupBy, removeDiacritics, sortBy } from 'utils/general';
 
-// Redux
-import { useDispatch } from 'react-redux';
-
-import { reloadOperatorDocumentation } from 'modules/operators-detail';
+import { useOperatorDetail } from 'components/operators-detail/layout';
 
 // Components
 import DocCard from 'components/ui/doc-card';
@@ -20,8 +17,7 @@ import useUser from 'hooks/use-user';
 
 function DocumentsByOperator({ groupedByCategory, searchText, id }) {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const reloadOperator = () => dispatch(reloadOperatorDocumentation(id));
+  const { reload } = useOperatorDetail();
   const user = useUser();
 
   // Maximum amount of documents in a category, other bars will be proportional to it
@@ -104,7 +100,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id }) {
                           type: 'operator',
                           id,
                         }}
-                        onChange={reloadOperator}
+                        onChange={reload}
                       />
 
                       {user.canManageOperator(id) && (
@@ -114,7 +110,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id }) {
                             type: 'operator',
                             id,
                           }}
-                          onChange={reloadOperator}
+                          onChange={reload}
                         />
                       )}
                     </div>
@@ -127,7 +123,7 @@ function DocumentsByOperator({ groupedByCategory, searchText, id }) {
               <DocumentsByFMU
                 documents={FMUDocsByFMU}
                 id={id}
-                onChange={reloadOperator}
+                onChange={reload}
               />
             )}
           </ExpandableSection>

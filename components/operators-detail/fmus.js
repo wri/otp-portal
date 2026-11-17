@@ -1,5 +1,5 @@
 /* eslint-disable react/prefer-stateless-function */
-import React, { Fragment, memo, useMemo } from 'react';
+import React, { Fragment, useEffect, useMemo, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import isEqual from 'react-fast-compare';
@@ -7,22 +7,16 @@ import { debounce } from 'utils/general';
 
 import getBBox from '@turf/bbox';
 
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  getIntegratedAlertsMetadata,
-  setOperatorsDetailMapLocation,
-  setOperatorsDetailMapLayersSettings,
-  setOperatorsDetailFmuBounds,
-  setOperatorsDetailAnalysis
-} from 'modules/operators-detail-fmus';
-import {
-  getActiveLayers,
-  getActiveInteractiveLayersIds,
-  getLegendLayers,
-  getFMUs,
-  getFMU
-} from 'selectors/operators-detail/fmus';
+  buildFmuLayers,
+  buildFmuLegendLayers,
+  buildSelectedFmu,
+  getLoadedFmus,
+  getSelectedFmuId
+} from 'components/operators-detail/fmu-map';
+import { collectInteractiveLayerIds } from 'components/map/layers';
+import { fmusReducer, initialFmusState, runFmuAnalysis } from 'components/operators-detail/fmus-state';
+import { fetchIntegratedAlertsSettings } from 'components/map/integrated-alerts-layer';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -311,7 +305,7 @@ class OperatorsDetailFMUs extends React.Component {
         <div className="c-map-container -static">
           {/* Map */}
           <Map
-            language={this.props.intl.locale}
+            language={this.props.language}
             bounds={fmu.bounds}
             // options
             scrollZoom={false}
@@ -378,6 +372,7 @@ OperatorsDetailFMUs.propTypes = {
   activeLayers: PropTypes.array,
   activeInteractiveLayersIds: PropTypes.array,
   legendLayers: PropTypes.array,
+  language: PropTypes.string.isRequired,
 
   getIntegratedAlertsMetadata: PropTypes.func,
   setOperatorsDetailMapLocation: PropTypes.func,
@@ -386,49 +381,67 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailAnalysis: PropTypes.func
 };
 
-// Gives the class the props connect used to compute. memo keeps connect's skipping of re-renders
-// when the page passes unchanged props, which matters for the map.
-const OperatorsDetailFMUsContainer = memo(function OperatorsDetailFMUsContainer(props) {
+// Map, layer and analysis state for the tab, handed to the class component as it got it from the store
+const OperatorsDetailFMUsContainer = ({ operatorsDetail, fmuId, onFmuChange }) => {
   const intl = useIntl();
   const deviceInfo = useDeviceInfo();
-  const dispatch = useDispatch();
-  // the selectors read intl and the URL's fmuId from their props argument
-  const selectorProps = { intl, fmuId: props.fmuId };
-
-  const operatorsDetail = useSelector((state) => state.operatorsDetail);
-  const operatorsDetailFmus = useSelector((state) => state.operatorsDetailFmus);
-  const fmus = useSelector((state) => getFMUs(state, selectorProps));
-  const fmu = useSelector((state) => getFMU(state, selectorProps));
-  const activeLayers = useSelector((state) => getActiveLayers(state, selectorProps));
-  const activeInteractiveLayersIds = useSelector((state) => getActiveInteractiveLayersIds(state, selectorProps));
-  const legendLayers = useSelector((state) => getLegendLayers(state, selectorProps));
+  const [state, dispatch] = useReducer(fmusReducer, initialFmusState);
+  // analysis requests read the stored geostore ids when they start, not when they were created
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  });
 
   const actions = useMemo(() => ({
-    getIntegratedAlertsMetadata: () => dispatch(getIntegratedAlertsMetadata()),
-    setOperatorsDetailMapLocation: (payload) => dispatch(setOperatorsDetailMapLocation(payload)),
-    setOperatorsDetailMapLayersSettings: (payload) => dispatch(setOperatorsDetailMapLayersSettings(payload)),
-    setOperatorsDetailFmuBounds: (payload) => dispatch(setOperatorsDetailFmuBounds(payload)),
-    setOperatorsDetailAnalysis: (arg) => dispatch(setOperatorsDetailAnalysis(arg))
-  }), [dispatch]);
+    getIntegratedAlertsMetadata: () => fetchIntegratedAlertsSettings().then(
+      (settings) => dispatch({ type: 'integratedAlerts', payload: settings }),
+      console.error
+    ),
+    setOperatorsDetailMapLocation: (payload) => dispatch({ type: 'mapLocation', payload }),
+    setOperatorsDetailMapLayersSettings: (payload) => dispatch({ type: 'layerSettings', payload }),
+    setOperatorsDetailFmuBounds: (payload) => dispatch({ type: 'fmuBounds', payload }),
+    setOperatorsDetailAnalysis: (arg) => runFmuAnalysis(arg, dispatch, () => stateRef.current)
+  }), []);
+
+  const operator = operatorsDetail.data;
+  const { layersActive, layersSettings, fmuBounds, analysis } = state;
+  const fmus = useMemo(() => getLoadedFmus(operator), [operator]);
+  const selectedFmuId = getSelectedFmuId(fmus, fmuId);
+  const activeLayers = useMemo(
+    () => buildFmuLayers(layersActive, layersSettings, selectedFmuId, operator),
+    [layersActive, layersSettings, selectedFmuId, operator]
+  );
+  const interactiveLayerIds = useMemo(() => collectInteractiveLayerIds(activeLayers), [activeLayers]);
+  const legendLayers = useMemo(
+    () => buildFmuLegendLayers(layersSettings, layersActive, analysis, selectedFmuId, intl),
+    [layersSettings, layersActive, analysis, selectedFmuId, intl]
+  );
+  const fmu = useMemo(
+    () => buildSelectedFmu(fmus, selectedFmuId, fmuBounds, layersSettings),
+    [fmus, selectedFmuId, fmuBounds, layersSettings]
+  );
 
   return (
     <OperatorsDetailFMUs
-      {...props}
       {...actions}
       intl={intl}
       deviceInfo={deviceInfo}
+      language={intl.locale}
       operatorsDetail={operatorsDetail}
-      operatorsDetailFmus={operatorsDetailFmus}
+      operatorsDetailFmus={state}
       fmus={fmus}
       fmu={fmu}
+      fmuId={fmuId}
+      onFmuChange={onFmuChange}
       activeLayers={activeLayers}
-      activeInteractiveLayersIds={activeInteractiveLayersIds}
+      activeInteractiveLayersIds={interactiveLayerIds}
       legendLayers={legendLayers}
     />
   );
-});
+};
 
 OperatorsDetailFMUsContainer.propTypes = {
+  operatorsDetail: PropTypes.object.isRequired,
   fmuId: PropTypes.string,
   onFmuChange: PropTypes.func.isRequired
 };

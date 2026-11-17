@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
 
 // Intl
 import { useIntl } from 'react-intl';
 
 // Utils
-import { HELPERS_DOC, getTodayDate } from 'utils/documentation';
+import { HELPERS_DOC } from 'utils/documentation';
 import { setUrlParam } from 'utils/url';
 
 import useUser from 'hooks/use-user';
-
-import {
-  setOperatorDocumentationDate,
-  setOperatorDocumentationFMU,
-} from 'modules/operators-detail';
-
-import {
-  getHistoricFMUs,
-} from 'selectors/operators-detail/documentation';
 
 // Components
 import DocumentsPublicationAuthorization from '~/components/operators-detail/documentation/documents-publication-authorization';
@@ -35,8 +24,6 @@ function OperatorsDetailDocumentation({
   operatorDocumentation,
   operatorsDetail
 }) {
-  const dispatch = useDispatch();
-  const fmus = useSelector(getHistoricFMUs);
   const intl = useIntl();
   const user = useUser();
   const operator = operatorsDetail.data;
@@ -57,13 +44,6 @@ function OperatorsDetailDocumentation({
   const validDocs = groupedByStatusChart.find((status) => status.id === 'doc_valid');
   const [searchText, setSearchText] = useState('');
 
-  const router = useRouter();
-  useEffect(() => {
-    dispatch(setOperatorDocumentationFMU(fmus.find(f => f.id === router.query.fmuId)));
-  }, [router.query.fmuId, fmus])
-  useEffect(() => {
-    dispatch(setOperatorDocumentationDate(router.query.date || getTodayDate()));
-  }, [router.query.date])
   const onFmuChange = (fmuId) => {
     setUrlParam('fmuId', fmuId);
   };

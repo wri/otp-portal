@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
-import { getActiveCountries, getTable } from '../operators-ranking';
+import { getActiveCountryIsos } from '../ranking-map';
+import { filterRankingRows } from '../ranking-table';
 
 const OPERATORS = [
   {
@@ -27,35 +28,26 @@ const OPERATORS = [
   }
 ];
 
-const state = (filters = {}) => ({
-  operatorsRanking: {
-    data: OPERATORS,
-    filters: {
-      data: { country: [], certification: [], operator: '', fmu: '', ...filters },
-      options: {
-        country: [
-          { value: 7, iso: 'COG' },
-          { value: 47, iso: 'CMR' }
-        ]
-      }
-    }
-  }
-});
-const tableNames = (filters) => getTable(state(filters)).map((o) => o.name);
+const FILTERS = { country: [], certification: [], operator: '', fmu: '' };
+const COUNTRY_OPTIONS = [
+  { value: 7, iso: 'COG' },
+  { value: 47, iso: 'CMR' }
+];
+const tableNames = (filters) => filterRankingRows(OPERATORS, { ...FILTERS, ...filters }).map((o) => o.name);
 
-describe('getActiveCountries', () => {
+describe('getActiveCountryIsos', () => {
   it('returns every country iso without a country filter', () => {
-    expect(getActiveCountries(state())).toEqual(['COG', 'CMR']);
+    expect(getActiveCountryIsos(COUNTRY_OPTIONS, [])).toEqual(['COG', 'CMR']);
   });
 
   it('returns only the selected countries', () => {
-    expect(getActiveCountries(state({ country: [47] }))).toEqual(['CMR']);
+    expect(getActiveCountryIsos(COUNTRY_OPTIONS, [47])).toEqual(['CMR']);
   });
 });
 
-describe('getTable', () => {
+describe('filterRankingRows', () => {
   it('maps operators to table rows', () => {
-    const [row, other] = getTable(state());
+    const [row, other] = filterRankingRows(OPERATORS, FILTERS);
 
     expect(row).toMatchObject({
       id: '1',

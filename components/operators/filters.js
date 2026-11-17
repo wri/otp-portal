@@ -5,10 +5,6 @@ import { sortBy } from 'utils/general';
 
 import modal from 'services/modal';
 
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilters } from 'modules/operators-ranking';
-
 // Intl
 import { useIntl } from 'react-intl';
 
@@ -73,21 +69,18 @@ const FILTERS_REFS = [
   }
 ];
 
-const OperatorsFilters = ({ className = '' }) => {
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.operatorsRanking.filters.data);
-  const options = useSelector((state) => state.operatorsRanking.filters.options);
+const OperatorsFilters = ({ filters, options, className = '', setFilters }) => {
   const intl = useIntl();
   const setSelect = (opts, key) => {
     const filter = {};
     filter[key] = opts.map(opt => opt.value || opt);
-    dispatch(setFilters(filter));
+    setFilters(filter);
   };
 
   const setSearch = (value, key) => {
     const filter = {};
     filter[key] = value;
-    dispatch(setFilters(filter));
+    setFilters(filter);
   };
 
   const renderFiltersSelects = () => {
@@ -192,7 +185,10 @@ const OperatorsFilters = ({ className = '' }) => {
 };
 
 OperatorsFilters.propTypes = {
-  className: PropTypes.string
+  filters: PropTypes.object,
+  options: PropTypes.object,
+  className: PropTypes.string,
+  setFilters: PropTypes.func
 };
 
 export default OperatorsFilters;
