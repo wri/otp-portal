@@ -24,8 +24,9 @@ import SubmitButton from 'components/form/SubmitButton';
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 
-const NewOperator = ({ language, saveOperator, onSubmit }) => {
+const NewOperator = ({ saveOperator, onSubmit }) => {
   const intl = useIntl();
+  const language = intl.locale;
   const [formInitialState] = useState({
     name: '',
     details: '',
@@ -249,14 +250,11 @@ const NewOperator = ({ language, saveOperator, onSubmit }) => {
 };
 
 NewOperator.propTypes = {
-  language: PropTypes.string,
   saveOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
 export default connect(
-  state => ({
-    language: state.language
-  }),
+  null,
   { saveOperator }
 )(NewOperator);

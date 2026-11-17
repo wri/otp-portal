@@ -444,7 +444,6 @@ ObservationsPage.getInitialProps = async ({ store, query }) => {
 export default injectIntl(withRouter(
   connect(
     (state, props) => ({
-      language: state.language,
       observations: state.observations,
       parsedFilters: getParsedFilters(state),
       parsedTableObservations: getParsedTableObservations(state),
