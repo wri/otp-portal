@@ -381,7 +381,7 @@ OperatorsDetailFMUs.propTypes = {
   setOperatorsDetailAnalysis: PropTypes.func
 };
 
-// Map, layer and analysis state for the tab, handed to the class component as it got it from the store
+// Map, layer and analysis state for the tab, handed to the class component as props
 const OperatorsDetailFMUsContainer = ({ operatorsDetail, fmuId, onFmuChange }) => {
   const intl = useIntl();
   const deviceInfo = useDeviceInfo();

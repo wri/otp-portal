@@ -93,9 +93,6 @@ const config = {
       },
     },
   },
-  experimental: {
-    optimizePackageImports: ["modules"]
-  },
   webpack(webpackConfig, { isServer }) {
     // Messages reach the browser precompiled (utils/translations.js), so it doesn't need the
     // ~10 kB gz ICU parser. `$` keeps the alias from also rewriting the no-parser subpath.

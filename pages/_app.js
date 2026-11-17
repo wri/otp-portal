@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import Router from 'next/router';
 import { IntlProvider } from 'react-intl';
 
-import { setLanguage } from 'modules/language';
 import { UserContext, getClientUser, setClientUser } from 'contexts/user';
 
 import HotJar from 'components/layout/hotjar';
@@ -15,7 +13,6 @@ import Error from 'pages/_error';
 import API, { setUnauthorizedHandler } from 'services/api';
 import { track } from 'services/server-timing';
 import { getCookie } from 'services/cookies';
-import wrapper from 'store';
 
 import 'css/index.scss';
 import { WebVitalsTracking } from '~/components/layout/web-vitals-tracking';
@@ -39,13 +36,8 @@ if (typeof window === 'undefined') {
 // (see the API's APIController#auth_cookie_name).
 const AUTH_COOKIE_NAME = 'otp_auth_token';
 
-function nextReduxWrapperHydrateWarning(...args) {
-  return /Cannot update a component/.test(args[0]) && args[2] === 'MyApp';
-}
-
 const IGNORE_WARNINGS = [
-  /`legacyBehavior` is deprecated and will be removed in a future release. A codemod is available to upgrade your components:/,
-  nextReduxWrapperHydrateWarning
+  /`legacyBehavior` is deprecated and will be removed in a future release. A codemod is available to upgrade your components:/
 ];
 const consoleError = console.error;
 console.error = (...args) => {
@@ -58,9 +50,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.info('Application is ignoring warnings:', IGNORE_WARNINGS.map(w => (typeof w === 'function' ? w.name : w.source)));
 }
 
-const MyApp = ({ Component, ...rest }) => {
-  const { store, props } = wrapper.useWrappedStore(rest);
-  const { pageProps, defaultLocale, language, user: initialUser } = props;
+const MyApp = ({ Component, pageProps, defaultLocale, language, user: initialUser }) => {
   // OTP_PORTAL_TRANSLATIONS is a global variable set in script loaded in _document.js
   const messages = translations ? translations[language] : window.OTP_PORTAL_TRANSLATIONS;
 
@@ -126,21 +116,19 @@ const MyApp = ({ Component, ...rest }) => {
       textComponent="span"
       defaultLocale={defaultLocale}
     >
-      <Provider store={store}>
-        <UserContext.Provider value={userContext}>
-          <WebVitalsTracking />
-          <GoogleTagManager />
-          <HotJar />
-          <PageViewTracking />
-          <IconSymbols />
-          <Component {...pageProps} language={language} />
-        </UserContext.Provider>
-      </Provider>
+      <UserContext.Provider value={userContext}>
+        <WebVitalsTracking />
+        <GoogleTagManager />
+        <HotJar />
+        <PageViewTracking />
+        <IconSymbols />
+        <Component {...pageProps} language={language} />
+      </UserContext.Provider>
     </IntlProvider>
   );
 }
 
-MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, ctx }) => {
+MyApp.getInitialProps = async ({ Component, ctx }) => {
   const { req, res, locale, defaultLocale } = ctx;
   const isServer = !!req;
   const language = locale || 'en';
@@ -182,8 +170,6 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
 
     const { token, ...safeUser } = user || {};
 
-    // the remaining slices' requests still read the locale from the store
-    store.dispatch(setLanguage(language));
     // pages read these from ctx
     ctx.language = language;
     ctx.user = safeUser;
@@ -220,6 +206,6 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
     return runWithRequest(req?.headers, run);
   }
   return run();
-});
+};
 
 export default MyApp;

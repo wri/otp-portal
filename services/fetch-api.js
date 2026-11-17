@@ -1,7 +1,7 @@
 import API from 'services/api';
 
-// Browser only: lets tabs and back-navigation reuse what an earlier page load fetched, as the
-// Redux store used to. The server must not share responses between requests.
+// Browser only: lets tabs and back-navigation reuse what an earlier page load fetched.
+// The server must not share responses between requests.
 const cache = new Map();
 
 // CMS-like content (about, help, country pages): instant revisits, fresh again after a while
@@ -41,7 +41,7 @@ export async function fetchApi(endpoint, { locale, params = {}, auth = false, ca
   return pending;
 }
 
-// The { data, error } shape components got from the store, so a failed request renders as before.
+// { data, error } page props, so a failed request still renders the page with the fallback.
 export function settle(promise, fallback) {
   return promise.then(
     (data) => ({ data, error: false }),
