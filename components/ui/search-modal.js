@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 import { useIntl } from 'react-intl';
 import classnames from 'classnames';
 
 import Icon from 'components/ui/icon';
 import modal from 'services/modal';
-import { getSearchFmus } from 'modules/search';
+import { useOperators, useSearchFmus } from 'services/resources';
 import { SEARCH_OPTIONS } from 'constants/general';
 import { mergeExactMatches } from 'utils/search';
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from 'utils/recent-searches';
@@ -23,19 +22,24 @@ const FUSE_OPTIONS = { ...SEARCH_OPTIONS, keys: ['title'] };
 
 const compact = (values) => values.filter(Boolean).join(' · ');
 
-function useSearchIndexes() {
-  const operators = useSelector(state => state.operators);
-  const { fmus } = useSelector(state => state.search);
+const NO_ITEMS = [];
 
-  const producers = useMemo(() => operators.data.map(o => ({
+function useSearchIndexes() {
+  const operators = useOperators();
+  // loaded on the first modal open, as the list is only needed here
+  const fmus = useSearchFmus();
+  const operatorsData = operators.data || NO_ITEMS;
+  const fmusData = fmus.data || NO_ITEMS;
+
+  const producers = useMemo(() => operatorsData.map(o => ({
     id: `producer-${o.id}`,
     type: 'producer',
     title: o.name,
     sub: o.country?.name,
     href: `/operators/${o.slug}/overview`
-  })), [operators.data]);
+  })), [operatorsData]);
 
-  const fmuItems = useMemo(() => fmus.data
+  const fmuItems = useMemo(() => fmusData
     .filter(f => f.operator?.slug)
     .map(f => ({
       id: `fmu-${f.id}`,
@@ -43,7 +47,7 @@ function useSearchIndexes() {
       title: f.name,
       sub: compact([f.operator.name, f.country?.name]),
       href: `/operators/${f.operator.slug}/fmus?fmuId=${f.id}`
-    })), [fmus.data]);
+    })), [fmusData]);
 
   return {
     producer: { items: producers, loading: operators.loading },
@@ -53,8 +57,6 @@ function useSearchIndexes() {
 
 const SearchModal = () => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const fmusState = useSelector(state => state.search.fmus);
   const indexes = useSearchIndexes();
 
   const [Fuse, setFuse] = useState(null);
@@ -82,8 +84,6 @@ const SearchModal = () => {
 
   useEffect(() => {
     import('fuse.js').then(m => setFuse(() => m.default));
-    if (!fmusState.data.length && !fmusState.loading) dispatch(getSearchFmus());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fuses = useMemo(() => {

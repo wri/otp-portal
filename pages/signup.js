@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
-
-// Redux
-import { connect } from 'react-redux';
-
-import { getCountries } from 'modules/countries';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -15,7 +9,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import UserNewForm from 'components/users/new';
 
-const SignUp = (props) => {
+const SignUp = () => {
   const [submittedEmail, setSubmittedEmail] = useState(null);
   const intl = useIntl();
   const creatingNewAccountText = intl.formatMessage({ id: "signup.user.header", defaultMessage: "Creating a new account" });
@@ -57,15 +51,4 @@ const SignUp = (props) => {
   );
 }
 
-SignUp.getInitialProps = async ({ store }) => {
-  await store.dispatch(getCountries());
-  return {};
-}
-
-
-export default connect(
-  (state) => ({
-    countries: state.countries,
-  }),
-  { getCountries }
-)(SignUp);
+export default SignUp;

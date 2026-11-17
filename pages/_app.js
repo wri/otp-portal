@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import Router from 'next/router';
 import { IntlProvider } from 'react-intl';
 
-import { setUser, setUserAgent, removeUser } from 'modules/user';
 import { setLanguage } from 'modules/language';
-import { getCountries } from 'modules/countries';
-import { getOperators } from 'modules/operators';
+import { UserContext, getClientUser, setClientUser } from 'contexts/user';
 
 import HotJar from 'components/layout/hotjar';
 import GoogleTagManager from 'components/layout/google-tag-manager';
@@ -17,7 +15,6 @@ import Error from 'pages/_error';
 import API, { setUnauthorizedHandler } from 'services/api';
 import { track } from 'services/server-timing';
 import { getCookie } from 'services/cookies';
-import { isMobileUserAgent } from 'utils/user-agent';
 import wrapper from 'store';
 
 import 'css/index.scss';
@@ -63,28 +60,27 @@ if (process.env.NODE_ENV !== 'production') {
 
 const MyApp = ({ Component, ...rest }) => {
   const { store, props } = wrapper.useWrappedStore(rest);
-  const { pageProps, defaultLocale, language } = props;
+  const { pageProps, defaultLocale, language, user: initialUser } = props;
   // OTP_PORTAL_TRANSLATIONS is a global variable set in script loaded in _document.js
   const messages = translations ? translations[language] : window.OTP_PORTAL_TRANSLATIONS;
 
   if (!messages) { throw new Error(`No translations found for language ${language}`); }
-  const user = store.getState().user;
+  // login and logout reload the page, so only a 401 changes the user after the server set it
+  const [user, setUser] = useState(initialUser || {});
+  const userContext = useMemo(() => ({ user, setUser }), [user]);
 
   useEffect(() => {
-    if (!pageProps.statusCode) {
-      store.dispatch(getOperators());
-      store.dispatch(getCountries());
-    }
-  }, [pageProps.statusCode]);
+    setClientUser(user);
+  }, [user]);
 
   // Reconcile stale auth when the session cookie expires mid-session. A client
   // request returning 401 means we're no longer authenticated even though the
-  // Redux user state still says we are. Clearing it gives logged-out chrome, and
+  // user state still says we are. Clearing it gives logged-out chrome, and
   // the protected pages redirect off their own getInitialProps on the next
   // navigation - no reload, which against a cached current-user would just loop.
   useEffect(() => {
     setUnauthorizedHandler(() => {
-      if (user?.user_id) store.dispatch(removeUser());
+      if (user.user_id) setUser({});
     });
     return () => setUnauthorizedHandler(null);
   }, [user]);
@@ -131,14 +127,14 @@ const MyApp = ({ Component, ...rest }) => {
       defaultLocale={defaultLocale}
     >
       <Provider store={store}>
-        <>
+        <UserContext.Provider value={userContext}>
           <WebVitalsTracking />
           <GoogleTagManager />
           <HotJar />
           <PageViewTracking />
           <IconSymbols />
           <Component {...pageProps} language={language} />
-        </>
+        </UserContext.Provider>
       </Provider>
     </IntlProvider>
   );
@@ -147,7 +143,6 @@ const MyApp = ({ Component, ...rest }) => {
 MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, ctx }) => {
   const { req, res, locale, defaultLocale } = ctx;
   const isServer = !!req;
-  const state = store.getState();
   const language = locale || 'en';
 
   const run = async () => {
@@ -181,23 +176,17 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
         }
       }
       doneAuth();
-
-      const ua = req.headers['user-agent'] || '';
-      const userAgent = {
-        ua,
-        isMobile: isMobileUserAgent(ua)
-      }
-      store.dispatch(setUserAgent(userAgent));
     } else {
-      user = state.user;
+      user = getClientUser();
     }
 
     const { token, ...safeUser } = user || {};
 
+    // the remaining slices' requests still read the locale from the store
     store.dispatch(setLanguage(language));
-    store.dispatch(setUser(safeUser));
-    // pages without the store read these from ctx
+    // pages read these from ctx
     ctx.language = language;
+    ctx.user = safeUser;
 
     const donePage = track(req, 'page');
     const pageProps = Component.getInitialProps ?
@@ -223,7 +212,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
       return {};
     }
 
-    return { pageProps, language, defaultLocale };
+    return { pageProps, language, defaultLocale, user: safeUser };
   };
 
   if (typeof window === 'undefined') {

@@ -1,7 +1,7 @@
-import { useSelector } from "react-redux";
+import { useUserContext } from 'contexts/user';
 
 export default function useUser() {
-  const user = useSelector((state) => state.user);
+  const { user } = useUserContext();
   const isLoggedIn = !!user.user_id;
   const isAdmin = isLoggedIn && user.role === 'admin';
   const isOperator = isLoggedIn && user.role === 'operator';

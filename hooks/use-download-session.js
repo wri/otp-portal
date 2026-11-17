@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { setDownloadCookie } from 'modules/user';
+import { setDownloadCookie } from 'services/user';
 
 export function useDownloadSession(enabled) {
   useEffect(() => {

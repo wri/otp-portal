@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { resetPassword, login } from 'modules/user';
+import { resetPassword, login } from 'services/user';
 import toast from 'services/toast';
 
 // Components

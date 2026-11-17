@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { sortBy, sumBy } from 'utils/general';
 import advancedFormat from 'dayjs/plugin/advancedFormat'
@@ -13,8 +12,9 @@ import { useIntl } from 'react-intl';
 dayjs.extend(advancedFormat)
 
 const LegendAnalysisIntegratedAlerts = (props) => {
-  const { activeLayer, analysis, language } = props;
+  const { activeLayer, analysis } = props;
   const intl = useIntl();
+  const language = intl.locale;
   const { decodeParams } = activeLayer;
   const { startDate, trimEndDate } = decodeParams;
   const { data, loading, error } = analysis;
@@ -77,14 +77,8 @@ const LegendAnalysisIntegratedAlerts = (props) => {
 }
 
 LegendAnalysisIntegratedAlerts.propTypes = {
-  language: PropTypes.string,
   activeLayer: PropTypes.shape({}).isRequired,
   analysis: PropTypes.shape({}).isRequired
 }
 
-export default connect(
-  state => ({
-    language: state.language,
-  }),
-  null
-)(LegendAnalysisIntegratedAlerts);
+export default LegendAnalysisIntegratedAlerts;

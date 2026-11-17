@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
-import { updateOperator } from 'modules/user';
+import { updateOperator } from 'services/user';
 import toast from 'services/toast';
 
 // Components
@@ -36,7 +35,7 @@ const EditOperator = (props) => {
     // otherwise the form still holds the URL of the current one.
     const logoChanged = (form.logo || '') !== logoURL;
 
-    return props.updateOperator({
+    return updateOperator({
       body: {
         data: {
           type: 'operators',
@@ -53,7 +52,7 @@ const EditOperator = (props) => {
       },
       type: 'PATCH',
       id: operator.id,
-      locale: props.language
+      locale: intl.locale
     }).then(() => {
       toast.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
@@ -219,17 +218,8 @@ const EditOperator = (props) => {
 }
 
 EditOperator.propTypes = {
-  language: PropTypes.string,
   operator: PropTypes.object,
-  updateOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    language: state.language
-  }),
-  {
-    updateOperator
-  }
-)(EditOperator);
+export default EditOperator;

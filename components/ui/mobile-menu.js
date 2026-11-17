@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useCountries } from 'services/resources';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -13,8 +13,9 @@ import { useIntl } from 'react-intl';
 import UserMenuList from 'components/ui/user-menu-list';
 import useUser from 'hooks/use-user';
 
-function MobileMenu({ className, countries }) {
+function MobileMenu({ className }) {
   const intl = useIntl();
+  const countries = useCountries();
   const user = useUser();
   const navCountries = (countries.data || []).filter(c => (c['required-gov-documents'] || []).length);
 
@@ -114,12 +115,7 @@ function MobileMenu({ className, countries }) {
 }
 
 MobileMenu.propTypes = {
-  className: PropTypes.string,
-  countries: PropTypes.object
+  className: PropTypes.string
 };
 
-export default connect(
-  (state) => ({
-    countries: state.countries,
-  }),
-)(MobileMenu);
+export default MobileMenu;

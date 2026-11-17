@@ -6,8 +6,6 @@ import dynamic from 'next/dynamic';
 
 import { useIntl } from 'react-intl';
 
-import { connect } from 'react-redux';
-import { logout } from 'modules/user';
 
 import modal from 'services/modal';
 
@@ -63,7 +61,4 @@ UserDropdown.propTypes = {
 }
 
 
-export default connect(
-  null,
-  { logout }
-)(UserDropdown);
+export default UserDropdown;

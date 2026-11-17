@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
-import { saveOperator } from 'modules/user';
+import { saveOperator } from 'services/user';
 
 // Next components
 import Link from 'next/link';
@@ -24,8 +23,9 @@ import SubmitButton from 'components/form/SubmitButton';
 // Utils
 import { HELPERS_REGISTER } from 'utils/signup';
 
-const NewOperator = ({ language, saveOperator, onSubmit }) => {
+const NewOperator = ({ onSubmit }) => {
   const intl = useIntl();
+  const language = intl.locale;
   const [formInitialState] = useState({
     name: '',
     details: '',
@@ -249,14 +249,7 @@ const NewOperator = ({ language, saveOperator, onSubmit }) => {
 };
 
 NewOperator.propTypes = {
-  language: PropTypes.string,
-  saveOperator: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    language: state.language
-  }),
-  { saveOperator }
-)(NewOperator);
+export default NewOperator;

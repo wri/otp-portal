@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { sortBy, uniqBy } from 'utils/general';
 import Link from 'next/link';
 
-// Redux
-import { connect, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { groupBy } from 'utils/general';
-import { getNotifications, dismissAll } from 'modules/notifications';
+import { useNotifications, useOperators, dismissAllNotifications } from 'services/resources';
 import useUser from 'hooks/use-user';
 import { getOperatorSlug } from 'selectors/operators';
 
@@ -20,12 +18,17 @@ function isBeforeToday(date) {
   return date < today;
 }
 
-const Notifications = ({ notifications, render = false, getNotifications, dismissAll }) => {
+const NO_NOTIFICATIONS = [];
+
+const Notifications = ({ render = false }) => {
   const intl = useIntl();
   const user = useUser();
-  const operatorSlug = useSelector((state) => getOperatorSlug(state, user.operator_ids?.[0]));
+  // the layout's instance loads them; the modal's instance only renders the same list
+  const resource = useNotifications(user.isLoggedIn && !render);
+  const notifications = { ...resource, data: resource.data || NO_NOTIFICATIONS };
+  const operatorSlug = getOperatorSlug(useOperators().data, user.operator_ids?.[0]);
   const handleDismiss = () => {
-    dismissAll();
+    dismissAllNotifications(notifications.data);
     modal.toggleModal(false);
   };
 
@@ -34,19 +37,13 @@ const Notifications = ({ notifications, render = false, getNotifications, dismis
   };
 
   useEffect(() => {
-    if (user.isLoggedIn && !render) {
-      getNotifications();
-    }
-  }, [user.isLoggedIn, render, getNotifications]);
-
-  useEffect(() => {
     if (!render
       && user.isLoggedIn
       && notifications.data.length
       && !localStorage.getItem('notificationsShown')
     ) {
       modal.toggleModal(true, {
-        children: ConnectedNotifications,
+        children: Notifications,
         childrenProps: {
           render: true
         },
@@ -205,20 +202,7 @@ const Notifications = ({ notifications, render = false, getNotifications, dismis
 };
 
 Notifications.propTypes = {
-  render: PropTypes.bool,
-  notifications: PropTypes.object,
-  getNotifications: PropTypes.func,
-  dismissAll: PropTypes.func,
-  language: PropTypes.string
+  render: PropTypes.bool
 };
 
-
-const ConnectedNotifications = connect(
-  state => ({
-    notifications: state.notifications,
-    language: state.language
-  }),
-  { getNotifications, dismissAll }
-)(Notifications);
-
-export default ConnectedNotifications;
+export default Notifications;

@@ -1,9 +1,11 @@
-import { connect } from 'react-redux';
+import React from 'react';
+import { useIntl } from 'react-intl';
 
 import Component from './component';
 
-export default connect(
-  state => ({
-    language: state.language
-  })
-)(Component);
+const Datepicker = (props) => {
+  const { locale } = useIntl();
+  return <Component language={locale} {...props} />;
+};
+
+export default Datepicker;

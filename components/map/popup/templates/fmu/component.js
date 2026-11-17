@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { connect } from 'react-redux';
 
 import { getOperatorSlug } from 'selectors/operators';
 
 // Intl
 import { injectIntl } from 'react-intl';
+import { useOperators } from 'services/resources';
 
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
@@ -84,14 +84,25 @@ class FMUTemplatePopup extends PureComponent {
   }
 }
 
-export default connect((state, { layers }) => {
+const IntlFMUTemplatePopup = injectIntl(FMUTemplatePopup);
+
+const FMUPopup = ({ layers }) => {
+  const operatorsList = useOperators().data;
   const { interactionConfig, data } = layers.find(l => l.id === 'fmus');
   const fmuData = data.data;
 
-  return {
-    fmuData,
-    output: interactionConfig.output,
-    // tile properties only carry the numeric operator id
-    operatorId: fmuData.operator_id && getOperatorSlug(state, fmuData.operator_id)
-  };
-})(injectIntl(FMUTemplatePopup));
+  return (
+    <IntlFMUTemplatePopup
+      fmuData={fmuData}
+      output={interactionConfig.output}
+      // tile properties only carry the numeric operator id
+      operatorId={fmuData.operator_id && getOperatorSlug(operatorsList, fmuData.operator_id)}
+    />
+  );
+};
+
+FMUPopup.propTypes = {
+  layers: PropTypes.array.isRequired
+};
+
+export default FMUPopup;

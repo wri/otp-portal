@@ -1,14 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'utils/general';
 
 // Next
 import Link from 'next/link';
-
-// Redux
-import { connect } from 'react-redux';
-import { getUserOperator } from 'modules/user';
-import { getOperators } from 'modules/operators';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -18,20 +12,28 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import EditOperator from 'components/operators/edit';
 import Spinner from 'components/ui/spinner';
-import useUser from 'hooks/use-user';
 
-const OperatorsEdit = ({ operatorId, getOperators, getUserOperator }) => {
+import { fetchUserOperator } from 'services/user';
+import { reloadOperators } from 'services/resources';
+
+const OperatorsEdit = ({ operatorId, operator: initialOperator }) => {
   const intl = useIntl();
-  const { userOperator } = useUser();
+  const [reloaded, setReloaded] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // a save reloads the operator; props win again once they are for another operator
+  const operator = reloaded && reloaded.id === initialOperator?.id ? reloaded : initialOperator;
 
   if (!operatorId) {
     return null;
   }
 
   const handleOperatorEditSubmit = () => {
-    getOperators();
-    getUserOperator(operatorId);
-  }
+    reloadOperators(intl.locale);
+    setLoading(true);
+    fetchUserOperator(operatorId, intl.locale)
+      .then(setReloaded, console.error)
+      .finally(() => setLoading(false));
+  };
 
   return (
     <Layout
@@ -42,30 +44,28 @@ const OperatorsEdit = ({ operatorId, getOperators, getUserOperator }) => {
         title={intl.formatMessage({ id: 'edit.operators' })}
         background="/static/images/static-header/bg-help.jpg"
         Component={
-          <Link href={`/operators/${userOperator.data.slug}/documentation`} className="c-button -secondary -small">
-            {intl.formatMessage({ id: 'documentation' })}
-          </Link>
+          operator && (
+            <Link href={`/operators/${operator.slug}/documentation`} className="c-button -secondary -small">
+              {intl.formatMessage({ id: 'documentation' })}
+            </Link>
+          )
         }
       />
 
-      {userOperator && userOperator.loading &&
-        <Spinner isLoading={userOperator.loading} className="-light -fixed" />
-      }
+      <Spinner isLoading={loading} className="-light -fixed" />
 
-      {userOperator && !isEmpty(userOperator.data) &&
+      {operator && (
         <EditOperator
-          key={userOperator.data.id} // set key to rerender component whenever the data changes
-          operator={userOperator.data}
+          key={operator.id} // a new form for another operator
+          operator={operator}
           onSubmit={handleOperatorEditSubmit}
         />
-      }
+      )}
     </Layout>
   );
 }
 
-OperatorsEdit.getInitialProps = async ({ store, query }) => {
-  const { user } = store.getState();
-
+OperatorsEdit.getInitialProps = async ({ user, query, language }) => {
   if (!user.operator_ids) {
     return { redirectTo: '/' };
   }
@@ -74,19 +74,18 @@ OperatorsEdit.getInitialProps = async ({ store, query }) => {
     return { statusCode: 404 };
   }
   const operatorId = Number(query.id) || user.operator_ids[0];
-  if (operatorId) {
-    await store.dispatch(getUserOperator(operatorId));
-  }
-  return { operatorId };
+  if (!operatorId) return {};
+
+  const operator = await fetchUserOperator(operatorId, language).catch((error) => {
+    console.error(error);
+    return null;
+  });
+  return { operatorId, operator };
 }
 
 OperatorsEdit.propTypes = {
-  operatorId: PropTypes.number.isRequired,
-  getOperators: PropTypes.func,
-  getUserOperator: PropTypes.func
+  operatorId: PropTypes.number,
+  operator: PropTypes.object
 };
 
-export default connect(
-  null,
-  { getUserOperator, getOperators }
-)(OperatorsEdit);
+export default OperatorsEdit;

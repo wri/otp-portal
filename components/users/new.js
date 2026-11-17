@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { connect } from 'react-redux';
-import { saveUser } from 'modules/user';
+import { saveUser } from 'services/user';
+import { useCountries, useOperators } from 'services/resources';
 
 // Next components
 import Link from 'next/link';
@@ -27,8 +27,9 @@ import SubmitButton from '../form/SubmitButton';
 import { LOCALES } from 'constants/locales';
 
 const UserNewForm = (props) => {
-  const { countries, operators } = props;
   const intl = useIntl();
+  const countries = useCountries();
+  const operators = useOperators();
 
   const handleSubmit = ({ form }) => {
     const body = {
@@ -47,7 +48,7 @@ const UserNewForm = (props) => {
     delete body.user.account_type;
 
     // Save data
-    return props.saveUser({ body })
+    return saveUser({ body })
       .then(() => {
         logEvent('sign_up', { method: 'credentials' });
         if (props.onSubmit) props.onSubmit({ email: form.email });
@@ -107,7 +108,7 @@ const UserNewForm = (props) => {
                 <Field
                   validations={['required']}
                   className="-fluid"
-                  options={HELPERS_REGISTER.mapToSelectOptions(countries.data)}
+                  options={HELPERS_REGISTER.mapToSelectOptions(countries.data || [])}
                   properties={{
                     name: 'country_id',
                     label: intl.formatMessage({ id: 'signup.user.form.field.country' }),
@@ -126,7 +127,7 @@ const UserNewForm = (props) => {
                       validations={['required']}
                       className="-fluid"
                       hint={registerNewProducerHint}
-                      options={HELPERS_REGISTER.mapToSelectOptions(operators.data.filter(o => o.country && o.country.id === form.country_id))}
+                      options={HELPERS_REGISTER.mapToSelectOptions((operators.data || []).filter(o => o.country && o.country.id === form.country_id))}
                       properties={{
                         name: 'operator_id',
                         label: intl.formatMessage({ id: 'signup.user.form.field.producer' }),
@@ -307,16 +308,7 @@ const UserNewForm = (props) => {
 }
 
 UserNewForm.propTypes = {
-  operators: PropTypes.object,
-  countries: PropTypes.object,
-  saveUser: PropTypes.func,
   onSubmit: PropTypes.func
 };
 
-export default connect(
-  state => ({
-    operators: state.operators,
-    countries: state.countries
-  }),
-  { saveUser }
-)(UserNewForm);
+export default UserNewForm;

@@ -21,6 +21,7 @@ import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayers
 import modal from 'services/modal';
 
 import { withDeviceInfo } from 'hooks/use-device-info';
+import { isMobileUserAgent } from 'utils/user-agent';
 
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
@@ -195,20 +196,19 @@ function OperatorsPage({
   );
 }
 
-OperatorsPage.getInitialProps = async ({ store }) => {
-  const { operatorsRanking, user } = store.getState();
-  const { userAgent } = user;
-  const isMobile = userAgent.isMobile;
+OperatorsPage.getInitialProps = async ({ store, req }) => {
+  const { operatorsRanking } = store.getState();
+  const isMobile = isMobileUserAgent(req ? req.headers['user-agent'] : navigator.userAgent);
   const requests = [];
 
   if (!operatorsRanking.data.length && !isMobile) {
     requests.push(store.dispatch(getOperatorsRanking()));
   }
-  requests.push(store.dispatch(setOperatorsSidebar({ open: !userAgent.isMobile })));
+  requests.push(store.dispatch(setOperatorsSidebar({ open: !isMobile })));
 
   await Promise.all(requests);
 
-  return {};
+  return { isMobile };
 };
 
 OperatorsPage.propTypes = {
@@ -220,7 +220,6 @@ OperatorsPage.propTypes = {
 export default injectIntl(withRouter(withDeviceInfo(connect(
   (state, props) => ({
     language: state.language,
-    isMobile: state.user.userAgent.isMobile,
     operatorsRanking: state.operatorsRanking,
     map: state.operatorsRanking.map,
     sidebar: state.operatorsRanking.sidebar,

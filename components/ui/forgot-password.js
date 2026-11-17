@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // Intl
 import { useIntl } from 'react-intl';
 
-import { forgotPassword } from 'modules/user';
+import { forgotPassword } from 'services/user';
 
 // Services
 import modal from 'services/modal';
