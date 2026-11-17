@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-import { getCountries } from 'modules/countries';
-
 // Intl
 import { useIntl } from 'react-intl';
 
@@ -11,7 +9,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import UserNewForm from 'components/users/new';
 
-const SignUp = (props) => {
+const SignUp = () => {
   const [submittedEmail, setSubmittedEmail] = useState(null);
   const intl = useIntl();
   const creatingNewAccountText = intl.formatMessage({ id: "signup.user.header", defaultMessage: "Creating a new account" });
@@ -51,11 +49,6 @@ const SignUp = (props) => {
       )}
     </Layout>
   );
-}
-
-SignUp.getInitialProps = async ({ store }) => {
-  await store.dispatch(getCountries());
-  return {};
 }
 
 export default SignUp;

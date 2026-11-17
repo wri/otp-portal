@@ -1,8 +1,5 @@
 import React from 'react';
-import { isEmpty } from 'utils/general';
-
-// Redux
-import { getUserProfile } from 'modules/user';
+import PropTypes from 'prop-types';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -11,12 +8,11 @@ import { useIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import UserEditForm from 'components/users/edit';
-import Spinner from 'components/ui/spinner';
-import useUser from '~/hooks/use-user';
 
-const Profile = () => {
+import { fetchUserProfile } from 'services/user';
+
+const Profile = ({ userProfile }) => {
   const intl = useIntl();
-  const { userProfile } = useUser();
 
   return (
     <Layout
@@ -28,26 +24,28 @@ const Profile = () => {
         background="/static/images/static-header/bg-help.jpg"
       />
 
-      {userProfile && userProfile.loading && (
-        <Spinner isLoading={userProfile.loading} className="-light -fixed" />
-      )}
-
-      {userProfile && !isEmpty(userProfile.data) && (
-        <UserEditForm userProfile={userProfile.data} />
+      {userProfile && (
+        <UserEditForm userProfile={userProfile} />
       )}
 
     </Layout>
   );
 }
 
-Profile.getInitialProps = async ({ store }) => {
-  const state = store.getState();
-  if (!state.user || !state.user.user_id) {
+Profile.getInitialProps = async ({ user }) => {
+  if (!user || !user.user_id) {
     return { redirectTo: '/', redirectPermanent: false };
   }
 
-  await store.dispatch(getUserProfile());
-  return {};
+  const userProfile = await fetchUserProfile(user.user_id).catch((error) => {
+    console.error(error);
+    return null;
+  });
+  return { userProfile };
 }
+
+Profile.propTypes = {
+  userProfile: PropTypes.object
+};
 
 export default Profile;

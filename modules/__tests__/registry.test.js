@@ -6,7 +6,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 import { makeStore, serializeState } from '../../store';
 
-const GLOBAL_SLICES = ['countries', 'language', 'notifications', 'operators', 'search', 'user'];
+const GLOBAL_SLICES = ['language'];
 
 describe('store', () => {
   it('starts with only the global slices', () => {
@@ -47,7 +47,7 @@ describe('serializeState', () => {
     store.dispatch(setFilters({ fmu: 'abc' }));
     const sent = serializeState(store.getState());
 
-    expect(Object.keys(sent)).toEqual(expect.arrayContaining(['language', 'user', 'operatorsRanking']));
+    expect(Object.keys(sent)).toEqual(expect.arrayContaining(['language', 'operatorsRanking']));
     expect(sent).not.toHaveProperty('operatorsDetail');
   });
 });

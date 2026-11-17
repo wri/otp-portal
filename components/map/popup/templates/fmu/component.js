@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 
 import { getOperatorSlug } from 'selectors/operators';
 
 // Intl
 import { injectIntl } from 'react-intl';
+import { useOperators } from 'services/resources';
 
 class FMUTemplatePopup extends PureComponent {
   static propTypes = {
@@ -86,20 +86,17 @@ class FMUTemplatePopup extends PureComponent {
 
 const IntlFMUTemplatePopup = injectIntl(FMUTemplatePopup);
 
-// the class gets the same props connect used to compute from the hovered fmus layer
-const FMUPopup = ({ layers, ...rest }) => {
+const FMUPopup = ({ layers }) => {
+  const operatorsList = useOperators().data;
   const { interactionConfig, data } = layers.find(l => l.id === 'fmus');
   const fmuData = data.data;
-  // tile properties only carry the numeric operator id
-  const operatorId = useSelector((state) => fmuData.operator_id && getOperatorSlug(state, fmuData.operator_id));
 
   return (
     <IntlFMUTemplatePopup
-      {...rest}
-      layers={layers}
       fmuData={fmuData}
       output={interactionConfig.output}
-      operatorId={operatorId}
+      // tile properties only carry the numeric operator id
+      operatorId={fmuData.operator_id && getOperatorSlug(operatorsList, fmuData.operator_id)}
     />
   );
 };

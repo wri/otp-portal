@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 // Redux
-import { useDispatch } from 'react-redux';
-import { updateUserProfile, login } from 'modules/user';
+import { updateUserProfile, login } from 'services/user';
+import useUser from 'hooks/use-user';
 import toast from 'services/toast';
 
 // Components
@@ -20,7 +20,7 @@ import { LOCALES } from 'constants/locales';
 
 const UserEditForm = (props) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
+  const { user_id: userId } = useUser();
   const { userProfile } = props;
   const isOrganizationAccount = userProfile['organization-account'] === true;
 
@@ -37,7 +37,7 @@ const UserEditForm = (props) => {
     }
     const updatingPassword = !!form.password && !!form.password.length;
 
-    return dispatch(updateUserProfile({ attributes }))
+    return updateUserProfile(userId, { attributes })
       .then(() => {
         if (!updatingPassword) return null;
 
@@ -57,7 +57,7 @@ const UserEditForm = (props) => {
             intl.formatMessage({ id: 'Password changed successfully' }),
             intl.formatMessage({ id: 'Please log in again' })
           );
-          // a full reload, not router.push: the store still holds the authenticated
+          // a full reload, not router.push: the app state still holds the authenticated
           // user, and only a fresh boot clears it
           // eslint-disable-next-line @next/next/no-location-assign-relative-destination
           window.location.href = '/';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 // Redux
-import { useSelector } from 'react-redux';
+import { useOperators } from 'services/resources';
 
 // Next
 import Router from 'next/router';
@@ -25,9 +25,8 @@ import { mergeExactMatches } from 'utils/search';
 const NO_LIST = [];
 
 const Search = ({ theme = '', options = SEARCH_OPTIONS }) => {
-  const list = useSelector((state) => state.operators.data) || NO_LIST;
-  const loading = useSelector((state) => state.operators.loading);
   const intl = useIntl();
+  const { data: list = NO_LIST, loading } = useOperators();
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
   const [active, setActive] = useState(false);

@@ -52,8 +52,8 @@ const COUNTRIES_FRENCH_FIX = {
 };
 
 // shared getInitialProps for operator's detail pages
-export async function getInitialProps({ query, asPath, res, store, ...rest }) {
-  let { operatorsDetail, user } = store.getState();
+export async function getInitialProps({ query, asPath, res, store, user, ...rest }) {
+  let { operatorsDetail } = store.getState();
   const requests = [];
   const { id } = query;
   const tab = asPath.split('/').pop().split('?')[0];

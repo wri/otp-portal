@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
-import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
-import { getReusableDocuments } from 'modules/document-reuse';
+import useApi from 'hooks/use-api';
+import { fetchReusableDocuments } from 'services/documents';
 import { removeDiacritics, sortBy } from 'utils/general';
 
 const STATUS_LABEL_ID = {
@@ -158,6 +158,8 @@ const filterTree = (operators, query, excludeDocId) => {
     .filter(Boolean);
 };
 
+const NO_DOCUMENTS = [];
+
 const DocModalSelectExisting = ({
   operatorIds,
   excludeDocId,
@@ -167,16 +169,12 @@ const DocModalSelectExisting = ({
   onSearchChange,
 }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  // grouped by operator and category already (services/documents.js)
-  const { data, loading } = useSelector((state) => state.documentReuse);
+  const ids = [...(operatorIds || [])].map(Number).sort((a, b) => a - b);
+  const { data = NO_DOCUMENTS, loading } = useApi(
+    ids.length ? `reusable-documents:${intl.locale}:${ids.join(',')}` : null,
+    () => fetchReusableDocuments(ids, intl.locale)
+  );
   const operators = useMemo(() => groupByOperator(data), [data]);
-
-  useEffect(() => {
-    if (operatorIds && operatorIds.length) {
-      dispatch(getReusableDocuments(operatorIds));
-    }
-  }, [dispatch, operatorIds]);
 
   const filtered = useMemo(
     () => filterTree(operators, search, excludeDocId),

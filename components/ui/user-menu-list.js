@@ -1,19 +1,20 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { uniqBy } from 'utils/general';
 
 import Notifications from 'components/ui/notifications';
-import { logout } from 'modules/user';
+import { logout } from 'services/user';
+import { useOperators, useNotifications } from 'services/resources';
 import modal from 'services/modal';
 import useUser from 'hooks/use-user';
 
+const NO_ITEMS = [];
+
 const UserMenuList = ({ className, listItemClassName }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const operators = useSelector((state) => state.operators.data);
-  const notifications = useSelector((state) => state.notifications.data);
+  const operators = useOperators().data || NO_ITEMS;
+  const notifications = useNotifications(false).data || NO_ITEMS;
   const user = useUser();
   const handleNotificationsClick = () => {
     modal.toggleModal(true, {
@@ -83,7 +84,7 @@ const UserMenuList = ({ className, listItemClassName }) => {
       <li className={listItemClassName}>
         <a
           onClick={() => {
-            dispatch(logout());
+            logout();
           }}
         >
           <span>{intl.formatMessage({ id: 'signout' })}</span>

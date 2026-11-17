@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { sortBy, uniqBy } from 'utils/general';
 import Link from 'next/link';
 
-// Redux
-import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import modal from 'services/modal';
 import { groupBy } from 'utils/general';
-import { getNotifications, dismissAll } from 'modules/notifications';
+import { useNotifications, useOperators, dismissAllNotifications } from 'services/resources';
 import useUser from 'hooks/use-user';
 import { getOperatorSlug } from 'selectors/operators';
 
@@ -20,26 +18,23 @@ function isBeforeToday(date) {
   return date < today;
 }
 
+const NO_NOTIFICATIONS = [];
+
 const Notifications = ({ render = false }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.notifications);
   const user = useUser();
-  const operatorSlug = useSelector((state) => getOperatorSlug(state, user.operator_ids?.[0]));
+  // the layout's instance loads them; the modal's instance only renders the same list
+  const resource = useNotifications(user.isLoggedIn && !render);
+  const notifications = { ...resource, data: resource.data || NO_NOTIFICATIONS };
+  const operatorSlug = getOperatorSlug(useOperators().data, user.operator_ids?.[0]);
   const handleDismiss = () => {
-    dispatch(dismissAll());
+    dismissAllNotifications(notifications.data);
     modal.toggleModal(false);
   };
 
   const closeModal = () => {
     modal.toggleModal(false);
   };
-
-  useEffect(() => {
-    if (user.isLoggedIn && !render) {
-      dispatch(getNotifications());
-    }
-  }, [user.isLoggedIn, render, dispatch]);
 
   useEffect(() => {
     if (!render

@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl';
 
 import toast from 'services/toast';
 
-import { login } from 'modules/user';
+import { login } from 'services/user';
 
 // Services
 import modal from 'services/modal';

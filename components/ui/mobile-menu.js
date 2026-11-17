@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useCountries } from 'services/resources';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -15,7 +15,7 @@ import useUser from 'hooks/use-user';
 
 function MobileMenu({ className }) {
   const intl = useIntl();
-  const countries = useSelector((state) => state.countries);
+  const countries = useCountries();
   const user = useUser();
   const navCountries = (countries.data || []).filter(c => (c['required-gov-documents'] || []).length);
 

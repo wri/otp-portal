@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useCountries } from 'services/resources';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -16,7 +16,7 @@ import { useIntl } from 'react-intl';
 
 function NavigationList({ footer = false, className }) {
   const intl = useIntl();
-  const countries = useSelector((state) => state.countries);
+  const countries = useCountries();
   const router = useRouter();
 
   const setActive = (pathname) => {
@@ -147,5 +147,6 @@ NavigationList.propTypes = {
   className: PropTypes.string,
   footer: PropTypes.bool
 };
+
 
 export default NavigationList;

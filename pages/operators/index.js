@@ -19,6 +19,7 @@ import {
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable, getActiveCountries } from 'selectors/operators-ranking';
 
 import modal from 'services/modal';
+import { isMobileUserAgent } from 'utils/user-agent';
 
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
@@ -36,11 +37,10 @@ import OperatorsTable from 'components/operators/table';
 
 import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
 
-function OperatorsPage({ language }) {
+function OperatorsPage({ language, isMobile }) {
   const router = useRouter();
   const intl = useIntl();
   const dispatch = useDispatch();
-  const isMobile = useSelector((state) => state.user.userAgent.isMobile);
   const operatorsRanking = useSelector((state) => state.operatorsRanking);
   const { map, sidebar } = operatorsRanking;
   const activeCountries = useSelector(getActiveCountries);
@@ -191,24 +191,24 @@ function OperatorsPage({ language }) {
   );
 }
 
-OperatorsPage.getInitialProps = async ({ store }) => {
-  const { operatorsRanking, user } = store.getState();
-  const { userAgent } = user;
-  const isMobile = userAgent.isMobile;
+OperatorsPage.getInitialProps = async ({ store, req }) => {
+  const { operatorsRanking } = store.getState();
+  const isMobile = isMobileUserAgent(req ? req.headers['user-agent'] : navigator.userAgent);
   const requests = [];
 
   if (!operatorsRanking.data.length && !isMobile) {
     requests.push(store.dispatch(getOperatorsRanking()));
   }
-  requests.push(store.dispatch(setOperatorsSidebar({ open: !userAgent.isMobile })));
+  requests.push(store.dispatch(setOperatorsSidebar({ open: !isMobile })));
 
   await Promise.all(requests);
 
-  return {};
+  return { isMobile };
 };
 
 OperatorsPage.propTypes = {
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool
 };
 
 export default OperatorsPage;
