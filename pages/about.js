@@ -4,7 +4,7 @@ import { sortBy } from 'utils/general';
 
 import { useIntl } from 'react-intl';
 
-import { fetchApi, settle } from 'services/fetch-api';
+import { fetchApi, settle, CONTENT_MAX_AGE } from 'services/fetch-api';
 
 // Components
 import Layout from 'components/layout/layout';
@@ -112,9 +112,9 @@ const AboutPage = ({ about, partners, donors }) => {
 
 AboutPage.getInitialProps = async ({ language }) => {
   const [about, partners, donors] = await Promise.all([
-    settle(fetchApi('pages', { locale: language, params: { 'filter[slug]': 'about', include: 'sections' } }).then((pages) => pages[0] || null), null),
-    settle(fetchApi('partners', { params: { 'page[size]': 2000 } }), []),
-    settle(fetchApi('donors', { locale: language, params: { 'page[size]': 2000 } }), [])
+    settle(fetchApi('pages', { locale: language, cache: CONTENT_MAX_AGE, params: { 'filter[slug]': 'about', include: 'sections' } }).then((pages) => pages[0] || null), null),
+    settle(fetchApi('partners', { cache: CONTENT_MAX_AGE, params: { 'page[size]': 2000 } }), []),
+    settle(fetchApi('donors', { locale: language, cache: CONTENT_MAX_AGE, params: { 'page[size]': 2000 } }), [])
   ]);
 
   return { about, partners, donors };
