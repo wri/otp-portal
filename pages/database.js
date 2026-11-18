@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -33,11 +32,12 @@ import {
 } from 'modules/documents-database';
 
 const DocumentsDatabasePage = (props) => {
+  const router = useRouter();
   const intl = useIntl();
   const dispatch = useDispatch();
   const database = useSelector((state) => state.database);
   const parsedFilters = useSelector(getParsedFilters);
-  const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
+  const [tab, setTab] = useState(router.query.subtab || 'documentation-list');
   const { page } = database;
   const previousPage = usePrevious(page);
 
@@ -52,8 +52,8 @@ const DocumentsDatabasePage = (props) => {
   }, [parsedFilters.data, page]);
 
   useEffect(() => {
-    dispatch(getDocumentsDatabaseUrl(props.router));
-  }, [props.router.asPath]);
+    dispatch(getDocumentsDatabaseUrl(router));
+  }, [router.asPath]);
 
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
@@ -96,13 +96,10 @@ const DocumentsDatabasePage = (props) => {
   );
 };
 
-DocumentsDatabasePage.propTypes = {
-  router: PropTypes.object.isRequired,
-};
 
 DocumentsDatabasePage.getInitialProps = async ({ store, query }) => {
   store.dispatch(getDocumentsDatabaseUrl({ query }));
   return {};
 }
 
-export default withRouter(DocumentsDatabasePage);
+export default DocumentsDatabasePage;

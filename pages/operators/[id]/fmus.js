@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +15,8 @@ import { getParsedObservations } from 'selectors/operators-detail/observations';
 
 import { getOperatorBySlug } from 'modules/operators-detail';
 
-const OperatorsDetailFMUsPage = ({ router }) => {
+const OperatorsDetailFMUsPage = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const operatorsDetail = useSelector((state) => state.operatorsDetail);
   const operatorObservations = useSelector(getParsedObservations);
@@ -56,8 +56,5 @@ const OperatorsDetailFMUsPage = ({ router }) => {
 
 OperatorsDetailFMUsPage.getInitialProps = getInitialProps;
 
-OperatorsDetailFMUsPage.propTypes = {
-  router: PropTypes.object.isRequired
-};
 
-export default withRouter(OperatorsDetailFMUsPage);
+export default OperatorsDetailFMUsPage;

@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Redux
 import { useSelector } from 'react-redux';
@@ -21,7 +20,8 @@ import HelpLegislationAndRegulations from 'components/help/legislation-and-regul
 import HelpFaqs from 'components/help/faqs';
 import HelpTutorials from 'components/help/tutorials';
 
-const HelpPage = ({ router }) => {
+const HelpPage = () => {
+  const router = useRouter();
   const intl = useIntl();
   const { howtos, tools, faqs, tutorials } = useSelector((state) => state.help);
   const tab = router.query.tab || 'overview';
@@ -107,8 +107,5 @@ HelpPage.getInitialProps = async ({ query, asPath, store }) => {
   return {};
 };
 
-HelpPage.propTypes = {
-  router: PropTypes.object.isRequired
-};
 
-export default withRouter(HelpPage);
+export default HelpPage;

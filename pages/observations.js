@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { sortBy } from 'utils/general';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { useIntl } from 'react-intl';
 
@@ -57,6 +57,7 @@ const ZoomControl = dynamic(() => import('components/map/controls/zoom-control')
 const LayerManager = dynamic(() => import('components/map/layer-manager'), { ssr: false });
 
 const ObservationsPage = (props) => {
+  const router = useRouter();
   const intl = useIntl();
   const dispatch = useDispatch();
   const observations = useSelector((state) => state.observations);
@@ -83,8 +84,8 @@ const ObservationsPage = (props) => {
   }, [parsedFilters.data]);
 
   useEffect(() => {
-    dispatch(getObservationsUrl(props.router));
-  }, [props.router.asPath]);
+    dispatch(getObservationsUrl(router));
+  }, [router.asPath]);
 
   useDeepCompareEffect(() => {
     const obsLayer = observationsLayers.find((l) => l.id === 'observations');
@@ -414,8 +415,7 @@ const ObservationsPage = (props) => {
 };
 
 ObservationsPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired
 };
 
 ObservationsPage.getInitialProps = async ({ store, query }) => {
@@ -423,4 +423,4 @@ ObservationsPage.getInitialProps = async ({ store, query }) => {
   return {};
 }
 
-export default withRouter(ObservationsPage);
+export default ObservationsPage;

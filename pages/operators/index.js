@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'utils/general';
 import { useIntl } from 'react-intl';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -36,7 +36,8 @@ import OperatorsTable from 'components/operators/table';
 
 import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
 
-function OperatorsPage({ router, language }) {
+function OperatorsPage({ language }) {
+  const router = useRouter();
   const intl = useIntl();
   const dispatch = useDispatch();
   const isMobile = useSelector((state) => state.user.userAgent.isMobile);
@@ -207,8 +208,7 @@ OperatorsPage.getInitialProps = async ({ store }) => {
 };
 
 OperatorsPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired
 };
 
-export default withRouter(OperatorsPage);
+export default OperatorsPage;
