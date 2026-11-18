@@ -32,6 +32,7 @@ function NavigationList({ footer = false, className }) {
     footer && LanguageDropdown,
     process.env.FEATURE_COUNTRY_PAGES === 'true' && {
       name: intl.formatMessage({ id: 'countries' }),
+      testId: 'countries',
       children: navCountries.map((country) => ({
         name: country.name,
         href: `/countries/${country.id}`
@@ -39,6 +40,7 @@ function NavigationList({ footer = false, className }) {
     },
     {
       name: intl.formatMessage({ id: 'operators' }),
+      testId: 'producers',
       children: [
         {
           href: '/operators',
@@ -76,6 +78,8 @@ function NavigationList({ footer = false, className }) {
       })}
     >
       {elements.map((element, idx) => {
+        // e.g. nav-database, nav-countries-7, footer-nav-producers
+        const testId = (key) => `${footer ? 'footer-' : ''}nav-${key.replace(/^\//, '').replace(/\//g, '-')}`;
         if (typeof element === 'function') {
           const Element = element;
 
@@ -96,6 +100,7 @@ function NavigationList({ footer = false, className }) {
                       'header-nav-list-item',
                       setActive(element.children.map(el => el.href))
                     )}
+                    data-test-id={testId(element.testId)}
                   >
                     <span>
                       {element.name}
@@ -107,7 +112,7 @@ function NavigationList({ footer = false, className }) {
                   <ul className="header-dropdown-list">
                     {element.children.map((item) => (
                       <li key={item.href} className="header-dropdown-list-item">
-                        <Link href={item.href} prefetch={false}>
+                        <Link href={item.href} prefetch={false} data-test-id={testId(item.href)}>
 
                           {item.name}
 
@@ -125,7 +130,8 @@ function NavigationList({ footer = false, className }) {
             <Link
               href={element.href}
               prefetch={false}
-              className={setActive([element.href])}>
+              className={setActive([element.href])}
+              data-test-id={testId(element.href)}>
 
               {element.name}
 

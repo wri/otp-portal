@@ -65,13 +65,13 @@ describe('Home Page', () => {
     });
 
     it('lists matching FMUs on their own tab and opens the FMU on its operator page', function () {
-      cy.get('.c-header [data-test-id=search-trigger]').click();
+      cy.get('[data-test-id=search-trigger]').click();
       cy.get('[data-test-id=search-modal-input]').type('nkola');
-      cy.get('.search-modal-tabs').contains('FMUs').click();
+      cy.get('[data-test-id=search-modal-tab-fmu]').click();
       cy.get('[data-test-id=search-modal-results]').contains('Nkola').click();
       cy.location('pathname', {timeout: 25000}).should('eq', '/operators/afriwood-industries/fmus');
       cy.location('search').should('include', 'fmuId=');
-      cy.get('.fmu-select-value', {timeout: 25000}).should('have.text', 'Nkola');
+      cy.get('[data-test-id=fmu-select-value]', {timeout: 25000}).should('have.text', 'Nkola');
     });
   });
 });

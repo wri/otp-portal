@@ -27,12 +27,12 @@ describe('Transparency ranking page', function () {
   })
 
   it('collapses and expands the sidebar', function () {
-    cy.get('.c-sidebar').should('have.class', '-open');
-    cy.get('.sidebar--button').click();
-    cy.get('.c-sidebar').should('not.have.class', '-open');
-    cy.get('.sidebar--button').click();
-    cy.get('.c-sidebar').should('have.class', '-open');
-    cy.get('.c-ranking table tbody').find('tr').should('have.length.at.least', 1);
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'true');
+    cy.get('[data-test-id=sidebar-toggle]').click();
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'false');
+    cy.get('[data-test-id=sidebar-toggle]').click();
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'true');
+    cy.get('[data-test-id=ranking-table] tbody tr').should('have.length.at.least', 1);
   })
 
   it('keeps the map position in the url', function () {

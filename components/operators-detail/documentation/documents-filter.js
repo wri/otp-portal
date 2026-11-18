@@ -29,7 +29,7 @@ function DocumentsFilter({
   const selectedFmu = FMU && fmus && fmus.find(f => f.id === FMU.id);
 
   return (
-    <div className="c-doc-filters">
+    <div className="c-doc-filters" data-test-id="documents-filter">
       <h3>{intl.formatMessage({ id: 'filter.title' })}</h3>
       <div className="filter-options">
         {fmus.length > 0 && showFMU && (
@@ -39,12 +39,13 @@ function DocumentsFilter({
               <button
                 className="dropdown-placeholder"
                 onClick={() => setDropdownOpen(!isDropdownOpen)}
+                data-test-id="documents-filter-fmu"
               >
                 {selectedFmu ? selectedFmu.name : intl.formatMessage({ id: 'filter.fmu_id.placeholder' })}
               </button>
 
               {isDropdownOpen && (
-                <div className="dropdown-content">
+                <div className="dropdown-content" data-test-id="documents-filter-fmu-options">
                   {[null, ...fmus].map((_fmu) => (
                     <option
                       key={_fmu ? _fmu.id : 'no-fmu'}
@@ -63,7 +64,7 @@ function DocumentsFilter({
         )}
 
         {showDate && (
-          <span className="filter-option">
+          <span className="filter-option" data-test-id="documents-filter-date">
             <label htmlFor="business">{intl.formatMessage({ id: 'date' })}</label>
 
             <Datepicker

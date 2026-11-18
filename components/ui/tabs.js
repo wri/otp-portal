@@ -34,7 +34,8 @@ export default function Tabs({ options, selected, href }) {
                   href={linkHref}
                   as={linkAs}
                   prefetch={false}
-                  className={`tabs-btn ${btnClasses}`}>
+                  className={`tabs-btn ${btnClasses}`}
+                  data-test-id={`tab-${option.value}`}>
 
                   <span className="title">{option.label}</span>
                   {(!!option.number || option.number === 0) && <span className="number">{option.number}</span>}

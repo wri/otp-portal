@@ -279,7 +279,7 @@ class OperatorsDetailFMUs extends React.Component {
                   ))}
                 </select>
 
-                <div className="fmu-select-value">{fmu.name || selectFmuPlaceholder}</div>
+                <div className="fmu-select-value" data-test-id="fmu-select-value">{fmu.name || selectFmuPlaceholder}</div>
               </div>
 
               {!!certifications.length && (

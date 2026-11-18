@@ -32,10 +32,10 @@ describe('Document database page', function () {
     it('adds and removes a column', function () {
       cy.get('.rt-thead').contains('Reason').should('not.exist');
 
-      cy.get('.c-db-table').contains('label', 'Reason').click();
+      cy.get('[data-test-id=database-table]').contains('label', 'Reason').click();
       cy.get('.rt-thead').contains('Reason');
 
-      cy.get('.c-db-table').contains('label', 'Reason').click();
+      cy.get('[data-test-id=database-table]').contains('label', 'Reason').click();
       cy.get('.rt-thead').contains('Reason').should('not.exist');
     })
   })

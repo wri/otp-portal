@@ -53,8 +53,8 @@ describe('Observations page', function () {
       cy.selectOption('#react-select-operator-input', 'AFRIWOOD', 'AFRIWOOD INDUSTRIES')
       cy.location('search').should('include', 'filters=');
 
-      cy.get('.c-header').contains('Producers').click();
-      cy.get('.c-header a[href="/database"]').first().click();
+      cy.get('[data-test-id=nav-producers]').click();
+      cy.get('[data-test-id=nav-database]').click();
       cy.location('pathname').should('eq', '/database');
       cy.go('back');
 

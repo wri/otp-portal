@@ -26,6 +26,8 @@ export default function Sidebar(props) {
         <button
           className="sidebar--button"
           onClick={() => onToggle(!open)}
+          aria-expanded={open}
+          data-test-id="sidebar-toggle"
         >
           {!open &&
             <span className="sidebar--button-name">

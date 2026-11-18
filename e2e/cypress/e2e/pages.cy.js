@@ -75,13 +75,13 @@ describe('Pages', () => {
     context('when moving through the tab links', () => {
       it('shows each tab', function () {
         cy.visit('/help/overview');
-        cy.get('.c-tabs a[href*="how-otp-works"]').first().click();
+        cy.get('[data-test-id=tab-how-otp-works]').click();
         cy.contains('What are severity parameters and why are they important? ');
-        cy.get('.c-tabs a[href*="legislation-and-regulations"]').first().click();
+        cy.get('[data-test-id=tab-legislation-and-regulations]').click();
         cy.contains('The Risk Tool, hosted by WRI, provides an overview of relevant legislations and regulations');
-        cy.get('.c-tabs a[href*="faqs"]').first().click();
+        cy.get('[data-test-id=tab-faqs]').click();
         cy.contains('About the OTP and the data on the site');
-        cy.get('.c-tabs a[href*="tutorials"]').first().click();
+        cy.get('[data-test-id=tab-tutorials]').click();
         cy.contains('Introductory video to the OTP');
       })
     })
@@ -152,7 +152,7 @@ describe('Pages', () => {
 
     it('opens the date picker on the operator documentation in French', function () {
       cy.visit('/fr/operators/afriwood-industries/documentation');
-      cy.get('.c-doc-filters .filters-date button').first().click();
+      cy.get('[data-test-id=documents-filter-date] button').click();
       cy.get('.react-datepicker').should('be.visible');
     })
   })
@@ -161,12 +161,12 @@ describe('Pages', () => {
     it('moves between pages and back and forward', function () {
       cy.interceptMapRequests();
       cy.visit('/');
-      cy.get('.c-header a[href="/observations"]').first().click();
+      cy.get('[data-test-id=nav-observations]').click();
       cy.location('pathname').should('eq', '/observations');
       cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
 
-      cy.get('.c-header').contains('Producers').click();
-      cy.get('.c-header a[href="/database"]').first().click();
+      cy.get('[data-test-id=nav-producers]').click();
+      cy.get('[data-test-id=nav-database]').click();
       cy.location('pathname').should('eq', '/database');
       cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
 

@@ -56,7 +56,7 @@ const OperatorsTable = () => {
   if (!operators.loading) {
     return (
       <div className="c-ranking">
-        <table>
+        <table data-test-id="ranking-table">
           <thead>
             <tr>
               <th
