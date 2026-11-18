@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -33,32 +32,32 @@ import {
 } from 'modules/documents-database';
 
 const DocumentsDatabasePage = (props) => {
+  const router = useRouter();
   const intl = useIntl();
-  const [tab, setTab] = useState(props.router.query.subtab || 'documentation-list');
-  const { page } = props.database;
+  const dispatch = useDispatch();
+  const database = useSelector((state) => state.database);
+  const parsedFilters = useSelector(getParsedFilters);
+  const [tab, setTab] = useState(router.query.subtab || 'documentation-list');
+  const { page } = database;
   const previousPage = usePrevious(page);
 
   useEffect(() => {
-    const { database } = props;
-
     if (isEmpty(database.filters.options)) {
-      props.getFilters();
+      dispatch(getFilters());
     }
   }, []);
 
   useDeepCompareEffect(() => {
-    props.getDocumentsDatabase({ reload: page === previousPage }); // reloading if changing filters, page is the same
-  }, [props.parsedFilters.data, page]);
+    dispatch(getDocumentsDatabase({ reload: page === previousPage })); // reloading if changing filters, page is the same
+  }, [parsedFilters.data, page]);
 
   useEffect(() => {
-    props.getDocumentsDatabaseUrl(props.router);
-  }, [props.router.asPath]);
+    dispatch(getDocumentsDatabaseUrl(router));
+  }, [router.asPath]);
 
   const triggerChangeTab = (tabValue) => {
     setTab(tabValue);
   };
-
-  const { parsedFilters } = props;
 
   return (
     <Layout
@@ -74,8 +73,8 @@ const DocumentsDatabasePage = (props) => {
       <Filters
         options={parsedFilters.options}
         filters={parsedFilters.data}
-        setFilters={props.setFilters}
-        loading={props.database.filters.loading}
+        setFilters={(filter) => dispatch(setFilters(filter))}
+        loading={database.filters.loading}
         filtersRefs={FILTERS_REFS}
       />
 
@@ -97,33 +96,10 @@ const DocumentsDatabasePage = (props) => {
   );
 };
 
-DocumentsDatabasePage.propTypes = {
-  router: PropTypes.object.isRequired,
-  database: PropTypes.object,
-  parsedFilters: PropTypes.object,
-
-  getFilters: PropTypes.func.isRequired,
-  getDocumentsDatabase: PropTypes.func.isRequired,
-  getDocumentsDatabaseUrl: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
-};
 
 DocumentsDatabasePage.getInitialProps = async ({ store, query }) => {
   store.dispatch(getDocumentsDatabaseUrl({ query }));
   return {};
 }
 
-export default withRouter(
-  connect(
-    (state) => ({
-      database: state.database,
-      parsedFilters: getParsedFilters(state),
-    }),
-    {
-      getDocumentsDatabase,
-      getFilters,
-      getDocumentsDatabaseUrl,
-      setFilters
-    }
-  )(DocumentsDatabasePage)
-);
+export default DocumentsDatabasePage;

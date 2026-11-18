@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { sortBy } from 'utils/general';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Next
 import Link from 'next/link';
@@ -20,7 +19,11 @@ import DynamicLoading from 'components/ui/dynamic-loading';
 
 const TableExpandedRow = dynamic(() => import('./table-expanded-row'), { ssr: false, loading: DynamicLoading });
 
-const OperatorsTable = ({ operators, operatorsTable, isLoading, filters }) => {
+const OperatorsTable = () => {
+  const operators = useSelector((state) => state.operatorsRanking.data);
+  const isLoading = useSelector((state) => state.operatorsRanking.loading);
+  const operatorsTable = useSelector(getTable);
+  const filters = useSelector((state) => state.operatorsRanking.filters.data);
   const intl = useIntl();
   const [sortColumn, setSortColumn] = useState('documentation');
   const [sortDirection, setSortDirection] = useState(-1);
@@ -182,16 +185,4 @@ const OperatorsTable = ({ operators, operatorsTable, isLoading, filters }) => {
   return <Spinner isLoading />;
 };
 
-OperatorsTable.propTypes = {
-  operators: PropTypes.array.isRequired,
-  operatorsTable: PropTypes.array.isRequired,
-  filters: PropTypes.object.isRequired,
-  fmuSearch: PropTypes.string
-};
-
-export default connect((state) => ({
-  operators: state.operatorsRanking.data,
-  isLoading: state.operatorsRanking.loading,
-  operatorsTable: getTable(state),
-  filters: state.operatorsRanking.filters.data,
-}))(OperatorsTable);
+export default OperatorsTable;

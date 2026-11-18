@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
 import Datepicker from 'components/ui/datepicker';
@@ -14,14 +14,14 @@ import {
 } from 'selectors/operators-detail/documentation';
 
 function DocumentsHeaderFilter({
-  date,
-  fmus,
-  FMU,
   searchText,
   onSearchTextChange,
   onFmuChange,
   onDateChange
 }) {
+  const date = useSelector(getOperatorDocumentationDate);
+  const FMU = useSelector(getOperatorDocumentationFMU);
+  const fmus = useSelector(getHistoricFMUs);
   const intl = useIntl();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const minDate = process.env.DOCUMENTS_MINDATE;
@@ -109,19 +109,10 @@ function DocumentsHeaderFilter({
 }
 
 DocumentsHeaderFilter.propTypes = {
-  date: PropTypes.string,
-  FMU: PropTypes.object,
-  fmus: PropTypes.array,
   searchText: PropTypes.string,
   onSearchTextChange: PropTypes.func,
   onFmuChange: PropTypes.func,
   onDateChange: PropTypes.func
 };
 
-export default connect(
-  (state) => ({
-    date: getOperatorDocumentationDate(state),
-    FMU: getOperatorDocumentationFMU(state),
-    fmus: getHistoricFMUs(state),
-  })
-)(DocumentsHeaderFilter);
+export default DocumentsHeaderFilter;

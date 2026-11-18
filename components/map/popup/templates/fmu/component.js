@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getOperatorSlug } from 'selectors/operators';
 
@@ -84,14 +84,28 @@ class FMUTemplatePopup extends PureComponent {
   }
 }
 
-export default connect((state, { layers }) => {
+const IntlFMUTemplatePopup = injectIntl(FMUTemplatePopup);
+
+// the class gets the same props connect used to compute from the hovered fmus layer
+const FMUPopup = ({ layers, ...rest }) => {
   const { interactionConfig, data } = layers.find(l => l.id === 'fmus');
   const fmuData = data.data;
+  // tile properties only carry the numeric operator id
+  const operatorId = useSelector((state) => fmuData.operator_id && getOperatorSlug(state, fmuData.operator_id));
 
-  return {
-    fmuData,
-    output: interactionConfig.output,
-    // tile properties only carry the numeric operator id
-    operatorId: fmuData.operator_id && getOperatorSlug(state, fmuData.operator_id)
-  };
-})(injectIntl(FMUTemplatePopup));
+  return (
+    <IntlFMUTemplatePopup
+      {...rest}
+      layers={layers}
+      fmuData={fmuData}
+      output={interactionConfig.output}
+      operatorId={operatorId}
+    />
+  );
+};
+
+FMUPopup.propTypes = {
+  layers: PropTypes.array.isRequired
+};
+
+export default FMUPopup;

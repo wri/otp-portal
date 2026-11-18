@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -9,7 +8,7 @@ import { useIntl } from 'react-intl';
 import { getParsedDocumentation } from 'selectors/countries-detail/documentation';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCountry, getCountryLinks, getCountryVPAs } from 'modules/countries-detail';
 
 // Components
@@ -34,8 +33,12 @@ const TABS_COUNTRIES_DETAIL = [
   }
 ];
 
-function CountriesDetail({ router, countriesDetail, countryDocumentation, getCountry }) {
+function CountriesDetail() {
+  const router = useRouter();
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const countriesDetail = useSelector((state) => state.countriesDetail);
+  const countryDocumentation = useSelector(getParsedDocumentation);
   const id = router.query.id;
   const tab = router.query.tab || 'overview';
   const user = useUser();
@@ -43,9 +46,9 @@ function CountriesDetail({ router, countriesDetail, countryDocumentation, getCou
 
   useEffect(() => {
     if (id) {
-      getCountry(id);
+      dispatch(getCountry(id));
     }
-  }, [id, getCountry]);
+  }, [id, dispatch]);
 
   const getTabOptions = () => {
     return TABS_COUNTRIES_DETAIL.map((tab) => {
@@ -116,17 +119,5 @@ CountriesDetail.getInitialProps = async ({ query, asPath, store }) => {
   return {};
 };
 
-CountriesDetail.propTypes = {
-  router: PropTypes.object.isRequired,
-  countriesDetail: PropTypes.shape({}).isRequired,
-  countryDocumentation: PropTypes.shape({}).isRequired,
-  getCountry: PropTypes.func.isRequired
-};
 
-export default withRouter(connect(
-  state => ({
-    countriesDetail: state.countriesDetail,
-    countryDocumentation: getParsedDocumentation(state)
-  }),
-  { getCountry }
-)(CountriesDetail));
+export default CountriesDetail;

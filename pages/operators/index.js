@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'utils/general';
-import { injectIntl } from 'react-intl';
-import { withRouter } from 'next/router';
-import { connect } from 'react-redux';
+import { useIntl } from 'react-intl';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   getOperatorsRanking,
@@ -19,8 +19,6 @@ import {
 import { getActiveLayers, getActiveInteractiveLayers, getActiveInteractiveLayersIds, getLegendLayers, getPopup, getTable, getActiveCountries } from 'selectors/operators-ranking';
 
 import modal from 'services/modal';
-
-import { withDeviceInfo } from 'hooks/use-device-info';
 
 import Layout from 'components/layout/layout';
 import Sidebar from 'components/ui/sidebar';
@@ -38,27 +36,25 @@ import OperatorsTable from 'components/operators/table';
 
 import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
 
-function OperatorsPage({
-  router,
-  intl,
-  language,
-  isMobile,
-  operatorsRanking,
-  activeLayers,
-  activeInteractiveLayers,
-  activeInteractiveLayersIds,
-  legendLayers,
-  popup,
-  map,
-  sidebar,
-  activeCountries,
-  setOperatorsMapLocation,
-  setOperatorsMapInteractions,
-  setOperatorsMapLayersSettings,
-  setOperatorsSidebar,
-  getOperatorsRanking,
-  getIntegratedAlertsMetadata
-}) {
+function OperatorsPage({ language }) {
+  const router = useRouter();
+  const intl = useIntl();
+  const dispatch = useDispatch();
+  const isMobile = useSelector((state) => state.user.userAgent.isMobile);
+  const operatorsRanking = useSelector((state) => state.operatorsRanking);
+  const { map, sidebar } = operatorsRanking;
+  const activeCountries = useSelector(getActiveCountries);
+  const activeLayers = useSelector(getActiveLayers);
+  const activeInteractiveLayers = useSelector(getActiveInteractiveLayers);
+  const activeInteractiveLayersIds = useSelector(getActiveInteractiveLayersIds);
+  const legendLayers = useSelector((state) => getLegendLayers(state, { intl }));
+  const popup = useSelector(getPopup);
+
+  // the location also goes into the URL, so a shared link opens the same view
+  const updateMapLocation = (mapLocation) => {
+    dispatch(setOperatorsMapLocation(mapLocation));
+    dispatch(setOperatorsUrl(mapLocation));
+  };
   const mapRef = useRef(null);
 
   const onCustomAttribute = (e) => {
@@ -70,14 +66,14 @@ function OperatorsPage({
 
   useEffect(() => {
     // Set location
-    setOperatorsMapLocation(getOperatorsUrl(router));
+    updateMapLocation(getOperatorsUrl(router));
     if (!operatorsRanking.layersSettings['integrated-alerts']) {
-      getIntegratedAlertsMetadata();
+      dispatch(getIntegratedAlertsMetadata());
     }
 
     // lazy load on mobile
     if (isMobile) {
-      getOperatorsRanking();
+      dispatch(getOperatorsRanking());
     }
 
     return () => {
@@ -106,9 +102,9 @@ function OperatorsPage({
     if (e.features && e.features.length && !element.classList?.contains('mapbox-prevent-click')) {
       const features = JSON.parse(JSON.stringify(e.features));
       const lngLat = JSON.parse(JSON.stringify(e.lngLat));
-      setOperatorsMapInteractions({ features, lngLat });
+      dispatch(setOperatorsMapInteractions({ features, lngLat }));
     } else {
-      setOperatorsMapInteractions({});
+      dispatch(setOperatorsMapInteractions({}));
     }
   };
 
@@ -122,7 +118,7 @@ function OperatorsPage({
   };
 
   const setMapLocation = debounce((mapLocation) => {
-    setOperatorsMapLocation(mapLocation);
+    updateMapLocation(mapLocation);
   }, 700);
 
   const { open } = sidebar;
@@ -139,7 +135,7 @@ function OperatorsPage({
           open={open}
           name={intl.formatMessage({ id: 'transparency_ranking' })}
           onToggle={(o) => {
-            setOperatorsSidebar({ open: o });
+            dispatch(setOperatorsSidebar({ open: o }));
           }}
         >
           <OperatorsFilters />
@@ -173,7 +169,7 @@ function OperatorsPage({
                   templateProps={{
                     layers: activeInteractiveLayers
                   }}
-                  onClose={() => setOperatorsMapInteractions({})}
+                  onClose={() => dispatch(setOperatorsMapInteractions({}))}
                 />
                 {/* LAYER MANAGER */}
                 <LayerManager
@@ -187,7 +183,7 @@ function OperatorsPage({
           <Legend
             layerGroups={legendLayers}
             expanded={false}
-            setLayerSettings={setOperatorsMapLayersSettings}
+            setLayerSettings={(payload) => dispatch(setOperatorsMapLayersSettings(payload))}
           />
         </div>
       </div>
@@ -212,46 +208,7 @@ OperatorsPage.getInitialProps = async ({ store }) => {
 };
 
 OperatorsPage.propTypes = {
-  router: PropTypes.object.isRequired,
-  deviceInfo: PropTypes.object,
+  language: PropTypes.string.isRequired
 };
 
-// needs injectIntl for selectors
-export default injectIntl(withRouter(withDeviceInfo(connect(
-  (state, props) => ({
-    isMobile: state.user.userAgent.isMobile,
-    operatorsRanking: state.operatorsRanking,
-    map: state.operatorsRanking.map,
-    sidebar: state.operatorsRanking.sidebar,
-    activeCountries: getActiveCountries(state, props),
-    activeLayers: getActiveLayers(state, props),
-    activeInteractiveLayers: getActiveInteractiveLayers(state, props),
-    activeInteractiveLayersIds: getActiveInteractiveLayersIds(state, props),
-    legendLayers: getLegendLayers(state, props),
-    popup: getPopup(state, props)
-  }),
-  dispatch => ({
-    getOperatorsRanking() {
-      dispatch(getOperatorsRanking());
-    },
-    getIntegratedAlertsMetadata() {
-      dispatch(getIntegratedAlertsMetadata());
-    },
-    setOperatorsMapLocation(mapLocation) {
-      dispatch(setOperatorsMapLocation(mapLocation));
-      dispatch(setOperatorsUrl(mapLocation));
-    },
-    setOperatorsMapInteractions(obj) {
-      dispatch(setOperatorsMapInteractions(obj));
-    },
-    setOperatorsMapLayersActive(obj) {
-      dispatch(setOperatorsMapLayersActive(obj));
-    },
-    setOperatorsMapLayersSettings(obj) {
-      dispatch(setOperatorsMapLayersSettings(obj));
-    },
-    setOperatorsSidebar(obj) {
-      dispatch(setOperatorsSidebar(obj));
-    }
-  })
-)(OperatorsPage))));
+export default OperatorsPage;

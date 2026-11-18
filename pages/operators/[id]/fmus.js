@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Components
 import Layout, { getInitialProps } from 'components/operators-detail/layout';
@@ -16,12 +15,11 @@ import { getParsedObservations } from 'selectors/operators-detail/observations';
 
 import { getOperatorBySlug } from 'modules/operators-detail';
 
-const OperatorsDetailFMUsPage = ({
-  operatorsDetail,
-  operatorObservations,
-  getOperatorBySlug,
-  router
-}) => {
+const OperatorsDetailFMUsPage = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const operatorsDetail = useSelector((state) => state.operatorsDetail);
+  const operatorObservations = useSelector(getParsedObservations);
   // Client routing between two operators' fmus pages keeps this page mounted, and
   // getInitialProps loads the new operator without fmus - so re-run on change.
   // Use the store's slug: it updates before router.query, which would still name
@@ -29,7 +27,7 @@ const OperatorsDetailFMUsPage = ({
   const { slug, loadedFMUS } = operatorsDetail.data;
   useEffect(() => {
     if (slug && !loadedFMUS) {
-      getOperatorBySlug({ slug, loadFmus: true });
+      dispatch(getOperatorBySlug({ slug, loadFmus: true }));
     }
   }, [slug, loadedFMUS]);
 
@@ -58,15 +56,5 @@ const OperatorsDetailFMUsPage = ({
 
 OperatorsDetailFMUsPage.getInitialProps = getInitialProps;
 
-OperatorsDetailFMUsPage.propTypes = {
-  operatorsDetail: PropTypes.object,
-  operatorObservations: PropTypes.array,
-  getOperatorBySlug: PropTypes.func.isRequired
-};
 
-export default withRouter(connect(
-  (state) => ({
-    operatorsDetail: state.operatorsDetail,
-    operatorObservations: getParsedObservations(state)
-  }), { getOperatorBySlug }
-)(OperatorsDetailFMUsPage));
+export default OperatorsDetailFMUsPage;

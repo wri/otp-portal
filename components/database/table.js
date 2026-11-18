@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 
 // Components
 import CheckboxGroup from 'components/form/CheckboxGroup';
@@ -9,20 +8,18 @@ import Spinner from 'components/ui/spinner';
 import Icon from 'components/ui/icon';
 
 // Redux and HOC
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // Intl
 import { useIntl } from 'react-intl';
 
 import { getParsedTableDocuments } from 'selectors/database/database';
-import { getDocumentsDatabase, setActiveColumns, setPage } from 'modules/documents-database';
+import { setActiveColumns, setPage } from 'modules/documents-database';
 
-function DatabaseTable({
-  database,
-  parsedTableDocuments,
-  setActiveColumns: _setActiveColumns,
-  setPage: _setPage
-}) {
+function DatabaseTable() {
   const intl = useIntl();
+  const dispatch = useDispatch();
+  const database = useSelector((state) => state.database);
+  const parsedTableDocuments = useSelector(getParsedTableDocuments);
   const inputs = [
     'country',
     'operator',
@@ -254,7 +251,7 @@ function DatabaseTable({
         <CheckboxGroup
           className="-inline"
           name="observations-columns"
-          onChange={(value) => _setActiveColumns(value)}
+          onChange={(value) => dispatch(setActiveColumns(value))}
           properties={{
             default: database.columns,
             name: 'observations-columns',
@@ -278,7 +275,7 @@ function DatabaseTable({
             pages: database.pageCount,
             loading: database.loading,
             onFetchData: ((state) => {
-              _setPage(state.page);
+              dispatch(setPage(state.page));
             }),
             previousText: '<',
             nextText: '>',
@@ -294,17 +291,4 @@ function DatabaseTable({
   );
 }
 
-DatabaseTable.propTypes = {
-  database: PropTypes.object,
-  parsedTableDocuments: PropTypes.array,
-  setActiveColumns: PropTypes.func,
-  setPage: PropTypes.func
-};
-
-export default connect(
-  (state) => ({
-    database: state.database,
-    parsedTableDocuments: getParsedTableDocuments(state),
-  }),
-  { setActiveColumns, setPage }
-)(DatabaseTable);
+export default DatabaseTable;

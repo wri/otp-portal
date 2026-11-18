@@ -2,14 +2,15 @@
  * Creating a page named _error.js lets you override HTTP error messages
  */
 import React from 'react';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
 
 import { loadSentry } from 'utils/sentry';
 
-const ErrorPage = ({ statusCode, router }) => {
+const ErrorPage = ({ statusCode }) => {
+  const router = useRouter();
   const css = (
     <Head>
       <style>{`
@@ -84,8 +85,7 @@ ErrorPage.getInitialProps = async (contextData) => {
 };
 
 ErrorPage.propTypes = {
-  statusCode: PropTypes.number.isRequired,
-  router: PropTypes.object.isRequired,
+  statusCode: PropTypes.number.isRequired
 };
 
-export default withRouter(ErrorPage);
+export default ErrorPage;

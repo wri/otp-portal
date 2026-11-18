@@ -157,6 +157,14 @@ const operatorsDetailSlice = createSlice({
 
 export const { setOperatorDocumentationDate, setOperatorDocumentationFMU } = operatorsDetailSlice.actions;
 
+// After a document change: the operator's completeness, its documents and the timeline all move
+export const reloadOperatorDocumentation = (id, { publicationAuthorization = false } = {}) => (dispatch) => {
+  dispatch(getOperator(id));
+  dispatch(getOperatorDocumentation(id));
+  dispatch(getOperatorTimeline(id));
+  if (publicationAuthorization) dispatch(getOperatorPublicationAuthorization(id));
+};
+
 registerReducer('operatorsDetail', operatorsDetailSlice.reducer);
 
 export default operatorsDetailSlice.reducer;

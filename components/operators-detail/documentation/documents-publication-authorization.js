@@ -3,20 +3,23 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'utils/general';
 
 // Redux
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 
-import { getOperator, getOperatorDocumentation, getOperatorPublicationAuthorization, getOperatorTimeline } from 'modules/operators-detail';
+import { getOperator, reloadOperatorDocumentation } from 'modules/operators-detail';
 
 // Components
 import DocCard from 'components/ui/doc-card';
 import DocCardUpload from 'components/ui/doc-card-upload';
 
-import { getContractSignatureDocumentation } from 'selectors/operators-detail/documentation';
 import useUser from 'hooks/use-user';
 
-function DocumentsPublicationAuthorization(props) {
-  const { doc, id } = props;
+const NO_DOC = {};
+
+function DocumentsPublicationAuthorization({ id }) {
+  const dispatch = useDispatch();
+  // no fallback inside the selector: a new {} each time would re-render on every dispatch
+  const doc = useSelector((state) => state.operatorsDetail.publicationAuthorization) || NO_DOC;
   const intl = useIntl();
   const user = useUser();
   const { status } = doc;
@@ -55,7 +58,7 @@ function DocumentsPublicationAuthorization(props) {
                   info: false,
                   annexes: false,
                 }}
-                onChange={() => props.getOperator(id)}
+                onChange={() => dispatch(getOperator(id))}
               />
 
               <DocCardUpload
@@ -71,12 +74,7 @@ function DocumentsPublicationAuthorization(props) {
                   delete: true,
                   not_required: false,
                 }}
-                onChange={() => {
-                  props.getOperator(id);
-                  props.getOperatorDocumentation(id);
-                  props.getOperatorTimeline(id);
-                  props.getOperatorPublicationAuthorization(id);
-                }}
+                onChange={() => dispatch(reloadOperatorDocumentation(id, { publicationAuthorization: true }))}
               />
             </div>
           </div>
@@ -88,17 +86,7 @@ function DocumentsPublicationAuthorization(props) {
 
 
 DocumentsPublicationAuthorization.propTypes = {
-  doc: PropTypes.shape({}),
   id: PropTypes.string,
-  getOperator: PropTypes.func,
-  getOperatorDocumentation: PropTypes.func,
-  getOperatorTimeline: PropTypes.func,
-  getOperatorPublicationAuthorization: PropTypes.func,
 };
 
-export default connect(
-  (state) => ({
-    doc: getContractSignatureDocumentation(state),
-  }),
-  { getOperator, getOperatorDocumentation, getOperatorTimeline, getOperatorPublicationAuthorization }
-)(DocumentsPublicationAuthorization);
+export default DocumentsPublicationAuthorization;

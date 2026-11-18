@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Spinner from 'components/ui/spinner';
 import Html from 'components/html';
-import { withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 // Intl
 import { useIntl } from 'react-intl';
@@ -10,7 +10,8 @@ import { useIntl } from 'react-intl';
 // Hooks
 import useMoveTo from 'hooks/use-move-to';
 
-const HelpFaqs = ({ router, faqs }) => {
+const HelpFaqs = ({ faqs }) => {
+  const router = useRouter();
   const intl = useIntl();
   const triggerScrollTo = useMoveTo(router.query.article);
 
@@ -70,8 +71,7 @@ const HelpFaqs = ({ router, faqs }) => {
 };
 
 HelpFaqs.propTypes = {
-  router: PropTypes.object.isRequired,
   faqs: PropTypes.object
 };
 
-export default withRouter(HelpFaqs);
+export default HelpFaqs;
