@@ -1,6 +1,6 @@
 describe('Observations page', function () {
   beforeEach(function () {
-    cy.interceptMapRequests(); // keep if we won't test the map
+    cy.interceptMapRequests({ loadMap: true });
     cy.visit('/observations');
   })
 
@@ -40,6 +40,22 @@ describe('Observations page', function () {
 
       cy.contains('.tabs-btn', 'Observations List').click();
       cy.get('.rt-tbody').should('exist');
+    })
+
+    it('opens a cluster and shows the popup of one of its observations', function () {
+      cy.contains('.tabs-btn', 'Map View').click();
+
+      // the seed clusters are small enough to open in place instead of zooming in
+      cy.clickMapFeature({ source: 'observations', filter: (f) => f.properties.cluster })
+        .then(({ point_count: count }) => {
+          cy.getMap().should((map) => {
+            expect(map.queryRenderedFeatures({ layers: ['observations-leaves'] })).to.have.length(count);
+          });
+        });
+
+      cy.clickMapFeature({ layers: ['observations-leaves'] }).then(({ subcategory }) => {
+        cy.contains('.c-map-popup .layer-popup--title', subcategory);
+      });
     })
   });
 

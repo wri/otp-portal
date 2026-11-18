@@ -115,6 +115,40 @@ describe('Operator', function () {
       cy.get('.c-legend-analysis').contains('There was an error during the analysis');
     })
 
+    describe('fmus map', function () {
+      beforeEach(function () {
+        cy.interceptMapRequests({ loadMap: true });
+        cy.visit('/operators/afriwood-industries/fmus');
+      })
+
+      it('zooms to the fmu selected in the dropdown', function () {
+        const nkola = { source: 'fmusdetail', filter: (f) => f.properties.fmu_name === 'Nkola' };
+
+        // every fmu is in view before one is selected
+        cy.getMapFeatureBounds(nkola).then(([sw, ne]) => {
+          cy.getMap().then((map) => {
+            const zoom = map.getZoom();
+
+            cy.get('[data-test-id="fmu-select"]').select('Nkola');
+            cy.getMap().should(() => {
+              expect(map.isMoving()).to.be.false;
+              expect(map.getZoom()).to.be.greaterThan(zoom);
+              expect(map.getBounds().contains(sw) && map.getBounds().contains(ne), 'Nkola is in view').to.be.true;
+            });
+          });
+        });
+      })
+
+      it('selects the fmu clicked on the map', function () {
+        cy.clickMapFeature({ source: 'fmusdetail', filter: (f) => f.properties.fmu_name === 'Cayo' })
+          .then(({ id }) => {
+            cy.location('search').should('include', `fmuId=${id}`);
+            cy.get('[data-test-id="fmu-select"]').should('have.value', String(id));
+            cy.get('.fmu-select-value').should('have.text', 'Cayo');
+          });
+      })
+    });
+
     it('can see operator observations', function () {
       // seed observations have fixed dates, so they fall out of the default past-five-years view
       cy.visit('/operators/afriwood-industries/observations?display_all=true');

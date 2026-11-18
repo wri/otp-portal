@@ -1,6 +1,6 @@
 describe('Transparency ranking page', function () {
   beforeEach(function () {
-    cy.interceptMapRequests(); // keep if we won't test the map
+    cy.interceptMapRequests({ loadMap: true });
     // with the metadata mocked the alerts layer joins the legend, timestep and all
     cy.intercept('GET', '**/gfw-data-api/dataset/gfw_integrated_alerts/latest', {
       body: {
@@ -35,8 +35,41 @@ describe('Transparency ranking page', function () {
     cy.get('[data-test-id=ranking-table] tbody tr').should('have.length.at.least', 1);
   })
 
-  it('keeps the map position in the url', function () {
-    cy.location('search').should('include', 'latitude=').and('include', 'longitude=').and('include', 'zoom=');
+  describe('map', function () {
+    it('keeps the map position in the url', function () {
+      cy.location('search').should('include', 'latitude=').and('include', 'longitude=').and('include', 'zoom=4.00');
+
+      cy.get('[aria-label="Zoom in"]').click();
+      cy.location('search').should('include', 'zoom=5.00');
+
+      // dragging west moves the map east
+      cy.location('search').then((search) => {
+        const longitude = +new URLSearchParams(search).get('longitude');
+        cy.getMap();
+        cy.get('.mapboxgl-canvas')
+          .trigger('mousedown', 300, 300, { button: 0, buttons: 1 })
+          .trigger('mousemove', 250, 300, { button: 0, buttons: 1 })
+          .trigger('mousemove', 200, 300, { button: 0, buttons: 1 })
+          .trigger('mouseup', 200, 300, { button: 0 });
+        cy.location('search').should((s) => {
+          expect(+new URLSearchParams(s).get('longitude')).to.be.greaterThan(longitude);
+        });
+      });
+    })
+
+    it('opens the location from the url and the popup of a clicked fmu', function () {
+      cy.visit('/operators?latitude=-4.34&longitude=11.68&zoom=8');
+      cy.getMap().should((map) => {
+        expect(map.getZoom()).to.equal(8);
+        expect(map.getCenter().lng).to.be.closeTo(11.68, 0.01);
+      });
+
+      cy.clickMapFeature({ source: 'fmus', filter: (f) => f.properties.fmu_name === 'Nkola' });
+      cy.get('.c-map-popup').within(() => {
+        cy.contains('.layer-popup--title', 'Nkola');
+        cy.contains('a', 'AFRIWOOD INDUSTRIES').should('have.attr', 'href', '/operators/afriwood-industries/overview');
+      });
+    })
   })
 
   describe('map legend', function () {

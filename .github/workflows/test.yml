@@ -92,6 +92,7 @@ jobs:
           DOCUMENTS_MINDATE='2020-11-02'
           APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
+          MAPBOX_API_KEY=pk.e2e
           DISABLE_HOTJAR=true
           CRITICAL_CSS=true
           " > .env
@@ -165,6 +166,8 @@ jobs:
       - name: Install Portal Dependencies
         run: yarn install --frozen-lockfile
 
+      # MAPBOX_API_KEY is a dummy: mapbox-gl only needs a pk. token to request the style,
+      # and Cypress answers that request from a fixture.
       - name: Set Portal ENV Variables
         run: |
           echo "
@@ -177,6 +180,7 @@ jobs:
           DOCUMENTS_MINDATE='2020-11-02'
           APP_URL=http://localhost:4000
           OTP_API=http://localhost:3000
+          MAPBOX_API_KEY=pk.e2e
           DISABLE_HOTJAR=true
           CRITICAL_CSS=true
           " > .env
