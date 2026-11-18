@@ -5,15 +5,27 @@
 // searched, `source` and `filter(feature)` pick among the rendered features.
 
 const MAP_TIMEOUT = 20000;
+// Pages fit their data a moment after the map loads (the FMU tab ~100 ms later), so a map that is
+// merely not moving yet may be about to
+const SETTLE_MS = 750;
 
-// Yields the map once it is loaded, mounted and not moving
+function stillSince(map) {
+  if (!map.__e2eStillSince) {
+    map.__e2eStillSince = Date.now();
+    map.on('movestart', () => { map.__e2eStillSince = Infinity; });
+    map.on('moveend', () => { map.__e2eStillSince = Date.now(); });
+  }
+  return map.__e2eStillSince;
+}
+
+// Yields the map once it is loaded, mounted and has stopped moving for SETTLE_MS
 Cypress.Commands.add('getMap', () => cy
   .window()
   .its('__map', { timeout: MAP_TIMEOUT })
   .should((map) => {
     expect(map.getCanvas().isConnected, 'map is mounted').to.be.true;
     expect(map.isStyleLoaded(), 'map style is loaded').to.be.true;
-    expect(map.isMoving(), 'map is moving').to.be.false;
+    expect(!map.isMoving() && Date.now() - stillSince(map) >= SETTLE_MS, 'map has settled').to.be.true;
   }));
 
 const matches = ({ source, filter = () => true }, feature) =>
