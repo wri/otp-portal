@@ -26,6 +26,19 @@ describe('Transparency ranking page', function () {
     cy.get('.c-table-expanded-row table tbody').find('tr').should('have.length', 1);
   })
 
+  it('collapses and expands the sidebar', function () {
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'true');
+    cy.get('[data-test-id=sidebar-toggle]').click();
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'false');
+    cy.get('[data-test-id=sidebar-toggle]').click();
+    cy.get('[data-test-id=sidebar-toggle]').should('have.attr', 'aria-expanded', 'true');
+    cy.get('[data-test-id=ranking-table] tbody tr').should('have.length.at.least', 1);
+  })
+
+  it('keeps the map position in the url', function () {
+    cy.location('search').should('include', 'latitude=').and('include', 'longitude=').and('include', 'zoom=');
+  })
+
   describe('map legend', function () {
     beforeEach(function () {
       cy.wait('@alertsMetadata');

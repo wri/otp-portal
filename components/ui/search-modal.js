@@ -191,6 +191,7 @@ const SearchModal = () => {
               key={key}
               className={classnames('search-modal-tab', { '-active': tab === key })}
               onClick={() => selectTab(key)}
+              data-test-id={`search-modal-tab-${key}`}
             >
               {key === 'all' ? t('search.modal.tabs.all', 'All') : t(TYPES.find(ty => ty.key === key).tab, TYPES.find(ty => ty.key === key).tabDefault)}
               <span className="search-modal-tab-count">{tabCount(key)}</span>

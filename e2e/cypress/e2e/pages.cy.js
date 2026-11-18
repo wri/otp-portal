@@ -72,6 +72,20 @@ describe('Pages', () => {
       })
     })
 
+    context('when moving through the tab links', () => {
+      it('shows each tab', function () {
+        cy.visit('/help/overview');
+        cy.get('[data-test-id=tab-how-otp-works]').click();
+        cy.contains('What are severity parameters and why are they important? ');
+        cy.get('[data-test-id=tab-legislation-and-regulations]').click();
+        cy.contains('The Risk Tool, hosted by WRI, provides an overview of relevant legislations and regulations');
+        cy.get('[data-test-id=tab-faqs]').click();
+        cy.contains('About the OTP and the data on the site');
+        cy.get('[data-test-id=tab-tutorials]').click();
+        cy.contains('Introductory video to the OTP');
+      })
+    })
+
     context('when visiting faq', () => {
       it('displays content', function () {
         cy.visit('/help/faqs');
@@ -124,6 +138,44 @@ describe('Pages', () => {
       cy.get('.c-hamburger').click();
 
       cy.get('.c-mobile-menu').should('not.exist');
+    })
+  })
+
+  describe('French version', () => {
+    it('shows the observations page in French', function () {
+      cy.interceptMapRequests();
+      cy.visit('/fr/observations');
+      cy.get('html').should('have.attr', 'lang', 'fr');
+      cy.contains("Liste d'observations");
+      cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
+    })
+
+    it('opens the date picker on the operator documentation in French', function () {
+      cy.visit('/fr/operators/afriwood-industries/documentation');
+      cy.get('[data-test-id=documents-filter-date] button').click();
+      cy.get('.react-datepicker').should('be.visible');
+    })
+  })
+
+  describe('Navigating with the menu and the browser history', () => {
+    it('moves between pages and back and forward', function () {
+      cy.interceptMapRequests();
+      cy.visit('/');
+      cy.get('[data-test-id=nav-observations]').click();
+      cy.location('pathname').should('eq', '/observations');
+      cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
+
+      cy.get('[data-test-id=nav-producers]').click();
+      cy.get('[data-test-id=nav-database]').click();
+      cy.location('pathname').should('eq', '/database');
+      cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
+
+      cy.go('back');
+      cy.location('pathname').should('eq', '/observations');
+      cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
+
+      cy.go('forward');
+      cy.location('pathname').should('eq', '/database');
     })
   })
 

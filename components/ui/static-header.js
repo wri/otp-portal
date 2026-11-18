@@ -37,7 +37,7 @@ const StaticHeader = ({
               </div>
             )}
 
-            <h2>{title}</h2>
+            <h2 data-test-id="page-title">{title}</h2>
             <h3>{subtitle}</h3>
 
             {!!Component && (
@@ -48,7 +48,7 @@ const StaticHeader = ({
       ) : (
         <div className="wrapper">
           <div className="container">
-            <h2>{title}</h2>
+            <h2 data-test-id="page-title">{title}</h2>
             <h3>{subtitle}</h3>
 
             {!!Component && (

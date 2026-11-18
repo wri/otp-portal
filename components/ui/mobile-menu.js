@@ -65,7 +65,7 @@ function MobileMenu({ className }) {
       })}
     >
       <li>
-        <SearchTrigger />
+        <SearchTrigger testId="mobile-search-trigger" />
       </li>
       <li>
         {user.isLoggedIn && (

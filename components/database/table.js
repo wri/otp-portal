@@ -240,7 +240,7 @@ function DatabaseTable() {
   }));
 
   return (
-    <section className="c-section -relative c-db-table">
+    <section className="c-section -relative c-db-table" data-test-id="database-table">
       <div className="l-container">
         <h2 className="c-title">
           {intl.formatMessage({
