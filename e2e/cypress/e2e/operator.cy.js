@@ -9,6 +9,53 @@ describe('Operator', function () {
 
 
   context('when visiting as a guest', function () {
+    it('moves between the operator tabs through the tab links', function () {
+      cy.visit('/operators/afriwood-industries/overview');
+
+      cy.get('.c-tabs a[href$="/documentation"]').click();
+      cy.location('pathname').should('eq', '/operators/afriwood-industries/documentation');
+      cy.get('.c-doc-filters').should('exist');
+
+      cy.get('.c-tabs a[href$="/observations"]').click();
+      cy.location('pathname').should('eq', '/operators/afriwood-industries/observations');
+
+      cy.get('.c-tabs a[href$="/fmus"]').click();
+      cy.location('pathname').should('eq', '/operators/afriwood-industries/fmus');
+      cy.get('[data-test-id="fmu-select"]', {timeout: 25000}).should('exist');
+
+      cy.get('.c-tabs a[href$="/overview"]').click();
+      cy.location('pathname').should('eq', '/operators/afriwood-industries/overview');
+      cy.get('.c-static-header').should('contain.text', 'AFRIWOOD INDUSTRIES');
+    })
+
+    it('filters the documentation by fmu and by date', function () {
+      cy.visit('/operators/afriwood-industries/documentation');
+
+      cy.get('.c-doc-filters .dropdown-placeholder').first().click();
+      cy.get('.c-doc-filters .dropdown-content').contains('option', 'Nkola').click();
+      cy.location('search').should('include', 'fmuId=');
+      cy.get('.c-doc-filters .dropdown-placeholder').first().should('contain.text', 'Nkola');
+
+      cy.get('.c-doc-filters .filters-date button').first().click();
+      cy.get('.react-datepicker__navigation--previous').click();
+      cy.get('.react-datepicker__day--015:not(.react-datepicker__day--outside-month)').first().click();
+      cy.location('search').should('match', /date=\d{4}-\d{2}-15/);
+    })
+
+    it("loads another operator's fmus after opening it from the search", function () {
+      cy.visit('/operators/afriwood-industries/fmus');
+      cy.contains('[data-test-id="fmu-select"] option', 'Nkola');
+
+      cy.get('.c-header [data-test-id=search-trigger]').click();
+      cy.get('[data-test-id=search-modal-input]').type('cib');
+      cy.get('[data-test-id=search-modal-results]').contains('CIB').click();
+      cy.location('pathname', {timeout: 25000}).should('eq', '/operators/cib/overview');
+
+      cy.get('.c-tabs a[href$="/fmus"]').click();
+      cy.contains('[data-test-id="fmu-select"] option', 'Kabo', {timeout: 25000});
+      cy.contains('[data-test-id="fmu-select"] option', 'Nkola').should('not.exist');
+    })
+
     it('can see operator documentation grouped by FMUs', function () {
       cy.visit('/operators/afriwood-industries/documentation');
 

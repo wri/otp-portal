@@ -48,5 +48,19 @@ describe('Observations page', function () {
       cy.selectOption('#react-select-operator-input', 'AFRIWOOD', 'AFRIWOOD INDUSTRIES')
       cy.get('.rt-tbody').find('.rt-tr-group').should('have.length.greaterThan', 1);
     })
+
+    it('keeps the filter in the url when leaving the page and coming back', function () {
+      cy.selectOption('#react-select-operator-input', 'AFRIWOOD', 'AFRIWOOD INDUSTRIES')
+      cy.location('search').should('include', 'filters=');
+
+      cy.get('.c-header').contains('Producers').click();
+      cy.get('.c-header a[href="/database"]').first().click();
+      cy.location('pathname').should('eq', '/database');
+      cy.go('back');
+
+      cy.location('search').should('include', 'filters=');
+      cy.get('.react-select__multi-value').should('contain.text', 'AFRIWOOD INDUSTRIES');
+      cy.get('.rt-tbody').find('.rt-tr-group', {timeout: 10000}).should('have.length.greaterThan', 1);
+    })
   })
 });
