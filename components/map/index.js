@@ -219,6 +219,9 @@ class Map extends Component {
       this.fitBounds();
     }
 
+    // e2e tests locate features on the canvas through the map instance
+    if (window.Cypress) window.__map = this.map;
+
     onLoad && onLoad({
       map: this.map,
       mapContainer: this.mapContainer

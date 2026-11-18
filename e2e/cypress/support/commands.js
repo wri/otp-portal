@@ -1,13 +1,27 @@
 import 'cypress-file-upload';
 import '@frsource/cypress-plugin-visual-regression-diff';
 import './commands/operator';
+import './commands/map';
 
-Cypress.Commands.add('interceptMapRequests', () => {
+// External tiles are always blocked. With { loadMap: true } the map still loads: the Mapbox style
+// comes from a fixture and the FMU tiles come from the e2e API's seed data.
+Cypress.Commands.add('interceptMapRequests', ({ loadMap = false } = {}) => {
   cy.intercept({ hostname: 'earthengine.google.org' }, { statusCode: 404 });
-  cy.intercept({ hostname: 'localhost', port: 3000, url: '/fmus/tiles/*' }, { statusCode: 404 });
   cy.intercept({ hostname: 'storage.googleapis.com' }, { statusCode: 404 });
   cy.intercept({ hostname: 'a.gusc.cartocdn.com' }, { statusCode: 404 });
+  cy.intercept({ hostname: 'tiles.globalforestwatch.org' }, { statusCode: 404 });
+  cy.intercept({ hostname: 'events.mapbox.com' }, { statusCode: 204 });
   cy.intercept({ hostname: 'api.mapbox.com' }, { statusCode: 404 });
+
+  if (loadMap) {
+    cy.intercept({ hostname: 'api.mapbox.com', pathname: '/styles/v1/mapbox/light-v9' }, { fixture: 'map-style.json' });
+    // empty glyphs and basemap tiles parse as "nothing to draw"
+    cy.intercept({ hostname: 'api.mapbox.com', pathname: /^\/(fonts|e2e-tiles)\// }, { statusCode: 200, body: '' });
+    // wins over the 404 an earlier interceptMapRequests() in the same test set up
+    cy.intercept({ hostname: 'localhost', port: 3000, pathname: /^\/fmus\/tiles\// }, (req) => req.continue());
+  } else {
+    cy.intercept({ hostname: 'localhost', port: 3000, url: '/fmus/tiles/*' }, { statusCode: 404 });
+  }
 });
 
 Cypress.Commands.add('login', (username, password) => {

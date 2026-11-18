@@ -1,0 +1,15 @@
+{
+  "version": 8,
+  "name": "e2e",
+  "metadata": { "mapbox:groups": {} },
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "sources": {
+    "composite": {
+      "type": "vector",
+      "tiles": ["https://api.mapbox.com/e2e-tiles/{z}/{x}/{y}.pbf"]
+    }
+  },
+  "layers": [
+    { "id": "background", "type": "background", "paint": { "background-color": "#eeeeee" } }
+  ]
+}
