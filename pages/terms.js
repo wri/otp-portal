@@ -9,7 +9,7 @@ import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 import Html from 'components/html';
 
-import API from 'services/api';
+import { fetchPage } from 'services/content';
 
 const TermsPage = ({ page }) => {
   const intl = useIntl();
@@ -39,9 +39,7 @@ const TermsPage = ({ page }) => {
 }
 
 TermsPage.getInitialProps = async () => {
-  const page = await API
-    .get('pages', { 'filter[slug]': 'terms', locale: 'en' })
-    .then(({ data }) => data[0]);
+  const page = await fetchPage('terms', 'en');
 
   return { page };
 }

@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
-import DocumentationService from 'services/documentationService';
+import { saveDocument } from 'services/documents';
 
 // Components
 import Field from 'components/form/Field';
@@ -35,7 +35,6 @@ const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType
     value
   }), [startDate, endDate, link, value, units]);
 
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form) => {
     return {
@@ -62,7 +61,7 @@ const DocModal = ({ startDate, endDate, link, value, units, docId, type, docType
   };
 
   const handleSubmit = ({ form }) => {
-    return documentationService.saveDocument({
+    return saveDocument({
       url: `gov-documents/${docId}`,
       body: getBody(form)
     }).then(() => {

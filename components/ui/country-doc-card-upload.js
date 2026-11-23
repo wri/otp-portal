@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import toast from 'services/toast';
@@ -7,7 +7,7 @@ import toast from 'services/toast';
 import { useIntl } from 'react-intl';
 
 // Services
-import DocumentationService from 'services/documentationService';
+import { deleteDocument } from 'services/documents';
 import modal from 'services/modal';
 
 // Components
@@ -18,7 +18,6 @@ const CountryDocCardUpload = (props) => {
   const { status, docType, id, onChange } = props;
   const intl = useIntl();
 
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const triggerAddFile = (e) => {
     e && e.preventDefault();
@@ -48,7 +47,7 @@ const CountryDocCardUpload = (props) => {
       ),
       confirmText: intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' }),
       onConfirm: ({ onSuccess, onError } = {}) => {
-        documentationService.deleteDocument(id, 'gov-documents')
+        deleteDocument(id, 'gov-documents')
           .then(() => {
             modal.toggleModal(false);
             onSuccess && onSuccess();

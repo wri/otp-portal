@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
 
-import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import { fetchIntegratedAlertsMetadata } from 'services/gfw';
 
 import reducer, {
   getIntegratedAlertsMetadata,
@@ -12,7 +12,11 @@ import reducer, {
   setOperatorsDetailMapLayersActive
 } from '../operators-detail-fmus';
 
-vi.mock('services/layers', () => ({ fetchIntegratedAlertsMetadata: vi.fn() }));
+// only the metadata is stubbed; the analysis requests go through the fetch mock below
+vi.mock('services/gfw', async (importOriginal) => ({
+  ...(await importOriginal()),
+  fetchIntegratedAlertsMetadata: vi.fn()
+}));
 
 const createStore = () => configureStore({ reducer: { operatorsDetailFmus: reducer } });
 const analysisState = (store) => store.getState().operatorsDetailFmus.analysis;

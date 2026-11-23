@@ -7,7 +7,7 @@ import dropcss from 'dropcss';
 import * as Sentry from '@sentry/nextjs';
 
 import GoogleTagManager from 'components/layout/google-tag-manager';
-import { track, sendServerTiming } from 'services/server-timing';
+import { track, sendServerTiming } from 'services/server/server-timing';
 
 const isCriticalCssEnabled = process.env.NODE_ENV === 'production' && process.env.CRITICAL_CSS === 'true';
 

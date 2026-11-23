@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
-import DocumentationService from 'services/documentationService';
+import { saveDocument } from 'services/documents';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -44,7 +44,6 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
     source: null,
   }), [startDate, endDate, url, reason]);
 
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form, request) => {
     const { id: propertyId, type: typeDoc } = properties;
@@ -80,8 +79,7 @@ const DocModal = ({ startDate, endDate, url, reason, type, docId, requiredDocId,
   };
 
   const handleSubmit = ({ form }) => {
-    return documentationService
-      .saveDocument({
+    return saveDocument({
         url: `${TYPES[type]}/${docId}`,
         body: getBody(form, 'patch'),
       })

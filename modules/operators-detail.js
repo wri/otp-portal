@@ -1,123 +1,55 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { parseDocument } from 'utils/documents';
+import {
+  fetchOperatorBySlug,
+  fetchOperator,
+  fetchOperatorDocumentation,
+  fetchOperatorObservations,
+  fetchOperatorPublicationAuthorization,
+  fetchOperatorTimeline
+} from 'services/operators';
 import { getTodayDate } from 'utils/documentation';
-import { addApiCases, createApiInitialState, createApiThunk, createNestedApiInitialState } from 'utils/redux-helpers';
+import { addApiCases, createApiInitialState, createServiceThunk, createNestedApiInitialState } from 'utils/redux-helpers';
 import { registerReducer } from 'modules/registry';
 
-export const getOperatorBySlug = createApiThunk(
+// The slice keeps its own copy, so these always refetch (reloadOperatorDocumentation relies on it)
+const NO_CACHE = { cache: false };
+
+export const getOperatorBySlug = createServiceThunk(
   'operatorsDetail/getOperatorBySlug',
-  'operators',
-  {
-    auth: true,
-    params: ({ slug, loadFmus = false }) => ({
-      include: ['country', 'fmus', 'observations'].join(','),
-      'fields[countries]': 'name,id,iso',
-      'fields[observations]': 'id,hidden',
-      ...(loadFmus ? {} : { 'fields[fmus]': 'name,id' }),
-      'filter[slug]': slug
-    }),
-    transformResponse: (data, _response, { loadFmus = false }) => {
-      const operator = data[0];
-      if (!operator) throw new Error('Operator not found');
-      operator.loadedFMUS = loadFmus;
-      return { data: operator };
-    }
-  }
+  ({ slug, loadFmus = false }, { language }) => fetchOperatorBySlug(slug, { locale: language, loadFmus, ...NO_CACHE })
+    .then((data) => ({ data }))
 );
 
-export const getOperator = createApiThunk(
+export const getOperator = createServiceThunk(
   'operatorsDetail/getOperator',
-  (id) => `operators/${id}`,
-  {
-    auth: true,
-    params: {
-      include: ['country', 'fmus'].join(',')
-    }
-  }
+  (id, { language }) => fetchOperator(id, { locale: language }).then((data) => ({ data }))
 );
 
-export const getOperatorDocumentation = createApiThunk(
+export const getOperatorDocumentation = createServiceThunk(
   'operatorsDetail/getOperatorDocumentation',
-  'operator-document-histories',
-  {
-    auth: true,
-    params: (operatorId, { operatorsDetail }) => {
-      const date = operatorsDetail.date || getTodayDate();
-      const includeFields = [
-        'required-operator-document',
-        'required-operator-document.required-operator-document-group',
-        'operator-document-annexes',
-        'fmu',
-      ];
-
-      return {
-        include: includeFields.join(','),
-        'fields[fmus]': 'name',
-        'filter[operator-id]': operatorId,
-        'filter[date]': date,
-      }
-    },
-    transformResponse: (data, _response, operatorId) => {
-      return { data, operatorId };
-    }
-  }
-)
-
-export const getOperatorObservations = createApiThunk(
-  'operatorsDetail/getOperatorObservations',
-  'observations',
-  {
-    auth: true,
-    params: (operatorId) => {
-      const includes = [
-        'country', 'fmu', 'observers', 'severity', 'subcategory',
-        'subcategory.category', 'observation-report', 'observation-documents',
-        'relevant-operators', 'operator',
-      ];
-
-      return {
-        include: includes.join(','),
-        'fields[fmus]': 'name',
-        'filter[operator]': operatorId,
-        'filter[hidden]': 'all'
-      }
-    },
-    transformResponse: (data, _response, operatorId) => {
-      return { data, operatorId };
-    }
-  }
-)
-
-export const getOperatorPublicationAuthorization = createApiThunk(
-  'operatorsDetail/getOperatorPublicationAuthorization',
-  'operator-documents',
-  {
-    auth: true,
-    params: (id) => ({
-      include: [
-        'required-operator-document',
-        'required-operator-document.required-operator-document-group',
-      ].join(','),
-      'filter[operator-id]': id,
-      'filter[contract-signature]': true,
-    }),
-    transformResponse: (data) => {
-      const doc = data.find((doc) => doc['required-operator-document']['contract-signature']);
-      return { data: parseDocument(doc) };
-    }
-  }
+  (operatorId, { language, operatorsDetail }) => fetchOperatorDocumentation(
+    operatorId,
+    operatorsDetail.date || getTodayDate(),
+    { locale: language, ...NO_CACHE }
+  ).then((data) => ({ data, operatorId }))
 );
 
-export const getOperatorTimeline = createApiThunk(
+export const getOperatorObservations = createServiceThunk(
+  'operatorsDetail/getOperatorObservations',
+  (operatorId, { language }) => fetchOperatorObservations(operatorId, { locale: language, ...NO_CACHE })
+    .then((data) => ({ data, operatorId }))
+);
+
+export const getOperatorPublicationAuthorization = createServiceThunk(
+  'operatorsDetail/getOperatorPublicationAuthorization',
+  (id, { language }) => fetchOperatorPublicationAuthorization(id, { locale: language, ...NO_CACHE })
+    .then((data) => ({ data }))
+);
+
+export const getOperatorTimeline = createServiceThunk(
   'operatorsDetail/getOperatorTimeline',
-  'score-operator-documents',
-  {
-    auth: true,
-    params: (id) => ({
-      'filter[operator]': id
-    })
-  }
+  (id, { language }) => fetchOperatorTimeline(id, { locale: language, ...NO_CACHE }).then((data) => ({ data }))
 );
 
 const operatorsDetailSlice = createSlice({

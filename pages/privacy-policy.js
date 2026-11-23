@@ -10,7 +10,7 @@ import StaticHeader from 'components/ui/static-header';
 import Html from 'components/html';
 import CookiesTable from 'components/page/cookies-table';
 
-import API from 'services/api';
+import { fetchPage } from 'services/content';
 
 const PrivacyPolicyPage = ({ page, cookies }) => {
   const intl = useIntl();
@@ -44,9 +44,7 @@ const PrivacyPolicyPage = ({ page, cookies }) => {
 }
 
 PrivacyPolicyPage.getInitialProps = async () => {
-  const page = await API
-    .get('pages', { 'filter[slug]': 'privacy-policy', locale: 'en' })
-    .then(({ data }) => data[0]);
+  const page = await fetchPage('privacy-policy', 'en');
 
   let cookies = [];
   if (process.env.OSANO_ID) {

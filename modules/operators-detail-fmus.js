@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import dayjs from 'dayjs';
 
-import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import { createGeostore, fetchIntegratedAlertsAnalysis, fetchZonalAnalysis } from 'services/gfw';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'utils/integrated-alerts-layer';
 import { sumBy } from 'utils/general';
 import { registerReducer } from 'modules/registry';
 
@@ -21,18 +21,8 @@ export const setOperatorsDetailAnalysis = createAsyncThunk(
         return await fetchAnalysis(dispatch, getState, { id: analysisData[fmu.id].geostore }, fmu, type);
       }
 
-      const response = await fetch(`${process.env.RW_API}/geostore`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ geojson: fmu.geojson })
-      });
-
-      if (!response.ok) throw new Error(response.statusText);
-
-      const { data } = await response.json();
-      return await fetchAnalysis(dispatch, getState, data, fmu, type);
+      const geostore = await createGeostore(fmu.geojson);
+      return await fetchAnalysis(dispatch, getState, geostore, fmu, type);
     } catch (err) {
       return rejectWithValue({ type, error: err.message });
     }
@@ -43,48 +33,8 @@ export const getIntegratedAlertsMetadata = createAsyncThunk(
   'operatorsDetailFmus/getIntegratedAlertsMetadata',
   async (_, { getState, rejectWithValue }) => {
     try {
-      const [{ minDataDate, maxDataDate, version }, { getIntegratedAlertsSource }] = await Promise.all([
-        fetchIntegratedAlertsMetadata(),
-        // imported lazily so the layer definitions stay out of _app, which bundles every module
-        import('constants/layers')
-      ]);
-      const { operatorsDetailFmus } = getState();
-      const activeLayers = operatorsDetailFmus.layersActive;
-
-      if (!minDataDate || !maxDataDate) {
-        return {
-          type: 'no-metadata',
-          layersActive: activeLayers.filter(l => l !== 'integrated-alerts')
-        };
-      }
-
-      const startDate = dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD');
-
-      return {
-        type: 'success',
-        layersSettings: {
-          id: 'integrated-alerts',
-          settings: {
-            ...(version && { source: getIntegratedAlertsSource(version) }),
-            decodeParams: {
-              startDate,
-              endDate: maxDataDate,
-              trimEndDate: maxDataDate,
-              maxDate: maxDataDate
-            },
-            timelineParams: {
-              minDate: startDate,
-              maxDate: maxDataDate,
-              minDataDate
-            }
-          }
-        },
-        layersActive: [... new Set([
-          ...activeLayers.slice(0, activeLayers.indexOf('fmusdetail')),
-          'integrated-alerts',
-          ...activeLayers.slice(activeLayers.indexOf('fmusdetail'))
-        ])]
-      };
+      const settings = await fetchIntegratedAlertsSettings();
+      return withIntegratedAlerts(getState().operatorsDetailFmus, settings, 'fmusdetail');
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -214,21 +164,8 @@ const operatorsDetailFmusSlice = createSlice({
         }
       })
       .addCase(getIntegratedAlertsMetadata.fulfilled, (state, action) => {
-        const { type, layersActive, layersSettings } = action.payload;
-
-        if (type === 'no-metadata') {
-          state.layersActive = layersActive;
-        } else {
-          const { id, settings } = layersSettings;
-          state.layersSettings = {
-            ...state.layersSettings,
-            [id]: {
-              ...state.layersSettings[id],
-              ...settings
-            }
-          };
-          state.layersActive = layersActive;
-        }
+        state.layersActive = action.payload.layersActive;
+        state.layersSettings = action.payload.layersSettings;
       });
   },
 });
@@ -245,43 +182,16 @@ export const {
 
 
 
-function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
+function loadIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
   const geostoreId = data.id;
   const { startDate, trimEndDate } = fmu['integrated-alerts'];
 
   // if trimEndDate is not valid, that means we probably did not download layer metadata yet, do not fetch analysis
   if (isNaN(Date.parse(trimEndDate))) return null;
 
-  const sql = `
-    SELECT count(*), SUM(area__ha)
-    FROM data
-    WHERE gfw_integrated_alerts__date >= '${startDate}' AND
-          gfw_integrated_alerts__date <= '${trimEndDate}'
-    GROUP BY gfw_integrated_alerts__confidence
-  `
-  const url = new URL(`${process.env.GFW_PROXY_API}/dataset/gfw_integrated_alerts/latest/query`);
-
-  url.searchParams.set('geostore_id', geostoreId);
-  url.searchParams.set('geostore_origin', 'rw');
-  url.searchParams.set('sql', sql);
-
-  return fetch(url.toString(), {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => {
-      if (response.ok) return response.json();
-      throw new Error(response.statusText);
-    })
-    .then((response) => {
-      const { operatorsDetailFmus } = getState();
-      const { analysis } = operatorsDetailFmus;
-      const { data: analysisData } = analysis;
-
-      // response data array element example
-      // { gfw_integrated_alerts__confidence: 'high', count: 1232, area__ha: 15.151760000000001 }
+  return fetchIntegratedAlertsAnalysis(geostoreId, startDate, trimEndDate)
+    .then((alerts) => {
+      const { data: analysisData } = getState().operatorsDetailFmus.analysis;
 
       dispatch(fmuAnalysisSuccess({
         type,
@@ -289,52 +199,18 @@ function fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type) {
           [fmu.id]: {
             geostore: data.id,
             ...analysisData[fmu.id],
-            'integrated-alerts': response && response.data
+            'integrated-alerts': alerts
           }
         }
       }));
     })
-    .catch(error => dispatch(fmuAnalysisError({ type })));
-}
-
-const ANALYSIS = {
-  'gain': {
-    sum: 'area__ha',
-    filters: 'is__umd_tree_cover_gain',
-    group_by: 'is__umd_tree_cover_gain'
-  },
-  'loss': {
-    sum: 'area__ha',
-    filters: 'umd_tree_cover_density_2000__30', // extentYear: 2000, threshold: 30
-    group_by: 'umd_tree_cover_loss__year'
-  }
-}
-
-function fetchZonalAnalysis(geostoreId, startDate, endDate, analysis) {
-  const url = new URL(`${process.env.GFW_PROXY_API}/analysis/zonal/${geostoreId}`);
-
-  url.searchParams.set('geostore_origin', 'rw');
-  url.searchParams.set('start_date', startDate);
-  url.searchParams.set('end_date', endDate);
-  url.searchParams.set('sum', ANALYSIS[analysis].sum);
-  url.searchParams.set('filters', ANALYSIS[analysis].filters);
-  url.searchParams.set('group_by', ANALYSIS[analysis].group_by);
-
-  return fetch(url.toString(), {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then((response) => {
-    if (response.ok) return response.json();
-    throw new Error(response.statusText);
-  });
+    .catch(() => dispatch(fmuAnalysisError({ type })));
 }
 
 function fetchAnalysis(dispatch, getState, data, fmu, type) {
   dispatch(fmuAnalysisLoading({ type }));
 
-  if (type === 'integrated-alerts') return fetchIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
+  if (type === 'integrated-alerts') return loadIntegratedAlertsAnalysis(dispatch, getState, data, fmu, type);
 
   const { startDate, trimEndDate } = fmu[type];
   const geostoreId = data.id;
@@ -347,9 +223,7 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
       const gain = (gainResponse.data && gainResponse.data[0] && gainResponse.data[0].area__ha) || 0;
       const loss = sumBy(lossResponse.data, 'area__ha') || 0;
 
-      const { operatorsDetailFmus } = getState();
-      const { analysis } = operatorsDetailFmus;
-      const { data: analysisData } = analysis;
+      const { data: analysisData } = getState().operatorsDetailFmus.analysis;
 
       dispatch(fmuAnalysisSuccess({
         type,
@@ -363,11 +237,10 @@ function fetchAnalysis(dispatch, getState, data, fmu, type) {
         }
       }));
     })
-    .catch(error => {
+    .catch(() => {
       dispatch(fmuAnalysisError({ type }));
     });
 }
-
 
 registerReducer('operatorsDetailFmus', operatorsDetailFmusSlice.reducer);
 

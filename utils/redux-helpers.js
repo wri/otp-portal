@@ -2,7 +2,7 @@
  * Redux Toolkit helper utilities to reduce boilerplate in API reducers
  */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'services/api';
+import { fetchApi } from 'services/fetch-api';
 
 /**
  * Creates standard API extra reducers for fetch operations
@@ -81,6 +81,7 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
     auth = false,
     requestOptions = {},
     params = {},
+    // the response passed in only carries `meta`
     transformResponse = (data, _response, _arg) => ({ data })
   } = options;
 
@@ -92,22 +93,35 @@ export function createApiThunk(typePrefix, endpoint, options = {}) {
         const finalEndpoint = typeof endpoint === 'function' ? endpoint(arg, state) : endpoint;
         const finalParams = typeof params === 'function' ? params(arg, state) : params;
 
-        const apiParams = {
-          ...(useLanguage && { locale: state.language }),
-          ...finalParams
-        };
-
         // Page data is public unless the thunk asks for `auth: true`; without that
         // a logged-in user would get their own view of every list on the site.
-        const apiOptions = { ...requestOptions, auth };
-        if (auth && typeof window === 'undefined') {
-          const { getRequestCookie } = require('services/request-context');
-          const cookie = getRequestCookie();
-          if (cookie) apiOptions.cookie = cookie;
-        }
+        const { data, meta } = await fetchApi(finalEndpoint, {
+          ...requestOptions,
+          locale: useLanguage ? state.language : undefined,
+          params: finalParams,
+          auth,
+          meta: true
+        });
+        return transformResponse(data, { meta }, arg);
+      } catch (err) {
+        console.error(err);
+        return rejectWithValue(err.message);
+      }
+    },
+  );
+}
 
-        const { data, response } = await API.get(finalEndpoint, apiParams, apiOptions);
-        return transformResponse(data, response, arg);
+/**
+ * Wraps a service call as a thunk: `fn(arg, state)` resolves with the payload.
+ * @param {string} typePrefix - The action type prefix
+ * @param {Function} fn - Returns a promise of the payload
+ */
+export function createServiceThunk(typePrefix, fn) {
+  return createAsyncThunk(
+    typePrefix,
+    async (arg, { getState, rejectWithValue }) => {
+      try {
+        return await fn(arg, getState());
       } catch (err) {
         console.error(err);
         return rejectWithValue(err.message);

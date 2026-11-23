@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import dayjs from 'dayjs';
@@ -13,7 +13,7 @@ import { getOperatorDocumentationDate } from 'selectors/operators-detail/documen
 import { useIntl } from 'react-intl';
 
 // Services
-import DocumentationService from 'services/documentationService';
+import { deleteDocument } from 'services/documents';
 import modal from 'services/modal';
 
 // Components
@@ -31,7 +31,6 @@ const DocCardUpload = (props) => {
   const { status, buttons = DEFAULT_BUTTONS, title, docId, onChange, reason } = props;
   const date = useSelector(getOperatorDocumentationDate);
   const intl = useIntl();
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const triggerAddFile = (e) => {
     e && e.preventDefault();
@@ -93,7 +92,7 @@ const DocCardUpload = (props) => {
   };
 
   const triggerConfirmedDeleteFile = ({ onSuccess, onError } = {}) => {
-    documentationService.deleteDocument(docId)
+    deleteDocument(docId)
       .then(() => {
         modal.toggleModal(false);
         onSuccess && onSuccess();

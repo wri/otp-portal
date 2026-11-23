@@ -6,10 +6,6 @@ import { useIntl } from 'react-intl';
 
 import Spinner from 'components/ui/spinner';
 import { getReusableDocuments } from 'modules/document-reuse';
-import {
-  getReusableDocumentsGrouped,
-  getReusableDocumentsLoading,
-} from 'selectors/document-reuse';
 import { removeDiacritics } from 'utils/general';
 
 const STATUS_LABEL_ID = {
@@ -100,8 +96,8 @@ const DocModalSelectExisting = ({
 }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
-  const operators = useSelector(getReusableDocumentsGrouped);
-  const loading = useSelector(getReusableDocumentsLoading);
+  // grouped by operator and category already (services/documents.js)
+  const { data: operators, loading } = useSelector((state) => state.documentReuse);
 
   useEffect(() => {
     if (operatorIds && operatorIds.length) {

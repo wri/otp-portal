@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Router from 'next/router';
-import dayjs from 'dayjs';
 
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
-import { fetchIntegratedAlertsMetadata } from 'services/layers';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'utils/integrated-alerts-layer';
 import { groupBy } from 'utils/general';
 import { CERTIFICATIONS } from 'constants/fmu';
 import { registerReducer } from 'modules/registry';
@@ -177,51 +176,12 @@ export function setFilters(filter) {
 }
 
 export function getIntegratedAlertsMetadata() {
-  return (dispatch, getState) => {
-    return Promise.all([
-      fetchIntegratedAlertsMetadata(),
-      // imported lazily so the layer definitions stay out of _app, which bundles every module
-      import('constants/layers')
-    ]).then(([{ minDataDate, maxDataDate, version }, { getIntegratedAlertsSource }]) => {
-      const state = getState();
-      const activeLayers = state.operatorsRanking.layersActive;
+  return (dispatch, getState) => fetchIntegratedAlertsSettings().then((settings) => {
+    const { layersActive } = withIntegratedAlerts(getState().operatorsRanking, settings, 'fmus');
 
-      if (!minDataDate || !maxDataDate) {
-        dispatch(setOperatorsMapLayersActive(
-          activeLayers.filter(l => l !== 'integrated-alerts')
-        ));
-        return;
-      }
-
-      const startDate = dayjs(maxDataDate).subtract(2, 'years').format('YYYY-MM-DD');
-
-      dispatch(setOperatorsMapLayersSettings({
-        id: 'integrated-alerts',
-        settings: {
-          ...(version && { source: getIntegratedAlertsSource(version) }),
-          decodeParams: {
-            startDate,
-            endDate: maxDataDate,
-            trimEndDate: maxDataDate,
-            maxDate: maxDataDate
-          },
-          timelineParams: {
-            minDate: startDate,
-            maxDate: maxDataDate,
-            minDataDate
-          }
-        }
-      }));
-
-      dispatch(setOperatorsMapLayersActive([
-        ...new Set([
-          ...activeLayers.slice(0, activeLayers.indexOf('fmus')),
-          'integrated-alerts',
-          ...activeLayers.slice(activeLayers.indexOf('fmus'))
-        ])
-      ]));
-    });
-  };
+    if (settings) dispatch(setOperatorsMapLayersSettings({ id: 'integrated-alerts', settings }));
+    dispatch(setOperatorsMapLayersActive(layersActive));
+  });
 }
 
 registerReducer('operatorsRanking', operatorsRankingSlice.reducer);

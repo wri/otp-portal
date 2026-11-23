@@ -4,7 +4,7 @@ import { sortBy } from 'utils/general';
 // Intl
 import { useIntl } from 'react-intl';
 
-import API from 'services/api';
+import { fetchAllCountries } from 'services/countries';
 
 import { groupBy } from 'utils/general';
 
@@ -17,9 +17,7 @@ import Select from 'components/form/SelectInput';
 import SubmitButton from '../form/SubmitButton';
 
 function fetchCountries(lang) {
-  return API.get('countries', { locale: lang, 'page[size]': 500, 'filter[is-active]': 'all' })
-    .then(({ data }) => data)
-    .catch((error) => console.error(error));
+  return fetchAllCountries(lang).catch((error) => console.error(error));
 }
 
 const NewsletterForm = () => {

@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 // Intl
 import { useIntl } from 'react-intl';
 
-// Redux
-import { useDispatch } from 'react-redux';
-import { saveOperator } from 'modules/user';
+import { saveOperator } from 'services/operators';
 
 // Next components
 import Link from 'next/link';
@@ -26,7 +24,6 @@ import { HELPERS_REGISTER } from 'utils/signup';
 
 const NewOperator = ({ onSubmit }) => {
   const intl = useIntl();
-  const dispatch = useDispatch();
   const language = intl.locale;
   const [formInitialState] = useState({
     name: '',
@@ -60,7 +57,7 @@ const NewOperator = ({ onSubmit }) => {
   };
 
   const handleSubmit = ({ form }) => {
-    return dispatch(saveOperator({ body: HELPERS_REGISTER.getBody(form) }))
+    return saveOperator({ body: HELPERS_REGISTER.getBody(form) })
       .then(() => {
         if (onSubmit) onSubmit();
       });
