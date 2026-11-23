@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
-import DocumentationService from 'services/documentationService';
+import { addAnnex, editAnnex } from 'services/documents';
 
 // Components
 import Form, { FormProvider } from 'components/form/Form';
@@ -23,7 +23,6 @@ const DocAnnexesModal = ({ title, docId, operatorId, id, name, startDate, expire
   // An existing annex id means we're editing; adding a new annex keeps the
   // submit button enabled.
   const isEditing = !!id;
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const getBody = (form) => {
     const usingSource = !!form.source;
@@ -55,7 +54,7 @@ const DocAnnexesModal = ({ title, docId, operatorId, id, name, startDate, expire
 
   const handleSubmit = ({ form }) => {
     const body = getBody(form);
-    const action = !!id ? documentationService.editAnnex({ id, body }) : documentationService.addAnnex({ body });
+    const action = !!id ? editAnnex({ id, body }) : addAnnex({ body });
 
     return action.then(() => {
         onChange && onChange();

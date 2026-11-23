@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
-import API from 'services/api';
+import { dismissNotification } from 'services/notifications';
 
 export const getNotifications = createApiThunk('notifications/getNotifications', 'notifications', { auth: true });
 
@@ -25,9 +25,7 @@ export function dismissAll() {
   return (dispatch, getState) => {
     const { notifications } = getState();
 
-    notifications.data.forEach((notification) => {
-      API.put(`notifications/${notification.id}/dismiss`);
-    })
+    notifications.data.forEach((notification) => dismissNotification(notification.id));
     dispatch(setNotifications([]));
   }
 }

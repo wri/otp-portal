@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { captureException } from 'utils/sentry';
 
-import { fetchIntegratedAlertsMetadata } from '../layers';
+import { fetchIntegratedAlertsMetadata } from '../gfw';
 
 vi.mock('utils/sentry', () => ({ captureException: vi.fn() }));
 

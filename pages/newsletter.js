@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl';
 import Layout from 'components/layout/layout';
 import StaticHeader from 'components/ui/static-header';
 
-import API from 'services/api';
+import { fetchNewsletters } from 'services/content';
 
 const Newsletter = ({ newsletters, language }) => {
   const intl = useIntl();
@@ -79,8 +79,7 @@ Newsletter.propTypes = {
 Newsletter.getInitialProps = async ({ locale }) => {
   // same default as _app
   const language = locale || 'en';
-  const { data: newsletters } = await API
-    .get('newsletters', { locale: language })
+  const newsletters = await fetchNewsletters(language);
 
   return { newsletters, language };
 }

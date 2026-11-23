@@ -15,7 +15,7 @@ import PageViewTracking from 'components/layout/pageview-tracking';
 import Error from 'pages/_error';
 
 import API, { setUnauthorizedHandler } from 'services/api';
-import { track } from 'services/server-timing';
+import { track } from 'services/server/server-timing';
 import { getCookie } from 'services/cookies';
 import { isMobileUserAgent } from 'utils/user-agent';
 import wrapper from 'store';
@@ -160,7 +160,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
 
       const doneAuth = track(req, 'auth');
       if (authToken) {
-        const { getCachedUser, setCachedUser } = require('services/current-user-cache');
+        const { getCachedUser, setCachedUser } = require('services/server/current-user-cache');
         const cached = getCachedUser(authToken);
         if (cached !== undefined) {
           user = cached;
@@ -225,7 +225,7 @@ MyApp.getInitialProps = wrapper.getInitialAppProps(store => async ({ Component, 
   };
 
   if (typeof window === 'undefined') {
-    const { runWithRequest } = require('services/request-context');
+    const { runWithRequest } = require('services/server/request-context');
     return runWithRequest(req?.headers, run);
   }
   return run();

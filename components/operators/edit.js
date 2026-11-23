@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 // Intl
 import { useIntl } from 'react-intl';
 
-// Redux
-import { useDispatch } from 'react-redux';
-import { updateOperator } from 'modules/user';
+import { updateOperator } from 'services/operators';
 import toast from 'services/toast';
 
 // Components
@@ -27,7 +25,6 @@ const EditOperator = (props) => {
   // rewrite class component to functional component
   const { operator } = props;
   const intl = useIntl();
-  const dispatch = useDispatch();
   const certifications = HELPERS_REGISTER.getFMUCertificationsValues(operator.fmus);
 
   const logoURL = (operator.logo && operator.logo.url) || '';
@@ -37,7 +34,7 @@ const EditOperator = (props) => {
     // otherwise the form still holds the URL of the current one.
     const logoChanged = (form.logo || '') !== logoURL;
 
-    return dispatch(updateOperator({
+    return updateOperator({
       body: {
         data: {
           type: 'operators',
@@ -55,7 +52,7 @@ const EditOperator = (props) => {
       type: 'PATCH',
       id: operator.id,
       locale: intl.locale
-    })).then(() => {
+    }).then(() => {
       toast.success(
         intl.formatMessage({ id: 'operators.edit.toaster.success.title' }),
         intl.formatMessage({ id: 'operators.edit.toaster.success.content' })

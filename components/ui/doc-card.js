@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { captureException } from 'utils/sentry';
@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
-import DocumentationService from 'services/documentationService';
+import { deleteAnnex } from 'services/documents';
 
 // Components
 import { showConfirmModal } from 'components/ui/confirm-modal';
@@ -31,7 +31,6 @@ const DocCard = (props) => {
   const { url, status, public: publicState, title, reason, source, sourceInfo, explanation, adminComment, startDate, endDate, properties, annexes = NO_ANNEXES, layout = DEFAULT_LAYOUT, onChange } = props;
   const withFile = !!url;
 
-  const documentationService = useMemo(() => new DocumentationService(), []);
 
   const triggerWhy = (e) => {
     e && e.preventDefault();
@@ -151,7 +150,7 @@ const DocCard = (props) => {
   };
 
   const triggerConfirmedRemoveAnnex = ({ annexId, onSuccess, onError } = {}) => {
-    documentationService.deleteAnnex(annexId)
+    deleteAnnex(annexId)
       .then(() => {
         modal.toggleModal(false);
         toast.success(

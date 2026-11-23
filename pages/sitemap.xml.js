@@ -1,4 +1,5 @@
-import API from 'services/api';
+import { fetchCountriesWithGovDocuments } from 'services/countries';
+import { fetchOperatorSlugs } from 'services/operators';
 import { LOCALES } from 'constants/locales';
 
 const URL = process.env.APP_URL;
@@ -53,19 +54,11 @@ function generateSiteMap(operators, countries) {
 }
 
 export async function getServerSideProps({ res }) {
-  const { data: operators } = await API
-    .get('operators', { locale: 'en', 'page[size]': 3000, 'fields[operators]': 'slug' })
+  const operators = await fetchOperatorSlugs('en');
 
   let countries = [];
   if (process.env.FEATURE_COUNTRY_PAGES === 'true') {
-    countries = await API.get('countries', {
-      locale: 'en',
-      include: 'required-gov-documents',
-      'fields[country]': 'id',
-      'fields[required-gov-documents]': 'id',
-      'page[size]': 2000
-    })
-      .then(({ data }) => data.filter(c => (c['required-gov-documents'] || []).length));
+    countries = await fetchCountriesWithGovDocuments('en');
   }
 
   const sitemap = generateSiteMap(operators, countries);

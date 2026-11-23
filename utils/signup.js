@@ -1,11 +1,10 @@
-import API from 'services/api';
+import { fetchCountries } from 'services/countries';
+import { fetchFreeFmus } from 'services/operators';
 import { groupBy, sortBy } from 'utils/general';
 
 const HELPERS_REGISTER = {
   getCountries(lang) {
-    return API.get('countries', {
-      locale: lang,
-    }).then(({ data }) => data.map(c => ({ label: c.name, value: c.id })));
+    return fetchCountries(lang).then((data) => data.map(c => ({ label: c.name, value: c.id })));
   },
 
   mapToSelectOptions(collection = []) {
@@ -48,10 +47,8 @@ const HELPERS_REGISTER = {
   },
 
   getOperatorFmus(countryId, lang) {
-    return API.get('fmus', { locale: lang, 'filter[country]': countryId, 'filter[free]': true })
-      .then(({ data }) => {
-        return sortBy(data.map(f => ({ label: f.name, value: f.id })), 'label');
-      });
+    return fetchFreeFmus(countryId, lang)
+      .then((data) => sortBy(data.map(f => ({ label: f.name, value: f.id })), 'label'));
   },
 
   getBody(form, id) {

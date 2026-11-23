@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl';
 
 // Services
 import modal from 'services/modal';
-import DocumentationService from 'services/documentationService';
 
 // Components
 import Icon from 'components/ui/icon';
