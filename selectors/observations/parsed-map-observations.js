@@ -5,7 +5,7 @@ import { isEmpty, sortBy } from 'utils/general';
 import { createSelector } from '@reduxjs/toolkit';
 import { spiderifyCluster, getStyleLayerId } from 'components/map/layer-manager/utils';
 
-import { parseObservation } from 'utils/observations';
+import { parseObservation } from 'services/observations';
 import { omitBy } from 'utils/general';
 
 // The spider leaves declare their own style layer id, so the page can test a clicked feature

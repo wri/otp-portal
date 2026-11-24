@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { sortBy } from 'utils/general';
 
-import { getInteractiveLayersIds, getParams, getActiveInteractiveLayersSelector, getLegendLayersSelector } from '../utils';
+import { getInteractiveLayersIds, getParams, getClickedLayers, buildLegendLayers } from 'components/map/layers';
 
 import { LAYERS } from 'constants/layers';
 
@@ -90,7 +90,7 @@ export const getActiveInteractiveLayersIds = createSelector([getActiveLayers], (
 
 export const getLegendLayers = createSelector(
   [layers, layersSettings, layersActive, analysis, getSelectedFmuId, intl], (_layers, _layersSettings, _layersActive, _analysis, _fmu, _intl) => {
-    return getLegendLayersSelector(_layers, _layersSettings, _layersActive, _intl).map((layer) => {
+    return buildLegendLayers(_layers, _layersSettings, _layersActive, _intl).map((layer) => {
       const i = layer.id === 'gain' ? 'loss' : layer.id; // gain and loss share the same analysis loading and error state
       const analysisParams = {
         loading: _analysis.loading[i],

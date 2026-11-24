@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { sortBy } from 'utils/general';
 
 // Get the datasets and filters from state
 const countriesDetail = state => state.countriesDetail;
@@ -52,34 +51,4 @@ const getParsedDocumentation = createSelector(
 );
 
 
-// Create a function to compare the current active datatasets and the current datasetsIds
-const getAllParsedDocumentation = createSelector(
-  countriesDetail,
-  (_countriesDetail) => {
-    const documentation = _countriesDetail.documentation.data;
-
-    if (documentation && !!documentation.length) {
-      return sortBy(documentation.filter(d => d.status !== 'doc_not_provided').map((doc) => {
-        if (doc['required-country-document']) {
-          return {
-            id: doc.id,
-            requiredDocId: doc['required-country-document'].id,
-            type: doc.type,
-            title: doc['required-country-document'].name,
-            category: doc['required-country-document']['required-country-document-group'].name,
-            categoryPosition: doc['required-country-document']['required-country-document-group'].position,
-            status: doc.status,
-            startDate: new Date(doc['start-date']),
-            endDate: new Date(doc['expire-date'])
-          };
-        }
-
-        return null;
-      }), 'title').filter(x => !!x);
-    }
-
-    return [];
-  }
-);
-
-export { getParsedDocumentation, getAllParsedDocumentation };
+export { getParsedDocumentation };

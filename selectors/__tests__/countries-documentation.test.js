@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { getParsedDocumentation, getAllParsedDocumentation } from '../countries-detail/documentation';
+import { getParsedDocumentation } from '../countries-detail/documentation';
 
 const govDoc = (overrides = {}) => ({
   id: '100',
@@ -89,55 +89,5 @@ describe('getParsedDocumentation', () => {
     const expiring = requiredDoc({ 'gov-documents': [govDoc({ 'expire-date': '2027-12-31T00:00:00Z' })] });
 
     expect(getParsedDocumentation(state({ 'required-gov-documents': [expiring] }))[0].endDate).toBe('2027/12/31');
-  });
-});
-
-describe('getAllParsedDocumentation', () => {
-  const countryDoc = (overrides = {}) => ({
-    id: '200',
-    type: 'country-documents',
-    status: 'doc_valid',
-    'start-date': '2024-01-01T00:00:00Z',
-    'expire-date': '2026-01-01T00:00:00Z',
-    'required-country-document': {
-      id: '2',
-      name: 'Zeta report',
-      'required-country-document-group': { name: 'Reports', position: 1 }
-    },
-    ...overrides
-  });
-
-  it('is empty without documentation', () => {
-    expect(getAllParsedDocumentation(state({}, { data: [] }))).toEqual([]);
-    expect(getAllParsedDocumentation(state({}, {}))).toEqual([]);
-  });
-
-  it('drops documents that were not provided', () => {
-    const docs = [countryDoc(), countryDoc({ id: '201', status: 'doc_not_provided' })];
-
-    expect(getAllParsedDocumentation(state({}, { data: docs })).map((d) => d.id)).toEqual(['200']);
-  });
-
-  it('drops documents without a required document and sorts by title', () => {
-    const alpha = countryDoc({
-      id: '202',
-      'required-country-document': { ...countryDoc()['required-country-document'], id: '3', name: 'Alpha report' }
-    });
-    const orphan = countryDoc({ id: '203', 'required-country-document': undefined });
-
-    const parsed = getAllParsedDocumentation(state({}, { data: [countryDoc(), alpha, orphan] }));
-
-    expect(parsed.map((d) => d.title)).toEqual(['Alpha report', 'Zeta report']);
-    expect(parsed[1]).toEqual({
-      id: '200',
-      requiredDocId: '2',
-      type: 'country-documents',
-      title: 'Zeta report',
-      category: 'Reports',
-      categoryPosition: 1,
-      status: 'doc_valid',
-      startDate: new Date('2024-01-01T00:00:00Z'),
-      endDate: new Date('2026-01-01T00:00:00Z')
-    });
   });
 });

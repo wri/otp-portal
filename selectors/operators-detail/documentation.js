@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { sortBy, uniqBy } from 'utils/general';
-import { parseDocument } from 'utils/documents';
+import { parseDocument } from 'services/documents';
 import { getTodayDate } from 'utils/documentation';
 
 // Get the datasets and filters from state

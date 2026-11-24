@@ -4,7 +4,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import Fuse from 'fuse.js';
 
 // Utils
-import { getInteractiveLayersIds, getActiveInteractiveLayersSelector, getParams, getPopupSelector, getLegendLayersSelector } from '../utils';
+import { getInteractiveLayersIds, getClickedLayers, getParams, getPopupPosition, buildLegendLayers } from 'components/map/layers';
 import { HELPERS_DOC } from 'utils/documentation';
 import searchFMUs from 'utils/search-fmus';
 import { SEARCH_OPTIONS } from 'constants/general';
@@ -69,11 +69,11 @@ export const getActiveLayers = createSelector(
 );
 
 export const getActiveInteractiveLayersIds = createSelector([getActiveLayers], (layers) => layers.map(l => l.interactiveLayersIds).flat().filter(x => !!x));
-export const getActiveInteractiveLayers = createSelector([layers, interactions], getActiveInteractiveLayersSelector);
+export const getActiveInteractiveLayers = createSelector([layers, interactions], getClickedLayers);
 
-export const getLegendLayers = createSelector([layers, layersSettings, layersActive, intl], getLegendLayersSelector);
+export const getLegendLayers = createSelector([layers, layersSettings, layersActive, intl], buildLegendLayers);
 
-export const getPopup = createSelector([latlng], getPopupSelector);
+export const getPopup = createSelector([latlng], getPopupPosition);
 
 export const getTable = createSelector(
   [data, filters],

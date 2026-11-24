@@ -91,8 +91,7 @@ export const getParams = (config = [], params = {}) => {
     }),
     ...getDayRange(newParams)
   };
-}
-  ;
+};
 
 export function getInteractiveLayersIds(layer) {
   const { id, config, interactionConfig } = layer;
@@ -111,7 +110,8 @@ export function getInteractiveLayersIds(layer) {
   }).filter(x => !!x);
 }
 
-export function getActiveInteractiveLayersSelector(layers, interactions) {
+// The layers under a map click, each with the clicked feature's data
+export function getClickedLayers(layers, interactions) {
   if (!layers || isEmpty(interactions)) return [];
 
   const allLayers = uniqBy(layers, 'id');
@@ -122,7 +122,7 @@ export function getActiveInteractiveLayersSelector(layers, interactions) {
   return interactiveLayers.map(l => ({ ...l, data: interactions[l.id] }));
 }
 
-export function getPopupSelector(latlng) {
+export function getPopupPosition(latlng) {
   if (isEmpty(latlng) || !latlng.lat || !latlng.lng) {
     return {};
   }
@@ -135,7 +135,7 @@ export function getPopupSelector(latlng) {
   return popup;
 }
 
-export function getLegendLayersSelector(layers, layersSettings, layersActive, intl) {
+export function buildLegendLayers(layers, layersSettings, layersActive, intl) {
   if (!layers) return [];
   const legendLayers = layers.filter(l => l.legendConfig && !isEmpty(l.legendConfig));
 
