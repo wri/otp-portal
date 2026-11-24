@@ -206,6 +206,3 @@ export function buildLegendLayers(layers, layersSettings, layersActive, intl) {
 
   return layerGroups;
 }
-
-// Style layer ids the map should report clicks for, across all active layers
-export const collectInteractiveLayerIds = (layers) => layers.map((l) => l.interactiveLayersIds).flat().filter((x) => !!x);

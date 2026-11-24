@@ -3,29 +3,6 @@ import { sortBy, uniqBy } from 'utils/general';
 import { parseDocument } from 'services/documents';
 import { getTodayDate } from 'utils/documentation';
 
-// The operator's documents, or only one FMU's, without the publication authorization
-export function parseOperatorDocuments(documentation, fmu) {
-  if (!documentation) return null;
-
-  return documentation
-    .filter((doc) => !doc['required-operator-document']['contract-signature'])
-    .filter((doc) => !fmu || (doc.fmu && doc.fmu.id === fmu.id))
-    .map((doc) => {
-      try {
-        return parseDocument(doc);
-      } catch (error) {
-        return null;
-      }
-    });
-}
-
-// FMUs that have documents on the selected date, which may differ from the operator's current ones
-export function getHistoricFmus(documentation) {
-  if (!documentation) return [];
-
-  return sortBy(uniqBy(documentation.filter((d) => d.fmu).map((d) => d.fmu), 'id'), 'name');
-}
-
 // Get the datasets and filters from state
 const operatorDocumentation = (state) => state.operatorsDetail.documentation;
 export const getFMUs = (state) => state.operatorsDetail.data.fmus;
@@ -33,16 +10,38 @@ export const getOperatorDocumentationFMU = (state) => state.operatorsDetail.fmu;
 export const getOperatorDocumentationDate = (state) =>
   state.operatorsDetail.date || getTodayDate();
 
+// Create a function to compare the current active datatasets and the current datasetsIds
 const getParsedDocumentation = createSelector(
   [operatorDocumentation, getOperatorDocumentationFMU],
-  (documentation, fmu) => parseOperatorDocuments(documentation.data, fmu)
+  (documentation, fmu) => {
+    if (!documentation.data) return null;
+
+    return documentation.data
+      .filter((doc) => !doc['required-operator-document']['contract-signature'])
+      .filter((doc) => !fmu || (doc.fmu && doc.fmu.id === fmu.id))
+      .map((doc) => {
+        try {
+          return parseDocument(doc);
+        } catch (error) {
+          return null;
+        }
+      });
+  }
 );
 
 const getContractSignatureDocumentation = (state) => state.operatorsDetail.publicationAuthorization || {};
 
 const getHistoricFMUs = createSelector(
   [operatorDocumentation],
-  (documentation) => getHistoricFmus(documentation.data)
+  (documentation) => {
+    if (!documentation.data) return [];
+
+    const FMUS = uniqBy(documentation.data
+      .filter(d => d.fmu)
+      .map(d => d.fmu), 'id');
+
+    return sortBy(FMUS, 'name');
+  }
 );
 
 export { getParsedDocumentation, getContractSignatureDocumentation, getHistoricFMUs };
