@@ -1,13 +1,14 @@
-import React, { Fragment, useEffect, useReducer, useRef } from 'react';
+import React, { Fragment, useEffect, useMemo, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { debounce, groupBy } from 'utils/general';
 import { useIntl } from 'react-intl';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 
 import modal from 'services/modal';
 import { fetchApi } from 'services/fetch-api';
-import { fetchIntegratedAlertsSettings } from 'components/map/integrated-alerts-layer';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'components/map/integrated-alerts-layer';
+import { buildLegendLayers, collectInteractiveLayerIds, getClickedLayers, getPopupPosition } from 'components/map/layers';
 import useApi from 'hooks/use-api';
 import { isMobileUserAgent } from 'utils/user-agent';
 
@@ -24,10 +25,111 @@ import ZoomControl from 'components/map/controls/zoom-control';
 
 import OperatorsFilters from 'components/operators/filters';
 import OperatorsTable from 'components/operators/table';
-import useRankingMap from 'components/operators/use-ranking-map';
-import { FILTER_OPTIONS, initRankingState, rankingReducer, setOperatorsUrl } from 'components/operators/ranking-state';
+import { buildRankingLayers, getActiveCountryIsos } from 'components/operators/ranking-map';
 
-import { BASEMAP_LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
+import { BASEMAP_LAYERS, LAYERS, getOtpCountriesLayerFilter } from 'constants/layers';
+import { CERTIFICATIONS } from 'constants/fmu';
+
+const COUNTRIES = [
+  { label: 'Congo', value: 47, iso: 'COG' },
+  { label: 'Democratic Republic of the Congo', value: 7, iso: 'COD' },
+  { label: 'Cameroon', value: 45, iso: 'CMR' },
+  { label: 'Central African Republic', value: 188, iso: 'CAF' },
+  { label: 'Gabon', value: 53, iso: 'GAB' }
+];
+
+const FILTER_OPTIONS = {
+  country: process.env.OTP_COUNTRIES.split(',').map(iso => COUNTRIES.find(c => c.iso === iso)),
+  certification: CERTIFICATIONS
+};
+
+const DEFAULT_MAP = { zoom: 4, latitude: 0, longitude: 20 };
+
+function getOperatorsUrl(query) {
+  const { zoom, lat, lng, latitude, longitude } = query;
+
+  return {
+    zoom: +zoom || DEFAULT_MAP.zoom,
+    latitude: +latitude || +lat || DEFAULT_MAP.latitude,
+    longitude: +longitude || +lng || DEFAULT_MAP.longitude
+  };
+}
+
+function setOperatorsUrl(mapLocation) {
+  Router.replace({
+    pathname: '/operators',
+    query: {
+      latitude: mapLocation.latitude.toFixed(2),
+      longitude: mapLocation.longitude.toFixed(2),
+      zoom: mapLocation.zoom.toFixed(2)
+    }
+  }, null, { shallow: true });
+}
+
+function initRankingState({ query, isMobile }) {
+  return {
+    map: getOperatorsUrl(query),
+    latlng: {},
+    interactions: {},
+    layersActive: ['gain', 'loss', 'fmus', 'protected-areas'],
+    layersSettings: {},
+    sidebar: { open: !isMobile, width: 600 },
+    filters: { fa: true, country: [], certification: [], operator: '', fmu: '' }
+  };
+}
+
+function rankingReducer(state, { type, payload }) {
+  switch (type) {
+    case 'map':
+      return { ...state, map: payload };
+    case 'interactions': {
+      const { features = [], lngLat = {} } = payload;
+      // could be more features for the same layer; the first one wins
+      const interactions = features.slice().reverse().reduce((obj, next) => ({
+        ...obj,
+        [next.layer.source]: { id: next.id, data: next.properties, geometry: next.geometry }
+      }), {});
+      return { ...state, interactions, latlng: lngLat };
+    }
+    case 'layerSettings': {
+      const { id, settings } = payload;
+      return {
+        ...state,
+        layersSettings: { ...state.layersSettings, [id]: { ...state.layersSettings[id], ...settings } }
+      };
+    }
+    case 'integratedAlerts':
+      return { ...state, ...withIntegratedAlerts(state, payload, 'fmus') };
+    case 'sidebar':
+      return { ...state, sidebar: { ...state.sidebar, ...payload } };
+    case 'filter':
+      return { ...state, filters: { ...state.filters, ...payload } };
+    default:
+      return state;
+  }
+}
+
+// Map layers, legend and click popup for the ranking page state (see rankingReducer)
+function useRankingMap({ filters, layersActive, layersSettings, interactions, latlng }) {
+  const intl = useIntl();
+  const activeCountries = useMemo(
+    () => getActiveCountryIsos(FILTER_OPTIONS.country, filters.country),
+    [filters.country]
+  );
+  const activeLayers = useMemo(
+    () => buildRankingLayers(layersActive, layersSettings, activeCountries),
+    [layersActive, layersSettings, activeCountries]
+  );
+  const interactiveLayerIds = useMemo(() => collectInteractiveLayerIds(activeLayers), [activeLayers]);
+  const clickedLayers = useMemo(() => getClickedLayers(LAYERS, interactions), [interactions]);
+  const legendLayers = useMemo(
+    () => buildLegendLayers(LAYERS, layersSettings, layersActive, intl),
+    [layersSettings, layersActive, intl]
+  );
+  const popup = useMemo(() => getPopupPosition(latlng), [latlng]);
+
+  return { activeCountries, activeLayers, interactiveLayerIds, clickedLayers, legendLayers, popup };
+}
 
 const NO_OPERATORS = [];
 

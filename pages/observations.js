@@ -15,8 +15,14 @@ import { parseObjectSelectOptions, getApiFiltersParams } from 'utils/general';
 
 import { parseObservations } from 'services/observations';
 import useFilterOptions from 'hooks/use-filter-options';
-import { OBSERVATIONS_LEAVES_LAYER_ID } from 'components/observations/map-layers';
-import useObservationsMap from 'components/observations/use-observations-map';
+import {
+  OBSERVATIONS_LEAVES_LAYER_ID,
+  buildClusterLayers,
+  buildFmusLayer,
+  buildObservationsLayer,
+  getInteractiveLayerIds,
+  buildLegend
+} from 'components/observations/map-layers';
 
 import Layout from 'components/layout/layout';
 import Overview from 'components/observations/overview';
@@ -64,6 +70,7 @@ const DEFAULT_MAP_LOCATION = { zoom: 5, latitude: -1.45, longitude: 15 };
 const NO_OBSERVATIONS = [];
 const NO_OPTIONS = {};
 const NO_CLUSTER = {};
+const NO_LAYERS = [];
 
 function fetchObservations(filters, locale) {
   return fetchApi('observations', {
@@ -88,6 +95,26 @@ function fetchObservations(filters, locale) {
 function fetchFilterOptions(locale) {
   return fetchApi('observation_filters_tree', { locale, deserialize: false, cache: true })
     .then((data) => parseObjectSelectOptions({ ...data, ...FRONTEND_FILTERS }));
+}
+
+/**
+ * Map layers, clickable layer ids and legend for the observations map. Each layer is memoised on
+ * its own inputs: panning and zooming only rebuild the cluster and FMU layers, and the observations
+ * layer keeps its identity so react-map-gl's `deepEqual` bails out instead of comparing every feature.
+ */
+function useObservationsMap(observations, cluster, zoom) {
+  const intl = useIntl();
+  const observationsLayer = useMemo(() => buildObservationsLayer(observations), [observations]);
+  const fmusLayer = useMemo(() => buildFmusLayer(zoom), [zoom]);
+  const clusterLayers = useMemo(() => buildClusterLayers(cluster, zoom), [cluster, zoom]);
+
+  const layers = useMemo(() => (
+    observations ? [...clusterLayers, fmusLayer, observationsLayer] : NO_LAYERS
+  ), [observations, clusterLayers, fmusLayer, observationsLayer]);
+  const interactiveLayerIds = useMemo(() => getInteractiveLayerIds(layers), [layers]);
+  const legend = useMemo(() => buildLegend(intl), [intl]);
+
+  return { layers, interactiveLayerIds, legend };
 }
 
 const ObservationsPage = ({ language }) => {

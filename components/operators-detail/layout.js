@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'utils/general';
+import { isEmpty, sortBy, uniqBy } from 'utils/general';
 import { useRouter } from 'next/router';
 
 // Utils
@@ -18,8 +18,8 @@ import {
   fetchOperatorPublicationAuthorization,
   fetchOperatorTimeline
 } from 'services/operators';
+import { parseDocument } from 'services/documents';
 import { parseObservations } from 'services/observations';
-import { parseOperatorDocuments, getHistoricFmus } from 'components/operators-detail/documents';
 
 import Link from 'next/link';
 
@@ -29,6 +29,29 @@ import StaticHeader from 'components/ui/static-header';
 import Tabs from 'components/ui/tabs';
 import Spinner from 'components/ui/spinner';
 import useUser from 'hooks/use-user';
+
+// The operator's documents, or only one FMU's, without the publication authorization
+function parseOperatorDocuments(documentation, fmu) {
+  if (!documentation) return null;
+
+  return documentation
+    .filter((doc) => !doc['required-operator-document']['contract-signature'])
+    .filter((doc) => !fmu || (doc.fmu && doc.fmu.id === fmu.id))
+    .map((doc) => {
+      try {
+        return parseDocument(doc);
+      } catch (error) {
+        return null;
+      }
+    });
+}
+
+// FMUs that have documents on the selected date, which may differ from the operator's current ones
+function getHistoricFmus(documentation) {
+  if (!documentation) return [];
+
+  return sortBy(uniqBy(documentation.filter((d) => d.fmu).map((d) => d.fmu), 'id'), 'name');
+}
 
 const TABS_OPERATORS_DETAIL = [{
   label: 'overview',
