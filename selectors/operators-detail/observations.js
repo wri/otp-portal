@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { parseObservations } from 'utils/observations';
+import { parseObservations } from 'services/observations';
 
 // Get the datasets and filters from state
 const operatorsDetail = (state) => state.operatorsDetail;

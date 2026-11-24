@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import classnames from 'classnames';
 
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_OBS } from 'services/observations';
 
 // components
 import Icon from 'components/ui/icon';

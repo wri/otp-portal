@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { createGeostore, fetchIntegratedAlertsAnalysis, fetchZonalAnalysis } from 'services/gfw';
-import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'utils/integrated-alerts-layer';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'components/map/integrated-alerts-layer';
 import { sumBy } from 'utils/general';
 import { registerReducer } from 'modules/registry';
 

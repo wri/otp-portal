@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
 
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_OBS } from 'services/observations';
 import { HELPERS_DOC } from 'utils/documentation';
 
 // Components

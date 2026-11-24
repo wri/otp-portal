@@ -1,5 +1,8 @@
 import { groupBy } from 'utils/general';
 
+// Observations from the API, shaped for the tables, charts and map
+
+// Groupings and counts for the observation charts, over parsed observations
 const HELPERS_OBS = {
   // Groups
   getGroupedByYear(data) {

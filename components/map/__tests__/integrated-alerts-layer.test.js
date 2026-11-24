@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { LAYERS, getIntegratedAlertsSource } from 'constants/layers';
 import { fetchIntegratedAlertsMetadata } from 'services/gfw';
 
-import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'utils/integrated-alerts-layer';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'components/map/integrated-alerts-layer';
 
 vi.mock('services/gfw', () => ({ fetchIntegratedAlertsMetadata: vi.fn() }));
 

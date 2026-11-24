@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import Router from 'next/router';
 
 import { addApiCases, createApiThunk, createApiInitialState } from 'utils/redux-helpers';
-import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'utils/integrated-alerts-layer';
+import { fetchIntegratedAlertsSettings, withIntegratedAlerts } from 'components/map/integrated-alerts-layer';
 import { groupBy } from 'utils/general';
 import { CERTIFICATIONS } from 'constants/fmu';
 import { registerReducer } from 'modules/registry';

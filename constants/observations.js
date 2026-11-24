@@ -58,6 +58,22 @@ const FILTERS_REFS = [
   },
 ];
 
+// Which option lists a selected filter narrows, and the ids the selected item allows in each
+const FILTER_RULES = {
+  country_id: {
+    operator: (country) => country.operators,
+    observer_id: (country) => country.observers,
+    fmu_id: (country) => country.fmus
+  },
+  operator: {
+    fmu_id: (operator) => operator.fmus
+  },
+  category_id: {
+    subcategory_id: (category) => category.subcategories
+  }
+};
+
 export {
-  FILTERS_REFS
+  FILTERS_REFS,
+  FILTER_RULES
 };

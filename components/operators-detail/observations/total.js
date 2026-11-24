@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_OBS } from 'services/observations';
 
 // Intl
 import { useIntl } from 'react-intl';

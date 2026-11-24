@@ -1,6 +1,6 @@
 import API from 'services/api';
 import { fetchApi } from 'services/fetch-api';
-import { parseDocument } from 'utils/documents';
+import { parseDocument } from 'services/documents';
 
 // Operator detail pages. These carry the session: owners and admins see unpublished documents
 // and observations. `cache` is true when switching tabs, 'reload' after the user changed a document.

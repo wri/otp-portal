@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { PALETTE_COLOR_1, LEGEND_SEVERITY } from 'constants/charts';
 
 // Utils
-import { HELPERS_OBS } from 'utils/observations';
+import { HELPERS_OBS } from 'services/observations';
 
 // Components
 import ChartLegend from 'components/ui/charts/legend';
